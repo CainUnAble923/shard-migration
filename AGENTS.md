@@ -73,3 +73,17 @@ with ServUO as the new base.
 Note that `apply-patches.sh` uses `-maxdepth 1 -type f -name '*.cs'` and deliberately
 excludes several files by name because they are handled as patches instead. Any change to
 how customizations reach the build tree must preserve both behaviors.
+
+## Asking questions
+
+Do not block on Chase to relay a question. Use `notes/codex-questions.md`.
+
+Read its **Standing answers** section first; most questions are already decided there.
+If yours is not, append an entry using the template. If the question is non-blocking, pick
+the most reasonable option, record the assumption, and keep working. If it genuinely
+blocks, mark it `[OPEN-BLOCKING]`, stop that thread, and pick up something else.
+
+Claude answers in the same file and promotes durable answers into this document.
+
+`notes/` is yours to write freely. `docs/` is Claude's lane: put findings in `notes/` and
+they will be promoted after review.

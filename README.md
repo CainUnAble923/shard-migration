@@ -46,12 +46,12 @@ notes/    working notes, scratch findings, anything not yet a decision
 ## Current status
 
 - [x] Direction decided: migrate to ServUO
-- [ ] **URGENT** Switch ModernUO to SHA2 password hashing (see migration-plan Phase 0,
-      this window closes when the old shard stops taking logins)
+- [ ] **URGENT** Deploy/restart the ModernUO image so startup enforces SHA2 password hashing
+      (enforcement is staged in the shard infrastructure repo; live state is unverified)
 - [x] Custom surface counted: **~131 files / ~39,900 lines**, already isolated from
       upstream. No Core bucket. See `docs/shard-inventory.md`
 - [x] Shard located: `shattered-legacy-infrastructure` (builds ModernUO from pinned commit)
-- [ ] Add `client-data/` and `server/uo/` to that repo's `.gitignore`
+- [x] Add `client-data/` and `server/uo/` to that repo's `.gitignore`
 - [ ] Stand up stock ServUO pub57 reference shard
 - [ ] Write spawner JSON to XmlSpawner XML converter
 - [ ] Write accounts exporter (MUO binary to ServUO accounts.xml)
