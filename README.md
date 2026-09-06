@@ -64,7 +64,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece. There is no total to reach, so there is no single completion percentage here by design.
 
 ```
-Setup health   #########.............  3/7   blocking defects resolved
+Setup health   ################......  5/7   blocking defects resolved
 ```
 
 | Setup defect | Resolved |
@@ -72,12 +72,12 @@ Setup health   #########.............  3/7   blocking defects resolved
 | CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered | yes |
 | ResourceInfo extended wood enum members (8) recovered | yes |
 | OutridersGuildmaster recovered | yes |
-| server/customizations compiles standalone | **no** |
-| apply-patches.sh fails on failed patch | **no** |
+| server/customizations compiles standalone | yes |
+| apply-patches.sh fails on failed patch | yes |
 | stale server/customizations/migrations removed | **no** |
 | RegenRates routing made explicit | **no** |
 
-**Patches:** 17 total, **7 currently failing to apply**, 0 triaged, 0 found obsolete. `apply-patches.sh` still exits 0 on failure, so a green build proves nothing.
+**Patches:** 15 total, **0 currently failing to apply**, 8 triaged, 3 found obsolete. `apply-patches.sh` fails the build on a failed patch, so a green build means every patch applied.
 
 ### Content moved over: 0 of 2,045 candidate files (0.0%)
 
@@ -135,7 +135,7 @@ _Detail and acceptance criteria in `docs/tasks.md`. Status lives in `tools/progr
 - **Eodon / Time of Legends** — gated on Myrmidex Invasion (83% dep) and Shadowguard (71%), both subsystem builds. Deferred, not declined: measure how much of the Valley separates first.
 - **Vice vs Virtue, City Loyalty, Skill Masteries, Exploring the Deep** — 29-100% dependent on subsystems ModernUO lacks entirely. Deferred to workstream 4.
 
-Counted from the trees: 114 customization files, 16 patch files, stale migrations subfolder still present.
+Counted from the trees: 114 customization files, 14 patch files, stale migrations subfolder still present.
 Shard status: running on ModernUO.
 <!-- PROGRESS:END -->
 

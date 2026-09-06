@@ -87,9 +87,13 @@ def build():
     L.append("")
 
     p = st["patches"]
+    gated = d.get("apply-patches.sh fails on failed patch", False)
     L.append(f"**Patches:** {p['total']} total, **{p['failing']} currently failing to apply**, "
              f"{p['triaged']} triaged, {p['obsolete']} found obsolete. "
-             f"`apply-patches.sh` still exits 0 on failure, so a green build proves nothing.")
+             + ("`apply-patches.sh` fails the build on a failed patch, so a green build means "
+                "every patch applied."
+                if gated else
+                "`apply-patches.sh` still exits 0 on failure, so a green build proves nothing."))
     L.append("")
 
     cp = content_progress()
