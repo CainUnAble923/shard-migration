@@ -146,6 +146,24 @@ def build_report():
 
     overall_done = sum(r[1] for r in rows)
     overall_total = sum(r[2] for r in rows)
+
+    snapshot = {
+        "generated": __import__("datetime").datetime.now().astimezone().isoformat(timespec="seconds"),
+        "overall": {"done": overall_done, "total": overall_total, "pct": round(pct(overall_done, overall_total), 1)},
+        "buckets": [
+            {"name": n, "done": d, "total": t, "pct": round(pct(d, t), 1), "note": note}
+            for n, d, t, note in rows
+        ],
+        "phases": ph,
+        "baseline_gaps": gaps,
+        "patches": {"triaged": st["patches_triaged"], "obsolete": st["patches_obsolete"]},
+        "warnings": warnings,
+    }
+    try:
+        (Path(MIGRATE) / "tools" / "progress.json").write_text(
+            json.dumps(snapshot, indent=2) + "\n", encoding="utf-8")
+    except Exception as e:
+        print(f"  warning: could not write progress.json ({e})", file=sys.stderr)
     lines.insert(0, f"**Overall: {pct(overall_done, overall_total):.0f}%** "
                     f"({overall_done}/{overall_total} tracked items). "
                     f"Counted from the working trees, not hand-maintained.")

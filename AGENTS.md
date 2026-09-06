@@ -144,3 +144,34 @@ It is still a landmine: divergent duplicates of serialization migrations, which 
 save-corruption material if any future change alters how customizations reach the build
 tree. Delete `server/customizations/migrations/` and confirm `server/migrations/` is the
 only source of migration JSONs.
+
+## Keeping progress current
+
+`tools/progress.py` reports migration progress. It counts real state from the working trees
+so the numbers cannot drift from reality.
+
+```
+python tools/progress.py             # print report, rewrite the README block, write progress.json
+python tools/progress.py --dry-run   # print only, touch nothing
+```
+
+**Run it at the end of every work session, before your final commit**, and include the
+resulting `README.md` and `tools/progress.json` changes in that commit. A stale progress
+number is worse than none, because someone will trust it.
+
+What is counted automatically, and therefore must never be hand-edited:
+
+- **Content ports** — `.cs` files under `<ServUO-work>/Scripts/Custom/ShatteredLegacy`
+  against the file count in `server/customizations`
+- **Patch triage total** — `.patch` and `.cs` files in `server/patches`
+
+What is a judgment call, and therefore lives in `tools/progress-state.json`:
+
+- `baseline_gaps` — flip each to `true` as it is genuinely closed and the tree compiles
+- `phases` — `not-started` | `in-progress` | `done` | `blocked`
+- `patches_triaged`, `patches_obsolete` — bump as patches are assessed
+
+Do not edit the `<!-- PROGRESS:START -->` block in `README.md` by hand. It is regenerated
+and your edit will be overwritten. Change `progress-state.json` instead.
+
+Path overrides, if your layout differs: `SL_SHARD`, `SL_WORK`, `SL_MIGRATE`.
