@@ -134,10 +134,25 @@ The original brief, kept because its acceptance criteria are the model for CC2 o
 rather than inference.
 
 ## CC2. Second port, timed — START HERE
-Do a second creature using only the recipe, changing nothing else.
+Do a second creature using only the recipe, changing nothing else. The deliverable is a
+timing number, not the creature. Pick something representative of the ~360-file C4 batch:
+a loot pack, and at least one thing PlagueRat did not exercise.
 
-**Done when:** it builds, the recipe is corrected wherever it was still wrong, and you have
-recorded roughly how long it took. That number prices every task below it.
+Use the recipe as written. If it is wrong, note it, work around it, keep the clock running,
+and correct it after the timing is captured. A recipe fixed mid-run gives a number that no
+longer describes what porting costs.
+
+**Run this one headless. No client, and not on Chase's machine.** P1 needed ClassicUO because
+it was verifying patch behaviour; a creature port does not. The compile is the real gate, and
+body and hue values check against the ServUO source. Batches of 20 will never get a client
+session each, so a timing number that includes one prices work nobody will do. Appearance and
+AI behaviour get spot-checked later, five creatures at a time, not here.
+
+**Done when:** it compiles in a clean Docker build, the server starts with the type registered,
+the world saves and reloads clean, the recipe is corrected wherever it was still wrong, and
+`notes/cc2-timed-port.md` has the phase breakdown, the total, and an estimate for a batch of 20
+with the reasoning shown. Phases matter more than the total: build cycles are fixed cost and
+the transformation is per-file, and that ratio is what prices every task below.
 
 ## CC3. Eodon core content
 **About 22 files, ~4,000 lines.** Corrected down from an earlier inflated figure of 52; see
