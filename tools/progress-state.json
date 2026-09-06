@@ -18,31 +18,24 @@
   "ported_content": [
     {
       "name": "PlagueRat",
+      "task": "P1",
       "source": "ServUO Scripts/Mobiles/Normal/PlagueRat.cs",
       "dest": "server/customizations/Mobiles/Normal/PlagueRat.cs",
       "note": "P1 reference port. 88 lines to 55. Builds, spawns, survives save/reload. No speed override: SpeedClass Medium, per the Q-008 answer (ModernUO's npc-speeds.json fallback is the standing rule for all ported creatures)."
     },
     {
       "name": "GreaterPoisonElemental",
+      "task": "P2",
       "source": "ServUO Scripts/Mobiles/Normal/GreaterPoisonElemental.cs",
       "dest": "server/customizations/Mobiles/Normal/GreaterPoisonElemental.cs",
       "note": "P2 timed port, headless. 123 lines to 80. Compiles clean, server starts, world saves and reloads; type registration proven by reflection over the shipped assembly. Adds PackItem, multi-AddLoot, an OnDeath override, AI_Mage and the two-argument stat overloads over what PlagueRat covered. No speed override, per Q-008. An instance in a saved world is NOT verified: headless has no spawn - batched for a later client spot check."
     },
     {
       "name": "LuckyCoin",
+      "task": "P2",
       "source": "ServUO Scripts/Items/Quest/SAQuestItems.cs:443",
       "dest": "server/customizations/Items/Quest/LuckyCoin.cs",
       "note": "Forced dependency of GreaterPoisonElemental; ModernUO has no LuckyCoin. Ported complete except its OnDoubleClick, which needs FountainOfFortune (an SA addon ModernUO lacks that drags in four more items). Deviation is in the item, not the creature. Q-010. Reused by 12 Mobiles/Normal creatures."
-    },
-    {
-      "name": "GreaterPoisonElemental",
-      "task": "P2",
-      "note": "123 lines to 80. Two PackItem, three AddLoot, OnDeath override, AI_Mage. Verified headlessly: clean build, server starts, world saves and reloads. An instance in a saved world is NOT verified; flagged for the batched client spot check."
-    },
-    {
-      "name": "LuckyCoin",
-      "task": "P2",
-      "note": "Dependency of GreaterPoisonElemental. Ported without its OnDoubleClick because FountainOfFortune is a declined subsystem. Logged as a deliberate deviation; twelve creatures reuse it."
     }
   ],
   "declined_content": [

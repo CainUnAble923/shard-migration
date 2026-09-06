@@ -64,7 +64,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece. There is no total to reach, so there is no single completion percentage here by design.
 
 ```
-Setup health   ######################  7/7   blocking defects resolved
+Setup health   ██████████████████████  7/7   blocking defects resolved
 ```
 
 | Setup defect | Resolved |
@@ -82,40 +82,44 @@ Setup health   ######################  7/7   blocking defects resolved
 ### Content moved over: 2 of 2,045 candidate files (0.1%)
 
 ```
-Mobiles/Normal                 ..................    2/138     1.4%
-Items/Artifacts                ..................    0/325     0.0%
-Mobiles/NPCs                   ..................    0/222     0.0%
-Services/Expansions            ..................    0/175     0.0%
-Items/Addons                   ..................    0/169     0.0%
-Services/Revamped Dungeons     ..................    0/150     0.0%
-Items/Equipment                ..................    0/148     0.0%
-Services/XmlSpawner            ..................    0/97      0.0%
-Items/Decorative               ..................    0/88      0.0%
-Quests                         ..................    0/84      0.0%
-Items/Quest                    ..................    0/78      0.0%
-Items/Resource                 ..................    0/61      0.0%
-Items/Consumables              ..................    0/59      0.0%
-Services/CleanUpBritannia      ..................    0/52      0.0%
-Items/StoreBought              ..................    0/51      0.0%
-Items/Functional               ..................    0/49      0.0%
-Services/New Magincia          ..................    0/40      0.0%
-Items/Containers               ..................    0/31      0.0%
-Services/BulkOrders            ..................    0/28      0.0%
+TOTAL                          █░░░░░░░░░░░░░░░░░    2/2045    0.1%
+
+Mobiles/Normal                 █░░░░░░░░░░░░░░░░░    2/138     1.4%
+Items/Artifacts                ░░░░░░░░░░░░░░░░░░    0/325     0.0%
+Mobiles/NPCs                   ░░░░░░░░░░░░░░░░░░    0/222     0.0%
+Services/Expansions            ░░░░░░░░░░░░░░░░░░    0/175     0.0%
+Items/Addons                   ░░░░░░░░░░░░░░░░░░    0/169     0.0%
+Services/Revamped Dungeons     ░░░░░░░░░░░░░░░░░░    0/150     0.0%
+Items/Equipment                ░░░░░░░░░░░░░░░░░░    0/148     0.0%
+Services/XmlSpawner            ░░░░░░░░░░░░░░░░░░    0/97      0.0%
+Items/Decorative               ░░░░░░░░░░░░░░░░░░    0/88      0.0%
+Quests                         ░░░░░░░░░░░░░░░░░░    0/84      0.0%
+Items/Quest                    ░░░░░░░░░░░░░░░░░░    0/78      0.0%
+Items/Resource                 ░░░░░░░░░░░░░░░░░░    0/61      0.0%
+Items/Consumables              ░░░░░░░░░░░░░░░░░░    0/59      0.0%
+Services/CleanUpBritannia      ░░░░░░░░░░░░░░░░░░    0/52      0.0%
+Items/StoreBought              ░░░░░░░░░░░░░░░░░░    0/51      0.0%
+Items/Functional               ░░░░░░░░░░░░░░░░░░    0/49      0.0%
+Services/New Magincia          ░░░░░░░░░░░░░░░░░░    0/40      0.0%
+Items/Containers               ░░░░░░░░░░░░░░░░░░    0/31      0.0%
+Services/BulkOrders            ░░░░░░░░░░░░░░░░░░    0/28      0.0%
 ```
 
 _Counted by matching ServUO file stems (excluding those stock ModernUO already has) against `server/customizations`. Auto-counted, never hand-edited._
 
-**Ported systems logged: 5**
+**Ported systems logged: 3**
 
-| Content | Ported | Notes |
+| Content | Task | Notes |
 |---|---|---|
-| PlagueRat | - |  |
-| GreaterPoisonElemental | - |  |
-| LuckyCoin | - |  |
-| GreaterPoisonElemental | - |  |
-| LuckyCoin | - |  |
+| PlagueRat | P1 | P1 reference port. 88 lines to 55. Builds, spawns, survives save/reload. No speed override: SpeedClass Medium, per the Q-008 answer (ModernUO's npc-speeds.json fallback is the standing rule for all ported creatures). |
+| GreaterPoisonElemental | P2 | P2 timed port, headless. 123 lines to 80. Compiles clean, server starts, world saves and reloads; type registration proven by reflection over the shipped assembly. Adds PackItem, multi-AddLoot, an OnDeath override, AI_Mage and the two-argument stat overloads over what PlagueRat covered. No speed override, per Q-008. An instance in a saved world is NOT verified: headless has no spawn - batched for a later client spot check. |
+| LuckyCoin | P2 | Forced dependency of GreaterPoisonElemental; ModernUO has no LuckyCoin. Ported complete except its OnDoubleClick, which needs FountainOfFortune (an SA addon ModernUO lacks that drags in four more items). Deviation is in the item, not the creature. Q-010. Reused by 12 Mobiles/Normal creatures. |
 
 ### Task list (7 of 14 done)
+
+```
+Tasks          ███████████░░░░░░░░░░░  7/14   Foundation and the port pipeline
+```
 
 | | Task | Status | Notes |
 |---|---|---|---|
@@ -153,15 +157,15 @@ Shard status: running on ModernUO.
 **3,041 of 6,144 ServUO files present** (49%), of which **2 ported by us**.
 
 ```
-Pre-AoS (T2A/UOR/LBR)     ##########..........  2225/4294    52%   +2
-Age of Shadows            #############.......   201/309     65%
-Samurai Empire            ###############.....    87/115     76%
-Mondain's Legacy          ##########..........   241/471     51%
-Stygian Abyss (Ter Mur)   ######..............   125/444     28%
-High Seas                 ######..............    96/334     29%
-Time of Legends (Eodon)   #######.............    53/157     34%
-Endless Journey           #############.......    13/20      65%
-TOTAL                     ##########..........  3041/6144    49%   +2
+Pre-AoS (T2A/UOR/LBR)     ██████████░░░░░░░░░░  2225/4294    52%   +2
+Age of Shadows            █████████████░░░░░░░   201/309     65%
+Samurai Empire            ███████████████░░░░░    87/115     76%
+Mondain's Legacy          ██████████░░░░░░░░░░   241/471     51%
+Stygian Abyss (Ter Mur)   ██████░░░░░░░░░░░░░░   125/444     28%
+High Seas                 ██████░░░░░░░░░░░░░░    96/334     29%
+Time of Legends (Eodon)   ███████░░░░░░░░░░░░░    53/157     34%
+Endless Journey           █████████████░░░░░░░    13/20      65%
+TOTAL                     ██████████░░░░░░░░░░  3041/6144    49%   +2
 ```
 
 _Filename-stem matching: a proxy for presence, not behaviour. Unclassified files fall into Pre-AoS, inflating it. Directional, not a completion percentage._

@@ -49,9 +49,11 @@ def classify(rel, src):
     return "Pre-AoS"
 
 def bar(d, t, w=20):
-    if t <= 0: return "-"*w
+    if t <= 0: return "\u2591"*w
     f = round(w*d/t)
-    return "#"*f + "."*(w-f)
+    if d > 0 and f == 0: f = 1
+    if d < t and f == w: f = w - 1
+    return "\u2588"*f + "\u2591"*(w-f)
 
 def main():
     root = SERVUO / "Scripts"

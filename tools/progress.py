@@ -27,9 +27,13 @@ def load():
         sys.exit(1)
 
 def bar(done, total, w=22):
-    if total <= 0: return "-" * w
+    """Block bar. A nonzero value always shows at least one block, so "barely
+    started" never renders identically to "not started"."""
+    if total <= 0: return "\u2591" * w
     f = round(w * done / total)
-    return "#" * f + "." * (w - f)
+    if done > 0 and f == 0: f = 1
+    if done < total and f == w: f = w - 1
+    return "\u2588" * f + "\u2591" * (w - f)
 
 AREAS = ["Items/Artifacts","Services/Revamped Dungeons","Mobiles/NPCs","Items/Addons",
          "Items/Equipment","Mobiles/Normal","Services/XmlSpawner","Items/Decorative",
@@ -103,6 +107,9 @@ def build():
                  f"({100*tot_d/tot_t if tot_t else 0:.1f}%)")
         L.append("")
         L.append("```")
+        L.append(f"{'TOTAL':<31}{bar(tot_d,tot_t,18)} {tot_d:>4}/{tot_t:<5}"
+                 f"{100*tot_d/tot_t if tot_t else 0:>6.1f}%")
+        L.append("")
         for r in cp:
             L.append(f"{r['area'][:30]:<31}{bar(r['done'],r['total'],18)} {r['done']:>4}/{r['total']:<5}{r['pct']:>6.1f}%")
         L.append("```")
@@ -111,14 +118,23 @@ def build():
                  "against `server/customizations`. Auto-counted, never hand-edited._")
         L.append("")
 
-    pc = st["ported_content"]
+    # De-duplicate by name. Two agents logging the same port in one day already
+    # happened once; the first entry wins and the duplicate is dropped silently.
+    pc, _seen = [], set()
+    for _e in st["ported_content"]:
+        _n = _e.get("name")
+        if _n in _seen: continue
+        _seen.add(_n); pc.append(_e)
+    if len(pc) != len(st["ported_content"]):
+        print(f"  note: dropped {len(st['ported_content'])-len(pc)} duplicate ported_content "
+              "entries; fix tools/progress-state.json", file=sys.stderr)
     L.append(f"**Ported systems logged: {len(pc)}**")
     if pc:
         L.append("")
-        L.append("| Content | Ported | Notes |")
+        L.append("| Content | Task | Notes |")
         L.append("|---|---|---|")
         for i in pc:
-            L.append(f"| {i.get('name','?')} | {i.get('date','-')} | {i.get('notes','')} |")
+            L.append(f"| {i.get('name','?')} | {i.get('task','-')} | {i.get('note', i.get('notes',''))} |")
     else:
         L.append("")
         L.append("_None yet. Blocked until the setup defects above are resolved._")
@@ -129,6 +145,11 @@ def build():
         SYM = {"done":"x", "in-progress":"~", "blocked":"!", "todo":" "}
         nd = sum(1 for t in tk if t["status"]=="done")
         L.append(f"### Task list ({nd} of {len(tk)} done)")
+        L.append("")
+        L.append("```")
+        L.append(f"Tasks          {bar(nd,len(tk))}  {nd}/{len(tk)}   "
+                 "Foundation and the port pipeline")
+        L.append("```")
         L.append("")
         L.append("| | Task | Status | Notes |")
         L.append("|---|---|---|---|")

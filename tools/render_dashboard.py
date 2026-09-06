@@ -21,6 +21,17 @@ def load(name):
 
 def esc(s): return html.escape(str(s))
 
+def minibar(done, total):
+    """Inline proportion bar for a table cell. A nonzero value always paints at
+    least a sliver, so "barely started" never looks identical to "not started"."""
+    if not total:
+        return '<span class="mini zero"><i style="width:0"></i></span>'
+    pct = 100 * done / total
+    w = max(pct, 1.5) if done else 0
+    z = "" if done else " zero"
+    return (f'<span class="mini{z}" role="img" aria-label="{pct:.0f} percent">'
+            f'<i style="width:{w:.1f}%"></i></span>')
+
 def foundation_html(pg):
     d = pg["setup_defects"]; done = pg["setup_done"]; tot = pg["setup_total"]
     pct = 100*done/tot if tot else 0
@@ -43,15 +54,17 @@ def expansion_html(ex):
     rows = "".join(
         f'<tr><td>{esc(r["label"])}</td>'
         f'<td class="n">{r["have"]:,}</td><td class="n">{r["servuo_files"]:,}</td>'
+        f'<td class="bar">{minibar(r["have"], r["servuo_files"])}</td>'
         f'<td class="n">{r["pct"]:.0f}%</td>'
         f'<td class="n">{"+" + str(r["ported_by_us"]) if r["ported_by_us"] else "&mdash;"}</td></tr>'
         for r in ex["rows"])
     t, h, o = ex["total_files"], ex["total_have"], ex.get("ported_by_us", 0)
     return ('<div class="scroller"><table><thead><tr><th>Expansion</th><th class="n">Have</th>'
-            '<th class="n">In ServUO</th><th class="n">Coverage</th><th class="n">Ours</th>'
+            '<th class="n">In ServUO</th><th></th><th class="n">Coverage</th><th class="n">Ours</th>'
             f'</tr></thead><tbody>{rows}'
             f'<tr><td><strong>Total</strong></td><td class="n"><strong>{h:,}</strong></td>'
             f'<td class="n"><strong>{t:,}</strong></td>'
+            f'<td class="bar">{minibar(h, t)}</td>'
             f'<td class="n"><strong>{100*h/t:.0f}%</strong></td>'
             f'<td class="n"><strong>+{o}</strong></td></tr></tbody></table></div>')
 
@@ -60,13 +73,22 @@ def content_html(pg):
     if not cp: return "<p class='foot'>No content data.</p>"
     d = sum(r["done"] for r in cp); t = sum(r["total"] for r in cp)
     rows = "".join(f'<tr><td>{esc(r["area"])}</td><td class="n">{r["done"]}</td>'
-                   f'<td class="n">{r["total"]}</td><td class="n">{r["pct"]:.1f}%</td></tr>'
+                   f'<td class="n">{r["total"]}</td>'
+                   f'<td class="bar">{minibar(r["done"], r["total"])}</td>'
+                   f'<td class="n">{r["pct"]:.1f}%</td></tr>'
                    for r in cp)
-    return (f'<p><strong>{d:,} of {t:,} candidate files moved over.</strong> Counted by matching '
-            f'ServUO file stems against <code>server/customizations</code>, excluding stems stock '
-            f'ModernUO already has.</p><div class="scroller"><table><thead><tr><th>Area</th>'
-            '<th class="n">Done</th><th class="n">Total</th><th class="n">%</th></tr></thead>'
-            f'<tbody>{rows}</tbody></table></div>')
+    return (f'<div class="card"><div class="hero"><span class="big">{d:,}</span>'
+            f'<span class="cap"><strong>files moved over, out of {t:,} candidates.</strong> '
+            'The candidate pool is what exists in ServUO, not a target. This backlog has no '
+            'completion date by design, so read the bar as scale, not as progress toward '
+            'finishing.</span></div>'
+            f'<span class="track"><span class="fill" '
+            f'style="width:{max(100*d/t, 0.6) if (t and d) else 0:.2f}%"></span></span></div>'
+            f'<p class="foot">Counted by matching '
+            'ServUO file stems against <code>server/customizations</code>, excluding stems stock '
+            'ModernUO already has.</p><div class="scroller"><table><thead><tr><th>Area</th>'
+            '<th class="n">Done</th><th class="n">Total</th><th></th><th class="n">%</th>'
+            f'</tr></thead><tbody>{rows}</tbody></table></div>')
 
 def tasks_html(pg):
     tk = pg.get("tasks") or []
@@ -78,7 +100,12 @@ def tasks_html(pg):
         f'<tr><td class="n">{esc(t["id"])}</td><td>{esc(t["title"])}</td>'
         f'<td><span class="pill {cls[t["status"]]}">{lab[t["status"]]}</span></td>'
         f'<td class="foot">{esc(t.get("note",""))}</td></tr>' for t in tk)
-    return (f'<p><strong>{nd} of {len(tk)} tasks done.</strong> Detail and acceptance criteria '
+    pct = 100*nd/len(tk)
+    return (f'<div class="card"><div class="hero"><span class="big">{nd} / {len(tk)}</span>'
+            '<span class="cap"><strong>Tasks done.</strong> Foundation and the port pipeline. '
+            'The content backlog below it is open-ended.</span></div>'
+            f'<span class="track"><span class="fill" style="width:{pct:.0f}%"></span></span></div>'
+            f'<p><strong>{nd} of {len(tk)} tasks done.</strong> Detail and acceptance criteria '
             f'in <code>docs/tasks.md</code>; status in <code>tools/progress-state.json</code>.</p>'
             '<div class="scroller"><table><thead><tr><th class="n">ID</th><th>Task</th>'
             '<th>Status</th><th>Notes</th></tr></thead><tbody>'
