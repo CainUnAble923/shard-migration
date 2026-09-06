@@ -39,7 +39,8 @@ notes/    working notes, scratch findings, anything not yet a decision
 
 1. `docs/migration-plan.md` - the seven phases, in order
 2. `docs/direction-decision.md` - why ServUO and not the reverse port
-3. `docs/client-analysis.md` - what UOAlive and Immortal Realms customized, and the
+3. `docs/shard-inventory.md` - what we actually have to migrate, and the revised Phase 2 scope
+4. `docs/client-analysis.md` - what UOAlive and Immortal Realms customized, and the
    custom-facet finding that changes our map plans
 
 ## Current status
@@ -47,8 +48,10 @@ notes/    working notes, scratch findings, anything not yet a decision
 - [x] Direction decided: migrate to ServUO
 - [ ] **URGENT** Switch ModernUO to SHA2 password hashing (see migration-plan Phase 0,
       this window closes when the old shard stops taking logins)
-- [ ] Count custom files under `Projects/UOContent` - this is the whole schedule
-- [ ] Locate and connect the ModernUO shard repo
+- [x] Custom surface counted: **~131 files / ~39,900 lines**, already isolated from
+      upstream. No Core bucket. See `docs/shard-inventory.md`
+- [x] Shard located: `shattered-legacy-infrastructure` (builds ModernUO from pinned commit)
+- [ ] Add `client-data/` and `server/uo/` to that repo's `.gitignore`
 - [ ] Stand up stock ServUO pub57 reference shard
 - [ ] Write spawner JSON to XmlSpawner XML converter
 - [ ] Write accounts exporter (MUO binary to ServUO accounts.xml)
