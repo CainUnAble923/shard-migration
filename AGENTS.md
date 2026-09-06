@@ -46,6 +46,11 @@ deviation in `docs/fidelity-principle.md`. Full reasoning there.
    working. Nothing in this project should ever require a migration event, a fresh world, or
    a compensation pass. If a piece of content cannot be added without one, decline it.
 
+## Chase's shell is Windows PowerShell 5.1
+
+`&&` is not a statement separator there. Any command you hand him chains with `;` or goes on
+separate lines. `cd D:\X && git push` fails; `cd D:\X; git push` works.
+
 ## Repo layout facts
 
 ```
@@ -71,30 +76,23 @@ edit target, never committed, never a build input. `server/customizations` is ca
 It was useful once as a recovery source for our own files (Q-001). It is useless as a place
 to read ModernUO: **it contains 161 files where ModernUO has 7,058 types.**
 
-**There is no readable ModernUO source on this machine, and that is a defect.** We port *to*
-ModernUO and cannot grep it. Every "does this type exist" question costs a build cycle.
-
-**The fix (do this once):** clone pinned ModernUO beside the ServUO reference and treat it the
-same way, pristine and read-only.
+**`D:\UO\ModernUO-pinned` is pinned ModernUO source, read-only.** Created 2026-09-06 and
+verified detached at `7c9215d97cb25c56b0b5cb35034944ccdaa0a485`, 3,991 `.cs` files. Grep it to
+answer every dependency question in seconds, offline, with no build cycle and no Docker:
 
 ```
-git clone https://github.com/modernuo/ModernUO.git D:\UO\ModernUO-pinned
-cd D:\UO\ModernUO-pinned && git checkout 7c9215d97
+findstr /s /c:"class LuckyCoin" D:\UO\ModernUO-pinned\Projects\*.cs
 ```
 
-`D:\UO\ModernUO-pinned` is then the answer to every dependency question, in seconds, offline,
-with no Docker involved. Never edit it, never build in it, never commit into it. Bump it only
-when the pinned commit in `docker/uo/Dockerfile` changes, and change both in the same commit.
+Treat it exactly like `D:\UO\ServUO-pub57`: never edit, never build in it, never commit into
+it. Bump it only when the pinned commit in `docker/uo/Dockerfile` changes, and change both in
+the same commit or the two silently disagree.
 
-**Until that clone exists**, the builder stage of the Docker image holds the same source at
-`/build/modernuo`. Build the stage and grep it:
+**Check dependencies here BEFORE the first build.** P2 lost a whole build cycle to a missing
+`LuckyCoin`. Every `new X(` in a ServUO file gets checked against this tree first.
 
-```
-docker build --target builder -t sl-uo-builder D:\ShatteredLegacy\docker\uo
-docker run --rm --entrypoint sh sl-uo-builder -c 'grep -rn "class LuckyCoin" /build/modernuo/Projects'
-```
-
-7,058 types at `7c9215d97`.
+If the clone is ever missing, the builder stage of the Docker image holds the same source at
+`/build/modernuo`: `docker build --target builder -t sl-uo-builder D:\ShatteredLegacy\docker\uo`.
 
 **`tools/modernuo-stems.txt` is not a substitute.** It is a filename-stem list. It is correct
 for collision-checking a ported type's own name and wrong for everything else: it reports
