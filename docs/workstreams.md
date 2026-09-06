@@ -1,91 +1,98 @@
 # Workstreams
 
-The migration splits into five streams. Three can run in parallel once Core is standing.
-This replaces the strictly sequential phase list in `migration-plan.md` as the day-to-day
-structure; the phases remain useful as gates.
+Five streams. This is a long-running effort with no completion date, so these are ongoing
+areas of work rather than phases with an end.
 
-**The thing to internalise: ServUO's content is not work.** It ships in the box. High Seas,
-Time of Legends, Endless Journey, the revamped dungeons, seasonal events, Skill Masteries,
-all of it is already written and maintained. We enable and tune it. Every stream below is
-about *our* side of the line.
+**Stream 1 blocks everything. Streams 2-5 then run indefinitely and in parallel.**
 
 ---
 
-## 1. Core / platform
-**Owner: Codex.** Blocks everything.
+## 1. Foundation
+**Owner: Codex.** Blocks everything else. Finite, and nearly done.
 
-- Stock ServUO `pub57` built and running from `ServUO-work`
-- `Config/Expansion.cfg` set to `EJ`; `Config/DataPath.cfg` pointed at client files
-- Runtime decision: Windows or Mono. Benchmark a full world save at real size.
-- Docker: new Dockerfile and `apply-patches.sh` targeting the ServUO tree
-- `AutoRestart.cfg`, autosave interval, off-box `Saves/` rotation
-- The pristine `ServUO-pub57` reference stays frozen and untouched
+Problems with the shard as it runs today, independent of any content work.
 
-**Done when:** stock ServUO boots, `[CreateWorld]` populates all six facets, and a full save
-completes in an acceptable time under the chosen runtime.
+- Recover the three missing pieces so `server/customizations` compiles standalone against
+  pinned ModernUO: `CraftContext` members, the eight `ResourceInfo` wood enum members,
+  `OutridersGuildmaster`. **Codex has done this; needs committing.**
+- **`apply-patches.sh` must fail on a failed patch.** It currently converts failures to
+  warnings and exits 0, and seven patches fail. A green build proves nothing until this is
+  fixed. Then triage the seven: some may be obsolete.
+- Delete the stale `server/customizations/migrations/` subfolder, whose PetMimic v0-v2 JSONs
+  diverge from the canonical set in `server/migrations/`.
+- Make `RegenRates` routing explicit. It currently works by accident: both it and ModernUO's
+  land in `Misc/`, so ours overwrites. The other six replacements are explicitly routed.
 
-## 2. Customizations
-**Owner: Claude drafts, Codex builds.** The bulk of the project.
+**Done when:** a clean Docker build from pinned ModernUO plus only tracked canonical inputs
+succeeds, and a failing patch actually fails the build.
 
-Our 111 scripts and 17 patches rewritten for ServUO. Triaged in `port-triage.md`:
-82 trivial, 25 mechanical, 3 repetitive, 1 genuinely hard. No Core bucket.
+## 2. Port pipeline
+**Owner: Claude.** Build once, use forever.
 
-- Prerequisite: `server/customizations` compiles standalone against pinned ModernUO, so we
-  are porting from a known-good baseline. Codex has recovered the three missing pieces.
-- Order: the repetitive trio (68 near-identical types, one pattern), then the 82 trivial in
-  batches, then the 25 mechanical, then the five upstream replacements last as ServUO patches.
-- Five files collide with existing ServUO scripts and must become patches, not additive
-  files: `CharacterCreation`, `CraftItem`, `HammerOfHephaestus`, `Meditation`, `RegenRates`.
+The repeatable recipe for bringing one ServUO system across. Getting this right is worth more
+than any individual port, because everything downstream runs through it.
 
-**Done when:** all 111 build clean against ServUO and the shard runs with our systems intact.
+- Collision check against pristine ModernUO before any work starts
+- Dependency check: does it touch a subsystem ModernUO lacks? If so it belongs to stream 4.
+- Serialization conversion: ServUO's hand-written `Serialize`/`Deserialize` with a version int
+  becomes ModernUO's `[SerializationGenerator]` partial class with `[SerializableField]`
+- `[Constructable]` becomes `[Constructible]`; `Serial` is signed in ServUO, `uint` in ModernUO
+- Where the ported file lands, and whether it is additive or a routed replacement
+- A worked example, start to finish, that the next twenty ports copy
 
-## 3. Data and identity
-**Owner: Claude writes the converters, Codex runs them.**
+**Done when:** a documented recipe plus one reference port exists, and the second port is
+visibly faster than the first.
 
-- **Accounts — bridgeable.** Exporter emits ServUO-shaped `accounts.xml` with hyphenated
-  SHA512 hashes. Tooling exists in `tools/modernuo/`.
-- **Spawn placement — bridgeable.** `[ExportSpawners]` JSON converted to ServUO XmlSpawner
-  XML. Tool and tests exist in `tools/`; validated against stock data, not yet against ours.
-- **The world — not bridgeable.** Fresh world plus a compensation pass: bank checks against
-  house value, skill restoration, rare-item audit. Announce before cutover.
+## 3. Content backlog
+**Owner: Chase prioritises, Claude drafts, Codex builds.** Never empties. That is fine.
 
-**TIME-BOXED:** switch ModernUO to SHA2 hashing **now**, while the old shard still takes
-logins. The window closes at cutover and cannot be reopened.
+The queue, priced in `content-menu.md`. 3,091 candidate files across ServUO, but the order
+matters far more than the total.
 
-**Done when:** accounts import and a real player password authenticates on ServUO.
+Best value first, by measured dependency cost:
 
-## 4. Content enablement and tuning
-**Owner: Chase decides, Codex configures.** Cheap. This is the payoff.
+- **Revamped Dungeons** — 255 files, 28,828 lines, 2% dependency. Places to go and things to
+  fight, almost no coupling. The single best value on the list.
+- **High Seas cheap half** — ~78 files, ~17,000 lines. Fishing, rare fish, sea creatures,
+  food. 0% missing-subsystem dependency.
+- **Creatures and NPCs** — 354 files, 0% dependency. Take a handful at a time as needed.
+- **Decoration and housing** — Addons, Decorative, New Magincia. 0% dependency, highly visible.
+- **Crafting and resources** — Items/Resource, BulkOrders. 0% dependency.
+- **High Seas naval half** — ~54 files, ~14,000 lines. Not blocked, but means extending
+  ModernUO's `BaseBoat`. Its own mini-project.
 
-Not porting. Choosing what is on.
+**Done when:** never. Pull from it for as long as the shard is being worked on.
 
-- Expansion level, and per-system toggles in `Config/` (Factions, VvV, City Loyalty,
-  Shadowguard, seasonal events, Champions, Honesty, Vet Rewards)
-- Spawner engine choice per region. Three ship: stock `Spawner`, XmlSpawner2, `ChampionSpawn`.
-  One per region or you get silent double spawn.
-- `Config/XmlSpawner2.cfg` features are all defaulted off; enable deliberately
-- Spawn edits go through `SpawnerPersistence.cs` with a version bump so they replay
-- **Custom facets are available.** ServUO allocates 256 map slots and ClassicUO reads well
-  past index 5; Immortal Realms runs `map0`-`map21` in production. Pin the client version
-  before cutting any map.
+## 4. Subsystem builds
+**Owner: decide case by case.** Expensive. Only when a wanted piece of content needs one.
 
-**Done when:** the shard's content set is a deliberate list rather than whatever defaulted on.
+ModernUO ships **zero** files for: Skill Masteries, Shadowguard, Myrmidex Invasion, Vendor
+Searching, Instanced Peerless. Content resting on these cannot be ported until the subsystem
+exists.
 
-## 5. Verification and cutover
-**Owner: Codex runs it, Chase decides the date.** The gate.
+This gates Eodon in particular: Shadowguard is 71% dependent and Myrmidex Invasion 83%.
+An open question worth answering before committing: how much of the Valley of Eodon separates
+from the Myrmidex battle system? Nobody has measured it. If it separates well, Eodon gets a
+lot cheaper.
 
-- Fresh world, `[CreateWorld]`, converted spawners imported, density spot-checked
-- Accounts imported; test one that logged in since the SHA2 switch and one that has not, to
-  size the reset list
-- Three save/restart cycles. Gate is **zero deserialization errors**, not "mostly clean"
-- Several clients at once, exercising every rewritten system
-- ModernUO kept cold-bootable for at least a week after
+**Done when:** each is built, or explicitly and permanently declined.
+
+## 5. Shard operations
+**Owner: Codex, Chase decides deploys.** Continuous.
+
+- Docker build, entrypoint, compose, deployment of each batch of ported content
+- Off-box `Saves/` rotation, autosave interval, restart policy
+- **Custom facets are available.** ModernUO supports them and ClassicUO reads well past map
+  index 5; Immortal Realms runs `map0`-`map21` in production. Pin the client version before
+  cutting any map.
+- Keep `tools/progress.py` current; run it at the end of every session
+
+**Done when:** never. This is running a shard.
 
 ---
 
-## Parallelism
+## What is explicitly not happening
 
-Core blocks everything. Once it stands, Customizations, Data and Content run in parallel.
-Verification is last and gates the cutover.
-
-The SHA2 switch in stream 3 is independent of all of it and should happen today.
+No migration. No cutover, no fresh world, no compensation pass, no account export, no
+password conversion window. The 111 custom scripts are never rewritten. Every port leaves a
+working shard.

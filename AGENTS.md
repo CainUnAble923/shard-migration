@@ -4,20 +4,24 @@ Applies to any agent working here (Codex, Claude, or otherwise). Humans should r
 
 ## What this project is
 
-**Migrating Shattered Legacy from ModernUO to ServUO pub57**, so the shard carries the full
-post-ML content catalogue.
+**Shattered Legacy stays on ModernUO.** ServUO is a **content source** we port from, one
+system at a time, for as long as the shard is being worked on.
 
-The direction reversed twice on 2026-09-06 as the scope was pinned down. It is settled now:
-the scope is **all** newer content, not a subset, and at that scope porting into ModernUO
-means rebuilding ServUO inside it. Read `docs/direction-decision.md`, which records the whole
-history honestly, before proposing another change.
+Scope is all the newer content, worked as an ongoing backlog with no completion date. That is
+the point, not a compromise: ModernUO stays modern (.NET 10, source-generated serialization,
+fast saves, real tests), every port leaves a working shard, and stopping anywhere is safe.
 
-**ServUO's content is not work.** It ships in the box. Every workstream is about our side of
-the line. See `docs/workstreams.md`.
+The direction moved several times on 2026-09-06 while scope was pinned down. It is settled.
+Read `docs/direction-decision.md`, which records the full history, before proposing a change.
 
-**TIME-BOXED, do this first:** switch ModernUO's `accountSecurity.encryptionAlgorithm` to
-`SHA2` while the old shard still takes logins, or every player needs a password reset at
-cutover. Detail in `docs/migration-plan.md` Phase 0.
+**There is no migration.** No cutover, no fresh world, no account export, no password window.
+The 111 custom scripts are never rewritten.
+
+`D:\UO\ServUO-pub57` is a **read-only content source**. Never edit it, never build in it,
+never migrate to it.
+
+Work is organised in `docs/workstreams.md`. Foundation blocks everything; the rest run
+indefinitely and in parallel.
 
 ## Ground rules
 

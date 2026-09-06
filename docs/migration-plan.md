@@ -1,3 +1,7 @@
+> **OBSOLETE.** Written for a migrate-to-ServUO plan that was not taken. The shard stays on
+> ModernUO and ports ServUO content in; see `direction-decision.md`. Measurements here remain
+> accurate and are cited elsewhere; the plans do not apply.
+
 # Migration plan: ModernUO to ServUO pub57
 
 Origin: **ModernUO** (`main`). Target: **ServUO `pub57`**, expansion **EJ**.
