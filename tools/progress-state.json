@@ -36,16 +36,143 @@
       "source": "ServUO Scripts/Items/Quest/SAQuestItems.cs:443",
       "dest": "server/customizations/Items/Quest/LuckyCoin.cs",
       "note": "Forced dependency of GreaterPoisonElemental; ModernUO has no LuckyCoin. Ported complete except its OnDoubleClick, which needs FountainOfFortune (an SA addon ModernUO lacks that drags in four more items). Deviation is in the item, not the creature. Q-010. Reused by 12 Mobiles/Normal creatures."
+    },
+    {
+      "name": "RaptorTeeth",
+      "task": "CC3",
+      "source": "ServUO Scripts/Items/Resource/RaptorTeeth.cs",
+      "dest": "server/customizations/Items/Resource/RaptorTeeth.cs",
+      "note": "ICommodity stackable resource. ServUO's TextDefinition Description becomes ModernUO's int DescriptionNumber; the Constructable X()/X(int) pair collapses to one [Constructible] X(int amount = 1)."
+    },
+    {
+      "name": "AncientPotteryFragments",
+      "task": "CC3",
+      "source": "ServUO Scripts/Items/Quest/SAQuestItems.cs:122",
+      "dest": "server/customizations/Items/Quest/AncientPotteryFragments.cs",
+      "note": "Forced dependency of Raptor; ModernUO has none. Trivial Item, ported complete, no deviation. One extracted type per file, per the LuckyCoin precedent (Q-010)."
+    },
+    {
+      "name": "PerfectBanana",
+      "task": "CC3",
+      "source": "ServUO Scripts/Items/Consumables/EodonPotions.cs:726",
+      "dest": "server/customizations/Items/Consumables/PerfectBanana.cs",
+      "note": "Forced dependency of SilverbackGorilla; ModernUO has none. Trivial stackable Item, ported complete, no deviation."
+    },
+    {
+      "name": "RaptorClaw",
+      "task": "CC3",
+      "source": "ServUO Scripts/Items/Artifacts/Equipment/Weapons/RaptorClaw.cs",
+      "dest": "server/customizations/Items/Artifacts/Equipment/Weapons/RaptorClaw.cs",
+      "note": "Boomerang artifact. Boomerang, Slayer, Attributes and WeaponAttributes.HitLeechStam all exist in ModernUO. Only IsArtifact dropped: it is a ServUO-only Server.Item virtual whose every consumer (pigments, NaturalDye, AlterItem, RunicReforging) is also ServUO-only, so it has zero readers in ModernUO."
+    },
+    {
+      "name": "StretchedDinosaurHide",
+      "task": "CC3",
+      "source": "ServUO Scripts/Items/Artifacts/Decorative/TOLDecorationArtifacts.cs",
+      "dest": "server/customizations/Items/Artifacts/Decorative/StretchedDinosaurHide.cs",
+      "note": "One of six TOL tribal reward decorations split out of a single ServUO file, one type per file. Derives from Item, not ModernUO's BaseDecorationArtifact, because ServUO sets ShowArtifactRarity=false and ModernUO's base adds the rarity line unconditionally; the three members that base contributes are reproduced so the rendered properties match ServUO exactly."
+    },
+    {
+      "name": "CarvedMyrmydexGlyph",
+      "task": "CC3",
+      "source": "ServUO Scripts/Items/Artifacts/Decorative/TOLDecorationArtifacts.cs",
+      "dest": "server/customizations/Items/Artifacts/Decorative/CarvedMyrmydexGlyph.cs",
+      "note": "One of six TOL tribal reward decorations split out of a single ServUO file, one type per file. Derives from Item, not ModernUO's BaseDecorationArtifact, because ServUO sets ShowArtifactRarity=false and ModernUO's base adds the rarity line unconditionally; the three members that base contributes are reproduced so the rendered properties match ServUO exactly."
+    },
+    {
+      "name": "WakuOnASpit",
+      "task": "CC3",
+      "source": "ServUO Scripts/Items/Artifacts/Decorative/TOLDecorationArtifacts.cs",
+      "dest": "server/customizations/Items/Artifacts/Decorative/WakuOnASpit.cs",
+      "note": "One of six TOL tribal reward decorations split out of a single ServUO file, one type per file. Derives from Item, not ModernUO's BaseDecorationArtifact, because ServUO sets ShowArtifactRarity=false and ModernUO's base adds the rarity line unconditionally; the three members that base contributes are reproduced so the rendered properties match ServUO exactly."
+    },
+    {
+      "name": "SacredLavaRock",
+      "task": "CC3",
+      "source": "ServUO Scripts/Items/Artifacts/Decorative/TOLDecorationArtifacts.cs",
+      "dest": "server/customizations/Items/Artifacts/Decorative/SacredLavaRock.cs",
+      "note": "One of six TOL tribal reward decorations split out of a single ServUO file, one type per file. Derives from Item, not ModernUO's BaseDecorationArtifact, because ServUO sets ShowArtifactRarity=false and ModernUO's base adds the rarity line unconditionally; the three members that base contributes are reproduced so the rendered properties match ServUO exactly."
+    },
+    {
+      "name": "WhiteTigerFigurine",
+      "task": "CC3",
+      "source": "ServUO Scripts/Items/Artifacts/Decorative/TOLDecorationArtifacts.cs",
+      "dest": "server/customizations/Items/Artifacts/Decorative/WhiteTigerFigurine.cs",
+      "note": "One of six TOL tribal reward decorations split out of a single ServUO file, one type per file. Derives from Item, not ModernUO's BaseDecorationArtifact, because ServUO sets ShowArtifactRarity=false and ModernUO's base adds the rarity line unconditionally; the three members that base contributes are reproduced so the rendered properties match ServUO exactly."
+    },
+    {
+      "name": "DragonTurtleHatchlingNet",
+      "task": "CC3",
+      "source": "ServUO Scripts/Items/Artifacts/Decorative/TOLDecorationArtifacts.cs",
+      "dest": "server/customizations/Items/Artifacts/Decorative/DragonTurtleHatchlingNet.cs",
+      "note": "One of six TOL tribal reward decorations split out of a single ServUO file, one type per file. Derives from Item, not ModernUO's BaseDecorationArtifact, because ServUO sets ShowArtifactRarity=false and ModernUO's base adds the rarity line unconditionally; the three members that base contributes are reproduced so the rendered properties match ServUO exactly."
+    },
+    {
+      "name": "Allosaurus",
+      "task": "CC3",
+      "source": "ServUO Scripts/Services/Expansions/Time Of Legends/Mobiles/Allosaurus.cs",
+      "dest": "server/customizations/Mobiles/Normal/Allosaurus.cs",
+      "note": "Three SetWeaponAbility calls become one GetWeaponAbility() over Utility.Random(3). GenerateLoot's IsChampionSpawn branch collapses to the non-champion arm and SetToChampionSpawn is dropped: ModernUO's BaseCreature has neither, and its ChampionSpawn never calls back into the creature. AttacksFocus dropped."
+    },
+    {
+      "name": "Archaeosaurus",
+      "task": "CC3",
+      "source": "ServUO Scripts/Services/Expansions/Time Of Legends/Mobiles/Archaeosaurus.cs",
+      "dest": "server/customizations/Mobiles/Normal/Archaeosaurus.cs",
+      "note": "Two SetWeaponAbility calls become GetWeaponAbility() over Utility.RandomBool(). DragonBlood => 6 dropped: ModernUO has neither the carving property nor the item. AttacksFocus dropped."
+    },
+    {
+      "name": "Dimetrosaur",
+      "task": "CC3",
+      "source": "ServUO Scripts/Services/Expansions/Time Of Legends/Mobiles/Dimetrosaur.cs",
+      "dest": "server/customizations/Mobiles/Normal/Dimetrosaur.cs",
+      "note": "SetWeaponAbility x2 become GetWeaponAbility(). Two behaviours dropped with no ModernUO equivalent: SetAreaEffect(AreaEffect.PoisonBreath), and OnAfterTame, which quartered Hits on first tame - StatLossAfterTame gives AnimalTaming's ScaleStats(0.50) instead. FruitsAndVegies -> FruitsAndVeggies. AttacksFocus and the champion-spawn hooks dropped."
+    },
+    {
+      "name": "Najasaurus",
+      "task": "CC3",
+      "source": "ServUO Scripts/Services/Expansions/Time Of Legends/Mobiles/Najasaurus.cs",
+      "dest": "server/customizations/Mobiles/Normal/Najasaurus.cs",
+      "note": "Clean. Its only PetTrainingHelper call is in the version-0 deserialize upgrade path, which new content at version 0 never runs, and the constructor already sets Poisoning skill and HitPoison - so dropping it is a no-op. AttacksFocus dropped."
+    },
+    {
+      "name": "Saurosaurus",
+      "task": "CC3",
+      "source": "ServUO Scripts/Services/Expansions/Time Of Legends/Mobiles/Saurosaurus.cs",
+      "dest": "server/customizations/Mobiles/Normal/Saurosaurus.cs",
+      "note": "SetWeaponAbility(ConcussionBlow) becomes GetWeaponAbility(). SetSpecialAbility(TailSwipe) and SetSpecialAbility(LifeLeech) dropped - PetTrainingHelper, which ModernUO lacks; ServUO's own source carries the comment \"Missing: Life Leech, Tail Swipe ability\". DragonBlood => 8 dropped. AttacksFocus dropped."
+    },
+    {
+      "name": "SilverbackGorilla",
+      "task": "CC3",
+      "source": "ServUO Scripts/Services/Expansions/Time Of Legends/Mobiles/SilverbackGorilla.cs",
+      "dest": "server/customizations/Mobiles/Normal/SilverbackGorilla.cs",
+      "note": "The only candidate creature calling no PetTrainingHelper method. Banana-throw OnActionCombat ported intact: the 13-argument MovingParticles overload with EffectLayer, AOS.Damage and Region.IsPartOf(string) all exist unchanged. DateTime.UtcNow -> Core.Now."
+    },
+    {
+      "name": "Raptor",
+      "task": "CC3",
+      "source": "ServUO Scripts/Mobiles/Normal/Raptor.cs",
+      "dest": "server/customizations/Mobiles/Normal/Raptor.cs",
+      "note": "The only ported creature with real persisted state: m_IsFriend becomes [SerializableField(0, setter: \"private\")] and ServUO's delete-on-deserialize becomes [AfterDeserialization(false)]. The Raptor()/Raptor(bool) Constructable pair collapses to one [Constructible] Raptor(bool isFriend = false). Pack-friend spawn timer, PackInstinct.Ostard, Map.CanFit and AIObject.Action all port unchanged. SetWeaponAbility(BleedAttack) becomes GetWeaponAbility(). Drops AncientPotteryFragments and RaptorClaw, both ported alongside."
     }
   ],
   "declined_content": [
     {
-      "name": "Eodon / Time of Legends",
-      "reason": "gated on Myrmidex Invasion (83% dep) and Shadowguard (71%), both subsystem builds. Deferred, not declined: measure how much of the Valley separates first."
-    },
-    {
       "name": "Vice vs Virtue, City Loyalty, Skill Masteries, Exploring the Deep",
       "reason": "29-100% dependent on subsystems ModernUO lacks entirely. Deferred to workstream 4."
+    },
+    {
+      "name": "Eodon: the eight Aloron armour pieces",
+      "reason": "CC3. Rest on the armour set-bonus subsystem, which ModernUO ships zero files for - SetItem, SetAttributes and AbsorptionAttributes are all absent, and BaseArmor has no SetID/Pieces/Set*Bonus/SetSelfRepair. After the resistances the entire item IS set data, so porting without the subsystem leaves a re-hued TigerPeltChest with a label. They also inherit from the TigerPelt set, a further 8 files. Cost to do properly: the set-bonus subsystem, then TigerPelt (8), then Aloron (8)."
+    },
+    {
+      "name": "Eodon: the Valley of One quest line",
+      "reason": "CC3. Two reasons, either sufficient. (1) It is 3 of 8 files, not 3 of 3: the directory is 3,870 lines and the three named files reference PrideOfTheAmbushQuest and TimeIsOfTheEssenceQuest from Quests.cs, so they do not compile alone. The 2,058-line figure sums a set that does not stand up. (2) It rests on ServUO's Mondain's Legacy quest framework - BaseQuest, BaseQuestItem, QuestHelper, QuestChain, MondainQuester, BaseRewardTitleDeed, all absent from ModernUO - which is 6,269 lines before gumps and persistence. ModernUO ships a DIFFERENT quest engine (MLQuest/MLQuestSystem: static definitions plus per-player context, versus ServUO's per-player instantiated BaseQuest objects). Porting means either two serialized quest engines in one world or a reimplementation. Subsystem port, not a content port."
+    },
+    {
+      "name": "Eodon: MoonstonePowerGenerator",
+      "reason": "CC3. It is Myrmidex Invasion content, not Eodon. It lives inside Services/Expansions/Time Of Legends/Myrmidex Invasion/, spawns Zipactriotl (the Myrmidex boss) and IgnisFatalis, subclasses DamageableItem (absent from ModernUO), and is referenced only by Myrmidex Invasion/System.cs and the MyrmidexThreat quest. It reached the CC3 list because the keyword moonstone matched and nobody opened the file."
     }
   ],
   "shard_status": "running on ModernUO",
@@ -94,9 +221,9 @@
     },
     {
       "id": "C1",
-      "title": "Eodon core content",
-      "status": "todo",
-      "note": "~22 files, ~4,000 lines. 6 dinosaurs, Raptor, 8 Aloron pieces, the quest line. Corrected down from 52."
+      "title": "Eodon core content (CC3)",
+      "status": "done",
+      "note": "17 files ported, built and verified headless; 12 declined. The 22-files/4,000-lines figure was wrong for the third time: the quest line (half the stated line count) is a subsystem port and is declined, the Aloron set rests on a subsystem ModernUO lacks, and MoonstonePowerGenerator is Myrmidex Invasion content. Delivered: 6 dinosaurs, Raptor, RaptorClaw, RaptorTeeth, 6 TOL decoration artifacts, and 2 forced leaf dependencies. Four build cycles, zero failures - the pre-flight dependency check against D:\\UO\\ModernUO-pinned worked. Time of Legends coverage moved 53/157 to 59/157. Recipe correction: SetWeaponAbility DOES have a faithful ModernUO equivalent, BaseCreature.GetWeaponAbility(), used by 49 stock creatures. See notes/cc3-eodon.md."
     },
     {
       "id": "C2",

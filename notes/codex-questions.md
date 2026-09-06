@@ -626,3 +626,81 @@ is plausibly the largest missing-subsystem question left in the creature backlog
 costed deliberately, not discovered halfway through a batch.
 
 Status: **[ANSWERED]** — CC6 rescoped; Pet Training is its own piece of work, unscheduled.
+
+---
+
+## Q-013 [OPEN] 2026-09-06 `SetWeaponAbility` has a ModernUO equivalent; the recipe says it does not
+
+**Question:** `notes/port-recipe.md` and `AGENTS.md` both state that `SetWeaponAbility` /
+`SetSpecialAbility` "do not exist on ModernUO's `BaseCreature`" and that any ServUO creature
+calling them "needs a decision, not a translation". That is true of `SetSpecialAbility`,
+`SetMagicalAbility` and `SetAreaEffect`. It is **not** true of `SetWeaponAbility`. Should the
+recipe be corrected, and should the CC6 "132 files / 29%" cohort be re-counted by *which* of the
+four methods each file calls?
+
+**Context:** verified against `D:\UO\ModernUO-pinned` at `7c9215d97`:
+
+- `UOContent/Mobiles/BaseCreature.cs:1312` — `public virtual WeaponAbility GetWeaponAbility() => null;`
+- `UOContent/Mobiles/BaseCreature.cs:439` — `public virtual double WeaponAbilityChance => 0.4;`
+- 49 stock creatures override it. `AbysmalHorror.cs:57` uses `Utility.RandomBool()` and
+  `DemonKnight.cs:202` a `Utility.Random(3)` switch — the same shape as several
+  `SetWeaponAbility` calls in ServUO.
+- All eight ability names CC3 needed exist under identical names
+  (`UOContent/Items/Weapons/Abilities/WeaponAbility.cs:53-75`).
+- `SpecialAbility`, `MagicalAbility` and `AreaEffect` have **zero** definitions in the pinned tree.
+  Those three remain a decision.
+
+Measured effect on CC3: **6 of 7 candidate creatures were in the "Pet Training" cohort and 6 of 7
+ported anyway**, because `SetWeaponAbility` was the only one of the four they called. Only
+`Saurosaurus` and `Dimetrosaur` lost anything, and both lost it to `SetSpecialAbility` /
+`SetAreaEffect`, not `SetWeaponAbility`.
+
+**My best guess:** correct the recipe, and re-count the 132 by method before CC6 sizes a batch.
+The 29% is real as a "touches Pet Training" figure but it is being read as a decline rate, and on
+CC3's sample the decline rate would have been ~14%, not 100%. I have **not** re-counted the 462
+files — that is the actual work this question is asking to authorise, and it is cheap now that
+`ModernUO-pinned` exists.
+
+Non-blocking for CC3: the correction was applied per file, with evidence, and is written up in
+`notes/cc3-eodon.md`.
+
+**Answer:**
+
+---
+
+## Q-014 [OPEN] 2026-09-06 The CC3 file count was wrong a third time, and `docs/` still says 22
+
+**Question:** `docs/eodon-separability.md` and `docs/tasks.md` CC3 both state "about 22 files,
+roughly 4,000 lines" and list the quest line as three files. Verification found 17 portable files
+and 12 that should be declined. I cannot edit `docs/`. Should those two documents be corrected,
+and is `docs/eodon-separability.md` still trustworthy for the rest of its claims?
+
+**Context:** full evidence in `notes/cc3-eodon.md`. Three specific errors:
+
+1. **`MoonstonePowerGenerator.cs` is Myrmidex Invasion content.** It sits inside
+   `Services/Expansions/Time Of Legends/Myrmidex Invasion/`, spawns `Zipactriotl` and
+   `IgnisFatalis`, and subclasses `DamageableItem`. It reached the list because "moonstone"
+   matched.
+2. **`Quests/Eodon` is not 3 files.** `Valley of One Quest/` is 8 files and 3,870 lines; the
+   three named ones reference types defined in the five that were left out, so they cannot
+   compile alone. The "2,058 lines" is the sum of a set that does not stand up.
+3. **The eight Aloron pieces rest on the armour set-bonus subsystem**, which ModernUO ships zero
+   files for, and on the TigerPelt set, a further eight unlisted files.
+
+`docs/eodon-separability.md` documents this exact failure mode in its own methodology note —
+"a file that mentions a thing is not a file about that thing" — and then commits it twice more in
+the table directly above that note. Its rule 3 ("prefer directory structure and explicit gates
+over keywords") would have caught error 1 on its own, because the directory is literally named
+`Myrmidex Invasion`.
+
+**My best guess:** correct both documents, and treat the *separability conclusion* as still sound
+while treating the *file table* as unverified. The headline claim — Eodon separates from Myrmidex
+and Shadowguard and is smaller than feared — held up completely. What did not hold up is the
+specific list, and only the list. The set of Eodon-and-absent-from-ModernUO creatures the doc
+excludes but that do exist (`Gallusaurus`, `Anchisaur`, `DragonTurtle`, `DragonTurtleHatchling`,
+`GreaterPhoenix`, `DesertScorpion`, `Infernus`, `BritannianInfantry`) is a reasonable follow-up
+task and is listed in `notes/cc3-eodon.md`.
+
+Non-blocking: CC3 shipped against the verified list, not the documented one.
+
+**Answer:**

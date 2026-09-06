@@ -79,15 +79,16 @@ Setup health   █████████████████████�
 
 **Patches:** 9 total, **0 currently failing to apply**, 8 triaged, 3 found obsolete. `apply-patches.sh` fails the build on a failed patch, so a green build means every patch applied.
 
-### Content moved over: 2 of 2,045 candidate files (0.1%)
+### Content moved over: 11 of 2,045 candidate files (0.5%)
 
 ```
-TOTAL                          █░░░░░░░░░░░░░░░░░    2/2045    0.1%
+TOTAL                          █░░░░░░░░░░░░░░░░░   11/2045    0.5%
 
-Mobiles/Normal                 █░░░░░░░░░░░░░░░░░    2/138     1.4%
-Items/Artifacts                ░░░░░░░░░░░░░░░░░░    0/325     0.0%
+Services/Expansions            █░░░░░░░░░░░░░░░░░    6/175     3.4%
+Mobiles/Normal                 █░░░░░░░░░░░░░░░░░    3/138     2.2%
+Items/Artifacts                █░░░░░░░░░░░░░░░░░    1/325     0.3%
+Items/Resource                 █░░░░░░░░░░░░░░░░░    1/61      1.6%
 Mobiles/NPCs                   ░░░░░░░░░░░░░░░░░░    0/222     0.0%
-Services/Expansions            ░░░░░░░░░░░░░░░░░░    0/175     0.0%
 Items/Addons                   ░░░░░░░░░░░░░░░░░░    0/169     0.0%
 Services/Revamped Dungeons     ░░░░░░░░░░░░░░░░░░    0/150     0.0%
 Items/Equipment                ░░░░░░░░░░░░░░░░░░    0/148     0.0%
@@ -95,7 +96,6 @@ Services/XmlSpawner            ░░░░░░░░░░░░░░░░�
 Items/Decorative               ░░░░░░░░░░░░░░░░░░    0/88      0.0%
 Quests                         ░░░░░░░░░░░░░░░░░░    0/84      0.0%
 Items/Quest                    ░░░░░░░░░░░░░░░░░░    0/78      0.0%
-Items/Resource                 ░░░░░░░░░░░░░░░░░░    0/61      0.0%
 Items/Consumables              ░░░░░░░░░░░░░░░░░░    0/59      0.0%
 Services/CleanUpBritannia      ░░░░░░░░░░░░░░░░░░    0/52      0.0%
 Items/StoreBought              ░░░░░░░░░░░░░░░░░░    0/51      0.0%
@@ -107,18 +107,35 @@ Services/BulkOrders            ░░░░░░░░░░░░░░░░�
 
 _Counted by matching ServUO file stems (excluding those stock ModernUO already has) against `server/customizations`. Auto-counted, never hand-edited._
 
-**Ported systems logged: 3**
+**Ported systems logged: 20**
 
 | Content | Task | Notes |
 |---|---|---|
 | PlagueRat | P1 | P1 reference port. 88 lines to 55. Builds, spawns, survives save/reload. No speed override: SpeedClass Medium, per the Q-008 answer (ModernUO's npc-speeds.json fallback is the standing rule for all ported creatures). |
 | GreaterPoisonElemental | P2 | P2 timed port, headless. 123 lines to 80. Compiles clean, server starts, world saves and reloads; type registration proven by reflection over the shipped assembly. Adds PackItem, multi-AddLoot, an OnDeath override, AI_Mage and the two-argument stat overloads over what PlagueRat covered. No speed override, per Q-008. An instance in a saved world is NOT verified: headless has no spawn - batched for a later client spot check. |
 | LuckyCoin | P2 | Forced dependency of GreaterPoisonElemental; ModernUO has no LuckyCoin. Ported complete except its OnDoubleClick, which needs FountainOfFortune (an SA addon ModernUO lacks that drags in four more items). Deviation is in the item, not the creature. Q-010. Reused by 12 Mobiles/Normal creatures. |
+| RaptorTeeth | CC3 | ICommodity stackable resource. ServUO's TextDefinition Description becomes ModernUO's int DescriptionNumber; the Constructable X()/X(int) pair collapses to one [Constructible] X(int amount = 1). |
+| AncientPotteryFragments | CC3 | Forced dependency of Raptor; ModernUO has none. Trivial Item, ported complete, no deviation. One extracted type per file, per the LuckyCoin precedent (Q-010). |
+| PerfectBanana | CC3 | Forced dependency of SilverbackGorilla; ModernUO has none. Trivial stackable Item, ported complete, no deviation. |
+| RaptorClaw | CC3 | Boomerang artifact. Boomerang, Slayer, Attributes and WeaponAttributes.HitLeechStam all exist in ModernUO. Only IsArtifact dropped: it is a ServUO-only Server.Item virtual whose every consumer (pigments, NaturalDye, AlterItem, RunicReforging) is also ServUO-only, so it has zero readers in ModernUO. |
+| StretchedDinosaurHide | CC3 | One of six TOL tribal reward decorations split out of a single ServUO file, one type per file. Derives from Item, not ModernUO's BaseDecorationArtifact, because ServUO sets ShowArtifactRarity=false and ModernUO's base adds the rarity line unconditionally; the three members that base contributes are reproduced so the rendered properties match ServUO exactly. |
+| CarvedMyrmydexGlyph | CC3 | One of six TOL tribal reward decorations split out of a single ServUO file, one type per file. Derives from Item, not ModernUO's BaseDecorationArtifact, because ServUO sets ShowArtifactRarity=false and ModernUO's base adds the rarity line unconditionally; the three members that base contributes are reproduced so the rendered properties match ServUO exactly. |
+| WakuOnASpit | CC3 | One of six TOL tribal reward decorations split out of a single ServUO file, one type per file. Derives from Item, not ModernUO's BaseDecorationArtifact, because ServUO sets ShowArtifactRarity=false and ModernUO's base adds the rarity line unconditionally; the three members that base contributes are reproduced so the rendered properties match ServUO exactly. |
+| SacredLavaRock | CC3 | One of six TOL tribal reward decorations split out of a single ServUO file, one type per file. Derives from Item, not ModernUO's BaseDecorationArtifact, because ServUO sets ShowArtifactRarity=false and ModernUO's base adds the rarity line unconditionally; the three members that base contributes are reproduced so the rendered properties match ServUO exactly. |
+| WhiteTigerFigurine | CC3 | One of six TOL tribal reward decorations split out of a single ServUO file, one type per file. Derives from Item, not ModernUO's BaseDecorationArtifact, because ServUO sets ShowArtifactRarity=false and ModernUO's base adds the rarity line unconditionally; the three members that base contributes are reproduced so the rendered properties match ServUO exactly. |
+| DragonTurtleHatchlingNet | CC3 | One of six TOL tribal reward decorations split out of a single ServUO file, one type per file. Derives from Item, not ModernUO's BaseDecorationArtifact, because ServUO sets ShowArtifactRarity=false and ModernUO's base adds the rarity line unconditionally; the three members that base contributes are reproduced so the rendered properties match ServUO exactly. |
+| Allosaurus | CC3 | Three SetWeaponAbility calls become one GetWeaponAbility() over Utility.Random(3). GenerateLoot's IsChampionSpawn branch collapses to the non-champion arm and SetToChampionSpawn is dropped: ModernUO's BaseCreature has neither, and its ChampionSpawn never calls back into the creature. AttacksFocus dropped. |
+| Archaeosaurus | CC3 | Two SetWeaponAbility calls become GetWeaponAbility() over Utility.RandomBool(). DragonBlood => 6 dropped: ModernUO has neither the carving property nor the item. AttacksFocus dropped. |
+| Dimetrosaur | CC3 | SetWeaponAbility x2 become GetWeaponAbility(). Two behaviours dropped with no ModernUO equivalent: SetAreaEffect(AreaEffect.PoisonBreath), and OnAfterTame, which quartered Hits on first tame - StatLossAfterTame gives AnimalTaming's ScaleStats(0.50) instead. FruitsAndVegies -> FruitsAndVeggies. AttacksFocus and the champion-spawn hooks dropped. |
+| Najasaurus | CC3 | Clean. Its only PetTrainingHelper call is in the version-0 deserialize upgrade path, which new content at version 0 never runs, and the constructor already sets Poisoning skill and HitPoison - so dropping it is a no-op. AttacksFocus dropped. |
+| Saurosaurus | CC3 | SetWeaponAbility(ConcussionBlow) becomes GetWeaponAbility(). SetSpecialAbility(TailSwipe) and SetSpecialAbility(LifeLeech) dropped - PetTrainingHelper, which ModernUO lacks; ServUO's own source carries the comment "Missing: Life Leech, Tail Swipe ability". DragonBlood => 8 dropped. AttacksFocus dropped. |
+| SilverbackGorilla | CC3 | The only candidate creature calling no PetTrainingHelper method. Banana-throw OnActionCombat ported intact: the 13-argument MovingParticles overload with EffectLayer, AOS.Damage and Region.IsPartOf(string) all exist unchanged. DateTime.UtcNow -> Core.Now. |
+| Raptor | CC3 | The only ported creature with real persisted state: m_IsFriend becomes [SerializableField(0, setter: "private")] and ServUO's delete-on-deserialize becomes [AfterDeserialization(false)]. The Raptor()/Raptor(bool) Constructable pair collapses to one [Constructible] Raptor(bool isFriend = false). Pack-friend spawn timer, PackInstinct.Ostard, Map.CanFit and AIObject.Action all port unchanged. SetWeaponAbility(BleedAttack) becomes GetWeaponAbility(). Drops AncientPotteryFragments and RaptorClaw, both ported alongside. |
 
-### Task list (7 of 14 done)
+### Task list (8 of 14 done)
 
 ```
-Tasks          ███████████░░░░░░░░░░░  7/14   Foundation and the port pipeline
+Tasks          █████████████░░░░░░░░░  8/14   Foundation and the port pipeline
 ```
 
 | | Task | Status | Notes |
@@ -130,7 +147,7 @@ Tasks          ███████████░░░░░░░░░░�
 | `F5` | Make RegenRates routing explicit | done | Works by accident today: both land in Misc/ so ours overwrites. |
 | `P1` | Validate the port recipe with one real port | done | PlagueRat ported, built, spawned, saved and reloaded intact. Both draft fidelity traps were wrong (range perception was backwards; ServUO ignores its own speed args) and are corrected in notes/port-recipe.md. Three of the five F3 patches exercised at runtime: bandage-on-PetMimic and talisman durability both work; MAKE X works with no button overlap but its label uses an HTML colour where AddLabel wants a hue, so it renders invisible. See notes/cc1-p1-runtime-validation.md. Open: Q-008 (speed model), and new evidence on Q-007 (forcing SHA2 breaks new-account login on the live shard). |
 | `P2` | Second port, timed, using only the recipe | done | GreaterPoisonElemental, ~20 min headless. Per-file work ~1:10, warm build cycle 0:44, so build cycles are NOT the dominant cost. A batch of 20 is about an hour. Bigger finding: of 462 Mobiles/Normal files only 275 (60%) are clean - 132 call Pet Training methods ModernUO lacks, 89 reference a missing type. CC6 batches draw from the clean 60%. See notes/cc2-timed-port.md. |
-| `C1` | Eodon core content | todo | ~22 files, ~4,000 lines. 6 dinosaurs, Raptor, 8 Aloron pieces, the quest line. Corrected down from 52. |
+| `C1` | Eodon core content (CC3) | done | 17 files ported, built and verified headless; 12 declined. The 22-files/4,000-lines figure was wrong for the third time: the quest line (half the stated line count) is a subsystem port and is declined, the Aloron set rests on a subsystem ModernUO lacks, and MoonstonePowerGenerator is Myrmidex Invasion content. Delivered: 6 dinosaurs, Raptor, RaptorClaw, RaptorTeeth, 6 TOL decoration artifacts, and 2 forced leaf dependencies. Four build cycles, zero failures - the pre-flight dependency check against D:\UO\ModernUO-pinned worked. Time of Legends coverage moved 53/157 to 59/157. Recipe correction: SetWeaponAbility DOES have a faithful ModernUO equivalent, BaseCreature.GetWeaponAbility(), used by 49 stock creatures. See notes/cc3-eodon.md. |
 | `C2` | Revamped Dungeons | todo | 255 files. Unblocked: F2 added subdirectory mirroring. One chat per dungeon: Despise 4, Shame 11, Wrong 26, Covetous 29, Exodus 38, Blackthorn 147. |
 | `C3` | High Seas, cheap half | todo | ~78 files. Fishing, rare fish, sea creatures, food. Skip anything touching BaseGalleon or cannons. |
 | `C4` | Creatures and NPCs | todo | ~360 files. Only 275 (60%) are clean on both dependency checks: 89 (19%) reference a type ModernUO lacks, 132 (29%) call a BaseCreature method it does not have. Batches of ~20, drawn from the clean 60%, about an hour each per the P2 measurement. See notes/cc2-timed-port.md. |
@@ -142,10 +159,12 @@ _Detail and acceptance criteria in `docs/tasks.md`. Status lives in `tools/progr
 
 **Deliberately declined:**
 
-- **Eodon / Time of Legends** — gated on Myrmidex Invasion (83% dep) and Shadowguard (71%), both subsystem builds. Deferred, not declined: measure how much of the Valley separates first.
 - **Vice vs Virtue, City Loyalty, Skill Masteries, Exploring the Deep** — 29-100% dependent on subsystems ModernUO lacks entirely. Deferred to workstream 4.
+- **Eodon: the eight Aloron armour pieces** — CC3. Rest on the armour set-bonus subsystem, which ModernUO ships zero files for - SetItem, SetAttributes and AbsorptionAttributes are all absent, and BaseArmor has no SetID/Pieces/Set*Bonus/SetSelfRepair. After the resistances the entire item IS set data, so porting without the subsystem leaves a re-hued TigerPeltChest with a label. They also inherit from the TigerPelt set, a further 8 files. Cost to do properly: the set-bonus subsystem, then TigerPelt (8), then Aloron (8).
+- **Eodon: the Valley of One quest line** — CC3. Two reasons, either sufficient. (1) It is 3 of 8 files, not 3 of 3: the directory is 3,870 lines and the three named files reference PrideOfTheAmbushQuest and TimeIsOfTheEssenceQuest from Quests.cs, so they do not compile alone. The 2,058-line figure sums a set that does not stand up. (2) It rests on ServUO's Mondain's Legacy quest framework - BaseQuest, BaseQuestItem, QuestHelper, QuestChain, MondainQuester, BaseRewardTitleDeed, all absent from ModernUO - which is 6,269 lines before gumps and persistence. ModernUO ships a DIFFERENT quest engine (MLQuest/MLQuestSystem: static definitions plus per-player context, versus ServUO's per-player instantiated BaseQuest objects). Porting means either two serialized quest engines in one world or a reimplementation. Subsystem port, not a content port.
+- **Eodon: MoonstonePowerGenerator** — CC3. It is Myrmidex Invasion content, not Eodon. It lives inside Services/Expansions/Time Of Legends/Myrmidex Invasion/, spawns Zipactriotl (the Myrmidex boss) and IgnisFatalis, subclasses DamageableItem (absent from ModernUO), and is referenced only by Myrmidex Invasion/System.cs and the MyrmidexThreat quest. It reached the CC3 list because the keyword moonstone matched and nobody opened the file.
 
-Counted from the trees: 117 customization files, 14 patch files.
+Counted from the trees: 134 customization files, 14 patch files.
 Shard status: running on ModernUO.
 <!-- PROGRESS:END -->
 
@@ -154,18 +173,18 @@ Shard status: running on ModernUO.
 <!-- EXPANSION:START -->
 ### Content by expansion
 
-**3,041 of 6,144 ServUO files present** (49%), of which **2 ported by us**.
+**3,050 of 6,144 ServUO files present** (50%), of which **11 ported by us**.
 
 ```
-Pre-AoS (T2A/UOR/LBR)     ██████████░░░░░░░░░░  2225/4294    52%   +2
+Pre-AoS (T2A/UOR/LBR)     ██████████░░░░░░░░░░  2228/4294    52%   +5
 Age of Shadows            █████████████░░░░░░░   201/309     65%
 Samurai Empire            ███████████████░░░░░    87/115     76%
 Mondain's Legacy          ██████████░░░░░░░░░░   241/471     51%
 Stygian Abyss (Ter Mur)   ██████░░░░░░░░░░░░░░   125/444     28%
 High Seas                 ██████░░░░░░░░░░░░░░    96/334     29%
-Time of Legends (Eodon)   ███████░░░░░░░░░░░░░    53/157     34%
+Time of Legends (Eodon)   ████████░░░░░░░░░░░░    59/157     38%   +6
 Endless Journey           █████████████░░░░░░░    13/20      65%
-TOTAL                     ██████████░░░░░░░░░░  3041/6144    49%   +2
+TOTAL                     ██████████░░░░░░░░░░  3050/6144    50%   +11
 ```
 
 _Filename-stem matching: a proxy for presence, not behaviour. Unclassified files fall into Pre-AoS, inflating it. Directional, not a completion percentage._

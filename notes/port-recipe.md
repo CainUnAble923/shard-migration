@@ -15,6 +15,11 @@ from pinned ModernUO `7c9215d97`:
   port. Built, started, world saved and reloaded, type registration proven by reflection. (CC2,
   headless.) Adds coverage of `PackItem`, multi-`AddLoot`, an `OnDeath` override, `AI_Mage` and
   the two-argument stat overloads.
+- **CC3, 17 files in four batches, zero failed builds.** Six Eodon dinosaurs, `Raptor`,
+  `RaptorClaw`, `RaptorTeeth`, six TOL decorations and two forced leaf dependencies. Adds coverage
+  of `[SerializableField]` + `[AfterDeserialization]` (`Raptor`), `GetWeaponAbility`, an inner
+  `Timer`, `Item` ports, and the collapsed optional-parameter `[Constructible]`. Corrections and
+  new absent-member tables are below; timings and declines in `notes/cc3-eodon.md`.
 
 **Before you transform anything, read "Check dependencies first" below.** It is the step whose
 absence cost CC2 a whole build cycle, and it is the cheapest thing in this document.
@@ -120,6 +125,42 @@ Compiler errors, not silent, but they cost a build cycle each:
   Any ServUO creature that calls them needs a decision, not a translation. PlagueRat was chosen
   partly because it calls neither. A large share of `Mobiles/Normal` does — check before
   committing to a batch.
+
+  **CORRECTED BY CC3: this is right about three of the four methods and wrong about the fourth.**
+  ServUO has four, all routing into `PetTrainingHelper.GetAbilityProfile(...).AddAbility(...)`
+  (`ServUO Scripts/Mobiles/Normal/BaseCreature.cs:635-651`). Only three of them are blocked.
+
+  **`SetWeaponAbility` translates faithfully.** ModernUO's `BaseCreature` has
+  `public virtual WeaponAbility GetWeaponAbility() => null;` (`BaseCreature.cs:1312`) plus
+  `WeaponAbilityChance => 0.4` (`:439`), and **49 stock creatures override it** — including the
+  multi-ability form that matches several ServUO `SetWeaponAbility` calls:
+
+  ```csharp
+  // ServUO                                        // ModernUO
+  SetWeaponAbility(WeaponAbility.MortalStrike);     public override WeaponAbility GetWeaponAbility() =>
+  SetWeaponAbility(WeaponAbility.Dismount);             Utility.RandomBool()
+                                                            ? WeaponAbility.MortalStrike
+                                                            : WeaponAbility.Dismount;
+  ```
+
+  For three or more, use a `Utility.Random(n)` switch — the shape stock `DemonKnight.cs:202` uses.
+  Every `WeaponAbility` name CC3 needed exists in ModernUO unchanged: `ArmorPierce`,
+  `CrushingBlow`, `Disarm`, `BleedAttack`, `TalonStrike`, `MortalStrike`, `Dismount`,
+  `ConcussionBlow`.
+
+  **`SetSpecialAbility`, `SetMagicalAbility` and `SetAreaEffect` stay blocked.** `SpecialAbility`,
+  `MagicalAbility` and `AreaEffect` have zero definitions in the pinned tree. These are a
+  decision, not a translation.
+
+  **So the "132 files / 29% Pet Training cohort" figure is not a decline rate.** CC3 hit it on
+  6 of 7 candidate creatures and ported 6 of 7 anyway, because `SetWeaponAbility` was the only
+  one of the four most of them called. Split the 132 by method before sizing a CC6 batch off it.
+  Raised as Q-013.
+
+  One more trap CC3 met twice: a `Set*Ability` call can sit inside the **`Deserialize` version
+  upgrade path** rather than the constructor (`Najasaurus`, `Dimetrosaur`). New content starts at
+  version 0 and never runs it, so those are no-ops — read where the call is before treating the
+  file as blocked.
 - **`ICommodity` has different members in the two emulators.** ServUO:
   `TextDefinition Description { get; }` + `bool IsDeedable { get; }`. ModernUO:
   `int DescriptionNumber { get; }` + `bool IsDeedable { get; }`. Written as explicit-interface
@@ -317,6 +358,21 @@ are the recipe's remaining blind corners, and any one of them could dominate the
   `-1` needs checking rather than find-and-replace.
 - **`[SerializableField(n)]`** replaces hand-written field writes when a type has real persisted
   state. Simple creatures with no extra state need none — neither reference port needed one.
+  **CC3 exercised it.** `Raptor` has one persisted `bool`, and the shape that compiled and
+  generated correctly is stock ModernUO's (`Mobiles/Monsters/Ants/BlackSolenQueen.cs:9`):
+
+  ```csharp
+  [SerializableField(0, setter: "private")]
+  private bool _isFriend;              // generator emits the public IsFriend property
+
+  // ServUO's "if (m_IsFriend) Delete();" at the end of Deserialize becomes:
+  [AfterDeserialization(false)]
+  private void AfterDeserialization() { if (_isFriend) Delete(); }
+  ```
+
+  The field must be `_camelCase`. Reflection over the built assembly confirmed the generator
+  emitted `Serialize`/`Deserialize` and both constructors. An *instance* round-trip is still
+  unverified — that needs a client.
 - **`TextDefinition`, `PooledRefQueue`, `ValueStringBuilder`** are ModernUO idioms with no ServUO
   equivalent. CC2 met `TextDefinition` only indirectly, via `ICommodity` (see above), where
   ModernUO uses a plain `int` instead.
@@ -542,3 +598,55 @@ Working invocation:
 Edit the scratch `Configuration/modernuo.json` to `listeners: ["127.0.0.1:2593"]`,
 `serverListing.address: "127.0.0.1"` and `autosave.enabled: "False"` so the throwaway server is
 loopback-only and does not save on a timer behind your back.
+
+## `BaseCreature` members ModernUO does not have (CC3)
+
+Checked against `D:\UO\ModernUO-pinned` at `7c9215d97`. Each of these compiles in ServUO and is a
+compiler error in ModernUO. Grep a candidate for them before writing anything.
+
+| ServUO member | ModernUO | What to do |
+|---|---|---|
+| `AttacksFocus` | absent entirely | drop; normal `FightMode` targeting applies |
+| `DragonBlood` | no property **and** no item | drop the carving yield |
+| `OnAfterTame(Mobile)` | no hook at all | drop. `StatLossAfterTame => true` gives `AnimalTaming`'s `ScaleStats(0.50)`, which is the nearest thing |
+| `IsChampionSpawn` (creature flag) | only `ChampionSpawn.IsChampionSpawn(Mobile)`, a method on the spawn | collapse a `GenerateLoot` branch to its non-champion arm |
+| `SetToChampionSpawn()` | nothing calls back into the creature | drop |
+| `FoodType.FruitsAndVegies` | `FruitsAndVeggies` | rename, two g's (already noted above) |
+
+Confirmed **present and unchanged**, so port them literally: `CanAngerOnTame`,
+`StatLossAfterTame`, `MinTameSkill`, `PackInstinct` (with `Ostard`), `HideType` (with `Horned`,
+`Spined`), `PackGold`, `OnActionCombat`, `OnCombatantChange`, `OnBeforeDeath`, `AIObject`,
+`ActionType.Combat`, `Map.CanFit(x,y,z,height,checkBlocksFit,checkMobiles)` (same argument order),
+`Map.GetAverageZ`, `AOS.Damage(m, from, dmg, phys, fire, cold, pois, nrgy)`, the 13-argument
+`Mobile.MovingParticles(..., EffectLayer, int)`, `Region.IsPartOf(string)`, `LootPack.UltraRich`,
+and all the `Get*Sound` overrides. `DateTime.UtcNow` becomes `Core.Now`.
+
+## Items: two more differences (CC3)
+
+- **`IsArtifact` is ServUO-only.** It is a `Server.Item` virtual, and every consumer
+  (`BasePigmentsOfTokuno`, `NaturalDye`, `AlterItem`, `RunicReforging`, `ArcaneGem`) is also
+  ServUO-only. Dropping the override has **zero** readers in ModernUO. Not a deviation worth
+  recording per item.
+- **`BaseDecorationArtifact` differs.** ServUO gates the artifact-rarity property line on a
+  `ShowArtifactRarity` virtual; ModernUO's base adds it unconditionally and has no such virtual.
+  For an item that sets `ShowArtifactRarity => false`, deriving from ModernUO's base *adds* a
+  property line ServUO suppresses. The faithful move is to derive from `Item` and reproduce the
+  three members the base contributes — `DefaultWeight => 10.0`, `ForceShowProperties => true`,
+  plus the item's own `DisplayWeight` — since nothing in ModernUO branches on the base type.
+  CC3 did this for six TOL decorations.
+
+## Headless harness: change exactly three settings
+
+Added by CC3, which lost a run to this. In the scratch `Configuration/modernuo.json`, change only:
+
+```
+listeners                  -> ["127.0.0.1:2593"]
+serverListing.address      -> "127.0.0.1"
+autosave.enabled           -> "False"
+```
+
+**Do not also disable `pingServer`.** Stock `PingServer.Shutdown()`
+(`Projects/Server/Network/PingServer.cs:145`) null-dereferences if the server was never started,
+so `pingServer.enabled=False` turns every `shutdown` into an unhandled exception and a crash
+report. The save completes first, so it does not corrupt anything — it just wastes a cycle and
+makes the log look like the port broke something. The scratch config is not a place to tidy.
