@@ -1,0 +1,25 @@
+diff --git a/Scripts/Accounting/Account.cs b/Scripts/Accounting/Account.cs
+--- a/Scripts/Accounting/Account.cs
++++ b/Scripts/Accounting/Account.cs
+@@ -304,6 +304,7 @@ namespace Server.Accounting
+ 			Flags = Utility.GetXMLInt32(Utility.GetText(node["flags"], "0"), 0);
+ 			Created = Utility.GetXMLDateTime(Utility.GetText(node["created"], null), DateTime.UtcNow);
+ 			LastLogin = Utility.GetXMLDateTime(Utility.GetText(node["lastLogin"], null), DateTime.UtcNow);
++			Email = Utility.GetText(node["modernUOEmail"], Utility.GetText(node["email"], null));
+ 
+ 			TotalCurrency = Utility.GetXMLDouble(Utility.GetText(node["totalCurrency"], "0"), 0);
+             Sovereigns = Utility.GetXMLInt32(Utility.GetText(node["sovereigns"], "0"), 0);
+@@ -1325,6 +1326,13 @@ namespace Server.Accounting
+ 			xml.WriteString(Username);
+ 			xml.WriteEndElement();
+ 
++			if (!String.IsNullOrEmpty(Email))
++			{
++				xml.WriteStartElement("email");
++				xml.WriteString(Email);
++				xml.WriteEndElement();
++			}
++
+ 			if (PlainPassword != null)
+ 			{
+ 				xml.WriteStartElement("password");

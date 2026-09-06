@@ -74,7 +74,7 @@ Phase gates        ███░░░░░░░░░░░░░░░░░�
 | 0 Freeze and inventory | in progress |
 | 1 Stock ServUO reference | done |
 | 2 Rewrite custom scripts | in progress |
-| 3 Move accounts and spawners | not started |
+| 3 Move accounts and spawners | in progress |
 | 4 Spawns and maps | not started |
 | 5 Runtime and hosting | not started |
 | 6 Verify and cut over | not started |
