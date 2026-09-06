@@ -4,14 +4,20 @@ Applies to any agent working here (Codex, Claude, or otherwise). Humans should r
 
 ## What this project is
 
-**Shattered Legacy stays on ModernUO.** We pull selected ServUO content into it, piece by
-piece, as additive code in the existing customization layer.
+**Migrating Shattered Legacy from ModernUO to ServUO pub57**, so the shard carries the full
+post-ML content catalogue.
 
-This reverses an earlier decision to migrate the shard to ServUO. Read
-`docs/direction-decision.md` before proposing we go back. The short version: ModernUO is the
-better engine (.NET 10, source-generated serialization, fast saves, real tests), migrating
-away is a one-way door that costs the world and all 111 custom scripts, and the content that
-justified migrating (naval combat, Eodon) is not load-bearing for a family-and-classroom shard.
+The direction reversed twice on 2026-09-06 as the scope was pinned down. It is settled now:
+the scope is **all** newer content, not a subset, and at that scope porting into ModernUO
+means rebuilding ServUO inside it. Read `docs/direction-decision.md`, which records the whole
+history honestly, before proposing another change.
+
+**ServUO's content is not work.** It ships in the box. Every workstream is about our side of
+the line. See `docs/workstreams.md`.
+
+**TIME-BOXED, do this first:** switch ModernUO's `accountSecurity.encryptionAlgorithm` to
+`SHA2` while the old shard still takes logins, or every player needs a password reset at
+cutover. Detail in `docs/migration-plan.md` Phase 0.
 
 ## Ground rules
 
