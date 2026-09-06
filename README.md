@@ -53,5 +53,6 @@ notes/    working notes, scratch findings, anything not yet a decision
 - [x] Shard located: `shattered-legacy-infrastructure` (builds ModernUO from pinned commit)
 - [x] Add `client-data/` and `server/uo/` to that repo's `.gitignore`
 - [ ] Stand up stock ServUO pub57 reference shard
+- [x] Create a dedicated `shattered-legacy` ServUO worktree; keep the pub57 reference pristine
 - [ ] Write spawner JSON to XmlSpawner XML converter
 - [ ] Write accounts exporter (MUO binary to ServUO accounts.xml)

@@ -25,7 +25,7 @@ ShatteredLegacy/
 
 | Bucket | Files | Lines of C# | Notes |
 |---|---|---|---|
-| `server/customizations` | 111 `.cs` (114 total) | 37,581 | self-contained additive content |
+| `server/customizations` | 111 `.cs` (114 total) | 37,581 | 106 additive files + 5 upstream replacements |
 | `server/patches` | 6 `.cs` + 11 `.patch` | 2,078 | actual upstream overrides |
 | `server/tools` | 1 `.cs` | 222 | |
 | **Total custom surface** | **~131** | **~39,900** | |
@@ -39,7 +39,10 @@ name) plus Artificer, Arborist and BOD/mining extensions.
 
 The Phase 2 estimate in `migration-plan.md` was written not knowing this. Revised:
 
-- **Content bucket** is 111 self-contained files. Each needs its persistence rewritten
+- **Content bucket** is mostly self-contained, but not entirely additive. Five files in
+  `server/customizations` have the same basename as pinned ModernUO source files and replace
+  them: `CharacterCreation`, `CraftItem`, `HammerOfHephaestus`, `Meditation`, and `RegenRates`.
+  The remaining 106 files are additive by basename. Each needs its persistence rewritten
   from ModernUO's `[SerializationGenerator]` codegen to ServUO's hand-written
   `Serialize`/`Deserialize`, plus the `Serial` signedness sweep. Mechanical and highly
   patterned. This is the bulk but it is the *easy* bulk.
@@ -53,6 +56,28 @@ Several patches target systems ServUO also has (`CraftGump`, `CraftItem`, `Smith
 `BulkMaterialType`, `Mining`, `ResourceInfo`, `Healer`, `BaseWeapon`). Check whether ServUO
 already exposes the behavior before re-applying, since some exist only to work around
 things ModernUO removed.
+
+## Baseline verification findings (2026-09-06)
+
+Verified by building a clean Docker context from pinned ModernUO `7c9215d97` plus only the
+canonical tracked inputs (never `server/uo/`):
+
+- The previous Docker build sourced `server/uo/modernuo/Projects/UOContent/Misc`, not
+  `server/customizations`, so a successful old image did not prove the canonical tree complete.
+- Copying the canonical directory wholesale into `Misc` produces duplicate definitions for
+  `CharacterCreation`, `CraftItem`, and `Meditation`; replacements must be routed to their
+  stock source paths.
+- After routing all five basename collisions, the canonical-only build still fails because
+  `CraftContext` lacks the `RepeatCount`, `RepeatItem`, and `RepeatTypeRes` members used by
+  `CraftCountGump` and the custom `CraftItem`; `ResourceInfo.cs` lacks the eight extended wood
+  enum members used by the lumber system; and `OutridersGuildmaster` is referenced but absent.
+- Seven tracked patch applications report failure against the pinned source. The patch runner
+  currently converts these failures to warnings and exits successfully, so its final success
+  message is not a valid verification gate.
+
+The missing canonical inputs and failing patches are verified. Their intended implementations
+cannot be verified without another authoritative source; the generated `server/uo/` tree is
+explicitly excluded and was not consulted.
 
 ## Hazard: `client-data/` is not gitignored
 
