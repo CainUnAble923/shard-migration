@@ -49,7 +49,9 @@ almost nothing to break.
 - **Statics rebuilt on every standard facet:** Felucca 20.4 to 68.7 MB (3.4x), Trammel
   20.4 to 74.3 MB (3.6x), Ilshenar/Malas/Tokuno 3.7x to 4.2x
 - **Sixteen additional facets** (see below)
-- **Rewritten strings:** `cliloc.enu` -1.3 MB, every other language file about -16 KB
+- **Legacy-format string table (corrected, see below):** `Cliloc.enu` is in the old
+  uncompressed format and holds a complete stock table of 117,628 entries with **zero**
+  shard-custom strings. The size delta vs vanilla is a format artifact, not customization.
 - **Patched client:** `client.exe` differs by 53 KB
 - **Both formats shipped:** `art.mul` alongside `artLegacyMUL.uop`, `map0.mul` through
   `map5.mul` alongside the `LegacyMUL.uop` equivalents
@@ -103,3 +105,39 @@ workaround that reuses slots 0-5. This corrects an earlier claim in `migration-p
 Entry-level diffing inside the `.uop` and `.mul` containers, which would name the specific
 art indices, tile IDs and cliloc strings that changed rather than reporting at file
 granularity.
+
+## Correction: the cliloc size deltas were never comparable
+
+Originally reported as a "rewritten string table" because `Cliloc.enu` came out 1.3 MB
+smaller than vanilla. That was wrong. The files are in **different formats**: vanilla and
+UOAlive ship the newer compressed cliloc used by modern Broadsword clients; Immortal Realms
+ships the **legacy uncompressed format** (header `02 00 00 00 01 00`). Byte-size comparison
+between them is meaningless, and a naive parser reads garbage from the compressed ones.
+
+Parsed properly, Immortal Realms carries 117,628 entries, all stock:
+
+| ID band | Entries | What it is |
+|---|---|---|
+| 500,000 - 1,000,000 | 3,406 | standard OSI |
+| 1,000,000 - 1,100,000 | 52,286 | standard OSI |
+| 1,100,000 - 1,160,000 | 59,621 | standard OSI |
+| 1,160,000 - 2,000,000 | 65 | recent official content (25th anniversary, 2022 holiday, EJ) |
+| 3,000,000+ | 2,250 | standard client UI block (login, errors, shard select) |
+
+Not one shard-custom string. This fits the rest of the profile: shipping `art.mul`,
+`map0.mul` through `map21.mul` and an uncompressed cliloc is a deliberate legacy-format
+client set, which is what ClassicUO reads most readily.
+
+## Squires and mercenaries: no client-side assets
+
+Searched all 117,628 entries for `squire`, `mercenar`, `henchman`, `hireling`, `companion`,
+`retainer`, `vassal`, `follower`. Hits exist (28 squire, 18 mercenary, 97 henchman) but
+**every one is a standard OSI string** in stock ID ranges. The 1052020-1052074 block is the
+official young-player squire/sponsor system; `1011511 Hire Mercenary` and `1078470 Mercenary`
+are likewise stock.
+
+**Zero matches in the custom ID range.** If Immortal Realms runs a squire or mercenary
+system, it is implemented entirely **server-side** on stock art and stock strings, or sends
+plain text rather than clilocs. Nothing about it is visible in the client files.
+
+Useful precedent for us: a shard system of that kind does not require custom client assets.
