@@ -68,6 +68,22 @@ def content_html(pg):
             '<th class="n">Done</th><th class="n">Total</th><th class="n">%</th></tr></thead>'
             f'<tbody>{rows}</tbody></table></div>')
 
+def tasks_html(pg):
+    tk = pg.get("tasks") or []
+    if not tk: return "<p class='foot'>No task data.</p>"
+    cls = {"done":"p-ok","in-progress":"p-next","blocked":"p-no","todo":"p-todo"}
+    lab = {"done":"done","in-progress":"in progress","blocked":"blocked","todo":"todo"}
+    nd = sum(1 for t in tk if t["status"]=="done")
+    rows = "".join(
+        f'<tr><td class="n">{esc(t["id"])}</td><td>{esc(t["title"])}</td>'
+        f'<td><span class="pill {cls[t["status"]]}">{lab[t["status"]]}</span></td>'
+        f'<td class="foot">{esc(t.get("note",""))}</td></tr>' for t in tk)
+    return (f'<p><strong>{nd} of {len(tk)} tasks done.</strong> Detail and acceptance criteria '
+            f'in <code>docs/tasks.md</code>; status in <code>tools/progress-state.json</code>.</p>'
+            '<div class="scroller"><table><thead><tr><th class="n">ID</th><th>Task</th>'
+            '<th>Status</th><th>Notes</th></tr></thead><tbody>'
+            f'{rows}</tbody></table></div>')
+
 def replace(txt, tag, body):
     s, e = f"<!-- DATA:{tag} -->", f"<!-- /DATA:{tag} -->"
     if s not in txt or e not in txt: return txt, False
@@ -82,7 +98,8 @@ def main():
     txt = DASH.read_text(encoding="utf-8"); hit = []
     for tag, body in (("FOUNDATION", foundation_html(pg)),
                       ("EXPANSION", expansion_html(ex)),
-                      ("CONTENT", content_html(pg))):
+                      ("CONTENT", content_html(pg)),
+                      ("TASKS", tasks_html(pg))):
         txt, ok = replace(txt, tag, body)
         if ok: hit.append(tag)
     txt = re.sub(r"<!-- DATA:GENERATED -->.*?<!-- /DATA:GENERATED -->",

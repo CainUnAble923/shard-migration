@@ -65,6 +65,7 @@
   .p-ok{color:var(--ok);background:var(--ok-bg)}
   .p-no{color:var(--stop);background:var(--stop-bg)}
   .p-next{color:var(--warn);background:var(--warn-bg)}
+  .p-todo{color:var(--muted);background:var(--sunk)}
   .scroller{overflow-x:auto}.scroller>table{min-width:28rem}
   .flag{background:var(--stop-bg);border:1px solid var(--stop);padding:1.1rem 1.3rem;
     display:flex;flex-direction:column;gap:.5rem}
@@ -83,7 +84,7 @@
     <span class="eyebrow">Shattered Legacy &middot; ModernUO</span>
     <h1>Shard status</h1>
     <div class="meta">
-      <span>2026-09-06</span>
+      <span><!-- DATA:GENERATED -->2026-09-06 16:55<!-- /DATA:GENERATED --></span>
       <span>Running on ModernUO</span>
       <span>Direction settled</span>
     </div>
@@ -107,28 +108,31 @@
   </section>
 
   <section>
-    <div class="card">
-      <div class="hero">
-        <span class="big">3 / 7</span>
-        <span class="cap"><strong>Foundation defects resolved.</strong> Problems with the shard as it runs today. Nothing else starts until these close.</span>
-      </div>
-      <span class="track"><span class="fill" style="width:43%"></span></span>
-    </div>
-    <div class="scroller">
-      <table>
-        <thead><tr><th>Foundation item</th><th>Status</th></tr></thead>
-        <tbody>
-          <tr><td><code>CraftContext</code> members recovered</td><td><span class="pill p-ok">done</span></td></tr>
-          <tr><td>Eight <code>ResourceInfo</code> wood enum members recovered</td><td><span class="pill p-ok">done</span></td></tr>
-          <tr><td><code>OutridersGuildmaster</code> recovered</td><td><span class="pill p-ok">done</span></td></tr>
-          <tr><td><code>server/customizations</code> compiles standalone</td><td><span class="pill p-next">next</span></td></tr>
-          <tr><td><code>apply-patches.sh</code> fails on a failed patch</td><td><span class="pill p-no">no</span></td></tr>
-          <tr><td>Stale <code>customizations/migrations</code> removed</td><td><span class="pill p-no">no</span></td></tr>
-          <tr><td><code>RegenRates</code> routing made explicit</td><td><span class="pill p-no">no</span></td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="foot">The three recovered pieces exist on disk but are uncommitted, and no clean build has confirmed the tree compiles. Marked done for recovery, not for verification.</p>
+    <div class="section-head"><span class="eyebrow">Work</span><h2>Task list</h2></div>
+<!-- DATA:TASKS -->
+<p><strong>1 of 14 tasks done.</strong> Detail and acceptance criteria in <code>docs/tasks.md</code>; status in <code>tools/progress-state.json</code>.</p><div class="scroller"><table><thead><tr><th class="n">ID</th><th>Task</th><th>Status</th><th>Notes</th></tr></thead><tbody><tr><td class="n">F1</td><td>Recover the three missing pieces so customizations compiles standalone</td><td><span class="pill p-ok">done</span></td><td class="foot">CraftContext members, 8 ResourceInfo wood enums, OutridersGuildmaster. Build verification still outstanding.</td></tr><tr><td class="n">F2</td><td>Make apply-patches.sh fail on a failed patch</td><td><span class="pill p-next">in progress</span></td><td class="foot">Also: preserve subdirectories under customizations (see Q-002). 7 patches currently fail while the build reports success.</td></tr><tr><td class="n">F3</td><td>Triage the seven failing patches</td><td><span class="pill p-todo">todo</span></td><td class="foot">Still needed, or obsolete because ModernUO changed? Fix or remove with a reason.</td></tr><tr><td class="n">F4</td><td>Delete stale server/customizations/migrations/</td><td><span class="pill p-todo">todo</span></td><td class="foot">3 PetMimic JSONs diverging from the canonical v0-v8 set.</td></tr><tr><td class="n">F5</td><td>Make RegenRates routing explicit</td><td><span class="pill p-todo">todo</span></td><td class="foot">Works by accident today: both land in Misc/ so ours overwrites.</td></tr><tr><td class="n">P1</td><td>Validate the port recipe with one real port</td><td><span class="pill p-todo">todo</span></td><td class="foot">notes/port-recipe.md was drafted from source study, not a build. Confirm the two fidelity traps.</td></tr><tr><td class="n">P2</td><td>Second port, timed, using only the recipe</td><td><span class="pill p-todo">todo</span></td><td class="foot">That number prices every content task below.</td></tr><tr><td class="n">C1</td><td>Eodon core content</td><td><span class="pill p-todo">todo</span></td><td class="foot">~22 files, ~4,000 lines. 6 dinosaurs, Raptor, 8 Aloron pieces, the quest line. Corrected down from 52.</td></tr><tr><td class="n">C2</td><td>Revamped Dungeons</td><td><span class="pill p-no">blocked</span></td><td class="foot">255 files. BLOCKED on Q-002: 32 duplicate basenames across 137 files would overwrite when flattened. One chat per dungeon: Despise 4, Shame 11, Wrong 26, Covetous 29, Exodus 38, Blackthorn 147.</td></tr><tr><td class="n">C3</td><td>High Seas, cheap half</td><td><span class="pill p-todo">todo</span></td><td class="foot">~78 files. Fishing, rare fish, sea creatures, food. Skip anything touching BaseGalleon or cannons.</td></tr><tr><td class="n">C4</td><td>Creatures and NPCs</td><td><span class="pill p-todo">todo</span></td><td class="foot">~360 files, 0% dependency. Batches of ~20.</td></tr><tr><td class="n">C5</td><td>Decoration, housing, crafting</td><td><span class="pill p-todo">todo</span></td><td class="foot">Addons, Decorative, New Magincia, Items/Resource, BulkOrders. 0% dependency.</td></tr><tr><td class="n">C6</td><td>Artifacts and equipment</td><td><span class="pill p-todo">todo</span></td><td class="foot">~473 files, 1-2%. Selectively: pieces anchoring a dungeon or quest.</td></tr><tr><td class="n">C7</td><td>High Seas naval - written proposal only</td><td><span class="pill p-todo">todo</span></td><td class="foot">~54 files. Means extending BaseBoat. Do not start; Chase decides from the proposal.</td></tr></tbody></table></div>
+<!-- /DATA:TASKS -->
+  </section>
+
+  <section>
+    <!-- DATA:FOUNDATION -->
+<div class="card"><div class="hero"><span class="big">3 / 7</span><span class="cap"><strong>Foundation defects resolved.</strong> Problems with the shard as it runs today. Nothing else starts until these close.</span></div><span class="track"><span class="fill" style="width:43%"></span></span></div><div class="scroller"><table><thead><tr><th>Foundation item</th><th>Status</th></tr></thead><tbody><tr><td>CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered</td><td><span class="pill p-ok">done</span></td></tr><tr><td>ResourceInfo extended wood enum members (8) recovered</td><td><span class="pill p-ok">done</span></td></tr><tr><td>OutridersGuildmaster recovered</td><td><span class="pill p-ok">done</span></td></tr><tr><td>server/customizations compiles standalone</td><td><span class="pill p-no">no</span></td></tr><tr><td>apply-patches.sh fails on failed patch</td><td><span class="pill p-no">no</span></td></tr><tr><td>stale server/customizations/migrations removed</td><td><span class="pill p-no">no</span></td></tr><tr><td>RegenRates routing made explicit</td><td><span class="pill p-no">no</span></td></tr></tbody></table></div><p class="foot"><strong>Patches:</strong> 17 tracked, <strong>7 currently failing to apply</strong>, 0 triaged, 0 found obsolete.</p>
+<!-- /DATA:FOUNDATION -->
+  </section>
+
+  <section>
+    <div class="section-head"><span class="eyebrow">Progression</span><h2>Content by expansion</h2></div>
+<!-- DATA:EXPANSION -->
+<div class="scroller"><table><thead><tr><th>Expansion</th><th class="n">Have</th><th class="n">In ServUO</th><th class="n">Coverage</th><th class="n">Ours</th></tr></thead><tbody><tr><td>Pre-AoS (T2A/UOR/LBR)</td><td class="n">2,223</td><td class="n">4,294</td><td class="n">52%</td><td class="n">&mdash;</td></tr><tr><td>Age of Shadows</td><td class="n">201</td><td class="n">309</td><td class="n">65%</td><td class="n">&mdash;</td></tr><tr><td>Samurai Empire</td><td class="n">87</td><td class="n">115</td><td class="n">76%</td><td class="n">&mdash;</td></tr><tr><td>Mondain&#x27;s Legacy</td><td class="n">241</td><td class="n">471</td><td class="n">51%</td><td class="n">&mdash;</td></tr><tr><td>Stygian Abyss (Ter Mur)</td><td class="n">125</td><td class="n">444</td><td class="n">28%</td><td class="n">&mdash;</td></tr><tr><td>High Seas</td><td class="n">96</td><td class="n">334</td><td class="n">29%</td><td class="n">&mdash;</td></tr><tr><td>Time of Legends (Eodon)</td><td class="n">53</td><td class="n">157</td><td class="n">34%</td><td class="n">&mdash;</td></tr><tr><td>Endless Journey</td><td class="n">13</td><td class="n">20</td><td class="n">65%</td><td class="n">&mdash;</td></tr><tr><td><strong>Total</strong></td><td class="n"><strong>3,039</strong></td><td class="n"><strong>6,144</strong></td><td class="n"><strong>49%</strong></td><td class="n"><strong>+0</strong></td></tr></tbody></table></div>
+<!-- /DATA:EXPANSION -->
+    <p class="foot">Filename-stem matching: a proxy for presence, not behaviour. Unclassified files fall into Pre-AoS, inflating it. Directional, not a completion percentage.</p>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="eyebrow">Moved over</span><h2>Content ported by us</h2></div>
+<!-- DATA:CONTENT -->
+<p><strong>0 of 2,045 candidate files moved over.</strong> Counted by matching ServUO file stems against <code>server/customizations</code>, excluding stems stock ModernUO already has.</p><div class="scroller"><table><thead><tr><th>Area</th><th class="n">Done</th><th class="n">Total</th><th class="n">%</th></tr></thead><tbody><tr><td>Items/Artifacts</td><td class="n">0</td><td class="n">325</td><td class="n">0.0%</td></tr><tr><td>Mobiles/NPCs</td><td class="n">0</td><td class="n">222</td><td class="n">0.0%</td></tr><tr><td>Services/Expansions</td><td class="n">0</td><td class="n">175</td><td class="n">0.0%</td></tr><tr><td>Items/Addons</td><td class="n">0</td><td class="n">169</td><td class="n">0.0%</td></tr><tr><td>Services/Revamped Dungeons</td><td class="n">0</td><td class="n">150</td><td class="n">0.0%</td></tr><tr><td>Items/Equipment</td><td class="n">0</td><td class="n">148</td><td class="n">0.0%</td></tr><tr><td>Mobiles/Normal</td><td class="n">0</td><td class="n">138</td><td class="n">0.0%</td></tr><tr><td>Services/XmlSpawner</td><td class="n">0</td><td class="n">97</td><td class="n">0.0%</td></tr><tr><td>Items/Decorative</td><td class="n">0</td><td class="n">88</td><td class="n">0.0%</td></tr><tr><td>Quests</td><td class="n">0</td><td class="n">84</td><td class="n">0.0%</td></tr><tr><td>Items/Quest</td><td class="n">0</td><td class="n">78</td><td class="n">0.0%</td></tr><tr><td>Items/Resource</td><td class="n">0</td><td class="n">61</td><td class="n">0.0%</td></tr><tr><td>Items/Consumables</td><td class="n">0</td><td class="n">59</td><td class="n">0.0%</td></tr><tr><td>Services/CleanUpBritannia</td><td class="n">0</td><td class="n">52</td><td class="n">0.0%</td></tr><tr><td>Items/StoreBought</td><td class="n">0</td><td class="n">51</td><td class="n">0.0%</td></tr><tr><td>Items/Functional</td><td class="n">0</td><td class="n">49</td><td class="n">0.0%</td></tr><tr><td>Services/New Magincia</td><td class="n">0</td><td class="n">40</td><td class="n">0.0%</td></tr><tr><td>Items/Containers</td><td class="n">0</td><td class="n">31</td><td class="n">0.0%</td></tr><tr><td>Services/BulkOrders</td><td class="n">0</td><td class="n">28</td><td class="n">0.0%</td></tr></tbody></table></div>
+<!-- /DATA:CONTENT -->
   </section>
 
   <section>

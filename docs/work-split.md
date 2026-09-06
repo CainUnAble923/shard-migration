@@ -79,4 +79,4 @@ Do not run Claude Code and Codex in the same working tree at the same time. On 2
 single agent working from a stale direction produced seven commits rewriting live
 customization files; two agents overlapping would be worse and harder to unpick.
 
-Claude Code's task list is `claude-code-tasks.md`. Codex's is `backlog.md`.
+The single task list for every agent is `tasks.md`.

@@ -1,4 +1,10 @@
-# Claude Code: task list and working agreement
+# Task list and working agreement
+
+**The single task list.** Any agent working this project uses this file. `backlog.md` is
+superseded and kept only for its history. Live status renders into `README.md` and
+`dashboard.html` from `tools/progress-state.json`; edit status there, not here.
+
+Task IDs here match the IDs in that status table.
 
 **Read `AGENTS.md` first.** This file assumes it.
 

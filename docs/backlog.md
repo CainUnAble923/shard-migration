@@ -1,3 +1,7 @@
+> **SUPERSEDED 2026-09-06.** The single task list is now `tasks.md`, which absorbed these
+> items and carries the current file counts. Kept for the acceptance criteria wording and the
+> record of what was asked. Do not work from this file.
+
 # Backlog
 
 **Work top-down. One item per Codex chat. Do not skip ahead.**

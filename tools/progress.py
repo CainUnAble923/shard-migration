@@ -120,6 +120,22 @@ def build():
         L.append("_None yet. Blocked until the setup defects above are resolved._")
     L.append("")
 
+    tk = st.get("tasks", [])
+    if tk:
+        SYM = {"done":"x", "in-progress":"~", "blocked":"!", "todo":" "}
+        nd = sum(1 for t in tk if t["status"]=="done")
+        L.append(f"### Task list ({nd} of {len(tk)} done)")
+        L.append("")
+        L.append("| | Task | Status | Notes |")
+        L.append("|---|---|---|---|")
+        for t in tk:
+            mark = {"done":"done","in-progress":"**in progress**","blocked":"**blocked**","todo":"todo"}[t["status"]]
+            L.append(f"| `{t['id']}` | {t['title']} | {mark} | {t.get('note','')} |")
+        L.append("")
+        L.append("_Detail and acceptance criteria in `docs/tasks.md`. Status lives in "
+                 "`tools/progress-state.json`._")
+        L.append("")
+
     dc = st.get("declined_content", [])
     if dc:
         L.append("**Deliberately declined:**")
@@ -138,7 +154,7 @@ def build():
             "direction": "stay on ModernUO; pull ServUO content selectively",
             "setup_defects": d, "setup_done": done, "setup_total": total,
             "patches": p, "ported_content": pc, "declined_content": dc,
-            "counted": cnt, "content_progress": content_progress(),
+            "counted": cnt, "content_progress": content_progress(), "tasks": st.get("tasks", []),
             "shard_status": st.get("shard_status")}
     try:
         (MIGRATE / "tools" / "progress.json").write_text(json.dumps(snap, indent=2) + "\n", encoding="utf-8")

@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-06T16:42:12+00:00",
+  "generated": "2026-09-06T16:54:41+00:00",
   "direction": "stay on ModernUO; pull ServUO content selectively",
   "setup_defects": {
     "CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered": true,
@@ -148,6 +148,92 @@
       "total": 28,
       "done": 0,
       "pct": 0.0
+    }
+  ],
+  "tasks": [
+    {
+      "id": "F1",
+      "title": "Recover the three missing pieces so customizations compiles standalone",
+      "status": "done",
+      "note": "CraftContext members, 8 ResourceInfo wood enums, OutridersGuildmaster. Build verification still outstanding."
+    },
+    {
+      "id": "F2",
+      "title": "Make apply-patches.sh fail on a failed patch",
+      "status": "in-progress",
+      "note": "Also: preserve subdirectories under customizations (see Q-002). 7 patches currently fail while the build reports success."
+    },
+    {
+      "id": "F3",
+      "title": "Triage the seven failing patches",
+      "status": "todo",
+      "note": "Still needed, or obsolete because ModernUO changed? Fix or remove with a reason."
+    },
+    {
+      "id": "F4",
+      "title": "Delete stale server/customizations/migrations/",
+      "status": "todo",
+      "note": "3 PetMimic JSONs diverging from the canonical v0-v8 set."
+    },
+    {
+      "id": "F5",
+      "title": "Make RegenRates routing explicit",
+      "status": "todo",
+      "note": "Works by accident today: both land in Misc/ so ours overwrites."
+    },
+    {
+      "id": "P1",
+      "title": "Validate the port recipe with one real port",
+      "status": "todo",
+      "note": "notes/port-recipe.md was drafted from source study, not a build. Confirm the two fidelity traps."
+    },
+    {
+      "id": "P2",
+      "title": "Second port, timed, using only the recipe",
+      "status": "todo",
+      "note": "That number prices every content task below."
+    },
+    {
+      "id": "C1",
+      "title": "Eodon core content",
+      "status": "todo",
+      "note": "~22 files, ~4,000 lines. 6 dinosaurs, Raptor, 8 Aloron pieces, the quest line. Corrected down from 52."
+    },
+    {
+      "id": "C2",
+      "title": "Revamped Dungeons",
+      "status": "blocked",
+      "note": "255 files. BLOCKED on Q-002: 32 duplicate basenames across 137 files would overwrite when flattened. One chat per dungeon: Despise 4, Shame 11, Wrong 26, Covetous 29, Exodus 38, Blackthorn 147."
+    },
+    {
+      "id": "C3",
+      "title": "High Seas, cheap half",
+      "status": "todo",
+      "note": "~78 files. Fishing, rare fish, sea creatures, food. Skip anything touching BaseGalleon or cannons."
+    },
+    {
+      "id": "C4",
+      "title": "Creatures and NPCs",
+      "status": "todo",
+      "note": "~360 files, 0% dependency. Batches of ~20."
+    },
+    {
+      "id": "C5",
+      "title": "Decoration, housing, crafting",
+      "status": "todo",
+      "note": "Addons, Decorative, New Magincia, Items/Resource, BulkOrders. 0% dependency."
+    },
+    {
+      "id": "C6",
+      "title": "Artifacts and equipment",
+      "status": "todo",
+      "note": "~473 files, 1-2%. Selectively: pieces anchoring a dungeon or quest."
+    },
+    {
+      "id": "C7",
+      "title": "High Seas naval - written proposal only",
+      "status": "todo",
+      "note": "~54 files. Means extending BaseBoat. Do not start; Chase decides from the proposal."
     }
   ],
   "shard_status": "running on ModernUO"

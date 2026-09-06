@@ -109,6 +109,27 @@ _Counted by matching ServUO file stems (excluding those stock ModernUO already h
 
 _None yet. Blocked until the setup defects above are resolved._
 
+### Task list (1 of 14 done)
+
+| | Task | Status | Notes |
+|---|---|---|---|
+| `F1` | Recover the three missing pieces so customizations compiles standalone | done | CraftContext members, 8 ResourceInfo wood enums, OutridersGuildmaster. Build verification still outstanding. |
+| `F2` | Make apply-patches.sh fail on a failed patch | **in progress** | Also: preserve subdirectories under customizations (see Q-002). 7 patches currently fail while the build reports success. |
+| `F3` | Triage the seven failing patches | todo | Still needed, or obsolete because ModernUO changed? Fix or remove with a reason. |
+| `F4` | Delete stale server/customizations/migrations/ | todo | 3 PetMimic JSONs diverging from the canonical v0-v8 set. |
+| `F5` | Make RegenRates routing explicit | todo | Works by accident today: both land in Misc/ so ours overwrites. |
+| `P1` | Validate the port recipe with one real port | todo | notes/port-recipe.md was drafted from source study, not a build. Confirm the two fidelity traps. |
+| `P2` | Second port, timed, using only the recipe | todo | That number prices every content task below. |
+| `C1` | Eodon core content | todo | ~22 files, ~4,000 lines. 6 dinosaurs, Raptor, 8 Aloron pieces, the quest line. Corrected down from 52. |
+| `C2` | Revamped Dungeons | **blocked** | 255 files. BLOCKED on Q-002: 32 duplicate basenames across 137 files would overwrite when flattened. One chat per dungeon: Despise 4, Shame 11, Wrong 26, Covetous 29, Exodus 38, Blackthorn 147. |
+| `C3` | High Seas, cheap half | todo | ~78 files. Fishing, rare fish, sea creatures, food. Skip anything touching BaseGalleon or cannons. |
+| `C4` | Creatures and NPCs | todo | ~360 files, 0% dependency. Batches of ~20. |
+| `C5` | Decoration, housing, crafting | todo | Addons, Decorative, New Magincia, Items/Resource, BulkOrders. 0% dependency. |
+| `C6` | Artifacts and equipment | todo | ~473 files, 1-2%. Selectively: pieces anchoring a dungeon or quest. |
+| `C7` | High Seas naval - written proposal only | todo | ~54 files. Means extending BaseBoat. Do not start; Chase decides from the proposal. |
+
+_Detail and acceptance criteria in `docs/tasks.md`. Status lives in `tools/progress-state.json`._
+
 **Deliberately declined:**
 
 - **Eodon / Time of Legends** — gated on Myrmidex Invasion (83% dep) and Shadowguard (71%), both subsystem builds. Deferred, not declined: measure how much of the Valley separates first.
