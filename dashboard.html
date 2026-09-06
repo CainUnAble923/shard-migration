@@ -95,7 +95,7 @@
       <span class="eyebrow">Settled</span>
       <h3>Stay on ModernUO. Port ServUO content in, indefinitely.</h3>
       <p>ModernUO stays modern (.NET 10, source-generated serialization, fast saves, real tests). ServUO is a read-only content source. Scope is all the newer content, worked as an ongoing backlog with no completion date, which is why there is no percentage on this page.</p>
-      <p><strong>No migration.</strong> No cutover, no fresh world, no account export, no password window. The 111 custom scripts are never rewritten, and every port leaves a working shard.</p>
+      <p><strong>No migration.</strong> No cutover, no fresh world, no account export, no password window. Our existing custom scripts are never rewritten, and every port leaves a working shard.</p>
     </div>
   </section>
 
@@ -136,11 +136,12 @@
   </section>
 
   <section>
-    <div class="flag">
-      <span class="eyebrow">Live issue, predates all of this</span>
-      <h3>Seven patches fail silently on every build</h3>
-      <p>Of 17 tracked patches, <strong>seven do not apply</strong> against the pinned ModernUO source. <code>apply-patches.sh</code> converts those failures to warnings and exits 0, so the build reports success regardless.</p>
-      <p>If they have been failing in production, some customizations may not be running on the live shard right now.</p>
+    <div class="note">
+      <span class="eyebrow">Resolved &middot; was the headline live issue</span>
+      <h3>The silently failing patches: eight, not seven, and now fixed</h3>
+      <p><code>apply-patches.sh</code> converted patch failures to warnings and exited 0, so the build reported success regardless. It now <strong>fails the build on a failed patch</strong>. Eight were broken, not seven: the eighth had no <code>apply_patch</code> line in any revision in git history, so it had never run at all.</p>
+      <p><strong>Six of the eight were never valid diffs</strong> &mdash; prose where hunk headers belong, wrong line counts, literal ellipses. Only one was genuine drift against ModernUO, and <strong>none</strong> was obsolete because ModernUO changed. Five were repaired; three were removed as already absorbed by our own full-file replacements.</p>
+      <p>Real gameplay impact, confirmed at runtime during P1: <strong>MAKE X never worked</strong>, PetMimic attributes were never aggregated, and talisman durability never applied. Bandaging a PetMimic and talisman durability both work now. MAKE X works and its button does not overlap, but its label renders invisible &mdash; the patch passes an RGB colour where <code>AddLabel</code> wants a hue. Diagnosed, not yet fixed.</p>
     </div>
   </section>
 
@@ -153,7 +154,7 @@
         <tbody>
           <tr><td><strong>Revamped Dungeons</strong> — Despise, Shame, Wrong, Covetous, Blackthorn, Exodus</td><td class="n">255</td><td class="n">28,828</td><td class="n">2%</td></tr>
           <tr><td><strong>High Seas, cheap half</strong> — fishing, rare fish, sea creatures, food</td><td class="n">~78</td><td class="n">~17,000</td><td class="n">0%</td></tr>
-          <tr><td><strong>Eodon creatures</strong> — dinosaurs and tribal mobs</td><td class="n">52</td><td class="n">6,607</td><td class="n">0%</td></tr>
+          <tr><td><strong>Eodon core content</strong> — dinosaurs, Aloron, the quest line</td><td class="n">~22</td><td class="n">~4,000</td><td class="n">0%</td></tr>
           <tr><td>Creatures and NPCs</td><td class="n">354</td><td class="n">56,339</td><td class="n">0%</td></tr>
           <tr><td>Addons, Decorative, New Magincia</td><td class="n">297</td><td class="n">39,067</td><td class="n">0%</td></tr>
           <tr><td>Crafting resources, Bulk Orders</td><td class="n">89</td><td class="n">8,221</td><td class="n">0%</td></tr>
@@ -190,6 +191,9 @@
         <li><strong>Eodon separates.</strong> 60% of Eodon-family content (89 files, 25,354 lines) touches no missing subsystem. The earlier "83% dependent" measured the Myrmidex folder, not Eodon, and made the Valley look gated when it is not.</li>
         <li><strong>Custom facets are available.</strong> The six-facet ceiling is an official-client limit, not a ClassicUO one. Immortal Realms runs <code>map0</code> through <code>map21</code> in production.</li>
         <li><strong>The canonical tree was never complete.</strong> The old build sourced <code>server/uo/</code>, so a green build never proved <code>server/customizations</code> could stand alone. It could not.</li>
+        <li><strong>Both drafted fidelity traps were wrong</strong>, one exactly backwards. ServUO's own constructor rewrites range perception 10 to 16, so it already runs at ModernUO's default; the recipe's "correct" example would have narrowed perception across nearly the whole creature roster. And ServUO ignores its own two speed arguments entirely — speed is derived from Dex. The recipe is now written from a build and a running client, not from reading source.</li>
+        <li><strong>The Eodon file count was wrong twice.</strong> A keyword search on <code>Tribe</code> caught 43 generic Britannia mobs. Real core Eodon is ~22 files, ~4,000 lines, not 52. Standing rule since: a keyword hit is a candidate, not a result, and the file list gets published beside the count.</li>
+        <li><strong>The progress tooling could not see ported content.</strong> It counted <code>server/customizations</code> with a top-level glob, but F2 put ported content in subdirectories — so every future port would have been invisible to the counter and to expansion coverage. Fixed 2026-09-06.</li>
       </ul>
     </div>
   </section>
