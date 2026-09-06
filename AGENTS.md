@@ -129,3 +129,18 @@ It converts patch failures to warnings and exits 0. Seven tracked patches curren
 apply against the pinned source while the script still reports success. Until that is fixed,
 a green build proves nothing about whether patches applied. Treat fixing this as a priority:
 a runner that cannot fail is not a runner.
+
+## Cleanup: stale divergent migration JSONs
+
+`server/customizations/migrations/` holds `Server.Items.PetMimic.v0/v1/v2.json` that
+**differ** from the canonical set in `server/migrations/` (which has v0 through v8).
+
+Currently inert: `apply-patches.sh` uses `-maxdepth 1 -type f -name '*.cs'`, and the
+Dockerfile now stages `server/customizations/` to `/customizations/` rather than copying it
+into `Misc/`, so the subfolder is skipped. It was briefly live when the Dockerfile copied
+the directory wholesale.
+
+It is still a landmine: divergent duplicates of serialization migrations, which is
+save-corruption material if any future change alters how customizations reach the build
+tree. Delete `server/customizations/migrations/` and confirm `server/migrations/` is the
+only source of migration JSONs.
