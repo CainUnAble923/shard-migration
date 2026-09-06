@@ -36,6 +36,28 @@ no working NuGet and too old a C# compiler. That single fact defines the split.
 **Standing answers** first. Non-blocking, decide and record the assumption. Blocking, mark
 `[OPEN-BLOCKING]`, stop that thread, take the next task.
 
+## One task, one chat
+
+**Start a fresh chat for each task.** Context only grows within a session, and a porting run
+that reads dozens of ServUO files climbs fast. High context means slower replies and
+eventually compaction, where earlier detail is lost. That is precisely when an agent forgets
+a standing rule like "port unchanged" or "check the destination exists before copying".
+
+Nothing is lost by restarting: `AGENTS.md` and this file are re-read at the start of every
+session, and the work itself lives in git.
+
+**Split the large tasks further.** These are too big for one session:
+
+- **CC4 Revamped Dungeons** (255 files, 6 dungeons) - one chat per dungeon. Start with
+  DespiseRevamped (4 files), then Shame (11), Wrong (26), Covetous (29), Exodus (38),
+  Blackthorn (147). Blackthorn is volume rather than complexity: many small armour variants.
+- **CC6 Creatures and NPCs** (~360 files) - one chat per batch of roughly 20.
+- **CC5 High Seas cheap half** (~78 files) - two or three chats.
+
+**Signs the current session has run too long**, regardless of the percentage shown: it
+re-reads files it already read, repeats work, restates conclusions it reached earlier, or
+stops applying a rule it followed at the start. Any of those means restart now.
+
 ## Hard boundaries
 
 - **Never deploy to the live shard.** Building and testing locally is yours; `docker compose
