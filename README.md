@@ -105,11 +105,13 @@ Services/BulkOrders            ..................    0/28      0.0%
 
 _Counted by matching ServUO file stems (excluding those stock ModernUO already has) against `server/customizations`. Auto-counted, never hand-edited._
 
-**Ported systems logged: 0**
+**Ported systems logged: 1**
 
-_None yet. Blocked until the setup defects above are resolved._
+| Content | Ported | Notes |
+|---|---|---|
+| PlagueRat | - |  |
 
-### Task list (5 of 14 done)
+### Task list (6 of 14 done)
 
 | | Task | Status | Notes |
 |---|---|---|---|
@@ -118,7 +120,7 @@ _None yet. Blocked until the setup defects above are resolved._
 | `F3` | Triage the seven failing patches | done | Eight broken, not seven. Five repaired, three removed as absorbed by our own full-file replacements. None obsolete due to ModernUO changing. |
 | `F4` | Delete stale server/customizations/migrations/ | done | 3 PetMimic JSONs diverging from the canonical v0-v8 set. |
 | `F5` | Make RegenRates routing explicit | done | Works by accident today: both land in Misc/ so ours overwrites. |
-| `P1` | Validate the port recipe with one real port | todo | notes/port-recipe.md was drafted from source study, not a build. Confirm the two fidelity traps. ALSO: exercise the five repaired patches in a client (bandage a PetMimic, check talisman durability, click MAKE X and check button overlap). |
+| `P1` | Validate the port recipe with one real port | done | PlagueRat ported, built, spawned, saved and reloaded intact. Both draft fidelity traps were wrong (range perception was backwards; ServUO ignores its own speed args) and are corrected in notes/port-recipe.md. Three of the five F3 patches exercised at runtime: bandage-on-PetMimic and talisman durability both work; MAKE X works with no button overlap but its label uses an HTML colour where AddLabel wants a hue, so it renders invisible. See notes/cc1-p1-runtime-validation.md. Open: Q-008 (speed model), and new evidence on Q-007 (forcing SHA2 breaks new-account login on the live shard). |
 | `P2` | Second port, timed, using only the recipe | todo | That number prices every content task below. |
 | `C1` | Eodon core content | todo | ~22 files, ~4,000 lines. 6 dinosaurs, Raptor, 8 Aloron pieces, the quest line. Corrected down from 52. |
 | `C2` | Revamped Dungeons | todo | 255 files. Unblocked: F2 added subdirectory mirroring. One chat per dungeon: Despise 4, Shame 11, Wrong 26, Covetous 29, Exodus 38, Blackthorn 147. |

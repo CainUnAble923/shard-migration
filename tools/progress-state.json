@@ -15,7 +15,14 @@
     "triaged": 8,
     "obsolete": 3
   },
-  "ported_content": [],
+  "ported_content": [
+    {
+      "name": "PlagueRat",
+      "source": "ServUO Scripts/Mobiles/Normal/PlagueRat.cs",
+      "dest": "server/customizations/Mobiles/Normal/PlagueRat.cs",
+      "note": "P1 reference port. 88 lines to 55. Builds, spawns, survives save/reload. No speed override (SpeedClass Medium) pending Q-002."
+    }
+  ],
   "declined_content": [
     {
       "name": "Eodon / Time of Legends",
@@ -61,8 +68,8 @@
     {
       "id": "P1",
       "title": "Validate the port recipe with one real port",
-      "status": "todo",
-      "note": "notes/port-recipe.md was drafted from source study, not a build. Confirm the two fidelity traps. ALSO: exercise the five repaired patches in a client (bandage a PetMimic, check talisman durability, click MAKE X and check button overlap)."
+      "status": "done",
+      "note": "PlagueRat ported, built, spawned, saved and reloaded intact. Both draft fidelity traps were wrong (range perception was backwards; ServUO ignores its own speed args) and are corrected in notes/port-recipe.md. Three of the five F3 patches exercised at runtime: bandage-on-PetMimic and talisman durability both work; MAKE X works with no button overlap but its label uses an HTML colour where AddLabel wants a hue, so it renders invisible. See notes/cc1-p1-runtime-validation.md. Open: Q-008 (speed model), and new evidence on Q-007 (forcing SHA2 breaks new-account login on the live shard)."
     },
     {
       "id": "P2",

@@ -173,6 +173,60 @@ for accounts that authenticate after a restart, which is account-affecting and t
 Chase's call per the standing answers. Marked non-blocking because it is uncommitted and
 outside F2-F5; I have left it exactly as found and touched nothing in the working tree.
 
+**Evidence added 2026-09-06 (P1). This is not cosmetic — SHA2 breaks new-account login.**
+
+While standing up a local test server for P1 I could not log in to a freshly created account.
+Root cause is a ModernUO bug at pinned `7c9215d97` that only bites under SHA2 or SHA1, i.e. only
+because this entrypoint block forces SHA2: under SHA2 (and SHA1), ModernUO stores a new
+account's password hash using the wrong phrase.
+
+`Account.SetPassword` chooses the phrase from `_passwordAlgorithm`, the account's *existing*
+algorithm, then stamps the new one:
+
+```csharp
+var phrase = _passwordAlgorithm is PasswordProtectionAlgorithm.SHA1 or PasswordProtectionAlgorithm.SHA2
+    ? $"{_username}{plainPassword}"
+    : plainPassword;
+
+Password = AccountSecurity.CurrentPasswordProtection.EncryptPassword(phrase);
+PasswordAlgorithm = AccountSecurity.CurrentAlgorithm;
+```
+
+On a brand-new account `_passwordAlgorithm` is the enum default `None`, so the stored hash is
+`SHA512(password)`, while `PasswordAlgorithm` becomes `SHA2` and `CheckPassword` then verifies
+`SHA512(username + password)`. They never match.
+
+Proven three ways during P1: the stored hash for a console-created owner account was exactly
+`SHA512("p1testpass")`; a packet capture confirmed the client sent the right credentials; and
+rewriting the stored hash to `SHA512("p1adminp1testpass")` made login work immediately.
+
+**Live impact:** `accountHandler.enableAutoAccountCreation` is `True`. A new player's account is
+created during their first login, so they get in that once, then can never log in again. Existing
+accounts are unaffected — the bug only touches the first `SetPassword` on a new account.
+
+**Not blocking migration work.** Recording it because it is invisible from the server logs (they
+say "Invalid password") and because it would look like a client problem to a player.
+
+Options, roughly ascending in cost: a small patch in `server/patches/` making `SetPassword` use
+`AccountSecurity.CurrentAlgorithm` for the phrase choice; report it upstream and pin past the fix;
+or switch off `SHA2` if the ServUO bridging reason no longer applies.
+
+Proven three ways: the stored hash for a console-created owner account was exactly
+`SHA512("p1testpass")`; a packet capture confirmed the client transmitted the right
+credentials; and rewriting the stored hash to `SHA512("p1adminp1testpass")` in
+`Saves/Accounts/Accounts.bin` made login succeed immediately.
+
+**Live impact:** `accountHandler.enableAutoAccountCreation` is `True`, so a new player's account
+is created during their first login — they get in that once, then can never log in again. The
+server log says only "Invalid password", so it looks like a player-side problem. Existing
+accounts are unaffected; the bug is only in the first `SetPassword` on a new account.
+
+This does not change my recommendation (drop the block), it raises the priority. If SHA2 has to
+stay for some reason I have not seen, the alternative is a small patch in `server/patches/`
+making `SetPassword` choose the phrase from `AccountSecurity.CurrentAlgorithm` rather than the
+account's previous `_passwordAlgorithm`. Still Chase's call — it touches accounts and the running
+shard. Full write-up in `notes/cc1-p1-runtime-validation.md`.
+
 **Answer:**
 
 ## Q-002 [OPEN] 2026-09-06 Flat customizations directory blocks structured content
@@ -240,3 +294,45 @@ copy strategy ever changes" scenario `AGENTS.md` warns about, and the copy strat
 changed. They are excluded because the mirror installs `*.cs` only, and the runner now prints
 a NOTE naming each non-`.cs` file it skipped rather than ignoring them silently. F4 is next
 and deletes them outright.
+
+## Q-008 [OPEN] 2026-09-06 Which speed model do ported creatures use?
+
+**Question:** ServUO and ModernUO derive creature speed in incompatible ways. Which target do
+ported creatures adopt? This is one decision for ~490 creatures, not a per-file call.
+
+**Context:** Found while validating `notes/port-recipe.md` in P1; full detail there and in
+`notes/cc1-p1-runtime-validation.md`.
+
+- ServUO's `BaseCreature` constructor takes `activeSpeed`/`passiveSpeed`, then throws them away.
+  `SpeedInfo.UseNewSpeeds` is hardcoded `true` (`Scripts/Mobiles/AI/SpeedInfo.cs:74`), so
+  `GetSpeedsNew` derives speed **from Dex**, and `OnRawDexChange -> AdjustSpeeds`
+  (`BaseCreature.cs:5310-5327`) recomputes it after `SetDex`. 437 of ~490 creatures pass
+  `0.2, 0.4`; none runs at `0.2, 0.4`.
+- ModernUO uses a type table, `Data/npc-speeds.json`, falling back to `SpeedLevel.Medium`
+  (0.25 / 0.5) for any type not listed. A ported type is never listed, so every port lands on
+  Medium unless it overrides `SpeedClass`.
+- Measured: ported `PlagueRat` runs at 0.25 / 0.5. The same creature in ServUO (Dex 51,
+  `IsMonster`) would run at 0.664 / 1.328 — noticeably slower.
+
+The three options:
+
+1. **Do nothing, accept Medium.** Ported creatures move like their nearest ModernUO peers and
+   stay inside ModernUO's data-driven table. Zero per-file work. `PlagueRat` is a re-hued
+   `GiantRat` and stock `GiantRat` is Medium, so for this file it is arguably the most faithful
+   answer as well as the cheapest.
+2. **`public override SpeedLevel SpeedClass => SpeedLevel.Fast;`** on everything that passed
+   `0.2, 0.4`. Matches the ServUO source literal — what a reader of ServUO would expect — but not
+   what ServUO runs. One line per file, mechanical.
+3. **Reproduce ServUO's Dex formula** with a `GetSpeeds` override per creature. Matches ServUO's
+   actual runtime, abandons ModernUO's table, and is the most work by a wide margin.
+
+**My best guess:** option 1. The fidelity principle is about not inventing OSI deviations, and
+ModernUO's Medium is OSI-derived content maintained upstream, not a deviation we authored. Option
+2 has the worst property of the three: it looks faithful in a diff while matching neither
+emulator's behaviour. If speed fidelity turns out to matter for specific creatures, option 3 can
+be applied selectively later.
+
+**Assumption in force meanwhile:** `PlagueRat` was ported with no override. Recorded in
+`notes/port-recipe.md` so it can be revisited in one place.
+
+**Answer:**
