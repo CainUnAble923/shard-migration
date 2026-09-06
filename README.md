@@ -64,7 +64,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece. There is no total to reach, so there is no single completion percentage here by design.
 
 ```
-Setup health   ###############.......  4/6   blocking defects resolved
+Setup health   #############.........  4/7   blocking defects resolved
 ```
 
 | Setup defect | Resolved |
@@ -75,6 +75,7 @@ Setup health   ###############.......  4/6   blocking defects resolved
 | server/customizations compiles standalone | yes |
 | apply-patches.sh fails on failed patch | **no** |
 | stale server/customizations/migrations removed | **no** |
+| RegenRates routing made explicit | **no** |
 
 **Patches:** 17 total, **7 currently failing to apply**, 0 triaged, 0 found obsolete. `apply-patches.sh` still exits 0 on failure, so a green build proves nothing.
 
@@ -84,8 +85,8 @@ _None yet. Blocked until the setup defects above are resolved._
 
 **Deliberately declined:**
 
-- **High Seas naval combat** — BaseGalleon + cannons replace BaseBoat; core surgery, not content
-- **Eodon / Time of Legends** — 18,828 lines resting on Myrmidex Invasion and Skill Masteries, both absent from ModernUO
+- **Eodon / Time of Legends** — gated on Myrmidex Invasion (83% dep) and Shadowguard (71%), both subsystem builds. Deferred, not declined: measure how much of the Valley separates first.
+- **Vice vs Virtue, City Loyalty, Skill Masteries, Exploring the Deep** — 29-100% dependent on subsystems ModernUO lacks entirely. Deferred to workstream 4.
 
 Counted from the trees: 114 customization files, 16 patch files, stale migrations subfolder still present.
 Shard status: running on ModernUO.

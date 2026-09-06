@@ -1,18 +1,30 @@
 {
-  "_comment": "Direction: stay on ModernUO, pull ServUO content in selectively. There is no total to reach, so only setup health has a denominator. Ported content is a growing list.",
+  "_comment": "Direction SETTLED: stay on ModernUO, port ServUO content in as an ongoing backlog. Only Foundation has a denominator; the content backlog is open-ended by design.",
   "setup_defects": {
     "CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered": true,
     "ResourceInfo extended wood enum members (8) recovered": true,
     "OutridersGuildmaster recovered": true,
     "server/customizations compiles standalone": true,
     "apply-patches.sh fails on failed patch": false,
-    "stale server/customizations/migrations removed": false
+    "stale server/customizations/migrations removed": false,
+    "RegenRates routing made explicit": false
   },
-  "patches": { "total": 17, "failing": 7, "triaged": 0, "obsolete": 0 },
+  "patches": {
+    "total": 17,
+    "failing": 7,
+    "triaged": 0,
+    "obsolete": 0
+  },
   "ported_content": [],
   "declined_content": [
-    { "name": "High Seas naval combat", "reason": "BaseGalleon + cannons replace BaseBoat; core surgery, not content" },
-    { "name": "Eodon / Time of Legends", "reason": "18,828 lines resting on Myrmidex Invasion and Skill Masteries, both absent from ModernUO" }
+    {
+      "name": "Eodon / Time of Legends",
+      "reason": "gated on Myrmidex Invasion (83% dep) and Shadowguard (71%), both subsystem builds. Deferred, not declined: measure how much of the Valley separates first."
+    },
+    {
+      "name": "Vice vs Virtue, City Loyalty, Skill Masteries, Exploring the Deep",
+      "reason": "29-100% dependent on subsystems ModernUO lacks entirely. Deferred to workstream 4."
+    }
   ],
   "shard_status": "running on ModernUO"
 }
