@@ -96,14 +96,24 @@ Do a second creature using only the recipe, changing nothing else.
 **Done when:** it builds, the recipe is corrected wherever it was still wrong, and you have
 recorded roughly how long it took. That number prices every task below it.
 
-## CC3. Eodon creatures
-52 files, 6,607 lines, zero coupling to any subsystem ModernUO lacks. Dinosaurs and tribal
-mobs, the most visible part of the Valley. See `docs/eodon-separability.md`.
+## CC3. Eodon core content
+**About 22 files, ~4,000 lines.** Corrected down from an earlier inflated figure of 52; see
+`docs/eodon-separability.md` for what went wrong and the exact file list.
 
-Work in batches of about five. Build each batch before starting the next.
+- Six creatures: Allosaurus, Archaeosaurus, Dimetrosaur, Najasaurus, Saurosaurus,
+  SilverbackGorilla, plus `Mobiles/Normal/Raptor.cs`
+- Ten artifacts: the eight Aloron armour pieces, RaptorClaw, TOL decoration artifacts
+- The quest line: `Quests/Eodon/Creatures.cs`, `Items.cs`, `TigerCubEnclosure.cs`
+- `RaptorTeeth.cs`, `MoonstonePowerGenerator.cs`
 
-**Done when:** all 52 build, and the count shows up in `python tools\expansion_coverage.py`
-under Time of Legends.
+**Verify the list yourself before starting.** Confirm each is absent from stock ModernUO
+(`tools/modernuo-stems.txt`) and references no Myrmidex or Shadowguard. If a file turns out to
+be a large shared system that merely mentions Eodon, skip it and say so.
+
+Work in batches of about five, building each batch.
+
+**Done when:** all build, and the count moves in `python tools\expansion_coverage.py` under
+Time of Legends.
 
 ## CC4. Revamped Dungeons
 150 candidate files. Despise, Shame, Wrong, Covetous Void Spawn, Blackthorn, Exodus. Best
