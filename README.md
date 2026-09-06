@@ -77,7 +77,7 @@ Setup health   ######################  7/7   blocking defects resolved
 | stale server/customizations/migrations removed | yes |
 | RegenRates routing made explicit | yes |
 
-**Patches:** 16 total, **0 currently failing to apply**, 8 triaged, 3 found obsolete. `apply-patches.sh` fails the build on a failed patch, so a green build means every patch applied.
+**Patches:** 9 total, **0 currently failing to apply**, 8 triaged, 3 found obsolete. `apply-patches.sh` fails the build on a failed patch, so a green build means every patch applied.
 
 ### Content moved over: 0 of 2,045 candidate files (0.0%)
 
@@ -109,19 +109,19 @@ _Counted by matching ServUO file stems (excluding those stock ModernUO already h
 
 _None yet. Blocked until the setup defects above are resolved._
 
-### Task list (1 of 14 done)
+### Task list (5 of 14 done)
 
 | | Task | Status | Notes |
 |---|---|---|---|
-| `F1` | Recover the three missing pieces so customizations compiles standalone | done | CraftContext members, 8 ResourceInfo wood enums, OutridersGuildmaster. Build verification still outstanding. |
-| `F2` | Make apply-patches.sh fail on a failed patch | **in progress** | Also: preserve subdirectories under customizations (see Q-002). 7 patches currently fail while the build reports success. |
-| `F3` | Triage the seven failing patches | todo | Still needed, or obsolete because ModernUO changed? Fix or remove with a reason. |
-| `F4` | Delete stale server/customizations/migrations/ | todo | 3 PetMimic JSONs diverging from the canonical v0-v8 set. |
-| `F5` | Make RegenRates routing explicit | todo | Works by accident today: both land in Misc/ so ours overwrites. |
-| `P1` | Validate the port recipe with one real port | todo | notes/port-recipe.md was drafted from source study, not a build. Confirm the two fidelity traps. |
+| `F1` | Recover the three missing pieces so customizations compiles standalone | done | Verified by a clean Docker build during F3, now meaningful because a patch failure can no longer pass silently. |
+| `F2` | Make apply-patches.sh fail on a failed patch | done | Runner fails on a failed patch and mirrors customization subdirectories. Resolves Q-002. |
+| `F3` | Triage the seven failing patches | done | Eight broken, not seven. Five repaired, three removed as absorbed by our own full-file replacements. None obsolete due to ModernUO changing. |
+| `F4` | Delete stale server/customizations/migrations/ | done | 3 PetMimic JSONs diverging from the canonical v0-v8 set. |
+| `F5` | Make RegenRates routing explicit | done | Works by accident today: both land in Misc/ so ours overwrites. |
+| `P1` | Validate the port recipe with one real port | todo | notes/port-recipe.md was drafted from source study, not a build. Confirm the two fidelity traps. ALSO: exercise the five repaired patches in a client (bandage a PetMimic, check talisman durability, click MAKE X and check button overlap). |
 | `P2` | Second port, timed, using only the recipe | todo | That number prices every content task below. |
 | `C1` | Eodon core content | todo | ~22 files, ~4,000 lines. 6 dinosaurs, Raptor, 8 Aloron pieces, the quest line. Corrected down from 52. |
-| `C2` | Revamped Dungeons | **blocked** | 255 files. BLOCKED on Q-002: 32 duplicate basenames across 137 files would overwrite when flattened. One chat per dungeon: Despise 4, Shame 11, Wrong 26, Covetous 29, Exodus 38, Blackthorn 147. |
+| `C2` | Revamped Dungeons | todo | 255 files. Unblocked: F2 added subdirectory mirroring. One chat per dungeon: Despise 4, Shame 11, Wrong 26, Covetous 29, Exodus 38, Blackthorn 147. |
 | `C3` | High Seas, cheap half | todo | ~78 files. Fishing, rare fish, sea creatures, food. Skip anything touching BaseGalleon or cannons. |
 | `C4` | Creatures and NPCs | todo | ~360 files, 0% dependency. Batches of ~20. |
 | `C5` | Decoration, housing, crafting | todo | Addons, Decorative, New Magincia, Items/Resource, BulkOrders. 0% dependency. |

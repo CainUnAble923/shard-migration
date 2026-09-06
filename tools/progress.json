@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-06T12:05:11-05:00",
+  "generated": "2026-09-06T12:31:59-05:00",
   "direction": "stay on ModernUO; pull ServUO content selectively",
   "setup_defects": {
     "CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered": true,
@@ -13,7 +13,7 @@
   "setup_done": 7,
   "setup_total": 7,
   "patches": {
-    "total": 16,
+    "total": 9,
     "failing": 0,
     "triaged": 8,
     "obsolete": 3
@@ -155,37 +155,37 @@
       "id": "F1",
       "title": "Recover the three missing pieces so customizations compiles standalone",
       "status": "done",
-      "note": "CraftContext members, 8 ResourceInfo wood enums, OutridersGuildmaster. Build verification still outstanding."
+      "note": "Verified by a clean Docker build during F3, now meaningful because a patch failure can no longer pass silently."
     },
     {
       "id": "F2",
       "title": "Make apply-patches.sh fail on a failed patch",
-      "status": "in-progress",
-      "note": "Also: preserve subdirectories under customizations (see Q-002). 7 patches currently fail while the build reports success."
+      "status": "done",
+      "note": "Runner fails on a failed patch and mirrors customization subdirectories. Resolves Q-002."
     },
     {
       "id": "F3",
       "title": "Triage the seven failing patches",
-      "status": "todo",
-      "note": "Still needed, or obsolete because ModernUO changed? Fix or remove with a reason."
+      "status": "done",
+      "note": "Eight broken, not seven. Five repaired, three removed as absorbed by our own full-file replacements. None obsolete due to ModernUO changing."
     },
     {
       "id": "F4",
       "title": "Delete stale server/customizations/migrations/",
-      "status": "todo",
+      "status": "done",
       "note": "3 PetMimic JSONs diverging from the canonical v0-v8 set."
     },
     {
       "id": "F5",
       "title": "Make RegenRates routing explicit",
-      "status": "todo",
+      "status": "done",
       "note": "Works by accident today: both land in Misc/ so ours overwrites."
     },
     {
       "id": "P1",
       "title": "Validate the port recipe with one real port",
       "status": "todo",
-      "note": "notes/port-recipe.md was drafted from source study, not a build. Confirm the two fidelity traps."
+      "note": "notes/port-recipe.md was drafted from source study, not a build. Confirm the two fidelity traps. ALSO: exercise the five repaired patches in a client (bandage a PetMimic, check talisman durability, click MAKE X and check button overlap)."
     },
     {
       "id": "P2",
@@ -202,8 +202,8 @@
     {
       "id": "C2",
       "title": "Revamped Dungeons",
-      "status": "blocked",
-      "note": "255 files. BLOCKED on Q-002: 32 duplicate basenames across 137 files would overwrite when flattened. One chat per dungeon: Despise 4, Shame 11, Wrong 26, Covetous 29, Exodus 38, Blackthorn 147."
+      "status": "todo",
+      "note": "255 files. Unblocked: F2 added subdirectory mirroring. One chat per dungeon: Despise 4, Shame 11, Wrong 26, Covetous 29, Exodus 38, Blackthorn 147."
     },
     {
       "id": "C3",

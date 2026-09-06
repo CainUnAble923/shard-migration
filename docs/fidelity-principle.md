@@ -51,3 +51,10 @@ surprises.
 ## Deliberate deviations
 
 _None yet. Add each with a date and a reason._
+
+## Deviations recorded
+
+- **2026-09-06, F3.** `SmithBOD-PostValorite.patch` split into
+  `SmallSmithBOD-PostValorite.patch`. Content unchanged; the `LargeSmithBOD` half was dead
+  because that file is replaced wholesale. Renamed because the old name implied both files.
+  No behaviour change.
