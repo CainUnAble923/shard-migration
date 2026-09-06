@@ -49,3 +49,27 @@ An agent will produce something that compiles and is subtly wrong.
 - When re-applying a ServUO override, re-apply it **by hand** against the current stock file.
   Never copy an old file over a new one. That is how a shard ends up running two copies of
   the same system.
+
+## The layering pattern is not negotiable
+
+The shard 's existing architecture is: **pristine upstream pinned to a commit**, plus
+additive `.cs` in `server/customizations/`, plus targeted `.patch` files in
+`server/patches/`, assembled at build time by `docker/uo/apply-patches.sh`.
+
+**This pattern is the reason the migration is cheap.** It is why there is no Core bucket
+and why the custom surface is a clean ~131 files instead of a diffuse fork. Preserve it
+with ServUO as the new base.
+
+- `D:\UO\ServUO-pub57` is the **pristine reference**. Never edit, never commit into it.
+  It exists so "is this mine or is this stock?" stays a one-minute question.
+- `D:\UO\ServUO-work` (if present) is a **scratch tree** for figuring out ports. Not the
+  deliverable. Create it with `git clone ServUO-pub57 ServUO-work`, not `git worktree`,
+  so the reference repo's `.git` is never written to.
+- **Final output lands in `server/customizations` and `server/patches`** in the shard
+  repo, with a ServUO-targeted `apply-patches.sh`.
+- **Do not commit our code into a ServUO fork.** A year from now, pulling ServUO fixes
+  must still be a pinned-commit bump, not a merge.
+
+Note that `apply-patches.sh` uses `-maxdepth 1 -type f -name '*.cs'` and deliberately
+excludes several files by name because they are handled as patches instead. Any change to
+how customizations reach the build tree must preserve both behaviors.
