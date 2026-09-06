@@ -105,11 +105,13 @@ Services/BulkOrders            ..................    0/28      0.0%
 
 _Counted by matching ServUO file stems (excluding those stock ModernUO already has) against `server/customizations`. Auto-counted, never hand-edited._
 
-**Ported systems logged: 3**
+**Ported systems logged: 5**
 
 | Content | Ported | Notes |
 |---|---|---|
 | PlagueRat | - |  |
+| GreaterPoisonElemental | - |  |
+| LuckyCoin | - |  |
 | GreaterPoisonElemental | - |  |
 | LuckyCoin | - |  |
 
@@ -123,7 +125,7 @@ _Counted by matching ServUO file stems (excluding those stock ModernUO already h
 | `F4` | Delete stale server/customizations/migrations/ | done | 3 PetMimic JSONs diverging from the canonical v0-v8 set. |
 | `F5` | Make RegenRates routing explicit | done | Works by accident today: both land in Misc/ so ours overwrites. |
 | `P1` | Validate the port recipe with one real port | done | PlagueRat ported, built, spawned, saved and reloaded intact. Both draft fidelity traps were wrong (range perception was backwards; ServUO ignores its own speed args) and are corrected in notes/port-recipe.md. Three of the five F3 patches exercised at runtime: bandage-on-PetMimic and talisman durability both work; MAKE X works with no button overlap but its label uses an HTML colour where AddLabel wants a hue, so it renders invisible. See notes/cc1-p1-runtime-validation.md. Open: Q-008 (speed model), and new evidence on Q-007 (forcing SHA2 breaks new-account login on the live shard). |
-| `P2` | Second port, timed, using only the recipe | done | GreaterPoisonElemental ported headlessly in about 20 minutes end to end. Phase split: orientation <=1:00, selection+source read 4:51 (2:51 net), transformation 0:40, failed build 1:00, dependency resolution 2:12, clean build 0:44, verification 9:21. A warm build cycle is 44s and per-file work is ~1:10, so build cycles are NOT the dominant cost - the transformation and the dependency decisions are. Estimate for a batch of 20: about one hour. Biggest finding: measured across all 462 Mobiles/Normal files, only 60% are clean - 19% reference a type ModernUO lacks and 29% call SetWeaponAbility/SetSpecialAbility/SetMagicalAbility/PetTrainingHelper. Draw C4 batches from the clean 60%. Full write-up in notes/cc2-timed-port.md; recipe corrected. Opened Q-010 (LuckyCoin deviation), Q-011 (AGENTS.md wrongly calls server/uo a full ModernUO checkout; the Docker builder image is the real offline source), Q-012 (the tameable cohort is not a straight port). |
+| `P2` | Second port, timed, using only the recipe | done | GreaterPoisonElemental, ~20 min headless. Per-file work ~1:10, warm build cycle 0:44, so build cycles are NOT the dominant cost. A batch of 20 is about an hour. Bigger finding: of 462 Mobiles/Normal files only 275 (60%) are clean - 132 call Pet Training methods ModernUO lacks, 89 reference a missing type. CC6 batches draw from the clean 60%. See notes/cc2-timed-port.md. |
 | `C1` | Eodon core content | todo | ~22 files, ~4,000 lines. 6 dinosaurs, Raptor, 8 Aloron pieces, the quest line. Corrected down from 52. |
 | `C2` | Revamped Dungeons | todo | 255 files. Unblocked: F2 added subdirectory mirroring. One chat per dungeon: Despise 4, Shame 11, Wrong 26, Covetous 29, Exodus 38, Blackthorn 147. |
 | `C3` | High Seas, cheap half | todo | ~78 files. Fishing, rare fish, sea creatures, food. Skip anything touching BaseGalleon or cannons. |

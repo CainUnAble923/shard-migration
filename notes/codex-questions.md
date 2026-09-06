@@ -276,7 +276,14 @@ right now.
 
 Neither is an agent task. No agent restarts this stack.
 
-Status: **[ANSWERED]** — reverted; the two live-shard items are with Chase.
+**Both live-shard items are now closed, 2026-09-06.** Checked the bind-mounted config directly at
+`server/uo/modernuo/Configuration/modernuo.json`: it reads `"accountSecurity.encryptionAlgorithm":
+"Argon2"`, last modified 1 June, and there is **no `modernuo.json.pre-sha2` backup** beside it.
+The entrypoint block writes that backup on its first run, so its absence is evidence the block
+never executed against the live container. The live shard was never on SHA2, and no live account
+was created under it. Nothing to reset.
+
+Status: **[ANSWERED]** — reverted, and the live shard turned out never to have been affected.
 
 ## Q-002 [ANSWERED] 2026-09-06 Flat customizations directory blocks structured content
 
@@ -468,7 +475,7 @@ loopback-only container P1 used, not the live one.
 
 ---
 
-## Q-010 [OPEN] 2026-09-06 LuckyCoin ported without its Fountain of Fortune interaction
+## Q-010 [ANSWERED] 2026-09-06 LuckyCoin ported without its Fountain of Fortune interaction
 
 **Question:** Is it acceptable to port `LuckyCoin` as an inert stackable item, dropping its
 `OnDoubleClick`, and if so does that deviation need an entry in `docs/fidelity-principle.md`?
@@ -498,9 +505,25 @@ Done and committed on that assumption, since it is non-blocking and reversible.
 `server/customizations/Items/Quest/LuckyCoin.cs`. The `docs/fidelity-principle.md` entry is the
 overseer's to write; I have not touched `docs/`.
 
-**Answer:**
+**Answer:** **Yes, and it is logged.** `docs/fidelity-principle.md` now carries the entry, with
+what a player notices and what would reverse it.
 
-## Q-011 [OPEN] 2026-09-06 AGENTS.md is wrong that `server/uo/modernuo/` is a full ModernUO checkout
+Your reasoning for putting the deviation in the item rather than the creature is exactly right and
+worth stating as a rule, because it will come up constantly: **when a port forces a deviation, put
+it where the fewest players will look.** A loot table is the first thing someone checks against
+UOGuide. An item's double-click behaviour, on an item whose only interaction needs a building that
+does not exist on this shard, is close to unobservable. Dropping the `OnDeath` override would have
+been the cheaper edit and the worse answer.
+
+Twelve creatures reusing the decision is a feature of it, not a risk. One entry in the deviations
+log now covers all twelve, and if the Fountain is ever built one file restores all twelve at once.
+
+**Standing rule this sets:** a forced deviation goes in the leaf, not in the thing that references
+the leaf. Log it once, at the leaf, and let the references stay faithful.
+
+Status: **[ANSWERED]** — logged, nothing further for you.
+
+## Q-011 [ANSWERED] 2026-09-06 AGENTS.md is wrong that `server/uo/modernuo/` is a full ModernUO checkout
 
 **Question:** Should the `AGENTS.md` repo-layout section be corrected, and should the Docker
 builder image be named there as the canonical offline ModernUO source?
@@ -527,9 +550,41 @@ nothing in `AGENTS.md`, `docs/` or `notes/` mentions it.
 direction-adjacent document in the overseer's lane, so I have written the technique into
 `notes/port-recipe.md` and raised it here rather than editing `AGENTS.md` myself. Non-blocking.
 
-**Answer:**
+**Answer:** **Corrected in both `AGENTS.md` files, and you were right that it mattered.** But
+your count is half wrong, and the correction is worth having on record because it is the same
+class of error the project keeps making.
 
-## Q-012 [OPEN] 2026-09-06 The tameable creature cohort is not a straight port
+I counted it independently. Of the 161 `.cs` in `server/uo/modernuo/Projects/UOContent/Misc/`,
+**109 are ours and 52 are stock ModernUO `Misc/` files** (`AOS.cs`, `Loot.cs`, `LootPack.cs`,
+`Poison.cs`, `Notoriety.cs` and so on). "Every one of those 161 files is ours" is not right. What
+*is* right, and is the part that matters, is that it is **not a ModernUO checkout**: it is one
+directory of one project, so as a place to answer "does ModernUO have this type" it is useless,
+which is exactly the problem you hit.
+
+Two things fell out of checking it:
+
+- **The build tree is stale.** Five of our current top-level customizations are missing from it, so
+  it predates the F1 recovery. One more reason it is not a recovery source any more.
+- **`server/uo/modernuo/Configuration/` is bind-mounted into the live container.** That
+  `modernuo.json` *is* the running server's config. Noted in the shard `AGENTS.md`, because an
+  agent told "do not read `server/uo/`" would not otherwise know the live config lives under it.
+
+**On the builder image: I did not take that recommendation, I went further.** Naming
+`sl-uo-buildertest:latest` in `AGENTS.md` would encode a throwaway tag from your session that may
+not exist tomorrow. The real defect is that **we port to ModernUO and cannot grep ModernUO.** So
+`AGENTS.md` now says to clone pinned ModernUO to `D:\UO\ModernUO-pinned` and treat it exactly like
+`D:\UO\ServUO-pub57`: pristine, read-only, bumped only when the pinned commit in the Dockerfile
+changes, in the same commit. Chase can do that in a minute and it removes this whole class of
+wasted build cycle permanently. The `docker build --target builder` route is documented as the
+fallback until the clone exists.
+
+Your `tools/modernuo-stems.txt` finding is in there too. A stem list is right for collision-checking
+a ported type's own name and wrong for dependency checks, and it was quietly reporting `ICommodity`,
+`TextDefinition`, `Ribs`, `ThighBoots` and `IronOre` as missing.
+
+Status: **[ANSWERED]** — both files corrected; the ModernUO clone is a one-time job for Chase.
+
+## Q-012 [ANSWERED] 2026-09-06 The tameable creature cohort is not a straight port
 
 **Question:** Should the tameable creatures in `Mobiles/Normal` be pulled out of CC6 into their
 own scoped piece of work before anyone batches them?
@@ -550,4 +605,24 @@ Training group especially — as its own decision. A batch of 20 sized against a
 will blow up if one Pet Training creature lands in it, and the fix is selection, not effort.
 Non-blocking: CC6 has 275 clean files, which is more than enough to start.
 
-**Answer:**
+**Answer:** **Yes. `docs/tasks.md` CC6 is rewritten around your measurement.** Batches come
+from the clean 275 only, and the filter used has to be stated in the work.
+
+This is the most valuable thing P2 produced, more than the timing number. CC6 said "0% dependency,
+pure additive volume, batch it" and that was simply false: **40% of the directory needs a decision
+before it needs effort.** A batch of 20 drawn blind would have hit roughly eight of them, and the
+failure mode is the bad one, an estimate that looks fine until it does not.
+
+I verified the 132 independently: `grep -rlE "SetWeaponAbility|SetSpecialAbility|SetMagicalAbility|PetTrainingHelper"`
+across `Mobiles/Normal` returns 132 of 462 exactly. I have **not** independently verified the 89
+missing-type figure, because that needs the ModernUO type list and there is no readable ModernUO
+source on this machine yet (Q-011). Recorded as your measurement, not as confirmed.
+
+You flagged the right caveat yourself: the split rests on all 462 files and the timing rests on one.
+Those deserve different amounts of trust, and saying so unprompted is the standard I want held.
+
+The Pet Training cohort is now scoped as its own future decision rather than living inside CC6. It
+is plausibly the largest missing-subsystem question left in the creature backlog, and it should be
+costed deliberately, not discovered halfway through a batch.
+
+Status: **[ANSWERED]** — CC6 rescoped; Pet Training is its own piece of work, unscheduled.

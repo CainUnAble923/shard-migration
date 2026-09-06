@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-06T15:28:26-05:00",
+  "generated": "2026-09-06T20:51:27+00:00",
   "direction": "stay on ModernUO; pull ServUO content selectively",
   "setup_defects": {
     "CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered": true,
@@ -36,6 +36,16 @@
       "source": "ServUO Scripts/Items/Quest/SAQuestItems.cs:443",
       "dest": "server/customizations/Items/Quest/LuckyCoin.cs",
       "note": "Forced dependency of GreaterPoisonElemental; ModernUO has no LuckyCoin. Ported complete except its OnDoubleClick, which needs FountainOfFortune (an SA addon ModernUO lacks that drags in four more items). Deviation is in the item, not the creature. Q-010. Reused by 12 Mobiles/Normal creatures."
+    },
+    {
+      "name": "GreaterPoisonElemental",
+      "task": "P2",
+      "note": "123 lines to 80. Two PackItem, three AddLoot, OnDeath override, AI_Mage. Verified headlessly: clean build, server starts, world saves and reloads. An instance in a saved world is NOT verified; flagged for the batched client spot check."
+    },
+    {
+      "name": "LuckyCoin",
+      "task": "P2",
+      "note": "Dependency of GreaterPoisonElemental. Ported without its OnDoubleClick because FountainOfFortune is a declined subsystem. Logged as a deliberate deviation; twelve creatures reuse it."
     }
   ],
   "declined_content": [
@@ -210,7 +220,7 @@
       "id": "P2",
       "title": "Second port, timed, using only the recipe",
       "status": "done",
-      "note": "GreaterPoisonElemental ported headlessly in about 20 minutes end to end. Phase split: orientation <=1:00, selection+source read 4:51 (2:51 net), transformation 0:40, failed build 1:00, dependency resolution 2:12, clean build 0:44, verification 9:21. A warm build cycle is 44s and per-file work is ~1:10, so build cycles are NOT the dominant cost - the transformation and the dependency decisions are. Estimate for a batch of 20: about one hour. Biggest finding: measured across all 462 Mobiles/Normal files, only 60% are clean - 19% reference a type ModernUO lacks and 29% call SetWeaponAbility/SetSpecialAbility/SetMagicalAbility/PetTrainingHelper. Draw C4 batches from the clean 60%. Full write-up in notes/cc2-timed-port.md; recipe corrected. Opened Q-010 (LuckyCoin deviation), Q-011 (AGENTS.md wrongly calls server/uo a full ModernUO checkout; the Docker builder image is the real offline source), Q-012 (the tameable cohort is not a straight port)."
+      "note": "GreaterPoisonElemental, ~20 min headless. Per-file work ~1:10, warm build cycle 0:44, so build cycles are NOT the dominant cost. A batch of 20 is about an hour. Bigger finding: of 462 Mobiles/Normal files only 275 (60%) are clean - 132 call Pet Training methods ModernUO lacks, 89 reference a missing type. CC6 batches draw from the clean 60%. See notes/cc2-timed-port.md."
     },
     {
       "id": "C1",

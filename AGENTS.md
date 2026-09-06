@@ -50,7 +50,7 @@ deviation in `docs/fidelity-principle.md`. Full reasoning there.
 
 ```
 D:\ShatteredLegacy               the shard. Infrastructure-as-code, NOT a ModernUO fork.
-  server/customizations/         canonical custom scripts. 115 .cs, 38,986 lines. EDIT TARGET.
+  server/customizations/         canonical custom scripts. 117 .cs, 39,087 lines. EDIT TARGET.
                                  (2026-09-06 snapshot; grows with every port. tools/progress.py
                                  recomputes it - that output is the live number.)
   server/patches/                overrides against stock ModernUO. 9 .patch + 5 replacements.
@@ -62,39 +62,75 @@ D:\UO\ServUO-pub57               ServUO, pristine. NOW A READ-ONLY CONTENT SOURC
 D:\UO\shard-migration            this repo.
 ```
 
-**`server/uo/` is a build tree** holding a full ModernUO checkout with our customizations
-copied into `Projects/UOContent/Misc/`. Every custom file exists twice on disk. It is
-**readable as a recovery source** but never an edit target, never committed, never a build
-input. `server/customizations` is canonical.
+**`server/uo/` is a stale partial build tree, and it is NOT a copy of ModernUO.** Counted
+2026-09-06: it holds only `Configuration/` and `Projects/UOContent/Misc/`, 161 `.cs` in total.
+109 of those are ours, 52 are stock ModernUO `Misc/` files, and five of our current top-level
+customizations are missing from it entirely, so it predates the F1 recovery. It is never an
+edit target, never committed, never a build input. `server/customizations` is canonical.
+
+It was useful once as a recovery source for our own files (Q-001). It is useless as a place
+to read ModernUO: **it contains 161 files where ModernUO has 7,058 types.**
+
+**There is no readable ModernUO source on this machine, and that is a defect.** We port *to*
+ModernUO and cannot grep it. Every "does this type exist" question costs a build cycle.
+
+**The fix (do this once):** clone pinned ModernUO beside the ServUO reference and treat it the
+same way, pristine and read-only.
+
+```
+git clone https://github.com/modernuo/ModernUO.git D:\UO\ModernUO-pinned
+cd D:\UO\ModernUO-pinned && git checkout 7c9215d97
+```
+
+`D:\UO\ModernUO-pinned` is then the answer to every dependency question, in seconds, offline,
+with no Docker involved. Never edit it, never build in it, never commit into it. Bump it only
+when the pinned commit in `docker/uo/Dockerfile` changes, and change both in the same commit.
+
+**Until that clone exists**, the builder stage of the Docker image holds the same source at
+`/build/modernuo`. Build the stage and grep it:
+
+```
+docker build --target builder -t sl-uo-builder D:\ShatteredLegacy\docker\uo
+docker run --rm --entrypoint sh sl-uo-builder -c 'grep -rn "class LuckyCoin" /build/modernuo/Projects'
+```
+
+7,058 types at `7c9215d97`.
+
+**`tools/modernuo-stems.txt` is not a substitute.** It is a filename-stem list. It is correct
+for collision-checking a ported type's own name and wrong for everything else: it reports
+`ICommodity`, `TextDefinition`, `Ribs`, `ThighBoots` and `IronOre` as missing when all five
+exist. Use the builder image for dependency checks.
 
 **`D:\UO\ServUO-pub57` is now a content source, not a target.** Read it to find the content
 we want. Copy what we need into `server/customizations`, rewritten for ModernUO. Never edit
 it, never build in it, never migrate to it.
 
-## Known defects in the current setup
+## Setup defects: all seven closed 2026-09-06
 
-These are real problems with the shard as it runs today, independent of any porting work.
+Kept as history because each one taught a rule. Findings in `notes/f2-patch-runner.md`,
+`notes/f3-patch-triage.md`, `notes/f4-f5-foundation-cleanup.md`.
 
-1. **`server/customizations` does not compile on its own.** A clean build from pinned
-   ModernUO plus only the canonical inputs fails. Missing: `CraftContext` members
-   `RepeatCount`/`RepeatItem`/`RepeatTypeRes`; eight extended wood enum members in
-   `ResourceInfo.cs`; `OutridersGuildmaster`. Recover each from `server/uo/` and write it
-   into `server/customizations`. **This is the highest-priority work item.**
-2. **`apply-patches.sh` is not a verification gate.** It converts patch failures to warnings
-   and exits 0. Seven patches currently fail against the pinned source while the script still
-   reports success. A runner that cannot fail is not a runner. Fix it, then determine which of
-   the seven are genuinely needed.
-3. **Stale divergent migration JSONs.** `server/customizations/migrations/` holds PetMimic
-   v0-v2 that differ from the canonical set in `server/migrations/` (v0-v8). Currently inert
-   because `apply-patches.sh` uses `-maxdepth 1`, but it is save-corruption material if the
-   copy strategy ever changes. Delete it.
+1. **`server/customizations` did not compile on its own.** Three pieces were missing and were
+   recovered from `server/uo/`. Verified by a clean Docker build during F3, which is only
+   meaningful now that a patch failure can no longer pass silently.
+2. **`apply-patches.sh` was not a verification gate.** It converted patch failures to warnings
+   and exited 0. It now fails the build, and it mirrors customization subdirectories by path.
+   **Eight** patches were broken, not seven; **six had never been valid diffs** at all, and
+   **none** was obsolete because ModernUO changed. Real effects: MAKE X never worked, PetMimic
+   attributes were never aggregated, talisman durability never applied.
+3. **Stale divergent migration JSONs** in `server/customizations/migrations/` are deleted.
+
+**The rule all three paid for: verify state, do not trust a status line.** A green build
+proved nothing while the runner could not fail, and a commit titled "Normalize patch runner"
+had changed three lines of a Dockerfile.
 
 ## Five files are upstream replacements, not additions
 
 `CharacterCreation`, `CraftItem`, `HammerOfHephaestus`, `Meditation`, `RegenRates` share a
 basename with pinned ModernUO sources and replace them. This is why `apply-patches.sh`
 excludes them by name. Any change to how customizations reach the build tree must preserve
-that routing. The other 106 are additive.
+that routing. The rest are additive, and ported content goes in subdirectories that
+`apply-patches.sh` mirrors by path.
 
 ## Porting ServUO content: the rules
 

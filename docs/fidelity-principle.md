@@ -35,7 +35,7 @@ wiki, if it ever exists, has a finite and known scope rather than being needed e
 
 ## The tension, stated honestly
 
-The shard already runs 111 custom scripts with no external documentation anywhere: extended
+The shard already runs a hundred-odd custom scripts with no external documentation anywhere: extended
 ore and lumber tiers (Platinum through Celestial), the Artificer and Forester guild systems,
 PetMimic, the pack mule breeding system, satchels, the league and achievement systems. None
 of that is on any wiki and never will be.
@@ -50,11 +50,22 @@ surprises.
 
 ## Deliberate deviations
 
-_None yet. Add each with a date and a reason._
-
-## Deviations recorded
+Every entry gets a date, the task that made it, what a player would notice, and what would
+reverse it.
 
 - **2026-09-06, F3.** `SmithBOD-PostValorite.patch` split into
   `SmallSmithBOD-PostValorite.patch`. Content unchanged; the `LargeSmithBOD` half was dead
   because that file is replaced wholesale. Renamed because the old name implied both files.
   No behaviour change.
+
+- **2026-09-06, P2.** `LuckyCoin` ported without its `OnDoubleClick`. ServUO's coin is
+  double-clicked at a `FountainOfFortune` to trade for Stygian Abyss rewards. ModernUO has no
+  Fountain, and porting it pulls in `EnchantedEssence`, `GemologistsSatchel`, `RelicFragment`
+  and `SolesOfProvidence`. That is a subsystem, which we decline.
+  **What a player notices:** the coin drops correctly and stacks, and double-clicking it does
+  nothing rather than saying "That is not sacred waters."
+  **Why here and not in the creature:** twelve `Mobiles/Normal` creatures drop this coin. Putting
+  the deviation in the item keeps all twelve creatures' loot tables faithful, which is what a
+  player checks against UOGuide. Dropping the `OnDeath` override instead would have put the
+  deviation in the loot table, where it is visible and wrong.
+  **Reversal:** one file. If the Fountain is ever built, restore the `OnDoubleClick`.

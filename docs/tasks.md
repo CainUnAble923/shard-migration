@@ -133,7 +133,12 @@ The original brief, kept because its acceptance criteria are the model for CC2 o
 **Done when:** it builds, spawns, and `notes/port-recipe.md` is corrected from experience
 rather than inference.
 
-## CC2. Second port, timed — START HERE
+## CC2. Second port, timed — DONE
+
+Completed 2026-09-06. `GreaterPoisonElemental`, about 20 minutes end to end, headless. The
+number and the phase split are in `notes/cc2-timed-port.md`. The brief is kept below because
+its shape is the model for how a timed task gets scoped.
+
 Do a second creature using only the recipe, changing nothing else. The deliverable is a
 timing number, not the creature. Pick something representative of the ~360-file C4 batch:
 a loot pack, and at least one thing PlagueRat did not exercise.
@@ -154,7 +159,7 @@ the world saves and reloads clean, the recipe is corrected wherever it was still
 with the reasoning shown. Phases matter more than the total: build cycles are fixed cost and
 the transformation is per-file, and that ratio is what prices every task below.
 
-## CC3. Eodon core content
+## CC3. Eodon core content — START HERE
 **About 22 files, ~4,000 lines.** Corrected down from an earlier inflated figure of 52; see
 `docs/eodon-separability.md` for what went wrong and the exact file list.
 
@@ -188,7 +193,28 @@ Fishing overhaul, rare fish, crabs and lobsters, fish pies, sea creatures. About
 is CC8 and a separate decision.
 
 ## CC6. Creatures and NPCs
-About 360 candidate files, 0% dependency. Pure additive volume. Batch it.
+About 360 candidate files. **The "0% dependency" figure was wrong** and P2 measured it properly
+across all 462 files in ServUO `Mobiles/Normal`:
+
+- **275 (60%) are clean.** Batch these.
+- **132 (29%) call `SetWeaponAbility`, `SetSpecialAbility`, `SetMagicalAbility` or
+  `PetTrainingHelper`.** None of those exist on ModernUO's `BaseCreature`. This is the Pet
+  Training cohort and it is a subsystem decision, not a transformation.
+- **89 (19%) reference at least one type ModernUO does not have.** Each is its own call: port
+  the dependency, decline it like `FountainOfFortune`, or drop the creature.
+
+The two groups overlap; 40% of the directory needs a decision before it needs effort.
+
+**Draw batches only from the clean 275.** A batch of 20 sized against the one-hour estimate
+will blow up if one Pet Training creature lands in it, and the fix is selection, not effort.
+Filter first, then batch, and say which filter you used.
+
+The Pet Training group gets scoped separately when someone chooses to take it on. It is
+plausibly the single largest missing-subsystem decision left in the creature backlog.
+
+**Budget:** roughly an hour per 20 clean creatures, so about 14 hours for the clean set,
+across as many sessions. Build cycles are not the dominant cost; batch the builds anyway,
+it saves about ten minutes in sixty.
 
 ## CC7. Decoration, housing, crafting
 Addons, Decorative, New Magincia, Items/Resource, BulkOrders. 0% dependency. Cheap and
