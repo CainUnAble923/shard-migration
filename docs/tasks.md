@@ -70,10 +70,16 @@ Measured, not estimated. Two data points, and they deserve different amounts of 
 
 | Task | Files | Context used | 5-hour window | Agent wall clock |
 |---|---|---|---|---|
+| CC3 | 17 ported, 29 verified | 278k of 1M (28%) | ~1% | ~17 min build, ~9 min verify |
 | P2 | 2 ported, 462 surveyed | 231.5k of 1M (23%) | ~9% | ~20 min |
 | P1 | 1 ported | ~492k of 1M (49%), **unreliable** | ~5% | not recorded |
 
-**P2 is the trustworthy number.** One task, one fresh chat, measured at the end. Note that a
+**CC3 is now the best number for a real content task**: 17 files ported and 29 candidates
+verified for 278k, in a fresh chat. Note where the time went. Writing and building 17 files took
+8:34; deciding *which* files to port took 8:48. Verification is half the cost of a content task
+and no estimate that ignores it will hold.
+
+**P2 is the trustworthy number for a single port.** One task, one fresh chat, measured at the end. Note that a
 large share of it was the one-time survey of all 462 `Mobiles/Normal` files that produced the
 60/40 split. A port that reads only the files it ports costs less.
 
@@ -185,26 +191,30 @@ the world saves and reloads clean, the recipe is corrected wherever it was still
 with the reasoning shown. Phases matter more than the total: build cycles are fixed cost and
 the transformation is per-file, and that ratio is what prices every task below.
 
-## CC3. Eodon core content — START HERE
-**About 22 files, ~4,000 lines.** Corrected down from an earlier inflated figure of 52; see
-`docs/eodon-separability.md` for what went wrong and the exact file list.
+## CC3. Eodon core content — DONE
 
-- Six creatures: Allosaurus, Archaeosaurus, Dimetrosaur, Najasaurus, Saurosaurus,
-  SilverbackGorilla, plus `Mobiles/Normal/Raptor.cs`
-- Ten artifacts: the eight Aloron armour pieces, RaptorClaw, TOL decoration artifacts
-- The quest line: `Quests/Eodon/Creatures.cs`, `Items.cs`, `TigerCubEnclosure.cs`
-- `RaptorTeeth.cs`, `MoonstonePowerGenerator.cs`
+Completed 2026-09-06. **17 files ported, 12 declined**, not the "about 22" this file claimed.
+That count was wrong for the third time. Evidence for every decision is in
+`notes/cc3-eodon.md`; `docs/eodon-separability.md` now carries the correction.
 
-**Verify the list yourself before starting.** Confirm each is absent from stock ModernUO
-(`tools/modernuo-stems.txt`) and references no Myrmidex or Shadowguard. If a file turns out to
-be a large shared system that merely mentions Eodon, skip it and say so.
+Declined with evidence, all three genuinely blocked rather than skipped:
 
-Work in batches of about five, building each batch.
+- **The eight Aloron armour pieces** rest on the armour set-bonus subsystem. `SetItem`,
+  `SetAttributes` and `AbsorptionAttributes` are all absent from pinned ModernUO and `BaseArmor`
+  has none of the plumbing. Plus the TigerPelt set, eight more unlisted files.
+- **The Valley of One quest line** is 8 files and 3,870 lines, not 3 files, and rests on ServUO's
+  Mondain's Legacy quest framework (6,269 lines) while ModernUO ships a different quest engine.
+  A subsystem port, not a content port.
+- **`MoonstonePowerGenerator.cs`** is Myrmidex Invasion content, in a directory named
+  `Myrmidex Invasion`. It reached the list because "moonstone" matched.
 
-**Done when:** all build, and the count moves in `python tools\expansion_coverage.py` under
-Time of Legends.
+Time of Legends coverage moved 53/157 to 59/157. Four build batches, zero failed builds.
 
-## CC4. Revamped Dungeons
+**The lesson, now three for three:** every content count in this repo derived from keywords has
+been wrong. Verify the list before porting it, publish the list beside the count, and expect the
+decline set to be real work that was hiding inside an optimistic total.
+
+## CC4. Revamped Dungeons — START HERE
 150 candidate files. Despise, Shame, Wrong, Covetous Void Spawn, Blackthorn, Exodus. Best
 value on the backlog: places to go and things to fight, 2% dependency.
 
@@ -222,14 +232,30 @@ is CC8 and a separate decision.
 About 360 candidate files. **The "0% dependency" figure was wrong** and P2 measured it properly
 across all 462 files in ServUO `Mobiles/Normal`:
 
-- **275 (60%) are clean.** Batch these.
-- **132 (29%) call `SetWeaponAbility`, `SetSpecialAbility`, `SetMagicalAbility` or
-  `PetTrainingHelper`.** None of those exist on ModernUO's `BaseCreature`. This is the Pet
-  Training cohort and it is a subsystem decision, not a transformation.
-- **89 (19%) reference at least one type ModernUO does not have.** Each is its own call: port
-  the dependency, decline it like `FountainOfFortune`, or drop the creature.
+**Re-counted 2026-09-06 after CC3, by method rather than by cohort.** The earlier
+"132 files touch Pet Training" was true and was being read as a decline rate. It is not one.
 
-The two groups overlap; 40% of the directory needs a decision before it needs effort.
+- **`SetWeaponAbility` is NOT blocked.** ModernUO has `BaseCreature.GetWeaponAbility()` at
+  `BaseCreature.cs:1312` with `WeaponAbilityChance` at `:439`, 49 stock creatures override it,
+  and every ability name matches. A `SetWeaponAbility` call ports to a `GetWeaponAbility`
+  override. This is a transformation, not a decision.
+- **57 files call `SetWeaponAbility`. 39 of those call nothing else blocked**, so 39 files move
+  out of the "needs a decision" pile and into the portable one.
+- **103 (22%) are genuinely blocked**: `SetSpecialAbility` (67), `SetAreaEffect` (19),
+  `SetMagicalAbility` (18), `PetTrainingHelper` (15). None of those three has any definition in
+  pinned ModernUO. These lose a real ability and each is its own call.
+- **89 (19%) reference at least one type ModernUO does not have.** Port the dependency to the
+  leaf like `LuckyCoin`, decline it like `FountainOfFortune`, or drop the creature. **This
+  figure is CC2's and has never been independently re-counted.**
+
+The groups overlap. CC3's sample is the useful calibration: 6 of 7 creatures were in the
+"touches Pet Training" cohort and 6 of 7 ported anyway, so the real decline rate there was
+about 14%, not 100%.
+
+**Losing an ability is not automatically a decline.** `Saurosaurus` lost two of three abilities
+and was still ported, following the `LuckyCoin` precedent: correct stats, loot and taming beat
+no creature at all. Decline when the creature is meaningless without what it loses; log the
+deviation either way.
 
 **Draw batches only from the clean 275.** A batch of 20 sized against the one-hour estimate
 will blow up if one Pet Training creature lands in it, and the fix is selection, not effort.

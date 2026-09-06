@@ -629,7 +629,7 @@ Status: **[ANSWERED]** — CC6 rescoped; Pet Training is its own piece of work, 
 
 ---
 
-## Q-013 [OPEN] 2026-09-06 `SetWeaponAbility` has a ModernUO equivalent; the recipe says it does not
+## Q-013 [ANSWERED] 2026-09-06 `SetWeaponAbility` has a ModernUO equivalent; the recipe says it does not
 
 **Question:** `notes/port-recipe.md` and `AGENTS.md` both state that `SetWeaponAbility` /
 `SetSpecialAbility` "do not exist on ModernUO's `BaseCreature`" and that any ServUO creature
@@ -664,11 +664,49 @@ files — that is the actual work this question is asking to authorise, and it i
 Non-blocking for CC3: the correction was applied per file, with evidence, and is written up in
 `notes/cc3-eodon.md`.
 
-**Answer:**
+**Answer:** **Correct the recipe, yes. And I did the re-count rather than authorising it,
+because it was ten minutes of grep and it changes how CC6 gets sized.**
+
+Your ModernUO evidence checks out. I confirmed `BaseCreature.cs:1312`
+`public virtual WeaponAbility GetWeaponAbility() => null;` and `:439` `WeaponAbilityChance => 0.4`
+in `D:\UO\ModernUO-pinned`, and the ability names at `WeaponAbility.cs`. A `SetWeaponAbility`
+call is a transformation, not a decision.
+
+**The re-count, over all 462 files in ServUO `Mobiles/Normal`:**
+
+| Method | Files | Blocked? |
+|---|---|---|
+| `SetWeaponAbility` | 57 | **No.** Ports to a `GetWeaponAbility` override |
+| `SetSpecialAbility` | 67 | Yes, zero definitions in pinned ModernUO |
+| `SetAreaEffect` | 19 | Yes |
+| `SetMagicalAbility` | 18 | Yes |
+| `PetTrainingHelper` | 15 | Yes |
+| any of the five | 142 | |
+| **genuinely blocked** | **103 (22%)** | |
+| **`SetWeaponAbility` only, nothing else blocked** | **39** | **portable today** |
+
+So **39 files move from "needs a decision" to "portable"**, and the blocked cohort is 103, not
+132. My original 132 also predates `SetAreaEffect` being on the list, which is why 142 and 132
+disagree; 142 is the right "touches any of the five" figure.
+
+`docs/tasks.md` CC6 is rewritten around this, with your CC3 calibration in it: 6 of 7 creatures
+were in the cohort and 6 of 7 ported anyway, so the real decline rate on that sample was about
+14%, not 100%.
+
+**You caught the more important error underneath the numbers.** I let a "touches subsystem X"
+count be read as a decline rate and then sized a task against it. Those are different quantities
+and I conflated them. CC6 now says so explicitly, and adds the rule your `Saurosaurus` call
+implies: losing an ability is not automatically a decline. Decline when the creature is
+meaningless without what it loses, log the deviation either way.
+
+The 89 missing-type figure is still CC2's and still has never been independently re-counted. It
+is now labelled that way in CC6 rather than sitting beside verified numbers as if it were one.
+
+Status: **[ANSWERED]** — recipe correction accepted, re-count done, CC6 resized.
 
 ---
 
-## Q-014 [OPEN] 2026-09-06 The CC3 file count was wrong a third time, and `docs/` still says 22
+## Q-014 [ANSWERED] 2026-09-06 The CC3 file count was wrong a third time, and `docs/` still says 22
 
 **Question:** `docs/eodon-separability.md` and `docs/tasks.md` CC3 both state "about 22 files,
 roughly 4,000 lines" and list the quest line as three files. Verification found 17 portable files
@@ -703,4 +741,33 @@ task and is listed in `notes/cc3-eodon.md`.
 
 Non-blocking: CC3 shipped against the verified list, not the documented one.
 
-**Answer:**
+**Answer:** **Both corrected, and your read on what to trust is exactly right.**
+
+`docs/eodon-separability.md` now opens with the third correction, naming all three errors, and
+says in as many words: **the separability conclusion is sound, the file table is unverified.**
+Eodon really does separate from Myrmidex and Shadowguard and really is smaller than the early
+figures. Only the list was wrong. `docs/tasks.md` CC3 is marked done with 17 ported and 12
+declined, and carries the evidence for each decline.
+
+You were right to point out that the document commits, in the table, the exact error its own
+methodology note warns about two screens below. That is worth more than the count. A rule
+written at the bottom of a document does not police the top of it, and rule 3, prefer directory
+structure over keywords, would have caught `MoonstonePowerGenerator` on its own, because the
+directory is literally named `Myrmidex Invasion`.
+
+**Three for three.** Every keyword-derived content count in this repo has been wrong: Eodon
+twice by me, the CC6 dependency figure once, and now the CC3 list. `docs/tasks.md` CC3 states
+that as the standing lesson: verify the list before porting it, publish the list beside the
+count, and expect the decline set to be real work hiding inside an optimistic total. Assume the
+same is true of CC4 and CC5 until someone verifies them.
+
+The eight further Eodon creatures you found and listed (`Gallusaurus`, `Anchisaur`,
+`DragonTurtle`, `DragonTurtleHatchling`, `GreaterPhoenix`, `DesertScorpion`, `Infernus`,
+`BritannianInfantry`) are a good follow-up. They are not scheduled yet; they fold naturally into
+CC6 now that the clean cohort is bigger.
+
+Declining the quest line was the right call and I want that on record, because "port 3 files"
+turning into "port a 6,269-line quest framework and reimplement it on a different engine" is
+precisely where a fidelity-driven project quietly becomes a fork.
+
+Status: **[ANSWERED]** — both documents corrected, nothing further for you.

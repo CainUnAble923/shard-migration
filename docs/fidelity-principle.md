@@ -69,3 +69,29 @@ reverse it.
   player checks against UOGuide. Dropping the `OnDeath` override instead would have put the
   deviation in the loot table, where it is visible and wrong.
   **Reversal:** one file. If the Fountain is ever built, restore the `OnDoubleClick`.
+
+- **2026-09-06, CC3.** Eleven deviations across the 17 Eodon files, every one a ServUO behaviour
+  with no ModernUO equivalent, dropped rather than approximated. Full table with reasoning in
+  `notes/cc3-eodon.md`. The ones a player could notice:
+  - **`Dimetrosaur` loses its poison breath area attack** (`SetAreaEffect`). ModernUO has no
+    `AreaEffect` at all.
+  - **`Saurosaurus` loses Tail Swipe and Life Leech** (`SetSpecialAbility`). ServUO's own source
+    carries the comment "Missing: Life Leech, Tail Swipe ability", so OSI parity was already
+    imperfect upstream. **This is the closest call in the set.** It keeps correct stats, loot,
+    taming and one weapon ability, and was ported rather than declined on the `LuckyCoin`
+    precedent: a saurosaurus with the right numbers beats no saurosaurus.
+  - **`Archaeosaurus` and `Saurosaurus` give no dragon blood when carved.** ModernUO has neither
+    the property nor the item.
+  - **A tamed `Dimetrosaur` ends up stronger than on ServUO.** ModernUO has no `OnAfterTame`
+    hook, so `AnimalTaming`'s `ScaleStats(0.50)` applies instead of ServUO's Hits/4.
+  - All six dinosaurs lose `AttacksFocus`; ModernUO uses normal `FightMode` targeting.
+
+  **Reversal:** each is one file, and each becomes portable if the corresponding ModernUO
+  subsystem is ever built.
+
+  Three further entries in that table are deviations only on paper and change nothing a player
+  sees: the champion-spawn branch (ModernUO's `ChampionSpawn` never calls back, and neither
+  dinosaur is in a spawn table), `RaptorClaw.IsArtifact` (zero readers in ModernUO), and the six
+  decorations deriving from `Item` rather than `BaseDecorationArtifact`, which **prevents** a
+  deviation by suppressing a rarity line ServUO also suppresses.
+

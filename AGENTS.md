@@ -55,7 +55,7 @@ separate lines. `cd D:\X && git push` fails; `cd D:\X; git push` works.
 
 ```
 D:\ShatteredLegacy               the shard. Infrastructure-as-code, NOT a ModernUO fork.
-  server/customizations/         canonical custom scripts. 117 .cs, 39,087 lines. EDIT TARGET.
+  server/customizations/         canonical custom scripts. 134 .cs, 39,981 lines. EDIT TARGET.
                                  (2026-09-06 snapshot; grows with every port. tools/progress.py
                                  recomputes it - that output is the live number.)
   server/patches/                overrides against stock ModernUO. 9 .patch + 5 replacements.

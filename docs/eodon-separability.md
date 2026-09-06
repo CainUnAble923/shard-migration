@@ -1,7 +1,34 @@
 # Eodon: what is actually there, and a correction to two earlier numbers
 
-**Corrected 2026-09-06, twice. Read the methodology note at the bottom before trusting any
-keyword-derived count in this repo, including this one.**
+> **CORRECTED A THIRD TIME, 2026-09-06, by CC3, which ported it.**
+>
+> **The conclusion holds. The file table below does not.** Eodon does separate from Myrmidex
+> and Shadowguard, and it is smaller than any earlier figure. That headline claim survived
+> verification intact. What did not survive is the specific list.
+>
+> Verified by porting: **17 portable files, 12 declined.** Not 22.
+>
+> 1. **`MoonstonePowerGenerator.cs` is Myrmidex Invasion content.** It lives in
+>    `Services/Expansions/Time Of Legends/Myrmidex Invasion/`, spawns `Zipactriotl` and
+>    `IgnisFatalis`, and subclasses `DamageableItem`. It reached the list because "moonstone"
+>    matched a keyword.
+> 2. **`Quests/Eodon` is not 3 files.** `Valley of One Quest/` is 8 files and 3,870 lines. The
+>    three named here reference types defined in the five that were left out, so they cannot
+>    compile alone, and the whole thing rests on ServUO's Mondain's Legacy quest framework
+>    (6,269 lines) while ModernUO ships a different quest engine. That is a subsystem port.
+> 3. **The eight Aloron pieces rest on the armour set-bonus subsystem**, which ModernUO ships
+>    zero files for, plus the TigerPelt set, a further eight unlisted files.
+>
+> **Read this document as: the separability finding is sound, the file table is unverified.**
+> Errors 1 and 2 are exactly the failure mode the methodology note at the bottom describes,
+> committed twice in the table directly above it. Rule 3 of that note, prefer directory
+> structure over keywords, would have caught error 1 on its own: the directory is named
+> `Myrmidex Invasion`.
+>
+> The verified list, the evidence for each decline, and eight further Eodon creatures this
+> document omits (`Gallusaurus`, `Anchisaur`, `DragonTurtle`, `DragonTurtleHatchling`,
+> `GreaterPhoenix`, `DesertScorpion`, `Infernus`, `BritannianInfantry`) are in
+> `notes/cc3-eodon.md`.
 
 ## The answer
 

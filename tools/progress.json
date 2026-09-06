@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-06T17:07:38-05:00",
+  "generated": "2026-09-06T22:33:33+00:00",
   "direction": "stay on ModernUO; pull ServUO content selectively",
   "setup_defects": {
     "CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered": true,
@@ -158,6 +158,13 @@
       "source": "ServUO Scripts/Mobiles/Normal/Raptor.cs",
       "dest": "server/customizations/Mobiles/Normal/Raptor.cs",
       "note": "The only ported creature with real persisted state: m_IsFriend becomes [SerializableField(0, setter: \"private\")] and ServUO's delete-on-deserialize becomes [AfterDeserialization(false)]. The Raptor()/Raptor(bool) Constructable pair collapses to one [Constructible] Raptor(bool isFriend = false). Pack-friend spawn timer, PackInstinct.Ostard, Map.CanFit and AIObject.Action all port unchanged. SetWeaponAbility(BleedAttack) becomes GetWeaponAbility(). Drops AncientPotteryFragments and RaptorClaw, both ported alongside."
+    },
+    {
+      "name": "Eodon core content (17 files)",
+      "task": "CC3",
+      "source": "ServUO Time Of Legends, Mobiles/Normal, Items/*",
+      "dest": "server/customizations/{Mobiles/Normal,Items/*}",
+      "note": "Six dinosaurs, Raptor, RaptorClaw, RaptorTeeth, six TOL decorations, PerfectBanana, AncientPotteryFragments. Four build batches, zero failures. All 17 types verified registered by reflection over the shipped assembly. Deviations logged in docs/fidelity-principle.md."
     }
   ],
   "declined_content": [
@@ -344,9 +351,9 @@
     },
     {
       "id": "C1",
-      "title": "Eodon core content (CC3)",
+      "title": "Eodon core content",
       "status": "done",
-      "note": "17 files ported, built and verified headless; 12 declined. The 22-files/4,000-lines figure was wrong for the third time: the quest line (half the stated line count) is a subsystem port and is declined, the Aloron set rests on a subsystem ModernUO lacks, and MoonstonePowerGenerator is Myrmidex Invasion content. Delivered: 6 dinosaurs, Raptor, RaptorClaw, RaptorTeeth, 6 TOL decoration artifacts, and 2 forced leaf dependencies. Four build cycles, zero failures - the pre-flight dependency check against D:\\UO\\ModernUO-pinned worked. Time of Legends coverage moved 53/157 to 59/157. Recipe correction: SetWeaponAbility DOES have a faithful ModernUO equivalent, BaseCreature.GetWeaponAbility(), used by 49 stock creatures. See notes/cc3-eodon.md."
+      "note": "17 files ported, 12 declined - not the 'about 22' the docs claimed, wrong for the third time. Six dinosaurs, Raptor, RaptorClaw, RaptorTeeth, six TOL decorations. Declined with evidence: the eight Aloron pieces (armour set-bonus subsystem), the Valley of One quest line (8 files on ServUO's ML quest framework, a subsystem port), MoonstonePowerGenerator (Myrmidex content, matched on 'moonstone'). Time of Legends 53/157 to 59/157. Eleven deviations logged. See notes/cc3-eodon.md."
     },
     {
       "id": "C2",
