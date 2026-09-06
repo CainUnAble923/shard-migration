@@ -64,6 +64,32 @@ session, and the work itself lives in git.
 re-reads files it already read, repeats work, restates conclusions it reached earlier, or
 stops applying a rule it followed at the start. Any of those means restart now.
 
+### What a task has actually cost
+
+Measured, not estimated. Two data points, and they deserve different amounts of trust.
+
+| Task | Files | Context used | 5-hour window | Agent wall clock |
+|---|---|---|---|---|
+| P2 | 2 ported, 462 surveyed | 231.5k of 1M (23%) | ~9% | ~20 min |
+| P1 | 1 ported | ~492k of 1M (49%), **unreliable** | ~5% | not recorded |
+
+**P2 is the trustworthy number.** One task, one fresh chat, measured at the end. Note that a
+large share of it was the one-time survey of all 462 `Mobiles/Normal` files that produced the
+60/40 split. A port that reads only the files it ports costs less.
+
+**P1's figure is not clean.** That chat had also run F2 through F5, so 49% covers four
+foundation tasks plus a port, not a port. Do not size anything against it.
+
+**What this is for:** a fresh chat starts near zero, so context is per-chat and a restart fully
+resets it. The 5-hour and weekly limits are account-wide rolling windows and a new chat does
+**not** reset those. At the observed rate a full task costs single-digit percent of a 5-hour
+window, so context, not the plan limit, is the binding constraint on a long task.
+
+**Stop well rather than badly.** On a task that batches, if context passes about 60% before the
+work is done: finish the batch you are in, commit it, write what is done and what remains into
+the task's `notes/` file, and stop. Say clearly that the task is partially complete and what the
+next chat picks up. A clean handoff mid-task beats running out of room mid-batch.
+
 ## Hard boundaries
 
 - **Never deploy to the live shard.** Building and testing locally is yours; `docker compose
