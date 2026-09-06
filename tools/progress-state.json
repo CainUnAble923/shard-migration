@@ -1,19 +1,18 @@
 {
-  "baseline_gaps": {
-    "CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes)": false,
-    "ResourceInfo extended wood enum members (8)": false,
-    "OutridersGuildmaster": false
+  "_comment": "Direction: stay on ModernUO, pull ServUO content in selectively. There is no total to reach, so only setup health has a denominator. Ported content is a growing list.",
+  "setup_defects": {
+    "CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered": false,
+    "ResourceInfo extended wood enum members (8) recovered": false,
+    "OutridersGuildmaster recovered": false,
+    "server/customizations compiles standalone": false,
+    "apply-patches.sh fails on failed patch": false,
+    "stale server/customizations/migrations removed": false
   },
-  "phases": {
-    "0 Freeze and inventory": "in-progress",
-    "1 Stock ServUO reference": "done",
-    "2 Rewrite custom scripts": "in-progress",
-    "3 Move accounts and spawners": "in-progress",
-    "4 Spawns and maps": "not-started",
-    "5 Runtime and hosting": "not-started",
-    "6 Verify and cut over": "not-started"
-  },
-  "patches_triaged": 0,
-  "patches_obsolete": 0,
-  "notes": "Edit this file for items that cannot be counted from the trees. Everything else is counted by tools/progress.py."
+  "patches": { "total": 17, "failing": 7, "triaged": 0, "obsolete": 0 },
+  "ported_content": [],
+  "declined_content": [
+    { "name": "High Seas naval combat", "reason": "BaseGalleon + cannons replace BaseBoat; core surgery, not content" },
+    { "name": "Eodon / Time of Legends", "reason": "18,828 lines resting on Myrmidex Invasion and Skill Masteries, both absent from ModernUO" }
+  ],
+  "shard_status": "running on ModernUO"
 }

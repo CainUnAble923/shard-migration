@@ -61,28 +61,32 @@ notes/    working notes, scratch findings, anything not yet a decision
 ## Migration progress
 
 <!-- PROGRESS:START -->
-**Overall: 5%** (7/138 tracked items). Counted from the working trees, not hand-maintained.
+**Direction: staying on ModernUO.** ServUO content is pulled in piece by piece. There is no total to reach, so there is no single completion percentage here by design.
 
 ```
-Baseline recovery  ░░░░░░░░░░░░░░░░░░░░░░    0/3     0.0%   canonical tree compiles
-Content ports      █░░░░░░░░░░░░░░░░░░░░░    6/111   5.4%   106 additive + 5 replacements
-Patch triage       ░░░░░░░░░░░░░░░░░░░░░░    0/17    0.0%   11 .patch + 6 replacements, 0 found obsolete
-Phase gates        ███░░░░░░░░░░░░░░░░░░░    1/7    14.3%   of 7 phases complete
+Setup health   ......................  0/6   blocking defects resolved
 ```
 
-| Phase | Status |
+| Setup defect | Resolved |
 |---|---|
-| 0 Freeze and inventory | in progress |
-| 1 Stock ServUO reference | done |
-| 2 Rewrite custom scripts | in progress |
-| 3 Move accounts and spawners | in progress |
-| 4 Spawns and maps | not started |
-| 5 Runtime and hosting | not started |
-| 6 Verify and cut over | not started |
+| CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered | **no** |
+| ResourceInfo extended wood enum members (8) recovered | **no** |
+| OutridersGuildmaster recovered | **no** |
+| server/customizations compiles standalone | **no** |
+| apply-patches.sh fails on failed patch | **no** |
+| stale server/customizations/migrations removed | **no** |
 
-**Blocking Phase 2:** canonical tree does not compile. Missing:
-- CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes)
-- ResourceInfo extended wood enum members (8)
-- OutridersGuildmaster
+**Patches:** 17 total, **7 currently failing to apply**, 0 triaged, 0 found obsolete. `apply-patches.sh` still exits 0 on failure, so a green build proves nothing.
 
+**ServUO content pulled in: 0**
+
+_None yet. Blocked until the setup defects above are resolved._
+
+**Deliberately declined:**
+
+- **High Seas naval combat** — BaseGalleon + cannons replace BaseBoat; core surgery, not content
+- **Eodon / Time of Legends** — 18,828 lines resting on Myrmidex Invasion and Skill Masteries, both absent from ModernUO
+
+Counted from the trees: 111 customization files, 17 patch files, stale migrations subfolder still present.
+Shard status: running on ModernUO.
 <!-- PROGRESS:END -->
