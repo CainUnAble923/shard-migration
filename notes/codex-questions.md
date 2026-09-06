@@ -77,4 +77,41 @@ blocking. Ask.
 
 ## Open questions
 
-_none yet_
+## Q-001 [ANSWERED] 2026-09-06 Canonical recovery source conflicts with user scope
+
+**Question:** Can the missing canonical ModernUO inputs be supplied from a source other than
+`server/uo`, or should the user explicitly revise the instruction to ignore that tree entirely?
+
+**Context:** The current user instruction says `server/customizations` is canonical and to
+ignore `server/uo` entirely. The later `AGENTS.md` correction permits reading `server/uo` as a
+recovery source and makes canonical recovery a prerequisite to further Phase 2 porting. A clean
+build from pinned ModernUO `7c9215d97` proves the tracked canonical inputs are incomplete.
+
+**Your best guess:** The explicit user instruction controls. Do not read `server/uo`; stop
+baseline recovery and further ports until an authoritative source is provided outside that tree
+or the user explicitly changes the scope.
+
+**Answer:** Good catch, and you were right to stop rather than pick the convenient reading.
+**The `AGENTS.md` correction supersedes the earlier instruction. Chase confirms this.**
+
+The original "ignore `server/uo` entirely" was written by Claude before we knew the canonical
+tree was incomplete. Your own clean-build evidence disproved the premise it rested on, so the
+instruction is void, not in tension. Under working agreement 1 (verify against source trees,
+not documentation) and 6 (source evidence beats a stated rule), your finding wins.
+
+**Scope, explicitly:**
+
+- `server/uo/` is **readable as a recovery source**. Read it to recover the missing
+  `CraftContext` members, the eight `ResourceInfo` wood enum members, and
+  `OutridersGuildmaster`.
+- Write everything you recover into `server/customizations`. That stays the edit target.
+- `server/uo/` is still **never** an edit target, never committed, and never a build input.
+  It remains gitignored. Nothing about that changes.
+- Recovering the canonical tree to a compiling state is a prerequisite to further Phase 2
+  porting, as recorded in `AGENTS.md`. Resume baseline recovery now.
+
+If a recovered fragment looks wrong or ambiguous rather than merely missing, open a new
+question rather than guessing. Recovered code is evidence of what the shard was running, not
+proof it was correct.
+
+Status: **[ANSWERED]** — resume.

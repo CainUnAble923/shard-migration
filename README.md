@@ -53,6 +53,35 @@ notes/    working notes, scratch findings, anything not yet a decision
 - [x] Shard located: `shattered-legacy-infrastructure` (builds ModernUO from pinned commit)
 - [x] Add `client-data/` and `server/uo/` to that repo's `.gitignore`
 - [ ] Stand up stock ServUO pub57 reference shard
-- [x] Create a dedicated `shattered-legacy` ServUO worktree; keep the pub57 reference pristine
+- [x] Create the independent `ServUO-work` scratch clone; keep the pub57 reference pristine
 - [ ] Write spawner JSON to XmlSpawner XML converter
 - [ ] Write accounts exporter (MUO binary to ServUO accounts.xml)
+
+## Migration progress
+
+<!-- PROGRESS:START -->
+**Overall: 1%** (2/138 tracked items). Counted from the working trees, not hand-maintained.
+
+```
+Baseline recovery  ░░░░░░░░░░░░░░░░░░░░░░    0/3     0.0%   canonical tree compiles
+Content ports      ░░░░░░░░░░░░░░░░░░░░░░    1/111   0.9%   106 additive + 5 replacements
+Patch triage       ░░░░░░░░░░░░░░░░░░░░░░    0/17    0.0%   11 .patch + 6 replacements, 0 found obsolete
+Phase gates        ███░░░░░░░░░░░░░░░░░░░    1/7    14.3%   of 7 phases complete
+```
+
+| Phase | Status |
+|---|---|
+| 0 Freeze and inventory | in progress |
+| 1 Stock ServUO reference | done |
+| 2 Rewrite custom scripts | in progress |
+| 3 Move accounts and spawners | not started |
+| 4 Spawns and maps | not started |
+| 5 Runtime and hosting | not started |
+| 6 Verify and cut over | not started |
+
+**Blocking Phase 2:** canonical tree does not compile. Missing:
+- CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes)
+- ResourceInfo extended wood enum members (8)
+- OutridersGuildmaster
+
+<!-- PROGRESS:END -->
