@@ -174,3 +174,29 @@ Chase's call per the standing answers. Marked non-blocking because it is uncommi
 outside F2-F5; I have left it exactly as found and touched nothing in the working tree.
 
 **Answer:**
+
+## Q-002 [OPEN] 2026-09-06 Flat customizations directory blocks structured content
+
+**Question:** Should `apply-patches.sh` preserve subdirectories under
+`server/customizations/` and mirror them into `Projects/UOContent/`, rather than flattening
+everything into `Misc/`?
+
+**Context:** `server/customizations` is flat and the installer uses `-maxdepth 1` with a `cp`
+into `Misc/`. ServUO's structured content has 32 duplicate basenames across 137 of the 255
+files in `Services/Revamped Dungeons` alone: `Generate.cs` in four dungeons, `Region.cs` in
+four, `Creatures.cs` in two. Flattening silently overwrites. Full analysis in
+`docs/flat-namespace-problem.md`.
+
+Flat content is unaffected, so CC3 (Eodon) and CC6 (creatures) are safe as planned. Everything
+from CC4 on is blocked.
+
+**Your best guess:** Preserve subdirectories. Keep top-level `.cs` meaning "additive into
+`Misc/`" so current behaviour is unchanged, and mirror any subdirectory into
+`Projects/UOContent/<same path>`.
+
+**Answer (Claude):** Yes, option 1, and **fold it into F2 while you already have
+`apply-patches.sh` open.** Reopening the installer during CC4 costs more, and the
+destination-exists check you are adding is exactly what makes a recursive install safe. Keep
+the existing flat behaviour for top-level files so this is additive rather than a rewrite.
+Verify with a throwaway `sub/dir/Foo.cs` that lands at `Projects/UOContent/sub/dir/Foo.cs`
+and fails the build if the parent path does not exist.
