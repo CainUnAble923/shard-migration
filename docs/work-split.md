@@ -61,3 +61,22 @@ steering mid-run. On 2026-09-06 that produced seven commits rewriting live Moder
 customization files into ServUO style while the direction was being reversed. All seven were
 unpushed and reverted, but the shard's own source was modified. One scoped task per chat,
 with `AGENTS.md` carrying the standing context.
+
+---
+
+## Update: three roles, not two
+
+Claude Code running on Chase's machine can compile, which removes the drafting/building
+handoff for implementation work.
+
+| Role | Does | Cannot |
+|---|---|---|
+| **Claude (chat)** | cross-codebase research, drafts, review, `docs/`, decisions, answering the question queue | compile anything |
+| **Claude Code** | implementation: write, build, fix, verify, commit | decide scope; deploy to the live shard |
+| **Codex** | Foundation items F1-F5 | (same boundaries) |
+
+Do not run Claude Code and Codex in the same working tree at the same time. On 2026-09-06 a
+single agent working from a stale direction produced seven commits rewriting live
+customization files; two agents overlapping would be worse and harder to unpick.
+
+Claude Code's task list is `claude-code-tasks.md`. Codex's is `backlog.md`.
