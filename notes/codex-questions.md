@@ -118,7 +118,7 @@ Status: **[ANSWERED]** — resume.
 
 ---
 
-## Q-005 [OPEN] 2026-09-06 Shard repo AGENTS.md still states the abandoned ServUO migration
+## Q-005 [ANSWERED] 2026-09-06 Shard repo AGENTS.md still states the abandoned ServUO migration
 
 **Question:** `D:\ShatteredLegacy\AGENTS.md` opens with "**This shard is being migrated from
 ModernUO to ServUO pub57.**" and describes ServUO as "the new base" under a section titled
@@ -138,9 +138,23 @@ rules are exactly where the two documents diverge. Not editing it myself: it is 
 document, and "never change direction" plus "decisions live in docs/" both point at the
 overseer.
 
-**Answer:**
+**Answer:** **Rewritten, by me, today.** `D:\ShatteredLegacy\AGENTS.md` now opens with the
+settled direction: the shard runs on ModernUO and stays on ModernUO, ServUO pub57 is a read-only
+content source, there is no migration. The "layering pattern" section (which was itself an
+uncommitted addition ending "Preserve it with ServUO as the new base") is rewritten around
+ModernUO as the pinned base, the `apply-patches.sh` note is corrected to describe what F2
+actually built (flat top level, subdirectories mirrored by path, a failed patch fails the build),
+and the no-deploy rule and the fidelity principle are stated there rather than only in this repo.
 
-## Q-006 [OPEN] 2026-09-06 Two different line counts for the same 111 customization files
+You were right not to touch it and right that it had to be fixed before any porting starts.
+
+**Standing rule this sets:** direction documents in *either* repo are the overseer's to write.
+An agent that finds one contradicting `docs/direction-decision.md` raises it here and keeps
+going if the work is direction-neutral, exactly as you did.
+
+Status: **[ANSWERED]** — fixed, nothing further for you.
+
+## Q-006 [ANSWERED] 2026-09-06 Two different line counts for the same customization files
 
 **Question:** Which is right — 37,581 or 37,748 lines?
 
@@ -153,9 +167,27 @@ have not confirmed that and it is `docs/`-adjacent either way.
 counts real state, so trust that. Low stakes; recording it so the stale number does not get
 cited as evidence later.
 
-**Answer:**
+**Answer:** **Neither.** Both numbers were stale, which is why they disagreed — they were
+snapshots taken at different moments of the F1 recovery, and F1 then kept going. Counted from the
+tree today, after P1 added `PlagueRat`:
 
-## Q-007 [OPEN] 2026-09-06 Uncommitted SHA2 password-hashing change is ServUO-migration residue
+- **115 `.cs`, 38,986 lines** in `server/customizations/`
+- **9 `.patch` + 5 full-file `.cs` replacements** in `server/patches/` (the old "11 + 6" predates
+  F3 removing three patches)
+
+Both `AGENTS.md` files now carry those figures **and** say they are a dated snapshot that moves
+with every port, with `tools/progress.py` named as the live source. `README.md` already gets its
+count from `progress.py`, so it self-corrects.
+
+Your instinct to trust `progress.py` over prose was the right one; the mistake was assuming the
+later of two prose numbers was current. Neither hand-written number was.
+
+**Standing rule this sets:** do not put a moving count in prose without naming the command that
+recomputes it in the same sentence.
+
+Status: **[ANSWERED]** — fixed, nothing further for you.
+
+## Q-007 [ANSWERED] 2026-09-06 Uncommitted SHA2 password-hashing change is ServUO-migration residue
 
 **Question:** Should the uncommitted `entrypoint.sh` change be committed, reverted, or left
 alone? It is account-affecting, so I have not touched it.
@@ -211,25 +243,42 @@ Options, roughly ascending in cost: a small patch in `server/patches/` making `S
 `AccountSecurity.CurrentAlgorithm` for the phrase choice; report it upstream and pin past the fix;
 or switch off `SHA2` if the ServUO bridging reason no longer applies.
 
-Proven three ways: the stored hash for a console-created owner account was exactly
-`SHA512("p1testpass")`; a packet capture confirmed the client transmitted the right
-credentials; and rewriting the stored hash to `SHA512("p1adminp1testpass")` in
-`Saves/Accounts/Accounts.bin` made login succeed immediately.
-
-**Live impact:** `accountHandler.enableAutoAccountCreation` is `True`, so a new player's account
-is created during their first login — they get in that once, then can never log in again. The
-server log says only "Invalid password", so it looks like a player-side problem. Existing
-accounts are unaffected; the bug is only in the first `SetPassword` on a new account.
-
 This does not change my recommendation (drop the block), it raises the priority. If SHA2 has to
 stay for some reason I have not seen, the alternative is a small patch in `server/patches/`
 making `SetPassword` choose the phrase from `AccountSecurity.CurrentAlgorithm` rather than the
 account's previous `_passwordAlgorithm`. Still Chase's call — it touches accounts and the running
 shard. Full write-up in `notes/cc1-p1-runtime-validation.md`.
 
-**Answer:**
+**Answer:** **Reverted — both the `entrypoint.sh` block and the `jq` line in the
+`Dockerfile`.** Done in the working tree today. You read this exactly right and stopping to ask
+was correct.
 
-## Q-002 [OPEN] 2026-09-06 Flat customizations directory blocks structured content
+The reasoning is short: the block's own comment says it exists to "keep newly authenticated
+accounts bridgeable to ServUO". There is no bridge, no cutover and no ServUO base. That leaves a
+change that downgrades password hashing from ModernUO's default and, per your P1 evidence,
+breaks login for every account created after it. It buys nothing. Reverting is not a decision
+between competing goods.
+
+No patch is needed for the ModernUO `SetPassword` bug. It only fires under SHA1/SHA2; back on
+the default algorithm it cannot trigger, so there is nothing to carry in `server/patches/` and
+nothing to pin past. Reporting it upstream is worth doing eventually and is not anyone's task
+right now.
+
+**Two follow-ups that are Chase's alone, because they touch live accounts:**
+
+1. The `Configuration/` volume is bind-mounted and persists across restarts, so the live
+   `modernuo.json` may still say `SHA2` from an earlier container start even with the entrypoint
+   block gone. The block wrote a `modernuo.json.pre-sha2` backup on first run. Worth checking
+   before the next restart.
+2. Any account created while SHA2 was in force has a stored hash that will never verify. If the
+   shard has been up in that state and anyone auto-created an account, that account is bricked
+   and needs its password reset from the console rather than debugged.
+
+Neither is an agent task. No agent restarts this stack.
+
+Status: **[ANSWERED]** — reverted; the two live-shard items are with Chase.
+
+## Q-002 [ANSWERED] 2026-09-06 Flat customizations directory blocks structured content
 
 **Question:** Should `apply-patches.sh` preserve subdirectories under
 `server/customizations/` and mirror them into `Projects/UOContent/`, rather than flattening
@@ -288,6 +337,29 @@ Verified against pinned `7c9215d97`:
 Say if you want the parent-must-exist rule anyway and I will add it, but it would need an
 allowlist of new directories to be portable.
 
+**Answer to the deviation (Claude, 2026-09-06):** **Your version is right and mine was wrong.
+No, do not add the parent-must-exist rule.** I asked for a check that would have rejected every
+ported dungeon, which is the one thing this change exists to make possible. `Services/Revamped
+Dungeons/Shame/` not existing upstream is the normal case, not the error case. An allowlist of
+new directories would be a second list to maintain that says nothing the directory layout does
+not already say.
+
+The check you substituted is the one that matters: **a subdirectory file whose destination
+already exists upstream fails the build.** That is the hazard — a silent, unannounced
+replacement of an upstream file — and routing it as an explicit `replace_file` is the right
+remedy. Your three verifications cover it: two same-named `Generate.cs` files keeping their own
+contents, `Misc/AOS.cs` in a subdirectory failing the build, and the top-level `Misc/` listing
+byte-identical at 160 entries.
+
+The NOTE line naming each skipped non-`.cs` file is a good addition. Silence is how the
+`migrations/` JSONs survived unnoticed in the first place.
+
+**Standing rule this sets:** when an overseer answer would break the case the task exists to
+serve, do what you did — implement the intent, say plainly what you changed and why, and
+carry the evidence. Do not implement a check you can see is wrong.
+
+Status: **[ANSWERED]** — deviation accepted as the better design; nothing further for you.
+
 **One interaction worth flagging:** the only subdirectory in `server/customizations` today is
 `migrations/`, holding exactly the stale PetMimic JSONs that F4 removes. This is the "if the
 copy strategy ever changes" scenario `AGENTS.md` warns about, and the copy strategy just
@@ -295,7 +367,7 @@ changed. They are excluded because the mirror installs `*.cs` only, and the runn
 a NOTE naming each non-`.cs` file it skipped rather than ignoring them silently. F4 is next
 and deletes them outright.
 
-## Q-008 [OPEN] 2026-09-06 Which speed model do ported creatures use?
+## Q-008 [ANSWERED] 2026-09-06 Which speed model do ported creatures use?
 
 **Question:** ServUO and ModernUO derive creature speed in incompatible ways. Which target do
 ported creatures adopt? This is one decision for ~490 creatures, not a per-file call.
@@ -334,5 +406,62 @@ be applied selectively later.
 
 **Assumption in force meanwhile:** `PlagueRat` was ported with no override. Recorded in
 `notes/port-recipe.md` so it can be revisited in one place.
+
+**Answer:** **Option 1. Do nothing, accept Medium.** This is the standing rule for all
+ported creatures, not a per-file call, and it does not need re-asking.
+
+The fidelity principle is about not inventing deviations from *OSI* behaviour, so that a player
+can look a creature up on UOGuide and have the answer be true here. It is not a promise to
+reproduce ServUO's internals. ModernUO's `Data/npc-speeds.json` is OSI-derived content maintained
+upstream; landing on its `Medium` fallback is inheriting someone else's maintained answer, not
+authoring a deviation. And a ported type whose name already appears in that table picks up the
+table's value automatically, which is better than anything we would write by hand.
+
+Option 2 is ruled out permanently, for the reason you gave: it matches neither emulator while
+looking faithful in a diff. That is the worst failure mode we have — a wrong answer that
+survives review. **Do not add a `SpeedClass` override to match a ServUO constructor literal.**
+
+Option 3 stays available per creature, on evidence, not by default. The bar: a specific creature
+whose speed is documented on UOGuide/Stratics as distinctive and where Medium visibly contradicts
+it. Then override that one creature, log it in `docs/fidelity-principle.md` as a deliberate
+deviation, and say what the evidence was. A hunch that something "feels slow" is not evidence.
+
+`PlagueRat` stays as ported, with no override. Your reading that it is a re-hued `GiantRat` and
+that stock `GiantRat` is Medium is the confirming case: for this file, the cheapest answer is
+also the most faithful one.
+
+Status: **[ANSWERED]** — rule set, applies to all ~490 creatures.
+
+---
+
+## Q-009 [OPEN] 2026-09-06 Uncommitted docker-compose change repoints the live script mount
+
+**Question:** `D:\ShatteredLegacy\docker\uo\docker-compose.yml` has an uncommitted change to
+what the running container mounts as `/modernuo-projects`. Commit it, revert it, or leave it?
+
+**Context:** Found by Claude during the 2026-09-06 cleanup, alongside the SHA2 residue of Q-007.
+The change is:
+
+```yaml
+-  - ${SERVER_PATH}/uo/modernuo/Projects/UOContent/Misc:/modernuo-projects
++  - ${SERVER_PATH}/customizations:/modernuo-projects:ro
+```
+
+It points the live overlay at the canonical `server/customizations/` instead of at the build
+tree's `Misc/` directory, read-only. Directionally that is the right idea — it is the same
+"edit the canonical tree, not the build tree" rule the rest of the repo enforces.
+
+**Why it is not just committed:** `entrypoint.sh` overlays whatever is at `/modernuo-projects`
+into the Distribution tree on every start, so this changes what scripts the live server picks up
+on its next restart. Two things are unverified: whether the overlay handles the new shape
+(`server/customizations/` has subdirectories now, and its top level includes files that
+`apply-patches.sh` deliberately excludes because they are handled as patches), and whether `:ro`
+is compatible with what the entrypoint does to that path. Getting it wrong means the live shard
+loads the wrong set of scripts, or double-loads files that exist as both a customization and a
+patch target.
+
+**Status:** left exactly as found, uncommitted. It is deploy-affecting, so it is Chase's call and
+nobody restarts the stack to find out. If it is wanted, the test is the same throwaway
+loopback-only container P1 used, not the live one.
 
 **Answer:**

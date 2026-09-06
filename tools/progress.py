@@ -43,7 +43,7 @@ def content_progress():
     if not (SERVUO / "Scripts").is_dir() or not stems_file.exists():
         return None
     stock = {l.strip().lower() for l in stems_file.read_text(encoding="utf-8").splitlines() if l.strip()}
-    cust = {p.stem.lower() for p in (SHARD/"server"/"customizations").glob("*.cs")} \
+    cust = {p.stem.lower() for p in (SHARD/"server"/"customizations").rglob("*.cs")} \
            if (SHARD/"server"/"customizations").is_dir() else set()
     out = []
     for area in AREAS:
@@ -62,7 +62,7 @@ def counted(shard):
     out = {}
     c = shard / "server" / "customizations"
     p = shard / "server" / "patches"
-    out["customization_files"] = len(list(c.glob("*.cs"))) if c.is_dir() else None
+    out["customization_files"] = len(list(c.rglob("*.cs"))) if c.is_dir() else None
     out["patch_files"] = (len(list(p.glob("*.patch"))) + len(list(p.glob("*.cs")))) if p.is_dir() else None
     out["stale_migrations_present"] = (c / "migrations").is_dir() if c.is_dir() else None
     return out
@@ -161,7 +161,7 @@ def build():
             "counted": cnt, "content_progress": content_progress(), "tasks": st.get("tasks", []),
             "shard_status": st.get("shard_status")}
     try:
-        (MIGRATE / "tools" / "progress.json").write_text(json.dumps(snap, indent=2) + "\n", encoding="utf-8")
+        (MIGRATE / "tools" / "progress.json").write_text(json.dumps(snap, indent=2) + "\n", encoding="utf-8", newline="\n")
     except Exception as e:
         print(f"  warning: progress.json not written ({e})", file=sys.stderr)
     return "\n".join(L)

@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-06T13:50:46-05:00",
+  "generated": "2026-09-06T19:22:27+00:00",
   "direction": "stay on ModernUO; pull ServUO content selectively",
   "setup_defects": {
     "CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered": true,
@@ -23,7 +23,7 @@
       "name": "PlagueRat",
       "source": "ServUO Scripts/Mobiles/Normal/PlagueRat.cs",
       "dest": "server/customizations/Mobiles/Normal/PlagueRat.cs",
-      "note": "P1 reference port. 88 lines to 55. Builds, spawns, survives save/reload. No speed override (SpeedClass Medium) pending Q-002."
+      "note": "P1 reference port. 88 lines to 55. Builds, spawns, survives save/reload. No speed override: SpeedClass Medium, per the Q-008 answer (ModernUO's npc-speeds.json fallback is the standing rule for all ported creatures)."
     }
   ],
   "declined_content": [
@@ -37,11 +37,17 @@
     }
   ],
   "counted": {
-    "customization_files": 114,
+    "customization_files": 115,
     "patch_files": 14,
     "stale_migrations_present": false
   },
   "content_progress": [
+    {
+      "area": "Mobiles/Normal",
+      "total": 138,
+      "done": 1,
+      "pct": 0.7
+    },
     {
       "area": "Items/Artifacts",
       "total": 325,
@@ -75,12 +81,6 @@
     {
       "area": "Items/Equipment",
       "total": 148,
-      "done": 0,
-      "pct": 0.0
-    },
-    {
-      "area": "Mobiles/Normal",
-      "total": 138,
       "done": 0,
       "pct": 0.0
     },

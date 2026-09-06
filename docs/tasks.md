@@ -79,14 +79,21 @@ stops applying a rule it followed at the start. Any of those means restart now.
 
 # Tasks
 
-**Foundation is now yours.** Codex completed F1 only (the three missing pieces are recovered
-and tracked, and the tree reportedly compiles). F2 through F5 remain, despite a commit titled
-"Normalize patch runner" that only changed three lines of the Dockerfile. Verify state before
-trusting any status; `apply-patches.sh` still swallows failures.
+**Foundation is complete and CC1 is done, as of 2026-09-06.** Foundation is 7/7 and the port
+recipe has been validated against a real build and a running client. `apply-patches.sh` no
+longer swallows failures, and it mirrors subdirectories, so structured content is unblocked.
 
-## CC0. Finish Foundation (F2-F5)
+**Start at CC2.** Everything above it is kept for its history and its acceptance criteria, not
+as work. Live status is in `tools/progress-state.json` and renders into `README.md` and
+`dashboard.html`; the findings behind it are in `notes/`. Verify state for yourself before
+trusting any status — that rule has already paid for itself three times on this project.
 
-Do these before any porting. Details in `backlog.md`.
+## CC0. Finish Foundation (F2-F5) — DONE
+
+Completed 2026-09-06. Findings in `notes/f2-patch-runner.md`,
+`notes/f3-patch-triage.md` and `notes/f4-f5-foundation-cleanup.md`. Kept for its acceptance
+criteria and for what it turned up: eight broken patches rather than seven, six of which had
+never been valid diffs, and none obsolete because ModernUO changed.
 
 - **F2. Make `apply-patches.sh` fail on a failed patch.** It still converts failures to
   warnings and exits 0. Seven patches currently fail while the build reports success.
@@ -105,7 +112,15 @@ pinned ModernUO plus only tracked canonical inputs and confirm it succeeds.
 
 **Done when:** all four are committed and `python tools\progress.py` shows Foundation 7/7.
 
-## CC1. Validate the port recipe
+## CC1. Validate the port recipe — DONE
+
+Completed 2026-09-06. `PlagueRat` ported, built, spawned, saved and reloaded; three repaired
+patches exercised at runtime. **Both drafted fidelity traps were wrong**, one exactly backwards.
+The recipe is rewritten from what the build actually did. Full write-up in
+`notes/cc1-p1-runtime-validation.md`; the speed decision it raised is answered as Q-008.
+
+The original brief, kept because its acceptance criteria are the model for CC2 onward:
+
 `notes/port-recipe.md` was drafted from source study, not from a build. Prove or correct it.
 
 - Port one simple ServUO creature from `Mobiles/Normal` with no dependencies into
@@ -118,7 +133,7 @@ pinned ModernUO plus only tracked canonical inputs and confirm it succeeds.
 **Done when:** it builds, spawns, and `notes/port-recipe.md` is corrected from experience
 rather than inference.
 
-## CC2. Second port, timed
+## CC2. Second port, timed — START HERE
 Do a second creature using only the recipe, changing nothing else.
 
 **Done when:** it builds, the recipe is corrected wherever it was still wrong, and you have

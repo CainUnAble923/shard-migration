@@ -15,7 +15,7 @@ The direction moved several times on 2026-09-06 while scope was pinned down. It 
 Read `docs/direction-decision.md`, which records the full history, before proposing a change.
 
 **There is no migration.** No cutover, no fresh world, no account export, no password window.
-The 111 custom scripts are never rewritten.
+Our existing custom scripts are never rewritten.
 
 `D:\UO\ServUO-pub57` is a **read-only content source**. Never edit it, never build in it,
 never migrate to it.
@@ -50,8 +50,10 @@ deviation in `docs/fidelity-principle.md`. Full reasoning there.
 
 ```
 D:\ShatteredLegacy               the shard. Infrastructure-as-code, NOT a ModernUO fork.
-  server/customizations/         canonical custom scripts. 111 .cs, 37,748 lines. EDIT TARGET.
-  server/patches/                overrides against stock ModernUO. 11 .patch + 6 replacements.
+  server/customizations/         canonical custom scripts. 115 .cs, 38,986 lines. EDIT TARGET.
+                                 (2026-09-06 snapshot; grows with every port. tools/progress.py
+                                 recomputes it - that output is the live number.)
+  server/patches/                overrides against stock ModernUO. 9 .patch + 5 replacements.
   server/migrations/             serialization migration JSONs.
   server/uo/modernuo/            build tree. NOT an edit target, NOT committed. See below.
   docker/                        compose stack; builds ModernUO from pinned commit 7c9215d97.

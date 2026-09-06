@@ -79,16 +79,16 @@ Setup health   ######################  7/7   blocking defects resolved
 
 **Patches:** 9 total, **0 currently failing to apply**, 8 triaged, 3 found obsolete. `apply-patches.sh` fails the build on a failed patch, so a green build means every patch applied.
 
-### Content moved over: 0 of 2,045 candidate files (0.0%)
+### Content moved over: 1 of 2,045 candidate files (0.0%)
 
 ```
+Mobiles/Normal                 ..................    1/138     0.7%
 Items/Artifacts                ..................    0/325     0.0%
 Mobiles/NPCs                   ..................    0/222     0.0%
 Services/Expansions            ..................    0/175     0.0%
 Items/Addons                   ..................    0/169     0.0%
 Services/Revamped Dungeons     ..................    0/150     0.0%
 Items/Equipment                ..................    0/148     0.0%
-Mobiles/Normal                 ..................    0/138     0.0%
 Services/XmlSpawner            ..................    0/97      0.0%
 Items/Decorative               ..................    0/88      0.0%
 Quests                         ..................    0/84      0.0%
@@ -137,7 +137,7 @@ _Detail and acceptance criteria in `docs/tasks.md`. Status lives in `tools/progr
 - **Eodon / Time of Legends** — gated on Myrmidex Invasion (83% dep) and Shadowguard (71%), both subsystem builds. Deferred, not declined: measure how much of the Valley separates first.
 - **Vice vs Virtue, City Loyalty, Skill Masteries, Exploring the Deep** — 29-100% dependent on subsystems ModernUO lacks entirely. Deferred to workstream 4.
 
-Counted from the trees: 114 customization files, 14 patch files.
+Counted from the trees: 115 customization files, 14 patch files.
 Shard status: running on ModernUO.
 <!-- PROGRESS:END -->
 
@@ -146,10 +146,10 @@ Shard status: running on ModernUO.
 <!-- EXPANSION:START -->
 ### Content by expansion
 
-**3,039 of 6,144 ServUO files present** (49%), of which **0 ported by us**.
+**3,040 of 6,144 ServUO files present** (49%), of which **1 ported by us**.
 
 ```
-Pre-AoS (T2A/UOR/LBR)     ##########..........  2223/4294    52%
+Pre-AoS (T2A/UOR/LBR)     ##########..........  2224/4294    52%   +1
 Age of Shadows            #############.......   201/309     65%
 Samurai Empire            ###############.....    87/115     76%
 Mondain's Legacy          ##########..........   241/471     51%
@@ -157,7 +157,7 @@ Stygian Abyss (Ter Mur)   ######..............   125/444     28%
 High Seas                 ######..............    96/334     29%
 Time of Legends (Eodon)   #######.............    53/157     34%
 Endless Journey           #############.......    13/20      65%
-TOTAL                     ##########..........  3039/6144    49%   +0
+TOTAL                     ##########..........  3040/6144    49%   +1
 ```
 
 _Filename-stem matching: a proxy for presence, not behaviour. Unclassified files fall into Pre-AoS, inflating it. Directional, not a completion percentage._

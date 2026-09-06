@@ -62,7 +62,7 @@ def main():
         print("missing " + str(stems_file), file=sys.stderr); return 1
     stock = {l.strip().lower() for l in stems_file.read_text(encoding="utf-8").splitlines() if l.strip()}
     cdir = SHARD/"server"/"customizations"
-    cust  = {p.stem.lower() for p in cdir.glob("*.cs")} if cdir.is_dir() else set()
+    cust  = {p.stem.lower() for p in cdir.rglob("*.cs")} if cdir.is_dir() else set()
 
     b = defaultdict(lambda: {"tot":0, "stock":0, "ours":0})
     for p in root.rglob("*.cs"):
@@ -92,7 +92,7 @@ def main():
     print("Unclassified files fall to Pre-AoS, inflating that bucket. Directional only.")
     (MIGRATE/"tools"/"expansion-coverage.json").write_text(
         json.dumps({"rows":rows,"total_files":t,"total_have":h,"ported_by_us":o}, indent=2)+"\n",
-        encoding="utf-8")
+        encoding="utf-8", newline="\n")
 
     if "--dry-run" not in sys.argv:
         write_readme(rows, t, h, o)
