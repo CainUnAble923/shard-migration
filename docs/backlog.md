@@ -13,7 +13,7 @@ question in `notes/codex-questions.md` and move to the next item.
 
 ## Foundation — blocks everything below
 
-- [ ] **F1. Commit the recovery work and prove the tree compiles.**
+- [x] **F1. Commit the recovery work and prove the tree compiles.**
   `CraftContext.cs`, `OutridersGuildmaster.cs` and `ResourceInfo.cs` are recovered but
   uncommitted, and `server/patches/ResourceInfo.cs` is deleted in the working tree.
   *Done when:* a clean Docker build from pinned ModernUO `7c9215d97` plus only tracked

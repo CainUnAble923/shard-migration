@@ -64,7 +64,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece. There is no total to reach, so there is no single completion percentage here by design.
 
 ```
-Setup health   #########.............  3/7   blocking defects resolved
+Setup health   #############.........  4/7   blocking defects resolved
 ```
 
 | Setup defect | Resolved |
@@ -72,7 +72,7 @@ Setup health   #########.............  3/7   blocking defects resolved
 | CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered | yes |
 | ResourceInfo extended wood enum members (8) recovered | yes |
 | OutridersGuildmaster recovered | yes |
-| server/customizations compiles standalone | **no** |
+| server/customizations compiles standalone | yes |
 | apply-patches.sh fails on failed patch | **no** |
 | stale server/customizations/migrations removed | **no** |
 | RegenRates routing made explicit | **no** |
