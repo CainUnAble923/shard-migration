@@ -23,6 +23,14 @@ never migrate to it.
 Work is organised in `docs/workstreams.md`. Foundation blocks everything; the rest run
 indefinitely and in parallel.
 
+## Fidelity principle
+
+**Port content unchanged.** The shard runs standard content so players can use existing wikis
+(UOGuide, Stratics) instead of needing a custom one. Every deviation from OSI behaviour is a
+documentation debt only we can pay. Keep ServUO's default values unless there is a recorded
+reason. Prefer turning a system off over running it differently. Record any deliberate
+deviation in `docs/fidelity-principle.md`. Full reasoning there.
+
 ## Ground rules
 
 1. **Decisions live in `docs/`.** If you make or change one, write it there in the same change.
