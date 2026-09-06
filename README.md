@@ -79,7 +79,33 @@ Setup health   #########.............  3/7   blocking defects resolved
 
 **Patches:** 17 total, **7 currently failing to apply**, 0 triaged, 0 found obsolete. `apply-patches.sh` still exits 0 on failure, so a green build proves nothing.
 
-**ServUO content pulled in: 0**
+### Content moved over: 0 of 2,045 candidate files (0.0%)
+
+```
+Items/Artifacts                ..................    0/325     0.0%
+Mobiles/NPCs                   ..................    0/222     0.0%
+Services/Expansions            ..................    0/175     0.0%
+Items/Addons                   ..................    0/169     0.0%
+Services/Revamped Dungeons     ..................    0/150     0.0%
+Items/Equipment                ..................    0/148     0.0%
+Mobiles/Normal                 ..................    0/138     0.0%
+Services/XmlSpawner            ..................    0/97      0.0%
+Items/Decorative               ..................    0/88      0.0%
+Quests                         ..................    0/84      0.0%
+Items/Quest                    ..................    0/78      0.0%
+Items/Resource                 ..................    0/61      0.0%
+Items/Consumables              ..................    0/59      0.0%
+Services/CleanUpBritannia      ..................    0/52      0.0%
+Items/StoreBought              ..................    0/51      0.0%
+Items/Functional               ..................    0/49      0.0%
+Services/New Magincia          ..................    0/40      0.0%
+Items/Containers               ..................    0/31      0.0%
+Services/BulkOrders            ..................    0/28      0.0%
+```
+
+_Counted by matching ServUO file stems (excluding those stock ModernUO already has) against `server/customizations`. Auto-counted, never hand-edited._
+
+**Ported systems logged: 0**
 
 _None yet. Blocked until the setup defects above are resolved._
 
