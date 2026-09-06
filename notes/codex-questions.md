@@ -115,3 +115,62 @@ question rather than guessing. Recovered code is evidence of what the shard was 
 proof it was correct.
 
 Status: **[ANSWERED]** — resume.
+
+---
+
+## Q-002 [OPEN] 2026-09-06 Shard repo AGENTS.md still states the abandoned ServUO migration
+
+**Question:** `D:\ShatteredLegacy\AGENTS.md` opens with "**This shard is being migrated from
+ModernUO to ServUO pub57.**" and describes ServUO as "the new base" under a section titled
+"The layering pattern is not negotiable". Should it be rewritten to match the settled
+direction, and by whom? It is in the shard repo, not `shard-migration/docs/`, so it is
+outside the "docs/ is Claude's" rule but is still a direction document.
+
+**Context:** Found while doing F2. `shard-migration/AGENTS.md` and
+`docs/direction-decision.md` both record that the shard **stays on ModernUO** and ServUO is a
+read-only content source. The shard repo's own working agreements say the opposite. Any agent
+that reads only the shard repo — the natural thing to do when working in
+`D:\ShatteredLegacy` — gets the abandoned direction and no hint that it is stale.
+
+**Your best guess:** Non-blocking for F2-F5, which are ModernUO-side work either way, so I
+kept going. But it should be corrected before anyone starts CC1 porting, since the porting
+rules are exactly where the two documents diverge. Not editing it myself: it is a direction
+document, and "never change direction" plus "decisions live in docs/" both point at the
+overseer.
+
+**Answer:**
+
+## Q-003 [OPEN] 2026-09-06 Two different line counts for the same 111 customization files
+
+**Question:** Which is right — 37,581 or 37,748 lines?
+
+**Context:** `D:\ShatteredLegacy\AGENTS.md` says "111 .cs, 37,581 lines".
+`shard-migration\AGENTS.md` says "111 .cs, 37,748 lines". Same file count, 167 lines apart.
+Most likely one was counted before the F1 recovery work landed and the other after, but I
+have not confirmed that and it is `docs/`-adjacent either way.
+
+**Your best guess:** The `shard-migration` figure is the later one and `tools/progress.py`
+counts real state, so trust that. Low stakes; recording it so the stale number does not get
+cited as evidence later.
+
+**Answer:**
+
+## Q-004 [OPEN] 2026-09-06 Uncommitted SHA2 password-hashing change is ServUO-migration residue
+
+**Question:** Should the uncommitted `entrypoint.sh` change be committed, reverted, or left
+alone? It is account-affecting, so I have not touched it.
+
+**Context:** `D:\ShatteredLegacy\docker\uo\entrypoint.sh` has an uncommitted block that
+rewrites `Configuration/modernuo.json` on every container start to force
+`accountSecurity.encryptionAlgorithm=SHA2`. Its own comment says the reason is to "keep newly
+authenticated accounts bridgeable to ServUO" — i.e. it exists only to serve the abandoned
+migration. It also adds `jq` to the runtime image (uncommitted `Dockerfile` change) for this
+one purpose. With no migration, downgrading password hashing from ModernUO's default buys
+nothing and weakens stored credentials.
+
+**Your best guess:** It should go, and `jq` with it. But it changes how passwords are stored
+for accounts that authenticate after a restart, which is account-affecting and therefore
+Chase's call per the standing answers. Marked non-blocking because it is uncommitted and
+outside F2-F5; I have left it exactly as found and touched nothing in the working tree.
+
+**Answer:**
