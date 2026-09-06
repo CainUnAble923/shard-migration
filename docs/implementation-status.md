@@ -6,7 +6,7 @@ Measured against source trees on 2026-09-06.
 
 - ModernUO reference: `D:\UO\ModernUO-reference`, detached at pinned commit `7c9215d97`.
 - ServUO pub57 reference: `D:\UO\ServUO-pub57`, kept pristine on `pub57`.
-- ServUO migration worktree: `D:\UO\ServUO-ShatteredLegacy`, branch `shattered-legacy`.
+- ServUO scratch clone: `D:\UO\ServUO-work` (not a deliverable or fork).
 - Canonical shard source: `D:\ShatteredLegacy\server\customizations`.
 - Excluded entirely: `D:\ShatteredLegacy\server\uo`.
 
@@ -24,7 +24,7 @@ Measured against source trees on 2026-09-06.
 
 | Canonical file | ServUO destination | Status | Verification |
 |---|---|---|---|
-| `CleanedDebris.cs` | `Scripts/Custom/ShatteredLegacy/Items/CleanedDebris.cs` | Ported, uncommitted | Source API/pattern checked; full build unverified because local Roslyn execution was denied |
+| `CleanedDebris.cs` | `Scripts/Custom/ShatteredLegacy/Items/CleanedDebris.cs` in scratch clone | Ported, uncommitted | Source API/pattern checked; full build unverified because local Roslyn execution was denied |
 
 No later script should be ported until the current script passes a full ServUO build, per the
 repository working agreement.
