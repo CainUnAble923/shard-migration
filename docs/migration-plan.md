@@ -1,8 +1,3 @@
-> **OBSOLETE as of 2026-09-06.** This document assumes the shard migrates from ModernUO to
-> ServUO. That decision was reversed: we stay on ModernUO and pull ServUO content in
-> selectively. See `direction-decision.md`. Kept for the reasoning and the measurements,
-> which are still accurate; the plan is not.
-
 # Migration plan: ModernUO to ServUO pub57
 
 Origin: **ModernUO** (`main`). Target: **ServUO `pub57`**, expansion **EJ**.

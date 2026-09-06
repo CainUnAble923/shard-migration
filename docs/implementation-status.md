@@ -1,7 +1,3 @@
-> **OBSOLETE as of 2026-09-06.** Written when the plan was to migrate the shard to ServUO.
-> The shard stays on ModernUO; see `direction-decision.md`. Its source-tree facts and the
-> SHA-512 comparison remain accurate; its ported-file table describes reverted work.
-
 # Implementation status
 
 Measured against source trees on 2026-09-06.

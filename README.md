@@ -64,15 +64,15 @@ notes/    working notes, scratch findings, anything not yet a decision
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece. There is no total to reach, so there is no single completion percentage here by design.
 
 ```
-Setup health   ......................  0/6   blocking defects resolved
+Setup health   ###############.......  4/6   blocking defects resolved
 ```
 
 | Setup defect | Resolved |
 |---|---|
-| CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered | **no** |
-| ResourceInfo extended wood enum members (8) recovered | **no** |
-| OutridersGuildmaster recovered | **no** |
-| server/customizations compiles standalone | **no** |
+| CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered | yes |
+| ResourceInfo extended wood enum members (8) recovered | yes |
+| OutridersGuildmaster recovered | yes |
+| server/customizations compiles standalone | yes |
 | apply-patches.sh fails on failed patch | **no** |
 | stale server/customizations/migrations removed | **no** |
 
@@ -87,6 +87,6 @@ _None yet. Blocked until the setup defects above are resolved._
 - **High Seas naval combat** — BaseGalleon + cannons replace BaseBoat; core surgery, not content
 - **Eodon / Time of Legends** — 18,828 lines resting on Myrmidex Invasion and Skill Masteries, both absent from ModernUO
 
-Counted from the trees: 111 customization files, 17 patch files, stale migrations subfolder still present.
+Counted from the trees: 114 customization files, 16 patch files, stale migrations subfolder still present.
 Shard status: running on ModernUO.
 <!-- PROGRESS:END -->
