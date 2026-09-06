@@ -60,11 +60,11 @@ notes/    working notes, scratch findings, anything not yet a decision
 ## Migration progress
 
 <!-- PROGRESS:START -->
-**Overall: 1%** (2/138 tracked items). Counted from the working trees, not hand-maintained.
+**Overall: 5%** (7/138 tracked items). Counted from the working trees, not hand-maintained.
 
 ```
 Baseline recovery  ░░░░░░░░░░░░░░░░░░░░░░    0/3     0.0%   canonical tree compiles
-Content ports      ░░░░░░░░░░░░░░░░░░░░░░    1/111   0.9%   106 additive + 5 replacements
+Content ports      █░░░░░░░░░░░░░░░░░░░░░    6/111   5.4%   106 additive + 5 replacements
 Patch triage       ░░░░░░░░░░░░░░░░░░░░░░    0/17    0.0%   11 .patch + 6 replacements, 0 found obsolete
 Phase gates        ███░░░░░░░░░░░░░░░░░░░    1/7    14.3%   of 7 phases complete
 ```
