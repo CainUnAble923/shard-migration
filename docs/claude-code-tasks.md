@@ -51,8 +51,31 @@ no working NuGet and too old a C# compiler. That single fact defines the split.
 
 # Tasks
 
-Foundation (F1-F5 in `backlog.md`) belongs to Codex. Do not duplicate it. If Foundation is
-not finished, CC1 is still safe to start; everything from CC2 needs a compiling tree.
+**Foundation is now yours.** Codex completed F1 only (the three missing pieces are recovered
+and tracked, and the tree reportedly compiles). F2 through F5 remain, despite a commit titled
+"Normalize patch runner" that only changed three lines of the Dockerfile. Verify state before
+trusting any status; `apply-patches.sh` still swallows failures.
+
+## CC0. Finish Foundation (F2-F5)
+
+Do these before any porting. Details in `backlog.md`.
+
+- **F2. Make `apply-patches.sh` fail on a failed patch.** It still converts failures to
+  warnings and exits 0. Seven patches currently fail while the build reports success.
+  *Done when:* a deliberately broken patch fails the build, and the real seven are listed
+  with their errors in `notes/`.
+- **F3. Triage those seven.** For each: still needed, or obsolete because ModernUO changed?
+  Fix or remove with a one-line reason. Update `patches_triaged` and `patches_obsolete`.
+- **F4. Delete `server/customizations/migrations/`.** Three PetMimic JSONs diverging from the
+  canonical v0-v8 set in `server/migrations/`. Inert today, save-corruption material if the
+  copy strategy changes.
+- **F5. Make `RegenRates` routing explicit.** It works by accident: both it and ModernUO's
+  land in `Misc/`, so ours overwrites. The other six replacements are explicitly routed.
+
+Also verify F1 for yourself rather than trusting the flag: run a clean Docker build from
+pinned ModernUO plus only tracked canonical inputs and confirm it succeeds.
+
+**Done when:** all four are committed and `python tools\progress.py` shows Foundation 7/7.
 
 ## CC1. Validate the port recipe
 `notes/port-recipe.md` was drafted from source study, not from a build. Prove or correct it.
