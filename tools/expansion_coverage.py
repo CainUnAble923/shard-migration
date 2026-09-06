@@ -93,7 +93,37 @@ def main():
     (MIGRATE/"tools"/"expansion-coverage.json").write_text(
         json.dumps({"rows":rows,"total_files":t,"total_have":h,"ported_by_us":o}, indent=2)+"\n",
         encoding="utf-8")
+
+    if "--dry-run" not in sys.argv:
+        write_readme(rows, t, h, o)
     return 0
+
+START, END = "<!-- EXPANSION:START -->", "<!-- EXPANSION:END -->"
+
+def write_readme(rows, t, h, o):
+    L = ["### Content by expansion", ""]
+    L.append(f"**{h:,} of {t:,} ServUO files present** ({100*h/t:.0f}%), of which **{o:,} ported by us**.")
+    L.append("")
+    L.append("```")
+    for r in rows:
+        L.append("%-26s%s %5d/%-6d%4.0f%%%s" % (
+            r["label"], bar(r["have"], r["servuo_files"]), r["have"], r["servuo_files"],
+            r["pct"], f"   +{r['ported_by_us']}" if r["ported_by_us"] else ""))
+    L.append("%-26s%s %5d/%-6d%4.0f%%   +%d" % ("TOTAL", bar(h,t), h, t, 100*h/t, o))
+    L.append("```")
+    L.append("")
+    L.append("_Filename-stem matching: a proxy for presence, not behaviour. Unclassified files "
+             "fall into Pre-AoS, inflating it. Directional, not a completion percentage._")
+    block = START + "\n" + "\n".join(L) + "\n" + END
+    rm = MIGRATE / "README.md"
+    if not rm.exists(): return
+    txt = rm.read_text(encoding="utf-8")
+    if START in txt and END in txt:
+        txt = re.sub(re.escape(START) + r".*?" + re.escape(END), lambda _: block, txt, flags=re.S)
+    else:
+        txt = txt.rstrip() + "\n\n## Expansion coverage\n\n" + block + "\n"
+    rm.write_text(txt, encoding="utf-8", newline="\n")
+    print("\n  README.md expansion block updated.")
 
 if __name__ == "__main__":
     sys.exit(main())

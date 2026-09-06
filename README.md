@@ -117,3 +117,25 @@ _None yet. Blocked until the setup defects above are resolved._
 Counted from the trees: 114 customization files, 16 patch files, stale migrations subfolder still present.
 Shard status: running on ModernUO.
 <!-- PROGRESS:END -->
+
+## Expansion coverage
+
+<!-- EXPANSION:START -->
+### Content by expansion
+
+**3,039 of 6,144 ServUO files present** (49%), of which **0 ported by us**.
+
+```
+Pre-AoS (T2A/UOR/LBR)     ##########..........  2223/4294    52%
+Age of Shadows            #############.......   201/309     65%
+Samurai Empire            ###############.....    87/115     76%
+Mondain's Legacy          ##########..........   241/471     51%
+Stygian Abyss (Ter Mur)   ######..............   125/444     28%
+High Seas                 ######..............    96/334     29%
+Time of Legends (Eodon)   #######.............    53/157     34%
+Endless Journey           #############.......    13/20      65%
+TOTAL                     ##########..........  3039/6144    49%   +0
+```
+
+_Filename-stem matching: a proxy for presence, not behaviour. Unclassified files fall into Pre-AoS, inflating it. Directional, not a completion percentage._
+<!-- EXPANSION:END -->

@@ -161,6 +161,24 @@ def main():
         t = t.rstrip() + "\n\n## Progress\n\n" + block + "\n"
     rm.write_text(t, encoding="utf-8", newline="\n")
     print("\n  README.md updated.")
+    # keep the expansion block in step: one command does both
+    try:
+        import subprocess
+        r = subprocess.run([sys.executable, str(MIGRATE/"tools"/"expansion_coverage.py")],
+                           capture_output=True, text=True, timeout=600)
+        if r.returncode == 0:
+            print("  expansion coverage refreshed.")
+        else:
+            print(f"  expansion coverage skipped: {(r.stderr or '').strip()[:120]}")
+    except Exception as e:
+        print(f"  expansion coverage skipped: {e}")
+    try:
+        import subprocess
+        r = subprocess.run([sys.executable, str(MIGRATE/"tools"/"render_dashboard.py")],
+                           capture_output=True, text=True, timeout=300)
+        print((r.stdout or r.stderr or "").rstrip() or "  dashboard step produced no output")
+    except Exception as e:
+        print(f"  dashboard skipped: {e}")
 
 if __name__ == "__main__":
     main()
