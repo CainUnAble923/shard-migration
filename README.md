@@ -79,10 +79,10 @@ Setup health   ######################  7/7   blocking defects resolved
 
 **Patches:** 9 total, **0 currently failing to apply**, 8 triaged, 3 found obsolete. `apply-patches.sh` fails the build on a failed patch, so a green build means every patch applied.
 
-### Content moved over: 1 of 2,045 candidate files (0.0%)
+### Content moved over: 2 of 2,045 candidate files (0.1%)
 
 ```
-Mobiles/Normal                 ..................    1/138     0.7%
+Mobiles/Normal                 ..................    2/138     1.4%
 Items/Artifacts                ..................    0/325     0.0%
 Mobiles/NPCs                   ..................    0/222     0.0%
 Services/Expansions            ..................    0/175     0.0%
@@ -105,13 +105,15 @@ Services/BulkOrders            ..................    0/28      0.0%
 
 _Counted by matching ServUO file stems (excluding those stock ModernUO already has) against `server/customizations`. Auto-counted, never hand-edited._
 
-**Ported systems logged: 1**
+**Ported systems logged: 3**
 
 | Content | Ported | Notes |
 |---|---|---|
 | PlagueRat | - |  |
+| GreaterPoisonElemental | - |  |
+| LuckyCoin | - |  |
 
-### Task list (6 of 14 done)
+### Task list (7 of 14 done)
 
 | | Task | Status | Notes |
 |---|---|---|---|
@@ -121,11 +123,11 @@ _Counted by matching ServUO file stems (excluding those stock ModernUO already h
 | `F4` | Delete stale server/customizations/migrations/ | done | 3 PetMimic JSONs diverging from the canonical v0-v8 set. |
 | `F5` | Make RegenRates routing explicit | done | Works by accident today: both land in Misc/ so ours overwrites. |
 | `P1` | Validate the port recipe with one real port | done | PlagueRat ported, built, spawned, saved and reloaded intact. Both draft fidelity traps were wrong (range perception was backwards; ServUO ignores its own speed args) and are corrected in notes/port-recipe.md. Three of the five F3 patches exercised at runtime: bandage-on-PetMimic and talisman durability both work; MAKE X works with no button overlap but its label uses an HTML colour where AddLabel wants a hue, so it renders invisible. See notes/cc1-p1-runtime-validation.md. Open: Q-008 (speed model), and new evidence on Q-007 (forcing SHA2 breaks new-account login on the live shard). |
-| `P2` | Second port, timed, using only the recipe | todo | That number prices every content task below. |
+| `P2` | Second port, timed, using only the recipe | done | GreaterPoisonElemental ported headlessly in about 20 minutes end to end. Phase split: orientation <=1:00, selection+source read 4:51 (2:51 net), transformation 0:40, failed build 1:00, dependency resolution 2:12, clean build 0:44, verification 9:21. A warm build cycle is 44s and per-file work is ~1:10, so build cycles are NOT the dominant cost - the transformation and the dependency decisions are. Estimate for a batch of 20: about one hour. Biggest finding: measured across all 462 Mobiles/Normal files, only 60% are clean - 19% reference a type ModernUO lacks and 29% call SetWeaponAbility/SetSpecialAbility/SetMagicalAbility/PetTrainingHelper. Draw C4 batches from the clean 60%. Full write-up in notes/cc2-timed-port.md; recipe corrected. Opened Q-010 (LuckyCoin deviation), Q-011 (AGENTS.md wrongly calls server/uo a full ModernUO checkout; the Docker builder image is the real offline source), Q-012 (the tameable cohort is not a straight port). |
 | `C1` | Eodon core content | todo | ~22 files, ~4,000 lines. 6 dinosaurs, Raptor, 8 Aloron pieces, the quest line. Corrected down from 52. |
 | `C2` | Revamped Dungeons | todo | 255 files. Unblocked: F2 added subdirectory mirroring. One chat per dungeon: Despise 4, Shame 11, Wrong 26, Covetous 29, Exodus 38, Blackthorn 147. |
 | `C3` | High Seas, cheap half | todo | ~78 files. Fishing, rare fish, sea creatures, food. Skip anything touching BaseGalleon or cannons. |
-| `C4` | Creatures and NPCs | todo | ~360 files, 0% dependency. Batches of ~20. |
+| `C4` | Creatures and NPCs | todo | ~360 files. Only 275 (60%) are clean on both dependency checks: 89 (19%) reference a type ModernUO lacks, 132 (29%) call a BaseCreature method it does not have. Batches of ~20, drawn from the clean 60%, about an hour each per the P2 measurement. See notes/cc2-timed-port.md. |
 | `C5` | Decoration, housing, crafting | todo | Addons, Decorative, New Magincia, Items/Resource, BulkOrders. 0% dependency. |
 | `C6` | Artifacts and equipment | todo | ~473 files, 1-2%. Selectively: pieces anchoring a dungeon or quest. |
 | `C7` | High Seas naval - written proposal only | todo | ~54 files. Means extending BaseBoat. Do not start; Chase decides from the proposal. |
@@ -137,7 +139,7 @@ _Detail and acceptance criteria in `docs/tasks.md`. Status lives in `tools/progr
 - **Eodon / Time of Legends** — gated on Myrmidex Invasion (83% dep) and Shadowguard (71%), both subsystem builds. Deferred, not declined: measure how much of the Valley separates first.
 - **Vice vs Virtue, City Loyalty, Skill Masteries, Exploring the Deep** — 29-100% dependent on subsystems ModernUO lacks entirely. Deferred to workstream 4.
 
-Counted from the trees: 115 customization files, 14 patch files.
+Counted from the trees: 117 customization files, 14 patch files.
 Shard status: running on ModernUO.
 <!-- PROGRESS:END -->
 
@@ -146,10 +148,10 @@ Shard status: running on ModernUO.
 <!-- EXPANSION:START -->
 ### Content by expansion
 
-**3,040 of 6,144 ServUO files present** (49%), of which **1 ported by us**.
+**3,041 of 6,144 ServUO files present** (49%), of which **2 ported by us**.
 
 ```
-Pre-AoS (T2A/UOR/LBR)     ##########..........  2224/4294    52%   +1
+Pre-AoS (T2A/UOR/LBR)     ##########..........  2225/4294    52%   +2
 Age of Shadows            #############.......   201/309     65%
 Samurai Empire            ###############.....    87/115     76%
 Mondain's Legacy          ##########..........   241/471     51%
@@ -157,7 +159,7 @@ Stygian Abyss (Ter Mur)   ######..............   125/444     28%
 High Seas                 ######..............    96/334     29%
 Time of Legends (Eodon)   #######.............    53/157     34%
 Endless Journey           #############.......    13/20      65%
-TOTAL                     ##########..........  3040/6144    49%   +1
+TOTAL                     ##########..........  3041/6144    49%   +2
 ```
 
 _Filename-stem matching: a proxy for presence, not behaviour. Unclassified files fall into Pre-AoS, inflating it. Directional, not a completion percentage._

@@ -21,6 +21,18 @@
       "source": "ServUO Scripts/Mobiles/Normal/PlagueRat.cs",
       "dest": "server/customizations/Mobiles/Normal/PlagueRat.cs",
       "note": "P1 reference port. 88 lines to 55. Builds, spawns, survives save/reload. No speed override: SpeedClass Medium, per the Q-008 answer (ModernUO's npc-speeds.json fallback is the standing rule for all ported creatures)."
+    },
+    {
+      "name": "GreaterPoisonElemental",
+      "source": "ServUO Scripts/Mobiles/Normal/GreaterPoisonElemental.cs",
+      "dest": "server/customizations/Mobiles/Normal/GreaterPoisonElemental.cs",
+      "note": "P2 timed port, headless. 123 lines to 80. Compiles clean, server starts, world saves and reloads; type registration proven by reflection over the shipped assembly. Adds PackItem, multi-AddLoot, an OnDeath override, AI_Mage and the two-argument stat overloads over what PlagueRat covered. No speed override, per Q-008. An instance in a saved world is NOT verified: headless has no spawn - batched for a later client spot check."
+    },
+    {
+      "name": "LuckyCoin",
+      "source": "ServUO Scripts/Items/Quest/SAQuestItems.cs:443",
+      "dest": "server/customizations/Items/Quest/LuckyCoin.cs",
+      "note": "Forced dependency of GreaterPoisonElemental; ModernUO has no LuckyCoin. Ported complete except its OnDoubleClick, which needs FountainOfFortune (an SA addon ModernUO lacks that drags in four more items). Deviation is in the item, not the creature. Q-010. Reused by 12 Mobiles/Normal creatures."
     }
   ],
   "declined_content": [
@@ -74,8 +86,8 @@
     {
       "id": "P2",
       "title": "Second port, timed, using only the recipe",
-      "status": "todo",
-      "note": "That number prices every content task below."
+      "status": "done",
+      "note": "GreaterPoisonElemental ported headlessly in about 20 minutes end to end. Phase split: orientation <=1:00, selection+source read 4:51 (2:51 net), transformation 0:40, failed build 1:00, dependency resolution 2:12, clean build 0:44, verification 9:21. A warm build cycle is 44s and per-file work is ~1:10, so build cycles are NOT the dominant cost - the transformation and the dependency decisions are. Estimate for a batch of 20: about one hour. Biggest finding: measured across all 462 Mobiles/Normal files, only 60% are clean - 19% reference a type ModernUO lacks and 29% call SetWeaponAbility/SetSpecialAbility/SetMagicalAbility/PetTrainingHelper. Draw C4 batches from the clean 60%. Full write-up in notes/cc2-timed-port.md; recipe corrected. Opened Q-010 (LuckyCoin deviation), Q-011 (AGENTS.md wrongly calls server/uo a full ModernUO checkout; the Docker builder image is the real offline source), Q-012 (the tameable cohort is not a straight port)."
     },
     {
       "id": "C1",
@@ -99,7 +111,7 @@
       "id": "C4",
       "title": "Creatures and NPCs",
       "status": "todo",
-      "note": "~360 files, 0% dependency. Batches of ~20."
+      "note": "~360 files. Only 275 (60%) are clean on both dependency checks: 89 (19%) reference a type ModernUO lacks, 132 (29%) call a BaseCreature method it does not have. Batches of ~20, drawn from the clean 60%, about an hour each per the P2 measurement. See notes/cc2-timed-port.md."
     },
     {
       "id": "C5",

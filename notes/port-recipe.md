@@ -1,16 +1,94 @@
 # Port recipe: ServUO to ModernUO
 
-**Status: VALIDATED against a real build and a running client, 2026-09-06 (backlog P1 / CC1).**
-The draft that preceded this was written from source study. Both of its "fidelity traps" were
-wrong — one of them exactly backwards — and are corrected below. Evidence and method are in
-`notes/cc1-p1-runtime-validation.md`.
+**Status: VALIDATED against a real build and a running client, 2026-09-06 (backlog P1 / CC1),
+then re-exercised headlessly on a second creature (CC2).** The draft that preceded this was
+written from source study. Both of its "fidelity traps" were wrong — one exactly backwards — and
+are corrected below. Evidence and method are in `notes/cc1-p1-runtime-validation.md` and
+`notes/cc2-timed-port.md`.
 
-Reference port: `PlagueRat.cs`, ServUO `Mobiles/Normal` → `server/customizations/Mobiles/Normal/`.
-88 lines to 55. Built in Docker from pinned ModernUO `7c9215d97`, spawned with `[add PlagueRat`,
-inspected with `[global get`, saved, server restarted, reloaded intact.
+Reference ports, both to `server/customizations/<ServUO-relative-path>/`, both built in Docker
+from pinned ModernUO `7c9215d97`:
+
+- **`PlagueRat.cs`**, 88 lines to 55. Spawned with `[add PlagueRat`, inspected with
+  `[global get`, saved, restarted, reloaded intact. (CC1, with a client.)
+- **`GreaterPoisonElemental.cs`**, 123 lines to 80, plus `LuckyCoin.cs` as a forced dependency
+  port. Built, started, world saved and reloaded, type registration proven by reflection. (CC2,
+  headless.) Adds coverage of `PackItem`, multi-`AddLoot`, an `OnDeath` override, `AI_Mage` and
+  the two-argument stat overloads.
+
+**Before you transform anything, read "Check dependencies first" below.** It is the step whose
+absence cost CC2 a whole build cycle, and it is the cheapest thing in this document.
 
 The headline still holds: for simple content, porting is mostly **deleting boilerplate**.
 ModernUO's source generator writes the serialization ServUO writes by hand.
+
+## Check dependencies first
+
+**Added by CC2, which learned this the expensive way.** The mechanical transformation is easy.
+The thing that actually fails a build is a type the ServUO file references and ModernUO does not
+have. `GreaterPoisonElemental` drops a `LuckyCoin`; ModernUO has no `LuckyCoin`; that cost a full
+build cycle to discover and a decision to resolve.
+
+### The pinned ModernUO source is on this machine, inside the Docker builder image
+
+There is **no ModernUO source tree on disk**. `AGENTS.md` says `server/uo/modernuo/` holds "a full
+ModernUO checkout" — it does not; it holds `Configuration/` and `Projects/UOContent/Misc/`, 161
+`.cs` files, all of them ours. But the *builder stage* of the Docker image clones ModernUO at the
+pinned commit and keeps it at `/build/modernuo`, and that image is still on disk:
+
+```bash
+docker run --rm --entrypoint sh sl-uo-buildertest:latest -c 'grep -rn "class FountainOfFortune" /build/modernuo/Projects'
+```
+
+Use it to answer, in seconds and with no build cycle:
+
+- does this type exist at all
+- what shape is this interface (`ICommodity` differs between the emulators — see below)
+- does `BaseCreature` really have this virtual
+- what are the `LootPack` member names
+- what constructor overloads does this item have
+
+Dump the whole type universe once per session and grep it locally:
+
+```bash
+docker run --rm --entrypoint sh sl-uo-buildertest:latest \
+  -c 'grep -rhoE "\b(class|struct|enum|interface|record)[[:space:]]+[A-Za-z_][A-Za-z0-9_]*" /build/modernuo/Projects/Server /build/modernuo/Projects/UOContent --include=*.cs | awk "{print \$2}" | sort -u' \
+  > mu-types.txt
+```
+
+That is 7,058 types at `7c9215d97`. Check every `new X(` in the ServUO file against it, plus the
+115 stems under `server/customizations`.
+
+### `tools/modernuo-stems.txt` is NOT a dependency checker
+
+It is a list of **filename stems**. It is correct for its one stated job — collision-checking the
+ported type's own name — and wrong for anything else. It reports `ICommodity`, `TextDefinition`,
+`Ribs`, `ThighBoots` and `IronOre` as absent when all five exist, because they are defined inside
+files named something else. Do not reuse it for dependency checking; use `mu-types.txt` above.
+
+### How often this bites, measured across all 462 `Mobiles/Normal` files
+
+| | files | share |
+|---|---|---|
+| Reference at least one type ModernUO lacks | 89 | **19%** |
+| Call `SetWeaponAbility` / `SetSpecialAbility` / `SetMagicalAbility` / `PetTrainingHelper` | 132 | **29%** |
+| **Clean on both checks** | **275** | **60%** |
+
+**Screen a batch against both lists before starting it.** The 29% group is a design decision, not
+a port. Full method and the missing-type frequency table are in `notes/cc2-timed-port.md`.
+
+### When the missing type is a leaf item, port it too — unless it drags in a subsystem
+
+`LuckyCoin` is a 60-line stackable item, so it was ported alongside the creature to
+`server/customizations/Items/Quest/LuckyCoin.cs`, mirroring its ServUO path even though ServUO
+keeps it inside the multi-type `SAQuestItems.cs`. **One extracted type per file.**
+
+Its `OnDoubleClick` throws the coin into a `FountainOfFortune`, an SA addon ModernUO lacks whose
+own port pulls in `EnchantedEssence`, `GemologistsSatchel`, `RelicFragment` and
+`SolesOfProvidence`. That is a subsystem, so it was declined and the coin ported without the
+interaction. **The deviation is in the item, not the creature** — the creature's loot table stays
+faithful, which is what a player checks against UOGuide. Recorded as Q-010. Twelve
+`Mobiles/Normal` creatures drop `LuckyCoin`, so this decision is reused, not re-litigated.
 
 ## The mechanical transformation
 
@@ -42,9 +120,33 @@ Compiler errors, not silent, but they cost a build cycle each:
   Any ServUO creature that calls them needs a decision, not a translation. PlagueRat was chosen
   partly because it calls neither. A large share of `Mobiles/Normal` does — check before
   committing to a batch.
+- **`ICommodity` has different members in the two emulators.** ServUO:
+  `TextDefinition Description { get; }` + `bool IsDeedable { get; }`. ModernUO:
+  `int DescriptionNumber { get; }` + `bool IsDeedable { get; }`. Written as explicit-interface
+  expression members, matching stock `Items/Resources/Arrows/Shaft.cs`:
+
+  ```csharp
+  int ICommodity.DescriptionNumber => LabelNumber;
+  bool ICommodity.IsDeedable => true;
+  ```
+
+- **ModernUO collapses `[Constructable]` overload pairs into one optional parameter.** ServUO's
+  `public X()` + `public X(int amount)` pair becomes a single
+  `[Constructible] public X(int amount = 1)`. One attribute, not two. Stock ModernUO does this
+  everywhere; `Shaft.cs` is the canonical shape.
+
 - `MinTameSkill`, `Fame`, `Karma`, `VirtualArmor`, `BaseSoundID`, `Hides`, `Meat`,
   `FavoriteFood`, `LootPack.Rich`, `AddLoot`, and the single- and two-argument
   `SetStr/SetDex/SetInt/SetHits/SetMana` overloads all exist unchanged.
+
+**Confirmed unchanged by CC2, so port them literally** (all checked against
+`Projects/UOContent/Mobiles/BaseCreature.cs` at the pinned commit and then compiled):
+`OnDeath(Container c)`, `BleedImmune`, `PoisonImmune`, `HitPoison`, `HitPoisonChance`,
+`TreasureMapLevel`, `SetStam`, `PackItem`, `SetDamageType`, `SetResistance`, and
+`SkillName.Poisoning` / `.EvalInt` / `.Meditation` / `.DetectHidden`. Several `AddLoot` calls in
+one `GenerateLoot` is fine, and `LootPack.FilthyRich` and `LootPack.MedScrolls` both exist
+(`Rich`, `FilthyRich`, `Poor`, `Meager`, `Average` are expansion-switching properties over the
+`Se*`/`Aos*` tables, so they resolve to the right era automatically).
 
 ## Two fidelity traps — both of the draft's claims were wrong
 
@@ -142,8 +244,17 @@ The table's levels are VerySlow 0.4/0.8, Slow 0.3/0.6, Medium 0.25/0.5, Fast 0.2
 VeryFast 0.125/0.3. Overriding `GetSpeeds` with raw doubles works but takes the creature out of
 the data-driven table for no benefit; prefer `SpeedClass`.
 
-**This is a shard-wide decision, not a per-file one, and it is open.** See Q-008 in
-`notes/codex-questions.md`. Three defensible targets:
+**ANSWERED — Q-008 is closed. Do nothing; accept ModernUO's `Medium` fallback.** This is a
+standing rule for all ~490 ported creatures and does not need re-asking per file.
+**Do not add a `SpeedClass` override to match a ServUO constructor literal** — that option is
+ruled out permanently, because it matches neither emulator while looking faithful in a diff. A
+per-creature `GetSpeeds` override stays available on documented evidence (UOGuide/Stratics says
+the creature's speed is distinctive *and* `Medium` visibly contradicts it), logged in
+`docs/fidelity-principle.md` as a deliberate deviation. A hunch that something feels slow is not
+evidence. `GreaterPoisonElemental` was ported with no override, per this rule.
+
+The reasoning, kept because it explains why the answer is not "match ServUO". Three targets were
+on the table:
 
 - **ModernUO Medium (do nothing).** Consistent with ModernUO's own roster; a ported creature
   moves like its nearest stock peer. PlagueRat is a re-hued `GiantRat`, and stock `GiantRat` is
@@ -153,8 +264,8 @@ the data-driven table for no benefit; prefer `SpeedClass`.
 - **Dex-derived per creature.** Matches ServUO's actual runtime, requires a `GetSpeeds` override
   per creature and abandons ModernUO's table.
 
-**PlagueRat was ported with no override (Medium), and that assumption is recorded here.** Do not
-copy it blindly onto CC3+ until Q-008 is answered.
+`PlagueRat` and `GreaterPoisonElemental` were both ported with no override, which is now the
+rule rather than an assumption in force.
 
 ## Where a ported file goes
 
@@ -198,19 +309,27 @@ Answered by building, saving and restarting.
 
 ## Also watch for
 
-Carried over from the draft. **Not exercised by this port** — PlagueRat has no persisted state,
-no `Serial` arithmetic and no string building. Treat as still unverified:
+Carried over from the draft and **still unverified after two ports.** Neither `PlagueRat` nor
+`GreaterPoisonElemental` has persisted state, `Serial` arithmetic or string building. These three
+are the recipe's remaining blind corners, and any one of them could dominate the cost of a batch:
 
 - **`Serial` is signed in ServUO, `uint` in ModernUO.** Any arithmetic or comparison against
   `-1` needs checking rather than find-and-replace.
 - **`[SerializableField(n)]`** replaces hand-written field writes when a type has real persisted
-  state. Simple creatures with no extra state need none — PlagueRat needed none.
+  state. Simple creatures with no extra state need none — neither reference port needed one.
 - **`TextDefinition`, `PooledRefQueue`, `ValueStringBuilder`** are ModernUO idioms with no ServUO
-  equivalent.
+  equivalent. CC2 met `TextDefinition` only indirectly, via `ICommodity` (see above), where
+  ModernUO uses a plain `int` instead.
+
+Also still unverified: **the second argument to `[SerializationGenerator(0, false)]`.** The
+attribute lives in the `ModernUO.Serialization` NuGet package, not the source tree, and all 2,921
+in-tree usages pass `false`. Copy `false` and move on.
 
 **Name collisions** are verified: check the stem against `tools/modernuo-stems.txt` before
-porting. `PlagueRat` is absent from it, and the structured mirror's overwrite check independently
-confirmed no collision at build time.
+porting. `PlagueRat` and `GreaterPoisonElemental` are both absent from it — note stock
+`PoisonElemental` *is* present, and the "Greater" variant is an addition, not a collision — and
+the structured mirror's overwrite check independently confirmed no collision at build time.
+**That is the only thing the stems file is good for; see "Check dependencies first".**
 
 ## Worked example
 
@@ -277,6 +396,69 @@ dropped argument groups, both covered above.
 as it reads next to `[CorpseName("a plague rat corpse")]`. Ported unchanged per the fidelity
 principle. In-game the creature announces itself as `a Clan Ribbon Plague Rat`.
 
+### Second example, the parts PlagueRat did not cover
+
+From `GreaterPoisonElemental.cs`, 123 lines to 80. Everything here compiled unchanged from the
+ServUO source apart from the property-body-to-expression rewrite:
+
+```csharp
+[Constructible]
+public GreaterPoisonElemental() : base(AIType.AI_Mage)   // non-default AI; FightMode.Closest
+{                                                        // and iRangeFight 1 are still defaults
+    // ...
+    SetStr(700, 771);          // two-argument overloads throughout
+    SetStam(300, 322);         // SetStam exists
+
+    PackItem(new Nightshade(4));         // quantity constructor
+    PackItem(new LesserPoisonPotion());
+}
+
+public override bool BleedImmune => true;
+public override Poison PoisonImmune => Poison.Lethal;
+public override Poison HitPoison => Poison.Lethal;
+public override double HitPoisonChance => 0.75;
+public override int TreasureMapLevel => 5;
+
+public override void GenerateLoot()
+{
+    AddLoot(LootPack.FilthyRich);      // several AddLoot calls in one GenerateLoot is fine
+    AddLoot(LootPack.Rich);
+    AddLoot(LootPack.MedScrolls);
+}
+
+public override void OnDeath(Container c)
+{
+    base.OnDeath(c);
+
+    if (Utility.RandomDouble() < 0.03)
+    {
+        c.DropItem(new LuckyCoin());
+    }
+}
+```
+
+`LuckyCoin` is the dependency that failed the first build. The companion item, showing the
+`ICommodity` shape and the collapsed constructor pair:
+
+```csharp
+[SerializationGenerator(0, false)]
+public partial class LuckyCoin : Item, ICommodity
+{
+    [Constructible]
+    public LuckyCoin(int amount = 1) : base(0xF87)   // ServUO's X() + X(int) pair, collapsed
+    {
+        Stackable = true;
+        Amount = amount;
+        Hue = 1174;
+    }
+
+    public override int LabelNumber => 1113366; // lucky coin
+
+    int ICommodity.DescriptionNumber => LabelNumber;   // ServUO: TextDefinition Description
+    bool ICommodity.IsDeedable => true;
+}
+```
+
 ## How to check a port at runtime
 
 `[global get <props> where <Type>` reads every instance without needing to click a wandering
@@ -292,3 +474,71 @@ idea and save just as much time.
 Standing up a local client against a throwaway build is written up in
 `notes/cc1-p1-runtime-validation.md`, including three obstacles that will hit anyone repeating it:
 the relay address, a ModernUO account-creation bug, and staff immunity from creature AI.
+
+## How to check a port with no client at all
+
+**Added by CC2.** A batch of 20 will never get a client session, so this is the normal path and
+the client is the exception. Everything below runs against a throwaway `--rm` container with no
+published ports and a scratch `Saves/`.
+
+### What you can prove headlessly
+
+1. **It compiles.** The build is the real gate and the only complete dependency check.
+2. **The server starts and the world loads.** Watch for `Loading world done (N items, N mobiles)`
+   with no errors. Note the world is *not* empty on a fresh `Saves/` — the ClusterF seeders build
+   617 items and 90 mobiles at load, so there is real content to exercise.
+3. **The world saves and reloads.** Console `save`, then restart the container on the same scratch
+   `Saves/` and watch for a clean `Loading world done`.
+4. **The type is registered, with generated serialization.** Reflect over the shipped assembly
+   with a .NET 10 file-based app inside the container — the SDK is present in the runtime image:
+
+   ```csharp
+   // reflect.cs
+   var asm = System.Reflection.Assembly.LoadFrom("/modernuo/UOContent.dll");
+   var t = asm.GetType("Server.Mobiles.GreaterPoisonElemental");
+   // list DeclaredOnly Serialize/Deserialize methods and the constructors
+   ```
+
+   ```bash
+   docker run --rm -v "C:/path/to/reflect.cs:/tmp/reflect.cs:ro" --entrypoint sh <image> \
+     -c 'cd /tmp && cp /modernuo/*.dll /tmp/ && dotnet run reflect.cs'
+   ```
+
+   A correctly generated type reports
+   `generated=[Serialize(IGenericWriter) Deserialize(IGenericReader)] ctors=[() (Serial)]` —
+   none of which is in your source, so it is direct evidence the generator ran. The assembly is
+   the one the server loads, which the ClusterF seeders prove independently by running at world
+   load from the same DLL.
+
+### What you cannot prove headlessly
+
+**Putting an instance of the new type into the world.** The container console registers exactly
+three commands — `save`, `shutdown`, `restart` (`Projects/UOContent/Console/ConsoleCommands.cs`).
+There is no console spawn, `Saves/SerializedTypes.db` records only types that have live instances
+(stock `PlagueRat` and `GiantRat` are absent from it too on a world that has neither), and
+`UOContent.Tests` ships no serialization round-trip harness.
+
+So an *instance* surviving save and reload needs a client or a spawn scaffold. **Leave it
+unverified and batch it into a five-creature client spot check** rather than working around it.
+The residual risk is bounded: at version 0 with no `[SerializableField]`, the creature adds no
+persisted state beyond what `BaseCreature` already round-trips, and CC1 proved that shape.
+
+### Three traps in the headless harness
+
+1. **Bind-mount paths must be Windows-style.** A Git-Bash `/c/Users/...` path mounts *empty*
+   under Docker Desktop with no error; the server then falls through to its interactive
+   client-data prompt and hangs. Use `C:/Users/...`.
+2. **Startup eats stdin before the console handler exists.** On a world with no accounts,
+   ModernUO asks `Do you want to create the owner account now? (y/n)` and holds stdin for about
+   65 seconds. A piped command sequence must answer `n` first or the next command is swallowed.
+3. **`shutdown` does not save.** Send `save`, wait for `Saving world done`, then `shutdown`.
+
+Working invocation:
+
+```bash
+( sleep 12; echo n; sleep 35; echo save; sleep 30; echo shutdown; sleep 20 ) | docker run -i --rm --name <name> -v "$S/Saves:/var/lib/uo/modernuo/Saves" -v "$S/Backups:/var/lib/uo/modernuo/Backups" -v "$S/Archives:/var/lib/uo/modernuo/Archives" -v "$S/Configuration:/modernuo/Configuration" -v "D:/ShatteredLegacy/client-data/classic-client:/var/lib/uo/client-data/classic-client:ro" --security-opt seccomp=unconfined -e TZ=America/Chicago <image>
+```
+
+Edit the scratch `Configuration/modernuo.json` to `listeners: ["127.0.0.1:2593"]`,
+`serverListing.address: "127.0.0.1"` and `autosave.enabled: "False"` so the throwaway server is
+loopback-only and does not save on a timer behind your back.

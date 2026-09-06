@@ -465,3 +465,89 @@ nobody restarts the stack to find out. If it is wanted, the test is the same thr
 loopback-only container P1 used, not the live one.
 
 **Answer:**
+
+---
+
+## Q-010 [OPEN] 2026-09-06 LuckyCoin ported without its Fountain of Fortune interaction
+
+**Question:** Is it acceptable to port `LuckyCoin` as an inert stackable item, dropping its
+`OnDoubleClick`, and if so does that deviation need an entry in `docs/fidelity-principle.md`?
+
+**Context:** Found during CC2. `GreaterPoisonElemental.OnDeath` drops a `LuckyCoin` at 3%.
+ModernUO has no `LuckyCoin` (build cycle 1 failed on `error CS0246`). ServUO defines it in
+`Scripts/Items/Quest/SAQuestItems.cs:443` as a ~60-line stackable `Item : ICommodity`.
+
+Its only behaviour is `OnDoubleClick`, which targets a `FountainOfFortune`
+(`Scripts/Items/Addons/FountainOfFortune.cs`, 318 lines) and otherwise says "That is not sacred
+waters." ModernUO has no `FountainOfFortune`, and porting it pulls in `EnchantedEssence`,
+`GemologistsSatchel`, `RelicFragment` and `SolesOfProvidence`. That is a subsystem, and
+`AGENTS.md` says decline subsystems.
+
+Twelve `Mobiles/Normal` creatures drop `LuckyCoin`: `GreaterPoisonElemental`,
+`EnragedEarthElemental`, `GreenGoblin`, `GreenGoblinAlchemist`, `GreenGoblinScout`, `BloodWorm`,
+`Gremlin`, `IronBeetle`, `Mimic`, `SentinelSpider`, `TanglingRoots`, `WolfSpider`. So this is a
+decision that gets reused across CC6, not a one-off.
+
+**Your best guess / assumption in force:** Port the coin without the interaction, keeping the
+*creature* faithful. Rationale: the deviation is then isolated to one item's double-click, the
+creature's loot table — the thing a player checks against UOGuide — is unchanged, and it is
+reversible in one file if the Fountain is ever built. The alternative, dropping the `OnDeath`
+override, puts the deviation in the creature and in the loot table, which is worse.
+
+Done and committed on that assumption, since it is non-blocking and reversible.
+`server/customizations/Items/Quest/LuckyCoin.cs`. The `docs/fidelity-principle.md` entry is the
+overseer's to write; I have not touched `docs/`.
+
+**Answer:**
+
+## Q-011 [OPEN] 2026-09-06 AGENTS.md is wrong that `server/uo/modernuo/` is a full ModernUO checkout
+
+**Question:** Should the `AGENTS.md` repo-layout section be corrected, and should the Docker
+builder image be named there as the canonical offline ModernUO source?
+
+**Context:** `AGENTS.md` says "**`server/uo/` is a build tree** holding a full ModernUO checkout
+with our customizations copied into `Projects/UOContent/Misc/`" and calls it "readable as a
+recovery source". Counted today: the whole tree is 161 `.cs` files, and its only directories are
+`Configuration/` and `Projects/UOContent/Misc/`. Every one of those 161 files is ours. **There is
+no ModernUO source in it at all.** As a recovery source for our own customizations it is exactly
+what Q-001 described; as a place to read ModernUO it is empty.
+
+That matters because CC2 needed to answer "does ModernUO have this type" and had nowhere to look.
+The answer turned out to be the Docker *builder* image, which clones ModernUO at the pinned commit
+and keeps it at `/build/modernuo`:
+
+```
+docker run --rm --entrypoint sh sl-uo-buildertest:latest -c 'grep -rn "class X" /build/modernuo/Projects'
+```
+
+7,058 types at `7c9215d97`. That is the only offline copy of ModernUO source on this machine, and
+nothing in `AGENTS.md`, `docs/` or `notes/` mentions it.
+
+**Your best guess:** correct the layout line and add the builder-image recipe next to it. It is a
+direction-adjacent document in the overseer's lane, so I have written the technique into
+`notes/port-recipe.md` and raised it here rather than editing `AGENTS.md` myself. Non-blocking.
+
+**Answer:**
+
+## Q-012 [OPEN] 2026-09-06 The tameable creature cohort is not a straight port
+
+**Question:** Should the tameable creatures in `Mobiles/Normal` be pulled out of CC6 into their
+own scoped piece of work before anyone batches them?
+
+**Context:** Found while selecting a representative creature for CC2. `Tamable = true` appears in
+122 of 462 `Mobiles/Normal` files (26%). Every tameable candidate between 85 and 140 lines that
+also had a loot pack pulled in ServUO's Pet Training subsystem — `PetTrainingHelper`,
+`SetMagicalAbility`, `OnAfterTame` overrides that scale `RawStr`/`RawDex` through it.
+`SabertoothedTiger` is the clean example and was rejected for CC2 on exactly this.
+
+More broadly, measured across all 462 files: 132 (29%) call `SetWeaponAbility`,
+`SetSpecialAbility`, `SetMagicalAbility` or `PetTrainingHelper`, none of which ModernUO's
+`BaseCreature` has. 89 (19%) reference at least one type ModernUO lacks. 275 (60%) are clean on
+both. Method and frequency tables in `notes/cc2-timed-port.md`.
+
+**Your best guess:** yes. Draw CC6 batches from the clean 60% and scope the rest — the Pet
+Training group especially — as its own decision. A batch of 20 sized against a one-hour estimate
+will blow up if one Pet Training creature lands in it, and the fix is selection, not effort.
+Non-blocking: CC6 has 275 clean files, which is more than enough to start.
+
+**Answer:**
