@@ -87,3 +87,45 @@ Claude answers in the same file and promotes durable answers into this document.
 
 `notes/` is yours to write freely. `docs/` is Claude's lane: put findings in `notes/` and
 they will be promoted after review.
+
+## CORRECTION: `server/customizations` is not complete
+
+Earlier guidance in this file said to ignore `server/uo/` entirely and treat
+`server/customizations` as canonical. **That was wrong and is now corrected.**
+
+Codex verified by building a clean Docker context from pinned ModernUO `7c9215d97` plus
+only the canonical tracked inputs. It does not compile. Missing from `server/customizations`:
+
+- `CraftContext` members `RepeatCount`, `RepeatItem`, `RepeatTypeRes`, used by
+  `CraftCountGump` and the custom `CraftItem`
+- Eight extended wood enum members in `ResourceInfo.cs`, used by the lumber system
+- `OutridersGuildmaster`, referenced but absent
+
+The old Docker build sourced `server/uo/modernuo/Projects/UOContent/Misc`, so a green build
+there never proved the canonical tree complete. It did not.
+
+**Revised rule:**
+
+- `server/customizations` is the **edit target**. New and changed code goes there.
+- `server/uo/` is **not** an edit target and must never be committed, but it **is** the
+  recovery source for customizations missing from the canonical tree. Read it to recover
+  what is missing, then write the recovered code into `server/customizations`.
+- Recovering the canonical tree to a compiling state is a **prerequisite** to Phase 2
+  porting. Do not port further scripts against an incomplete baseline.
+
+## `server/customizations` contains five upstream replacements
+
+It is not purely additive. These five share a basename with pinned ModernUO sources and
+replace them, and must be routed to their stock source paths rather than dropped in `Misc/`:
+
+`CharacterCreation`, `CraftItem`, `HammerOfHephaestus`, `Meditation`, `RegenRates`
+
+This is why `apply-patches.sh` excludes several files by name. The remaining 106 are
+additive. Any change to how customizations reach the build tree must preserve this routing.
+
+## `apply-patches.sh` is not a verification gate
+
+It converts patch failures to warnings and exits 0. Seven tracked patches currently fail to
+apply against the pinned source while the script still reports success. Until that is fixed,
+a green build proves nothing about whether patches applied. Treat fixing this as a priority:
+a runner that cannot fail is not a runner.
