@@ -1,72 +1,78 @@
-# Decision: migrate to ServUO, do not port content into ModernUO
+# Direction: stay on ModernUO, pull ServUO content in piece by piece
 
-Status: **decided**, 2026-09-06. Measured by reading both source trees, not documentation.
+**Status: DECIDED 2026-09-06. This reverses the earlier decision, deliberately.**
 
-## Scope that drove it
+## What changed
 
-Full post-ML world **including naval combat and Eodon**. That scope is what settles this.
+The original call was to migrate the shard from ModernUO to ServUO, on the grounds that
+ServUO ships post-ML content ModernUO never implemented. That reasoning was sound but it
+rested on a scope answer given in four words ("full post-ML world including naval combat
+and Eodon") that was never checked against what this shard is actually for.
 
-## The content gap
+This is a private shard for a family and possibly a small school, as an alternative to
+Roblox. Naval combat and Eodon were the two things that made the reverse direction
+expensive. For this audience they are not load-bearing.
 
-Both emulators declare the same expansion ladder
-(`None T2A UOR UOTD LBR AOS SE ML SA HS TOL EJ`). ModernUO's enum reaches EJ but the content
-behind those flags was never written.
+## The decision
 
-| Content | ServUO pub57 | ModernUO main |
-|---|---|---|
-| High Seas | 134 files / 31,080 lines | 0 |
-| Time of Legends / Eodon / Myrmidex | 74 files / 18,828 lines | 0 |
-| Ter Mur / Stygian | 18 | 5 (all spawn data JSON, no systems) |
+**Stay on ModernUO. Port ServUO content into it selectively and incrementally.**
 
-High Seas by subsystem (lines): Items 13,750 | Quests 5,139 | Multis 5,135 | Mobiles 3,174 |
-Spawners 1,346 | Gumps 1,048 | Regions 827 | Network 84
+## Why this is right
 
-## Why the reverse port was rejected
+**Modernization.** ModernUO is .NET 10, source-generated serialization, fast saves, a real
+test suite, and active platform work. ServUO is .NET Framework 4.8 under Mono on anything
+that is not Windows. Migrating to ServUO is a step backward on every one of those, and the
+gap widens over time. Content is something you can write; a runtime is something you inherit.
 
-The two directions are not symmetrical.
+**Reversibility, which was under-weighted before.** Porting content into ModernUO is
+stoppable at any point and still leaves a working shard, an intact world, and live player
+accounts. Migrating to ServUO is a one-way door: it costs the world, the accounts, and a
+rewrite of all 111 custom scripts, and regretting it a year later means doing it all again.
 
-| | Forward (shard to ServUO) | Reverse (content to ModernUO) |
-|---|---|---|
-| What gets rewritten | our own custom scripts | 184 files / 49,908 lines we did not write |
-| World data | lost, fresh start + compensation | untouched, shard keeps running |
-| Accounts | bridgeable but time-boxed | not a question |
-| Runtime | .NET 10 down to net48/Mono | stays on .NET 10 |
-| Shape of work | all-or-nothing cutover | incremental, reversible |
-| Missing substrate | none | MUO has **zero** files for SkillMasteries, Shadowguard, Myrmidex, VendorSearching, InstancedPeerless |
-| Maintenance after | ServUO project maintains it | we maintain it forever, conflicts on every upstream pull |
-| Precedent | hundreds of shards | nobody has done it |
+**No migration event.** No fresh world. No compensation pass. No password conversion window.
+No rewriting working code just to keep it working.
 
-The reverse direction has real merit and was not dismissed lightly. It keeps the better
-engine and skips the migration event entirely. It fails on scope:
+**The existing architecture already supports it.** The shard builds ModernUO from a pinned
+commit and layers `server/customizations` and `server/patches` on top. Ported ServUO content
+lands in exactly the same place, through exactly the same mechanism. Nothing structural
+changes.
 
-**High Seas is not leaf content.** Its center is `BaseGalleon.cs` (1,848 lines) plus
-`Cannon.cs` (1,491) and `ShipCannon.cs` (1,512). That subsystem extends and partly replaces
-`BaseBoat`. Porting it means core surgery on the engine we would be keeping precisely to
-avoid core surgery. **Eodon** is Time of Legends, 18,828 lines, sitting on Myrmidex Invasion
-and Skill Masteries, both of which ModernUO ships zero files for.
+## What this costs
 
-The cheap half of the reverse port was always leaf content: fishing (`Fish.cs`,
-`RareFish.cs`, `CrabsAndLobsters.cs`, `FishPies.cs`, ~3,300 lines, few dependencies) and
-spawn data (JSON on MUO, XML on ServUO, converts both ways). None of that is what we want.
+Honest accounting. Each ported system is code we own and maintain forever, with no upstream
+fixing it for us. Some ServUO content depends on subsystems ModernUO has **zero** files for:
+Skill Masteries, Shadowguard, Myrmidex Invasion, Vendor Searching, Instanced Peerless.
+Anything resting on those is expensive and should be declined rather than attempted.
 
-## What ModernUO does have
+Specifically **not** planned, unless the shard's actual users ask for it:
 
-Worth recording so nobody re-discovers it: Quests, Party (`Engines/Party/`),
-CannedEvil/champions, and Multis with the classic RunUO boats (`BaseBoat`, `SmallBoat`,
-`LargeBoat`, `Plank`, `Hold`). Its spawner system is genuinely good: `Spawner`,
-`RegionSpawner`, `ProximitySpawner`, JSON-backed with `[ExportSpawners]` / `[ImportSpawners]`,
-and 109 era-tiered spawn files across `shared`, `uoml` and `post-uoml`.
+- **High Seas naval combat.** `BaseGalleon` (1,848 lines) plus two cannon files (~3,000)
+  extend and partly replace ModernUO's `BaseBoat`. Core surgery, not content.
+- **Eodon / Time of Legends.** 18,828 lines resting on Myrmidex Invasion and Skill Masteries.
 
-The premise "ServUO has better spawn options" is right about **reach**, not about
-**plumbing**. What ServUO adds is XmlSpawner2's conditional and quest-driven logic
-(99 files, with XmlAttachments and XmlQuests) plus a post-ML world worth spawning into.
+## What is cheap and worth doing
 
-## Third option, considered and not taken
+- Leaf content: items, decorations, food, fishing. Few dependencies, drops straight in.
+- Data: spawn definitions, location tables. ServUO XML converts to ModernUO JSON with no
+  logic in between.
+- Custom facets, which ModernUO supports and ClassicUO reads well past index 5.
 
-Stay on ModernUO, port only leaf content and data, accept an ML-era world with extras.
-Cheapest path by a wide margin. Rejected because post-ML content is the point of the shard.
+## Licensing note
 
-## Footnote
+ServUO is GPL-2.0, ModernUO is GPL-3.0. This only matters if we distribute source. Not legal
+advice; worth a look before publishing anything that combines both.
 
-ServUO is GPL-2.0, ModernUO is GPL-3.0. Only matters if we distribute source. Not legal
-advice, but worth checking before publishing a repo that combines both.
+## What carries over from the earlier work
+
+Still valid and still worth acting on, because they are defects in the current setup rather
+than migration concerns:
+
+- `server/customizations` does not compile on its own. Three pieces are missing and exist
+  only in `server/uo/`. See `AGENTS.md`.
+- `apply-patches.sh` converts patch failures to warnings and exits 0. Seven patches
+  currently fail. A green build proves nothing.
+- `server/customizations/migrations/` holds stale PetMimic JSONs that diverge from
+  `server/migrations/`.
+
+No longer relevant: the SHA2 password window, the accounts exporter, world-save migration,
+and the ModernUO-to-ServUO spawner converter.

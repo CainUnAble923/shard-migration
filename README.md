@@ -1,7 +1,8 @@
-# Shard Migration: ModernUO to ServUO
+# Shattered Legacy: ServUO content on ModernUO
 
-Working repo for moving the shard off ModernUO onto ServUO `pub57`, so the shard can
-carry post-ML content (High Seas, Time of Legends, Endless Journey).
+Working repo for **staying on ModernUO** and pulling selected ServUO content into it,
+piece by piece. Reversed from the original migrate-to-ServUO plan on 2026-09-06; see
+`docs/direction-decision.md` for why.
 
 This repo is the shared source of truth for everyone working on the migration,
 human or agent. If a decision is not written down here, it is not decided.
