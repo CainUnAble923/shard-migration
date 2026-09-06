@@ -214,7 +214,50 @@ Time of Legends coverage moved 53/157 to 59/157. Four build batches, zero failed
 been wrong. Verify the list before porting it, publish the list beside the count, and expect the
 decline set to be real work that was hiding inside an optimistic total.
 
-## CC4. Revamped Dungeons — START HERE
+## S1. Armour set-bonus subsystem — START HERE
+
+**Reverses a decline. See `docs/subsystem-policy.md` for why the old rule was wrong.**
+
+ServUO's armour set-bonus system is **one file, `Items/Artifacts/Equipment/Armor/Sets/SetItem.cs`,
+387 lines**, and **187 ServUO files reference `SetItem`, `SetAttributes` or
+`AbsorptionAttributes`**. Pinned ModernUO has none of it. That is an unblock ratio of roughly
+187 to 1, the best in the backlog, and CC3 declined the eight Aloron pieces against it.
+
+This is not a content port. It is a subsystem build, and the interesting question is not the
+387 lines, it is the plumbing into `BaseArmor`, `BaseWeapon`, `BaseJewel` and `BaseClothing`.
+Patching upstream base classes is what `server/patches/` is for, so the layering pattern should
+hold, but **prove that before writing the whole thing.**
+
+**Do the feasibility spike first, and stop if it fails.** Port `SetItem.cs`, wire the minimum
+plumbing into one base class, and get one set item showing a set bonus. If that needs more than
+targeted patches, if it means forking a base class beyond what a patch can express, stop and
+write up what it would actually take. A negative answer delivered early is a good result.
+
+**Then the eight Aloron pieces**, which are the proof the subsystem works on real content, plus
+the TigerPelt set if it is cheap.
+
+**Done when:** a clean Docker build with all patches applying, the server starting, the world
+saving and reloading, and at least one set item verified to carry its set attributes. Record
+what the next pinned-commit bump would have to reconcile, because that is this task's ongoing
+cost and nobody else will track it.
+
+## S2. Fountain of Fortune cluster
+
+Also reverses a decline. `Items/Addons/FountainOfFortune.cs` (318 lines) plus a handful of leaf
+items, roughly 900 lines total. The original decline assumed `EnchantedEssence` and
+`RelicFragment` pull in Imbuing; they do not, both are leaf items in `SAQuestItems.cs` and
+Imbuing only consumes them. Restores `LuckyCoin`'s `OnDoubleClick` and removes the Q-010
+deviation. Small; do it after S1.
+
+## S3. Cost every remaining decline
+
+Produce the costed menu `docs/subsystem-policy.md` calls for: unblock ratio for Pet Training
+(and for `SpecialAbility.cs` alone), the Mondain's Legacy quest framework, Myrmidex Invasion,
+Shadowguard, Skill Masteries, Vice vs Virtue, City Loyalty, Exploring the Deep, Vendor
+Searching and Instanced Peerless. Measurement only, no porting. The output is a table Chase
+picks from.
+
+## CC4. Revamped Dungeons
 150 candidate files. Despise, Shame, Wrong, Covetous Void Spawn, Blackthorn, Exodus. Best
 value on the backlog: places to go and things to fight, 2% dependency.
 
