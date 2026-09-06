@@ -1,63 +1,63 @@
-# Direction: migrate the shard from ModernUO to ServUO
+# Direction: stay on ModernUO. Port ServUO content in, indefinitely.
 
-**Status: DECIDED (again) 2026-09-06. This is the third and final entry. Read the history
-before proposing a change; the analysis never moved, only the scope did.**
+**Status: SETTLED 2026-09-06, by Chase, adamantly. Do not reopen.**
+
+## The decision
+
+Shattered Legacy runs on **ModernUO** and continues to. ServUO is a **content source** we
+port from, one system at a time, for as long as the shard is being worked on.
+
+Scope is **all the newer content**, worked through as an ongoing backlog. This is explicitly
+not a project with a completion date. It is the shard's long-term development plan.
 
 ## History, honestly
 
-1. **Decided: migrate to ServUO.** ModernUO ships zero files for High Seas and zero for Time
-   of Legends; ServUO ships 134 and 74. Scope was given as "full post-ML including naval
-   combat and Eodon."
-2. **Reversed: stay on ModernUO.** That scope had never been checked against what the shard
-   is for (a family, possibly a small school). On the assumption the scope was smaller than
-   stated, staying on the better engine and porting selectively won on every axis.
-3. **Reversed back: migrate to ServUO.** The scope was confirmed as stated: **all** newer
-   content, not a chosen subset. At that scope the arithmetic is not close.
+The direction moved several times on 2026-09-06 as scope was pinned down. Recording it so
+nobody re-derives it:
 
-The analysis was consistent throughout. What changed was one input, and it was the input
-nobody had pinned down.
+1. Migrate to ServUO — ModernUO ships zero High Seas and zero Time of Legends files.
+2. Stay on ModernUO — the scope that justified migrating had never been checked against what
+   the shard is for.
+3. Migrate to ServUO — scope confirmed as all newer content, and at that scope porting into
+   ModernUO looked like rebuilding ServUO inside it.
+4. **Stay on ModernUO.** Final. Chase's call, made with the numbers in hand.
 
-## The arithmetic at "all newer content"
+The analysis never changed. What kept moving was scope, and then how to weigh a large
+ongoing effort against a one-time migration.
 
-ServUO content absent from ModernUO: **3,091 files, 548,912 lines.** Narrowing to just the
-post-ML systems (expansions, revamped dungeons, seasonal events, Skill Masteries, Vice vs
-Virtue, City Loyalty, Exploring the Deep) is still roughly **780 files and 134,000 lines**,
-before the artifacts, mobiles and gumps that dress them.
+## Why this is defensible at full scope
 
-Five of those are subsystems ModernUO has **zero** files for and would be built from scratch,
-not ported: Skill Masteries, Shadowguard, Myrmidex Invasion, Vendor Searching, Instanced
-Peerless.
+The case against was that porting the whole post-ML catalogue is multi-year. That is true,
+and it is not the objection it first appears to be:
 
-Porting all of that into ModernUO is rebuilding ServUO inside ModernUO, and leaves us
-maintaining every line with no upstream. On ServUO it already works and is maintained.
+- **This is a hobby shard with no deadline.** A backlog that never empties is a feature, not
+  a cost. The alternative buys the content at once and then permanently pays a worse runtime.
+- **ModernUO stays modern.** .NET 10, source-generated serialization, fast saves, real tests,
+  active platform work. Migrating trades all of that away for good.
+- **Nothing is ever at risk.** Every port leaves a working shard, an intact world and live
+  accounts. There is no cutover, no fresh world, no compensation pass, no password window.
+- **Stop anywhere and the shard is fine.** A migration half-done is a broken shard; a backlog
+  half-done is just a shard with less content than it will have next month.
+- **Value arrives in the right order.** Port what players will actually touch first. The
+  content nobody opens simply stays unported, forever, at no cost.
 
-## What this costs, stated plainly
+## What we do not pretend
 
-Nothing about the engine comparison changed and none of these shrank:
+Ported content is ours to maintain, with no upstream. Five subsystems ModernUO has zero
+files for — Skill Masteries, Shadowguard, Myrmidex Invasion, Vendor Searching, Instanced
+Peerless — are builds, not ports, and gate the content resting on them. Those are priced in
+`content-menu.md` and `highseas-eodon-feasibility.md`. They get done when they get done.
 
-- **Runtime.** .NET 10 down to `net48` under Mono. This is a real regression.
-- **Serialization.** Source-generated back to hand-written with a version int.
-- **The world.** Characters, items and houses do not port. Fresh world plus a compensation pass.
-- **Our own code.** All 111 custom scripts get rewritten.
+## Immediate consequences
 
-Accepted deliberately, in exchange for a content catalogue we would otherwise spend years
-writing and then own forever.
+- **No SHA2 password window.** There is no cutover; hashes never need another engine to read
+  them. That urgency is cancelled.
+- **No account or world migration**, and no spawner conversion. Our data stays put.
+- **The 111 custom scripts are never rewritten.** They keep working as they are.
+- `D:\UO\ServUO-pub57` is a **read-only content source**. Never edit, never build in, never
+  migrate to.
 
-## What makes it affordable
+## Still true regardless
 
-The port triage (`port-triage.md`) measured our side: **82 trivial, 25 mechanical, 3
-repetitive, 1 genuinely hard.** No Core bucket at all, because the shard was already built as
-pinned upstream plus an isolated customization layer. That architecture is why this is weeks
-rather than months.
-
-## Time-boxed, act now
-
-**Switch ModernUO to SHA2 password hashing while the old shard is still taking logins.**
-Default is Argon2, which ServUO cannot read; SHA2 is marked "ServUO compatibility" in
-ModernUO's own source and rehashes on successful login. Miss this window and every player
-needs a password reset. Full detail in `migration-plan.md` Phase 0.
-
-## Still true regardless of direction
-
-The three setup defects were never migration concerns; they are problems with the shard as it
-runs today, and a compiling canonical tree is a prerequisite to porting *from*. See `AGENTS.md`.
+The three setup defects are problems with the shard as it runs today, not migration concerns.
+A compiling canonical tree is the prerequisite for everything. See `AGENTS.md`.
