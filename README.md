@@ -1,0 +1,54 @@
+# Shard Migration: ModernUO to ServUO
+
+Working repo for moving the shard off ModernUO onto ServUO `pub57`, so the shard can
+carry post-ML content (High Seas, Time of Legends, Endless Journey).
+
+This repo is the shared source of truth for everyone working on the migration,
+human or agent. If a decision is not written down here, it is not decided.
+
+## Why we are doing this
+
+ModernUO declares expansions through `EJ` but never implemented the content.
+Measured by file count in each tree:
+
+| Content | ServUO pub57 | ModernUO main |
+|---|---|---|
+| High Seas | 134 | 0 |
+| Time of Legends / Eodon / Myrmidex | 74 | 0 |
+| Ter Mur / Stygian | 18 | 5 (spawn data only) |
+
+Target scope is the **full post-ML world including naval combat and Eodon**, which is
+precisely the content ModernUO lacks. See `docs/direction-decision.md` for why porting
+the other way was costed and rejected.
+
+## What we give up
+
+ServUO targets `net48` and runs under Mono off Windows, versus ModernUO's .NET 10.
+Serialization goes from source-generated back to hand-written. This is a deliberate
+trade of engineering quality for content reach. Do not relitigate it in code review.
+
+## Layout
+
+```
+docs/     decisions and plans. Read these first.
+tools/    converters and migration scripts (spawners, accounts)
+notes/    working notes, scratch findings, anything not yet a decision
+```
+
+## Start here
+
+1. `docs/migration-plan.md` - the seven phases, in order
+2. `docs/direction-decision.md` - why ServUO and not the reverse port
+3. `docs/client-analysis.md` - what UOAlive and Immortal Realms customized, and the
+   custom-facet finding that changes our map plans
+
+## Current status
+
+- [x] Direction decided: migrate to ServUO
+- [ ] **URGENT** Switch ModernUO to SHA2 password hashing (see migration-plan Phase 0,
+      this window closes when the old shard stops taking logins)
+- [ ] Count custom files under `Projects/UOContent` - this is the whole schedule
+- [ ] Locate and connect the ModernUO shard repo
+- [ ] Stand up stock ServUO pub57 reference shard
+- [ ] Write spawner JSON to XmlSpawner XML converter
+- [ ] Write accounts exporter (MUO binary to ServUO accounts.xml)
