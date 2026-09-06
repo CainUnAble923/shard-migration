@@ -1,15 +1,34 @@
 # Migration tools
 
-Two converters carry real value across the migration. Neither is written yet.
-
 ## `spawner-json-to-xmlspawner`
 
-Input: output of ModernUO's `[ExportSpawners]` command, serialized by `SpawnerJsonSerializer`.
-Output: ServUO XmlSpawner XML.
+`spawner_json_to_xmlspawner.py` converts the JSON produced by ModernUO's
+`ExportSpawners` command into the native DataSet XML consumed by ServUO pub57's
+XmlSpawner loader:
 
-This is what saves our spawn placement work. Write it **before** hand-placing anything in
-ServUO. Reference the DTOs at `Projects/UOContent/Engines/Spawners/*.Dto.cs` on the MUO side
-and `Scripts/Services/XmlSpawner/` on the ServUO side.
+```console
+python tools/spawner_json_to_xmlspawner.py modernuo-spawns.json servuo-spawns.xml
+```
+
+The default is deliberately strict. Unsupported spawner types or behavior stop the
+conversion without writing output. `--skip-unsupported` writes only verified rows and
+prints every skipped spawner. `--allow-z-loss` explicitly accepts that XmlSpawner cannot
+preserve ModernUO's bounds/region Z-selection behavior; both options are intentionally
+lossy.
+
+Currently source-verified mappings: ordinary `Spawner`, `RegionSpawner`, legacy home
+range, total and per-entry counts, whole-second delays, team, walking/home range,
+map/location, XY bounds, and region name.
+Not verified and therefore rejected: `ProximitySpawner`, per-entry probability other
+than 100, entry constructor parameters/properties, non-default position optimization,
+and non-default maximum spawn attempts. Exact Z-selection parity
+remains unverified and cannot be represented directly by XmlSpawner.
+
+Run its tests with:
+
+```console
+python -m unittest tools/test_spawner_json_to_xmlspawner.py
+```
 
 ## `muo-accounts-to-servuo-xml`
 
