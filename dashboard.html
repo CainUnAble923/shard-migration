@@ -1,0 +1,198 @@
+<title>Shattered Legacy Status</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;600;700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root{
+    --ground:#f1f3f6; --surface:#fff; --sunk:#e7eaef;
+    --ink:#141d27; --ink-soft:#3c4b5a; --muted:#6b7a89;
+    --rule:#d4dae1; --rule-strong:#b6c0ca; --track:#dde2e8;
+    --data:#00897b; --ok:#00897b; --warn:#a97b12; --stop:#a3243a;
+    --ok-bg:#e2f1ee; --warn-bg:#f6eeda; --stop-bg:#f8e5e8;
+    --shadow:0 1px 2px rgba(20,29,39,.06);
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --ground:#0e141b; --surface:#161f29; --sunk:#111a23;
+    --ink:#e4eaf0; --ink-soft:#bcc8d4; --muted:#8494a3;
+    --rule:#26333f; --rule-strong:#3a4a58; --track:#243140;
+    --data:#2ea894; --ok:#2ea894; --warn:#bfa83c; --stop:#ee7888;
+    --ok-bg:#12262a; --warn-bg:#272113; --stop-bg:#2b1a1e;
+    --shadow:0 1px 2px rgba(0,0,0,.4);
+  }}
+  :root[data-theme="dark"]{
+    --ground:#0e141b; --surface:#161f29; --sunk:#111a23;
+    --ink:#e4eaf0; --ink-soft:#bcc8d4; --muted:#8494a3;
+    --rule:#26333f; --rule-strong:#3a4a58; --track:#243140;
+    --data:#2ea894; --ok:#2ea894; --warn:#bfa83c; --stop:#ee7888;
+    --ok-bg:#12262a; --warn-bg:#272113; --stop-bg:#2b1a1e;
+    --shadow:0 1px 2px rgba(0,0,0,.4);
+  }
+  *{box-sizing:border-box}
+  body{background:var(--ground);color:var(--ink);
+    font-family:"Source Sans 3",ui-sans-serif,system-ui,sans-serif;font-size:16px;line-height:1.6}
+  .wrap{max-width:58rem;margin:0 auto;padding:3rem 1.5rem 5rem;display:flex;flex-direction:column;gap:2.5rem}
+  h1,h2,h3{font-family:"Zilla Slab",Georgia,serif;margin:0;line-height:1.15;text-wrap:balance}
+  h1{font-size:2.2rem;font-weight:700;letter-spacing:-.015em}
+  h2{font-size:1.3rem;font-weight:600}
+  h3{font-size:1rem;font-weight:600}
+  p{margin:0;max-width:64ch}
+  .eyebrow{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:.7rem;
+    letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+  code{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:.87em;
+    background:var(--sunk);border-radius:3px;padding:.08em .34em;color:var(--ink-soft)}
+  header{display:flex;flex-direction:column;gap:.8rem}
+  .meta{display:flex;flex-wrap:wrap;gap:.4rem 1.3rem;font-family:"JetBrains Mono",ui-monospace,monospace;
+    font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);
+    border-top:2px solid var(--ink);padding-top:.65rem}
+  section{display:flex;flex-direction:column;gap:1rem}
+  .card{background:var(--surface);border:1px solid var(--rule);box-shadow:var(--shadow);
+    padding:1.4rem 1.6rem;display:flex;flex-direction:column;gap:.8rem}
+  .hero{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem 1.5rem}
+  .hero .big{font-family:"Zilla Slab",Georgia,serif;font-size:3rem;font-weight:700;line-height:1;
+    color:var(--warn);font-variant-numeric:tabular-nums}
+  .hero .cap{font-size:.95rem;color:var(--ink-soft);max-width:36ch}
+  .track{position:relative;height:14px;background:var(--track);border-radius:7px;overflow:hidden;max-width:22rem}
+  .fill{position:absolute;inset:0 auto 0 0;background:var(--data);border-radius:7px}
+  table{border-collapse:collapse;width:100%;font-size:.92rem}
+  th,td{text-align:left;padding:.48rem .7rem;border-bottom:1px solid var(--rule);vertical-align:top}
+  thead th{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:.67rem;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--rule-strong)}
+  td.n{font-family:"JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;
+    text-align:right;white-space:nowrap}
+  .pill{display:inline-flex;align-items:center;gap:.4rem;font-size:.77rem;font-weight:600;
+    padding:.1rem .5rem;border-radius:99px;white-space:nowrap}
+  .pill::before{content:"";width:7px;height:7px;border-radius:99px;background:currentColor;flex:none}
+  .p-ok{color:var(--ok);background:var(--ok-bg)}
+  .p-no{color:var(--stop);background:var(--stop-bg)}
+  .p-next{color:var(--warn);background:var(--warn-bg)}
+  .scroller{overflow-x:auto}.scroller>table{min-width:28rem}
+  .flag{background:var(--stop-bg);border:1px solid var(--stop);padding:1.1rem 1.3rem;
+    display:flex;flex-direction:column;gap:.5rem}
+  .flag .eyebrow{color:var(--stop)}
+  .note{background:var(--ok-bg);border:1px solid var(--ok);padding:1.1rem 1.3rem;
+    display:flex;flex-direction:column;gap:.5rem}
+  .note .eyebrow{color:var(--ok)}
+  ul{margin:0;padding-left:1.1rem;display:flex;flex-direction:column;gap:.3rem}
+  .foot{font-size:.85rem;color:var(--muted)}
+  @media (max-width:600px){h1{font-size:1.75rem}.hero .big{font-size:2.4rem}}
+</style>
+
+<div class="wrap">
+
+  <header>
+    <span class="eyebrow">Shattered Legacy &middot; ModernUO</span>
+    <h1>Shard status</h1>
+    <div class="meta">
+      <span>2026-09-06</span>
+      <span>Running on ModernUO</span>
+      <span>Direction settled</span>
+    </div>
+  </header>
+
+  <section>
+    <div class="note">
+      <span class="eyebrow">Settled</span>
+      <h3>Stay on ModernUO. Port ServUO content in, indefinitely.</h3>
+      <p>ModernUO stays modern (.NET 10, source-generated serialization, fast saves, real tests). ServUO is a read-only content source. Scope is all the newer content, worked as an ongoing backlog with no completion date, which is why there is no percentage on this page.</p>
+      <p><strong>No migration.</strong> No cutover, no fresh world, no account export, no password window. The 111 custom scripts are never rewritten, and every port leaves a working shard.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="note">
+      <span class="eyebrow">Governing principle</span>
+      <h3>Port unchanged, so the existing wikis do our documentation</h3>
+      <p>Content matching OSI behaviour is content nobody has to document. Players use UOGuide and Stratics instead of a custom wiki. Every deviation is a page only we can write, so keep ServUO's defaults, and prefer turning a system <em>off</em> over running it <em>differently</em>.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="card">
+      <div class="hero">
+        <span class="big">3 / 7</span>
+        <span class="cap"><strong>Foundation defects resolved.</strong> Problems with the shard as it runs today. Nothing else starts until these close.</span>
+      </div>
+      <span class="track"><span class="fill" style="width:43%"></span></span>
+    </div>
+    <div class="scroller">
+      <table>
+        <thead><tr><th>Foundation item</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><code>CraftContext</code> members recovered</td><td><span class="pill p-ok">done</span></td></tr>
+          <tr><td>Eight <code>ResourceInfo</code> wood enum members recovered</td><td><span class="pill p-ok">done</span></td></tr>
+          <tr><td><code>OutridersGuildmaster</code> recovered</td><td><span class="pill p-ok">done</span></td></tr>
+          <tr><td><code>server/customizations</code> compiles standalone</td><td><span class="pill p-next">next</span></td></tr>
+          <tr><td><code>apply-patches.sh</code> fails on a failed patch</td><td><span class="pill p-no">no</span></td></tr>
+          <tr><td>Stale <code>customizations/migrations</code> removed</td><td><span class="pill p-no">no</span></td></tr>
+          <tr><td><code>RegenRates</code> routing made explicit</td><td><span class="pill p-no">no</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="foot">The three recovered pieces exist on disk but are uncommitted, and no clean build has confirmed the tree compiles. Marked done for recovery, not for verification.</p>
+  </section>
+
+  <section>
+    <div class="flag">
+      <span class="eyebrow">Live issue, predates all of this</span>
+      <h3>Seven patches fail silently on every build</h3>
+      <p>Of 17 tracked patches, <strong>seven do not apply</strong> against the pinned ModernUO source. <code>apply-patches.sh</code> converts those failures to warnings and exits 0, so the build reports success regardless.</p>
+      <p>If they have been failing in production, some customizations may not be running on the live shard right now.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="eyebrow">Content backlog</span><h2>Ordered by measured dependency cost</h2></div>
+    <p>3,091 candidate files exist in ServUO. Order matters far more than the total. Everything below has near-zero coupling to subsystems ModernUO lacks.</p>
+    <div class="scroller">
+      <table>
+        <thead><tr><th>Content</th><th class="n">Files</th><th class="n">Lines</th><th class="n">Dep</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Revamped Dungeons</strong> — Despise, Shame, Wrong, Covetous, Blackthorn, Exodus</td><td class="n">255</td><td class="n">28,828</td><td class="n">2%</td></tr>
+          <tr><td><strong>High Seas, cheap half</strong> — fishing, rare fish, sea creatures, food</td><td class="n">~78</td><td class="n">~17,000</td><td class="n">0%</td></tr>
+          <tr><td><strong>Eodon creatures</strong> — dinosaurs and tribal mobs</td><td class="n">52</td><td class="n">6,607</td><td class="n">0%</td></tr>
+          <tr><td>Creatures and NPCs</td><td class="n">354</td><td class="n">56,339</td><td class="n">0%</td></tr>
+          <tr><td>Addons, Decorative, New Magincia</td><td class="n">297</td><td class="n">39,067</td><td class="n">0%</td></tr>
+          <tr><td>Crafting resources, Bulk Orders</td><td class="n">89</td><td class="n">8,221</td><td class="n">0%</td></tr>
+          <tr><td>Artifacts and Equipment</td><td class="n">466</td><td class="n">45,472</td><td class="n">1-2%</td></tr>
+          <tr><td>High Seas, naval half — galleons and cannons</td><td class="n">~54</td><td class="n">~14,000</td><td class="n">0%*</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="foot">* Naval is not blocked by a missing subsystem, but it means extending ModernUO's <code>BaseBoat</code>. Its own mini-project rather than a drop-in.</p>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="eyebrow">Deferred</span><h2>Needs a subsystem built first</h2></div>
+    <div class="scroller">
+      <table>
+        <thead><tr><th>Content</th><th class="n">Files</th><th>Gate</th></tr></thead>
+        <tbody>
+          <tr><td>Myrmidex Invasion</td><td class="n">45</td><td>subsystem absent from ModernUO. The Valley of Eodon works without it.</td></tr>
+          <tr><td>Shadowguard</td><td class="n">8</td><td>separate dungeon, own decision. Unrelated to the Valley.</td></tr>
+          <tr><td>Skill Masteries</td><td class="n">45</td><td>100% dependent</td></tr>
+          <tr><td>Vice vs Virtue</td><td class="n">55</td><td>100% dependent</td></tr>
+          <tr><td>City Loyalty</td><td class="n">27</td><td>96% dependent</td></tr>
+          <tr><td>Exploring the Deep</td><td class="n">70</td><td>29% dependent</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="foot">Deferred, not declined. Costs are recorded so any of these can be picked up deliberately.</p>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="eyebrow">Correction log</span><h2>Findings that changed a decision</h2></div>
+    <div class="card">
+      <ul>
+        <li><strong>Eodon separates.</strong> 60% of Eodon-family content (89 files, 25,354 lines) touches no missing subsystem. The earlier "83% dependent" measured the Myrmidex folder, not Eodon, and made the Valley look gated when it is not.</li>
+        <li><strong>Custom facets are available.</strong> The six-facet ceiling is an official-client limit, not a ClassicUO one. Immortal Realms runs <code>map0</code> through <code>map21</code> in production.</li>
+        <li><strong>The canonical tree was never complete.</strong> The old build sourced <code>server/uo/</code>, so a green build never proved <code>server/customizations</code> could stand alone. It could not.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="eyebrow">Method</span><h2>Where these numbers come from</h2></div>
+    <p class="foot">Counts come from the working trees on every run of <code>tools/progress.py</code>. Judgment items live in <code>tools/progress-state.json</code>. Dependency percentages are the share of files in an area referencing a subsystem ModernUO ships zero files for. Source for this page: <code>dashboard.html</code> in the migration repo.</p>
+  </section>
+
+</div>
