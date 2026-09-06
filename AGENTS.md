@@ -131,5 +131,15 @@ python tools/progress.py --dry-run   # print only
 ```
 
 Run it at the end of every work session and include the result in that commit.
+
+`tools/expansion_coverage.py` gives the same picture by **expansion** rather than by
+directory: how much of each era's content exists, how much ModernUO already ships, and how
+much we have added. Run it after any batch of ports.
+
+    python tools/expansion_coverage.py
+
+Its coverage figures are filename-stem matches, a proxy for presence and not for behaviour,
+and unclassified files fall into the Pre-AoS bucket. Directional, not precise. Do not quote
+them as completion percentages.
 **Its buckets still describe the old migrate-to-ServUO plan and need rewriting for the new
 direction.** Do not trust the numbers until that is done.
