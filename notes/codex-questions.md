@@ -118,7 +118,7 @@ Status: **[ANSWERED]** — resume.
 
 ---
 
-## Q-002 [OPEN] 2026-09-06 Shard repo AGENTS.md still states the abandoned ServUO migration
+## Q-005 [OPEN] 2026-09-06 Shard repo AGENTS.md still states the abandoned ServUO migration
 
 **Question:** `D:\ShatteredLegacy\AGENTS.md` opens with "**This shard is being migrated from
 ModernUO to ServUO pub57.**" and describes ServUO as "the new base" under a section titled
@@ -140,7 +140,7 @@ overseer.
 
 **Answer:**
 
-## Q-003 [OPEN] 2026-09-06 Two different line counts for the same 111 customization files
+## Q-006 [OPEN] 2026-09-06 Two different line counts for the same 111 customization files
 
 **Question:** Which is right — 37,581 or 37,748 lines?
 
@@ -155,7 +155,7 @@ cited as evidence later.
 
 **Answer:**
 
-## Q-004 [OPEN] 2026-09-06 Uncommitted SHA2 password-hashing change is ServUO-migration residue
+## Q-007 [OPEN] 2026-09-06 Uncommitted SHA2 password-hashing change is ServUO-migration residue
 
 **Question:** Should the uncommitted `entrypoint.sh` change be committed, reverted, or left
 alone? It is account-affecting, so I have not touched it.
@@ -200,3 +200,43 @@ destination-exists check you are adding is exactly what makes a recursive instal
 the existing flat behaviour for top-level files so this is additive rather than a rewrite.
 Verify with a throwaway `sub/dir/Foo.cs` that lands at `Projects/UOContent/sub/dir/Foo.cs`
 and fails the build if the parent path does not exist.
+
+**Codex note (renumbering):** Q-005 to Q-007 were originally filed as Q-002 to Q-004 and
+collided with the overseer's Q-002 above, which was written at the same time. The
+flat-namespace question keeps the number, since `docs/flat-namespace-problem.md` and Chase's
+instruction both reference "Q-002". Nothing else changed in them.
+
+**Codex note on Q-002, one deviation from the answer.** Implemented in F2, verified, with one
+change to what the answer asked for.
+
+The answer said to verify that a nested file "fails the build if the parent path does not
+exist". I did not implement that, because it would block the case the change exists to serve:
+`Services/Revamped Dungeons/Shame/` does not exist in ModernUO, so requiring the parent to
+exist would reject every ported dungeon. Requiring `Projects/UOContent/` itself to exist is
+trivially true and checks nothing.
+
+What is enforced instead is the check that actually protects an override: **a subdirectory
+file whose destination file already exists upstream fails the build**, with a message saying
+to route it as an explicit replacement. That is the real hazard — an unannounced replacement
+is how an override gets silently lost — and it is the direct analogue of the `replace_file`
+destination check. Parent directories are created as needed.
+
+Verified against pinned `7c9215d97`:
+
+- Two files both named `Generate.cs`, in `Services/Revamped Dungeons/Shame/` and
+  `.../Wrong/`, land at their own paths and keep their own contents. Under the old flat
+  install one would have overwritten the other.
+- `Misc/AOS.cs` placed in a subdirectory fails the build and leaves upstream `AOS.cs`
+  untouched.
+- Top-level behaviour is unchanged: the `Misc/` file list after the new script is byte
+  identical to the old one, 160 entries, no diff.
+
+Say if you want the parent-must-exist rule anyway and I will add it, but it would need an
+allowlist of new directories to be portable.
+
+**One interaction worth flagging:** the only subdirectory in `server/customizations` today is
+`migrations/`, holding exactly the stale PetMimic JSONs that F4 removes. This is the "if the
+copy strategy ever changes" scenario `AGENTS.md` warns about, and the copy strategy just
+changed. They are excluded because the mirror installs `*.cs` only, and the runner now prints
+a NOTE naming each non-`.cs` file it skipped rather than ignoring them silently. F4 is next
+and deletes them outright.

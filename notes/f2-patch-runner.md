@@ -246,3 +246,52 @@ Per the loop rule, raised as questions in `codex-questions.md` rather than fixed
 - `D:\ShatteredLegacy\docker\uo\entrypoint.sh` has an uncommitted change forcing
   `accountSecurity.encryptionAlgorithm=SHA2`, commented as keeping accounts "bridgeable to
   ServUO" — a leftover of the abandoned migration.
+
+---
+
+## Addendum — subdirectory mirroring (folded into F2)
+
+Added after the above, on Chase's instruction and the answer to Q-002, while
+`apply-patches.sh` was still open. Analysis in `docs/flat-namespace-problem.md`.
+
+**Behaviour.** Top-level `.cs` is unchanged: additive into `Misc/`, `-maxdepth 1`, same six
+by-name exclusions. Anything in a **subdirectory** of `server/customizations` is now mirrored
+to `Projects/UOContent/<same relative path>` instead of being flattened. Purely additive.
+
+**Safety rule.** A subdirectory file whose destination file already exists upstream fails the
+build, with a message to route it as an explicit replacement. Parent directories are created
+as needed.
+
+I did **not** implement the "fail if the parent path does not exist" check the answer
+suggested. It would reject every ported dungeon, since `Services/Revamped Dungeons/Shame/`
+does not exist in ModernUO — that is the whole point of the change. Reasoning and an offer to
+add it behind an allowlist are in the Q-002 note in `codex-questions.md`.
+
+**Non-`.cs` files in subdirectories are not installed**, and the runner now prints a NOTE
+naming each one rather than ignoring it silently.
+
+### Tests, against pinned `7c9215d97`
+
+| # | Case | Expected | Result |
+|---|---|---|---|
+| D | `Shame/Generate.cs` and `Wrong/Generate.cs`, same basename | both land at their own paths, contents distinct | **pass** — `// shame` and `// wrong`, each at its own path |
+| E | `Misc/AOS.cs` in a subdirectory, colliding with upstream | exit 1, upstream untouched | **pass** — exit 1, `would overwrite existing upstream file`, upstream `AOS.cs` intact |
+| F | Regression: top-level install old script vs new | identical | **pass** — `Misc/` listing byte identical, 160 entries, empty diff |
+
+D is the case `flat-namespace-problem.md` describes: under the old flat install one of those
+two would have silently overwritten the other.
+
+### The F4 interaction, now more urgent
+
+The only subdirectory in `server/customizations` today is `migrations/`, holding exactly the
+stale PetMimic v0-v2 JSONs. `AGENTS.md` calls them "save-corruption material if the copy
+strategy ever changes" — and the copy strategy just changed. They are excluded because the
+mirror installs `*.cs` only, and each skipped file is now named in the build log. F4 removes
+them outright and is next.
+
+### Aside: the customization count is 114, not 111
+
+`find server/customizations -maxdepth 1 -type f -name '*.cs'` returns **114**. Both `AGENTS.md`
+files say 111. The difference is the three files F1 recovered: `CraftContext.cs`,
+`ResourceInfo.cs`, `OutridersGuildmaster.cs`. Related to Q-006 on the line-count discrepancy;
+neither doc was edited.
