@@ -1248,7 +1248,7 @@ misleading-message cleanup in point 2 is wanted.
 
 ---
 
-## Q-023 [OPEN] 2026-09-07 ModernUO already ships an ML quest engine, so the quest-framework decline rests on a false premise
+## Q-023 [ANSWERED] 2026-09-07 ModernUO already ships an ML quest engine, so the quest-framework decline rests on a false premise
 
 **Question:** `docs/tasks.md` CC3 declined the Valley of One quest line because it "rests on
 ServUO's Mondain's Legacy quest framework (6,269 lines) while ModernUO ships a different quest
@@ -1285,9 +1285,40 @@ before committing. Full working in `notes/s3-decline-costs.md` §5.
 exists, is the same system, and carries 240 quests. The spike is what settles that, and S3 was
 measurement-only so it was not run.
 
-**Answer:**
+**Answer:** **Reopened. Your reading is right and CC3's decline was wrong in its conclusion
+while being right in its facts.**
 
-## Q-024 [OPEN] 2026-09-07 Every CC6 count is against the wrong denominator: 325 of the 462 `Mobiles/Normal` files are already in ModernUO
+I verified the premise myself before acting on it: `Projects/UOContent/Engines/ML Quests` is
+there, 109 files, 18,110 lines, and `Aelorn` and `Aeluva` are where you said. That is not a
+"different quest engine" in the sense CC3 meant. It is the same OSI system with 240 quests
+already in it.
+
+**Two separate decisions, and CC3 collapsed them into one:**
+
+1. **Do we port ServUO's ML framework?** No, and the decline stands — but on the *two engines for
+   one job* reason, not on 6,269 lines. Line count was never the argument; I wrote it as though it
+   were, and that is what made the second decision look settled.
+2. **Do we port the quests ModernUO lacks?** That is ordinary content work against an engine we
+   already have. 203 quests, including the 7 Valley of One and 10 Myrmidex Threat quests CC3
+   turned down.
+
+**Approved: the one-quest spike, as its own task.** It is now **S5** in `docs/tasks.md`, and it
+runs the way S1 did, with permission to fail. Your caveat is the reason it must be a spike and not
+a batch: you established that ModernUO's engine *exists* and is *the same system*, not that it is
+behaviourally complete. Translate one quest end to end, prove or disprove the objective mapping,
+and report. A well-evidenced "the mapping does not hold" delivered in an hour is a good result.
+
+Pick a quest with an objective type on both sides of the mapping, not the easiest one. And note
+`QuestionAndAnswerObjective` has no counterpart; the 2 files using it are their own small
+question later, not this spike's problem.
+
+**What this changes if the spike passes:** the Valley of One comes back into scope, and so does a
+category I had written off entirely. That is the second decline of mine this project has reversed
+on measurement, after the armour sets.
+
+Status: **[ANSWERED]** — framework decline restated on two-engines; quests reopened; S5 is the spike.
+
+## Q-024 [ANSWERED] 2026-09-07 Every CC6 count is against the wrong denominator: 325 of the 462 `Mobiles/Normal` files are already in ModernUO
 
 **Question:** CC6's percentages, the 103 blocked, and the 89 are all computed over ServUO's 462
 `Mobiles/Normal` files. 325 of those 462 have a primary type ModernUO already declares, so they
@@ -1321,4 +1352,47 @@ Consequences, all in `notes/s3-decline-costs.md`:
 beside it, and `TribeType` joins `SetWeaponAbility` in the "transformation, not a decision"
 list in `AGENTS.md`. I have not edited `docs/` — that is the overseer's lane.
 
-**Answer:**
+**Answer:** **Yes. CC6 is rewritten against 137, and this is the most valuable single finding
+the project has produced.**
+
+I reproduced the headline independently before touching anything: 462 ServUO `Mobiles/Normal`
+stems against every `.cs` name in pinned ModernUO gives **325 present, 137 absent**. Exactly your
+numbers.
+
+**The general lesson is bigger than CC6.** More than half of ServUO's script tree is types
+ModernUO already declares. So *any* count phrased as "ServUO files that reference X" is roughly
+double what we would actually gain, and this project has been quoting such numbers as backlog
+size since the first week. That is now a standing rule in `AGENTS.md`: **filter by what ModernUO
+lacks before a count means anything.** It is worth more than the eight corrections that led to
+it.
+
+Taking your four consequences in turn:
+
+- **462 to 137.** Done. CC6 is rewritten around it, with the denominator stated in the task so
+  nobody recomputes percentages against the old one.
+- **103 blocked to 37, and 4 genuinely hard-blocked** after your own follow-up correction. Your
+  conclusion is the one that matters and I have adopted it verbatim: **Pet Training buys fidelity,
+  not throughput.** A creature that degrades to deleting a one-line `SetSpecialAbility` call is
+  the `Saurosaurus` precedent, and we already decided that ships.
+- **The 89 becomes 65, with its definition beside it.** Four candidate definitions giving 206,
+  135, 81 and 65 is the clearest demonstration yet of why a bare number is worthless. The
+  definition is now written into CC6 next to the figure.
+- **`TribeType` joins `SetWeaponAbility`** in the transformation-not-decision list in `AGENTS.md`.
+  Removing 52 files from a "missing type" scan by recognising an equivalent under a different
+  name is exactly the failure mode that made `SetWeaponAbility` look blocking.
+
+**On your ninth-for-nine follow-up commit:** correcting your own count, unprompted, in the note
+whose subject is miscounting, and then saying plainly that the correction *weakens* your number
+rather than strengthening it — that is the standard. Four is an upper bound on "genuinely
+blocked", and you said so. Nobody would have caught it.
+
+Two things from the survey I am acting on that were not in your question:
+
+- **`Services/PointsSystems`** (12 files, 2,857 lines, unblocks 55, hard dependency of both Vice
+  vs Virtue and City Loyalty) is a better ratio than several things that *were* on the list. It is
+  on it now.
+- **`SAAbsorptionAttributes`** is queued as **S6**, with your ~1,120-line figure rather than the
+  ~350 headline, because you were careful to say the smaller number buys the property and tooltips
+  and not the effect.
+
+Status: **[ANSWERED]** — CC6 rewritten, the filter rule promoted to `AGENTS.md`, S5 and S6 queued.

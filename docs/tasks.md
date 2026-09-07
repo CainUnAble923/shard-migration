@@ -279,13 +279,66 @@ Q-022 answered and fixed in place: `build.sh` could not run its own test gate fr
 because MSYS rewrote `-w /build/modernuo` into a Windows path and the daemon error surfaced as
 "tests did not pass".
 
-## S3. Cost every remaining decline — START HERE
+## S3. Cost every remaining decline — DONE
 
-Produce the costed menu `docs/subsystem-policy.md` calls for: unblock ratio for Pet Training
-(and for `SpecialAbility.cs` alone), the Mondain's Legacy quest framework, Myrmidex Invasion,
-Shadowguard, Skill Masteries, Vice vs Virtue, City Loyalty, Exploring the Deep, Vendor
-Searching and Instanced Peerless. Measurement only, no porting. The output is a table Chase
-picks from.
+Completed 2026-09-07, measurement only, nothing ported. `notes/s3-decline-costs.md` carries the
+table, the file lists, the overlap analysis and the ranked recommendation.
+
+**It found the error underneath every count this project has made.** 3,134 of ServUO's 6,144
+script files have a primary type ModernUO already declares. See the new section at the top of
+`AGENTS.md`. Every backlog figure quoted before today was roughly double what we would gain.
+
+Ranked outcome:
+
+- **Best ratio: `SAAbsorptionAttributes`.** One additive file against `BaseAttributes`, which
+  ModernUO has, 57 files unblocked, closes S1's D-1 deviation, repeats S1's layering exactly.
+  Now **S6**. Cost it at ~1,120 lines, not the ~350 headline: the smaller figure buys the
+  property and tooltips, not the effect.
+- **Best surprise: ModernUO already ships an ML quest engine.** 109 files, 240 quests, 205 of
+  ServUO's 408 already present by name. The framework decline stands on two-engines-for-one-job,
+  but the 203 missing quests are content work. Now **S5**, a spike. Q-023.
+- **Strongest decline: Skill Masteries.** 35 upstream patch points for 14 files, against a
+  `BaseCreature` upstream is actively refactoring. Fails questions 2 and 3 of
+  `docs/subsystem-policy.md` at once.
+- **`Services/PointsSystems`**: 12 files, 2,857 lines, unblocks 55, and a hard dependency of both
+  Vice vs Virtue and City Loyalty. Better ratio than several things that were on the list and it
+  was not on it. Now **S7**.
+- **Pet Training buys fidelity, not throughput.** Of the 103, 37 are creatures we would gain and
+  only **4** are genuinely hard-blocked, all four by a single override or guard. The rest degrade
+  to deleting a one-line call, which is the `Saurosaurus` precedent and already settled.
+
+## S5. Translate one ML quest onto ModernUO's engine — START HERE
+
+A spike, with permission to fail, run the way S1 was. S3 established that ModernUO's `Engines/ML
+Quests` **exists** and is **the same OSI system**; it did not establish that it is behaviourally
+complete. This settles that.
+
+Translate **one** ServUO quest end to end onto ModernUO's engine. Pick one exercising an objective
+type on both sides of the mapping (ServUO Slay/Obtain/Deliver/Escort/Apprentice against ModernUO
+Kill/Collect/Deliver/Escort/GainSkill), not the easiest one. `QuestionAndAnswerObjective` has no
+counterpart and its 2 files are a separate question later.
+
+**Done when:** it builds through `build.sh`, the quest is offered and completable, and
+`notes/s5-quest-spike.md` says whether the mapping holds. A well-evidenced no in an hour is a
+good result.
+
+**If it passes**, the Valley of One and Myrmidex Threat quest lines come back into scope as
+content, and CC3's quest decline is fully reversed.
+
+## S6. `SAAbsorptionAttributes`
+
+Best measured ratio on the menu. One additive file against `BaseAttributes`. 57 files unblocked,
+and it closes deviation D-1 from S1, where all eight Aloron pieces lost `EaterCold`.
+
+Cost at **~1,120 lines**, not ~350. The ~350 buys the property and its tooltips; the effect needs
+`SAPropEffects.cs` or a patch. S3's dependency check confirmed the scary-looking parts are small:
+`GetValue`'s `RunicReforging` term is a 16-line type switch, and the `Enhancement` and
+`SkillMasterySpell` terms both return 0 on a shard without those systems.
+
+## S7. `Services/PointsSystems`
+
+12 files, 2,857 lines, unblocks 55. A hard dependency of both Vice vs Virtue and City Loyalty, so
+it gates two clusters currently sitting in the deferred list. Not scheduled; costed and available.
 
 ## CC4. Revamped Dungeons
 150 candidate files. Despise, Shame, Wrong, Covetous Void Spawn, Blackthorn, Exodus. Best
@@ -302,44 +355,32 @@ Fishing overhaul, rare fish, crabs and lobsters, fish pies, sea creatures. About
 is CC8 and a separate decision.
 
 ## CC6. Creatures and NPCs
-About 360 candidate files. **The "0% dependency" figure was wrong** and P2 measured it properly
-across all 462 files in ServUO `Mobiles/Normal`:
 
-**Re-counted 2026-09-06 after CC3, by method rather than by cohort.** The earlier
-"132 files touch Pet Training" was true and was being read as a decline rate. It is not one.
+**The backlog is 137 files, not ~360.** 325 of ServUO's 462 `Mobiles/Normal` files have a primary
+type ModernUO already declares (S3, Q-024). Every earlier figure here was against the wrong
+denominator. Verified independently: 462 stems against every `.cs` name in pinned ModernUO gives
+325 present, 137 absent.
 
-- **`SetWeaponAbility` is NOT blocked.** ModernUO has `BaseCreature.GetWeaponAbility()` at
-  `BaseCreature.cs:1312` with `WeaponAbilityChance` at `:439`, 49 stock creatures override it,
-  and every ability name matches. A `SetWeaponAbility` call ports to a `GetWeaponAbility`
-  override. This is a transformation, not a decision.
-- **57 files call `SetWeaponAbility`. 39 of those call nothing else blocked**, so 39 files move
-  out of the "needs a decision" pile and into the portable one.
-- **103 (22%) are genuinely blocked**: `SetSpecialAbility` (67), `SetAreaEffect` (19),
-  `SetMagicalAbility` (18), `PetTrainingHelper` (15). None of those three has any definition in
-  pinned ModernUO. These lose a real ability and each is its own call.
-- **89 (19%) reference at least one type ModernUO does not have.** Port the dependency to the
-  leaf like `LuckyCoin`, decline it like `FountainOfFortune`, or drop the creature. **This
-  figure is CC2's and has never been independently re-counted.**
+Of those 137:
 
-The groups overlap. CC3's sample is the useful calibration: 6 of 7 creatures were in the
-"touches Pet Training" cohort and 6 of 7 ported anyway, so the real decline rate there was
-about 14%, not 100%.
+- **65 are blocked by something other than Pet Training.** This replaces the old "89", which does
+  not reproduce at any definition — four candidate definitions give 206, 135, 81 and 65. **65 is
+  the planning number and its definition is: files ModernUO lacks, blocked by something that is
+  not Pet Training.** Method and file list in `notes/s3-decline-costs.md` section 10.
+- **37 touch Pet Training, and only 4 are genuinely hard-blocked**: `CrimsonDrake`, `IronBeetle`,
+  `PlatinumDrake`, `SabertoothedTiger`. Two are entangled only by a `TrainingDefinition` override
+  and two only by a `PetTrainingHelper.Enabled` guard on a tamed-pet branch. **Four is an upper
+  bound on blocked, not a floor.**
+- **`TribeType` blocks nothing.** ModernUO's `OppositionGroup` covers three of ServUO's four tribe
+  pairs with the same semantics; only the goblin pair needs ~25 additive lines and no patch. This
+  alone removed 52 files from the raw missing-type scan.
 
-**Losing an ability is not automatically a decline.** `Saurosaurus` lost two of three abilities
-and was still ported, following the `LuckyCoin` precedent: correct stats, loot and taming beat
-no creature at all. Decline when the creature is meaningless without what it loses; log the
-deviation either way.
+**Losing an ability is not a decline.** `Saurosaurus` lost two of three and shipped. A creature
+whose only entanglement is a one-line `SetSpecialAbility` call gets that line deleted and the
+deviation logged.
 
-**Draw batches only from the clean 275.** A batch of 20 sized against the one-hour estimate
-will blow up if one Pet Training creature lands in it, and the fix is selection, not effort.
-Filter first, then batch, and say which filter you used.
-
-The Pet Training group gets scoped separately when someone chooses to take it on. It is
-plausibly the single largest missing-subsystem decision left in the creature backlog.
-
-**Budget:** roughly an hour per 20 clean creatures, so about 14 hours for the clean set,
-across as many sessions. Build cycles are not the dominant cost; batch the builds anyway,
-it saves about ten minutes in sixty.
+**Batch from the clean set, state the filter you used, and never recompute a percentage against
+462.**
 
 ## CC7. Decoration, housing, crafting
 Addons, Decorative, New Magincia, Items/Resource, BulkOrders. 0% dependency. Cheap and

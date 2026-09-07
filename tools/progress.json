@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-07T06:50:23-05:00",
+  "generated": "2026-09-07T12:24:36+00:00",
   "direction": "stay on ModernUO; pull ServUO content selectively",
   "setup_defects": {
     "CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered": true,
@@ -454,7 +454,25 @@
       "id": "S3",
       "title": "Cost every remaining decline",
       "status": "done",
-      "note": "Costed menu for every remaining decline. Measurement only; nothing ported. Full working, every file list, and the ranked recommendation in notes/s3-decline-costs.md. Headline: a second counting error was inflating every estimate - 3,134 of ServUO's 6,144 script files have a primary type ModernUO already declares, so a ServUO file referencing a subsystem is not automatically a file we would gain. The '103 Mobiles/Normal files blocked by Pet Training' is 37 after that filter, and only 4 of those cannot be ported at all today, all four arguably degradable. Best ratio on the menu is SAAbsorptionAttributes: one additive file, ~350 lines (up to ~1,120 if the damage-eater effect comes too), 57 files unblocked, closes deviation D-1, repeats S1's layering pattern exactly. Biggest finding: ModernUO ALREADY SHIPS an ML quest engine - Engines/ML Quests, 109 files, 18,110 lines, 240 quest classes - and 205 of ServUO's 408 quests already exist there by name, so the ML framework decline stands on 'two engines for one job' and the 203 remaining quests, including both Eodon lines, are content work not a subsystem build (Q-023). Skill Masteries is the strongest decline: 35 upstream patch points for 14 files. The CC6 89 does not reproduce at any definition; the planning number is 65 (Q-024). TribeType is a SetWeaponAbility-class transformation onto ModernUO's OppositionGroup, not a blocker."
+      "note": "Measurement only. Found the error under every count on this project: 3,134 of ServUO's 6,144 files are types ModernUO already declares. CC6's backlog is 137, not 360. Best ratio is SAAbsorptionAttributes; biggest surprise is that ModernUO already ships an ML quest engine with 205 of ServUO's 408 quests; strongest decline is Skill Masteries. See notes/s3-decline-costs.md."
+    },
+    {
+      "id": "S5",
+      "title": "Translate one ML quest onto ModernUO's engine",
+      "status": "todo",
+      "note": "Spike, permission to fail. ModernUO already ships Engines/ML Quests: 109 files, 240 quests, 205 of ServUO's 408 by name. Proves whether the objective mapping holds. If it passes, the Valley of One and Myrmidex Threat quests come back as content work."
+    },
+    {
+      "id": "S6",
+      "title": "SAAbsorptionAttributes",
+      "status": "todo",
+      "note": "Best measured ratio. One additive file against BaseAttributes, 57 files unblocked, closes S1's D-1 deviation. Cost ~1,120 lines, not the ~350 headline: the smaller figure buys the property and tooltips, not the effect."
+    },
+    {
+      "id": "S7",
+      "title": "Services/PointsSystems",
+      "status": "todo",
+      "note": "12 files, 2,857 lines, unblocks 55. Hard dependency of both Vice vs Virtue and City Loyalty. Costed and available, not scheduled."
     },
     {
       "id": "C2",

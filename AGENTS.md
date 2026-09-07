@@ -170,6 +170,35 @@ excludes them by name. Any change to how customizations reach the build tree mus
 that routing. The rest are additive, and ported content goes in subdirectories that
 `apply-patches.sh` mirrors by path.
 
+## Filter by what ModernUO lacks before any count means anything
+
+**3,134 of ServUO's 6,144 script files have a primary type ModernUO already declares.** They are
+duplicate-type build failures, not porting candidates. Measured in S3 by indexing all 7,097 type
+declarations across the 3,991 pinned files.
+
+**So any count phrased as "ServUO files that reference X" is roughly double what we would gain**,
+and this project quoted such figures as backlog size for weeks. Concretely: `Mobiles/Normal` is
+462 files and **137** candidates; the "103 creatures blocked by Pet Training" is **37** we would
+gain, of which **4** are genuinely hard-blocked.
+
+**Every count gets the filter applied and the denominator stated beside it.** A percentage
+without its denominator written next to it is not a measurement.
+
+## Equivalents hide under different names
+
+Twice now a ModernUO feature has been recorded as missing because ServUO calls it something else,
+and both times it cost real content:
+
+- **`SetWeaponAbility`** → `BaseCreature.GetWeaponAbility()` (`BaseCreature.cs:1312`), overridden
+  by 49 stock creatures. Made 57 files look blocked. **Transformation, not a decision.**
+- **`TribeType`** → `OppositionGroup` (`UOContent/Mobiles/AI/OppositionGroup.cs:6`, used at
+  `BaseCreature.cs:512` and `:1316`), same semantics for three of ServUO's four tribe pairs. Made
+  53 files look blocked; only the goblin pair needs anything, ~25 additive lines and no patch.
+
+**Before recording anything as missing, search pinned ModernUO for what it *does*, not what
+ServUO *calls* it.** Zero occurrences of an identifier is evidence about a name, not about a
+capability.
+
 ## Porting ServUO content: the rules
 
 Read `docs/subsystem-policy.md` alongside these if anything you need is missing from ModernUO.
