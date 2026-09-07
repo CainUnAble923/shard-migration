@@ -106,10 +106,11 @@ B5 is the shape to aim for**, and S3 measured them separately for exactly that r
 
 | # | What | Impact | Disp. |
 |---|---|---|---|
-| D1 | **The S4 test route cannot construct any `BaseCreature`.** Every public constructor needs a `Data/npc-speeds.json` the test host does not load. Worked around inside S5's fixture | **CC6 is 137 creatures away from needing this.** The fix belongs in the route, not in each test | **OURS, before CC6.** Q-026 |
+| ~~D1~~ | ~~The S4 test route cannot construct any `BaseCreature`~~ **CLOSED 2026-09-07 by S8.** **And the cause I recorded here was wrong** (Q-031): the data file *was* in the test output all along, since `UOContent.Tests.csproj` copies 272 files there. Nothing ever called `NPCSpeeds.Configure`, because `UOContentFixture` uses a hand-picked list. Missing call, not missing data, and the two point at different fixes | — | S8 | **DONE** |
 | D2 | **ModernUO has no `Quest.StartingItem` equivalent.** How many of the 203 need one is genuinely unmeasured | unknown, blocks some quests | OURS, measure. Q-025 |
 | D3 | **`docker-compose.yml` has an uncommitted change** repointing the live script mount at `server/customizations` read-only. Directionally right, unverified, deploy-affecting | live shard | **CHASE.** Q-009 |
 | D4 | **Build cost is 6x what the estimate says.** 20s unchanged, **266s with one changed file**, against `cc2-timed-port.md`'s 0:44 which predates S4 and did not compile or run tests | every batch estimate is optimistic | fix the estimate |
+| D6 | **The runtime image ships 16 test-infrastructure assemblies of 53.** Pre-existing since S4, because the Dockerfile publishes `ModernUO.slnx` | inert, cosmetic | **Recorded, not scheduled.** Q-032. **The trap:** that same publish line provides the compile gate. Any fix must lose the test assemblies *and* still fail the build on a deliberately broken test |
 | D5 | **`server/uo/` build tree is stale**, missing five current customizations, and predates the F1 recovery | confusing, not harmful | leave; it is gitignored and generated |
 
 ---

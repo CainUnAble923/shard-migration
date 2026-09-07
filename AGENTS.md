@@ -95,10 +95,10 @@ loaded and reachable. Check before placing anything on one.
 
 ```
 D:\ShatteredLegacy               the shard. Infrastructure-as-code, NOT a ModernUO fork.
-  server/customizations/         canonical custom scripts. 191 .cs, 42,617 lines. EDIT TARGET.
+  server/customizations/         canonical custom scripts. 198 .cs, 44127 lines. EDIT TARGET.
                                  (2026-09-06 snapshot; grows with every port. tools/progress.py
                                  recomputes it - that output is the live number.)
-  server/patches/                overrides against stock ModernUO. 13 .patch + 5 replacements.
+  server/patches/                overrides against stock ModernUO. 15 .patch + 5 replacements.
   server/migrations/             serialization migration JSONs.
   server/uo/modernuo/            build tree. NOT an edit target, NOT committed. See below.
   docker/                        compose stack; builds ModernUO from pinned commit 7c9215d97.
@@ -205,6 +205,17 @@ and both times it cost real content:
 **Before recording anything as missing, search pinned ModernUO for what it *does*, not what
 ServUO *calls* it.** Zero occurrences of an identifier is evidence about a name, not about a
 capability.
+
+**And a cause deduced from reading source is a hypothesis, not a finding.** Q-026 stated that a
+`BaseCreature` could not be constructed in a test because the speed table was not in the test
+host's directory. It was: `UOContent.Tests.csproj` copies 272 data files into the output. Nothing
+ever called `NPCSpeeds.Configure`. **The two causes point at different fixes** — a build-system
+change versus one added line — and the wrong one reached `docs/gap-register.md` as fact.
+**Probe the running system before writing the fix.** A probe test costs minutes.
+
+This project now has three shapes of one mistake: **counts** described rather than counted, ten
+times; **capabilities** judged by name rather than behaviour; and **causes** deduced rather than
+probed.
 
 **And a name is a hypothesis about behaviour, not a description of it.** `AbsorptionAttributes`
 and "damage eater" both sound like damage reduction. `DamageEaterContext.OnDamage` actually calls

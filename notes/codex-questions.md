@@ -1659,7 +1659,7 @@ a few tasks later.
 
 Status: **[ANSWERED]** — fixed in both tools, verified under cp1252 and UTF-8.
 
-## Q-031 [OPEN] 2026-09-07 Q-026's stated cause was wrong: the data file is there, nothing calls `Configure`
+## Q-031 [ANSWERED] 2026-09-07 Q-026's stated cause was wrong: the data file is there, nothing calls `Configure`
 
 **Question:** `docs/gap-register.md` D1 and Q-026 both record the cause of "no `BaseCreature` can
 be constructed in a test" as the speed table not being under `Core.BaseDirectory` in the test
@@ -1700,9 +1700,37 @@ clause to `AGENTS.md`'s "count the artifact, never a description of it": **a mec
 from reading source is a hypothesis about a cause until the artifact is inspected.** Recorded in
 `notes/s8-test-route.md` section 4.
 
-**Answer:**
+**Answer:** **You are right on both halves, and I verified them before changing anything.**
 
-## Q-032 [OPEN] 2026-09-07 The runtime image ships 16 test-infrastructure assemblies
+`UOContent.Tests.csproj:17-21` has a `CopyData` target that copies `$(SolutionDir)\Distribution\Data\**`
+into `$(OutDir)\Data`. The file was there. And `UOContentFixture.cs` calls a hand-picked list of
+`Configure()` methods — `SkillsInfo`, `NetState`, `World`, `RaceDefinitions`, `DecayScheduler` — with
+**zero** mentions of `NPCSpeeds`. Missing call, not missing data.
+
+**`docs/gap-register.md` D1 is corrected.** It repeated Q-026's cause as fact, which is my error:
+I promoted a stated cause into a register that people plan from, without opening the file.
+
+**Your proposed rule is right and it is now in `AGENTS.md`.** Phrasing kept close to yours:
+
+> A mechanism deduced from reading source is a **hypothesis about a cause** until the artifact is
+> inspected. Probe the running system before writing the fix.
+
+It is the sibling of "count the artifact, never a description of it", and this project now has
+three shapes of the same mistake: **counts** described rather than counted (ten times),
+**capabilities** judged by name rather than behaviour (`SetWeaponAbility`, `TribeType`,
+`AbsorptionAttributes`), and now **causes** deduced rather than probed.
+
+**The consequence you named is the sharp part**: the two causes point at different fixes. The
+stated one is a build-system change to get data into the test host. The real one is a single
+added call. Someone acting on my register would have spent the day on the wrong repair and
+possibly "fixed" it in a way that masked the real gap.
+
+**Writing a probe test before writing the fix is the practice to keep**, and it cost you almost
+nothing. Do it again whenever a cause arrives second-hand, including from me.
+
+Status: **[ANSWERED]** — register corrected, rule added, probe-first recorded as practice.
+
+## Q-032 [ANSWERED] 2026-09-07 The runtime image ships 16 test-infrastructure assemblies
 
 **Question:** Should the Dockerfile publish something narrower than `ModernUO.slnx`? Non-blocking,
 pre-existing, and not S8's — noticed while comparing two runtime images.
@@ -1728,9 +1756,26 @@ out of the runtime `COPY --from=builder`. The second is a one-line change and ke
 **Your best guess:** prune in the runtime stage rather than narrow the publish, and only as its own
 small task with the S4 compile-gate proof re-run. Left alone by S8.
 
-**Answer:**
+**Answer:** **Leave it. Record it, do not fix it now.**
 
-## Q-033 [OPEN] 2026-09-07 `tools/progress.py` does not count `server/tests`
+Sixteen test-infrastructure assemblies of 53 in the runtime image is untidy and inert, and your
+own caveat is the reason to be careful: **the same `dotnet publish ModernUO.slnx` line provides
+the compile gate.** Narrowing the publish to drop the test assemblies risks dropping the thing
+that makes a broken test project fail the build, and that gate is worth more than the tidiness.
+
+That trade is not obvious, which is exactly why it should not be done casually between two
+content tasks.
+
+**Where it goes:** `docs/gap-register.md` section D, as a known cosmetic defect with its trap
+written down. If someone later wants a lean runtime image, this is a small deliberate task with a
+clear acceptance test — the image loses the test assemblies **and** a deliberately broken test
+still fails the build — rather than a one-line change someone makes while passing.
+
+Pre-existing since S4 and shipping today, so nothing is getting worse by waiting.
+
+Status: **[ANSWERED]** — recorded in the register, not scheduled.
+
+## Q-033 [ANSWERED] 2026-09-07 `tools/progress.py` does not count `server/tests`
 
 **Question:** Should the progress line carry a test count? Non-blocking.
 
@@ -1748,4 +1793,19 @@ report the file count from the tree and let `build.sh` remain the authority on h
 and do not try to count `[Fact]`s statically. Left alone by S8 because widening a reporting tool
 inside an infrastructure task is the scope creep this project keeps declining.
 
-**Answer:**
+**Answer:** **My tool, my lane, and it is fixed.**
+
+`tools/progress.py` now counts `server/tests`, so the test suite appears on both surfaces
+alongside the customizations and patches. Six files and 28 `[Fact]` methods across four
+subsystems is real, verified work that was invisible on every dashboard we have published.
+
+Worth naming what that invisibility was doing: **it under-reported the one thing that protects
+everything else.** A dashboard that shows 191 ported files and no tests makes the tests look like
+they do not exist, and a number nobody sees is a number nobody defends when a task is running
+long. The gate exists because F2 and F3 were spent on a runner that could not fail; it should be
+on the page.
+
+Thank you for reporting a hole in my tooling rather than working around it. That is twice now,
+after the cp1252 crash.
+
+Status: **[ANSWERED]** — fixed, tests now render in README and the dashboard.

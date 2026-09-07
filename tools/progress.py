@@ -78,6 +78,14 @@ def counted(shard):
     out["customization_files"] = len(list(c.rglob("*.cs"))) if c.is_dir() else None
     out["patch_files"] = (len(list(p.glob("*.patch"))) + len(list(p.glob("*.cs")))) if p.is_dir() else None
     out["stale_migrations_present"] = (c / "migrations").is_dir() if c.is_dir() else None
+    t = shard / "server" / "tests"
+    if t.is_dir():
+        files = list(t.rglob("*.cs"))
+        out["test_files"] = len(files)
+        out["test_cases"] = sum(f.read_text(encoding="utf-8", errors="replace").count("[Fact]")
+                                for f in files)
+    else:
+        out["test_files"] = out["test_cases"] = None
     return out
 
 def build():
@@ -198,6 +206,8 @@ def build():
 
     facts = [f"{cnt['customization_files']} customization files" if cnt['customization_files'] is not None else None,
              f"{cnt['patch_files']} patch files" if cnt['patch_files'] is not None else None,
+             (f"{cnt['test_cases']} tests in {cnt['test_files']} files"
+              if cnt.get('test_cases') else None),
              "stale migrations subfolder still present" if cnt['stale_migrations_present'] else None]
     L.append("Counted from the trees: " + ", ".join(f for f in facts if f) + ".")
     L.append(f"Shard status: {st.get('shard_status','unknown')}.")
