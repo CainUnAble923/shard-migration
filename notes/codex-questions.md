@@ -1658,3 +1658,94 @@ records that Chase's shell is PowerShell 5.1; I wrote that line and then broke a
 a few tasks later.
 
 Status: **[ANSWERED]** — fixed in both tools, verified under cp1252 and UTF-8.
+
+## Q-031 [OPEN] 2026-09-07 Q-026's stated cause was wrong: the data file is there, nothing calls `Configure`
+
+**Question:** `docs/gap-register.md` D1 and Q-026 both record the cause of "no `BaseCreature` can
+be constructed in a test" as the speed table not being under `Core.BaseDirectory` in the test
+host. It is under `Core.BaseDirectory`. Does the register want correcting? Non-blocking; S8 is
+built against the real cause either way.
+
+**Context:** Q-026 says `NPCSpeeds.Configure()` "gives up silently when the file is not under
+`Core.BaseDirectory`, which in the test host it is not", and I wrote the same thing in
+`notes/s5-quest-spike.md`. Measured inside the builder image before writing anything, with a
+throwaway probe test:
+
+```
+Core.BaseDirectory = '/build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0'
+Data dir exists = True        Data file count = 272        npc-speeds.json exists = True
+BEFORE Configure: new GreyWolf() THREW KeyNotFoundException: key 'Medium' not present
+NPCSpeeds.Configure() returned. MinIdle=15 MaxIdle=25
+AFTER  Configure: new GreyWolf() OK, active=0.25 passive=0.5
+```
+
+`UOContent.Tests.csproj` carries a `CopyData` target copying `Distribution/Data/**` into
+`$(OutDir)/Data`, and `UOContentFixture` sets `Core.ApplicationAssembly` to the test assembly on
+its first line, so `Core.BaseDirectory` **is** that output directory. The real cause is that
+`UOContentFixture` calls a hand-picked list of `Configure()` methods and `NPCSpeeds` is not on it,
+where the real server calls every one of them through `AssemblyHandler.Invoke("Configure")`
+(`Projects/Server/Main.cs:441`).
+
+**This is not a footnote, because the two causes point at different fixes.** Q-026's guessed fix
+was "one line in `apply-patches.sh` copying `Distribution/Data`", and the register carries the
+same. That would have been a build-system change solving a problem that does not exist, and it is
+the kind of change the S8 brief specifically warned could make tests pass for a new wrong reason.
+The real fix is one call, added by `server/patches/UOContentFixture-npc-speeds.patch`.
+
+Both of us had read `Configure`'s early return and reasoned correctly about what it does. Neither
+of us looked in the output directory to see whether the file it looks for was there.
+
+**Your best guess:** correct D1 and the Q-026 entry to name the missing call, and add a sibling
+clause to `AGENTS.md`'s "count the artifact, never a description of it": **a mechanism deduced
+from reading source is a hypothesis about a cause until the artifact is inspected.** Recorded in
+`notes/s8-test-route.md` section 4.
+
+**Answer:**
+
+## Q-032 [OPEN] 2026-09-07 The runtime image ships 16 test-infrastructure assemblies
+
+**Question:** Should the Dockerfile publish something narrower than `ModernUO.slnx`? Non-blocking,
+pre-existing, and not S8's — noticed while comparing two runtime images.
+
+**Context:** `docker/uo/Dockerfile` runs `dotnet publish ModernUO.slnx -o /modernuo/Distribution`,
+which publishes every project in the solution including the two test projects. Counted in
+`sl-modernuo:s8`, and present identically in `sl-modernuo:s6`, `:s5` and `:s4`, so it predates S8:
+
+**16 of the 53 DLLs in `/modernuo` are test infrastructure** — `UOContent.Tests.dll`,
+`Server.Tests.dll`, `testhost.dll`, `xunit.abstractions`, `xunit.assert`, `xunit.core`,
+`xunit.execution.dotnet`, `xunit.runner.visualstudio.testadapter`, `Xunit.SkippableFact`, and
+seven `Microsoft.*TestPlatform*` assemblies. Total image payload 67 MB.
+
+They are inert: `Data/assemblies.json` decides what the server loads and none of these is in it.
+So this is image hygiene and attack surface, not a correctness bug.
+
+**The reason to be careful rather than just fix it:** the same `publish ModernUO.slnx` line is what
+makes a test that does not COMPILE fail `docker build` (S4 section 3, proof 2). Narrowing it to
+`ModernUO.csproj` would silently remove that gate. Any change here has to keep compiling the test
+projects while not shipping them — a separate `dotnet build` step for the tests, or pruning them
+out of the runtime `COPY --from=builder`. The second is a one-line change and keeps the gate.
+
+**Your best guess:** prune in the runtime stage rather than narrow the publish, and only as its own
+small task with the S4 compile-gate proof re-run. Left alone by S8.
+
+**Answer:**
+
+## Q-033 [OPEN] 2026-09-07 `tools/progress.py` does not count `server/tests`
+
+**Question:** Should the progress line carry a test count? Non-blocking.
+
+**Context:** S4 left this deliberately: "one file today, so it was left alone rather than widened
+inside S4" (`notes/s4-test-route.md` section 8). There are now **6 files and 27 tests** across four
+subsystems, and the test count is the closest thing this project has to a regression-coverage
+number — it is what a pinned-commit bump is actually measured by. The customization and patch
+counts are already reported from the trees, so this is the same shape of thing.
+
+Counting files is a one-line change. Counting `[Fact]` methods is a grep and would be a *stated*
+count rather than a counted one unless it reads the build output; per `AGENTS.md` I would rather
+report the file count from the tree and let `build.sh` remain the authority on how many tests ran.
+
+**Your best guess:** add the `server/tests` file count beside the customization and patch counts,
+and do not try to count `[Fact]`s statically. Left alone by S8 because widening a reporting tool
+inside an infrastructure task is the scope creep this project keeps declining.
+
+**Answer:**

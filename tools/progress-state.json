@@ -10,7 +10,7 @@
     "RegenRates routing made explicit": true
   },
   "patches": {
-    "total": 14,
+    "total": 15,
     "failing": 0,
     "triaged": 8,
     "obsolete": 3
@@ -376,8 +376,8 @@
     {
       "id": "S8",
       "title": "Finish the test route",
-      "status": "todo",
-      "note": "Runs before CC6. Two defects found by S5 and S6: no BaseCreature can be constructed in a test (needs Data/npc-speeds.json), and Timer.Slice advances the wheel rather than the clock so timing tests measure the wrong thing. Both belong in the route, not in every consumer. Q-026 and Q-029."
+      "status": "done",
+      "note": "Both S4-route defects fixed in the route, not in consumers. (1) UOContentFixture-npc-speeds.patch adds the NPCSpeeds.Configure call the upstream test fixture omits, so any test constructs a stock or ported BaseCreature with no scaffolding - Q-026, whose STATED CAUSE was wrong: the data file was always in the test output directory, nothing ever called Configure (Q-031). (2) server/tests/Route/ShardTestClock.cs is the one correct way to advance time; Timer.Slice turns the wheel without moving Core.Now, which made S6's first eater test measure regeneration - Q-029. apply-patches.sh now fails the build for a test that drives the wheel or registers speeds by hand, and S5's and S6's workarounds are deleted rather than relocated. Five negative proofs run and reverted. 27 tests green through build.sh; Server.dll, ModernUO.dll and UOContent.dll are byte-identical to the S6 image, so the shipped server is provably unchanged."
     },
     {
       "id": "S7",
@@ -550,6 +550,15 @@
         "risk": "low",
         "why": "post-Valorite BOD tiers",
         "breaks": "BOD generation"
+      },
+      {
+        "file": "Projects/UOContent.Tests/Fixtures/UOContentFixture.cs",
+        "patch": "UOContentFixture-npc-speeds",
+        "d": "+13/-0",
+        "task": "S8",
+        "risk": "low",
+        "why": "one call, NPCSpeeds.Configure, added to the upstream TEST fixture so a BaseCreature can be constructed in a test at all. The only patch here that touches a test project, so it cannot change the shipped server - proved by hashing the runtime assemblies against the S6 image",
+        "breaks": "any upstream edit to UOContentFixture's constructor near SkillsInfo.Configure, or a change to what NPCSpeeds.Configure does; either way every creature test fails loudly in the constructor"
       }
     ],
     "replacements": [
