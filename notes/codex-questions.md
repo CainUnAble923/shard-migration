@@ -945,3 +945,73 @@ it, its `GetValue` pulls in `Enhancement`, `RunicReforging` and `SkillMasterySpe
 close deviation D-1.
 
 Status: **[ANSWERED]** — re-counted, policy corrected, S3 row added.
+
+---
+
+## Q-018 [OPEN] 2026-09-07 A failing test fails `build.sh`, not `docker build`
+
+**Question:** S4 was asked to make a failing test fail the Docker build. On Docker Desktop it
+cannot. Do we accept the gate living in `docker/uo/build.sh`, or do we require an entitled buildx
+builder and accept that `docker compose build` stops working?
+
+**Context:** Every ModernUO test fixture calls `NetState.Configure()` (`UOContentFixture.cs:30`,
+`PathfindingTestFixture.cs`, and `TestServerInitializer.Initialize()` behind `ServerFixture`), which
+needs io_uring. Docker Desktop's default seccomp profile blocks it:
+`System.InvalidOperationException : io_uring is not available (blocked by seccomp or kernel too old)`.
+
+Three things were measured, in this order:
+
+1. `RUN dotnet test` in a plain `docker build` — throws the exception above. BuildKit's `RUN` uses
+   the daemon's seccomp profile and `docker build` has no `--security-opt`.
+2. `RUN --security=insecure` plus `docker build --allow security.insecure` —
+   `granting entitlement security.insecure is not allowed by build daemon configuration`. It needs a
+   `docker buildx create --driver docker-container` builder carrying
+   `--allow-insecure-entitlement security.insecure`. **`docker compose build` cannot pass an
+   entitlement**, so this would leave the compose deploy path unable to build the image at all.
+3. `docker run --security-opt seccomp=unconfined` — works, four tests in 1.0 s. This is what
+   `docker-compose.yml` already does for the same reason, and what upstream ModernUO's Linux CI does.
+
+Writing our own lighter fixture was rejected under the Q-015 rule: it means copying upstream
+initialization logic into our tree, which drifts silently.
+
+Three of the four failure modes still fail `docker build` itself — a test that does not compile, a
+test in the wrong namespace, and a test that would overwrite an upstream file. Only "a test that
+compiles and fails" needs `build.sh`. All four are proven in `notes/s4-test-route.md` section 3.
+
+**Your best guess:** accept it. The residual risk is a *missing* signal ("nobody ran the tests"),
+not the *lying* signal F2 fixed ("the runner said FAILED and exited 0"). Option 2 trades a working
+deploy path for closing that gap, which is a bad trade for a shard that has to stay deployable.
+`build.sh` is documented as the build command in four places, and it refuses to treat "the filter
+matched no tests" or an unreadable test count as a pass. Proceeded on that basis.
+
+**Answer:**
+
+---
+
+## Q-019 [OPEN] 2026-09-07 "S1's six tests" are four
+
+**Question:** None that blocks. Recording a count that was wrong in three places, since this repo
+now has a rule about exactly that.
+
+**Context:** `docs/tasks.md` S4, the S4 brief and Q-016's *Answer* all say "S1's six tests".
+`%TEMP%\claude\s1verify\ArmourSetBonusVerification.cs` is one file with **four** `[Fact]` methods:
+`AloronSetGrantsItsSetBonus`, `StockArmourIsUnaffected`, `TigerPeltAloneIsNotASetItem`,
+`SetStateSurvivesASerializationRoundTrip`. No second harness file exists anywhere under `%TEMP%`.
+
+The provenance is clean: `notes/s1-armour-sets.md` section 4 says "Four tests, all passing" and
+Q-016's *Context* says "Four tests". Q-016's *Answer* says six, and `docs/tasks.md` copied it. Most
+likely a miscount of the eleven checks in the section 4 table — `AloronSetGrantsItsSetBonus` alone
+covers seven of them.
+
+That makes it five for five on counts stated without checking the list, and the first one that was
+not even keyword-derived: it was restated from a document that had the right number two paragraphs
+above.
+
+**Your best guess:** land the four unchanged, do not invent two more to match the number, and say so.
+Done — they are committed at
+`server/tests/Items/Artifacts/Equipment/Armor/Sets/ArmourSetBonusVerification.cs`, unchanged apart
+from the namespace and header comment, and all four pass through the committed route.
+`docs/tasks.md` still says six and is yours to correct.
+
+**Answer:**
+

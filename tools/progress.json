@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-07T01:07:37+00:00",
+  "generated": "2026-09-06T21:34:47-05:00",
   "direction": "stay on ModernUO; pull ServUO content selectively",
   "setup_defects": {
     "CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered": true,
@@ -402,8 +402,8 @@
     {
       "id": "S4",
       "title": "Test route for ported subsystems",
-      "status": "todo",
-      "note": "Runs before S2 and S3. S1's six passing xunit tests cannot be committed: apply-patches.sh has no route into Projects/UOContent.Tests. A ported subsystem needs a regression test the way ported content does not. A failing test must fail the build."
+      "status": "done",
+      "note": "server/tests/<path> mirrors into Projects/UOContent.Tests/Tests/<path> through mirror_cs_tree(), the same F2 mechanism structured customizations use, with the same destination-must-not-already-exist guard. S1's tests are committed and green - four [Fact] methods, not the six docs/tasks.md claims (Q-019). No patch to an upstream project file was needed: UOContent.Tests.csproj has no <Compile Include> items and is already in ModernUO.slnx. Four negative proofs, all failing the build: a failing assertion, a test that does not compile, a wrong namespace, an upstream path collision. Three of the four fail docker build itself; a failing assertion fails docker/uo/build.sh, because every ModernUO fixture needs io_uring and docker build cannot relax seccomp (Q-018). build.sh is now the build command. See notes/s4-test-route.md."
     },
     {
       "id": "S2",
