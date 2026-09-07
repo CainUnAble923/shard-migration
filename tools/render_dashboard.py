@@ -90,6 +90,32 @@ def content_html(pg):
             '<th class="n">Done</th><th class="n">Total</th><th></th><th class="n">%</th>'
             f'</tr></thead><tbody>{rows}</tbody></table></div>')
 
+def patches_html(pg):
+    up = pg.get("upstream_patches") or {}
+    if not up: return "<p class='foot'>No patch inventory.</p>"
+    ps, rp = up.get("patches", []), up.get("replacements", [])
+    cls = {"high": "p-no", "medium": "p-next", "low": "p-todo"}
+    order = {"high": 0, "medium": 1, "low": 2}
+    rows = "".join(
+        f'<tr><td><code>{esc(x["file"])}</code></td><td class="foot">{esc(x["patch"])}</td>'
+        f'<td class="n">{esc(x["d"])}</td>'
+        f'<td><span class="pill {cls.get(x.get("risk"),"p-todo")}">{esc(x.get("risk",""))}</span></td>'
+        f'<td class="foot">{esc(x["breaks"])}</td></tr>'
+        for x in sorted(ps, key=lambda v: order.get(v.get("risk"), 3)))
+    return (f'<div class="card"><div class="hero"><span class="big">{len(ps)}</span>'
+            f'<span class="cap"><strong>patches into upstream files</strong>, plus {len(rp)} full-file '
+            'replacements. This is what a pinned-commit bump has to reconcile, and nothing else '
+            'tracks it.</span></div></div>'
+            f'<p class="foot">{esc(up.get("note",""))}</p>'
+            '<div class="scroller"><table><thead><tr><th>Upstream file</th><th>Patch</th>'
+            '<th class="n">Diff</th><th>Risk</th><th>Breaks when</th></tr></thead>'
+            f'<tbody>{rows}</tbody></table></div>'
+            f'<div class="flag"><span class="eyebrow">Silent on a bump</span>'
+            f'<p>These {len(rp)} full-file replacements <strong>always apply</strong>. They never fail, '
+            'they just quietly discard whatever upstream changed in that file, so they must be diffed '
+            'by hand: '
+            + ", ".join(f"<code>{esc(x['file'])}</code>" for x in rp) + ".</p></div>")
+
 def tasks_html(pg):
     tk = pg.get("tasks") or []
     if not tk: return "<p class='foot'>No task data.</p>"
@@ -126,7 +152,8 @@ def main():
     for tag, body in (("FOUNDATION", foundation_html(pg)),
                       ("EXPANSION", expansion_html(ex)),
                       ("CONTENT", content_html(pg)),
-                      ("TASKS", tasks_html(pg))):
+                      ("TASKS", tasks_html(pg)),
+                      ("PATCHES", patches_html(pg))):
         txt, ok = replace(txt, tag, body)
         if ok: hit.append(tag)
     txt = re.sub(r"<!-- DATA:GENERATED -->.*?<!-- /DATA:GENERATED -->",

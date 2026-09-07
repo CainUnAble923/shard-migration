@@ -180,6 +180,29 @@ Tasks          ███████████████░░░░░░�
 
 _Detail and acceptance criteria in `docs/tasks.md`. Status lives in `tools/progress-state.json`._
 
+### Needs reconciling on a `MODERNUO_COMMIT` bump: 14 patches, 5 replacements
+
+What a MODERNUO_COMMIT bump must reconcile. Patches fail LOUDLY - apply-patches.sh stops the build. Full-file replacements fail SILENTLY: they always apply, and quietly discard whatever upstream changed in that file.
+
+| Upstream file | Patch | Diff | Risk | Breaks when |
+|---|---|---|---|---|
+| `Projects/Server/Mobiles/Mobile.cs` | Mobile-set-item-resistance-hook | +18/-5 | **high** | any upstream change to ComputeResistances or the resistance pipeline |
+| `Projects/UOContent/Misc/AOS.cs` | AOS-damage-eater-hook | +15/-0 | **high** | any change to AOS.Damage's signature or damage ordering |
+| `Projects/UOContent/Misc/AOS.cs` | AOS-set-attribute-aggregation | +11/-0 | **high** | changes to attribute aggregation; three patches share this file |
+| `Projects/UOContent/Misc/AOS.cs` | AOS-pet-mimic-attribute-aggregation | +8/-0 | **high** | same file as the two above; upstream just changed OPL hashing nearby |
+| `Projects/UOContent/Mobiles/PlayerMobile.cs` | PlayerMobile-fountain-luck-bonus | +1/-1 | **medium** | any change to how loot reads Mobile.Luck. Pinned by a test |
+| `Projects/UOContent/Mobiles/PlayerMobile.cs` | PlayerMobile-individual-stat-cap | +3/-3 | **medium** | stat cap handling; second patch on this file |
+| `Projects/UOContent/Items/Armor/BaseArmor.cs` | BaseArmor-set-self-repair | +4/-1 | **medium** | changes to self-repair or durability |
+| `Projects/UOContent/Items/Weapons/BaseWeapon.cs` | BaseWeapon-talisman-durability | +5/-0 | **medium** | durability handling |
+| `Projects/UOContent/Items/Skill Items/Misc/Bandage.cs` | Bandage-pet-mimic-targeting | +9/-0 | **low** | bandage targeting rewrite |
+| `Projects/UOContent/Engines/Craft/Core/CraftGumpItem.cs` | CraftGumpItem-MakeX | +15/-1 | **low** | craft gump layout. Label still renders invisible (known) |
+| `Projects/UOContent/Engines/Craft/Core/CraftGump.cs` | CraftGump-MakeXClear | +4/-0 | **low** | craft gump layout |
+| `Projects/UOContent/Mobiles/Healers/Healer.cs` | Healer-resurrection-policy | +2/-2 | **low** | healer logic |
+| `Projects/UOContent/Mobiles/Vendors/NPC/Guildmasters/HealerGuildmaster.cs` | HealerGuildmaster-resurrection | +27/-0 | **low** | guildmaster logic |
+| `Projects/UOContent/Engines/Bulk Orders/SmallSmithBOD.cs` | SmallSmithBOD-PostValorite | +33/-0 | **low** | BOD generation |
+
+**5 full-file replacements fail silently on a bump** and must be diffed by hand: `BaseGuildmaster.cs`, `BulkMaterialType.cs`, `JacobsPickaxe.cs`, `LargeSmithBOD.cs`, `Mining.cs`.
+
 **Deliberately declined:**
 
 - **Eodon: the Valley of One quest line - REOPENED, and a poor first batch** — Declined by CC3 because ModernUO 'ships a different quest engine'. S3 found ModernUO already ships Engines/ML Quests: 109 files, 240 quests, 205 of ServUO's 408 present by name. S5 then translated one quest end to end and CONFIRMED the objective mapping holds, so this decline is reversed and these are content work. Q-023 answered. But S5 also read all seven: none uses two objective types and THREE of the seven (EmptyNest, TheGreatVolcano, PrideOfTheAmbush) use a hand-written InternalObjective with no counterpart on either side of the mapping, against 19% bespoke across the 203. Reopened, but do not start the quest work here - pick from the 164 single-standard-objective quests instead. See notes/s5-quest-spike.md sections 1 and 8.

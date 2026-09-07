@@ -170,6 +170,24 @@ def build():
                  "`tools/progress-state.json`._")
         L.append("")
 
+    up = st.get("upstream_patches") or {}
+    if up:
+        ps = up.get("patches", []); rp = up.get("replacements", [])
+        hi = sum(1 for x in ps if x.get("risk") == "high")
+        L.append(f"### Needs reconciling on a `MODERNUO_COMMIT` bump: {len(ps)} patches, {len(rp)} replacements")
+        L.append("")
+        L.append(up.get("note", ""))
+        L.append("")
+        L.append("| Upstream file | Patch | Diff | Risk | Breaks when |")
+        L.append("|---|---|---|---|---|")
+        order = {"high": 0, "medium": 1, "low": 2}
+        for x in sorted(ps, key=lambda v: order.get(v.get("risk"), 3)):
+            L.append(f"| `{x['file']}` | {x['patch']} | {x['d']} | **{x['risk']}** | {x['breaks']} |")
+        L.append("")
+        L.append(f"**{len(rp)} full-file replacements fail silently on a bump** and must be diffed by hand: "
+                 + ", ".join(f"`{x['file']}`" for x in rp) + ".")
+        L.append("")
+
     dc = st.get("declined_content", [])
     if dc:
         L.append("**Deliberately declined:**")
@@ -188,7 +206,7 @@ def build():
             "direction": "stay on ModernUO; pull ServUO content selectively",
             "setup_defects": d, "setup_done": done, "setup_total": total,
             "patches": p, "ported_content": pc, "declined_content": dc,
-            "counted": cnt, "content_progress": content_progress(), "tasks": st.get("tasks", []),
+            "upstream_patches": st.get("upstream_patches"), "counted": cnt, "content_progress": content_progress(), "tasks": st.get("tasks", []),
             "shard_status": st.get("shard_status")}
     try:
         (MIGRATE / "tools" / "progress.json").write_text(json.dumps(snap, indent=2) + "\n", encoding="utf-8", newline="\n")

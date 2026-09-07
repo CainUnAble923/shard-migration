@@ -415,5 +415,158 @@
       "status": "todo",
       "note": "~54 files. Means extending BaseBoat. Do not start; Chase decides from the proposal."
     }
-  ]
+  ],
+  "upstream_patches": {
+    "note": "What a MODERNUO_COMMIT bump must reconcile. Patches fail LOUDLY - apply-patches.sh stops the build. Full-file replacements fail SILENTLY: they always apply, and quietly discard whatever upstream changed in that file.",
+    "patches": [
+      {
+        "file": "Projects/Server/Mobiles/Mobile.cs",
+        "patch": "Mobile-set-item-resistance-hook",
+        "d": "+18/-5",
+        "task": "S1",
+        "risk": "high",
+        "why": "armour set resistances; ComputeResistances lives in the core project",
+        "breaks": "any upstream change to ComputeResistances or the resistance pipeline"
+      },
+      {
+        "file": "Projects/UOContent/Misc/AOS.cs",
+        "patch": "AOS-damage-eater-hook",
+        "d": "+15/-0",
+        "task": "S6",
+        "risk": "high",
+        "why": "damage eaters, at ServUO's own call site in AOS.Damage",
+        "breaks": "any change to AOS.Damage's signature or damage ordering"
+      },
+      {
+        "file": "Projects/UOContent/Misc/AOS.cs",
+        "patch": "AOS-set-attribute-aggregation",
+        "d": "+11/-0",
+        "task": "S1",
+        "risk": "high",
+        "why": "aggregates armour set attributes into AOS totals",
+        "breaks": "changes to attribute aggregation; three patches share this file"
+      },
+      {
+        "file": "Projects/UOContent/Misc/AOS.cs",
+        "patch": "AOS-pet-mimic-attribute-aggregation",
+        "d": "+8/-0",
+        "task": "pre-existing",
+        "risk": "high",
+        "why": "PetMimic attributes; never worked before F3 repaired it",
+        "breaks": "same file as the two above; upstream just changed OPL hashing nearby"
+      },
+      {
+        "file": "Projects/UOContent/Mobiles/PlayerMobile.cs",
+        "patch": "PlayerMobile-fountain-luck-bonus",
+        "d": "+1/-1",
+        "task": "S2",
+        "risk": "medium",
+        "why": "ServUO routes the fountain reward through RealLuck, which ModernUO lacks",
+        "breaks": "any change to how loot reads Mobile.Luck. Pinned by a test"
+      },
+      {
+        "file": "Projects/UOContent/Mobiles/PlayerMobile.cs",
+        "patch": "PlayerMobile-individual-stat-cap",
+        "d": "+3/-3",
+        "task": "pre-existing",
+        "risk": "medium",
+        "why": "our per-stat cap system",
+        "breaks": "stat cap handling; second patch on this file"
+      },
+      {
+        "file": "Projects/UOContent/Items/Armor/BaseArmor.cs",
+        "patch": "BaseArmor-set-self-repair",
+        "d": "+4/-1",
+        "task": "S1",
+        "risk": "medium",
+        "why": "set self-repair contributes at ServUO's own point",
+        "breaks": "changes to self-repair or durability"
+      },
+      {
+        "file": "Projects/UOContent/Items/Weapons/BaseWeapon.cs",
+        "patch": "BaseWeapon-talisman-durability",
+        "d": "+5/-0",
+        "task": "F3",
+        "risk": "medium",
+        "why": "talisman durability; the only genuine drift of the original eight",
+        "breaks": "durability handling"
+      },
+      {
+        "file": "Projects/UOContent/Items/Skill Items/Misc/Bandage.cs",
+        "patch": "Bandage-pet-mimic-targeting",
+        "d": "+9/-0",
+        "task": "F3",
+        "risk": "low",
+        "why": "lets a bandage target a PetMimic",
+        "breaks": "bandage targeting rewrite"
+      },
+      {
+        "file": "Projects/UOContent/Engines/Craft/Core/CraftGumpItem.cs",
+        "patch": "CraftGumpItem-MakeX",
+        "d": "+15/-1",
+        "task": "F3",
+        "risk": "low",
+        "why": "the MAKE X button",
+        "breaks": "craft gump layout. Label still renders invisible (known)"
+      },
+      {
+        "file": "Projects/UOContent/Engines/Craft/Core/CraftGump.cs",
+        "patch": "CraftGump-MakeXClear",
+        "d": "+4/-0",
+        "task": "F3",
+        "risk": "low",
+        "why": "MAKE X clear",
+        "breaks": "craft gump layout"
+      },
+      {
+        "file": "Projects/UOContent/Mobiles/Healers/Healer.cs",
+        "patch": "Healer-resurrection-policy",
+        "d": "+2/-2",
+        "task": "pre-existing",
+        "risk": "low",
+        "why": "our resurrection policy",
+        "breaks": "healer logic"
+      },
+      {
+        "file": "Projects/UOContent/Mobiles/Vendors/NPC/Guildmasters/HealerGuildmaster.cs",
+        "patch": "HealerGuildmaster-resurrection",
+        "d": "+27/-0",
+        "task": "pre-existing",
+        "risk": "low",
+        "why": "guildmaster resurrection",
+        "breaks": "guildmaster logic"
+      },
+      {
+        "file": "Projects/UOContent/Engines/Bulk Orders/SmallSmithBOD.cs",
+        "patch": "SmallSmithBOD-PostValorite",
+        "d": "+33/-0",
+        "task": "F3",
+        "risk": "low",
+        "why": "post-Valorite BOD tiers",
+        "breaks": "BOD generation"
+      }
+    ],
+    "replacements": [
+      {
+        "file": "BaseGuildmaster.cs",
+        "risk": "silent"
+      },
+      {
+        "file": "BulkMaterialType.cs",
+        "risk": "silent"
+      },
+      {
+        "file": "JacobsPickaxe.cs",
+        "risk": "silent"
+      },
+      {
+        "file": "LargeSmithBOD.cs",
+        "risk": "silent"
+      },
+      {
+        "file": "Mining.cs",
+        "risk": "silent"
+      }
+    ]
+  }
 }
