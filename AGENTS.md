@@ -271,6 +271,21 @@ Eight patches had been failing silently for who knows how long, and three real g
 never worked. Every gate added since exists because of that, and a gate that has only ever been
 observed passing is indistinguishable from the thing we were fixing.
 
+## Commit to `main`. Do not branch.
+
+Asked and settled 2026-09-07 (S8). Commit your task's work directly to `main` in both repos, and
+**do not push** — Chase pushes.
+
+The reasons are structural, not preference. Chase is the only person who pushes, there is no CI,
+and there is no reviewer but the overseer. Every task is already gated before a commit exists:
+`build.sh` runs the patches and the tests, and a failure stops it. A branch would add a merge step
+to a loop that has none, and the thing a pull request would buy — somewhere to review before it
+lands — is already covered by the overseer reading the commits and the note before Chase pushes.
+
+**Which is why the commit message matters here more than it would elsewhere.** It is doing the job
+a PR description would do. Say what changed, what you measured, what you got wrong, and what a
+reader should not trust. The task notes in `notes/` carry the detail; the commit carries the claim.
+
 ## Asking questions
 
 Do not block on Chase to relay a question. Use `notes/codex-questions.md`. Read its
