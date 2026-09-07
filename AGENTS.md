@@ -38,12 +38,14 @@ deviation in `docs/fidelity-principle.md`. Full reasoning there.
    documents its content coverage accurately. Every content claim in `docs/` came from
    reading and counting files. Hold new claims to the same bar.
 3. **State what you could not verify.** An explicit "unverified" beats a confident guess.
-   **Count the artifact, never a description of it.** Every count in this project stated without
-   counting has been wrong, five times now: Eodon twice, the CC6 dependency cohort, the armour
-   set unblock ratio that justified building it, and "six tests" when there were four. A keyword
-   hit is a candidate, not a result. **Publish the file list beside the count.** And when a
-   source states a count and a list that disagree, neither is the answer: go count the thing.
-   Never adjust the work to match a number in a document, including one in your own brief.
+   **Count the artifact, never a description of it.** **Seven for seven**: every count in this
+   project stated without counting has been wrong, including two that were the basis of a
+   decision and one inside a document whose own subject was miscounting. A keyword hit is a
+   candidate, not a result. **Publish the file list beside the count.** When a source states a
+   count and a list that disagree, neither is the answer: go count the thing. Never adjust the
+   work to match a number in a document, including one in your own brief. Assume any figure in
+   a brief, including one I wrote, is unverified until you have counted it yourself, and say so
+   when it turns out wrong.
 4. **Upstream conversation is a hypothesis, never evidence.** Chase is in the ModernUO Discord
    from 2026-09-07. What upstream says there is genuinely useful for *intent* - whether a gap is
    deliberate or just not built yet, what a pinned-commit bump will bring, whether a patch of
@@ -75,6 +77,19 @@ stop `docker compose build` working. Evidence in `notes/s4-test-route.md`.
 
 `&&` is not a statement separator there. Any command you hand him chains with `;` or goes on
 separate lines. `cd D:\X && git push` fails; `cd D:\X; git push` works.
+
+## The shard runs Endless Journey
+
+`Configuration/expansion.json` sets expansion **Id 11, "Endless Journey"**, with `SA`, `HS`,
+`TOL` and `EJ` all true, alongside T2A, UOR, LBR, AOS, SE and ML.
+
+**This decides what content is in scope**, and it has already been needed twice without being
+written down anywhere. Ter Mur, High Seas, Time of Legends and Eodon are all content this shard
+is entitled to, so "does this belong here" is usually answerable from that file rather than from
+judgment.
+
+Configured is not the same as present: a facet being enabled does not prove its map files are
+loaded and reachable. Check before placing anything on one.
 
 ## Repo layout facts
 
@@ -177,7 +192,15 @@ why a failing patch beats copied upstream logic, and why a ported subsystem ship
   three abilities and was still ported: correct stats, loot and taming beat no creature at all.
   Decline when the content is meaningless without what it loses. Log the deviation either way.
 - **Check for name collisions against ModernUO before porting.** ServUO has 5,902 script type
-  names and ModernUO has its own; a collision is a duplicate-type build failure.
+  names and ModernUO has its own; a collision is a duplicate-type build failure. Use
+  `tools/modernuo-stems.txt` for this and **only** this: it is a filename-stem list, correct for
+  collision-checking a ported type's own name and wrong for anything else.
+- **Resolve every dependency in `D:\UO\ModernUO-pinned` BEFORE the first build.** P2 lost a whole
+  build cycle to a missing `LuckyCoin` because there was nowhere to look. There is now.
+- **Walk the arrays, not just the file.** A dependency walk that stops at the file in front of you
+  misses a `Type[]` one level down. S2 looked like ~900 lines and was 2,292, because
+  `GemologistsSatchel` reads a 42-entry `Imbuing.IngredTypes` table and 35 entries were absent.
+  Check every `new X(`, and then check the tables those types are registered in.
 - **Convert, do not translate blindly.** ServUO's hand-written `Serialize`/`Deserialize` with
   a version int becomes ModernUO's `[SerializationGenerator]` partial class with
   `[SerializableField]` members. ServUO's `[Constructable]` is ModernUO's `[Constructible]`.
@@ -187,7 +210,14 @@ why a failing patch beats copied upstream logic, and why a ported subsystem ship
 ## Asking questions
 
 Do not block on Chase to relay a question. Use `notes/codex-questions.md`. Read its
-**Standing answers** first. If the question is non-blocking, pick the most reasonable option,
+**Standing answers** first.
+
+**Check whether the repo already answers it.** Q-021 asked whether an Underworld fixture belonged
+on a shard without the Underworld; `Configuration/expansion.json` said the shard runs Endless
+Journey with `SA` true, and ServUO's own generator carried the exact coordinates. Both were one
+command away. A question that the source tree, the config, or `docs/` already answers costs a
+round trip and reads as a judgment call when it is a lookup. Search first, ask second, and when
+you do ask, say what you checked. If the question is non-blocking, pick the most reasonable option,
 record the assumption, and keep working. If it genuinely blocks, mark it `[OPEN-BLOCKING]`,
 stop that thread, and pick up something else. Claude answers in the same file.
 
