@@ -1399,7 +1399,7 @@ Status: **[ANSWERED]** — CC6 rewritten, the filter rule promoted to `AGENTS.md
 
 ---
 
-## Q-025 [OPEN] 2026-09-07 ModernUO's quest engine has no `Quest.StartingItem` equivalent
+## Q-025 [ANSWERED] 2026-09-07 ModernUO's quest engine has no `Quest.StartingItem` equivalent
 
 **Question:** ServUO's `BaseQuest` supports a quest begun by double-clicking an **item** rather
 than talking to an NPC. `DeliverObjective` branches on it in both `OnAccept`
@@ -1424,9 +1424,22 @@ absorbed inside a quest definition; this cannot.
 what we would take anyway — and revisit only when a quest we actually want turns out to need it.
 Nothing is blocked by leaving this open.
 
-**Answer:**
+**Answer:** **Measure it, do not guess it, and it is not blocking anything today.**
 
-## Q-026 [OPEN] 2026-09-07 The S4 test route cannot construct a `BaseCreature`
+You were right to open this as unmeasured rather than estimating. Given this project's record,
+an estimate would have become a planning number within a day.
+
+**It belongs to the first quest batch, not to a task of its own.** Whoever takes the 164
+mechanically-translatable quests counts how many need a `StartingItem` equivalent as their first
+step, publishes the list beside the count, and only then decides whether to build one. If it is
+a handful, hand-place the item per quest. If it is most of them, it is a small additive helper
+and worth building once.
+
+Recorded in `docs/gap-register.md` as D2 so it cannot get lost between tasks.
+
+Status: **[ANSWERED]** — measure it inside the first quest batch; nothing waits on it.
+
+## Q-026 [ANSWERED] 2026-09-07 The S4 test route cannot construct a `BaseCreature`
 
 **Question:** Should the S4 test route load `Data/npc-speeds.json`, or should each test that
 needs a creature keep working around it?
@@ -1456,4 +1469,26 @@ next writes a creature test — changing `build.sh` or `apply-patches.sh` inside
 the scope creep this project keeps declining. If it is fixed centrally, **delete** the S5
 workaround rather than leaving both; `notes/s5-quest-spike.md` section 10 item 4 says so.
 
-**Answer:**
+**Answer:** **It is a defect in the route, the fix belongs in the route, and it runs before
+CC6. Not before S6.**
+
+Your workaround inside the S5 fixture was the right call for S5 and the wrong permanent answer,
+and you said so, which is the part that matters. Every creature test after this one would
+re-implement the same workaround, and a route that needs a workaround in every consumer is not a
+route.
+
+**The sequencing:** S6 is next and builds an item subsystem, so it needs no creature. CC6 is 137
+creatures and cannot be tested without this. So the fix lands between them, as its own small
+infrastructure task, the way S4 was.
+
+**What it must do:** make the test host load `Data/npc-speeds.json`, or whatever the minimal
+equivalent is, so a `BaseCreature` constructs in a test without per-fixture scaffolding. Same bar
+as S4: prove it with a test that constructs a stock creature and one that constructs a ported
+one, and make sure a broken fixture fails the build rather than silently skipping.
+
+This is the second time S4's route has needed extending on contact with a real case, which is
+normal for infrastructure and is exactly why it landed before the content rather than after.
+
+Recorded as **D1** in `docs/gap-register.md`, flagged as do-first.
+
+Status: **[ANSWERED]** — its own task, after S6 and before CC6.

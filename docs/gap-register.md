@@ -63,9 +63,9 @@ types ModernUO already declares. Full method and file lists in `notes/s3-decline
 | # | Subsystem | Cost | Unblocked | Ratio | Upstream files patched | Fits layering | Disp. |
 |---|---|---|---|---|---|---|---|
 | **B1** | **`SAAbsorptionAttributes`** (minimal) | 1 file / ~350 lines (**cost at ~1,120**: the 350 buys the property and tooltips, not the effect) | **57** | **~57:1** | 1 damage hook | **Yes**, S1 pattern exactly | **OURS — queued as S6** |
-| B2 | Pet Training, `SpecialAbility` group | 4 / ~4,100 | 53 | ~13:1 | 6 + `AOS.Damage` | Yes | OURS, decide |
-| B3 | Pet Training, `MagicalAbility` group | slice of B2 | 18 | — | same | Yes | OURS, decide |
-| B4 | Pet Training, `AreaEffect` group | +1 / 596 | 17 | — | same | Yes | OURS, decide |
+| B2 | Pet Training, `SpecialAbility` group | 4 / ~4,100 | 53 | ~13:1 | 6 + `AOS.Damage` | Yes | **WAIT** (2026-09-07) |
+| B3 | Pet Training, `MagicalAbility` group | slice of B2 | 18 | — | same | Yes | **WAIT** |
+| B4 | Pet Training, `AreaEffect` group | +1 / 596 | 17 | — | same | Yes | **WAIT** |
 | B5 | Pet Training, gate + profiles + gumps | 6 / ~4,050 | 11 | **~2:1** | +6 more | Yes, **poor value** | WON'T for now |
 | B6 | *Pet Training, all four* | *11 / 8,664* | *79* | *~7:1* | *17* | — | — |
 | B7 | **`Services/PointsSystems`** | 12 / 2,857 | **55** | ~4.6:1 | — | Yes | **OURS — queued as S7.** Hard dependency of B9 and B13 |
@@ -122,6 +122,15 @@ B5 is the shape to aim for**, and S3 measured them separately for exactly that r
 | E2 | **The armour set-bonus system.** Standard OSI content ModernUO lacks. We built it in 387 lines plus three small patches | S1, plus five passing tests | **UPSTREAM candidate.** If taken, our maintenance on the highest-value thing we have built drops to zero, and the 111 files it unblocks stop being ours to keep working across version bumps |
 
 ---
+
+## Standing decisions
+
+**2026-09-07, Pet Training: WAIT.** Not on value, on timing. It patches 6-7 upstream files
+including `AOS.Damage`, and upstream is refactoring `BaseCreature` right now with `SpeedClass` an
+open behaviour change. Revisit once the delta-saves project and the `BaseCreature` conversion
+settle. Gaps A1-A4 and A10 stay open and logged meanwhile.
+
+**2026-09-07, upstream contributions: not now.** E1 and E2 stay available; neither expires.
 
 ## Recommended order
 

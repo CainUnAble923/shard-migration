@@ -117,3 +117,25 @@ Ported content is checked by the compiler and by reading the ServUO source. A po
 not. Nothing in a build would catch a bump that leaves every patch applying while the behaviour
 quietly stops reaching the player. Every subsystem built from here ships with a committed
 regression test, once S4 builds the route for one.
+
+## Decisions of 2026-09-07
+
+**Pet Training: wait, do not build.** Chase's call, and the reason is timing rather than value.
+The three ability groups (B2-B4 in `docs/gap-register.md`) would close five of the ten
+player-visible gaps for ~4,700 lines and 88 files unblocked, which is a defensible ratio. But
+they patch six or seven upstream files including `AOS.Damage`, and `docs/upstream-watch.md`
+records that ModernUO is **actively refactoring `BaseCreature` right now**, with `SpeedClass` an
+open behaviour change in PR #2592. Patching heavily into a class being rewritten this week is the
+worst available timing.
+
+**Revisit when** the delta-saves project and the `BaseCreature` conversion have landed and
+settled upstream. Nothing expires; the gaps stay logged in section A of the register meanwhile.
+
+**This is a new kind of reason on this project and worth keeping:** a subsystem can pass the
+ratio test and still be wrong to build *this week*. Add upstream churn to the three questions
+above as a timing check, not a fourth gate.
+
+**Upstream contributions: not now.** The `SetPassword` defect report and the offer of the armour
+set-bonus system both stay available and neither expires. Recorded in section E of the register
+so they are not forgotten rather than declined.
+
