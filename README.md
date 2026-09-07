@@ -77,20 +77,21 @@ Setup health   █████████████████████�
 | stale server/customizations/migrations removed | yes |
 | RegenRates routing made explicit | yes |
 
-**Patches:** 12 total, **0 currently failing to apply**, 8 triaged, 3 found obsolete. `apply-patches.sh` fails the build on a failed patch, so a green build means every patch applied.
+**Patches:** 13 total, **0 currently failing to apply**, 8 triaged, 3 found obsolete. `apply-patches.sh` fails the build on a failed patch, so a green build means every patch applied.
 
-### Content moved over: 28 of 2,045 candidate files (1.4%)
+### Content moved over: 59 of 2,045 candidate files (2.9%)
 
 ```
-TOTAL                          █░░░░░░░░░░░░░░░░░   28/2045    1.4%
+TOTAL                          █░░░░░░░░░░░░░░░░░   59/2045    2.9%
 
-Items/Artifacts                █░░░░░░░░░░░░░░░░░   10/325     3.1%
+Items/Resource                 █████████░░░░░░░░░   29/61     47.5%
+Items/Artifacts                █░░░░░░░░░░░░░░░░░   11/325     3.4%
 Items/Equipment                █░░░░░░░░░░░░░░░░░    8/148     5.4%
 Services/Expansions            █░░░░░░░░░░░░░░░░░    6/175     3.4%
 Mobiles/Normal                 █░░░░░░░░░░░░░░░░░    3/138     2.2%
-Items/Resource                 █░░░░░░░░░░░░░░░░░    1/61      1.6%
+Items/Addons                   █░░░░░░░░░░░░░░░░░    1/169     0.6%
+Items/Containers               █░░░░░░░░░░░░░░░░░    1/31      3.2%
 Mobiles/NPCs                   ░░░░░░░░░░░░░░░░░░    0/222     0.0%
-Items/Addons                   ░░░░░░░░░░░░░░░░░░    0/169     0.0%
 Services/Revamped Dungeons     ░░░░░░░░░░░░░░░░░░    0/150     0.0%
 Services/XmlSpawner            ░░░░░░░░░░░░░░░░░░    0/97      0.0%
 Items/Decorative               ░░░░░░░░░░░░░░░░░░    0/88      0.0%
@@ -101,19 +102,18 @@ Services/CleanUpBritannia      ░░░░░░░░░░░░░░░░�
 Items/StoreBought              ░░░░░░░░░░░░░░░░░░    0/51      0.0%
 Items/Functional               ░░░░░░░░░░░░░░░░░░    0/49      0.0%
 Services/New Magincia          ░░░░░░░░░░░░░░░░░░    0/40      0.0%
-Items/Containers               ░░░░░░░░░░░░░░░░░░    0/31      0.0%
 Services/BulkOrders            ░░░░░░░░░░░░░░░░░░    0/28      0.0%
 ```
 
 _Counted by matching ServUO file stems (excluding those stock ModernUO already has) against `server/customizations`. Auto-counted, never hand-edited._
 
-**Ported systems logged: 27**
+**Ported systems logged: 31**
 
 | Content | Task | Notes |
 |---|---|---|
 | PlagueRat | P1 | P1 reference port. 88 lines to 55. Builds, spawns, survives save/reload. No speed override: SpeedClass Medium, per the Q-008 answer (ModernUO's npc-speeds.json fallback is the standing rule for all ported creatures). |
 | GreaterPoisonElemental | P2 | P2 timed port, headless. 123 lines to 80. Compiles clean, server starts, world saves and reloads; type registration proven by reflection over the shipped assembly. Adds PackItem, multi-AddLoot, an OnDeath override, AI_Mage and the two-argument stat overloads over what PlagueRat covered. No speed override, per Q-008. An instance in a saved world is NOT verified: headless has no spawn - batched for a later client spot check. |
-| LuckyCoin | P2 | Forced dependency of GreaterPoisonElemental; ModernUO has no LuckyCoin. Ported complete except its OnDoubleClick, which needs FountainOfFortune (an SA addon ModernUO lacks that drags in four more items). Deviation is in the item, not the creature. Q-010. Reused by 12 Mobiles/Normal creatures. |
+| LuckyCoin | P2, completed by S2 | Forced dependency of GreaterPoisonElemental; ModernUO has no LuckyCoin. P2 ported it without OnDoubleClick because that targets a FountainOfFortune (Q-010). S2 built the Fountain and RESTORED OnDoubleClick and its InternalTarget, so Q-010 is CLOSED and docs/fidelity-principle.md should drop its entry. Pinned by ShatteredLegacy.Tests.FountainOfFortuneVerification.DoubleClickingACoinInTheBackpackAsksForATarget. Reused by 12 Mobiles/Normal creatures, of which 1 (GreaterPoisonElemental) is in the tree today. |
 | RaptorTeeth | CC3 | ICommodity stackable resource. ServUO's TextDefinition Description becomes ModernUO's int DescriptionNumber; the Constructable X()/X(int) pair collapses to one [Constructible] X(int amount = 1). |
 | AncientPotteryFragments | CC3 | Forced dependency of Raptor; ModernUO has none. Trivial Item, ported complete, no deviation. One extracted type per file, per the LuckyCoin precedent (Q-010). |
 | PerfectBanana | CC3 | Forced dependency of SilverbackGorilla; ModernUO has none. Trivial stackable Item, ported complete, no deviation. |
@@ -138,11 +138,15 @@ _Counted by matching ServUO file stems (excluding those stock ModernUO already h
 | TigerPelt armour (8 files) | S1 | CC3 called these 'itself set-bonus content'. That was wrong: grep SetID over all eight returns nothing. They are plain BaseArmor leaf armour and were never blocked. Ported unchanged, re-parented to BaseSetArmor so the Aloron pieces that derive from them can carry set state. Weight moves from a ctor assignment to a DefaultWeight override, the ModernUO idiom. |
 | Aloron's Armor set (8 files) | S1 | The CC3 decline, reversed. Four-piece set (SetItem.Aloron), SetAttributes BonusMana 15 / LowerManaCost 20, SetSelfRepair 3, per-piece resist bonuses 8/8/9/8/8. Verified at runtime: four pieces worn gives 60/60/60/60/60 resists and BonusMana 15 through AosAttributes.GetValue. Two deviations: AbsorptionAttributes.EaterCold=2 omitted (SAAbsorptionAttributes is a separate missing subsystem that drags in three more), and the Dinosaur Slayer omitted along with its tooltip line, rather than advertise a bonus that does nothing. D-1 and D-2 in notes/s1-armour-sets.md. |
 | Armour set-bonus subsystem + Aloron set + TigerPelt | S1 | First subsystem built rather than ported. Unblocks 114 further ServUO files. Three patches, one of them the first into the ModernUO core project (Mobile.ComputeResistances), allowed because no UOContent hook exists and the alternative was copied upstream logic. Four deviations logged, all omissions. |
+| FountainOfFortune | S2 | BaseAddon with a reward loop, three static tables, a defrag timer and a resurrect hook. Subsystem-shaped, so it ships with a test per docs/subsystem-policy.md - the first content task to use S4's route. Needs server/patches/PlayerMobile-fountain-luck-bonus.patch: ServUO routes the luck reward through PlayerMobile.RealLuck, which ModernUO does not have, and its three luck consumers all read Mobile.Luck. ModernUO's ResurrectGump takes no callback, so FountainResurrectGump subclasses it rather than patching upstream. Two reward cases are unreachable in ServUO too (Random(4) over a six-case switch) and were ported unchanged. NOTHING PLACES ONE: ServUO builds it in Services/Underworld/Generate.cs, which is not ported. Q-021. |
+| GemologistsSatchel | S2 | The reward branch that blew S2 past its estimate. Reads Imbuing.IngredTypes, a 42-entry Type[] at Services/LootGeneration/Imbuing/Core/Imbuing.cs:1735, of which 35 were missing from ModernUO. Not a subsystem pull-in - all 35 are leaf items - so all 35 were ported (Q-020, Chase chose option A). The 42-entry array now lives in this file as a private static, verbatim and complete; verified at runtime as length 42 with no nulls. |
+| SolesOfProvidence | S2 | Sandals with Attributes.Luck = 80. Loses ServUO's IsArtifact override: ModernUO has no such member and every ServUO consumer of it (RunicReforging, BasePigmentsOfTokuno, NaturalDye, AlterItem, ArcaneGem) is also absent, so it is inert. Deviation D-1. |
+| Imbuing ingredient set (35 leaf items) | S2 | EnchantedEssence and RelicFragment are core cluster members; the other 33 are forced dependencies of GemologistsSatchel. All are Item or Item,ICommodity stackables with an ItemID and a cliloc and nothing else - grep for 'new X(' across all 31 Resource files returns zero matches. Files are named after the class, so ServUO's SeedRenewal.cs, LavaSerpenCrust.cs and ElvenFletchings.cs become SeedOfRenewal.cs, LavaSerpentCrust.cs and ElvenFletching.cs; the TypeAlias attributes are carried across unchanged. These are Stygian Abyss drops that CC5 and CC6 want regardless, so the overrun buys reusable content. |
 
-### Task list (10 of 18 done)
+### Task list (11 of 18 done)
 
 ```
-Tasks          ████████████░░░░░░░░░░  10/18   Foundation and the port pipeline
+Tasks          █████████████░░░░░░░░░  11/18   Foundation and the port pipeline
 ```
 
 | | Task | Status | Notes |
@@ -157,7 +161,7 @@ Tasks          ████████████░░░░░░░░░�
 | `C1` | Eodon core content | done | 17 files ported, 12 declined - not the 'about 22' the docs claimed, wrong for the third time. Six dinosaurs, Raptor, RaptorClaw, RaptorTeeth, six TOL decorations. Declined with evidence: the eight Aloron pieces (armour set-bonus subsystem), the Valley of One quest line (8 files on ServUO's ML quest framework, a subsystem port), MoonstonePowerGenerator (Myrmidex content, matched on 'moonstone'). Time of Legends 53/157 to 59/157. Eleven deviations logged. See notes/cc3-eodon.md. |
 | `S1` | Armour set-bonus subsystem | done | Spike passed. SetItem.cs plus three targeted patches (44 added lines, 6 changed), no upstream logic copied, no upstream serialization version bumped. Aloron set and TigerPelt ported. My 187 unblock figure was wrong: the real number is 114. Bump checklist in notes/s1-armour-sets.md section 3. |
 | `S4` | Test route for ported subsystems | done | server/tests/<path> mirrors into Projects/UOContent.Tests/Tests/<path> through mirror_cs_tree(), the same F2 mechanism structured customizations use, with the same destination-must-not-already-exist guard. S1's tests are committed and green - four [Fact] methods, not the six docs/tasks.md claims (Q-019). No patch to an upstream project file was needed: UOContent.Tests.csproj has no <Compile Include> items and is already in ModernUO.slnx. Four negative proofs, all failing the build: a failing assertion, a test that does not compile, a wrong namespace, an upstream path collision. Three of the four fail docker build itself; a failing assertion fails docker/uo/build.sh, because every ModernUO fixture needs io_uring and docker build cannot relax seccomp (Q-018). build.sh is now the build command. See notes/s4-test-route.md. |
-| `S2` | Fountain of Fortune cluster | todo | Reverses a decline. ~900 lines. Restores LuckyCoin's OnDoubleClick and removes the Q-010 deviation. |
+| `S2` | Fountain of Fortune cluster | done | Reverses the second decline in docs/subsystem-policy.md and CLOSES Q-010: LuckyCoin.OnDoubleClick is restored, which covers all twelve coin droppers at once. The brief's 'roughly 900 lines' was wrong in BOTH directions - the core is 465 lines across 4 files, and the full cluster is 2,292 across 36, because GemologistsSatchel reads Imbuing.IngredTypes and 35 of its 42 entries were missing from ModernUO. Not a subsystem: all 35 are leaf items with no dependencies at all, so all 35 were ported (Q-020). Needs one patch, PlayerMobile-fountain-luck-bonus, because ServUO routes the luck reward through RealLuck which ModernUO does not have. Ships with 5 regression tests, the first content task to use S4's route. build.sh had a Git Bash path-mangling bug that made its own test gate unrunnable; fixed in place (Q-022). Nothing places a fountain in the world - Q-021, Chase's call. Full green: 13 patches, 9 tests, image built, world saves and reloads clean. See notes/s2-fountain.md. |
 | `S3` | Cost every remaining decline | todo | Measurement only. Unblock ratio for Pet Training (and SpecialAbility.cs alone), the ML quest framework, Myrmidex, Shadowguard, Skill Masteries, VvV, City Loyalty, Exploring the Deep. Output is a table Chase picks from. |
 | `C2` | Revamped Dungeons | todo | 255 files. Unblocked: F2 added subdirectory mirroring. One chat per dungeon: Despise 4, Shame 11, Wrong 26, Covetous 29, Exodus 38, Blackthorn 147. |
 | `C3` | High Seas, cheap half | todo | ~78 files. Fishing, rare fish, sea creatures, food. Skip anything touching BaseGalleon or cannons. |
@@ -174,7 +178,7 @@ _Detail and acceptance criteria in `docs/tasks.md`. Status lives in `tools/progr
 - **Eodon: the Valley of One quest line** — CC3. Two reasons, either sufficient. (1) It is 3 of 8 files, not 3 of 3: the directory is 3,870 lines and the three named files reference PrideOfTheAmbushQuest and TimeIsOfTheEssenceQuest from Quests.cs, so they do not compile alone. The 2,058-line figure sums a set that does not stand up. (2) It rests on ServUO's Mondain's Legacy quest framework - BaseQuest, BaseQuestItem, QuestHelper, QuestChain, MondainQuester, BaseRewardTitleDeed, all absent from ModernUO - which is 6,269 lines before gumps and persistence. ModernUO ships a DIFFERENT quest engine (MLQuest/MLQuestSystem: static definitions plus per-player context, versus ServUO's per-player instantiated BaseQuest objects). Porting means either two serialized quest engines in one world or a reimplementation. Subsystem port, not a content port.
 - **Eodon: MoonstonePowerGenerator** — CC3. It is Myrmidex Invasion content, not Eodon. It lives inside Services/Expansions/Time Of Legends/Myrmidex Invasion/, spawns Zipactriotl (the Myrmidex boss) and IgnisFatalis, subclasses DamageableItem (absent from ModernUO), and is referenced only by Myrmidex Invasion/System.cs and the MyrmidexThreat quest. It reached the CC3 list because the keyword moonstone matched and nobody opened the file.
 
-Counted from the trees: 153 customization files, 17 patch files.
+Counted from the trees: 191 customization files, 18 patch files.
 Shard status: running on ModernUO.
 <!-- PROGRESS:END -->
 
@@ -183,18 +187,18 @@ Shard status: running on ModernUO.
 <!-- EXPANSION:START -->
 ### Content by expansion
 
-**3,067 of 6,144 ServUO files present** (50%), of which **28 ported by us**.
+**3,098 of 6,144 ServUO files present** (50%), of which **59 ported by us**.
 
 ```
-Pre-AoS (T2A/UOR/LBR)     ██████████░░░░░░░░░░  2244/4294    52%   +21
+Pre-AoS (T2A/UOR/LBR)     ███████████░░░░░░░░░  2274/4294    53%   +51
 Age of Shadows            █████████████░░░░░░░   201/309     65%
 Samurai Empire            ███████████████░░░░░    87/115     76%
 Mondain's Legacy          ██████████░░░░░░░░░░   241/471     51%
-Stygian Abyss (Ter Mur)   ██████░░░░░░░░░░░░░░   125/444     28%
+Stygian Abyss (Ter Mur)   ██████░░░░░░░░░░░░░░   126/444     28%   +1
 High Seas                 ██████░░░░░░░░░░░░░░    96/334     29%
 Time of Legends (Eodon)   ████████░░░░░░░░░░░░    60/157     38%   +7
 Endless Journey           █████████████░░░░░░░    13/20      65%
-TOTAL                     ██████████░░░░░░░░░░  3067/6144    50%   +28
+TOTAL                     ██████████░░░░░░░░░░  3098/6144    50%   +59
 ```
 
 _Filename-stem matching: a proxy for presence, not behaviour. Unclassified files fall into Pre-AoS, inflating it. Directional, not a completion percentage._

@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-07T07:11:16+00:00",
+  "generated": "2026-09-07T02:58:48-05:00",
   "direction": "stay on ModernUO; pull ServUO content selectively",
   "setup_defects": {
     "CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered": true,
@@ -13,7 +13,7 @@
   "setup_done": 7,
   "setup_total": 7,
   "patches": {
-    "total": 12,
+    "total": 13,
     "failing": 0,
     "triaged": 8,
     "obsolete": 3
@@ -35,10 +35,10 @@
     },
     {
       "name": "LuckyCoin",
-      "task": "P2",
+      "task": "P2, completed by S2",
       "source": "ServUO Scripts/Items/Quest/SAQuestItems.cs:443",
       "dest": "server/customizations/Items/Quest/LuckyCoin.cs",
-      "note": "Forced dependency of GreaterPoisonElemental; ModernUO has no LuckyCoin. Ported complete except its OnDoubleClick, which needs FountainOfFortune (an SA addon ModernUO lacks that drags in four more items). Deviation is in the item, not the creature. Q-010. Reused by 12 Mobiles/Normal creatures."
+      "note": "Forced dependency of GreaterPoisonElemental; ModernUO has no LuckyCoin. P2 ported it without OnDoubleClick because that targets a FountainOfFortune (Q-010). S2 built the Fountain and RESTORED OnDoubleClick and its InternalTarget, so Q-010 is CLOSED and docs/fidelity-principle.md should drop its entry. Pinned by ShatteredLegacy.Tests.FountainOfFortuneVerification.DoubleClickingACoinInTheBackpackAsksForATarget. Reused by 12 Mobiles/Normal creatures, of which 1 (GreaterPoisonElemental) is in the tree today."
     },
     {
       "name": "RaptorTeeth",
@@ -207,6 +207,34 @@
       "source": "ServUO Items/Artifacts/Equipment/Armor/Sets/SetItem.cs and the Alorons Set",
       "dest": "server/customizations/Items/{Armor,Artifacts/Equipment/Armor/Sets}, server/patches/",
       "note": "First subsystem built rather than ported. Unblocks 114 further ServUO files. Three patches, one of them the first into the ModernUO core project (Mobile.ComputeResistances), allowed because no UOContent hook exists and the alternative was copied upstream logic. Four deviations logged, all omissions."
+    },
+    {
+      "name": "FountainOfFortune",
+      "task": "S2",
+      "source": "ServUO Scripts/Items/Addons/FountainOfFortune.cs (318 lines)",
+      "dest": "server/customizations/Items/Addons/FountainOfFortune.cs",
+      "note": "BaseAddon with a reward loop, three static tables, a defrag timer and a resurrect hook. Subsystem-shaped, so it ships with a test per docs/subsystem-policy.md - the first content task to use S4's route. Needs server/patches/PlayerMobile-fountain-luck-bonus.patch: ServUO routes the luck reward through PlayerMobile.RealLuck, which ModernUO does not have, and its three luck consumers all read Mobile.Luck. ModernUO's ResurrectGump takes no callback, so FountainResurrectGump subclasses it rather than patching upstream. Two reward cases are unreachable in ServUO too (Random(4) over a six-case switch) and were ported unchanged. NOTHING PLACES ONE: ServUO builds it in Services/Underworld/Generate.cs, which is not ported. Q-021."
+    },
+    {
+      "name": "GemologistsSatchel",
+      "task": "S2",
+      "source": "ServUO Scripts/Items/Containers/GemologistsSatchel.cs",
+      "dest": "server/customizations/Items/Containers/GemologistsSatchel.cs",
+      "note": "The reward branch that blew S2 past its estimate. Reads Imbuing.IngredTypes, a 42-entry Type[] at Services/LootGeneration/Imbuing/Core/Imbuing.cs:1735, of which 35 were missing from ModernUO. Not a subsystem pull-in - all 35 are leaf items - so all 35 were ported (Q-020, Chase chose option A). The 42-entry array now lives in this file as a private static, verbatim and complete; verified at runtime as length 42 with no nulls."
+    },
+    {
+      "name": "SolesOfProvidence",
+      "task": "S2",
+      "source": "ServUO Scripts/Items/Artifacts/Equipment/Clothing/SolesOfProvidence.cs",
+      "dest": "server/customizations/Items/Artifacts/Equipment/Clothing/SolesOfProvidence.cs",
+      "note": "Sandals with Attributes.Luck = 80. Loses ServUO's IsArtifact override: ModernUO has no such member and every ServUO consumer of it (RunicReforging, BasePigmentsOfTokuno, NaturalDye, AlterItem, ArcaneGem) is also absent, so it is inert. Deviation D-1."
+    },
+    {
+      "name": "Imbuing ingredient set (35 leaf items)",
+      "task": "S2",
+      "source": "ServUO Scripts/Items/Resource/ (31 files, 1,668 lines) plus MagicalResidue, EnchantedEssence, RelicFragment and BouraPelt in Scripts/Items/Quest/SAQuestItems.cs",
+      "dest": "server/customizations/Items/Resource/ and Items/Quest/",
+      "note": "EnchantedEssence and RelicFragment are core cluster members; the other 33 are forced dependencies of GemologistsSatchel. All are Item or Item,ICommodity stackables with an ItemID and a cliloc and nothing else - grep for 'new X(' across all 31 Resource files returns zero matches. Files are named after the class, so ServUO's SeedRenewal.cs, LavaSerpenCrust.cs and ElvenFletchings.cs become SeedOfRenewal.cs, LavaSerpentCrust.cs and ElvenFletching.cs; the TypeAlias attributes are carried across unchanged. These are Stygian Abyss drops that CC5 and CC6 want regardless, so the overrun buys reusable content."
     }
   ],
   "declined_content": [
@@ -224,16 +252,22 @@
     }
   ],
   "counted": {
-    "customization_files": 153,
-    "patch_files": 17,
+    "customization_files": 191,
+    "patch_files": 18,
     "stale_migrations_present": false
   },
   "content_progress": [
     {
+      "area": "Items/Resource",
+      "total": 61,
+      "done": 29,
+      "pct": 47.5
+    },
+    {
       "area": "Items/Artifacts",
       "total": 325,
-      "done": 10,
-      "pct": 3.1
+      "done": 11,
+      "pct": 3.4
     },
     {
       "area": "Items/Equipment",
@@ -254,20 +288,20 @@
       "pct": 2.2
     },
     {
-      "area": "Items/Resource",
-      "total": 61,
+      "area": "Items/Addons",
+      "total": 169,
       "done": 1,
-      "pct": 1.6
+      "pct": 0.6
+    },
+    {
+      "area": "Items/Containers",
+      "total": 31,
+      "done": 1,
+      "pct": 3.2
     },
     {
       "area": "Mobiles/NPCs",
       "total": 222,
-      "done": 0,
-      "pct": 0.0
-    },
-    {
-      "area": "Items/Addons",
-      "total": 169,
       "done": 0,
       "pct": 0.0
     },
@@ -328,12 +362,6 @@
     {
       "area": "Services/New Magincia",
       "total": 40,
-      "done": 0,
-      "pct": 0.0
-    },
-    {
-      "area": "Items/Containers",
-      "total": 31,
       "done": 0,
       "pct": 0.0
     },
@@ -408,8 +436,8 @@
     {
       "id": "S2",
       "title": "Fountain of Fortune cluster",
-      "status": "todo",
-      "note": "Reverses a decline. ~900 lines. Restores LuckyCoin's OnDoubleClick and removes the Q-010 deviation."
+      "status": "done",
+      "note": "Reverses the second decline in docs/subsystem-policy.md and CLOSES Q-010: LuckyCoin.OnDoubleClick is restored, which covers all twelve coin droppers at once. The brief's 'roughly 900 lines' was wrong in BOTH directions - the core is 465 lines across 4 files, and the full cluster is 2,292 across 36, because GemologistsSatchel reads Imbuing.IngredTypes and 35 of its 42 entries were missing from ModernUO. Not a subsystem: all 35 are leaf items with no dependencies at all, so all 35 were ported (Q-020). Needs one patch, PlayerMobile-fountain-luck-bonus, because ServUO routes the luck reward through RealLuck which ModernUO does not have. Ships with 5 regression tests, the first content task to use S4's route. build.sh had a Git Bash path-mangling bug that made its own test gate unrunnable; fixed in place (Q-022). Nothing places a fountain in the world - Q-021, Chase's call. Full green: 13 patches, 9 tests, image built, world saves and reloads clean. See notes/s2-fountain.md."
     },
     {
       "id": "S3",

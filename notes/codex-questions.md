@@ -1069,3 +1069,139 @@ regression, and nobody would ever have known.
 
 Status: **[ANSWERED]** — corrected to four; the tests stay as they are.
 
+
+## Q-020 [ANSWERED] 2026-09-07 GemologistsSatchel drags in 35 Imbuing ingredient items, not zero
+
+**Question:** The S2 brief says `EnchantedEssence` and `RelicFragment` do not drag in Imbuing, and
+that is correct. But `GemologistsSatchel`, the fourth Fountain reward, references
+`Server.SkillHandlers.Imbuing.IngredTypes` directly. Do we port the 35 missing ingredient types
+(option A), drop the satchel and take a reward-branch deviation (option B), or ship a
+gems-only satchel (option C)?
+
+**Context:** Walked every dependency of `Items/Addons/FountainOfFortune.cs` against
+`D:\UO\ModernUO-pinned` (7c9215d97).
+
+`Scripts/Items/Containers/GemologistsSatchel.cs:26`:
+
+    Type type = Server.SkillHandlers.Imbuing.IngredTypes[Utility.Random(...Length)];
+
+`IngredTypes` is defined at `Scripts/Services/LootGeneration/Imbuing/Core/Imbuing.cs:1735` as a
+42-entry `Type[]`. Counted against pinned ModernUO: **6 of the 42 exist** (`ParasiticPlant`,
+`LuminescentFungi`, `FireRuby`, `WhitePearl`, `BlueDiamond`, `Turquoise`), **1 we already ported**
+(`RaptorTeeth`), **35 are missing**.
+
+The 35 are pure leaves. All 31 in `Items/Resource/` are `Item, ICommodity` stackables with an
+ItemID and a cliloc, and `grep -oE "new [A-Z][A-Za-z0-9_]*\("` across all 31 returns **nothing**.
+`PowderedIron` is plain `Item`. The other 4 are `MagicalResidue`, `EnchantedEssence`,
+`RelicFragment` and `BouraPelt` in `SAQuestItems.cs`, two of which the core cluster needs anyway.
+
+So this is **not** a subsystem pull-in. It is a 35-item leaf batch hiding behind one reward branch.
+
+Measured line counts (ServUO source):
+
+| Group | Files | Lines |
+|---|---|---|
+| Core cluster (Fountain, Soles, EnchantedEssence, RelicFragment) | 4 | **465** |
+| `GemologistsSatchel.cs` | 1 | 58 |
+| 31 `Items/Resource/` ingredient files | 31 | 1,668 |
+| `MagicalResidue` (56) + `BouraPelt` (45) in `SAQuestItems.cs` | 2 classes | 101 |
+| **Total, option A** | **36** | **2,292** |
+
+The brief's estimate was "roughly 900 lines". The **core is 465, about half that**. Option A is
+**2,292, about 2.6x it**. Both halves of the brief's number are wrong in opposite directions.
+
+**Your best guess / assumption in force:** Option A, port all 35. It is the only zero-deviation
+option; the standing rule is that a forced dependency gets ported to the leaf rather than worked
+around (`LuckyCoin` precedent, Q-010); the files are mechanically identical and carry no
+dependencies at all; and the 35 are wanted content for CC5/CC6 regardless, since they are the
+Stygian Abyss imbuing drops. Cost is volume, not risk.
+
+Not started on that assumption, because it is 2.6x a stated budget and scope is Chase's call.
+Everything independent of the answer is being built now.
+
+**Answer:** **Option A, port all 35.** Chase answered in-session 2026-09-07, agreeing with the
+recommendation and with the reasoning: zero deviations, the `LuckyCoin` precedent applies, and the
+35 are wanted content regardless. Scope overrun accepted with the numbers on the table.
+
+Status: **[ANSWERED]** — built in S2.
+
+## Q-021 [OPEN] 2026-09-07 Nothing places a FountainOfFortune, so LuckyCoin has no target in-world
+
+**Question:** Should S2 (or a follow-up) place a `FountainOfFortune` at the OSI location, or does
+the fountain stay GM-placed only until the Underworld is ported?
+
+**Context:** Found while walking S2's dependencies. `Services/Underworld/Generate.cs:183` is the
+**only** place ServUO constructs one:
+
+    FountainOfFortune f = new FountainOfFortune();
+    f.MoveToWorld(new Point3D(1121, 957, -42), Map.TerMur);
+    WeakEntityCollection.Add("sa", f);
+
+That file also generates the Maze of Death, Navrey's Lair, the Puzzle Room and the Experimental
+Room. It is a dungeon generator, not part of the Fountain cluster, and porting it was never in
+S2's scope.
+
+The consequence is concrete rather than theoretical. `LuckyCoin.OnDoubleClick` is restored and
+works, but with no fountain in the world the only reachable outcome is its failure message,
+"That is not sacred waters. Try looking in the Underworld." A player holding a coin from any of
+the twelve droppers has nowhere to go. The reward loop, the 24-hour cooldown, the resurrect hook
+and the luck bonus are all live and all unreachable.
+
+Placing one is a single `MoveToWorld` at the coordinates above. The judgement call is not the
+code, it is whether a shard without the Underworld should have the Underworld's fountain sitting
+in an empty spot on Ter Mur, or whether the coin stays a collectible until the dungeon lands.
+
+**Your best guess / assumption in force:** Leave it GM-placed for now and do not invent a
+placement. Reasons: an addon dropped into unported terrain is a decoration decision rather than
+a port, `AGENTS.md` says pick by what the shard needs, and `[add FountainOfFortune` gives Chase
+a one-command way to try it without a commit. Logged as deviation D-3 in `notes/s2-fountain.md`.
+
+Non-blocking, and reversible in one line whichever way it goes.
+
+**Answer:**
+
+## Q-022 [ANSWERED] 2026-09-07 build.sh test gate could not run from Git Bash; fixed in place
+
+**Question:** S4's `docker/uo/build.sh` fails its own test gate on this machine for an
+environment reason, not a test reason. I fixed it in the script rather than in my shell. Is that
+the right place, and does S4's "four negative proofs" claim need re-checking?
+
+**Context:** First run of `build.sh` after writing S2's files:
+
+    == 2/3 running ShatteredLegacy.Tests tests (test gate) ==========================
+    docker: Error response from daemon: the working directory
+    'C:/Program Files/Git/build/modernuo' is invalid, it needs to be an absolute path
+    BUILD FAILED: ShatteredLegacy.Tests tests did not pass. No image was built.
+
+Git Bash (MSYS) rewrites any argument that looks like a Unix absolute path into a Windows path
+before exec, so `-w /build/modernuo` reaches the daemon as `C:/Program Files/Git/build/modernuo`.
+Nothing to do with the tests: running the same `docker run` with `MSYS_NO_PATHCONV=1` gives
+
+    Total tests: 9
+         Passed: 9
+
+Step 1 (patches) and step 3 (image) are unaffected — they pass `-f docker/uo/Dockerfile` and `.`,
+which are relative and so not rewritten. Only the `-w` in step 2 is absolute.
+
+**Two things worth flagging beyond the fix.**
+
+1. **`AGENTS.md` says to run this script from Git Bash.** So the fix belongs in the script, not
+   in a shell profile that only exists on one machine. Applied as an `MSYS_NO_PATHCONV=1` prefix
+   on the step-2 `docker run`, with the reason in a comment. The variable is inert outside MSYS,
+   so nothing changes for any other shell.
+2. **The failure mode was misleading in exactly the way F2 and F3 were spent removing.** A daemon
+   error about a working directory was reported as "tests did not pass". The gate was right to
+   fail the build — it could not prove the tests passed — but the message sends the next reader
+   after their own code. Worth a `docker: Error response from daemon` check that says "the test
+   container did not start" instead, if anyone is in there again.
+
+**Does S4's evidence need re-checking?** I do not think so, and I would not spend a session on
+it. S4 ran its four negative proofs through the same `docker run` and recorded real pass/fail
+output for each, so its container plainly started; the likeliest explanation is that S4's shell
+had `MSYS_NO_PATHCONV` set or it used a different terminal. Recording it because "it worked on
+the machine that wrote it" is exactly the class of claim this repo makes people verify.
+
+**Answer:** Fixed in `docker/uo/build.sh` in the S2 commit. Full green run afterwards: 13 patches
+applied, 9 tests passed, image built. Status **[ANSWERED]** — no further action unless the
+misleading-message cleanup in point 2 is wanted.
+
