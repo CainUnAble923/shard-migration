@@ -48,6 +48,15 @@ def classify(rel, src):
         if KEY[e].search(src): return e
     return "Pre-AoS"
 
+def _emit(text):
+    """Print to a console that may be cp1252. The block characters used by bar()
+    are correct in the files we write; only the console needs a fallback. A
+    progress tool that crashes on its own progress bar is worse than an ugly bar."""
+    try:
+        print(text)
+    except UnicodeEncodeError:
+        print(text.replace("\u2588", "#").replace("\u2591", "."))
+
 def bar(d, t, w=20):
     if t <= 0: return "\u2591"*w
     f = round(w*d/t)
@@ -76,20 +85,20 @@ def main():
         elif st in cust: b[e]["ours"] += 1
 
     rows = []
-    print("%-26s%-22s%7s%7s%6s   (ours)" % ("expansion","progress","have","of","%"))
+    _emit("%-26s%-22s%7s%7s%6s   (ours)" % ("expansion","progress","have","of","%"))
     print("-"*76)
     for e in ORDER:
         v = b[e]
         if not v["tot"]: continue
         have = v["stock"] + v["ours"]; pct = 100*have/v["tot"]
-        print("%-26s%s  %5d%7d%5.0f%%   +%d" % (LABEL[e], bar(have,v["tot"]), have, v["tot"], pct, v["ours"]))
+        _emit("%-26s%s  %5d%7d%5.0f%%   +%d" % (LABEL[e], bar(have,v["tot"]), have, v["tot"], pct, v["ours"]))
         rows.append({"expansion":e,"label":LABEL[e],"servuo_files":v["tot"],
                      "modernuo_stock":v["stock"],"ported_by_us":v["ours"],
                      "have":have,"pct":round(pct,1)})
     t = sum(r["servuo_files"] for r in rows); h = sum(r["have"] for r in rows)
     o = sum(r["ported_by_us"] for r in rows)
     print("-"*76)
-    print("%-26s%s  %5d%7d%5.0f%%   +%d" % ("TOTAL", bar(h,t), h, t, 100*h/t, o))
+    _emit("%-26s%s  %5d%7d%5.0f%%   +%d" % ("TOTAL", bar(h,t), h, t, 100*h/t, o))
     print("\nCoverage is filename-stem matching: a proxy for presence, not behaviour.")
     print("Unclassified files fall to Pre-AoS, inflating that bucket. Directional only.")
     (MIGRATE/"tools"/"expansion-coverage.json").write_text(

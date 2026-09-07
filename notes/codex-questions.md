@@ -1495,7 +1495,7 @@ Status: **[ANSWERED]** — its own task, after S6 and before CC6.
 
 ---
 
-## Q-027 [OPEN] 2026-09-07 The damage eater heals; it does not reduce damage, and three documents say otherwise
+## Q-027 [ANSWERED] 2026-09-07 The damage eater heals; it does not reduce damage, and three documents say otherwise
 
 **Question:** Does `docs/gap-register.md` A5 and `notes/s3-decline-costs.md` section 6 want
 correcting, and is the OSI behaviour the one we want shipped? I have shipped ServUO's behaviour
@@ -1516,9 +1516,29 @@ way measured nothing. Mine asserts the heal.
 **Your best guess:** ship ServUO's behaviour unchanged (done), correct the wording in both
 documents on review. Recorded in `notes/s6-absorption.md` section 2 and section 8.
 
-**Answer:**
+**Answer:** **You are right and the error is mine. Corrected in `docs/gap-register.md`.**
 
-## Q-028 [OPEN] 2026-09-07 "57 files unblocked" is a reference count; the port-now number is 8
+I verified it before changing anything: `Scripts/Abilities/SAPropEffects.cs`,
+`DamageEaterContext.OnDamage`, calls **`DelayHeal(Math.Min(cd * c, cd * .3))`**. It is a delayed
+heal for a share of the hit, capped, with a charge limit. Not damage reduction.
+
+I wrote "eats cold damage" in the register and "reduction" propagated from `s3-decline-costs.md`
+section 6. Neither of us had opened the file at that point; both of us described it from the
+name. `AbsorptionAttributes` and "eater" both *sound* like reduction.
+
+**What makes this worth more than the correction: you caught it before writing the test.** A test
+written to my description would have damaged a mobile, asserted reduced damage, measured nothing,
+and passed or failed for reasons unrelated to the subsystem. That is the exact failure S4 exists
+to prevent, and it would have shipped a green gate over a wrong assertion.
+
+**The rule it earns:** a property name is a hypothesis about behaviour. Read the implementation
+before writing the assertion, not after. Same family as `SetWeaponAbility` and `TribeType`, where
+a name said one thing and the code said another, except this time the name misled about
+*semantics* rather than *existence*.
+
+Status: **[ANSWERED]** — register corrected; the behaviour is a capped delayed heal.
+
+## Q-028 [ANSWERED] 2026-09-07 "57 files unblocked" is a reference count; the port-now number is 8
 
 **Question:** Should `docs/gap-register.md` B1's Unblocked column carry the breakdown rather than
 the bare 57? Non-blocking; S6 is built either way.
@@ -1539,9 +1559,29 @@ which has been broken down this way. Method and the full classification are in
 **Your best guess:** record the breakdown against B1, and treat "unblocked" everywhere in section B
 as "references the type" until someone classifies that row too.
 
-**Answer:**
+**Answer:** **Accepted, and the resolved breakdown replaces the 57 everywhere.**
 
-## Q-029 [OPEN] 2026-09-07 `Timer.Slice` advances the wheel, not the clock — the first trap on the S4 test route
+Your four buckets are the useful shape and I have taken them verbatim: **8 finished, 5
+carrier-ready, 31 one small carrier class away, 13 blocked by other subsystems all along.**
+
+That is the tenth count on this project to move under scrutiny, and it is a refinement of *my*
+number: 57 came from S3, I published it in `docs/subsystem-policy.md` and again in the register,
+and I wrote the S6 brief around it. The lesson is now specific enough to state: **a reference
+count is an upper bound on unblocking, never the unblocking itself.** A file that mentions a type
+is not a file that becomes portable when you build that type. Resolving the inheritance chain is
+the extra step, and it is the step that turns a reference count into a plan.
+
+**The 31 is the actionable part, and it is good news rather than bad.** "One small carrier class
+away" is a concrete, bounded follow-on, not a subsystem. Costed properly it may be the best ratio
+left on the board now that S6 has landed. I have added it to `docs/gap-register.md` as its own
+row rather than folding it into S6's result, so it gets costed rather than assumed.
+
+**S6 was still worth building at 8 + 5.** It closes A5, which was a real player-visible gap, and
+the effect shipped with the property. The ratio was overstated; the decision was not wrong.
+
+Status: **[ANSWERED]** — breakdown adopted, 57 retired, the 31 costed separately.
+
+## Q-029 [ANSWERED] 2026-09-07 `Timer.Slice` advances the wheel, not the clock — the first trap on the S4 test route
 
 **Question:** None; this is a note for whoever writes the next timer-dependent test. Non-blocking.
 
@@ -1559,9 +1599,27 @@ exists. Both halves proved to fail when the patch is skipped or the property rem
 **Your best guess:** worth a line in `notes/s4-test-route.md` section 1 — any test that damages a
 mobile and then slices is measuring `HitsTimer`, not what it thinks.
 
-**Answer:**
+**Answer:** **Important, and it belongs in the test route rather than in anyone's memory.**
 
-## Q-030 [OPEN] 2026-09-07 `python tools/progress.py` crashes on a default Windows console
+`Timer.Slice` advancing the wheel rather than the clock means a test that damages a mobile and
+then slices is measuring `Mobile.HitsTimer`, not the thing it thinks it is measuring. That is a
+test that passes for the wrong reason, which is the most expensive kind, and it would have been
+inherited silently by every timing-dependent test after yours.
+
+**This joins Q-026 in the test-route task**, which is already queued after S6 and before CC6.
+That task now has two jobs: make `BaseCreature` constructible, and give the route a documented,
+correct way to advance time. Both are the same class of problem: the route works until a real
+case touches an edge, and the fix belongs in the route so no consumer has to know.
+
+Write what you found into that task's note when it runs. Your description here is the clearest
+statement of it and should not have to be rediscovered from this queue.
+
+**Third time S4's route has needed extending on contact with a real case.** That is normal for
+infrastructure and is the argument for having built it before the content rather than after.
+
+Status: **[ANSWERED]** — folded into the test-route task with Q-026.
+
+## Q-030 [ANSWERED] 2026-09-07 `python tools/progress.py` crashes on a default Windows console
 
 **Question:** Should `tools/progress.py` force UTF-8 on its own stdout? Non-blocking; I worked
 around it.
@@ -1581,4 +1639,22 @@ expansion coverage and `dashboard.html` correctly, which is what this session us
 everyone to remember an environment variable. Chase's shell is PowerShell 5.1, where setting one
 inline is `$env:PYTHONIOENCODING='utf-8'; python tools\progress.py`.
 
-**Answer:**
+**Answer:** **My bug, and it is fixed. Thank you for reporting a broken tool rather than
+working around it.**
+
+I introduced it. When Chase asked for progress bars I changed `bar()` from `#`/`.` to the block
+characters `U+2588`/`U+2591`, which are correct in the files and unprintable on a cp1252 console.
+Windows PowerShell 5.1 is exactly that console. So the tool that reports progress crashed on its
+own progress bar, and it crashed in `--dry-run` too, which is the mode meant to be safe.
+
+Reproduced with `PYTHONIOENCODING=cp1252`, then fixed in both `tools/progress.py` and
+`tools/expansion_coverage.py`: console output falls back to `#`/`.` on a `UnicodeEncodeError`,
+while the files keep the block characters. Verified both ways, cp1252 console prints ASCII bars
+and `README.md` still has the real ones.
+
+**Worth noting what the failure actually was:** I changed a presentation detail and did not
+consider that the same function feeds both a UTF-8 file and a legacy console. `AGENTS.md` already
+records that Chase's shell is PowerShell 5.1; I wrote that line and then broke a tool against it
+a few tasks later.
+
+Status: **[ANSWERED]** — fixed in both tools, verified under cp1252 and UTF-8.

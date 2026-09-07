@@ -26,6 +26,15 @@ def load():
         print(f"  cannot read progress-state.json: {e}", file=sys.stderr)
         sys.exit(1)
 
+def _emit(text):
+    """Print to a console that may be cp1252. The block characters used by bar()
+    are correct in the files we write; only the console needs a fallback. A
+    progress tool that crashes on its own progress bar is worse than an ugly bar."""
+    try:
+        print(text)
+    except UnicodeEncodeError:
+        print(text.replace("\u2588", "#").replace("\u2591", "."))
+
 def bar(done, total, w=22):
     """Block bar. A nonzero value always shows at least one block, so "barely
     started" never renders identically to "not started"."""
@@ -190,7 +199,7 @@ def build():
 START, END = "<!-- PROGRESS:START -->", "<!-- PROGRESS:END -->"
 
 def main():
-    rep = build(); print(rep)
+    rep = build(); _emit(rep)
     if "--dry-run" in sys.argv: return
     rm = MIGRATE / "README.md"
     if not rm.exists(): return

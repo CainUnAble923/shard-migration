@@ -26,7 +26,7 @@ Ordered by how likely someone is to hit it. Every one traces to section B.
 | A2 | **`Saurosaurus` has no Tail Swipe and no Life Leech**, 2 of its 3 abilities | `SetSpecialAbility` | B2 | OURS |
 | A3 | **`Dimetrosaur` has no poison breath area attack** | `SetAreaEffect` | B4 | OURS |
 | A4 | **Six dinosaurs lose `AttacksFocus`** and use normal `FightMode` targeting | Pet Training | B2 | OURS |
-| A5 | **A completed Aloron set gives no cold-damage eating** (`EaterCold`) | `SAAbsorptionAttributes` | **B1** | OURS |
+| ~~A5~~ | ~~A completed Aloron set gives no cold-damage eating~~ **CLOSED 2026-09-07 by S6.** Note the mechanic is a **capped delayed heal**, not damage reduction: `DamageEaterContext.OnDamage` calls `DelayHeal`. My original wording here said reduction and was wrong (Q-027) | — | S6 | **DONE** |
 | A6 | **The Aloron set has no Dinosaur Slayer**, effect and tooltip both. Tooltip omitted deliberately: a slayer line that does not slay is worse than no line | `SlayerName` lacks `Dinosaur`/`Myrmidex` | small additive enum + patch | OURS |
 | A7 | **Queen Zhah is undressed.** All seven of her gargoyle items are absent from ModernUO | missing items | leaf ports | OURS |
 | A8 | **`Archaeosaurus` and `Saurosaurus` give no dragon blood when carved** | property and item both absent | leaf port | OURS |
@@ -62,7 +62,7 @@ types ModernUO already declares. Full method and file lists in `notes/s3-decline
 
 | # | Subsystem | Cost | Unblocked | Ratio | Upstream files patched | Fits layering | Disp. |
 |---|---|---|---|---|---|---|---|
-| **B1** | **`SAAbsorptionAttributes`** (minimal) | 1 file / ~350 lines (**cost at ~1,120**: the 350 buys the property and tooltips, not the effect) | **57** | **~57:1** | 1 damage hook | **Yes**, S1 pattern exactly | **OURS — queued as S6** |
+| ~~B1~~ | **`SAAbsorptionAttributes`** — **BUILT by S6.** 744 additive lines, **one** upstream patch (`AOS.cs`, 16 added, 0 changed), no core-project patch, no serialization version bumped | actual: **8 finished, 5 carrier-ready** | — | 1 | Yes | **DONE** |
 | B2 | Pet Training, `SpecialAbility` group | 4 / ~4,100 | 53 | ~13:1 | 6 + `AOS.Damage` | Yes | **WAIT** (2026-09-07) |
 | B3 | Pet Training, `MagicalAbility` group | slice of B2 | 18 | — | same | Yes | **WAIT** |
 | B4 | Pet Training, `AreaEffect` group | +1 / 596 | 17 | — | same | Yes | **WAIT** |
@@ -122,6 +122,14 @@ B5 is the shape to aim for**, and S3 measured them separately for exactly that r
 | E2 | **The armour set-bonus system.** Standard OSI content ModernUO lacks. We built it in 387 lines plus three small patches | S1, plus five passing tests | **UPSTREAM candidate.** If taken, our maintenance on the highest-value thing we have built drops to zero, and the 111 files it unblocks stop being ours to keep working across version bumps |
 
 ---
+
+### Follow-on from S6
+
+**B1b — the carrier class.** S6's "57 unblocked" was a *reference* count. Resolved through the
+inheritance chain (Q-028): **8 finished, 5 carrier-ready, 31 one small carrier class away, 13
+blocked by other subsystems all along.** The **31** are a bounded, concrete follow-on rather than
+a subsystem, and may be the best ratio left now that S6 has landed. **Cost it before scheduling
+it** — that is the whole lesson of this row.
 
 ## Standing decisions
 
