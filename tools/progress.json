@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-07T11:11:18+00:00",
+  "generated": "2026-09-07T06:48:44-05:00",
   "direction": "stay on ModernUO; pull ServUO content selectively",
   "setup_defects": {
     "CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered": true,
@@ -256,6 +256,10 @@
     {
       "name": "Eodon: MoonstonePowerGenerator",
       "reason": "CC3. It is Myrmidex Invasion content, not Eodon. It lives inside Services/Expansions/Time Of Legends/Myrmidex Invasion/, spawns Zipactriotl (the Myrmidex boss) and IgnisFatalis, subclasses DamageableItem (absent from ModernUO), and is referenced only by Myrmidex Invasion/System.cs and the MyrmidexThreat quest. It reached the CC3 list because the keyword moonstone matched and nobody opened the file."
+    },
+    {
+      "name": "S3 costed menu - declines upheld with their ratios recorded",
+      "reason": "Measured 2026-09-07, notes/s3-decline-costs.md. Skill Masteries (45 files/8,542 lines, unblocks 14, patches 35 upstream files - fails the layering test). Vice vs Virtue (57/9,613, unblocks 5, patches 21). Exploring the Deep (70/10,292, unblocks 2 - structurally the safest build here and the worst ratio). Shadowguard (14/11,222, unblocks 8). City Loyalty (28/8,177, unblocks 15 - decline on ratio, not structure; revisit with Town Cryer). Instanced Peerless (13/1,543, unblocks 2, and BasePeerless and PeerlessAltar are both absent from ModernUO, so there is no base to instance - cost Services/Peerless first). ServUO's ML quest framework (22 files/6,269 lines, not the 21/5,625 the brief stated) - declined because ModernUO already ships the same OSI system. NOT declined and recommended instead: SAAbsorptionAttributes, the TribeType transformation, and a one-quest spike onto ModernUO's ML quest engine. Vendor Searching (4/2,545) is a player feature, not content; the unblock ratio is the wrong test and it is Chase's call."
     }
   ],
   "counted": {
@@ -449,8 +453,8 @@
     {
       "id": "S3",
       "title": "Cost every remaining decline",
-      "status": "todo",
-      "note": "Measurement only. Unblock ratio for Pet Training (and SpecialAbility.cs alone), the ML quest framework, Myrmidex, Shadowguard, Skill Masteries, VvV, City Loyalty, Exploring the Deep. Output is a table Chase picks from."
+      "status": "done",
+      "note": "Costed menu for every remaining decline. Measurement only; nothing ported. Full working, every file list, and the ranked recommendation in notes/s3-decline-costs.md. Headline: a second counting error was inflating every estimate - 3,134 of ServUO's 6,144 script files have a primary type ModernUO already declares, so a ServUO file referencing a subsystem is not automatically a file we would gain. The '103 Mobiles/Normal files blocked by Pet Training' is 37 after that filter, and only 3 of those cannot be ported at all today. Best ratio on the menu is SAAbsorptionAttributes: one additive file, ~350 lines (up to ~1,120 if the damage-eater effect comes too), 57 files unblocked, closes deviation D-1, repeats S1's layering pattern exactly. Biggest finding: ModernUO ALREADY SHIPS an ML quest engine - Engines/ML Quests, 109 files, 18,110 lines, 240 quest classes - and 205 of ServUO's 408 quests already exist there by name, so the ML framework decline stands on 'two engines for one job' and the 203 remaining quests, including both Eodon lines, are content work not a subsystem build (Q-023). Skill Masteries is the strongest decline: 35 upstream patch points for 14 files. The CC6 89 does not reproduce at any definition; the planning number is 65 (Q-024). TribeType is a SetWeaponAbility-class transformation onto ModernUO's OppositionGroup, not a blocker."
     },
     {
       "id": "C2",

@@ -1245,3 +1245,80 @@ the machine that wrote it" is exactly the class of claim this repo makes people 
 applied, 9 tests passed, image built. Status **[ANSWERED]** — no further action unless the
 misleading-message cleanup in point 2 is wanted.
 
+
+---
+
+## Q-023 [OPEN] 2026-09-07 ModernUO already ships an ML quest engine, so the quest-framework decline rests on a false premise
+
+**Question:** `docs/tasks.md` CC3 declined the Valley of One quest line because it "rests on
+ServUO's Mondain's Legacy quest framework (6,269 lines) while ModernUO ships a different quest
+engine", and the ML framework sits in the deferred list as a subsystem build. Measurement in S3
+says the premise is right and the conclusion backwards. Should CC3's quest declines be reopened
+as ordinary content work against ModernUO's engine?
+
+**Context:** `D:\UO\ModernUO-pinned\Projects\UOContent\Engines\ML Quests` is **109 files,
+18,110 lines, 240 `MLQuest` subclasses**, with 21 definition files including `Heartwood.cs`,
+`Bedlam.cs`, `BlightedGrove.cs`, `Sanctuary.cs`, `Spellweaving.cs`, `Heritage.cs`,
+`NewHavenSkillTraining.cs`, `TownEscorts.cs`.
+
+ServUO has 408 `BaseQuest` subclasses. **205 of them already exist in ModernUO by class name**,
+verified individually rather than by filename stem — `Acob` at `Definitions/Heartwood.cs:3796`,
+`Aelorn` at `Definitions/NewHavenSkillTraining.cs:25`, `Aeluva` at
+`Definitions/Spellweaving.cs:486`, `Ahie` at `Definitions/Heartwood.cs:3162`.
+
+The two engines are the same OSI system: `BaseQuest`/`MLQuest`, `BaseObjective` both sides,
+`BaseReward` both sides, and ServUO's Slay/Obtain/Deliver/Escort/Apprentice objectives map onto
+ModernUO's Kill/Collect/Deliver/Escort/GainSkill. Only `QuestionAndAnswerObjective` has no
+counterpart, and 2 files use it.
+
+So porting ServUO's framework would mean two quest engines for one job — a standing decline
+reason in `docs/subsystem-policy.md`. But the 203 quests ModernUO lacks, **including the 10
+Myrmidex Threat and 7 Valley of One quests**, are then a translation job, not a subsystem
+build.
+
+**My best guess:** the framework decline stands and gets restated on the two-engines reason
+rather than on line count; CC3's Valley of One decline is reopened; and the next task is a
+spike translating **one** ML quest onto ModernUO's engine end to end, exactly as S1 spiked
+before committing. Full working in `notes/s3-decline-costs.md` §5.
+
+**What I did not verify:** that ModernUO's engine is behaviourally complete. Only that it
+exists, is the same system, and carries 240 quests. The spike is what settles that, and S3 was
+measurement-only so it was not run.
+
+**Answer:**
+
+## Q-024 [OPEN] 2026-09-07 Every CC6 count is against the wrong denominator: 325 of the 462 `Mobiles/Normal` files are already in ModernUO
+
+**Question:** CC6's percentages, the 103 blocked, and the 89 are all computed over ServUO's 462
+`Mobiles/Normal` files. 325 of those 462 have a primary type ModernUO already declares, so they
+are duplicate-type build failures rather than porting candidates. Should `docs/tasks.md` CC6 be
+rewritten against the real 137-file backlog?
+
+**Context:** Measured in S3 by indexing all 7,097 type declarations in the 3,991 pinned
+ModernUO files and matching each ServUO file's primary declared type. Spot-checked by hand in
+both directions: `Dragon` present at
+`UOContent/Mobiles/Monsters/Reptile/Magic/Dragon.cs:6`; `WolfSpider`, `GiantTurkey`, `FireAnt`,
+`Rotworm`, `BloodWorm`, `Triton` all zero occurrences anywhere in the tree.
+
+Consequences, all in `notes/s3-decline-costs.md`:
+
+- **462 candidates is really 137.**
+- **The 103 blocked by Pet Training is really 37** creatures we would gain; 66 of the 103 are
+  creatures ModernUO ships and one is `BaseCreature.cs` itself.
+- **The 89 does not reproduce at any definition.** Four candidate definitions give 206, 135,
+  81 and 65. The planning number is **65** — files ModernUO lacks, blocked by something other
+  than Pet Training. §10 of the S3 note has the method and the list. That makes it eight for
+  eight on counts stated without counting.
+- **`TribeType` is not a blocker.** It reads as one (zero occurrences in ModernUO, 53
+  `Mobiles/Normal` files reference it) but ModernUO's `OppositionGroup`
+  (`UOContent/Mobiles/AI/OppositionGroup.cs:6`, used at `UOContent/Mobiles/BaseCreature.cs:512`
+  and `:1316`) covers three of ServUO's four tribe pairs with the same semantics. It is a
+  `SetWeaponAbility`-class transformation. Only the goblin pair needs anything, and that is
+  ~25 additive lines and no patch. This alone removed 52 files from the raw "missing type"
+  scan.
+
+**My best guess:** CC6 is rewritten against 137, the 89 is replaced by 65 with its definition
+beside it, and `TribeType` joins `SetWeaponAbility` in the "transformation, not a decision"
+list in `AGENTS.md`. I have not edited `docs/` — that is the overseer's lane.
+
+**Answer:**
