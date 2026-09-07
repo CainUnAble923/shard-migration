@@ -374,6 +374,12 @@
       "note": "SAAbsorptionAttributes built, gated build green at 20 tests, A5 CLOSED: EaterCold = 2 restored on all eight Aloron pieces and a completed set demonstrably eats cold damage. 1,031 lines against the ~1,120 budget: SAAbsorptionAttributes.cs 342, the damage-eater slice of SAPropEffects.cs 402 (of ServUO's 768 - the other eight PropertyEffect kinds are weapon properties for systems this shard lacks), 223 test, 25 patch, 31 BaseSetArmor delta, 8 Aloron lines. ONE UOContent patch and NO core patch, so cheaper on a bump than S1. S3's three dependency claims all verified in ServUO and two are stronger than stated: Enhancement's only absorption writer (EnhancementTimer) is never constructed anywhere in ServUO, and SkillMasterySpell's absorption switch has one arm, CastingFocus, which is not an eater - both terms are zero in ServUO too, not merely here. THE EATER DOES NOT REDUCE DAMAGE: it schedules a heal three seconds later for a share of the hit, and gap-register A5 plus s3-decline-costs section 6 both describe it wrong (Q-027). '57 unblocked' is a reference count: 8 finished, 5 carrier-ready, 31 need one of four small carrier classes, 13 were blocked by other subsystems all along (Q-028). The four carriers are deliberately NOT built - that is more than the shape the brief allowed, and it is S1 section 8's boundary exactly; build each with the content batch that needs it. Patch proved to fail when skipped. Needed no BaseCreature, so D1/Q-026 did not bite. See notes/s6-absorption.md."
     },
     {
+      "id": "S8",
+      "title": "Finish the test route",
+      "status": "todo",
+      "note": "Runs before CC6. Two defects found by S5 and S6: no BaseCreature can be constructed in a test (needs Data/npc-speeds.json), and Timer.Slice advances the wheel rather than the clock so timing tests measure the wrong thing. Both belong in the route, not in every consumer. Q-026 and Q-029."
+    },
+    {
       "id": "S7",
       "title": "Services/PointsSystems",
       "status": "todo",

@@ -337,6 +337,34 @@ Cost at **~1,120 lines**, not ~350. The ~350 buys the property and its tooltips;
 `GetValue`'s `RunicReforging` term is a 16-line type switch, and the `Enhancement` and
 `SkillMasterySpell` terms both return 0 on a shard without those systems.
 
+## S8. Finish the test route — START HERE
+
+**Runs before CC6.** The S4 route has now needed extending on contact with a real case three
+times, which is normal for infrastructure and is the argument for having built it before the
+content. Two defects, both found by S5 and S6, both belonging in the route rather than in every
+consumer.
+
+**1. No `BaseCreature` can be constructed in a test** (Q-026). Every public constructor needs a
+`Data/npc-speeds.json` table the test host does not load. S5 worked around it inside its own
+fixture, which was right for S5 and is the wrong permanent answer: every creature test after it
+would re-implement the same workaround, and a route that needs a workaround in every consumer is
+not a route. **CC6 is 137 creatures away from needing this.**
+
+**2. `Timer.Slice` advances the wheel, not the clock** (Q-029). A test that damages a mobile and
+then slices is measuring `Mobile.HitsTimer`, not the thing it thinks it is measuring. That is a
+test passing for the wrong reason, which is the most expensive kind, and it would be inherited
+silently by every timing-dependent test written after it. The route needs one documented, correct
+way to advance time.
+
+**Prove both gates.** Per `AGENTS.md`: break it deliberately, watch the build go red, restore it,
+watch it go green, and say so in the note. A gate nobody has watched fail is not a gate.
+
+**Done when:** a test constructs a stock ModernUO creature and a ported one with no per-fixture
+scaffolding; a timing-dependent test advances time correctly and demonstrably fails when the
+behaviour under test is broken; S5's and S6's fixtures are moved onto the route's way of doing
+both, so the workarounds do not survive as examples; and `notes/s8-test-route.md` documents how to
+write a creature test and how to advance time.
+
 ## S7. `Services/PointsSystems`
 
 12 files, 2,857 lines, unblocks 55. A hard dependency of both Vice vs Virtue and City Loyalty, so
