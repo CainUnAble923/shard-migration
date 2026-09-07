@@ -38,6 +38,12 @@ deviation in `docs/fidelity-principle.md`. Full reasoning there.
    documents its content coverage accurately. Every content claim in `docs/` came from
    reading and counting files. Hold new claims to the same bar.
 3. **State what you could not verify.** An explicit "unverified" beats a confident guess.
+   **Count the artifact, never a description of it.** Every count in this project stated without
+   counting has been wrong, five times now: Eodon twice, the CC6 dependency cohort, the armour
+   set unblock ratio that justified building it, and "six tests" when there were four. A keyword
+   hit is a candidate, not a result. **Publish the file list beside the count.** And when a
+   source states a count and a list that disagree, neither is the answer: go count the thing.
+   Never adjust the work to match a number in a document, including one in your own brief.
 4. **Source evidence beats a stated rule.** If a rule here rests on a premise your evidence
    disproves, the rule is void, not merely in tension. Say so and open a question. This has
    already happened twice and both times the evidence was right.
@@ -144,13 +150,25 @@ that routing. The rest are additive, and ported content goes in subdirectories t
 
 ## Porting ServUO content: the rules
 
+Read `docs/subsystem-policy.md` alongside these if anything you need is missing from ModernUO.
+It carries the unblock-ratio test, when a patch into the ModernUO **core** project is allowed,
+why a failing patch beats copied upstream logic, and why a ported subsystem ships with a test.
+
 - **Pick by what the shard needs**, not by completeness. This is not a migration; there is no
   finish line to reach.
 - **Leaf content first.** Items, decorations, food, fishing, crafting resources. Few
   dependencies, drops straight in.
-- **Decline anything resting on a missing subsystem.** ModernUO ships zero files for Skill
-  Masteries, Shadowguard, Myrmidex Invasion, Vendor Searching, Instanced Peerless. Content
-  needing those is a subsystem build, not a port. Say so and stop.
+- **A missing subsystem is not an automatic decline. Read `docs/subsystem-policy.md`.**
+  This rule used to say "decline anything resting on a missing subsystem", which cost us
+  content. It measured the wrong thing: "ModernUO ships zero files for X" says nothing about
+  what X costs or what it frees. The armour set-bonus system turned out to be **one file, 387
+  lines**, freeing **114**, and it had been declined on that rule.
+  **Cost it by unblock ratio, and cost the smallest useful subset separately.** Then decline
+  with the ratio recorded, or say it is worth building and stop for Chase to decide. Never
+  build a subsystem inside a content task.
+- **Losing a behaviour is not automatically a decline either.** `Saurosaurus` lost two of its
+  three abilities and was still ported: correct stats, loot and taming beat no creature at all.
+  Decline when the content is meaningless without what it loses. Log the deviation either way.
 - **Check for name collisions against ModernUO before porting.** ServUO has 5,902 script type
   names and ModernUO has its own; a collision is a duplicate-type build failure.
 - **Convert, do not translate blindly.** ServUO's hand-written `Serialize`/`Deserialize` with
