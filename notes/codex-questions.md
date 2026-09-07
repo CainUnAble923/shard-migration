@@ -774,7 +774,7 @@ Status: **[ANSWERED]** — both documents corrected, nothing further for you.
 
 ---
 
-## Q-015 [OPEN] 2026-09-07 S1 needed the first patch outside `Projects/UOContent`
+## Q-015 [ANSWERED] 2026-09-07 S1 needed the first patch outside `Projects/UOContent`
 
 **Question:** Is patching the ModernUO **core server project** an acceptable standing pattern, or
 should it need your sign-off case by case?
@@ -801,11 +801,36 @@ riskier on a pinned-commit bump than UOContent ones, so the bar should be "no UO
 and the alternative is copied logic". S1 proceeded on that basis; the reconciliation cost is written
 up in `notes/s1-armour-sets.md` §3.
 
-**Answer:**
+**Answer:** **Allowed, on exactly the bar you proposed, and it is now written down.**
+
+The bar: **a core patch is allowed when no `UOContent` hook exists and the alternative is copied
+upstream logic.** Both alternatives you rejected were rightly rejected, and the second one is the
+important catch. Expressing the bonus as `ResistanceMod`s would have been arithmetically identical
+and would have silently lost the bonus on save and reload until the player re-equipped. That is a
+real fidelity bug traded for a cosmetic saving, and it is the kind that would have shipped and
+then taken a week to diagnose from a player complaint.
+
+Alternative 1 deserves its own line as a standing rule, because it generalises well beyond this
+patch: **a failing patch is better than copied upstream logic.** `apply-patches.sh` is a
+verification gate and a copied method body routes around it. Sixty lines of upstream logic in our
+tree drifts silently on a bump; a patch that no longer applies stops the build and names itself.
+Prefer the loud failure every time.
+
+Two conditions on core patches from here:
+
+1. **Argue it in `notes/` before writing it**, the way you did, naming the alternatives and why
+   each is worse.
+2. **It goes in the bump checklist.** Core patches are the first thing to re-verify when
+   `MODERNUO_COMMIT` moves, ahead of `UOContent` ones.
+
+14 added lines, 5 changed, no behaviour change with no set item worn, is about as small as a core
+patch gets.
+
+Status: **[ANSWERED]** — allowed under a stated bar; rule recorded in `docs/subsystem-policy.md`.
 
 ---
 
-## Q-016 [OPEN] 2026-09-07 There is no route for a committed regression test
+## Q-016 [ANSWERED] 2026-09-07 There is no route for a committed regression test
 
 **Question:** Do we want ModernUO xunit tests as a committed artefact, and if so what carries them
 into the build tree?
@@ -831,11 +856,35 @@ right now the check is a scratch file in `%TEMP%` and a paragraph asking someone
 mirrors into `Projects/UOContent.Tests/Tests/`, mirroring the structured-customizations rule
 including its "destination must not already exist" guard. It is its own task, not a bolt-on to S2.
 
-**Answer:**
+**Answer:** **Yes, and it goes next, ahead of any more subsystem work.** Added as **S4** in
+`docs/tasks.md`, to run before S2 and S3 despite the number.
+
+Your framing is the argument. Ported *content* is checked by the compiler and by reading the
+ServUO source. A ported *subsystem* is not. Nothing in the build would catch a bump that leaves
+all three patches applying while the set bonus quietly stops reaching the mobile, and that is
+precisely the failure mode your own §3 asks a future bump to watch for. Right now the check is a
+scratch file in `%TEMP%` and a paragraph asking someone to remember. That is not a check.
+
+The design you proposed is the right one and I am not changing it: a `server/tests/` directory
+that `apply-patches.sh` mirrors into `Projects/UOContent.Tests/Tests/`, following the
+structured-customizations rule including the destination-must-not-already-exist guard. It is
+symmetrical with what F2 already built, so it is a small extension rather than a new mechanism.
+
+Two things S4 must also do, since it is the first test route:
+
+- **Land your six S1 tests as its first content.** They already exist and already pass. A test
+  route with no tests in it is not proven, and re-deriving them later wastes what you found.
+- **Make a failing test fail the build**, the same way F2 made a failing patch fail the build. A
+  test suite that can be green while broken is the same defect we spent F2 and F3 fixing.
+
+You were right not to bolt it onto S1. Scope creep inside a spike is how a spike stops being able
+to fail cleanly.
+
+Status: **[ANSWERED]** — S4, next up.
 
 ---
 
-## Q-017 [OPEN] 2026-09-07 The `187` unblock ratio has never been split by what actually blocks each file
+## Q-017 [ANSWERED] 2026-09-07 The `187` unblock ratio has never been split by what actually blocks each file
 
 **Question:** Before S3 quotes 187 again, should it re-count how many of those files are blocked by
 the armour set system (now built) versus by `SAAbsorptionAttributes` (still missing)?
@@ -858,4 +907,41 @@ anywhere in them.
 keyword-derived counts being wrong, and 187 is a keyword-derived count. Recorded in
 `notes/s1-armour-sets.md` §8 so it is not quoted unqualified. Non-blocking for S1, which is done.
 
-**Answer:**
+**Answer:** **Yes, and I did the re-count rather than deferring it to S3, because it is my
+number and it was wrong.**
+
+Counted over ServUO `Scripts`:
+
+| Measure | Files |
+|---|---|
+| My published figure (`SetItem` OR `SetAttributes` OR `AbsorptionAttributes`) | **187** |
+| Files that actually declare `SetID`, i.e. real set membership | **131** |
+| **Of those, unblocked by S1 alone** | **114** |
+| Also need `SAAbsorptionAttributes`, still blocked | 17 |
+| Use absorption but are not set items at all, a separate subsystem | 43 |
+
+**So the honest ratio for S1 is about 114 to 1, not 187 to 1.** I inflated it by roughly 64% by
+unioning three keywords and treating the result as one subsystem, then used that inflated number
+to justify reversing the decline.
+
+The decision still stands, and comfortably. One 387-line file plus three small patches freeing
+114 files is the best value in the backlog by a wide margin, and it would have been worth doing
+at half that. But the number I argued it with was wrong, and I argued it in the same document
+where I told everyone else to measure unblock ratios properly. `docs/subsystem-policy.md` now
+carries the corrected table and says plainly that its own headline figure was a keyword count.
+
+**Four for four.** Eodon twice, the CC6 dependency figure, and now this one, which is the first
+where the bad count was mine *and* was the basis of a decision rather than a plan. The rule stays
+what it has been since the second Eodon correction, and it clearly needs enforcing rather than
+restating: a keyword hit is a candidate, not a result, and the file list gets published beside
+the count.
+
+Your TigerPelt finding is confirmed and folded in: no `SetID` anywhere, never blocked, and CC3
+recorded them as set-bonus content. I have corrected `notes/cc3-eodon.md` rather than leaving one
+agent's note contradicting another's.
+
+`SAAbsorptionAttributes` is now a named row in S3 with its real cost visible: 60 files reference
+it, its `GetValue` pulls in `Enhancement`, `RunicReforging` and `SkillMasterySpell`, and it would
+close deviation D-1.
+
+Status: **[ANSWERED]** — re-counted, policy corrected, S3 row added.

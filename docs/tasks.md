@@ -214,7 +214,43 @@ Time of Legends coverage moved 53/157 to 59/157. Four build batches, zero failed
 been wrong. Verify the list before porting it, publish the list beside the count, and expect the
 decline set to be real work that was hiding inside an optimistic total.
 
-## S1. Armour set-bonus subsystem — START HERE
+## S1. Armour set-bonus subsystem — DONE
+
+Completed 2026-09-07 in about 30 minutes. Spike passed all three stop conditions, so the content
+followed in the same session. `SetItem.cs` plus **three targeted patches**, 44 added lines and 6
+changed, none rewriting upstream logic and none bumping an upstream serialization version, so no
+upstream migration is ours to maintain. Eight Aloron pieces and the TigerPelt armour ported.
+
+**Read `notes/s1-armour-sets.md` section 3 before ever bumping `MODERNUO_COMMIT`.** It lists every
+patched upstream file, what each patch assumes, and what breaks it. That is this task's ongoing
+price and nothing else tracks it.
+
+**The number that justified this task was wrong.** I claimed 187 files unblocked; the real figure
+is **114**. See the correction in `docs/subsystem-policy.md`. The decision holds easily at 114.
+
+One incidental finding worth carrying: **a warm build cycle is 53 seconds**, not the minutes
+earlier tasks assumed.
+
+## S4. Test route for ported subsystems — START HERE
+
+**Do this before S2 or S3, despite the number.** S1 verified itself with six xunit tests against
+ModernUO's `UOContentFixture`, which boots a headless world in about a second. They all pass and
+**they are not committed**, because `apply-patches.sh` has no route into
+`Projects/UOContent.Tests/`. The check for the subsystem we just built currently lives in a scratch
+file and a paragraph asking someone to remember.
+
+Ported content is checked by the compiler and by reading ServUO. A ported subsystem is not.
+
+- Add a `server/tests/` directory that `apply-patches.sh` mirrors into
+  `Projects/UOContent.Tests/Tests/`, following the structured-customizations rule including its
+  destination-must-not-already-exist guard. Symmetrical with what F2 built.
+- **Land S1's six tests as the first content.** They exist and pass; the reproduction command is in
+  `notes/s1-armour-sets.md` section 4.
+- **A failing test must fail the build**, exactly as F2 made a failing patch fail the build. A suite
+  that can be green while broken is the defect F2 and F3 were spent fixing.
+
+**Done when:** a deliberately broken test fails the build, S1's six are committed and green, and the
+route handles a nested path.
 
 **Reverses a decline. See `docs/subsystem-policy.md` for why the old rule was wrong.**
 

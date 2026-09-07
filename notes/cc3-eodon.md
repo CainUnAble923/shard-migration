@@ -1,3 +1,10 @@
+> **Corrected 2026-09-07 by the overseer, after S1.** This note records the TigerPelt armour as
+> set-bonus content blocked on the armour set system. It is not. S1 checked all eight files and
+> **none declares `SetID` anywhere**; they were never blocked by anything. Left here rather than
+> edited away, because the pattern matters more than the entry: the block was assumed from the
+> neighbourhood a file sits in rather than verified in the file. Everything else in this note
+> held up under S1.
+
 # CC3 — Eodon core content: the verified list, the port, the timings
 
 Date: 2026-09-06. Agent: Claude Code, headless. Pinned ModernUO `7c9215d97`.

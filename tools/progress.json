@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-06T19:36:24-05:00",
+  "generated": "2026-09-07T01:07:37+00:00",
   "direction": "stay on ModernUO; pull ServUO content selectively",
   "setup_defects": {
     "CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered": true,
@@ -15,7 +15,7 @@
   "patches": {
     "total": 12,
     "failing": 0,
-    "triaged": 11,
+    "triaged": 8,
     "obsolete": 3
   },
   "ported_content": [
@@ -200,6 +200,13 @@
       "source": "ServUO Scripts/Items/Artifacts/Equipment/Armor/Sets/Alorons Set/*.cs",
       "dest": "server/customizations/Items/Artifacts/Equipment/Armor/Sets/Alorons Set/Alorons*.cs",
       "note": "The CC3 decline, reversed. Four-piece set (SetItem.Aloron), SetAttributes BonusMana 15 / LowerManaCost 20, SetSelfRepair 3, per-piece resist bonuses 8/8/9/8/8. Verified at runtime: four pieces worn gives 60/60/60/60/60 resists and BonusMana 15 through AosAttributes.GetValue. Two deviations: AbsorptionAttributes.EaterCold=2 omitted (SAAbsorptionAttributes is a separate missing subsystem that drags in three more), and the Dinosaur Slayer omitted along with its tooltip line, rather than advertise a bonus that does nothing. D-1 and D-2 in notes/s1-armour-sets.md."
+    },
+    {
+      "name": "Armour set-bonus subsystem + Aloron set + TigerPelt",
+      "task": "S1",
+      "source": "ServUO Items/Artifacts/Equipment/Armor/Sets/SetItem.cs and the Alorons Set",
+      "dest": "server/customizations/Items/{Armor,Artifacts/Equipment/Armor/Sets}, server/patches/",
+      "note": "First subsystem built rather than ported. Unblocks 114 further ServUO files. Three patches, one of them the first into the ModernUO core project (Mobile.ComputeResistances), allowed because no UOContent hook exists and the alternative was copied upstream logic. Four deviations logged, all omissions."
     }
   ],
   "declined_content": [
@@ -390,7 +397,13 @@
       "id": "S1",
       "title": "Armour set-bonus subsystem",
       "status": "done",
-      "note": "Feasibility spike PASSED, then the content. Subsystem is 3 additive files (843 lines) plus 3 targeted patches (44 added lines, 6 changed) into Mobile.cs, AOS.cs and BaseArmor.cs. No upstream serialization version bumped and no upstream class gains a field, so no upstream migration is ours. 16 content files: 8 TigerPelt (never actually blocked) and the 8 Aloron pieces CC3 declined. Clean Docker build, all 12 patches applying, server starts, world saves and reloads, and a headless xunit harness proves the set bonus, the resistances, the self repair and a serialization round trip. Four deviations logged. Maintenance cost, patch by patch, is in notes/s1-armour-sets.md section 3 - read it before bumping MODERNUO_COMMIT."
+      "note": "Spike passed. SetItem.cs plus three targeted patches (44 added lines, 6 changed), no upstream logic copied, no upstream serialization version bumped. Aloron set and TigerPelt ported. My 187 unblock figure was wrong: the real number is 114. Bump checklist in notes/s1-armour-sets.md section 3."
+    },
+    {
+      "id": "S4",
+      "title": "Test route for ported subsystems",
+      "status": "todo",
+      "note": "Runs before S2 and S3. S1's six passing xunit tests cannot be committed: apply-patches.sh has no route into Projects/UOContent.Tests. A ported subsystem needs a regression test the way ported content does not. A failing test must fail the build."
     },
     {
       "id": "S2",

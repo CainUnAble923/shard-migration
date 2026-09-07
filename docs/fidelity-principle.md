@@ -95,3 +95,20 @@ reverse it.
   decorations deriving from `Item` rather than `BaseDecorationArtifact`, which **prevents** a
   deviation by suppressing a rarity line ServUO also suppresses.
 
+- **2026-09-07, S1.** Four deviations in the armour set-bonus subsystem, all omissions rather
+  than approximations, which is the right side of "prefer turning a system off over running it
+  differently". Full reasoning and the cost to close each in `notes/s1-armour-sets.md` section 5.
+  - **`AbsorptionAttributes.EaterCold = 2` omitted from all eight Aloron pieces.** That property
+    is `SAAbsorptionAttributes`, the Stygian Abyss damage-eater system, which ModernUO lacks
+    entirely and whose `GetValue` pulls in `Enhancement`, `RunicReforging` and
+    `SkillMasterySpell`. **What a player notices:** a completed Aloron set gives no cold-damage
+    eating. **Closes when** the absorption subsystem is built, which is now a costed row in S3.
+  - **Aloron's Dinosaur Slayer omitted, effect and tooltip line both.** ModernUO's `SlayerName`
+    enum has neither `Dinosaur` nor `Myrmidex`. Omitting the tooltip too is deliberate: a slayer
+    line that does not slay is worse than no line.
+  - **`SetSelfRepair` uses ModernUO's self-repair formula, not ServUO's.** The set contributes
+    faithfully at the same point ServUO adds it; the two emulators' underlying formulas already
+    differed, and this changes nothing about that.
+  - **Property-list ordering differs slightly** from ServUO, because ModernUO splits
+    `AddNameProperty` from `GetProperties`. Cosmetic; the same lines with the same values.
+

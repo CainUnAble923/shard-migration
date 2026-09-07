@@ -77,7 +77,7 @@ Setup health   █████████████████████�
 | stale server/customizations/migrations removed | yes |
 | RegenRates routing made explicit | yes |
 
-**Patches:** 12 total, **0 currently failing to apply**, 11 triaged, 3 found obsolete. `apply-patches.sh` fails the build on a failed patch, so a green build means every patch applied.
+**Patches:** 12 total, **0 currently failing to apply**, 8 triaged, 3 found obsolete. `apply-patches.sh` fails the build on a failed patch, so a green build means every patch applied.
 
 ### Content moved over: 28 of 2,045 candidate files (1.4%)
 
@@ -107,7 +107,7 @@ Services/BulkOrders            ░░░░░░░░░░░░░░░░�
 
 _Counted by matching ServUO file stems (excluding those stock ModernUO already has) against `server/customizations`. Auto-counted, never hand-edited._
 
-**Ported systems logged: 26**
+**Ported systems logged: 27**
 
 | Content | Task | Notes |
 |---|---|---|
@@ -137,11 +137,12 @@ _Counted by matching ServUO file stems (excluding those stock ModernUO already h
 | PlayerMobile set resistances | S1 | Additive partial class, no patch needed: PlayerMobile is already partial and is not source-generated. Overrides the GetItemResistance virtual that Mobile-set-item-resistance-hook.patch introduces. |
 | TigerPelt armour (8 files) | S1 | CC3 called these 'itself set-bonus content'. That was wrong: grep SetID over all eight returns nothing. They are plain BaseArmor leaf armour and were never blocked. Ported unchanged, re-parented to BaseSetArmor so the Aloron pieces that derive from them can carry set state. Weight moves from a ctor assignment to a DefaultWeight override, the ModernUO idiom. |
 | Aloron's Armor set (8 files) | S1 | The CC3 decline, reversed. Four-piece set (SetItem.Aloron), SetAttributes BonusMana 15 / LowerManaCost 20, SetSelfRepair 3, per-piece resist bonuses 8/8/9/8/8. Verified at runtime: four pieces worn gives 60/60/60/60/60 resists and BonusMana 15 through AosAttributes.GetValue. Two deviations: AbsorptionAttributes.EaterCold=2 omitted (SAAbsorptionAttributes is a separate missing subsystem that drags in three more), and the Dinosaur Slayer omitted along with its tooltip line, rather than advertise a bonus that does nothing. D-1 and D-2 in notes/s1-armour-sets.md. |
+| Armour set-bonus subsystem + Aloron set + TigerPelt | S1 | First subsystem built rather than ported. Unblocks 114 further ServUO files. Three patches, one of them the first into the ModernUO core project (Mobile.ComputeResistances), allowed because no UOContent hook exists and the alternative was copied upstream logic. Four deviations logged, all omissions. |
 
-### Task list (9 of 17 done)
+### Task list (9 of 18 done)
 
 ```
-Tasks          ████████████░░░░░░░░░░  9/17   Foundation and the port pipeline
+Tasks          ███████████░░░░░░░░░░░  9/18   Foundation and the port pipeline
 ```
 
 | | Task | Status | Notes |
@@ -154,7 +155,8 @@ Tasks          ████████████░░░░░░░░░�
 | `P1` | Validate the port recipe with one real port | done | PlagueRat ported, built, spawned, saved and reloaded intact. Both draft fidelity traps were wrong (range perception was backwards; ServUO ignores its own speed args) and are corrected in notes/port-recipe.md. Three of the five F3 patches exercised at runtime: bandage-on-PetMimic and talisman durability both work; MAKE X works with no button overlap but its label uses an HTML colour where AddLabel wants a hue, so it renders invisible. See notes/cc1-p1-runtime-validation.md. Open: Q-008 (speed model), and new evidence on Q-007 (forcing SHA2 breaks new-account login on the live shard). |
 | `P2` | Second port, timed, using only the recipe | done | GreaterPoisonElemental, ~20 min headless. Per-file work ~1:10, warm build cycle 0:44, so build cycles are NOT the dominant cost. A batch of 20 is about an hour. Bigger finding: of 462 Mobiles/Normal files only 275 (60%) are clean - 132 call Pet Training methods ModernUO lacks, 89 reference a missing type. CC6 batches draw from the clean 60%. See notes/cc2-timed-port.md. |
 | `C1` | Eodon core content | done | 17 files ported, 12 declined - not the 'about 22' the docs claimed, wrong for the third time. Six dinosaurs, Raptor, RaptorClaw, RaptorTeeth, six TOL decorations. Declined with evidence: the eight Aloron pieces (armour set-bonus subsystem), the Valley of One quest line (8 files on ServUO's ML quest framework, a subsystem port), MoonstonePowerGenerator (Myrmidex content, matched on 'moonstone'). Time of Legends 53/157 to 59/157. Eleven deviations logged. See notes/cc3-eodon.md. |
-| `S1` | Armour set-bonus subsystem | done | Feasibility spike PASSED, then the content. Subsystem is 3 additive files (843 lines) plus 3 targeted patches (44 added lines, 6 changed) into Mobile.cs, AOS.cs and BaseArmor.cs. No upstream serialization version bumped and no upstream class gains a field, so no upstream migration is ours. 16 content files: 8 TigerPelt (never actually blocked) and the 8 Aloron pieces CC3 declined. Clean Docker build, all 12 patches applying, server starts, world saves and reloads, and a headless xunit harness proves the set bonus, the resistances, the self repair and a serialization round trip. Four deviations logged. Maintenance cost, patch by patch, is in notes/s1-armour-sets.md section 3 - read it before bumping MODERNUO_COMMIT. |
+| `S1` | Armour set-bonus subsystem | done | Spike passed. SetItem.cs plus three targeted patches (44 added lines, 6 changed), no upstream logic copied, no upstream serialization version bumped. Aloron set and TigerPelt ported. My 187 unblock figure was wrong: the real number is 114. Bump checklist in notes/s1-armour-sets.md section 3. |
+| `S4` | Test route for ported subsystems | todo | Runs before S2 and S3. S1's six passing xunit tests cannot be committed: apply-patches.sh has no route into Projects/UOContent.Tests. A ported subsystem needs a regression test the way ported content does not. A failing test must fail the build. |
 | `S2` | Fountain of Fortune cluster | todo | Reverses a decline. ~900 lines. Restores LuckyCoin's OnDoubleClick and removes the Q-010 deviation. |
 | `S3` | Cost every remaining decline | todo | Measurement only. Unblock ratio for Pet Training (and SpecialAbility.cs alone), the ML quest framework, Myrmidex, Shadowguard, Skill Masteries, VvV, City Loyalty, Exploring the Deep. Output is a table Chase picks from. |
 | `C2` | Revamped Dungeons | todo | 255 files. Unblocked: F2 added subdirectory mirroring. One chat per dungeon: Despise 4, Shame 11, Wrong 26, Covetous 29, Exodus 38, Blackthorn 147. |

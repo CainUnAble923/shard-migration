@@ -19,11 +19,23 @@ Measure the **unblock ratio**: files freed per file built.
 
 | Subsystem | Cost to build | Files it unblocks | Ratio |
 |---|---|---|---|
-| Armour set bonus | **1 file, 387 lines**, plus base-class plumbing | **187** | ~187:1 |
+| Armour set bonus | **1 file, 387 lines**, plus 3 small patches | **114** (see correction below) | ~114:1 |
 | Fountain of Fortune cluster | ~5-8 files, ~900 lines | its own reward loop, and `LuckyCoin`'s interaction | low, but so is the cost |
 | Pet Training, full | 11 files, 8,664 lines | 103 creatures | ~9:1 |
 | Pet Training, `SpecialAbility.cs` only | 2,688 lines | 67 of those creatures | unmeasured, likely much better |
 | Mondain's Legacy quest framework | 21 files, 5,625 lines | the Eodon quest line, plus an unknown number of others | **unknown, and that unknown decides it** |
+
+> **Correction, 2026-09-07, after S1 built it.** The 187 above was mine and it was wrong: a union
+> of `SetItem`, `SetAttributes` and `AbsorptionAttributes`, which are **not one subsystem**.
+> Re-counted: **131 files actually declare `SetID`**, of which **114 are unblocked by the armour
+> set system alone**. 17 also need `SAAbsorptionAttributes`, the Stygian Abyss damage-eater system,
+> which ModernUO also lacks and S1 did not build; 43 more use absorption without being set items.
+> The decision was right and 114:1 is still the best ratio in the backlog. The number I argued it
+> with was inflated by about 64%, in the same document that tells everyone else to measure
+> properly. Raised by S1 as Q-017.
+>
+> **Four for four**: every keyword-derived count in this repo has been wrong. A keyword hit is a
+> candidate, not a result. Publish the file list beside the count, including in this table.
 
 A subsystem that frees one thing is bad value. A subsystem that frees 187 is the best value
 in the backlog. The old rule treated those identically.
@@ -68,3 +80,30 @@ ratio recorded**, so the decision can be revisited when the surrounding content 
 Declining is still right when the ratio is poor, when the subsystem would mean two engines
 coexisting for the same job, or when the content it frees is not content we want. Nothing
 here says port everything regardless of cost. It says cost it properly first.
+
+## Patching the ModernUO core project
+
+S1 needed the first patch outside `Projects/UOContent`, into `Projects/Server/Mobiles/Mobile.cs`,
+because `ComputeResistances()` lives in the core and that is where ServUO applies set resistances.
+
+**Allowed, on this bar: no `UOContent` hook exists, and the alternative is copied upstream logic.**
+Core patches are riskier on a pinned-commit bump than `UOContent` ones, so they are rare, they are
+argued in `notes/` before being written, and they are the **first** thing re-verified when
+`MODERNUO_COMMIT` moves.
+
+**The standing rule underneath it generalises: a failing patch beats copied upstream logic.**
+`apply-patches.sh` is a verification gate, and a copied method body routes around it. Sixty lines of
+upstream logic living in our tree drifts silently on a bump; a patch that no longer applies stops
+the build and names itself. Take the loud failure every time.
+
+**And prefer a patch over a mechanism that does not persist.** S1 rejected expressing set bonuses as
+`ResistanceMod`s, which was arithmetically identical and needed no patch, because ModernUO does not
+appear to serialize them: the bonus would have vanished on save and reload until the player
+re-equipped. Zero patches is not worth a silent fidelity bug.
+
+## A ported subsystem needs a test; ported content does not
+
+Ported content is checked by the compiler and by reading the ServUO source. A ported subsystem is
+not. Nothing in a build would catch a bump that leaves every patch applying while the behaviour
+quietly stops reaching the player. Every subsystem built from here ships with a committed
+regression test, once S4 builds the route for one.
