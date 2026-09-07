@@ -58,17 +58,12 @@ reverse it.
   because that file is replaced wholesale. Renamed because the old name implied both files.
   No behaviour change.
 
-- **2026-09-06, P2.** `LuckyCoin` ported without its `OnDoubleClick`. ServUO's coin is
-  double-clicked at a `FountainOfFortune` to trade for Stygian Abyss rewards. ModernUO has no
-  Fountain, and porting it pulls in `EnchantedEssence`, `GemologistsSatchel`, `RelicFragment`
-  and `SolesOfProvidence`. That is a subsystem, which we decline.
-  **What a player notices:** the coin drops correctly and stacks, and double-clicking it does
-  nothing rather than saying "That is not sacred waters."
-  **Why here and not in the creature:** twelve `Mobiles/Normal` creatures drop this coin. Putting
-  the deviation in the item keeps all twelve creatures' loot tables faithful, which is what a
-  player checks against UOGuide. Dropping the `OnDeath` override instead would have put the
-  deviation in the loot table, where it is visible and wrong.
-  **Reversal:** one file. If the Fountain is ever built, restore the `OnDoubleClick`.
+- ~~**2026-09-06, P2.** `LuckyCoin` ported without its `OnDoubleClick`.~~ **CLOSED 2026-09-07 by
+  S2.** The Fountain of Fortune cluster is ported and `OnDoubleClick` is restored, covering all
+  twelve coin droppers at once, pinned by a regression test. The original decline rested on a
+  factual error of mine: `EnchantedEssence` and `RelicFragment` do not pull in Imbuing, they are
+  leaf items in `SAQuestItems.cs` that Imbuing merely consumes. Kept struck through rather than
+  deleted, because a deviation that got closed is the most useful kind of entry this log has.
 
 - **2026-09-06, CC3.** Eleven deviations across the 17 Eodon files, every one a ServUO behaviour
   with no ModernUO equivalent, dropped rather than approximated. Full table with reasoning in
@@ -111,4 +106,20 @@ reverse it.
     differed, and this changes nothing about that.
   - **Property-list ordering differs slightly** from ServUO, because ModernUO splits
     `AddNameProperty` from `GetProperties`. Cosmetic; the same lines with the same values.
+
+- **2026-09-07, S2.** Four live deviations in the Fountain of Fortune cluster. Full reasoning in
+  `notes/s2-fountain.md`.
+  - **The fountain's luck bonus shows in the status bar**, where ServUO hides it. ServUO routes
+    the reward through `PlayerMobile.RealLuck`, which ModernUO does not have, and all three of
+    ModernUO's luck consumers read `Mobile.Luck`. One patched line in `PlayerMobile.Luck` gets all
+    three right, against three patches into three content files for the invisible version.
+    Cosmetic, and the cheaper patch is the more robust one.
+  - **`SolesOfProvidence` loses `IsArtifact`**, a ServUO-only virtual with zero readers in
+    ModernUO. Inert.
+  - **Nothing places a fountain yet**, so the coin's only reachable outcome is its failure
+    message. Not a deviation we are keeping: Q-021 answers it with the OSI coordinates,
+    Ter Mur `(1121, 957, -42)`, and it is a small follow-on task.
+  - **ServUO's two unreachable reward cases are ported unchanged** rather than "fixed". Correct
+    under "port unchanged": upstream dead code stays dead code, and quietly repairing it would be
+    an undocumented divergence from every wiki that describes the fountain.
 

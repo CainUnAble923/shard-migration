@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-07T02:58:48-05:00",
+  "generated": "2026-09-07T11:11:18+00:00",
   "direction": "stay on ModernUO; pull ServUO content selectively",
   "setup_defects": {
     "CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered": true,
@@ -235,6 +235,13 @@
       "source": "ServUO Scripts/Items/Resource/ (31 files, 1,668 lines) plus MagicalResidue, EnchantedEssence, RelicFragment and BouraPelt in Scripts/Items/Quest/SAQuestItems.cs",
       "dest": "server/customizations/Items/Resource/ and Items/Quest/",
       "note": "EnchantedEssence and RelicFragment are core cluster members; the other 33 are forced dependencies of GemologistsSatchel. All are Item or Item,ICommodity stackables with an ItemID and a cliloc and nothing else - grep for 'new X(' across all 31 Resource files returns zero matches. Files are named after the class, so ServUO's SeedRenewal.cs, LavaSerpenCrust.cs and ElvenFletchings.cs become SeedOfRenewal.cs, LavaSerpentCrust.cs and ElvenFletching.cs; the TypeAlias attributes are carried across unchanged. These are Stygian Abyss drops that CC5 and CC6 want regardless, so the overrun buys reusable content."
+    },
+    {
+      "name": "Fountain of Fortune cluster (38 files)",
+      "task": "S2",
+      "source": "ServUO Items/Addons/FountainOfFortune.cs, SAQuestItems.cs, 31 Items/Resource ingredients",
+      "dest": "server/customizations/Items/{Addons,Quest,Resource,Containers,Artifacts}",
+      "note": "Reverses the second decline. Restores LuckyCoin's OnDoubleClick for all 12 coin droppers. One patch: PlayerMobile.Luck, because ServUO routes the reward through RealLuck which ModernUO lacks. Ships with a regression test. Nothing places a fountain yet - Q-021 gives the OSI coordinates."
     }
   ],
   "declined_content": [
@@ -437,7 +444,7 @@
       "id": "S2",
       "title": "Fountain of Fortune cluster",
       "status": "done",
-      "note": "Reverses the second decline in docs/subsystem-policy.md and CLOSES Q-010: LuckyCoin.OnDoubleClick is restored, which covers all twelve coin droppers at once. The brief's 'roughly 900 lines' was wrong in BOTH directions - the core is 465 lines across 4 files, and the full cluster is 2,292 across 36, because GemologistsSatchel reads Imbuing.IngredTypes and 35 of its 42 entries were missing from ModernUO. Not a subsystem: all 35 are leaf items with no dependencies at all, so all 35 were ported (Q-020). Needs one patch, PlayerMobile-fountain-luck-bonus, because ServUO routes the luck reward through RealLuck which ModernUO does not have. Ships with 5 regression tests, the first content task to use S4's route. build.sh had a Git Bash path-mangling bug that made its own test gate unrunnable; fixed in place (Q-022). Nothing places a fountain in the world - Q-021, Chase's call. Full green: 13 patches, 9 tests, image built, world saves and reloads clean. See notes/s2-fountain.md."
+      "note": "38 files, 2,292 lines, 1 patch, 5 tests. Closes Q-010: LuckyCoin.OnDoubleClick restored across all 12 coin droppers. My ~900-line estimate was wrong in both directions: the core is 465 lines, but GemologistsSatchel reads a 42-entry Imbuing table and 35 entries were missing. All 35 were dependency-free leaf items, so they were ported. First content task to use S4's test route."
     },
     {
       "id": "S3",

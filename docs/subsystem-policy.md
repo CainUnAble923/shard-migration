@@ -20,7 +20,7 @@ Measure the **unblock ratio**: files freed per file built.
 | Subsystem | Cost to build | Files it unblocks | Ratio |
 |---|---|---|---|
 | Armour set bonus | **1 file, 387 lines**, plus 3 small patches | **114** (see correction below) | ~114:1 |
-| Fountain of Fortune cluster | ~5-8 files, ~900 lines | its own reward loop, and `LuckyCoin`'s interaction | low, but so is the cost |
+| Fountain of Fortune cluster | **38 files, 2,292 lines**, 1 patch (measured by S2) | its own reward loop, `LuckyCoin`'s interaction across 12 creatures, and 35 Imbuing ingredient leaf items | low ratio, and the cost was 2.5x my estimate |
 | Pet Training, full | 11 files, 8,664 lines | 103 creatures | ~9:1 |
 | Pet Training, `SpecialAbility.cs` only | 2,688 lines | 67 of those creatures | unmeasured, likely much better |
 | Mondain's Legacy quest framework | 21 files, 5,625 lines | the Eodon quest line, plus an unknown number of others | **unknown, and that unknown decides it** |
@@ -36,6 +36,16 @@ Measure the **unblock ratio**: files freed per file built.
 >
 > **Four for four**: every keyword-derived count in this repo has been wrong. A keyword hit is a
 > candidate, not a result. Publish the file list beside the count, including in this table.
+
+> **Second correction, 2026-09-07, after S2 built it.** My "roughly 900 lines" was wrong in both
+> directions. The *core* cluster is 465 lines across 4 files. The *whole* thing is 2,292 across 38,
+> because `GemologistsSatchel` reads `Imbuing.IngredTypes`, a 42-entry table, and 35 of the 42 were
+> missing from ModernUO. All 35 turned out to be dependency-free leaf items, so they were ported to
+> the leaf per the `LuckyCoin` precedent and the ingredient table is complete and verbatim.
+>
+> **The lesson is not "estimate better", it is that a cheap-looking leaf can hide a table.** A
+> dependency walk that stops at the file you are reading misses a `Type[]` one level down. Walk the
+> arrays too.
 
 A subsystem that frees one thing is bad value. A subsystem that frees 187 is the best value
 in the backlog. The old rule treated those identically.

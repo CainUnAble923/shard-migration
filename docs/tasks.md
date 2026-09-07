@@ -70,6 +70,7 @@ Measured, not estimated. Two data points, and they deserve different amounts of 
 
 | Task | Files | Context used | 5-hour window | Agent wall clock |
 |---|---|---|---|---|
+| S2 | 38 ported, 1 patch, 5 tests | not recorded | not recorded | not recorded |
 | CC3 | 17 ported, 29 verified | 278k of 1M (28%) | ~1% | ~17 min build, ~9 min verify |
 | P2 | 2 ported, 462 surveyed | 231.5k of 1M (23%) | ~9% | ~20 min |
 | P1 | 1 ported | ~492k of 1M (49%), **unreliable** | ~5% | not recorded |
@@ -253,15 +254,32 @@ rightly rejected. The gate also refuses to read "the filter matched no tests" as
 always did. Q-019, and the fifth count this project has had to correct. The right thing was done:
 the four landed unchanged rather than two being invented to match a number in a document.
 
-## S2. Fountain of Fortune cluster — START HERE
+## S2. Fountain of Fortune cluster — DONE
 
-Also reverses a decline. `Items/Addons/FountainOfFortune.cs` (318 lines) plus a handful of leaf
-items, roughly 900 lines total. The original decline assumed `EnchantedEssence` and
-`RelicFragment` pull in Imbuing; they do not, both are leaf items in `SAQuestItems.cs` and
-Imbuing only consumes them. Restores `LuckyCoin`'s `OnDoubleClick` and removes the Q-010
-deviation. Small; do it after S1.
+Completed 2026-09-07. **38 files, 2,292 ServUO lines, one patch, five new tests.** Closes Q-010:
+`LuckyCoin.OnDoubleClick` is restored and pinned by a regression test, covering all twelve coin
+droppers at once.
 
-## S3. Cost every remaining decline
+**My "roughly 900 lines" was wrong in both directions.** The core cluster is 465 lines across 4
+files; the whole thing is 2,292 across 38, because `GemologistsSatchel` reads
+`Imbuing.IngredTypes` and 35 of that table's 42 entries were missing from ModernUO. All 35 are
+dependency-free leaf items, verified: a grep for `new X(` across all 31 `Items/Resource` files
+returns nothing. So they were ported rather than worked around, and the ingredient table is
+complete and verbatim.
+
+**First content task to use S4's test route**, and the right call: the luck patch is exactly the
+failure S4 exists to catch. A bump that stops routing loot through `Mobile.Luck` would leave the
+patch applying and the build green while the reward silently stopped reaching the player.
+
+Q-021 answered: nothing places a fountain yet. The OSI coordinates are Ter Mur
+`(1121, 957, -42)`, from `Services/Underworld/Generate.cs:184`, and the shard runs Endless
+Journey with `SA` true, so that is in scope. Small follow-on, not folded in here.
+
+Q-022 answered and fixed in place: `build.sh` could not run its own test gate from Git Bash,
+because MSYS rewrote `-w /build/modernuo` into a Windows path and the daemon error surfaced as
+"tests did not pass".
+
+## S3. Cost every remaining decline — START HERE
 
 Produce the costed menu `docs/subsystem-policy.md` calls for: unblock ratio for Pet Training
 (and for `SpecialAbility.cs` alone), the Mondain's Legacy quest framework, Myrmidex Invasion,

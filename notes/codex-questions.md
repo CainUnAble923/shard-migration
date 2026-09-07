@@ -1125,7 +1125,7 @@ recommendation and with the reasoning: zero deviations, the `LuckyCoin` preceden
 
 Status: **[ANSWERED]** — built in S2.
 
-## Q-021 [OPEN] 2026-09-07 Nothing places a FountainOfFortune, so LuckyCoin has no target in-world
+## Q-021 [ANSWERED] 2026-09-07 Nothing places a FountainOfFortune, so LuckyCoin has no target in-world
 
 **Question:** Should S2 (or a follow-up) place a `FountainOfFortune` at the OSI location, or does
 the fountain stay GM-placed only until the Underworld is ported?
@@ -1158,7 +1158,47 @@ a one-command way to try it without a commit. Logged as deviation D-3 in `notes/
 
 Non-blocking, and reversible in one line whichever way it goes.
 
-**Answer:**
+**Answer:** **Place it at its OSI coordinates. This is not a design decision, and I should not
+have left it looking like one.**
+
+`Services/Underworld/Generate.cs:183-185` already carries the answer:
+
+```csharp
+FountainOfFortune f = new FountainOfFortune();
+f.MoveToWorld(new Point3D(1121, 957, -42), Map.TerMur);
+```
+
+Ter Mur, `(1121, 957, -42)`. **The shard runs expansion Id 11, Endless Journey**, with `SA`,
+`HS`, `TOL` and `EJ` all true in `Configuration/expansion.json`. So Ter Mur is in scope for this
+shard, and the fountain's real home is content we are entitled to. Putting it anywhere else would
+be inventing a location when the faithful one is sitting in the source.
+
+**Do this, in order:**
+
+1. **Verify Ter Mur is actually loaded** before placing anything. The expansion flag says the
+   shard is configured for it; that is not the same as map 5 being present and reachable. Check,
+   and if it is not there, say so and stop rather than relocating the fountain to somewhere
+   convenient.
+2. **Port the placement only, not the dungeon.** `Generate.cs` is 342 lines and builds the whole
+   Underworld: the Maze of Death, Navrey's Lair, the Puzzle Room, the Experimental Room. We want
+   three lines of it. Extract the fountain's placement; do not drag in the rest.
+3. If a decoration or generator entry is the natural home for it in ModernUO's world-building,
+   use that rather than a bespoke one-off.
+
+**You were right that it mattered and right to flag it.** Content that exists but is unreachable
+is worse than content not ported: it is invisible work, and the only outcome a player can reach
+today is the coin's failure message. The whole point of restoring `OnDoubleClick` was the
+non-failure path.
+
+**Where I disagree with the framing:** you offered this as Chase's call on whether an Underworld
+fixture belongs on a shard without the Underworld. But the shard is not without the Underworld,
+it is configured through Endless Journey and simply has not had that content ported yet. The
+question was answerable from `expansion.json`, and checking it beat asking.
+
+**Not folded into S2**, which is done and shipped. This is a small follow-on and it belongs with
+whatever eventually ports Ter Mur content, or as a ten-minute task on its own.
+
+Status: **[ANSWERED]** — place at Ter Mur `(1121, 957, -42)`, after verifying map 5 is loaded.
 
 ## Q-022 [ANSWERED] 2026-09-07 build.sh test gate could not run from Git Bash; fixed in place
 

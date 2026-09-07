@@ -80,10 +80,10 @@ separate lines. `cd D:\X && git push` fails; `cd D:\X; git push` works.
 
 ```
 D:\ShatteredLegacy               the shard. Infrastructure-as-code, NOT a ModernUO fork.
-  server/customizations/         canonical custom scripts. 153 .cs, 41,432 lines. EDIT TARGET.
+  server/customizations/         canonical custom scripts. 191 .cs, 42,617 lines. EDIT TARGET.
                                  (2026-09-06 snapshot; grows with every port. tools/progress.py
                                  recomputes it - that output is the live number.)
-  server/patches/                overrides against stock ModernUO. 12 .patch + 5 replacements.
+  server/patches/                overrides against stock ModernUO. 13 .patch + 5 replacements.
   server/migrations/             serialization migration JSONs.
   server/uo/modernuo/            build tree. NOT an edit target, NOT committed. See below.
   docker/                        compose stack; builds ModernUO from pinned commit 7c9215d97.
