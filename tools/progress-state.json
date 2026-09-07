@@ -243,12 +243,8 @@
   ],
   "declined_content": [
     {
-      "name": "Vice vs Virtue, City Loyalty, Skill Masteries, Exploring the Deep",
-      "reason": "29-100% dependent on subsystems ModernUO lacks entirely. Deferred to workstream 4."
-    },
-    {
-      "name": "Eodon: the Valley of One quest line",
-      "reason": "CC3. Two reasons, either sufficient. (1) It is 3 of 8 files, not 3 of 3: the directory is 3,870 lines and the three named files reference PrideOfTheAmbushQuest and TimeIsOfTheEssenceQuest from Quests.cs, so they do not compile alone. The 2,058-line figure sums a set that does not stand up. (2) It rests on ServUO's Mondain's Legacy quest framework - BaseQuest, BaseQuestItem, QuestHelper, QuestChain, MondainQuester, BaseRewardTitleDeed, all absent from ModernUO - which is 6,269 lines before gumps and persistence. ModernUO ships a DIFFERENT quest engine (MLQuest/MLQuestSystem: static definitions plus per-player context, versus ServUO's per-player instantiated BaseQuest objects). Porting means either two serialized quest engines in one world or a reimplementation. Subsystem port, not a content port."
+      "name": "Eodon: the Valley of One quest line \u2014 REOPENED",
+      "reason": "Declined by CC3 because ModernUO 'ships a different quest engine'. S3 found ModernUO already ships Engines/ML Quests: 109 files, 240 quests, 205 of ServUO's 408 present by name. The framework decline stands on two-engines-for-one-job, but these quests are content work against an engine we have. S5 is the spike that settles whether the objective mapping holds. Q-023."
     },
     {
       "name": "Eodon: MoonstonePowerGenerator",

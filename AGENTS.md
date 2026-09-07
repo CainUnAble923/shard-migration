@@ -38,7 +38,7 @@ deviation in `docs/fidelity-principle.md`. Full reasoning there.
    documents its content coverage accurately. Every content claim in `docs/` came from
    reading and counting files. Hold new claims to the same bar.
 3. **State what you could not verify.** An explicit "unverified" beats a confident guess.
-   **Count the artifact, never a description of it.** **Seven for seven**: every count in this
+   **Count the artifact, never a description of it.** **Nine for nine**: every count in this
    project stated without counting has been wrong, including two that were the basis of a
    decision and one inside a document whose own subject was miscounting. A keyword hit is a
    candidate, not a result. **Publish the file list beside the count.** When a source states a
