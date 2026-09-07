@@ -46,6 +46,18 @@ deviation in `docs/fidelity-principle.md`. Full reasoning there.
    working. Nothing in this project should ever require a migration event, a fresh world, or
    a compensation pass. If a piece of content cannot be added without one, decline it.
 
+## `docker/uo/build.sh` is the build command
+
+Since S4, `D:\ShatteredLegacy\docker\uo\build.sh` is how this shard is built: builder stage,
+then the shard's own tests, then the image, each gating the next. **`docker build` and
+`docker compose build` are internal steps of it, not things to run directly.** Running them
+directly produces an image with no test gate and no warning.
+
+The reason it cannot all live inside `docker build`: every ModernUO test fixture calls
+`NetState.Configure()`, which needs io_uring, which Docker Desktop's default seccomp profile
+blocks. `docker build` has no `--security-opt`, and the BuildKit entitlement alternative would
+stop `docker compose build` working. Evidence in `notes/s4-test-route.md`.
+
 ## Chase's shell is Windows PowerShell 5.1
 
 `&&` is not a statement separator there. Any command you hand him chains with `;` or goes on

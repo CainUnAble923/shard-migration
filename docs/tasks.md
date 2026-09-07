@@ -231,53 +231,29 @@ is **114**. See the correction in `docs/subsystem-policy.md`. The decision holds
 One incidental finding worth carrying: **a warm build cycle is 53 seconds**, not the minutes
 earlier tasks assumed.
 
-## S4. Test route for ported subsystems — START HERE
+## S4. Test route for ported subsystems — DONE
 
-**Do this before S2 or S3, despite the number.** S1 verified itself with six xunit tests against
-ModernUO's `UOContentFixture`, which boots a headless world in about a second. They all pass and
-**they are not committed**, because `apply-patches.sh` has no route into
-`Projects/UOContent.Tests/`. The check for the subsystem we just built currently lives in a scratch
-file and a paragraph asking someone to remember.
+Completed 2026-09-07. `server/tests/<path>` mirrors into `Projects/UOContent.Tests/Tests/<path>`,
+and a failing test stops a build instead of living in `%TEMP%` with a paragraph asking someone to
+re-run it. **Not a new mechanism**: F2's structured-customizations loop became `mirror_cs_tree()`
+called twice, same destination-must-not-already-exist guard, everything F2 established unchanged.
+No patch to an upstream project file was needed; `UOContent.Tests.csproj` has no
+`<Compile Include>` items so the SDK's default glob picks the tests up.
 
-Ported content is checked by the compiler and by reading ServUO. A ported subsystem is not.
+Four negative proofs, each run and then removed: a failing assertion, a test that does not
+compile, a test in the wrong namespace, and a test at an upstream path. All four fail the build.
 
-- Add a `server/tests/` directory that `apply-patches.sh` mirrors into
-  `Projects/UOContent.Tests/Tests/`, following the structured-customizations rule including its
-  destination-must-not-already-exist guard. Symmetrical with what F2 built.
-- **Land S1's six tests as the first content.** They exist and pass; the reproduction command is in
-  `notes/s1-armour-sets.md` section 4.
-- **A failing test must fail the build**, exactly as F2 made a failing patch fail the build. A suite
-  that can be green while broken is the defect F2 and F3 were spent fixing.
+**`docker/uo/build.sh` is now the build command for this repo.** See the entry in `AGENTS.md`.
+A failing assertion fails `build.sh`, not `docker build`, because every ModernUO fixture calls
+`NetState.Configure()`, which needs io_uring, which Docker Desktop's default seccomp blocks. The
+BuildKit entitlement alternative would have stopped `docker compose build` working, so it was
+rightly rejected. The gate also refuses to read "the filter matched no tests" as a pass.
 
-**Done when:** a deliberately broken test fails the build, S1's six are committed and green, and the
-route handles a nested path.
+**It landed four tests, not six.** My brief said six. The harness has four `[Fact]` methods and
+always did. Q-019, and the fifth count this project has had to correct. The right thing was done:
+the four landed unchanged rather than two being invented to match a number in a document.
 
-**Reverses a decline. See `docs/subsystem-policy.md` for why the old rule was wrong.**
-
-ServUO's armour set-bonus system is **one file, `Items/Artifacts/Equipment/Armor/Sets/SetItem.cs`,
-387 lines**, and **187 ServUO files reference `SetItem`, `SetAttributes` or
-`AbsorptionAttributes`**. Pinned ModernUO has none of it. That is an unblock ratio of roughly
-187 to 1, the best in the backlog, and CC3 declined the eight Aloron pieces against it.
-
-This is not a content port. It is a subsystem build, and the interesting question is not the
-387 lines, it is the plumbing into `BaseArmor`, `BaseWeapon`, `BaseJewel` and `BaseClothing`.
-Patching upstream base classes is what `server/patches/` is for, so the layering pattern should
-hold, but **prove that before writing the whole thing.**
-
-**Do the feasibility spike first, and stop if it fails.** Port `SetItem.cs`, wire the minimum
-plumbing into one base class, and get one set item showing a set bonus. If that needs more than
-targeted patches, if it means forking a base class beyond what a patch can express, stop and
-write up what it would actually take. A negative answer delivered early is a good result.
-
-**Then the eight Aloron pieces**, which are the proof the subsystem works on real content, plus
-the TigerPelt set if it is cheap.
-
-**Done when:** a clean Docker build with all patches applying, the server starting, the world
-saving and reloading, and at least one set item verified to carry its set attributes. Record
-what the next pinned-commit bump would have to reconcile, because that is this task's ongoing
-cost and nobody else will track it.
-
-## S2. Fountain of Fortune cluster
+## S2. Fountain of Fortune cluster — START HERE
 
 Also reverses a decline. `Items/Addons/FountainOfFortune.cs` (318 lines) plus a handful of leaf
 items, roughly 900 lines total. The original decline assumed `EnchantedEssence` and

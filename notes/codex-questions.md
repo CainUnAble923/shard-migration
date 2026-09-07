@@ -948,7 +948,7 @@ Status: **[ANSWERED]** — re-counted, policy corrected, S3 row added.
 
 ---
 
-## Q-018 [OPEN] 2026-09-07 A failing test fails `build.sh`, not `docker build`
+## Q-018 [ANSWERED] 2026-09-07 A failing test fails `build.sh`, not `docker build`
 
 **Question:** S4 was asked to make a failing test fail the Docker build. On Docker Desktop it
 cannot. Do we accept the gate living in `docker/uo/build.sh`, or do we require an entitled buildx
@@ -984,11 +984,39 @@ deploy path for closing that gap, which is a bad trade for a shard that has to s
 `build.sh` is documented as the build command in four places, and it refuses to treat "the filter
 matched no tests" or an unreadable test count as a pass. Proceeded on that basis.
 
-**Answer:**
+**Answer:** **Accepted, and you made the right call rejecting the BuildKit route.** Breaking
+`docker compose build` to gain a gate would have traded a working deploy path for a check, and
+this shard's deploy path is not something to spend.
+
+Saying so plainly rather than implying `docker build` covers it is the part that matters. A gate
+everyone believes in and that does not actually run is worse than no gate, and this project has
+already paid for that lesson once with `apply-patches.sh` swallowing eight failing patches.
+
+**So `docker/uo/build.sh` is now THE build command for this repo, and that is recorded in both
+`AGENTS.md` files.** `docker build` and `docker compose build` are internal steps of it, not
+things anyone runs directly. Anyone who runs them directly gets an image with no test gate and
+no warning, which is exactly the trap worth naming in the place people look first.
+
+Three things I checked and liked:
+
+- The gate refuses to read "the filter matched no tests" as a pass. That is the same class of
+  defect as a runner that cannot fail, caught before it could bite.
+- Three of the four negative proofs fail `docker build` itself, so only the assertion case
+  depends on `build.sh`. The blast radius of the environmental limitation is one case, not all
+  four.
+- No patch to an upstream project file was needed, because `UOContent.Tests.csproj` carries no
+  `<Compile Include>` items and the SDK's default glob picks up anything under the project. That
+  is the cheapest possible answer and it is verified against the pinned commit rather than
+  assumed.
+
+**Left for Chase, not an agent:** the live deploy sequence is now `build.sh`, then his own
+`docker compose up`. Nobody but him touches that, so it is his to fold in when he next deploys.
+
+Status: **[ANSWERED]** — accepted; `build.sh` recorded as the build command in both `AGENTS.md`.
 
 ---
 
-## Q-019 [OPEN] 2026-09-07 "S1's six tests" are four
+## Q-019 [ANSWERED] 2026-09-07 "S1's six tests" are four
 
 **Question:** None that blocks. Recording a count that was wrong in three places, since this repo
 now has a rule about exactly that.
@@ -1013,5 +1041,31 @@ Done — they are committed at
 from the namespace and header comment, and all four pass through the committed route.
 `docs/tasks.md` still says six and is yours to correct.
 
-**Answer:**
+**Answer:** **You are right, it is four, and landing the four unchanged rather than inventing
+two to match my number was exactly correct.** `docs/tasks.md` is fixed.
+
+I counted the `[Fact]` methods myself: `AloronSetGrantsItsSetBonus`, `StockArmourIsUnaffected`,
+`TigerPeltAloneIsNotASetItem`, `SetStateSurvivesASerializationRoundTrip`. Four.
+
+**Where "six" came from is worth recording, because the mechanism is new.** Q-016's context
+paragraph reads "Four tests: set completion, attribute aggregation, resistance aggregation, set
+self repair, set breaking, and a serialization round trip." That sentence states four and then
+lists six. I read the list, wrote "six", and propagated it into `docs/tasks.md` and into the S4
+brief you worked from. The source was internally inconsistent and I picked the wrong half without
+checking the artifact that would have settled it in one grep.
+
+**Five for five**, and you are right that this one is different in kind. The first four were
+keyword-derived counts, which at least have the excuse of being a hard measurement problem. This
+one was a number sitting in a file I could have counted in five seconds.
+
+**The rule this adds:** when a source states a count and a list that disagree, **neither is the
+answer**. Go count the artifact. Do not pick the half that looks more specific, which is what I
+did, and do not reconcile them by adjusting the work to fit the number, which is what you
+correctly refused to do.
+
+That refusal is the important half of this. Inventing two tests to match a number in a brief
+would have produced two tests that existed to satisfy a document rather than to catch a
+regression, and nobody would ever have known.
+
+Status: **[ANSWERED]** — corrected to four; the tests stay as they are.
 
