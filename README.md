@@ -77,21 +77,21 @@ Setup health   █████████████████████�
 | stale server/customizations/migrations removed | yes |
 | RegenRates routing made explicit | yes |
 
-**Patches:** 9 total, **0 currently failing to apply**, 8 triaged, 3 found obsolete. `apply-patches.sh` fails the build on a failed patch, so a green build means every patch applied.
+**Patches:** 12 total, **0 currently failing to apply**, 11 triaged, 3 found obsolete. `apply-patches.sh` fails the build on a failed patch, so a green build means every patch applied.
 
-### Content moved over: 11 of 2,045 candidate files (0.5%)
+### Content moved over: 28 of 2,045 candidate files (1.4%)
 
 ```
-TOTAL                          █░░░░░░░░░░░░░░░░░   11/2045    0.5%
+TOTAL                          █░░░░░░░░░░░░░░░░░   28/2045    1.4%
 
+Items/Artifacts                █░░░░░░░░░░░░░░░░░   10/325     3.1%
+Items/Equipment                █░░░░░░░░░░░░░░░░░    8/148     5.4%
 Services/Expansions            █░░░░░░░░░░░░░░░░░    6/175     3.4%
 Mobiles/Normal                 █░░░░░░░░░░░░░░░░░    3/138     2.2%
-Items/Artifacts                █░░░░░░░░░░░░░░░░░    1/325     0.3%
 Items/Resource                 █░░░░░░░░░░░░░░░░░    1/61      1.6%
 Mobiles/NPCs                   ░░░░░░░░░░░░░░░░░░    0/222     0.0%
 Items/Addons                   ░░░░░░░░░░░░░░░░░░    0/169     0.0%
 Services/Revamped Dungeons     ░░░░░░░░░░░░░░░░░░    0/150     0.0%
-Items/Equipment                ░░░░░░░░░░░░░░░░░░    0/148     0.0%
 Services/XmlSpawner            ░░░░░░░░░░░░░░░░░░    0/97      0.0%
 Items/Decorative               ░░░░░░░░░░░░░░░░░░    0/88      0.0%
 Quests                         ░░░░░░░░░░░░░░░░░░    0/84      0.0%
@@ -107,7 +107,7 @@ Services/BulkOrders            ░░░░░░░░░░░░░░░░�
 
 _Counted by matching ServUO file stems (excluding those stock ModernUO already has) against `server/customizations`. Auto-counted, never hand-edited._
 
-**Ported systems logged: 21**
+**Ported systems logged: 26**
 
 | Content | Task | Notes |
 |---|---|---|
@@ -132,11 +132,16 @@ _Counted by matching ServUO file stems (excluding those stock ModernUO already h
 | SilverbackGorilla | CC3 | The only candidate creature calling no PetTrainingHelper method. Banana-throw OnActionCombat ported intact: the 13-argument MovingParticles overload with EffectLayer, AOS.Damage and Region.IsPartOf(string) all exist unchanged. DateTime.UtcNow -> Core.Now. |
 | Raptor | CC3 | The only ported creature with real persisted state: m_IsFriend becomes [SerializableField(0, setter: "private")] and ServUO's delete-on-deserialize becomes [AfterDeserialization(false)]. The Raptor()/Raptor(bool) Constructable pair collapses to one [Constructible] Raptor(bool isFriend = false). Pack-friend spawn timer, PackInstinct.Ostard, Map.CanFit and AIObject.Action all port unchanged. SetWeaponAbility(BleedAttack) becomes GetWeaponAbility(). Drops AncientPotteryFragments and RaptorClaw, both ported alongside. |
 | Eodon core content (17 files) | CC3 | Six dinosaurs, Raptor, RaptorClaw, RaptorTeeth, six TOL decorations, PerfectBanana, AncientPotteryFragments. Four build batches, zero failures. All 17 types verified registered by reflection over the shipped assembly. Deviations logged in docs/fidelity-principle.md. |
+| SetItem (SetItem enum, ISetItem, SetHelper) | S1 | The Mondain's Legacy armour set-bonus subsystem. Ported to ModernUO's IPropertyList, StatMod and AosSkillBonuses APIs. Omits SetHelper.GetSetSlayer (ModernUO's SlayerName has no Dinosaur/Myrmidex; consumers are BaseWeapon combat code, out of scope) and the IFishingAttire branch (no such interface in ModernUO; Fisherman set not ported). Deviations D-2 and D-4 in notes/s1-armour-sets.md. |
+| BaseSetArmor | S1 | The key design decision of S1. ServUO puts set state on BaseArmor itself; doing that in ModernUO would mean bumping BaseArmor's [SerializationGenerator(9)] to 10 and owning a migration for an upstream file. Instead this additive abstract class at version 0 carries the state and set content derives from it. Behaviourally identical for set content, because no stock ModernUO armour is a set item (verified at runtime). |
+| PlayerMobile set resistances | S1 | Additive partial class, no patch needed: PlayerMobile is already partial and is not source-generated. Overrides the GetItemResistance virtual that Mobile-set-item-resistance-hook.patch introduces. |
+| TigerPelt armour (8 files) | S1 | CC3 called these 'itself set-bonus content'. That was wrong: grep SetID over all eight returns nothing. They are plain BaseArmor leaf armour and were never blocked. Ported unchanged, re-parented to BaseSetArmor so the Aloron pieces that derive from them can carry set state. Weight moves from a ctor assignment to a DefaultWeight override, the ModernUO idiom. |
+| Aloron's Armor set (8 files) | S1 | The CC3 decline, reversed. Four-piece set (SetItem.Aloron), SetAttributes BonusMana 15 / LowerManaCost 20, SetSelfRepair 3, per-piece resist bonuses 8/8/9/8/8. Verified at runtime: four pieces worn gives 60/60/60/60/60 resists and BonusMana 15 through AosAttributes.GetValue. Two deviations: AbsorptionAttributes.EaterCold=2 omitted (SAAbsorptionAttributes is a separate missing subsystem that drags in three more), and the Dinosaur Slayer omitted along with its tooltip line, rather than advertise a bonus that does nothing. D-1 and D-2 in notes/s1-armour-sets.md. |
 
-### Task list (8 of 17 done)
+### Task list (9 of 17 done)
 
 ```
-Tasks          ██████████░░░░░░░░░░░░  8/17   Foundation and the port pipeline
+Tasks          ████████████░░░░░░░░░░  9/17   Foundation and the port pipeline
 ```
 
 | | Task | Status | Notes |
@@ -149,7 +154,7 @@ Tasks          ██████████░░░░░░░░░░░�
 | `P1` | Validate the port recipe with one real port | done | PlagueRat ported, built, spawned, saved and reloaded intact. Both draft fidelity traps were wrong (range perception was backwards; ServUO ignores its own speed args) and are corrected in notes/port-recipe.md. Three of the five F3 patches exercised at runtime: bandage-on-PetMimic and talisman durability both work; MAKE X works with no button overlap but its label uses an HTML colour where AddLabel wants a hue, so it renders invisible. See notes/cc1-p1-runtime-validation.md. Open: Q-008 (speed model), and new evidence on Q-007 (forcing SHA2 breaks new-account login on the live shard). |
 | `P2` | Second port, timed, using only the recipe | done | GreaterPoisonElemental, ~20 min headless. Per-file work ~1:10, warm build cycle 0:44, so build cycles are NOT the dominant cost. A batch of 20 is about an hour. Bigger finding: of 462 Mobiles/Normal files only 275 (60%) are clean - 132 call Pet Training methods ModernUO lacks, 89 reference a missing type. CC6 batches draw from the clean 60%. See notes/cc2-timed-port.md. |
 | `C1` | Eodon core content | done | 17 files ported, 12 declined - not the 'about 22' the docs claimed, wrong for the third time. Six dinosaurs, Raptor, RaptorClaw, RaptorTeeth, six TOL decorations. Declined with evidence: the eight Aloron pieces (armour set-bonus subsystem), the Valley of One quest line (8 files on ServUO's ML quest framework, a subsystem port), MoonstonePowerGenerator (Myrmidex content, matched on 'moonstone'). Time of Legends 53/157 to 59/157. Eleven deviations logged. See notes/cc3-eodon.md. |
-| `S1` | Armour set-bonus subsystem | todo | Reverses a decline. 1 file, 387 lines, unblocks 187. Best unblock ratio in the backlog. Feasibility spike first: prove the base-class plumbing fits the patch layer before writing it all. |
+| `S1` | Armour set-bonus subsystem | done | Feasibility spike PASSED, then the content. Subsystem is 3 additive files (843 lines) plus 3 targeted patches (44 added lines, 6 changed) into Mobile.cs, AOS.cs and BaseArmor.cs. No upstream serialization version bumped and no upstream class gains a field, so no upstream migration is ours. 16 content files: 8 TigerPelt (never actually blocked) and the 8 Aloron pieces CC3 declined. Clean Docker build, all 12 patches applying, server starts, world saves and reloads, and a headless xunit harness proves the set bonus, the resistances, the self repair and a serialization round trip. Four deviations logged. Maintenance cost, patch by patch, is in notes/s1-armour-sets.md section 3 - read it before bumping MODERNUO_COMMIT. |
 | `S2` | Fountain of Fortune cluster | todo | Reverses a decline. ~900 lines. Restores LuckyCoin's OnDoubleClick and removes the Q-010 deviation. |
 | `S3` | Cost every remaining decline | todo | Measurement only. Unblock ratio for Pet Training (and SpecialAbility.cs alone), the ML quest framework, Myrmidex, Shadowguard, Skill Masteries, VvV, City Loyalty, Exploring the Deep. Output is a table Chase picks from. |
 | `C2` | Revamped Dungeons | todo | 255 files. Unblocked: F2 added subdirectory mirroring. One chat per dungeon: Despise 4, Shame 11, Wrong 26, Covetous 29, Exodus 38, Blackthorn 147. |
@@ -164,11 +169,10 @@ _Detail and acceptance criteria in `docs/tasks.md`. Status lives in `tools/progr
 **Deliberately declined:**
 
 - **Vice vs Virtue, City Loyalty, Skill Masteries, Exploring the Deep** — 29-100% dependent on subsystems ModernUO lacks entirely. Deferred to workstream 4.
-- **Eodon: the eight Aloron armour pieces** — CC3. Rest on the armour set-bonus subsystem, which ModernUO ships zero files for - SetItem, SetAttributes and AbsorptionAttributes are all absent, and BaseArmor has no SetID/Pieces/Set*Bonus/SetSelfRepair. After the resistances the entire item IS set data, so porting without the subsystem leaves a re-hued TigerPeltChest with a label. They also inherit from the TigerPelt set, a further 8 files. Cost to do properly: the set-bonus subsystem, then TigerPelt (8), then Aloron (8).
 - **Eodon: the Valley of One quest line** — CC3. Two reasons, either sufficient. (1) It is 3 of 8 files, not 3 of 3: the directory is 3,870 lines and the three named files reference PrideOfTheAmbushQuest and TimeIsOfTheEssenceQuest from Quests.cs, so they do not compile alone. The 2,058-line figure sums a set that does not stand up. (2) It rests on ServUO's Mondain's Legacy quest framework - BaseQuest, BaseQuestItem, QuestHelper, QuestChain, MondainQuester, BaseRewardTitleDeed, all absent from ModernUO - which is 6,269 lines before gumps and persistence. ModernUO ships a DIFFERENT quest engine (MLQuest/MLQuestSystem: static definitions plus per-player context, versus ServUO's per-player instantiated BaseQuest objects). Porting means either two serialized quest engines in one world or a reimplementation. Subsystem port, not a content port.
 - **Eodon: MoonstonePowerGenerator** — CC3. It is Myrmidex Invasion content, not Eodon. It lives inside Services/Expansions/Time Of Legends/Myrmidex Invasion/, spawns Zipactriotl (the Myrmidex boss) and IgnisFatalis, subclasses DamageableItem (absent from ModernUO), and is referenced only by Myrmidex Invasion/System.cs and the MyrmidexThreat quest. It reached the CC3 list because the keyword moonstone matched and nobody opened the file.
 
-Counted from the trees: 134 customization files, 14 patch files.
+Counted from the trees: 153 customization files, 17 patch files.
 Shard status: running on ModernUO.
 <!-- PROGRESS:END -->
 
@@ -177,18 +181,18 @@ Shard status: running on ModernUO.
 <!-- EXPANSION:START -->
 ### Content by expansion
 
-**3,050 of 6,144 ServUO files present** (50%), of which **11 ported by us**.
+**3,067 of 6,144 ServUO files present** (50%), of which **28 ported by us**.
 
 ```
-Pre-AoS (T2A/UOR/LBR)     ██████████░░░░░░░░░░  2228/4294    52%   +5
+Pre-AoS (T2A/UOR/LBR)     ██████████░░░░░░░░░░  2244/4294    52%   +21
 Age of Shadows            █████████████░░░░░░░   201/309     65%
 Samurai Empire            ███████████████░░░░░    87/115     76%
 Mondain's Legacy          ██████████░░░░░░░░░░   241/471     51%
 Stygian Abyss (Ter Mur)   ██████░░░░░░░░░░░░░░   125/444     28%
 High Seas                 ██████░░░░░░░░░░░░░░    96/334     29%
-Time of Legends (Eodon)   ████████░░░░░░░░░░░░    59/157     38%   +6
+Time of Legends (Eodon)   ████████░░░░░░░░░░░░    60/157     38%   +7
 Endless Journey           █████████████░░░░░░░    13/20      65%
-TOTAL                     ██████████░░░░░░░░░░  3050/6144    50%   +11
+TOTAL                     ██████████░░░░░░░░░░  3067/6144    50%   +28
 ```
 
 _Filename-stem matching: a proxy for presence, not behaviour. Unclassified files fall into Pre-AoS, inflating it. Directional, not a completion percentage._

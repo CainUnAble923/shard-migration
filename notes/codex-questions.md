@@ -771,3 +771,91 @@ turning into "port a 6,269-line quest framework and reimplement it on a differen
 precisely where a fidelity-driven project quietly becomes a fork.
 
 Status: **[ANSWERED]** — both documents corrected, nothing further for you.
+
+---
+
+## Q-015 [OPEN] 2026-09-07 S1 needed the first patch outside `Projects/UOContent`
+
+**Question:** Is patching the ModernUO **core server project** an acceptable standing pattern, or
+should it need your sign-off case by case?
+
+**Context:** All nine pre-S1 patches touch `Projects/UOContent`. S1's
+`Mobile-set-item-resistance-hook.patch` touches `Projects/Server/Mobiles/Mobile.cs`, because
+`Mobile.ComputeResistances()` lives in the core project and ServUO applies armour set resistances at
+exactly that point. `ISetItem` is declared in `UOContent`, which `Server` cannot reference, so the
+patch adds a `public virtual int GetItemResistance(Item, ResistanceType)` and our additive
+`PlayerMobile` partial overrides it. 14 added lines, 5 changed, no behaviour change when no set item
+is worn.
+
+Two alternatives were considered and rejected, both worse:
+
+1. **Override `ComputeResistances()` wholesale in our `PlayerMobile` partial.** Zero patches, but it
+   means copying ~60 lines of upstream logic into our tree, which drifts *silently* on a bump. The
+   patch fails loudly instead. `apply-patches.sh` is a verification gate; a copied method body is not.
+2. **Express the bonus as `ResistanceMod`s added on equip.** Zero patches and arithmetically
+   identical, but ModernUO does not appear to serialize `_resistanceMods`, so the bonus would vanish
+   on save/reload until the player re-equipped. A real fidelity bug for a cosmetic saving.
+
+**Your best guess:** allowed, but rare and always argued in `notes/`. Core patches are strictly
+riskier on a pinned-commit bump than UOContent ones, so the bar should be "no UOContent hook exists
+and the alternative is copied logic". S1 proceeded on that basis; the reconciliation cost is written
+up in `notes/s1-armour-sets.md` §3.
+
+**Answer:**
+
+---
+
+## Q-016 [OPEN] 2026-09-07 There is no route for a committed regression test
+
+**Question:** Do we want ModernUO xunit tests as a committed artefact, and if so what carries them
+into the build tree?
+
+**Context:** S1's set behaviour is not observable from the server console — ModernUO's console
+registers only `save`, `shutdown` and `restart`, so a headless run cannot create an item. It was
+verified instead with a throwaway xunit file against ModernUO's own `UOContentFixture`, which boots a
+full world headless in about a second. Four tests: set completion, attribute aggregation, resistance
+aggregation, set self repair, set breaking, and a serialization round trip. All pass; the numbers are
+in `notes/s1-armour-sets.md` §4, and the reproduction command is there too.
+
+It is **not committed**, because it would have to land in `Projects/UOContent.Tests/` and
+`apply-patches.sh` only routes `server/customizations` into `Projects/UOContent` plus a fixed list of
+full-file replacements. Adding a test route was scope creep inside S1.
+
+This matters more than it did before S1. Ported *content* is checked by the compiler and by reading
+the ServUO source. A ported *subsystem* is not: nothing in the build would catch it if a future
+pinned-commit bump left the three patches applying but the set bonus silently not reaching the
+mobile. That is the exact failure mode `notes/s1-armour-sets.md` §3 asks a bump to check for, and
+right now the check is a scratch file in `%TEMP%` and a paragraph asking someone to re-run it.
+
+**Your best guess:** worth doing, and small — a `server/tests/` directory that `apply-patches.sh`
+mirrors into `Projects/UOContent.Tests/Tests/`, mirroring the structured-customizations rule
+including its "destination must not already exist" guard. It is its own task, not a bolt-on to S2.
+
+**Answer:**
+
+---
+
+## Q-017 [OPEN] 2026-09-07 The `187` unblock ratio has never been split by what actually blocks each file
+
+**Question:** Before S3 quotes 187 again, should it re-count how many of those files are blocked by
+the armour set system (now built) versus by `SAAbsorptionAttributes` (still missing)?
+
+**Context:** `docs/subsystem-policy.md` puts the armour set-bonus ratio at 187:1, from a grep over
+ServUO for `SetItem`, `SetAttributes` **or** `AbsorptionAttributes`. Those are not one subsystem.
+`AbsorptionAttributes` is a property of type `SAAbsorptionAttributes` (`Scripts/Misc/AOS.cs:2753`),
+the Stygian Abyss damage-eater system, which ModernUO also lacks entirely and whose `GetValue` pulls
+in `Enhancement`, `RunicReforging` and `SkillMasterySpell` — three further absent subsystems. S1 did
+not build it, and omitting `EaterCold` is deviation D-1.
+
+So an unknown share of the 187 is still blocked, on a different subsystem, and S1 did not move it.
+60 ServUO files reference `AbsorptionAttributes`; the overlap with the set files is unmeasured.
+
+Separately, S1 found two files' worth of the 187 that were **never blocked at all**: the eight
+TigerPelt armour pieces, which CC3 recorded as "itself set-bonus content" and which have no `SetID`
+anywhere in them.
+
+**Your best guess:** yes, and it is S3's natural first row. This repo is three for three on
+keyword-derived counts being wrong, and 187 is a keyword-derived count. Recorded in
+`notes/s1-armour-sets.md` §8 so it is not quoted unqualified. Non-blocking for S1, which is done.
+
+**Answer:**
