@@ -44,11 +44,18 @@ deviation in `docs/fidelity-principle.md`. Full reasoning there.
    hit is a candidate, not a result. **Publish the file list beside the count.** And when a
    source states a count and a list that disagree, neither is the answer: go count the thing.
    Never adjust the work to match a number in a document, including one in your own brief.
-4. **Source evidence beats a stated rule.** If a rule here rests on a premise your evidence
+4. **Upstream conversation is a hypothesis, never evidence.** Chase is in the ModernUO Discord
+   from 2026-09-07. What upstream says there is genuinely useful for *intent* - whether a gap is
+   deliberate or just not built yet, what a pinned-commit bump will bring, whether a patch of
+   ours conflicts with work in flight. It is **not** a source for what the code does. Nothing
+   enters `docs/` or a decision on the strength of a chat message; verify it in
+   `D:\UO\ModernUO-pinned` and cite the file and line. Never write "upstream says" as a
+   justification, and never treat a Discord claim as outranking the source tree.
+5. **Source evidence beats a stated rule.** If a rule here rests on a premise your evidence
    disproves, the rule is void, not merely in tension. Say so and open a question. This has
    already happened twice and both times the evidence was right.
-5. **Never commit** `Saves/`, `Accounts/`, `client-data/`, `backups/`, `server/uo/`, or logs.
-6. **Incremental and stoppable is the point.** Every ported piece should leave the shard
+6. **Never commit** `Saves/`, `Accounts/`, `client-data/`, `backups/`, `server/uo/`, or logs.
+7. **Incremental and stoppable is the point.** Every ported piece should leave the shard
    working. Nothing in this project should ever require a migration event, a fresh world, or
    a compensation pass. If a piece of content cannot be added without one, decline it.
 
