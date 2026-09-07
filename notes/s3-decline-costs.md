@@ -193,12 +193,17 @@ Of the 103 `Mobiles/Normal` files that reference it:
   `GiantSpider`, `RuneBeetle`, `Scorpion`, `Slime`, `Snake`, `WolfSpider`;
 - **14** are genuinely entangled outside `Deserialize` — `Beetle`, `CrimsonDrake`, `CuSidhe`,
   `FireBeetle`, `Hiryu`, `IronBeetle`, `LesserHiryu`, `Phoenix`, `PlatinumDrake`, `Ridgeback`,
-  `SabertoothedTiger`, `SavageRidgeback`, `ScaledSwampDragon`, `SwampDragon`. **Eleven of
-  those 14 are creatures ModernUO already has.**
+  `SabertoothedTiger`, `SavageRidgeback`, `ScaledSwampDragon`, `SwampDragon`. **Ten of those
+  14 are creatures ModernUO already has.**
 
 So the count of `Mobiles/Normal` creatures that are in our backlog **and** cannot be ported at
-all without Pet Training is **three**: `CrimsonDrake`, `PlatinumDrake`, `IronBeetle`.
-Everything else is portable today at the cost of a logged deviation.
+all without Pet Training is **four**: `CrimsonDrake`, `IronBeetle`, `PlatinumDrake`,
+`SabertoothedTiger`. Everything else is portable today at the cost of a logged deviation.
+
+Two of the four — `CrimsonDrake` and `PlatinumDrake` — are entangled only because they
+override `TrainingDefinition`; `IronBeetle` and `SabertoothedTiger` only because of a
+`PetTrainingHelper.Enabled` guard on a tamed-pet branch. All four are arguably degradable too.
+Four is therefore an upper bound on "genuinely blocked", not a floor.
 
 That does not make Pet Training worthless. It makes its value **fidelity, not throughput**:
 79 files across the tree, 37 of them creatures in the `Mobiles/Normal` backlog, get the
