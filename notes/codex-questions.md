@@ -1396,3 +1396,64 @@ Two things from the survey I am acting on that were not in your question:
   and not the effect.
 
 Status: **[ANSWERED]** — CC6 rewritten, the filter rule promoted to `AGENTS.md`, S5 and S6 queued.
+
+---
+
+## Q-025 [OPEN] 2026-09-07 ModernUO's quest engine has no `Quest.StartingItem` equivalent
+
+**Question:** ServUO's `BaseQuest` supports a quest begun by double-clicking an **item** rather
+than talking to an NPC. `DeliverObjective` branches on it in both `OnAccept`
+(`QuestObjectives.cs:545` — the starting item becomes the delivery, nothing is spawned) and
+`Update` (`:594` — any `BaseVendor` completes it, not just the declared `Destination`).
+ModernUO's engine has no equivalent: `MLQuestSystem` is entered only through
+`OnDoubleClick(IQuestGiver, PlayerMobile)`, and `IQuestGiver` is implemented by `BaseCreature`.
+
+Is item-started questing something we want, and if so is it a framework addition we would accept?
+
+**Context:** Found in S5 while mapping Deliver → Deliver. Not needed by
+`JourneyToTheAthenaeumIsle`, which is NPC-started. I have **not** measured how many of the 203
+missing quests use `StartingItem`, because doing it properly means reading `BaseQuestItem` and
+its subclasses rather than grepping for a keyword, and this project's rule is that a keyword hit
+is a candidate and not a result. So the size of this is genuinely unknown and I am not guessing
+at it.
+
+Note that this is a **framework** gap, not a per-quest one. Everything else S5 found could be
+absorbed inside a quest definition; this cannot.
+
+**Your best guess:** Leave it. Port the NPC-started quests first — they are the large majority of
+what we would take anyway — and revisit only when a quest we actually want turns out to need it.
+Nothing is blocked by leaving this open.
+
+**Answer:**
+
+## Q-026 [OPEN] 2026-09-07 The S4 test route cannot construct a `BaseCreature`
+
+**Question:** Should the S4 test route load `Data/npc-speeds.json`, or should each test that
+needs a creature keep working around it?
+
+**Context:** Every public `BaseCreature` constructor calls `NPCSpeeds.GetSpeeds`, which does
+`_speedsByLevel[SpeedLevel.Medium]` and throws `KeyNotFoundException` when the table is empty.
+`NPCSpeeds.Configure()` fills it from `Data/npc-speeds.json` and returns **silently** when the
+file is not under `Core.BaseDirectory`, which in the test host it is not. So no test can build a
+creature.
+
+Not our defect and not new: ModernUO's own tests hit it and dodge it by using the `Serial`
+deserialization constructor —
+`UOContent.Tests/Tests/Engines/Pathing/BitmapAStarAlgorithmTests.cs:356`, comment "requires the
+npc-speeds.json table loaded — not available in tests". That dodge is not available to a quest
+test, which needs real creatures.
+
+Four of S5's five tests failed on this before I worked around it. The workaround is eight lines
+in the fixture registering the table's `Medium` row with values verbatim from pinned
+`Distribution/Data/npc-speeds.json`.
+
+**This will hit every future creature test, and CC6 is 137 creatures.** The right fix is
+probably one line in `apply-patches.sh` copying `Distribution/Data` into the test project's
+output, or a shared fixture helper under `server/tests/`.
+
+**Your best guess:** Leave the per-test workaround in S5 and fix it properly in whichever task
+next writes a creature test — changing `build.sh` or `apply-patches.sh` inside a content spike is
+the scope creep this project keeps declining. If it is fixed centrally, **delete** the S5
+workaround rather than leaving both; `notes/s5-quest-spike.md` section 10 item 4 says so.
+
+**Answer:**

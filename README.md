@@ -79,16 +79,16 @@ Setup health   █████████████████████�
 
 **Patches:** 13 total, **0 currently failing to apply**, 8 triaged, 3 found obsolete. `apply-patches.sh` fails the build on a failed patch, so a green build means every patch applied.
 
-### Content moved over: 59 of 2,045 candidate files (2.9%)
+### Content moved over: 60 of 2,045 candidate files (2.9%)
 
 ```
-TOTAL                          █░░░░░░░░░░░░░░░░░   59/2045    2.9%
+TOTAL                          █░░░░░░░░░░░░░░░░░   60/2045    2.9%
 
 Items/Resource                 █████████░░░░░░░░░   29/61     47.5%
 Items/Artifacts                █░░░░░░░░░░░░░░░░░   11/325     3.4%
 Items/Equipment                █░░░░░░░░░░░░░░░░░    8/148     5.4%
 Services/Expansions            █░░░░░░░░░░░░░░░░░    6/175     3.4%
-Mobiles/Normal                 █░░░░░░░░░░░░░░░░░    3/138     2.2%
+Mobiles/Normal                 █░░░░░░░░░░░░░░░░░    4/138     2.9%
 Items/Addons                   █░░░░░░░░░░░░░░░░░    1/169     0.6%
 Items/Containers               █░░░░░░░░░░░░░░░░░    1/31      3.2%
 Mobiles/NPCs                   ░░░░░░░░░░░░░░░░░░    0/222     0.0%
@@ -107,7 +107,7 @@ Services/BulkOrders            ░░░░░░░░░░░░░░░░�
 
 _Counted by matching ServUO file stems (excluding those stock ModernUO already has) against `server/customizations`. Auto-counted, never hand-edited._
 
-**Ported systems logged: 32**
+**Ported systems logged: 35**
 
 | Content | Task | Notes |
 |---|---|---|
@@ -143,11 +143,14 @@ _Counted by matching ServUO file stems (excluding those stock ModernUO already h
 | SolesOfProvidence | S2 | Sandals with Attributes.Luck = 80. Loses ServUO's IsArtifact override: ModernUO has no such member and every ServUO consumer of it (RunicReforging, BasePigmentsOfTokuno, NaturalDye, AlterItem, ArcaneGem) is also absent, so it is inert. Deviation D-1. |
 | Imbuing ingredient set (35 leaf items) | S2 | EnchantedEssence and RelicFragment are core cluster members; the other 33 are forced dependencies of GemologistsSatchel. All are Item or Item,ICommodity stackables with an ItemID and a cliloc and nothing else - grep for 'new X(' across all 31 Resource files returns zero matches. Files are named after the class, so ServUO's SeedRenewal.cs, LavaSerpenCrust.cs and ElvenFletchings.cs become SeedOfRenewal.cs, LavaSerpentCrust.cs and ElvenFletching.cs; the TypeAlias attributes are carried across unchanged. These are Stygian Abyss drops that CC5 and CC6 want regardless, so the overrun buys reusable content. |
 | Fountain of Fortune cluster (38 files) | S2 | Reverses the second decline. Restores LuckyCoin's OnDoubleClick for all 12 coin droppers. One patch: PlayerMobile.Luck, because ServUO routes the reward through RealLuck which ModernUO lacks. Ships with a regression test. Nothing places a fountain yet - Q-021 gives the OSI coordinates. |
+| JourneyToTheAthenaeumIsle + QueenZhah | S5 | First ServUO quest on ModernUO's MLQuest engine. SlayObjective -> KillObjective, 10x ObtainObjective -> 10x CollectObjective with ShowDetailed=false carrying clilocs 1150933-1150942, BaseReward -> ItemReward. Registered from a Configure() hook via MLQuestSystem.Register, because apply-patches.sh mirrors .cs only and Data/MLQuests.cfg is CRLF data. Deviation D-S5-3: QueenZhah is undressed, her seven gargoyle items (~470 ServUO lines) are all absent from ModernUO. Pinned by 5 tests in ShatteredLegacy.Tests.AthenaeumIsleQuestVerification. |
+| MinionOfScelestus | S5 | Kill-objective target for the S5 quest. Stats, resistances, skills, loot, HitPoison, treasure level, mount knockoff and home-return are verbatim. Two deviations: D-S5-1 loses SetSpecialAbility(DragonBreath) (Pet Training, CC6 decline, Saurosaurus precedent); D-S5-2 loses TaintedLifeAura, which would need additive patches into BaseWeapon and AOS. ServUO's Poison.Parasitic maps to ModernUO's Poison.LethalParasitic (Misc/PoisonKinds.cs). Not spawned - batched for the client spot check. |
+| GargishDocuments (12 types) + BaseLocalizedBook + Note | S5 | The ten Collect-objective targets, the reward book, and the two base classes underneath them. Forced dependencies found by the array walk, ported to the leaf per LuckyCoin: ModernUO's Items/Books has BaseBook/BookContent/BookPageInfo, all authored-text, none cliloc-paged, so this is additive and not a duplicate. Both reader gumps were rewritten from ServUO's Gump API onto DynamicGumpBuilder - a real rewrite, and UNVERIFIED without a client. D-S5-4: ChronicleOfTheGargoyleQueen1.Initialize() became a static initializer; the values are constants so behaviour is identical. |
 
-### Task list (12 of 21 done)
+### Task list (13 of 21 done)
 
 ```
-Tasks          █████████████░░░░░░░░░  12/21   Foundation and the port pipeline
+Tasks          ██████████████░░░░░░░░  13/21   Foundation and the port pipeline
 ```
 
 | | Task | Status | Notes |
@@ -164,7 +167,7 @@ Tasks          █████████████░░░░░░░░�
 | `S4` | Test route for ported subsystems | done | server/tests/<path> mirrors into Projects/UOContent.Tests/Tests/<path> through mirror_cs_tree(), the same F2 mechanism structured customizations use, with the same destination-must-not-already-exist guard. S1's tests are committed and green - four [Fact] methods, not the six docs/tasks.md claims (Q-019). No patch to an upstream project file was needed: UOContent.Tests.csproj has no <Compile Include> items and is already in ModernUO.slnx. Four negative proofs, all failing the build: a failing assertion, a test that does not compile, a wrong namespace, an upstream path collision. Three of the four fail docker build itself; a failing assertion fails docker/uo/build.sh, because every ModernUO fixture needs io_uring and docker build cannot relax seccomp (Q-018). build.sh is now the build command. See notes/s4-test-route.md. |
 | `S2` | Fountain of Fortune cluster | done | 38 files, 2,292 lines, 1 patch, 5 tests. Closes Q-010: LuckyCoin.OnDoubleClick restored across all 12 coin droppers. My ~900-line estimate was wrong in both directions: the core is 465 lines, but GemologistsSatchel reads a 42-entry Imbuing table and 35 entries were missing. All 35 were dependency-free leaf items, so they were ported. First content task to use S4's test route. |
 | `S3` | Cost every remaining decline | done | Measurement only. Found the error under every count on this project: 3,134 of ServUO's 6,144 files are types ModernUO already declares. CC6's backlog is 137, not 360. Best ratio is SAAbsorptionAttributes; biggest surprise is that ModernUO already ships an ML quest engine with 205 of ServUO's 408 quests; strongest decline is Skill Masteries. See notes/s3-decline-costs.md. |
-| `S5` | Translate one ML quest onto ModernUO's engine | todo | Spike, permission to fail. ModernUO already ships Engines/ML Quests: 109 files, 240 quests, 205 of ServUO's 408 by name. Proves whether the objective mapping holds. If it passes, the Valley of One and Myrmidex Threat quests come back as content work. |
+| `S5` | Translate one ML quest onto ModernUO's engine | done | JourneyToTheAthenaeumIsleQuest translated onto ModernUO's ML quest engine end to end. 6 files, 1,063 ServUO lines in, 745 out, plus a 284-line test with 5 facts. Gated build green at 14 tests. THE MAPPING HOLDS for 4 of 5 objective types: Slay->Kill and Obtain->Collect are identical and are proven by test; Apprentice->GainSkill holds (upstream already made this exact translation in NewHavenSkillTraining.cs) but loses region-scoped acceleration and needs cap x10; Deliver->Deliver holds but the destination name moves to a [QuesterName] attribute and Quest.StartingItem has no counterpart (Q-025); Escort->Escort holds and its dropped fame/compassion parameters are unused across all 30 ServUO call sites. THE REAL FINDING is not the mapping: of the 203 missing quests, 164 use one standard objective type and translate mechanically, but 39 hand-write a BaseObjective subclass with no counterpart - 25 of them InternalObjective. QuestionAndAnswerObjective is 2 of those 39, not the tail. Also: it is the ONLY quest in all 408 that uses two standard objective types, and Valley of One is a poor first batch (3 of its 7 need a hand-written objective). Registration uses MLQuestSystem.Register rather than Data/MLQuests.cfg, which apply-patches.sh cannot carry; that API has zero upstream callers, so a test guards it. Found a gap in the S4 route: no BaseCreature can be constructed in a test without the npc-speeds.json table (Q-026). Answers Q-023. See notes/s5-quest-spike.md. |
 | `S6` | SAAbsorptionAttributes | todo | Best measured ratio. One additive file against BaseAttributes, 57 files unblocked, closes S1's D-1 deviation. Cost ~1,120 lines, not the ~350 headline: the smaller figure buys the property and tooltips, not the effect. |
 | `S7` | Services/PointsSystems | todo | 12 files, 2,857 lines, unblocks 55. Hard dependency of both Vice vs Virtue and City Loyalty. Costed and available, not scheduled. |
 | `C2` | Revamped Dungeons | todo | 255 files. Unblocked: F2 added subdirectory mirroring. One chat per dungeon: Despise 4, Shame 11, Wrong 26, Covetous 29, Exodus 38, Blackthorn 147. |
@@ -178,11 +181,12 @@ _Detail and acceptance criteria in `docs/tasks.md`. Status lives in `tools/progr
 
 **Deliberately declined:**
 
-- **Eodon: the Valley of One quest line — REOPENED** — Declined by CC3 because ModernUO 'ships a different quest engine'. S3 found ModernUO already ships Engines/ML Quests: 109 files, 240 quests, 205 of ServUO's 408 present by name. The framework decline stands on two-engines-for-one-job, but these quests are content work against an engine we have. S5 is the spike that settles whether the objective mapping holds. Q-023.
+- **Eodon: the Valley of One quest line - REOPENED, and a poor first batch** — Declined by CC3 because ModernUO 'ships a different quest engine'. S3 found ModernUO already ships Engines/ML Quests: 109 files, 240 quests, 205 of ServUO's 408 present by name. S5 then translated one quest end to end and CONFIRMED the objective mapping holds, so this decline is reversed and these are content work. Q-023 answered. But S5 also read all seven: none uses two objective types and THREE of the seven (EmptyNest, TheGreatVolcano, PrideOfTheAmbush) use a hand-written InternalObjective with no counterpart on either side of the mapping, against 19% bespoke across the 203. Reopened, but do not start the quest work here - pick from the 164 single-standard-objective quests instead. See notes/s5-quest-spike.md sections 1 and 8.
 - **Eodon: MoonstonePowerGenerator** — CC3. It is Myrmidex Invasion content, not Eodon. It lives inside Services/Expansions/Time Of Legends/Myrmidex Invasion/, spawns Zipactriotl (the Myrmidex boss) and IgnisFatalis, subclasses DamageableItem (absent from ModernUO), and is referenced only by Myrmidex Invasion/System.cs and the MyrmidexThreat quest. It reached the CC3 list because the keyword moonstone matched and nobody opened the file.
 - **S3 costed menu - declines upheld with their ratios recorded** — Measured 2026-09-07, notes/s3-decline-costs.md. Skill Masteries (45 files/8,542 lines, unblocks 14, patches 35 upstream files - fails the layering test). Vice vs Virtue (57/9,613, unblocks 5, patches 21). Exploring the Deep (70/10,292, unblocks 2 - structurally the safest build here and the worst ratio). Shadowguard (14/11,222, unblocks 8). City Loyalty (28/8,177, unblocks 15 - decline on ratio, not structure; revisit with Town Cryer). Instanced Peerless (13/1,543, unblocks 2, and BasePeerless and PeerlessAltar are both absent from ModernUO, so there is no base to instance - cost Services/Peerless first). ServUO's ML quest framework (22 files/6,269 lines, not the 21/5,625 the brief stated) - declined because ModernUO already ships the same OSI system. NOT declined and recommended instead: SAAbsorptionAttributes, the TribeType transformation, and a one-quest spike onto ModernUO's ML quest engine. Vendor Searching (4/2,545) is a player feature, not content; the unblock ratio is the wrong test and it is Chase's call.
+- **ServUO ML quest framework - decline REAFFIRMED by S5** — S5 translated one quest end to end and the objective mapping holds for 4 of 5 types, two of them pinned by tests. Porting ServUO's 22-file, 6,269-line framework would put a second engine in the tree to do a job the engine we already have does correctly. The decline was always on two-engines-for-one-job; it now rests on measurement rather than on principle alone. What is NOT declined: the 164 of 203 missing quests that use a single standard objective type. The 39 that hand-write a BaseObjective subclass (25 InternalObjective, 3 CollectionsObtain, 2 QuestionAndAnswer, ~9 one-offs) are per-quest work, not a framework port, and are the thing to cost before the next quest batch.
 
-Counted from the trees: 191 customization files, 18 patch files.
+Counted from the trees: 196 customization files, 18 patch files.
 Shard status: running on ModernUO.
 <!-- PROGRESS:END -->
 
@@ -191,18 +195,18 @@ Shard status: running on ModernUO.
 <!-- EXPANSION:START -->
 ### Content by expansion
 
-**3,098 of 6,144 ServUO files present** (50%), of which **59 ported by us**.
+**3,102 of 6,144 ServUO files present** (50%), of which **63 ported by us**.
 
 ```
-Pre-AoS (T2A/UOR/LBR)     ███████████░░░░░░░░░  2274/4294    53%   +51
+Pre-AoS (T2A/UOR/LBR)     ███████████░░░░░░░░░  2276/4294    53%   +53
 Age of Shadows            █████████████░░░░░░░   201/309     65%
-Samurai Empire            ███████████████░░░░░    87/115     76%
+Samurai Empire            ███████████████░░░░░    88/115     76%   +1
 Mondain's Legacy          ██████████░░░░░░░░░░   241/471     51%
-Stygian Abyss (Ter Mur)   ██████░░░░░░░░░░░░░░   126/444     28%   +1
+Stygian Abyss (Ter Mur)   ██████░░░░░░░░░░░░░░   127/444     29%   +2
 High Seas                 ██████░░░░░░░░░░░░░░    96/334     29%
 Time of Legends (Eodon)   ████████░░░░░░░░░░░░    60/157     38%   +7
 Endless Journey           █████████████░░░░░░░    13/20      65%
-TOTAL                     ██████████░░░░░░░░░░  3098/6144    50%   +59
+TOTAL                     ██████████░░░░░░░░░░  3102/6144    50%   +63
 ```
 
 _Filename-stem matching: a proxy for presence, not behaviour. Unclassified files fall into Pre-AoS, inflating it. Directional, not a completion percentage._

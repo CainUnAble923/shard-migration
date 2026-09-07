@@ -239,12 +239,33 @@
       "source": "ServUO Items/Addons/FountainOfFortune.cs, SAQuestItems.cs, 31 Items/Resource ingredients",
       "dest": "server/customizations/Items/{Addons,Quest,Resource,Containers,Artifacts}",
       "note": "Reverses the second decline. Restores LuckyCoin's OnDoubleClick for all 12 coin droppers. One patch: PlayerMobile.Luck, because ServUO routes the reward through RealLuck which ModernUO lacks. Ships with a regression test. Nothing places a fountain yet - Q-021 gives the OSI coordinates."
+    },
+    {
+      "name": "JourneyToTheAthenaeumIsle + QueenZhah",
+      "task": "S5",
+      "source": "ServUO Scripts/Quests/JourneyToTheAthenaeumIsleQuest.cs + Scripts/Mobiles/NPCs/Zhah.cs",
+      "dest": "server/customizations/Engines/ML Quests/Definitions/AthenaeumIsle.cs",
+      "note": "First ServUO quest on ModernUO's MLQuest engine. SlayObjective -> KillObjective, 10x ObtainObjective -> 10x CollectObjective with ShowDetailed=false carrying clilocs 1150933-1150942, BaseReward -> ItemReward. Registered from a Configure() hook via MLQuestSystem.Register, because apply-patches.sh mirrors .cs only and Data/MLQuests.cfg is CRLF data. Deviation D-S5-3: QueenZhah is undressed, her seven gargoyle items (~470 ServUO lines) are all absent from ModernUO. Pinned by 5 tests in ShatteredLegacy.Tests.AthenaeumIsleQuestVerification."
+    },
+    {
+      "name": "MinionOfScelestus",
+      "task": "S5",
+      "source": "ServUO Scripts/Mobiles/Normal/MinionOfScelestus.cs",
+      "dest": "server/customizations/Mobiles/Normal/MinionOfScelestus.cs",
+      "note": "Kill-objective target for the S5 quest. Stats, resistances, skills, loot, HitPoison, treasure level, mount knockoff and home-return are verbatim. Two deviations: D-S5-1 loses SetSpecialAbility(DragonBreath) (Pet Training, CC6 decline, Saurosaurus precedent); D-S5-2 loses TaintedLifeAura, which would need additive patches into BaseWeapon and AOS. ServUO's Poison.Parasitic maps to ModernUO's Poison.LethalParasitic (Misc/PoisonKinds.cs). Not spawned - batched for the client spot check."
+    },
+    {
+      "name": "GargishDocuments (12 types) + BaseLocalizedBook + Note",
+      "task": "S5",
+      "source": "ServUO Scripts/Items/Books/GargishDocuments.cs, BaseLocalizedBook.cs, Note.cs",
+      "dest": "server/customizations/Items/Books/",
+      "note": "The ten Collect-objective targets, the reward book, and the two base classes underneath them. Forced dependencies found by the array walk, ported to the leaf per LuckyCoin: ModernUO's Items/Books has BaseBook/BookContent/BookPageInfo, all authored-text, none cliloc-paged, so this is additive and not a duplicate. Both reader gumps were rewritten from ServUO's Gump API onto DynamicGumpBuilder - a real rewrite, and UNVERIFIED without a client. D-S5-4: ChronicleOfTheGargoyleQueen1.Initialize() became a static initializer; the values are constants so behaviour is identical."
     }
   ],
   "declined_content": [
     {
-      "name": "Eodon: the Valley of One quest line \u2014 REOPENED",
-      "reason": "Declined by CC3 because ModernUO 'ships a different quest engine'. S3 found ModernUO already ships Engines/ML Quests: 109 files, 240 quests, 205 of ServUO's 408 present by name. The framework decline stands on two-engines-for-one-job, but these quests are content work against an engine we have. S5 is the spike that settles whether the objective mapping holds. Q-023."
+      "name": "Eodon: the Valley of One quest line - REOPENED, and a poor first batch",
+      "reason": "Declined by CC3 because ModernUO 'ships a different quest engine'. S3 found ModernUO already ships Engines/ML Quests: 109 files, 240 quests, 205 of ServUO's 408 present by name. S5 then translated one quest end to end and CONFIRMED the objective mapping holds, so this decline is reversed and these are content work. Q-023 answered. But S5 also read all seven: none uses two objective types and THREE of the seven (EmptyNest, TheGreatVolcano, PrideOfTheAmbush) use a hand-written InternalObjective with no counterpart on either side of the mapping, against 19% bespoke across the 203. Reopened, but do not start the quest work here - pick from the 164 single-standard-objective quests instead. See notes/s5-quest-spike.md sections 1 and 8."
     },
     {
       "name": "Eodon: MoonstonePowerGenerator",
@@ -253,6 +274,10 @@
     {
       "name": "S3 costed menu - declines upheld with their ratios recorded",
       "reason": "Measured 2026-09-07, notes/s3-decline-costs.md. Skill Masteries (45 files/8,542 lines, unblocks 14, patches 35 upstream files - fails the layering test). Vice vs Virtue (57/9,613, unblocks 5, patches 21). Exploring the Deep (70/10,292, unblocks 2 - structurally the safest build here and the worst ratio). Shadowguard (14/11,222, unblocks 8). City Loyalty (28/8,177, unblocks 15 - decline on ratio, not structure; revisit with Town Cryer). Instanced Peerless (13/1,543, unblocks 2, and BasePeerless and PeerlessAltar are both absent from ModernUO, so there is no base to instance - cost Services/Peerless first). ServUO's ML quest framework (22 files/6,269 lines, not the 21/5,625 the brief stated) - declined because ModernUO already ships the same OSI system. NOT declined and recommended instead: SAAbsorptionAttributes, the TribeType transformation, and a one-quest spike onto ModernUO's ML quest engine. Vendor Searching (4/2,545) is a player feature, not content; the unblock ratio is the wrong test and it is Chase's call."
+    },
+    {
+      "name": "ServUO ML quest framework - decline REAFFIRMED by S5",
+      "reason": "S5 translated one quest end to end and the objective mapping holds for 4 of 5 types, two of them pinned by tests. Porting ServUO's 22-file, 6,269-line framework would put a second engine in the tree to do a job the engine we already have does correctly. The decline was always on two-engines-for-one-job; it now rests on measurement rather than on principle alone. What is NOT declined: the 164 of 203 missing quests that use a single standard objective type. The 39 that hand-write a BaseObjective subclass (25 InternalObjective, 3 CollectionsObtain, 2 QuestionAndAnswer, ~9 one-offs) are per-quest work, not a framework port, and are the thing to cost before the next quest batch."
     }
   ],
   "shard_status": "running on ModernUO",
@@ -332,8 +357,8 @@
     {
       "id": "S5",
       "title": "Translate one ML quest onto ModernUO's engine",
-      "status": "todo",
-      "note": "Spike, permission to fail. ModernUO already ships Engines/ML Quests: 109 files, 240 quests, 205 of ServUO's 408 by name. Proves whether the objective mapping holds. If it passes, the Valley of One and Myrmidex Threat quests come back as content work."
+      "status": "done",
+      "note": "JourneyToTheAthenaeumIsleQuest translated onto ModernUO's ML quest engine end to end. 6 files, 1,063 ServUO lines in, 745 out, plus a 284-line test with 5 facts. Gated build green at 14 tests. THE MAPPING HOLDS for 4 of 5 objective types: Slay->Kill and Obtain->Collect are identical and are proven by test; Apprentice->GainSkill holds (upstream already made this exact translation in NewHavenSkillTraining.cs) but loses region-scoped acceleration and needs cap x10; Deliver->Deliver holds but the destination name moves to a [QuesterName] attribute and Quest.StartingItem has no counterpart (Q-025); Escort->Escort holds and its dropped fame/compassion parameters are unused across all 30 ServUO call sites. THE REAL FINDING is not the mapping: of the 203 missing quests, 164 use one standard objective type and translate mechanically, but 39 hand-write a BaseObjective subclass with no counterpart - 25 of them InternalObjective. QuestionAndAnswerObjective is 2 of those 39, not the tail. Also: it is the ONLY quest in all 408 that uses two standard objective types, and Valley of One is a poor first batch (3 of its 7 need a hand-written objective). Registration uses MLQuestSystem.Register rather than Data/MLQuests.cfg, which apply-patches.sh cannot carry; that API has zero upstream callers, so a test guards it. Found a gap in the S4 route: no BaseCreature can be constructed in a test without the npc-speeds.json table (Q-026). Answers Q-023. See notes/s5-quest-spike.md."
     },
     {
       "id": "S6",
