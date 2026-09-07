@@ -1492,3 +1492,93 @@ normal for infrastructure and is exactly why it landed before the content rather
 Recorded as **D1** in `docs/gap-register.md`, flagged as do-first.
 
 Status: **[ANSWERED]** — its own task, after S6 and before CC6.
+
+---
+
+## Q-027 [OPEN] 2026-09-07 The damage eater heals; it does not reduce damage, and three documents say otherwise
+
+**Question:** Does `docs/gap-register.md` A5 and `notes/s3-decline-costs.md` section 6 want
+correcting, and is the OSI behaviour the one we want shipped? I have shipped ServUO's behaviour
+verbatim, on the fidelity principle, and am flagging it rather than asking permission.
+
+**Context:** `docs/gap-register.md` A5 reads "gives no cold-damage eating"; S3 section 6 says to
+"assert that damage taken with an eater item equipped is **reduced**"; the property is called an
+eater. All three read as damage reduction. `DamageEaterContext.OnDamage`
+(`D:\UO\ServUO-pub57\Scripts\Abilities\SAPropEffects.cs:239`) never touches `totalDamage`: it
+schedules `Timer.DelayCall(TimeSpan.FromSeconds(3), DoHeal, ...)` for a share of each damage
+component, capped at 30% for a matching eater and 18% for the generic `EaterDamage`, at most 20
+pending. The victim takes the hit in full and gets part of it back three seconds later.
+
+This is not a nitpick: a regression test written to S3's description would have asserted a
+reduction that never happens, passed for the wrong reason or failed for the right one, and either
+way measured nothing. Mine asserts the heal.
+
+**Your best guess:** ship ServUO's behaviour unchanged (done), correct the wording in both
+documents on review. Recorded in `notes/s6-absorption.md` section 2 and section 8.
+
+**Answer:**
+
+## Q-028 [OPEN] 2026-09-07 "57 files unblocked" is a reference count; the port-now number is 8
+
+**Question:** Should `docs/gap-register.md` B1's Unblocked column carry the breakdown rather than
+the bare 57? Non-blocking; S6 is built either way.
+
+**Context:** S3's list is honest — 57 entries, 57 files, all present on disk, count and list agree,
+which is not the usual outcome on this project. But 57 is "files that reference the type". Resolving
+each file's base class through ServUO's own inheritance chain splits it: **8** Aloron pieces
+finished by S6, **5** Darden pieces carrier-ready, **31** needing one of four small carrier classes
+(15 armour incl. shields, 6 weapons, 4 clothing, 3 jewellery, 2 talismans, 1 mixed-kind file), and
+**13** blocked by a different missing subsystem entirely — Vendor Searching, Vice vs Virtue, Skill
+Masteries, Shadowguard, the LootGeneration cluster, the Mannequin system, and two dead-code
+`Enhancement` files. Those 13 were never absorption's to unblock.
+
+The same qualification probably applies to B7's 55 and to several other rows in section B, none of
+which has been broken down this way. Method and the full classification are in
+`notes/s6-absorption.md` section 6; it is a 30-line script, not a judgement call.
+
+**Your best guess:** record the breakdown against B1, and treat "unblocked" everywhere in section B
+as "references the type" until someone classifies that row too.
+
+**Answer:**
+
+## Q-029 [OPEN] 2026-09-07 `Timer.Slice` advances the wheel, not the clock — the first trap on the S4 test route
+
+**Question:** None; this is a note for whoever writes the next timer-dependent test. Non-blocking.
+
+**Context:** S6's first attempt at the damage-hook test drove `AOS.Damage` and then
+`Timer.Slice(4000)` to let the eater's three-second heal land. It reported `healed=40 expected=3`.
+`Mobile.Damage` starts `Mobile.HitsTimer` (`ModernUO-pinned Projects/Server/Mobiles/Mobile.cs:8910`),
+which does `Hits++` and re-arms every tick, and `Timer.Slice` turns the wheel **without advancing
+`Core.Now`** — so four seconds of wheel regenerated the whole 40-point hit. The test was measuring
+regeneration.
+
+Split into two deterministic tests instead: one that never calls `Mobile.Damage` and proves the
+heal arithmetic exactly, and one that proves `AOS.Damage` reaches the eater by asserting the context
+exists. Both halves proved to fail when the patch is skipped or the property removed.
+
+**Your best guess:** worth a line in `notes/s4-test-route.md` section 1 — any test that damages a
+mobile and then slices is measuring `HitsTimer`, not what it thinks.
+
+**Answer:**
+
+## Q-030 [OPEN] 2026-09-07 `python tools/progress.py` crashes on a default Windows console
+
+**Question:** Should `tools/progress.py` force UTF-8 on its own stdout? Non-blocking; I worked
+around it.
+
+**Context:** `AGENTS.md` tells every agent to run `tools/progress.py` at the end of every session.
+On a console using the cp1252 default it dies before printing anything:
+`UnicodeEncodeError: 'charmap' codec can't encode characters in position 191-212`. Position 191 is
+the `██████████████████████` progress bar in the Foundation row — the block characters, not any
+content. **Pre-existing, not from S6**: reproduced with `--dry-run` at `fbc6358` before this
+session's changes, and every character in S6's own state entry is ASCII.
+
+`PYTHONIOENCODING=utf-8 python tools/progress.py` works and writes README, `progress.json`, the
+expansion coverage and `dashboard.html` correctly, which is what this session used.
+
+**Your best guess:** two lines at the top of `progress.py` —
+`sys.stdout.reconfigure(encoding='utf-8')` guarded for older interpreters — rather than asking
+everyone to remember an environment variable. Chase's shell is PowerShell 5.1, where setting one
+inline is `$env:PYTHONIOENCODING='utf-8'; python tools\progress.py`.
+
+**Answer:**

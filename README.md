@@ -77,7 +77,7 @@ Setup health   █████████████████████�
 | stale server/customizations/migrations removed | yes |
 | RegenRates routing made explicit | yes |
 
-**Patches:** 13 total, **0 currently failing to apply**, 8 triaged, 3 found obsolete. `apply-patches.sh` fails the build on a failed patch, so a green build means every patch applied.
+**Patches:** 14 total, **0 currently failing to apply**, 8 triaged, 3 found obsolete. `apply-patches.sh` fails the build on a failed patch, so a green build means every patch applied.
 
 ### Content moved over: 60 of 2,045 candidate files (2.9%)
 
@@ -107,7 +107,7 @@ Services/BulkOrders            ░░░░░░░░░░░░░░░░�
 
 _Counted by matching ServUO file stems (excluding those stock ModernUO already has) against `server/customizations`. Auto-counted, never hand-edited._
 
-**Ported systems logged: 35**
+**Ported systems logged: 36**
 
 | Content | Task | Notes |
 |---|---|---|
@@ -146,11 +146,12 @@ _Counted by matching ServUO file stems (excluding those stock ModernUO already h
 | JourneyToTheAthenaeumIsle + QueenZhah | S5 | First ServUO quest on ModernUO's MLQuest engine. SlayObjective -> KillObjective, 10x ObtainObjective -> 10x CollectObjective with ShowDetailed=false carrying clilocs 1150933-1150942, BaseReward -> ItemReward. Registered from a Configure() hook via MLQuestSystem.Register, because apply-patches.sh mirrors .cs only and Data/MLQuests.cfg is CRLF data. Deviation D-S5-3: QueenZhah is undressed, her seven gargoyle items (~470 ServUO lines) are all absent from ModernUO. Pinned by 5 tests in ShatteredLegacy.Tests.AthenaeumIsleQuestVerification. |
 | MinionOfScelestus | S5 | Kill-objective target for the S5 quest. Stats, resistances, skills, loot, HitPoison, treasure level, mount knockoff and home-return are verbatim. Two deviations: D-S5-1 loses SetSpecialAbility(DragonBreath) (Pet Training, CC6 decline, Saurosaurus precedent); D-S5-2 loses TaintedLifeAura, which would need additive patches into BaseWeapon and AOS. ServUO's Poison.Parasitic maps to ModernUO's Poison.LethalParasitic (Misc/PoisonKinds.cs). Not spawned - batched for the client spot check. |
 | GargishDocuments (12 types) + BaseLocalizedBook + Note | S5 | The ten Collect-objective targets, the reward book, and the two base classes underneath them. Forced dependencies found by the array walk, ported to the leaf per LuckyCoin: ModernUO's Items/Books has BaseBook/BookContent/BookPageInfo, all authored-text, none cliloc-paged, so this is additive and not a duplicate. Both reader gumps were rewritten from ServUO's Gump API onto DynamicGumpBuilder - a real rewrite, and UNVERIFIED without a client. D-S5-4: ChronicleOfTheGargoyleQueen1.Initialize() became a static initializer; the values are constants so behaviour is identical. |
+| SAAbsorptionAttributes + DamageEaterContext | S6 | Subsystem, not content. Additive against BaseAttributes, which ModernUO already ships. The property reaches items through an additive IAbsorptionItem interface rather than fields on BaseArmor/BaseWeapon/BaseJewel/BaseClothing, so no upstream serialization version is bumped - S1's decision, reused. BaseSetArmor is the only carrier today, at serialization field 11. The effect reaches combat through AOS-damage-eater-hook.patch, 16 added lines in Projects/UOContent/Misc/AOS.cs at ServUO's own call site. Pinned by six tests in ShatteredLegacy.Tests.AbsorptionAttributesVerification, of which ColdDamageThroughAosDamageReachesTheEater was proved to fail with the patch skipped. |
 
-### Task list (13 of 21 done)
+### Task list (14 of 21 done)
 
 ```
-Tasks          ██████████████░░░░░░░░  13/21   Foundation and the port pipeline
+Tasks          ███████████████░░░░░░░  14/21   Foundation and the port pipeline
 ```
 
 | | Task | Status | Notes |
@@ -168,7 +169,7 @@ Tasks          ██████████████░░░░░░░�
 | `S2` | Fountain of Fortune cluster | done | 38 files, 2,292 lines, 1 patch, 5 tests. Closes Q-010: LuckyCoin.OnDoubleClick restored across all 12 coin droppers. My ~900-line estimate was wrong in both directions: the core is 465 lines, but GemologistsSatchel reads a 42-entry Imbuing table and 35 entries were missing. All 35 were dependency-free leaf items, so they were ported. First content task to use S4's test route. |
 | `S3` | Cost every remaining decline | done | Measurement only. Found the error under every count on this project: 3,134 of ServUO's 6,144 files are types ModernUO already declares. CC6's backlog is 137, not 360. Best ratio is SAAbsorptionAttributes; biggest surprise is that ModernUO already ships an ML quest engine with 205 of ServUO's 408 quests; strongest decline is Skill Masteries. See notes/s3-decline-costs.md. |
 | `S5` | Translate one ML quest onto ModernUO's engine | done | JourneyToTheAthenaeumIsleQuest translated onto ModernUO's ML quest engine end to end. 6 files, 1,063 ServUO lines in, 745 out, plus a 284-line test with 5 facts. Gated build green at 14 tests. THE MAPPING HOLDS for 4 of 5 objective types: Slay->Kill and Obtain->Collect are identical and are proven by test; Apprentice->GainSkill holds (upstream already made this exact translation in NewHavenSkillTraining.cs) but loses region-scoped acceleration and needs cap x10; Deliver->Deliver holds but the destination name moves to a [QuesterName] attribute and Quest.StartingItem has no counterpart (Q-025); Escort->Escort holds and its dropped fame/compassion parameters are unused across all 30 ServUO call sites. THE REAL FINDING is not the mapping: of the 203 missing quests, 164 use one standard objective type and translate mechanically, but 39 hand-write a BaseObjective subclass with no counterpart - 25 of them InternalObjective. QuestionAndAnswerObjective is 2 of those 39, not the tail. Also: it is the ONLY quest in all 408 that uses two standard objective types, and Valley of One is a poor first batch (3 of its 7 need a hand-written objective). Registration uses MLQuestSystem.Register rather than Data/MLQuests.cfg, which apply-patches.sh cannot carry; that API has zero upstream callers, so a test guards it. Found a gap in the S4 route: no BaseCreature can be constructed in a test without the npc-speeds.json table (Q-026). Answers Q-023. See notes/s5-quest-spike.md. |
-| `S6` | SAAbsorptionAttributes | todo | Best measured ratio. One additive file against BaseAttributes, 57 files unblocked, closes S1's D-1 deviation. Cost ~1,120 lines, not the ~350 headline: the smaller figure buys the property and tooltips, not the effect. |
+| `S6` | SAAbsorptionAttributes | done | SAAbsorptionAttributes built, gated build green at 20 tests, A5 CLOSED: EaterCold = 2 restored on all eight Aloron pieces and a completed set demonstrably eats cold damage. 1,031 lines against the ~1,120 budget: SAAbsorptionAttributes.cs 342, the damage-eater slice of SAPropEffects.cs 402 (of ServUO's 768 - the other eight PropertyEffect kinds are weapon properties for systems this shard lacks), 223 test, 25 patch, 31 BaseSetArmor delta, 8 Aloron lines. ONE UOContent patch and NO core patch, so cheaper on a bump than S1. S3's three dependency claims all verified in ServUO and two are stronger than stated: Enhancement's only absorption writer (EnhancementTimer) is never constructed anywhere in ServUO, and SkillMasterySpell's absorption switch has one arm, CastingFocus, which is not an eater - both terms are zero in ServUO too, not merely here. THE EATER DOES NOT REDUCE DAMAGE: it schedules a heal three seconds later for a share of the hit, and gap-register A5 plus s3-decline-costs section 6 both describe it wrong (Q-027). '57 unblocked' is a reference count: 8 finished, 5 carrier-ready, 31 need one of four small carrier classes, 13 were blocked by other subsystems all along (Q-028). The four carriers are deliberately NOT built - that is more than the shape the brief allowed, and it is S1 section 8's boundary exactly; build each with the content batch that needs it. Patch proved to fail when skipped. Needed no BaseCreature, so D1/Q-026 did not bite. See notes/s6-absorption.md. |
 | `S7` | Services/PointsSystems | todo | 12 files, 2,857 lines, unblocks 55. Hard dependency of both Vice vs Virtue and City Loyalty. Costed and available, not scheduled. |
 | `C2` | Revamped Dungeons | todo | 255 files. Unblocked: F2 added subdirectory mirroring. One chat per dungeon: Despise 4, Shame 11, Wrong 26, Covetous 29, Exodus 38, Blackthorn 147. |
 | `C3` | High Seas, cheap half | todo | ~78 files. Fishing, rare fish, sea creatures, food. Skip anything touching BaseGalleon or cannons. |
@@ -186,7 +187,7 @@ _Detail and acceptance criteria in `docs/tasks.md`. Status lives in `tools/progr
 - **S3 costed menu - declines upheld with their ratios recorded** — Measured 2026-09-07, notes/s3-decline-costs.md. Skill Masteries (45 files/8,542 lines, unblocks 14, patches 35 upstream files - fails the layering test). Vice vs Virtue (57/9,613, unblocks 5, patches 21). Exploring the Deep (70/10,292, unblocks 2 - structurally the safest build here and the worst ratio). Shadowguard (14/11,222, unblocks 8). City Loyalty (28/8,177, unblocks 15 - decline on ratio, not structure; revisit with Town Cryer). Instanced Peerless (13/1,543, unblocks 2, and BasePeerless and PeerlessAltar are both absent from ModernUO, so there is no base to instance - cost Services/Peerless first). ServUO's ML quest framework (22 files/6,269 lines, not the 21/5,625 the brief stated) - declined because ModernUO already ships the same OSI system. NOT declined and recommended instead: SAAbsorptionAttributes, the TribeType transformation, and a one-quest spike onto ModernUO's ML quest engine. Vendor Searching (4/2,545) is a player feature, not content; the unblock ratio is the wrong test and it is Chase's call.
 - **ServUO ML quest framework - decline REAFFIRMED by S5** — S5 translated one quest end to end and the objective mapping holds for 4 of 5 types, two of them pinned by tests. Porting ServUO's 22-file, 6,269-line framework would put a second engine in the tree to do a job the engine we already have does correctly. The decline was always on two-engines-for-one-job; it now rests on measurement rather than on principle alone. What is NOT declined: the 164 of 203 missing quests that use a single standard objective type. The 39 that hand-write a BaseObjective subclass (25 InternalObjective, 3 CollectionsObtain, 2 QuestionAndAnswer, ~9 one-offs) are per-quest work, not a framework port, and are the thing to cost before the next quest batch.
 
-Counted from the trees: 196 customization files, 18 patch files.
+Counted from the trees: 198 customization files, 19 patch files.
 Shard status: running on ModernUO.
 <!-- PROGRESS:END -->
 
@@ -195,7 +196,7 @@ Shard status: running on ModernUO.
 <!-- EXPANSION:START -->
 ### Content by expansion
 
-**3,102 of 6,144 ServUO files present** (50%), of which **63 ported by us**.
+**3,103 of 6,144 ServUO files present** (51%), of which **64 ported by us**.
 
 ```
 Pre-AoS (T2A/UOR/LBR)     ███████████░░░░░░░░░  2276/4294    53%   +53
@@ -205,8 +206,8 @@ Mondain's Legacy          ██████████░░░░░░░░
 Stygian Abyss (Ter Mur)   ██████░░░░░░░░░░░░░░   127/444     29%   +2
 High Seas                 ██████░░░░░░░░░░░░░░    96/334     29%
 Time of Legends (Eodon)   ████████░░░░░░░░░░░░    60/157     38%   +7
-Endless Journey           █████████████░░░░░░░    13/20      65%
-TOTAL                     ██████████░░░░░░░░░░  3102/6144    50%   +63
+Endless Journey           ██████████████░░░░░░    14/20      70%   +1
+TOTAL                     ██████████░░░░░░░░░░  3103/6144    51%   +64
 ```
 
 _Filename-stem matching: a proxy for presence, not behaviour. Unclassified files fall into Pre-AoS, inflating it. Directional, not a completion percentage._
