@@ -229,8 +229,10 @@ price and nothing else tracks it.
 **The number that justified this task was wrong.** I claimed 187 files unblocked; the real figure
 is **114**. See the correction in `docs/subsystem-policy.md`. The decision holds easily at 114.
 
-One incidental finding worth carrying: **a warm build cycle is 53 seconds**, not the minutes
-earlier tasks assumed.
+~~One incidental finding worth carrying: a warm build cycle is 53 seconds.~~ **Superseded by S5,
+2026-09-07.** Measured through `build.sh`: **20s with nothing changed, 266s with one changed
+customization file.** The 53s and CC2's 0:44 both predate S4 and neither compiled nor ran the
+tests. **Any batch estimate built on those is optimistic by about 6x.**
 
 ## S4. Test route for ported subsystems — DONE
 

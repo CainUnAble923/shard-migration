@@ -38,7 +38,7 @@ deviation in `docs/fidelity-principle.md`. Full reasoning there.
    documents its content coverage accurately. Every content claim in `docs/` came from
    reading and counting files. Hold new claims to the same bar.
 3. **State what you could not verify.** An explicit "unverified" beats a confident guess.
-   **Count the artifact, never a description of it.** **Nine for nine**: every count in this
+   **Count the artifact, never a description of it.** **Ten for ten**: every count in this
    project stated without counting has been wrong, including two that were the basis of a
    decision and one inside a document whose own subject was miscounting. A keyword hit is a
    candidate, not a result. **Publish the file list beside the count.** When a source states a
@@ -184,6 +184,13 @@ gain, of which **4** are genuinely hard-blocked.
 **Every count gets the filter applied and the denominator stated beside it.** A percentage
 without its denominator written next to it is not a measurement.
 
+**Then resolve it. A reference count is an upper bound on unblocking, never the unblocking
+itself.** A file that *mentions* a type is not a file that becomes portable when you build that
+type. S6's "57 files unblocked" resolved, through each file's inheritance chain, to **8 finished,
+5 carrier-ready, 31 one small carrier class away, and 13 blocked by other subsystems all along**.
+Three different numbers live inside one figure, and only the resolution tells you which one you
+are planning against.
+
 ## Equivalents hide under different names
 
 Twice now a ModernUO feature has been recorded as missing because ServUO calls it something else,
@@ -198,6 +205,12 @@ and both times it cost real content:
 **Before recording anything as missing, search pinned ModernUO for what it *does*, not what
 ServUO *calls* it.** Zero occurrences of an identifier is evidence about a name, not about a
 capability.
+
+**And a name is a hypothesis about behaviour, not a description of it.** `AbsorptionAttributes`
+and "damage eater" both sound like damage reduction. `DamageEaterContext.OnDamage` actually calls
+`DelayHeal`: a capped heal three seconds after the hit. Two documents described it wrong because
+nobody had opened the file. **Read the implementation before writing the assertion**, or you ship
+a green test over a wrong expectation, which is worse than no test.
 
 ## Porting ServUO content: the rules
 
@@ -235,6 +248,17 @@ why a failing patch beats copied upstream logic, and why a ported subsystem ship
   `[SerializableField]` members. ServUO's `[Constructable]` is ModernUO's `[Constructible]`.
   `Serial` is signed in ServUO and `uint` in ModernUO.
 - **Each port lands in `server/customizations` and must build** before the next one starts.
+
+## A gate nobody has watched fail is not a gate
+
+S6's phrasing, and it is now the rule. When you add a test, a patch check, or any other gate,
+**prove it fails**: break the thing deliberately, watch the build go red, then restore it and
+watch it go green. Then say in the note that you did.
+
+This project spent F2 and F3 on a patch runner that converted failures to warnings and exited 0.
+Eight patches had been failing silently for who knows how long, and three real gameplay features
+never worked. Every gate added since exists because of that, and a gate that has only ever been
+observed passing is indistinguishable from the thing we were fixing.
 
 ## Asking questions
 
