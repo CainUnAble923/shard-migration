@@ -124,6 +124,30 @@ B5 is the shape to aim for**, and S3 measured them separately for exactly that r
 
 ---
 
+### B5 — 123 set-bearing ServUO types sit on stock ModernUO bases
+
+**Measured 2026-09-08 while answering Q-040.** Across ServUO, **195 types carry set or absorption
+state**. **123 of them derive directly from a type ModernUO already ships** — 68 distinct bases,
+`LeatherGloves` x8, `LeatherLegs` x7, `LeatherChest` x7, `BaseArmor` x6, `StuddedChest` x4,
+`BaseTalisman` x3, and a long tail. `Pincer : BattleAxe` is one; so is every `Bestial*` piece on
+`GargishLeatherArms`.
+
+**The carrier family cannot reach them.** S10's five carriers work by being the parent of a
+*ported* base. A stock upstream base cannot be re-parented without patching an upstream item
+class, which is the layering test's whole objection.
+
+**The route that does not patch:** derive the *piece* from the carrier and inline the stock base's
+few overrides — `ArmorBase`, resists, `ItemID`, stat requirement. Checked before writing this: the
+affected bases are referenced in ModernUO only as `typeof(X)` in craft, loot and vendor tables,
+never as `is X` on an instance, so dropping the stock identity costs nothing a player can see. It
+is per-file work rather than a subsystem, so it does not need a policy decision — it needs to be
+in the brief of whichever content task first hits one.
+
+**Unlike the row below, this has no deadline.** A piece ported this way is born with the right
+ancestor; there is nothing to re-parent later.
+
+---
+
 ### The re-parenting window closes on the next deploy
 
 **Deriving a ported type from one of our carriers inserts an ancestor, which changes the save

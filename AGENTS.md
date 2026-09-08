@@ -175,11 +175,9 @@ gain, of which **4** are genuinely hard-blocked.
 without its denominator written next to it is not a measurement.
 
 **Then resolve it. A reference count is an upper bound on unblocking, never the unblocking
-itself.** A file that *mentions* a type is not a file that becomes portable when you build that
-type. S6's "57 files unblocked" resolved, through each file's inheritance chain, to **8 finished,
-5 carrier-ready, 31 one small carrier class away, and 13 blocked by other subsystems all along**.
-Three different numbers live inside one figure, and only the resolution tells you which one you
-are planning against.
+itself.** S6's "57 files unblocked" resolved, through each file's inheritance chain, to **8
+finished, 5 carrier-ready, 31 one carrier class away, 13 blocked by other subsystems all along**.
+Only the resolution tells you which number you are planning against.
 
 ## Equivalents hide under different names
 
@@ -266,11 +264,22 @@ why a failing patch beats copied upstream logic, and why a ported subsystem ship
 - **Give a base its final parent the first time you port it.** Deriving a type from one of our
   carriers *later* inserts an ancestor, which changes the save chain and is **not expressible as a
   migration** — it is free only while no instance exists in any save, and that window closes on
-  the next deploy. So before porting any base class, grep ServUO for `class \w+ : ThatType` and
-  check whether any descendant touches `AbsorptionAttributes`, `SetAttributes`, `SetSelfRepair`,
-  `SetID` or `ISetItem`. If one does, the base derives from the matching carrier now, even though
-  the base itself is not a set piece: `SetID` defaults to `SetItem.None` and it stays inert.
-  Verified this way in S10 (four gargish bases) and again for CC9 batch 3 (eight more).
+  the next deploy. So before porting any base class, walk its ServUO descendants **transitively**
+  (`class \w+ : ThatType`, then their descendants) and grep each body for a carrier member:
+
+      AbsorptionAttributes|LastEquipped|SetAttributes|SetSkillBonuses|SetSelfRepair|SetHue|
+      SetEquipped|Set(Physical|Fire|Cold|Poison|Energy)Bonus|SetID|Pieces|BardMasteryBonus|
+      MixedSet|IsSetItem|SetResistBonus|EffectiveSelfRepair|GetSetProperties|ISetItem
+
+  If one hits, the base goes on the matching carrier now; `SetID` defaults to `SetItem.None`, so
+  it stays inert. **Regenerate that list, never extend it by hand** — it is exactly the members
+  `.../Armor/Sets/BaseSet*.cs` add over their stock base, and a hand-written five-token version
+  missed `SetSkillBonuses` and so missed `GargishBattleAxe` (Q-040). **The test is a descendant
+  that needs it, not the kind of item**, and measured tree-wide exactly one ported type fails it
+  today, so "stock base" is the normal answer. **When the base is a stock ModernUO type and cannot
+  be re-parented** — true of 123 of ServUO's 195 set-bearing types — derive the *piece* from the
+  carrier and inline the stock base's overrides; nothing `is`-checks those bases, they appear only
+  as `typeof(X)` in craft, loot and vendor tables.
 - **Each port lands in `server/customizations` and must build** before the next one starts.
 
 ## A green build is not proof the port is right

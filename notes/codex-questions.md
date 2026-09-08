@@ -2134,7 +2134,7 @@ Status: **[ANSWERED]** — yes to all four, in CC9 batch 4, re-checking the wind
 
 ---
 
-## Q-040 [OPEN] 2026-09-08 Batch 3 followed "41 on stock"; Q-039's generalised rule says otherwise, and the grep token list is short by one
+## Q-040 [ANSWERED] 2026-09-08 Batch 3 followed "41 on stock"; Q-039's generalised rule says otherwise, and the grep token list is short by one
 
 **Question:** two things CC9 batch 3 met that the brief and the docs answer differently, both
 non-blocking, both recorded as assumptions and worked through. Decide them before `latest` is
@@ -2164,3 +2164,78 @@ too. (Nothing else among the 49's 41 direct and transitive descendants touched a
 set-bearing descendant buys nothing today and costs two bytes per saved instance forever, and
 the descendant grep is cheap and now proven. (2) widen the token list in AGENTS.md. Both are
 `docs/` edits, so raised here rather than made.
+
+
+**Answer: (1) keep the narrow rule, and the measurement collapses batch 4's re-parent list to
+ONE type. (2) Yes, widen — but stop maintaining a token list by hand.**
+
+Good catch on `GargishPincer`. You were right to follow `tasks.md` and right to raise it.
+
+**1. Narrow, and here is the number that decides it.** I ran your check over the whole tree
+rather than over the 49: for every type in `server/customizations` that is not already on a
+carrier, walk its ServUO descendants transitively and look for any carrier member. **Exactly one
+hit in the entire customization tree:**
+
+    GargishDagger (currently : BaseKnife)
+      <- StoneDragonsTooth  [AbsorptionAttributes.EaterPoison = 10]
+         Scripts/Items/Artifacts/Equipment/Weapons/StoneDragonsTooth.cs:21
+
+So the 40 stay on stock, **and three of Q-039's four also stay on stock** — that answer was given
+on the general rule and the narrow rule overrides it now that it is measured:
+
+| Q-039 type | Transitive ServUO descendants | Verdict |
+|---|---|---|
+| `LargeStoneShield` | `PillarOfStrength` — plain | **stays on `BaseShield`** |
+| `GargishKatana` | `GargishBrightblade` — plain | **stays on `BaseWeapon`** |
+| `GargishGnarledStaff` | `GargishEquivocation`, `GargishKotlBlackRod`, `GargishAsclepius` — all plain | **stays** |
+| `GargishDagger` | `StoneDragonsTooth` — `AbsorptionAttributes` | **`BaseSetWeapon`. The one re-parent.** |
+
+**Why narrow is safe rather than merely cheaper.** Not because the cost is high — it is not; every
+field on all six carriers is save-flag guarded (12/12, 12/12, 11/11, 12/12, 10/10, 12/12), so an
+inert instance writes a zero flags word and nothing else. Narrow is safe because **there is an
+escape hatch if we are ever wrong.** A future set piece whose ServUO parent is one of our stock-
+parented types does not need that type re-parented: it can derive from the carrier directly and
+inline the stock base's handful of overrides. That is not theory — it is the only option available
+for the bucket below, and ModernUO references these bases only as `typeof(X)` in craft, loot and
+vendor tables, never as `is X` on an instance, so nothing type-checks the identity we would drop.
+
+**And the broad rule cannot be applied where the risk actually lives.** Measured across ServUO:
+**195 types carry set or absorption state, and 123 of them derive directly from a type ModernUO
+already ships** — 68 distinct stock bases, `LeatherGloves` x8, `LeatherLegs` x7, `LeatherChest` x7,
+`BaseArmor` x6, `StuddedChest` x4, `BaseTalisman` x3. `Pincer : BattleAxe`, the sibling of the very
+class you found, is one of them. None of those can be re-parented at any price short of patching
+upstream item bases. So the broad rule would buy partial coverage, permanently, while leaving the
+larger bucket untouched — and that bucket needs the escape hatch anyway. Logged as a new row in
+`docs/gap-register.md`.
+
+**2. Widen the token list, and derive it instead of remembering it.** Your five tokens were my
+list and it was incomplete because I wrote it from the cases in front of me. The correct list is
+not a judgement call: it is **exactly the members our carriers add over the stock base**, so it can
+be regenerated whenever a carrier changes. Today that is:
+
+    serialized: AbsorptionAttributes LastEquipped SetAttributes SetSkillBonuses SetSelfRepair
+                SetHue SetEquipped SetPhysicalBonus SetFireBonus SetColdBonus SetPoisonBonus
+                SetEnergyBonus
+    virtual:    SetID Pieces BardMasteryBonus MixedSet IsSetItem SetResistBonus
+                EffectiveSelfRepair GetSetProperties
+    interface:  ISetItem
+
+`AGENTS.md` now carries that regex and the instruction to regenerate it from the carrier sources
+rather than extend it by hand. Your widened grep (`SetSkillBonuses|SetHue|Set\w+Bonus|Pieces`)
+was the right instinct; this just makes it not depend on instinct.
+
+**Two counting notes, because this is the third time on this project.** Q-039's question says
+"five more ported bases" and lists **four**; my answer said four and the list is right. Section 11
+of `notes/cc9-artifacts.md` inherited the "five" — it is four, and after this answer it is one.
+When a count and a list disagree, count the list (Q-019).
+
+**One correction to batch 3, not a defect in the code.** `StaffRing`'s comment says ServUO's
+`Mobile.IsPlayer()` is `AccessLevel == Player`. It is not: `Server/Customs Framework/Utilities/
+Utilities.cs:51` returns `AccessLevel <= AccessLevel.VIP`. **The port is still exactly right** —
+pinned ModernUO's `AccessLevel` enum has no `VIP` member (`Mobiles/Mobile.cs:135-144`), so
+`== Player` is the precise equivalent — but the stated reason is wrong and D-13 repeats it. Fix
+the comment and the note in batch 4. Same shape as Q-031: right fix, wrong stated cause, and that
+is now twice, so it is worth naming as a habit rather than an incident.
+
+Status: **[ANSWERED]** — narrow rule confirmed; batch 4 re-parents `GargishDagger` only, after
+re-verifying the no-instance condition; token list widened and made derivable in `AGENTS.md`.

@@ -468,11 +468,16 @@ eight have such a descendant:
 The other 41 stay on their stock ModernUO base. `SetID` defaults to `SetItem.None`, so a carrier
 parent on a non-set base is inert — this is exactly what S10 did for the four gargish bases.
 
-### CC9 batch 4 — the carrier-blocked 41, plus four re-parents
+### CC9 batch 4 — the carrier-blocked 41, plus ONE re-parent
 
-Unblocked by S10. Before the re-parents, **re-verify that no instance exists in any save**
-(`docs/gap-register.md`, "The re-parenting window closes on the next deploy"). Q-039 approved
-`LargeStoneShield` onto `BaseSetShield` and three gargish weapons onto `BaseSetWeapon`.
+Unblocked by S10. Before the re-parent, **re-verify that no instance exists in any save**
+(`docs/gap-register.md`, "The re-parenting window closes on the next deploy").
+
+**The re-parent list is one type, not four.** Q-039 approved four on the general rule; Q-040
+answered the general rule narrow and measured every ported type's ServUO descendants. Only
+`GargishDagger` has one that needs a carrier (`StoneDragonsTooth`, `AbsorptionAttributes`), so it
+moves from `BaseKnife` to `BaseSetWeapon`. `LargeStoneShield`, `GargishKatana` and
+`GargishGnarledStaff` stay on their stock bases, and so do batch 3's 40.
 
 Then the **79 set-armour re-parents**, mechanical once the stock parent's members are looked up.
 
