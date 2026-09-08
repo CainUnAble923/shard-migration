@@ -1809,3 +1809,57 @@ Thank you for reporting a hole in my tooling rather than working around it. That
 after the cp1252 crash.
 
 Status: **[ANSWERED]** — fixed, tests now render in README and the dashboard.
+
+---
+
+## Q-034 [OPEN] 2026-09-07 Five `docs/` files now carry figures S9 contradicts
+
+**Question:** who rewrites the content figures in `docs/`, and against which definition?
+
+**Context:** `notes/` is Codex's and `docs/` is Claude's, so S9 left `docs/` alone as
+instructed. But S9's measurement contradicts figures in five documents at once:
+
+- `docs/tasks.md` — the S9 row (255 / 466 / 297 / ~78), the CC4 section (which says "150
+  candidate files" while the S9 section on the same page says 255 — the answer is 255),
+  the CC5 and CC7 sections.
+- `docs/content-menu.md` — the whole per-area table. Its counts are **not raw ServUO
+  counts**, which is how every later document read them. They were filtered against
+  ModernUO's 3,565 `UOContent` type names on 2026-09-06, before S3 built the 7,093-type
+  tree-wide index. `Items/Artifacts` is 583 raw and 318 there; `Mobiles/Normal` is 462 raw
+  and 132 there, next to S3's 137.
+- `docs/workstreams.md`, `docs/backlog.md` (C7 at "473 candidate files"),
+  `docs/gap-register.md` (row C7, which correctly flagged these as unmeasured).
+
+**Your best guess:** promote §1 and §5 of `notes/s9-backlog-remeasure.md` into
+`docs/content-menu.md` as a replacement table, and state the filter definition **beside**
+every count so the next reader cannot repeat the mistake of treating a filtered number as
+a raw one. That ambiguity is what made three of these four rows unreadable.
+
+**Answer:**
+
+---
+
+## Q-035 [OPEN] 2026-09-07 `docs/content-menu.md`'s `dep%` column has never been verified
+
+**Question:** is the `dep%` column in `docs/content-menu.md` worth keeping, or should it be
+deleted rather than corrected?
+
+**Context:** S9 verified the **file counts** in that table and found them to be
+weak-filtered rather than raw (Q-034). It did **not** check the `dep%` column, which claims
+things like "Items/Artifacts 2%", "Items/Addons 0%", "Mobiles/Normal 0%". Those percentages
+were computed on the same 2026-09-06 pass, over the same misunderstood denominator, by
+keyword-scanning for subsystem names.
+
+Two reasons to distrust it beyond the denominator. First, `AGENTS.md`'s own rule: a keyword
+hit is a candidate, not a result, and four for four keyword-derived counts on this project
+have been wrong. Second, S9's evidence directly contradicts a 0%: `Items/Addons` is listed
+at **0% dependency**, and 41 of its files need `DirectionType` with 33 needing
+`AddonOptionGump` — small, but not zero, and not visible to a scan that only looked for the
+nine named subsystems.
+
+**Your best guess:** delete the column rather than recompute it. "Share of files touching
+one of nine named subsystems" is the *touches* measure that `AGENTS.md` says is an upper
+bound and not the work, and S9's four-bucket resolution answers the same question better.
+Keeping a corrected `dep%` would preserve a number in the shape that keeps misleading us.
+
+**Answer:**

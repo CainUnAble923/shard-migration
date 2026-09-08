@@ -382,8 +382,8 @@
     {
       "id": "S9",
       "title": "Re-measure the remaining content backlog",
-      "status": "todo",
-      "note": "Measurement only. Dungeons 255, artifacts 466, decoration 297, High Seas ~78 are all unfiltered ServUO counts. Creatures went 462 to 137 under the same filter. Also resolve what is now free because S1, S5 and S6 shipped."
+      "status": "done",
+      "note": "Measurement only; nothing ported. Three of the four rows were NOT raw counts - they were already weak-filtered by docs/content-menu.md against ModernUO's 3,565 UOContent names, not S3's 7,093 tree-wide types. Re-filtered: Revamped Dungeons 255 raw -> 255 candidates (0 duplicates, the only such row); artifacts+equipment 1,022 raw -> 455 (567 duplicates, NOT 466); decoration/housing 745 raw -> 303 (442 duplicates, NOT 297); High Seas cheap half 78 -> 77, the one figure that was right. Resolved: artifacts is 88% free (320 drop straight in), and FlipableAttribute is ModernUO's FlippableAttribute with one extra letter - 86 files of false blocking, a third SetWeaponAbility. IsArtifact looked like 280+153 blocked and is worth zero: pinned ModernUO has no consumer of it. CC4's 138 ReforgedSuffix hits are 136 one-line cosmetic assignments; the naming carrier is ~100 lines + 4 serialization patches and frees 110, or 141 with the gargoyle wearables cluster. CC7's DirectionType + AddonOptionGump is ~71 lines, no patch, frees 34. S1/S5/S6 made only 10 files newly free here - their value was already banked. A transitive-closure method was built, produced clean numbers, and was discarded as artefact: one artifact breastplate reaches 758 files and every subsystem. See notes/s9-backlog-remeasure.md."
     },
     {
       "id": "S7",
@@ -395,13 +395,13 @@
       "id": "C2",
       "title": "Revamped Dungeons",
       "status": "todo",
-      "note": "255 files. Unblocked: F2 added subdirectory mirroring. One chat per dungeon: Despise 4, Shame 11, Wrong 26, Covetous 29, Exodus 38, Blackthorn 147."
+      "note": "255 raw and 255 candidates - the only row where the filter removes nothing (S9). 31 drop straight in, 25 need another CC4 file, 140 need ServUO files elsewhere, 59 need an upstream member. 138 reference ReforgedSuffix and 136 use it as a single cosmetic line: delete it (free, 136 logged name-suffix deviations) or build the ~100-line naming carrier plus 4 serialization patches, which frees 110. One chat per dungeon: Despise 4, Shame 11, Wrong 26, Covetous 29, Exodus 38, Blackthorn 147."
     },
     {
       "id": "C3",
       "title": "High Seas, cheap half",
       "status": "todo",
-      "note": "~78 files. Fishing, rare fish, sea creatures, food. Skip anything touching BaseGalleon or cannons."
+      "note": "78 raw, 77 candidates, 16,940 lines - the one published figure S9 confirmed. 31 drop straight in, 17 need another file in the row, 17 need an upstream member. The 'skip BaseGalleon/cannons' instruction costs exactly 12 of the 77, now enumerated in notes/s9-backlog-remeasure.md."
     },
     {
       "id": "C4",
@@ -413,13 +413,13 @@
       "id": "C5",
       "title": "Decoration, housing, crafting",
       "status": "todo",
-      "note": "Addons, Decorative, New Magincia, Items/Resource, BulkOrders. 0% dependency."
+      "note": "S9: the 297 was Addons+Decorative+New Magincia already weak-filtered. Raw 745, 442 duplicates, 303 candidates; 159 drop straight in. DirectionType (7 lines) + AddonOptionGump (64 lines, models a gump ModernUO already ships) is ~71 additive lines with no patch and frees 34 - the best ratio measured in S9. Items/Resource + BulkOrders add 57 more candidates from 191 raw."
     },
     {
       "id": "C6",
       "title": "Artifacts and equipment",
       "status": "todo",
-      "note": "~473 files, 1-2%. Selectively: pieces anchoring a dungeon or quest."
+      "note": "NOT 473 or 466. Raw 1,022, of which 567 have a primary type ModernUO already declares; 455 candidates, 45,230 lines. 320 drop straight in and 81 more need only another file from the same two directories - 88% needs nothing built. S9 recommends this first: largest no-subsystem, no-patch, no-deviation batch on the backlog. It also delivers 9 of the 14 gargoyle-wearable files as ordinary row content, which is why S9 says not to schedule that cluster before it."
     },
     {
       "id": "C7",
