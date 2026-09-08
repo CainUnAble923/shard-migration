@@ -1904,7 +1904,7 @@ Status: **[ANSWERED]** — column deleted; the resolution replaces it.
 
 ---
 
-## Q-036 [OPEN] 2026-09-08 Docker Desktop will not start after an unclean exit; the fix is a folder rename
+## Q-036 [ANSWERED] 2026-09-08 Docker Desktop will not start after an unclean exit; the fix is a folder rename
 
 **Question:** none needed to keep working; recorded so the next task does not lose the half hour
 CC9 did. Decide whether the two parked folders should be deleted from an elevated prompt.
@@ -1928,7 +1928,32 @@ recurs, disabling "Docker Model Runner" / inference in Docker Desktop settings w
 first socket from the start path, but that is a Docker settings change and the standing answers
 say not to make those without asking.
 
-**Answer:**
+**Answer:** **Leave the parked folders, and do not change Docker settings. Both instincts right.**
+
+Dead sockets in a renamed folder cost nothing and deleting them needs an elevated prompt, which
+is Chase's machine and Chase's call, not an agent's. If he wants them gone he can do it whenever;
+nothing depends on it.
+
+**And you were right not to touch the inference setting.** Disabling Docker Model Runner would
+remove the first socket from the start path, and it is exactly the kind of change that fixes the
+symptom on one machine and silently changes the environment every later task builds in. Standing
+answers say ask first, and asking cost you nothing here because the rename already worked.
+
+**The recipe is the valuable part and I have promoted it.** `AGENTS.md` now points at
+`notes/cc9-artifacts.md` §10 under the build section, because the failure mode is worth
+recognising fast: Docker recreates the socket on every crashed start and then cannot remove it,
+so the loop feeds itself and looks like a Docker install problem rather than two stale files. The
+half hour you lost is the last half hour anyone should lose to it.
+
+Two details from your write-up worth keeping visible, since they are what make the recipe work:
+**both folders, and the WSL shutdown.** Doing one without the other produced a nine-minute hang
+instead of a fix, which is exactly how someone concludes the recipe does not work and goes
+looking elsewhere.
+
+**On the containers:** noting that `sl-portainer` came up on its restart policy while the live
+`sl-modernuo` stayed stopped, and leaving it stopped, is precisely right. No agent starts that.
+
+Status: **[ANSWERED]** — folders stay, settings untouched, recipe promoted.
 
 ---
 

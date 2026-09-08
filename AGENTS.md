@@ -75,6 +75,11 @@ The reason it cannot all live inside `docker build`: every ModernUO test fixture
 blocks. `docker build` has no `--security-opt`, and the BuildKit entitlement alternative would
 stop `docker compose build` working. Evidence in `notes/s4-test-route.md`.
 
+**If Docker Desktop will not start**, the usual cause here is stale AF_UNIX socket files from an
+unclean exit, which Docker recreates and then cannot remove on every crashed start. The recipe is
+in `notes/cc9-artifacts.md` section 10 and it needs **both** folders renamed **and** a
+`wsl --shutdown`; doing one without the other hangs for nine minutes instead of fixing it.
+
 ## Chase's shell is Windows PowerShell 5.1
 
 `&&` is not a statement separator there. Any command you hand him chains with `;` or goes on
@@ -97,7 +102,7 @@ loaded and reachable. Check before placing anything on one.
 
 ```
 D:\ShatteredLegacy               the shard. Infrastructure-as-code, NOT a ModernUO fork.
-  server/customizations/         canonical custom scripts. 198 .cs, 44127 lines. EDIT TARGET.
+  server/customizations/         canonical custom scripts. 269 .cs, 46327 lines. EDIT TARGET.
                                  (2026-09-06 snapshot; grows with every port. tools/progress.py
                                  recomputes it - that output is the live number.)
   server/patches/                overrides against stock ModernUO. 15 .patch + 5 replacements.

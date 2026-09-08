@@ -401,12 +401,21 @@ it gates two clusters currently sitting in the deferred list. Not scheduled; cos
 **Status table calls this `C6`.** Measured by S9 and it is the cheapest row on the whole backlog,
 which is the reverse of how this plan used to be ordered.
 
-**455 candidates**, not the 466 carried before, filtered from 1,022 raw against ModernUO's
-tree-wide types. Resolved:
+**IN PROGRESS. 71 files ported across two batches; 269 customizations in the tree.**
 
-- **320 drop straight in.**
-- **81 more need only another file from the same two directories.**
-- So **88% needs nothing built**: no subsystem, no patch, no fidelity deviation to log.
+**Re-costed from a build rather than a count, by CC9 batch 1, and S9's figures were optimistic.**
+S9 said 455 candidates with 320 dropping straight in, 88% needing nothing built. Reading the
+files instead of counting them gives **437 real candidates, of which 272 need nothing built —
+62%, not 88%.** The gap: **18 are already in ModernUO under other names** (gargish cloth, leather
+and stone armour as `Gargish*Type1`/`Type2`, `SerpentstoneStaff`) and **must not be ported**;
+**83 are set-armour re-parents** onto `BaseSetArmor`; and **41 are carrier-blocked** (Q-037).
+
+Batch 2 then corrected batch 1's own bucket: carrier-blocked is **41, not 30**, because the
+in-row bucket only ever checked the one member that put a file there.
+
+**A green build hides this.** Batch 1 compiled 31 files clean on the first cycle while concealing
+8 types that would not have compiled mechanically and 3 that should never be ported at all.
+Compiling is necessary and is not sufficient.
 
 Two findings that removed most of the apparent blocking, both verified:
 
@@ -427,7 +436,7 @@ two carrier classes correctly instead of building them twice.
 **S9 compiled nothing.** Every "drops straight in" is a claim about names, not a build result.
 Expect some of the 320 to fail and report how many.
 
-**Batch it.** A changed-file build is ~266s, so group files per build rather than rebuilding per
+**Batch it.** A changed-file build measured 86s and 95s in CC9, not the ~266s, so group files per build rather than rebuilding per
 file. Report the real per-batch cost; the old estimates predate S4 and are optimistic by ~6x.
 
 ## CC4. Revamped Dungeons
