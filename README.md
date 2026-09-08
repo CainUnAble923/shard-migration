@@ -79,13 +79,13 @@ Setup health   █████████████████████�
 
 **Patches:** 15 total, **0 currently failing to apply**, 8 triaged, 3 found obsolete. `apply-patches.sh` fails the build on a failed patch, so a green build means every patch applied.
 
-### Content moved over: 180 of 2,045 candidate files (8.8%)
+### Content moved over: 305 of 2,045 candidate files (14.9%)
 
 ```
-TOTAL                          ██░░░░░░░░░░░░░░░░  180/2045    8.8%
+TOTAL                          ███░░░░░░░░░░░░░░░  305/2045   14.9%
 
+Items/Artifacts                █████████░░░░░░░░░  165/325    50.8%
 Items/Equipment                ████████████░░░░░░   99/148    66.9%
-Items/Artifacts                ██░░░░░░░░░░░░░░░░   40/325    12.3%
 Items/Resource                 █████████░░░░░░░░░   29/61     47.5%
 Services/Expansions            █░░░░░░░░░░░░░░░░░    6/175     3.4%
 Mobiles/Normal                 █░░░░░░░░░░░░░░░░░    4/138     2.9%
@@ -107,7 +107,7 @@ Services/BulkOrders            ░░░░░░░░░░░░░░░░�
 
 _Counted by matching ServUO file stems (excluding those stock ModernUO already has) against `server/customizations`. Auto-counted, never hand-edited._
 
-**Ported systems logged: 43**
+**Ported systems logged: 44**
 
 | Content | Task | Notes |
 |---|---|---|
@@ -154,6 +154,7 @@ _Counted by matching ServUO file stems (excluding those stock ModernUO already h
 | CC9 batch 1: artifacts and equipment (31 files, 34 types) | CC9 | 2,604 ServUO lines in, 1,324 out. Category-spread sample chosen to test S9's 'drops straight in' claim: 20 of 34 types needed only the standard conversion, 8 would not have compiled mechanically (four set pieces re-parented, fishing-pole attributes, BattleLust, two non-virtual overrides on earrings/necklace, IRepairable), 3 must not be ported at all (already in ModernUO). Real persisted state exercised on GobletOfCelebration (SerializableProperty + DeltaDateTime + AfterDeserialization timer rebuild), AmuletOfRighteousness (IUsesRemaining) and BaseCostume. Deviations D-3 AxeOfAbandon BattleLust, D-4 XenrrFishingPole SpellChanneling/CastSpeed (ModernUO's FishingPole has no attribute block and AosAttributes.GetValue aggregates only the seven equipment bases), D-5 costume damage hook. Gated build 86 s; 33/33 types reflected; headless save and reload clean. |
 | The carrier family: BaseSetWeapon, BaseSetJewel, BaseSetClothing, BaseSetQuiver, BaseSetShield (5 files) | S10 | Subsystem, not content: the set state ServUO puts on each base class, on an additive intermediate class of ours instead (the S1 decision, applied four more times). 1,426 lines, zero patches, zero migrations, 15 tests, every gate watched fail. Field layout identical to BaseSetArmor on every carrier (0-9, then SetSelfRepair 10 and absorption 11 where the ServUO base has them; jewel has absorption at 10; quiver has neither). SetSelfRepair inert on weapon/clothing/shield (Q-038). The four ported gargish armour-class bases were re-parented onto BaseSetArmor in the same commit, before any instance reached a save. Unblocks CC9 batch 4 (13 set pieces + 9 non-armour absorption users + 5 gargish-jewellery set pieces) and CC4's ReforgedSuffix route C. |
 | CC9 batch 3: the plain remainder (49 files, 49 types) | CC9 | 21 weapons, 11 jewellery, 17 armour and shields; 4,636 ServUO lines in, 1,740 out. Pre-flighted with the section-3 method before any build: every override checked against a pinned ModernUO virtual, every attribute member against the Aos* enums, item IDs cross-checked, and every ServUO descendant of all 49 walked transitively for set or absorption state. Nine bases got a carrier parent at port time because a descendant needs it (GargishPlateArms, GargishPlateKilt, the five DragonTurtleHide pieces on BaseSetArmor; GargishKiteShield on BaseSetShield; GargishBattleAxe on BaseSetWeapon, the ninth, found because GargishPincer assigns SetSkillBonuses, a token the AGENTS.md grep does not list - Q-040). The other 40 are on stock bases per docs/tasks.md. RandomWand is a static helper, not an item. Every override value re-diffed mechanically against ServUO after writing: 524 compared, 0 mismatches. Deviations D-10 (GargishWarHammer flip typo 0x481 -> 0x48C1), D-11 (EvilOrcHelm's two zero-reader virtuals), D-12 (OrcishBow one durability line, not two), D-13 (StaffRing IsPlayer; not OSI content). Gated build green first cycle, 101 s, 42 tests; 49/49 reflected; headless fresh save and reload clean. |
+| CC9 batch 4: the one re-parent, the 41 carrier-blocked, the set-armour bucket (125 files, 127 types; 3 edited) | CC9 | GargishDagger moved from BaseKnife to BaseSetWeapon (Q-040: StoneDragonsTooth needs AbsorptionAttributes), after re-verifying no instance in any save by reading the type tables of the live save (2026-07-06, 1,468 types, no Gargish* at all), the three Backups snapshots and the newest daily and hourly Archives (decompressed), not by date alone. The 41 carrier-blocked: 40 ported, Swiftflight declined (Bow sits on BaseRanged, no carrier can sit above it; Q-041). Two talismans ported on stock BaseTalisman with the eater dropped, which is behaviour-identical: ServUO never aggregates a talisman's absorption (RunicReforging.GetSAAbsorptionAttributes). The set-armour bucket counts 85, not 79: 79 set pieces plus the 6 Phoenix suit files that sit under Sets/ with no SetID and stay on stock parents. All 85 generated from ServUO values plus a dump of the pinned stock parent's members ([Flippable] copied because ModernUO reads it inherit:false; IArcaneEquip dropped on 6 gloves per D-7). Two corrections found by reading the parents: batch 3's GargishBattleAxe had lost BaseAxe (Slash1H, sword sounds, no harvesting) and S10's BaseSetWeapon skipped BaseMeleeWeapon's AbsorbDamage; both fixed, both save-neutral today. Bestial pieces ported with the berserk helper inert (its AOS.Damage/heal hooks do not exist here; Q-042). Deviations D-14..D-19. Value diff over 126 files: 0 findings, proved red with three injected faults. One failed build cycle (28 s, one inlined member), then green in 99 s with 42 tests; 130/130 reflected; headless fresh save and reload clean. 10,062 ServUO lines in, 6,363 out. See notes/cc9-artifacts.md section 14. |
 
 ### Task list (17 of 24 done)
 
@@ -185,7 +186,7 @@ Tasks          ████████████████░░░░░�
 | `C3` | High Seas, cheap half | todo | 78 raw, 77 candidates, 16,940 lines - the one published figure S9 confirmed. 31 drop straight in, 17 need another file in the row, 17 need an upstream member. The 'skip BaseGalleon/cannons' instruction costs exactly 12 of the 77, now enumerated in notes/s9-backlog-remeasure.md. |
 | `C4` | Creatures and NPCs | todo | ~360 files. Only 275 (60%) are clean on both dependency checks: 89 (19%) reference a type ModernUO lacks, 132 (29%) call a BaseCreature method it does not have. Batches of ~20, drawn from the clean 60%, about an hour each per the P2 measurement. See notes/cc2-timed-port.md. |
 | `C5` | Decoration, housing, crafting | todo | S9: the 297 was Addons+Decorative+New Magincia already weak-filtered. Raw 745, 442 duplicates, 303 candidates; 159 drop straight in. DirectionType (7 lines) + AddonOptionGump (64 lines, models a gump ModernUO already ships) is ~71 additive lines with no patch and frees 34 - the best ratio measured in S9. Items/Resource + BulkOrders add 57 more candidates from 191 raw. |
-| `C6` | Artifacts and equipment | **in progress** | CC9 batches 1 and 2 done 2026-09-08: 71 files / 75 types, each green through build.sh on its first cycle (86 s and 95 s gated), 74/74 concrete types reflected, four clean headless save/reload runs. Batch 1 was the category-spread sample; batch 2 the 33 costumes and 7 artifacts it unblocked. Remaining: 169 plain, 79 set-armour re-parents, 41 carrier-blocked (Q-037); next batch named in notes/cc9-artifacts.md section 11. S9's '88% needs nothing built' does not survive reading: 18 of the 320 are already in ModernUO by content (gargish cloth/leather/stone armour as Gargish*Type1/Type2, SerpentstoneStaff), 83 are set armour that must be re-parented onto BaseSetArmor, 13 set pieces and 17 absorption users sit on bases with no carrier. Corrected: 437 real candidates, 272 (62%) need nothing built, 30 wait on the carrier family that is also the no-patch route for ReforgedSuffix (Q-037). On the 34-type sample, 8 would not have compiled as a mechanical conversion and 3 must not be ported; pre-flight caught all of them before the build. Gargoyle cluster: 6 of S9's 9 ported, 3 already present. Nine deviations logged in notes/cc9-artifacts.md, D-1 (IsArtifact) and D-2 (CanBeWornByGargoyles) once for the whole row. Next: the 34 costumes and the 19 in-row artifacts batch 1 unblocked. |
+| `C6` | Artifacts and equipment | **in progress** | CC9 batches 1-4 done 2026-09-08: 245 files / 251 types, every batch green through build.sh (batch 4 after one failed cycle on a single inlined member), every type reflected, eight clean headless save/reload runs. Batch 3 (49 plain, nine on carriers) and batch 4 (GargishDagger re-parent after measuring the no-instance condition; 40 of the 41 carrier-blocked; the 85-file set-armour bucket = 79 set pieces + 6 Phoenix) are in notes/cc9-artifacts.md sections 13-14. Remaining: 120 plain from the 320, 29 in-row, co-port 10, upstream/carrier 44; Swiftflight declined pending a ranged carrier (Q-041). S9's '88% needs nothing built' does not survive reading: 18 of the 320 are already in ModernUO by content, 85 are set armour re-parented onto BaseSetArmor, 13 set pieces and 17 absorption users needed the S10 carriers. Nineteen deviations logged in notes/cc9-artifacts.md, D-1 (IsArtifact) and D-2 (CanBeWornByGargoyles) once for the whole row. The client spot check has never happened and now covers all 245 files. The re-parenting window (S10, batch 3, batch 4) closes on the first deploy; docs/gap-register.md. |
 | `C7` | High Seas naval - written proposal only | todo | ~54 files. Means extending BaseBoat. Do not start; Chase decides from the proposal. |
 
 _Detail and acceptance criteria in `docs/tasks.md`. Status lives in `tools/progress-state.json`._
@@ -221,7 +222,7 @@ What a MODERNUO_COMMIT bump must reconcile. Patches fail LOUDLY - apply-patches.
 - **S3 costed menu - declines upheld with their ratios recorded** — Measured 2026-09-07, notes/s3-decline-costs.md. Skill Masteries (45 files/8,542 lines, unblocks 14, patches 35 upstream files - fails the layering test). Vice vs Virtue (57/9,613, unblocks 5, patches 21). Exploring the Deep (70/10,292, unblocks 2 - structurally the safest build here and the worst ratio). Shadowguard (14/11,222, unblocks 8). City Loyalty (28/8,177, unblocks 15 - decline on ratio, not structure; revisit with Town Cryer). Instanced Peerless (13/1,543, unblocks 2, and BasePeerless and PeerlessAltar are both absent from ModernUO, so there is no base to instance - cost Services/Peerless first). ServUO's ML quest framework (22 files/6,269 lines, not the 21/5,625 the brief stated) - declined because ModernUO already ships the same OSI system. NOT declined and recommended instead: SAAbsorptionAttributes, the TribeType transformation, and a one-quest spike onto ModernUO's ML quest engine. Vendor Searching (4/2,545) is a player feature, not content; the unblock ratio is the wrong test and it is Chase's call.
 - **ServUO ML quest framework - decline REAFFIRMED by S5** — S5 translated one quest end to end and the objective mapping holds for 4 of 5 types, two of them pinned by tests. Porting ServUO's 22-file, 6,269-line framework would put a second engine in the tree to do a job the engine we already have does correctly. The decline was always on two-engines-for-one-job; it now rests on measurement rather than on principle alone. What is NOT declined: the 164 of 203 missing quests that use a single standard objective type. The 39 that hand-write a BaseObjective subclass (25 InternalObjective, 3 CollectionsObtain, 2 QuestionAndAnswer, ~9 one-offs) are per-quest work, not a framework port, and are the thing to cost before the next quest batch.
 
-Counted from the trees: 323 customization files, 20 patch files, 43 tests in 11 files.
+Counted from the trees: 448 customization files, 20 patch files, 43 tests in 11 files.
 Shard status: running on ModernUO.
 <!-- PROGRESS:END -->
 
@@ -230,18 +231,18 @@ Shard status: running on ModernUO.
 <!-- EXPANSION:START -->
 ### Content by expansion
 
-**3,223 of 6,144 ServUO files present** (52%), of which **184 ported by us**.
+**3,348 of 6,144 ServUO files present** (54%), of which **309 ported by us**.
 
 ```
-Pre-AoS (T2A/UOR/LBR)     ███████████░░░░░░░░░  2355/4294    55%   +132
-Age of Shadows            █████████████░░░░░░░   204/309     66%   +3
+Pre-AoS (T2A/UOR/LBR)     ███████████░░░░░░░░░  2454/4294    57%   +231
+Age of Shadows            ██████████████░░░░░░   216/309     70%   +15
 Samurai Empire            ███████████████░░░░░    88/115     76%   +1
-Mondain's Legacy          ██████████░░░░░░░░░░   242/471     51%   +1
-Stygian Abyss (Ter Mur)   ███████░░░░░░░░░░░░░   164/444     37%   +39
+Mondain's Legacy          ███████████░░░░░░░░░   248/471     53%   +7
+Stygian Abyss (Ter Mur)   ████████░░░░░░░░░░░░   172/444     39%   +47
 High Seas                 ██████░░░░░░░░░░░░░░    96/334     29%
 Time of Legends (Eodon)   ████████░░░░░░░░░░░░    60/157     38%   +7
 Endless Journey           ██████████████░░░░░░    14/20      70%   +1
-TOTAL                     ██████████░░░░░░░░░░  3223/6144    52%   +184
+TOTAL                     ███████████░░░░░░░░░  3348/6144    54%   +309
 ```
 
 _Filename-stem matching: a proxy for presence, not behaviour. Unclassified files fall into Pre-AoS, inflating it. Directional, not a completion percentage._

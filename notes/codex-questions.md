@@ -2239,3 +2239,48 @@ is now twice, so it is worth naming as a habit rather than an incident.
 
 Status: **[ANSWERED]** — narrow rule confirmed; batch 4 re-parents `GargishDagger` only, after
 re-verifying the no-instance condition; token list widened and made derivable in `AGENTS.md`.
+
+---
+
+## Q-041 [OPEN] 2026-09-08 `Swiftflight` is a ranged set weapon, and no carrier can sit above `BaseRanged`
+
+**Question:** the Marksman set is two pieces, `Feathernock : BaseQuiver` and `Swiftflight : Bow`. Batch 4 ported
+Feathernock on `BaseSetQuiver`. Swiftflight is **not ported**: `Bow : BaseRanged : BaseMeleeWeapon`, and
+`BaseRanged` is a generated type with its own serialized fields (`Items/Weapons/Ranged/BaseRanged.cs:11-19`)
+carrying the whole ranged-combat implementation (ammo, `OnSwing`, `OnFired`). `BaseSetWeapon` sits below
+`BaseMeleeWeapon`, so a ranged set piece cannot derive from it, and inlining `BaseRanged` into one item is not a
+port, it is a fork. Do you want a sixth carrier, `BaseSetRanged : BaseRanged`, or does Swiftflight stay declined?
+
+**Context:** cost, measured against `BaseSetWeapon` (246 lines): the carrier is the same file with a different
+parent and constructor, ~250 lines, zero patches, zero migrations, plus one test. What it frees: **Swiftflight
+here**, and in CC4 every reforged bow/crossbow; a count of ServUO `Items/Artifacts` types deriving from a
+`BaseRanged` descendant with set or absorption state is **1** (Swiftflight), and with `ReforgedSuffix` it is the
+CC4 bows, which I did not count. Until it exists the Marksman set bonus can never complete on this shard, and
+Feathernock is a quiver with its own attributes and an inert "part of a set" line. Logged as D-17 in
+`notes/cc9-artifacts.md`.
+
+**Your best guess:** not worth a carrier for one file; take it when CC4 needs `ReforgedSuffix` on bows, which is
+the same class and the same zero-patch shape, and count the CC4 bows then. Non-blocking.
+
+---
+
+## Q-042 [OPEN] 2026-09-08 The Bestial berserk mechanic needs two engine hooks; ported inert, like `SetSelfRepair`
+
+**Question:** batch 4 ported `BestialSetHelper` and the three gargish Bestial pieces (`BestialArms`, `BestialEarrings`,
+`BestialNecklace`). ServUO drives the berserk mechanic from two places the pieces do not own:
+`BestialSetHelper.OnDamage` is called from `AOS.Damage`, and `BestialSetHelper.OnHeal` from every heal path
+(`SpellHelper.Heal`, bandages, potions). Neither hook exists in pinned ModernUO, so on this shard a full Bestial set
+gives its set bonus and never rages: no damage absorption, no heal blocking, no hue shift. The helper is ported whole
+with both methods present and uncalled, so the mechanic switches on the day the hooks land, with no migration. Do
+you want the hooks costed as their own row?
+
+**Context:** the damage side is one line inside a method we already patch (`AOS-damage-eater-hook.patch` touches
+`AOS.Damage`), so +1 to an existing patch. The heal side is new: ModernUO has no single heal entry point, so it is
+one call in `SpellHelper.Heal` plus one each in the bandage and potion paths, three or four sites in files upstream
+edits often. That is the same shape as Q-038's three `OnHit` hooks, and the same subsystem-policy argument applies:
+patches into busy upstream files get costed and put to Chase, not folded into a content batch. The other five
+Bestial pieces (`BestialGloves/Gorget/Helm/Kilt/Legs`) are in the in-row bucket and not in this batch; four are plain
+stock-parent re-parents and `BestialHelm : BearMask` is a clothing carrier child.
+
+**Your best guess:** log it (D-14), leave the helper inert, and cost the hooks together with Q-038's self-repair hooks
+as one "set-mechanic hooks" row, since they are the same kind of change to the same kind of file. Non-blocking.
