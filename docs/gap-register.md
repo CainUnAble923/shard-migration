@@ -171,6 +171,21 @@ the **31** are buildable now, along with CC9's 41 and the CC4 gargoyle wearables
 row exists for still stands: **cost it before scheduling it.** The 31 was worth acting on because
 it was a measured number, not because it was large.
 
+### The set-mechanic hooks row — Q-038 + Q-042, costed, unscheduled
+
+**Five small additive patches** that make two already-ported sets actually work. Costed
+2026-09-08; **Chase's call to schedule**, because five patches is five things a pinned-commit bump
+has to reconcile.
+
+| Hook | Change | Shape |
+|---|---|---|
+| Bestial berserk, damage side | +1 line in `AOS.Damage` | a patch we already own (`AOS-damage-eater-hook.patch`) |
+| Bestial berserk, heal side | additive `OnHeal` override in `PlayerMobile` | ModernUO already declares `Mobile.OnHeal` (`Mobile.cs:6104`) and `PlayerMobile` does not override it |
+| `SetSelfRepair` on weapon, clothing, shield | three `OnHit` hooks | same shape as `BaseArmor-set-self-repair.patch`, which works |
+
+No serialization change, no core-project patch. Until it lands, a full Bestial set gives its
+bonuses and never rages (D-14), and a completed weapon or shield set does not self-repair (D-16).
+
 ### From S10
 
 **`SetSelfRepair` is stored but inert on weapon, clothing and shield.** ModernUO's

@@ -401,11 +401,21 @@ it gates two clusters currently sitting in the deferred list. Not scheduled; cos
 **Status table calls this `C6`.** Measured by S9 and it is the cheapest row on the whole backlog,
 which is the reverse of how this plan used to be ordered.
 
-**IN PROGRESS. 71 files ported across two batches; 274 customizations in the tree.**
+**IN PROGRESS. 245 of 437 files ported across four batches; 448 customizations in the tree.**
 
-**S10 landed, so the 41 carrier-blocked files are no longer blocked.** What remains, by bucket:
-**169 plain**, **79 set-armour re-parents**, **41 carrier-blocked** (now buildable). Batches 3 and
-4 are defined at the end of this section.
+Batches 1-4 done 2026-09-08. Batch 4 closed the two buckets S10 unblocked: the `GargishDagger`
+re-parent (after measuring the no-instance condition against the live save's type table, three
+backups and two archives), 40 of the 41 carrier-blocked files, and the set-armour bucket, which
+was **85 files, not 79** — 79 set pieces plus 6 Phoenix suit files ServUO keeps under `Sets/`
+without a `SetID`.
+
+**Remaining: 120 plain, 29 in-row, 10 co-port, 44 upstream/carrier**, plus `Swiftflight`, which
+Q-041 answers as a one-off `ISetItem` implementer rather than a sixth carrier.
+
+**The client spot check is now the overdue item, not a batch.** `docs/client-check-backlog.md`
+said "after CC9 lands, in one sitting". It covers **245 files** and nothing has been seen in a
+client since June. Batch 5 does not depend on it, but every batch added to it is risk that only a
+client can retire.
 
 **Re-costed from a build rather than a count, by CC9 batch 1, and S9's figures were optimistic.**
 S9 said 455 candidates with 320 dropping straight in, 88% needing nothing built. Reading the

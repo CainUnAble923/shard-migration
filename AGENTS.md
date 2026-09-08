@@ -272,7 +272,11 @@ why a failing patch beats copied upstream logic, and why a ported subsystem ship
       MixedSet|IsSetItem|SetResistBonus|EffectiveSelfRepair|GetSetProperties|ISetItem
 
   If one hits, the base goes on the matching carrier now; `SetID` defaults to `SetItem.None`, so
-  it stays inert. **Regenerate that list, never extend it by hand** — it is exactly the members
+  it stays inert. **Changing a parent means porting the old parent's members too.** A value diff
+  against the ServUO file cannot see them, because the ServUO file never states them. Batch 3 put
+  `GargishBattleAxe` on `BaseSetWeapon` and silently dropped `BaseAxe`: one-handed, sword sounds,
+  could not chop wood. Dump the pinned parent's members and reproduce them, and review a carrier
+  child against **the pinned parent**, not against ServUO. **Regenerate that list, never extend it by hand** — it is exactly the members
   `.../Armor/Sets/BaseSet*.cs` add over their stock base, and a hand-written five-token version
   missed `SetSkillBonuses` and so missed `GargishBattleAxe` (Q-040). **The test is a descendant
   that needs it, not the kind of item**, and measured tree-wide exactly one ported type fails it

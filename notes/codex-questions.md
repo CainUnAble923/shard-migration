@@ -2242,7 +2242,7 @@ re-verifying the no-instance condition; token list widened and made derivable in
 
 ---
 
-## Q-041 [OPEN] 2026-09-08 `Swiftflight` is a ranged set weapon, and no carrier can sit above `BaseRanged`
+## Q-041 [ANSWERED] 2026-09-08 `Swiftflight` is a ranged set weapon, and no carrier can sit above `BaseRanged`
 
 **Question:** the Marksman set is two pieces, `Feathernock : BaseQuiver` and `Swiftflight : Bow`. Batch 4 ported
 Feathernock on `BaseSetQuiver`. Swiftflight is **not ported**: `Bow : BaseRanged : BaseMeleeWeapon`, and
@@ -2264,7 +2264,42 @@ the same class and the same zero-patch shape, and count the CC4 bows then. Non-b
 
 ---
 
-## Q-042 [OPEN] 2026-09-08 The Bestial berserk mechanic needs two engine hooks; ported inert, like `SetSelfRepair`
+
+**Answer: no sixth carrier. Port `Swiftflight` as a one-off `ISetItem` implementer on `Bow`.**
+
+Your decline was right and your reason for deferring was wrong, so the deferral does not survive.
+
+**I counted the thing you said you had not counted.** Ranged descendants in all of ServUO that carry
+set or absorption state: **1** (`Swiftflight`). Ranged descendants that use `ReforgedSuffix`: **0**.
+So "take it when CC4 needs `ReforgedSuffix` on bows" never arrives — CC4 has no reforged bows. A
+`BaseSetRanged` would free exactly one file, forever.
+
+**And it is not needed, because the plumbing already dispatches on the interface, not the carrier.**
+
+- `AOS-set-attribute-aggregation.patch` tests `obj is ISetItem { LastEquipped: true }`. A `Bow`
+  implementing `ISetItem` aggregates with no patch change.
+- `SetHelper.GetSetProperties` (`SetItem.cs:62`) tests `setItem is BaseWeapon` **first**, and
+  `Bow : BaseRanged : BaseMeleeWeapon : BaseWeapon` satisfies it, so the tooltip path is already
+  correct for a bow with no work at all.
+- Resistances are irrelevant: a bow has none.
+
+So the cost is the `ISetItem` members on one item instead of a 246-line abstract base with one child
+forever. Roughly a wash on lines and strictly less to maintain, which matters concretely: batch 4
+had to correct `BaseSetWeapon` because S10 missed `BaseMeleeWeapon.AbsorbDamage`. **A sixth carrier
+is a sixth place to make that mistake, for one item.** ServUO uses this same shape itself where a
+piece cannot sit on a set base (`BestialArms : GargishLeatherArms, ISetItem`).
+
+`Swiftflight` needs `SetID`, `Pieces`, `SetHue`, `SetAttributes` and `SetSelfRepair` — no absorption,
+so no `IAbsorptionItem`. `SetSelfRepair` is inert on weapons here (Q-038); suppress the tooltip line
+per the Aloron precedent and log it under D-16 rather than opening a new deviation.
+
+**Do it in the next content task, not as its own row.** It completes the Marksman set and removes
+D-17. If a second ranged set piece ever appears, that is the moment to reconsider a carrier, and by
+then there will be two known children instead of a guess.
+
+Status: **[ANSWERED]** — no carrier; `Swiftflight : Bow, ISetItem`, folded into the next batch.
+
+## Q-042 [ANSWERED] 2026-09-08 The Bestial berserk mechanic needs two engine hooks; ported inert, like `SetSelfRepair`
 
 **Question:** batch 4 ported `BestialSetHelper` and the three gargish Bestial pieces (`BestialArms`, `BestialEarrings`,
 `BestialNecklace`). ServUO drives the berserk mechanic from two places the pieces do not own:
@@ -2284,3 +2319,40 @@ stock-parent re-parents and `BestialHelm : BearMask` is a clothing carrier child
 
 **Your best guess:** log it (D-14), leave the helper inert, and cost the hooks together with Q-038's self-repair hooks
 as one "set-mechanic hooks" row, since they are the same kind of change to the same kind of file. Non-blocking.
+
+
+**Answer: yes, cost it as one "set-mechanic hooks" row with Q-038 — and it is much cheaper than you
+priced it, because ModernUO already has the heal hook.**
+
+Your instinct to keep it out of a content batch was right. Your cost estimate was not, and the
+correction is the useful part.
+
+**The heal side is one site, not three or four.** ServUO calls `BestialSetHelper.OnHeal` from exactly
+one place: `PlayerMobile.OnHeal` (`PlayerMobile.cs:2188`), which overrides `Mobile.OnHeal`. It does
+not hook `SpellHelper.Heal`, bandages or potions individually — those all reach `Mobile.Heal`, which
+calls `OnHeal`. (`SpellHelper.cs:1933` uses `IsBerserk` in a polymorph hue check; that is a read, not
+a hook.)
+
+**And pinned ModernUO already has that virtual.** `Mobile.Heal(int, Mobile, bool)` calls
+`OnHeal(ref amount, from)` at `Mobiles/Mobile.cs:6079`, and `public virtual void OnHeal` is declared
+at `6104`. ModernUO's `PlayerMobile` does not override it at all, so this is a purely additive
+override, not a change to existing upstream logic.
+
+**Revised cost for the whole row:**
+
+| Hook | Change | Shape |
+|---|---|---|
+| Bestial damage | +1 line inside `AOS.Damage` | **a patch we already own** (`AOS-damage-eater-hook.patch`) |
+| Bestial heal | additive `OnHeal` override in `PlayerMobile` | new patch, but we already carry two `PlayerMobile` patches |
+| `SetSelfRepair` on weapon / clothing / shield (Q-038) | three `OnHit` hooks | same shape as `BaseArmor-set-self-repair.patch`, which already works |
+
+**Five small additive patches, no serialization change, no core-project patch.** That is well inside
+what `docs/subsystem-policy.md` allows, and it is the difference between two ported sets that look
+right and two ported sets that work. It still goes to Chase as a row rather than into a content
+batch, because five patches is five things a pinned-commit bump has to reconcile, and that is his
+call to schedule, not mine to fold in.
+
+Leave the helper inert until then. D-14 stands and is accurate.
+
+Status: **[ANSWERED]** — one row, "set-mechanic hooks", Q-038 + Q-042 together, five additive
+patches, costed and unscheduled pending Chase.
