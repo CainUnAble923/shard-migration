@@ -443,12 +443,16 @@ Expect some of the 320 to fail and report how many.
 **Batch it.** A changed-file build measured 86s and 95s in CC9, not the ~266s, so group files per build rather than rebuilding per
 file. Report the real per-batch cost; the old estimates predate S4 and are optimistic by ~6x.
 
-### CC9 batch 3 — the plain remainder, 48 named
+### CC9 batch 3 — the plain remainder, 49 named
 
-Weapons (21), jewellery (11), armour and shields (16), listed in `notes/cc9-artifacts.md` §11.
-All plain ports, the `GargishKatana` shape, generator-friendly.
+Weapons (21), jewellery (11), armour and shields (17). Listed in `notes/cc9-artifacts.md` §11,
+which says "~35 files" and "the 19 remaining" gargish weapons; **both are wrong and the list
+itself is right** — ServUO has 20 `Gargish*` weapon files, three are already ported and
+`GargishTalwar` is in ModernUO, leaving **16**. All 49 verified present in ServUO, absent from
+`server/customizations`, and absent from `tools/modernuo-stems.txt`. Count the artifact, not the
+sentence above it — the same error as Q-019.
 
-**Eight of the 48 are not plain, and the difference is a save-format decision, not a style one.**
+**Eight of the 49 are not plain, and the difference is a save-format decision, not a style one.**
 A base whose ServUO descendants use `AbsorptionAttributes`, `SetAttributes`, `SetSelfRepair`,
 `SetID` or `ISetItem` must derive from the matching carrier **at port time**, because adding the
 ancestor later is not expressible as a migration. Grepped ServUO for every one of the 48; these
@@ -461,7 +465,7 @@ eight have such a descendant:
 | `BaseSetArmor` | `DragonTurtleHideArms`, `Bustier`, `Chest`, `Helm`, `Legs` | Darden's set, all five |
 | `BaseSetShield` | `GargishKiteShield` | `DragonHideShield` (`AbsorptionAttributes.EaterFire`) |
 
-The other 40 stay on their stock ModernUO base. `SetID` defaults to `SetItem.None`, so a carrier
+The other 41 stay on their stock ModernUO base. `SetID` defaults to `SetItem.None`, so a carrier
 parent on a non-set base is inert — this is exactly what S10 did for the four gargish bases.
 
 ### CC9 batch 4 — the carrier-blocked 41, plus four re-parents
