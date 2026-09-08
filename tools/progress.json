@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-08T11:57:32+00:00",
+  "generated": "2026-09-08T08:51:55-05:00",
   "direction": "stay on ModernUO; pull ServUO content selectively",
   "setup_defects": {
     "CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered": true,
@@ -270,6 +270,34 @@
       "source": "ServUO Scripts/Misc/AOS.cs:2726-3058 and Scripts/Abilities/SAPropEffects.cs",
       "dest": "server/customizations/SAAbsorptionAttributes.cs, server/customizations/Abilities/SAPropEffects.cs",
       "note": "Subsystem, not content. Additive against BaseAttributes, which ModernUO already ships. The property reaches items through an additive IAbsorptionItem interface rather than fields on BaseArmor/BaseWeapon/BaseJewel/BaseClothing, so no upstream serialization version is bumped - S1's decision, reused. BaseSetArmor is the only carrier today, at serialization field 11. The effect reaches combat through AOS-damage-eater-hook.patch, 16 added lines in Projects/UOContent/Misc/AOS.cs at ServUO's own call site. Pinned by six tests in ShatteredLegacy.Tests.AbsorptionAttributesVerification, of which ColdDamageThroughAosDamageReachesTheEater was proved to fail with the patch skipped."
+    },
+    {
+      "name": "Gargoyle wearables, row share (9 files, 11 types)",
+      "task": "CC9",
+      "source": "ServUO Items/Equipment/{Armor,Jewelry,Weapons}/Gargish*.cs, LargeStoneShield.cs, Items/Artifacts/Equipment/Glasses/GargishGlasses.cs",
+      "dest": "server/customizations/Items/Equipment/{Armor,Jewelry,Weapons}/, Items/Artifacts/Equipment/Glasses/",
+      "note": "GargishGlasses, GargishPlateChest, GargishPlateLegs, GargishEarrings, GargishNecklace (+GargishAmulet, GargishStoneAmulet), GargishGnarledStaff, GargishKatana, GargishDagger, LargeStoneShield. ServUO's 'Race RequiredRace => Race.Gargoyle' is ModernUO's 'int RequiredRaces => Race.AllowGargoylesOnly' on armour/weapons/shields (Item.cs:2110); CanBeWornByGargoyles has zero readers and is dropped. S9's other three gargoyle files in this row (GargishClothArmor.cs, GargishLeatherArms, GargishStoneChest) were NOT ported: ModernUO already ships them as Gargish<Material><Slot>Type1/Type2 with the same item IDs, found by an item-ID cross-check, not by name."
+    },
+    {
+      "name": "Greymist (Acolyte) armour set (4 files)",
+      "task": "CC9",
+      "source": "ServUO Items/Artifacts/Equipment/Armor/Sets/Acolyte/Greymist{Arms,Chest,Gloves,Legs}.cs",
+      "dest": "server/customizations/Items/Artifacts/Equipment/Armor/Sets/Acolyte/",
+      "note": "ServUO derives these from stock Leather* and reads set state off BaseArmor; here they derive from S1's BaseSetArmor and reproduce the stock parent's members, the TigerPelt/Aloron shape. This is the transformation every one of the row's 83 set-armour files needs and S9's name scan could not see. Set bonus firing is NOT verified headlessly; batched for the client spot check."
+    },
+    {
+      "name": "BaseCostume",
+      "task": "CC9",
+      "source": "ServUO Items/Equipment/Suits/BaseCostume.cs",
+      "dest": "server/customizations/Items/Equipment/Suits/BaseCostume.cs",
+      "note": "Shield-slot mask that body-mods the wearer; carrier for the 34 costumes in the in-row bucket, all now plain ports. Two persisted ints (CostumeBody, CostumeHue) at version 0; ServUO's three save versions collapse. Deviation D-5: ServUO knocks the costume off from AOS.Damage (AOS.cs:417); ModernUO has no call site, so a masked player keeps the mask through combat. One line added to the existing AOS-damage-eater-hook.patch would restore it."
+    },
+    {
+      "name": "CC9 batch 1: artifacts and equipment (31 files, 34 types)",
+      "task": "CC9",
+      "source": "ServUO Items/Artifacts/{Consumables,Decorative,Equipment,Tools}, Items/Equipment/{Armor,Jewelry,Weapons,Suits}",
+      "dest": "server/customizations/Items/",
+      "note": "2,604 ServUO lines in, 1,324 out. Category-spread sample chosen to test S9's 'drops straight in' claim: 20 of 34 types needed only the standard conversion, 8 would not have compiled mechanically (four set pieces re-parented, fishing-pole attributes, BattleLust, two non-virtual overrides on earrings/necklace, IRepairable), 3 must not be ported at all (already in ModernUO). Real persisted state exercised on GobletOfCelebration (SerializableProperty + DeltaDateTime + AfterDeserialization timer rebuild), AmuletOfRighteousness (IUsesRemaining) and BaseCostume. Deviations D-3 AxeOfAbandon BattleLust, D-4 XenrrFishingPole SpellChanneling/CastSpeed (ModernUO's FishingPole has no attribute block and AosAttributes.GetValue aggregates only the seven equipment bases), D-5 costume damage hook. Gated build 86 s; 33/33 types reflected; headless save and reload clean."
     }
   ],
   "declined_content": [
@@ -453,7 +481,7 @@
     ]
   },
   "counted": {
-    "customization_files": 198,
+    "customization_files": 229,
     "patch_files": 20,
     "stale_migrations_present": false,
     "test_files": 6,
@@ -461,22 +489,22 @@
   },
   "content_progress": [
     {
+      "area": "Items/Artifacts",
+      "total": 325,
+      "done": 33,
+      "pct": 10.2
+    },
+    {
       "area": "Items/Resource",
       "total": 61,
       "done": 29,
       "pct": 47.5
     },
     {
-      "area": "Items/Artifacts",
-      "total": 325,
-      "done": 11,
-      "pct": 3.4
-    },
-    {
       "area": "Items/Equipment",
       "total": 148,
-      "done": 8,
-      "pct": 5.4
+      "done": 17,
+      "pct": 11.5
     },
     {
       "area": "Services/Expansions",
@@ -705,8 +733,8 @@
     {
       "id": "C6",
       "title": "Artifacts and equipment",
-      "status": "todo",
-      "note": "NOT 473 or 466. Raw 1,022, of which 567 have a primary type ModernUO already declares; 455 candidates, 45,230 lines. 320 drop straight in and 81 more need only another file from the same two directories - 88% needs nothing built. S9 recommends this first: largest no-subsystem, no-patch, no-deviation batch on the backlog. It also delivers 9 of the 14 gargoyle-wearable files as ordinary row content, which is why S9 says not to schedule that cluster before it."
+      "status": "in-progress",
+      "note": "CC9 batch 1 done 2026-09-08: 31 files / 34 types, green through build.sh first time (86 s gated cycle), 33/33 types reflected, headless save/reload clean. S9's '88% needs nothing built' does not survive reading: 18 of the 320 are already in ModernUO by content (gargish cloth/leather/stone armour as Gargish*Type1/Type2, SerpentstoneStaff), 83 are set armour that must be re-parented onto BaseSetArmor, 13 set pieces and 17 absorption users sit on bases with no carrier. Corrected: 437 real candidates, 272 (62%) need nothing built, 30 wait on the carrier family that is also the no-patch route for ReforgedSuffix (Q-037). On the 34-type sample, 8 would not have compiled as a mechanical conversion and 3 must not be ported; pre-flight caught all of them before the build. Gargoyle cluster: 6 of S9's 9 ported, 3 already present. Nine deviations logged in notes/cc9-artifacts.md, D-1 (IsArtifact) and D-2 (CanBeWornByGargoyles) once for the whole row. Next: the 34 costumes and the 19 in-row artifacts batch 1 unblocked."
     },
     {
       "id": "C7",

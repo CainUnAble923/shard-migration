@@ -1901,3 +1901,60 @@ that only looked for nine named subsystems. A column that reports zero where the
 Your four-bucket resolution answers what `dep%` was reaching for, and answers it correctly.
 
 Status: **[ANSWERED]** — column deleted; the resolution replaces it.
+
+---
+
+## Q-036 [OPEN] 2026-09-08 Docker Desktop will not start after an unclean exit; the fix is a folder rename
+
+**Question:** none needed to keep working; recorded so the next task does not lose the half hour
+CC9 did. Decide whether the two parked folders should be deleted from an elevated prompt.
+
+**Context:** Docker Desktop 4.75 (engine 29.5.2) on this machine crashed on launch, twice, with
+`starting services: initializing Inference manager: listening on unix://…\Docker\run\dockerInference:
+remove …: The file cannot be accessed by the system`, then the same for
+`…\docker-secrets-engine\engine.sock`. Both are AF_UNIX socket files left behind by a previous
+unclean exit; `del`, `Remove-Item` and `fsutil reparsepoint delete` all fail on them, and Docker
+recreates and then cannot remove them on every crashed start, so the loop feeds itself. Renaming
+the *parent folder* works. What got the daemon up in 5 s: stop every `*docker*` process,
+`wsl --shutdown`, rename `%LOCALAPPDATA%\Docker\run` and `%LOCALAPPDATA%\docker-secrets-engine`
+to `*.stale-<time>`, launch. Doing one folder without the other, or skipping the WSL shutdown,
+produced a 9-minute "waiting for init control API" hang instead. Full sequence in
+`notes/cc9-artifacts.md` §10. Also observed: `sl-portainer` has a restart policy and came up with
+the daemon; the live `sl-modernuo` container did not (stopped two months ago) and was not touched.
+
+**Your best guess:** leave the four parked folders (`run.stale-*`, `run.stale2-*`,
+`docker-secrets-engine.stale-*`) where they are; they hold nothing but dead sockets. If the crash
+recurs, disabling "Docker Model Runner" / inference in Docker Desktop settings would remove the
+first socket from the start path, but that is a Docker settings change and the standing answers
+say not to make those without asking.
+
+**Answer:**
+
+---
+
+## Q-037 [OPEN] 2026-09-08 The carrier family: one subsystem task that four rows are waiting on
+
+**Question:** build `BaseSetWeapon`, `BaseSetJewel`, `BaseSetClothing`, `BaseSetQuiver` (and a
+shield carrier) as their own S-task, or take the free "delete the line" route for `ReforgedSuffix`
+in CC4 and leave the carrier-blocked files where they are?
+
+**Context:** CC9 batch 1 read the 320 "drop straight in" files instead of counting them
+(`notes/cc9-artifacts.md` §4–5). 30 of them cannot be ported without a carrier: 13 set pieces on
+jewel/clothing/weapon/quiver/shield bases and 17 absorption users, 9 of them on non-armour bases.
+S1 §8 and S6 §6 both deferred exactly these classes "until a batch needs them". This is that
+batch. The same carriers are the only route for `ReforgedSuffix` that does not bump four upstream
+serialization versions (S9's "4 patches + 4 migrations" route contradicts the S1 decision that
+created `BaseSetArmor`), and they also carry `NegativeAttributes` for 8 more. Measured against
+`BaseSetArmor` (394 lines including absorption) with `SetHelper` and the AOS aggregation patch
+already dispatching on `ISetItem`/`BaseWeapon`/`BaseJewel`/`BaseClothing`/`BaseQuiver`
+(`SetItem.cs:62-78`, `AOS-set-attribute-aggregation.patch:10`): roughly 250 lines per carrier,
+~1,000 total, zero patches, zero migrations, plus one test per carrier. Frees: 30 here, 110–141 in
+CC4, 8 `NegativeAttributes`. Route A (delete the suffix line) is free and costs 136 logged
+name-line deviations that a wiki reader would notice.
+
+**Your best guess:** the carriers are the right call and cheaper than their unblock count
+suggests, because `SetHelper` already knows how to talk to every one of them. Do it as an S-task
+gated by tests, before CC4. Until then CC9 continues on the 272 files that need no carrier and
+skips the 30. Not built in CC9, per the brief.
+
+**Answer:**
