@@ -114,14 +114,10 @@ D:\UO\ServUO-pub57               ServUO, pristine. NOW A READ-ONLY CONTENT SOURC
 D:\UO\shard-migration            this repo.
 ```
 
-**`server/uo/` is a stale partial build tree, and it is NOT a copy of ModernUO.** Counted
-2026-09-06: it holds only `Configuration/` and `Projects/UOContent/Misc/`, 161 `.cs` in total.
-109 of those are ours, 52 are stock ModernUO `Misc/` files, and five of our current top-level
-customizations are missing from it entirely, so it predates the F1 recovery. It is never an
-edit target, never committed, never a build input. `server/customizations` is canonical.
-
-It was useful once as a recovery source for our own files (Q-001). It is useless as a place
-to read ModernUO: **it contains 161 files where ModernUO has 7,058 types.**
+**Do not read `server/uo/`.** Stale, generated, gitignored, and **not** a copy of ModernUO:
+161 files against ModernUO's 7,058 types, predating the F1 recovery. `server/customizations` is
+canonical. Its `Configuration/` is the one exception worth knowing, because it is bind-mounted
+into the live container.
 
 **`D:\UO\ModernUO-pinned` is pinned ModernUO source, read-only.** Created 2026-09-06 and
 verified detached at `7c9215d97cb25c56b0b5cb35034944ccdaa0a485`, 3,991 `.cs` files. Grep it to
@@ -141,10 +137,9 @@ the same commit or the two silently disagree.
 If the clone is ever missing, the builder stage of the Docker image holds the same source at
 `/build/modernuo`: `docker build --target builder -t sl-uo-builder D:\ShatteredLegacy\docker\uo`.
 
-**`tools/modernuo-stems.txt` is not a substitute.** It is a filename-stem list. It is correct
-for collision-checking a ported type's own name and wrong for everything else: it reports
-`ICommodity`, `TextDefinition`, `Ribs`, `ThighBoots` and `IronOre` as missing when all five
-exist. Use the builder image for dependency checks.
+**`tools/modernuo-stems.txt` is for collision-checking a ported type's own name and nothing
+else.** It reports `ICommodity`, `TextDefinition`, `Ribs`, `ThighBoots` and `IronOre` as missing
+when all five exist.
 
 **`D:\UO\ServUO-pub57` is now a content source, not a target.** Read it to find the content
 we want. Copy what we need into `server/customizations`, rewritten for ModernUO. Never edit
@@ -208,6 +203,11 @@ and both times it cost real content:
 - **`IsArtifact`** looked like a top-two blocker at 280 files. It is worth **zero**: pinned
   ModernUO has no consumer of the name at all. Delete the line and log it.
 
+- **Sometimes the equivalent means *do not port this at all*.** Eighteen CC9 files are already
+  in ModernUO under different names — gargish cloth, leather and stone armour as
+  `Gargish*Type1`/`Type2`, and `SerpentstoneStaff`. Porting them would have shipped duplicates of
+  content the shard already had.
+
 **Before recording anything as missing, search pinned ModernUO for what it *does*, not what
 ServUO *calls* it.** Zero occurrences of an identifier is evidence about a name, not about a
 capability.
@@ -270,6 +270,17 @@ why a failing patch beats copied upstream logic, and why a ported subsystem ship
   `[SerializableField]` members. ServUO's `[Constructable]` is ModernUO's `[Constructible]`.
   `Serial` is signed in ServUO and `uint` in ModernUO.
 - **Each port lands in `server/customizations` and must build** before the next one starts.
+
+## A green build is not proof the port is right
+
+Compiling is necessary and is nowhere near sufficient. CC9 batch 1 built 31 files clean on the
+first cycle while hiding **eight types that would not have compiled mechanically** and **three
+that should never have been ported at all**, because ModernUO already ships them under other
+names. The build was green the whole time.
+
+**So read the files you port, do not just watch them compile.** For each one: does ModernUO
+already have this under another name, does the base class still mean the same thing, and is the
+behaviour reachable. A batch that compiles is the start of the check, not the end of it.
 
 ## A gate nobody has watched fail is not a gate
 
