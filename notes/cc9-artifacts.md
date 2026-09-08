@@ -1,7 +1,8 @@
 # CC9 — Artifacts and equipment: batch 1, and the row re-costed
 
-**Status: batch 1 ported, built green through `build.sh`, headless-verified. The row is NOT
-"88% needs nothing built". Partial row with an honest boundary; next batch named in §11.**
+**Status: two batches ported (71 files, 75 types), each built green through `build.sh` on its
+first cycle and headless-verified. The row is NOT "88% needs nothing built". Partial row with
+an honest boundary; next batch named in §11.**
 
 Task CC9 (`C6` in the status table). Brief: test S9's "320 drop straight in" claim with a real
 build, batch the work, report the real per-batch cost, deliver the gargoyle files, cost
@@ -60,6 +61,19 @@ verified registered in the shipped `UOContent.dll` by reflection (§9): generate
 
 Every file carries a header comment naming its ServUO source and any deviation.
 
+### 2b. Batch 2 — 40 files, 41 types: the costumes and the artifacts batch 1 unblocked
+
+| Category | Files | Notes |
+|---|---|---|
+| Costumes | the 33 `Items/Equipment/Suits/*Costume.cs` | One template: `CostumeBody`, one `CostumeHue` (`ShadowWyrm`), `CreatureName`, and a `LabelNumber` (31) or `DefaultName` (2: `DragonWolf`, `SabertoothedTiger`). Generated from the ServUO values by a 40-line script that refuses any file whose constructor or overrides differ from the template; it refused none. Values checked back against the ServUO grep in §12 |
+| Artifacts on batch-1 or ModernUO gargish bases | `CastOffZombieSkin` (: `GargishLeatherArmsType2`), `CuffsOfTheArchmage` (+ `GargishCuffsOfTheArchmage` : `GargishStoneArmsType1`), `PillarOfStrength` (: `LargeStoneShield`), `BreastplateOfTheBerserker` (: `GargishPlateChest`), `GiantSteps` (: `GargishStoneLegsType1`), `Glasses`, `NightEyes` | `Glasses` drops ServUO's `[Alterable]` (no `AlterItem` in ModernUO, S9 §4) and `IRepairable`; its ML-client `CanEquip` check ports (`NetState.SupportsExpansion` exists, `NetState.ClientVersion.cs:92`) |
+
+**Result: green on the first `build.sh` cycle, 95 s, 27 tests; `structured customizations
+installed: 154 file(s)` (114 + 40); 41 of 41 types reflected with generated serialization;
+headless fresh save and reload both clean (§9, runs 3 and 4).** Pre-flight for this batch was
+the batch-1 findings applied: the two ModernUO parents renamed, `Alterable` and `IRepairable`
+dropped, everything else standard.
+
 ---
 
 ## 3. The claim, tested: what "drops straight in" hid
@@ -109,9 +123,15 @@ Counted, not described. File lists in §12.
 | **Absorption users with no carrier** | **17** | S6 built `SAAbsorptionAttributes` and put it on `BaseSetArmor` only. These 17 are 8 non-set armour (re-parent onto `BaseSetArmor` works — it carries absorption already), 1 shield, 1 clothing, 2 jewellery, 4 weapons, 2 talismans (which S6 §4 says would not aggregate even on ServUO). Alternative: port with the line dropped, as S1 did for Aloron before S6 |
 
 **Corrected: 455 → 437 real candidates. 272 need nothing built (62%), 30 need the carrier
-family, the 81 / 10 / 44 S9 buckets are otherwise as S9 measured them** except that batch 1
-plus ModernUO's gargish types satisfy the dependency of **53 of the 81 in-row files** (34
-costumes on `BaseCostume`, 19 on gargoyle names — list in §12), so those are now plain ports.
+family, the 81 / 10 / 44 S9 buckets are otherwise as S9 measured them** with one correction
+to the in-row 81: batch 1 plus ModernUO's gargish types satisfy the *named* dependency of 53
+of them (34 costumes on `BaseCostume`, 19 on gargoyle names), but reading the 19 shows that
+**6 of them also assign `AbsorptionAttributes`** (`BritchesOfWarding`, `PetrifiedSnake`,
+`StoneDragonsTooth`, `DragonJadeEarrings`, `ObsidianEarrings`, `SpinedBloodwormBracers`) and
+**5 are set pieces on gargish jewellery** (`VirtuososEarpieces`, `VirtuososNecklace`, the three
+`Bestial*`), so they join the carrier-blocked group. S9's in-row bucket never checked members
+beyond the one that put the file there. **Truly unblocked: 34 costumes + 8 artifacts = 42**,
+and 41 of those are batch 2 (§2b).
 
 ---
 
@@ -201,7 +221,10 @@ Wall clock, 2026-09-08 local, this machine (Docker Desktop 4.75, engine 29.5.2, 
 | Writing 31 files | ~15 min | ~30 s a file for the plain ones; the three with persisted state and the four re-parented set pieces took most of it |
 | **`build.sh` gated cycle** | **86 s** | builder stage 41 s of which `dotnet publish` 27.3 s; tests 27 passed; runtime image. Log: `build-batch1.log` in the task's work folder. `[patches] structured customizations installed: 114 file(s)` (83 + 31) |
 | Reflection over 33 types | ~1 min | |
-| Headless start / save / shutdown, then reload | see §9 | |
+| Headless start / save / shutdown, then reload | ~4 min | two fixed-sleep runs of ~100 s each |
+| **Batch 2**: read 33 costumes + 15 in-row artifacts, write the generator, generate 33, hand-write 7 | ~15 min | the generator paid for itself on file 5 |
+| **Batch 2 `build.sh`** | **95 s** | publish 28.5 s; 154 files mirrored |
+| Batch 2 reflection + two headless runs | ~5 min | |
 
 **So a 30-file batch is roughly 35 minutes of agent time plus 90 seconds of build, once Docker is
 up.** The 266 s figure in the brief is not what this machine does today with a warm layer cache:
@@ -225,8 +248,11 @@ before, during and after, and was not touched.
 | **1 — fresh scratch `Saves/`, start / `n` / `save` / `shutdown`** | `Loading world done (617 items, 90 mobiles) (0.14 seconds)`; `Listening: 127.0.0.1:2593` and `127.0.0.1:12000 (Pings)` only; `Saving world done (0.02 seconds)`; `Writing world save snapshot done (0.13 seconds)`; `Shutting down`. Zero errors, zero warnings in 58 log lines. Container exit 0 |
 | **2 — reload run 1's save** | `Loading world done (621 items, 91 mobiles) (0.18 seconds)`, same listeners, `Saving world done (0.01 seconds)`, clean shutdown, exit 0. Zero errors |
 
-The 617 → 621 / 90 → 91 growth is the ClusterF seeders, as in CC2 and CC3. Logs:
-`headless-run1.log`, `headless-run2.log` in the task's work folder.
+| **3 — batch-2 image `sl-modernuo:cc9b`, fresh scratch `Saves/`** | `Loading world done (617 items, 90 mobiles) (0.11 seconds)`, loopback listeners, `Saving world done (0.01 seconds)`, clean shutdown, exit 0 |
+| **4 — reload run 3's save** | `Loading world done (621 items, 91 mobiles) (0.23 seconds)`, save, clean shutdown, exit 0 |
+
+The 617 → 621 / 90 → 91 growth is the ClusterF seeders, as in CC2 and CC3. Zero errors or
+warnings in any of the four logs (`headless-run1..4.log` in the task's work folder).
 
 Type registration, reflected over `/modernuo/UOContent.dll` inside the built image
 (`reflect.cs`, same probe as CC2/CC3): **33 ok, 0 bad** — every type reports
@@ -265,27 +291,41 @@ Also observed: `sl-portainer` has a restart policy and came up with the daemon; 
 
 ## 11. What is done, what remains, and the next batch
 
-**Done:** 31 files / 34 types in `server/customizations/Items/`, green, reflected, headless
-run in §9. `tools/progress-state.json` updated; `python tools/progress.py` run.
+**Done:** two batches, **71 files / 75 types** in `server/customizations/Items/`, each green on
+its first `build.sh` cycle, all reflected, four clean headless runs (§9). Two commits per repo.
+`tools/progress-state.json` updated; `python tools/progress.py` run.
 
-**Remaining in the row, by bucket (§4):** 189 − 20 = **169 plain** files not yet ported;
-83 − 4 = **79 set-armour** re-parents; 13 + 17 = **30 carrier-blocked** (decision, §5);
-the 81 in-row of which 53 are now unblocked; 10 co-port; 44 upstream/carrier as S9 listed.
+**Remaining in the row, by bucket (§4):**
 
-**Next batch (CC9 batch 2), in this order, ~30 files, pre-flighted with the §3 method:**
+| Bucket | Left | Note |
+|---|---|---|
+| Plain, from the 320 | **169** | 189 − 20 ported in batch 1 |
+| Set armour re-parents | **79** | 83 − the 4 Greymist |
+| In-row 81 | **40** | − 34 costumes − 7 artifact files; **11 of the 40 are carrier-blocked** (§4) |
+| Carrier-blocked | **41** | 30 from the 320 + 11 from the in-row. Wait on Q-037 |
+| Co-port 10, upstream/carrier 44 | as S9 | untouched |
+| Not candidates | 18 | already in ModernUO (§12) |
 
-1. The 34 costumes in `Items/Equipment/Suits/` — now plain, all `BaseCostume(body[, hue])`
-   one-liners; check each `CostumeBody` value and the two that set `CostumeHue`.
-2. The in-row artifacts that batch 1 unblocked: `BritchesOfWarding`, `CastOffZombieSkin`
-   (from `GargishLeatherArmsType2`), `CuffsOfTheArchmage` (`GargishStoneArmsType1`),
-   `GiantSteps` (`GargishStoneLegsType1`), `PillarOfStrength`, `BreastplateOfTheBerserker`,
-   `StoneDragonsTooth`, `PetrifiedSnake` (`SerpentstoneStaff`), `DragonJadeEarrings`,
-   `ObsidianEarrings`, `Glasses` → `NightEyes`, `CollectionsBritLibraryGlasses`,
-   `VirtuososEarpieces`, `VirtuososNecklace`, `SpinedBloodwormBracers` (`GargishClothArmsType1`).
-3. Then the plain `Items/Equipment/Weapons/Gargish*` (19 files, all the `GargishKatana` shape)
-   and `Items/Equipment/Jewelry/*` (11 remaining), which are the cheapest files on the row.
+**Next batch (CC9 batch 3), ~35 files, all plain, pre-flighted with the §3 method:**
 
-Do **not** start the 30 carrier-blocked files or CC4 until Q-037 is answered.
+1. `Items/Equipment/Weapons/Gargish*` — the 19 remaining (`GargishAxe`, `Bardiche`,
+   `BattleAxe`, `BoneHarvester`, `ButcherKnife`, `Cleaver`, `Daisho`, `Kryss`, `Lance`, `Maul`,
+   `Pike`, `Scythe`, `Tekagi`, `Tessen`, `WarFork`, `WarHammer`) plus `OrcishBow`, `PaladinSword`,
+   `Shortblade`, `StoneWarSword`, `RandomWand`. All the `GargishKatana` shape; a generator like
+   the costume one would fit them.
+2. `Items/Equipment/Jewelry/` — the 11 remaining (`BlueDiamondRing`, `BrilliantAmberBracelet`,
+   `DarkSapphireBracelet`, `EcruCitrineRing`, `FireRubyBracelet`, `GargishBracelet`,
+   `GargishRing`, `PerfectEmeraldRing`, `StaffRing`, `TurqouiseRing`, `WhitePearlBracelet`).
+   Check whether `GargishBracelet`/`GargishRing` are `BaseJewel` (fine) or `BaseArmor` like the
+   earrings (then the §12 `BaseSetArmor` option applies).
+3. `Items/Equipment/Armor/` plain remainder: `GargishPlateArms`, `GargishPlateKilt`,
+   `GargishChaosShield`, `GargishKiteShield`, `GargishOrderShield`, `LargePlateShield`,
+   `MediumPlateShield`, `SmallPlateShield`, `AssassinsCowl`, `ElegantCollar`, `EvilOrcHelm`,
+   `MagesHood`, and the five `DragonTurtleHide*` (which the Darden set then re-parents).
+   **Skip** `GargishStoneArms/Kilt/Legs`, `GargishLeather*`, `FemaleGargish*`: already present.
+
+Then the set-armour re-parents (79), which are mechanical once the stock parent's members are
+looked up. Do **not** start the 41 carrier-blocked files or CC4 until Q-037 is answered.
 
 ---
 
@@ -396,15 +436,20 @@ Sets/Virtue/SacrificeSollerets.cs      : BaseClothing
 Sets/Virtuosos/VirtuososCap.cs         : JesterHat
 ```
 
-### In-row files unblocked by batch 1 or by ModernUO's gargish types (53)
+### In-row files whose named dependency batch 1 or ModernUO's gargish types satisfy (53), read
 
-The 34 `Items/Equipment/Suits/*Costume.cs` (on `BaseCostume`), plus `BritchesOfWarding`,
-`CastOffZombieSkin`, `CuffsOfTheArchmage`, `PillarOfStrength`, `BestialArms`*,
-`BestialEarrings`*, `BestialNecklace`*, `VirtuososEarpieces`, `VirtuososNecklace`,
-`SpinedBloodwormBracers`, `CollectionsBritLibraryGlasses`†, `Glasses`, `DragonJadeEarrings`,
-`ObsidianEarrings`, `BreastplateOfTheBerserker`, `GiantSteps`, `PetrifiedSnake`,
-`StoneDragonsTooth`, `VillainousEpiphany`‡. (* still need `BestialSetHelper`; † still needs
-`Glasses`; ‡ still needs the Epiphany helper and two more gargish plate pieces.)
+| Now plain (42) | The 34 `Items/Equipment/Suits/*Costume.cs`, `CastOffZombieSkin` (→ `GargishLeatherArmsType2`), `CuffsOfTheArchmage` (+ gargish variant → `GargishStoneArmsType1`), `PillarOfStrength`, `BreastplateOfTheBerserker`, `GiantSteps` (→ `GargishStoneLegsType1`), `Glasses`, `NightEyes`, `CollectionsBritLibraryGlasses` (unread) |
+| Also need an absorption carrier (6) | `BritchesOfWarding` (random eater on `ChainLegs` + a gargish twin), `PetrifiedSnake` (→ `SerpentstoneStaff`), `StoneDragonsTooth`, `DragonJadeEarrings`, `ObsidianEarrings`, `SpinedBloodwormBracers` |
+| Also need set-capable gargish jewellery (5) | `VirtuososEarpieces`, `VirtuososNecklace` (`GargishEarrings`/`GargishNecklace` would have to derive from `BaseSetArmor`), `BestialArms`, `BestialEarrings`, `BestialNecklace` (+ `BestialSetHelper`) |
+| Still short of other things | `VillainousEpiphany` (Epiphany helper, `GargishPlateArms`, `GargishPlateKilt`) |
+
+One cheap option worth Chase's eye, not taken here: **derive the ported gargish armour-class
+jewellery (`GargishEarrings`, `GargishNecklace`) and `GargishPlateChest/Legs` from
+`BaseSetArmor` instead of `BaseArmor`.** ServUO carries set and absorption state on every
+`BaseArmor`, so for those four ported bases it is the *more* faithful parent, `SetID.None` is
+inert, and it would free the 5 set pieces and the 4 armour-class absorption users above without
+a new carrier. It costs nothing but a save-format decision on four brand-new types, which is why
+it should be made once and before they reach the live save.
 
 ### The item-ID cross-check, for the next batch
 

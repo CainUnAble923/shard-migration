@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-08T08:51:55-05:00",
+  "generated": "2026-09-08T09:01:35-05:00",
   "direction": "stay on ModernUO; pull ServUO content selectively",
   "setup_defects": {
     "CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered": true,
@@ -293,6 +293,13 @@
       "note": "Shield-slot mask that body-mods the wearer; carrier for the 34 costumes in the in-row bucket, all now plain ports. Two persisted ints (CostumeBody, CostumeHue) at version 0; ServUO's three save versions collapse. Deviation D-5: ServUO knocks the costume off from AOS.Damage (AOS.cs:417); ModernUO has no call site, so a masked player keeps the mask through combat. One line added to the existing AOS-damage-eater-hook.patch would restore it."
     },
     {
+      "name": "CC9 batch 2: 33 costumes + 7 unblocked artifacts (40 files, 41 types)",
+      "task": "CC9",
+      "source": "ServUO Items/Equipment/Suits/*Costume.cs; Items/Artifacts/Equipment/{Armor,Weapons,Glasses}/",
+      "dest": "server/customizations/Items/Equipment/Suits/, Items/Artifacts/Equipment/",
+      "note": "The 33 costumes are one template on BaseCostume (body, one hue, creature name, cliloc or default name) and were generated from the ServUO values by a script that refuses any file whose constructor or overrides differ from the template; it refused none. CastOffZombieSkin, CuffsOfTheArchmage (2 types), PillarOfStrength, BreastplateOfTheBerserker, GiantSteps, Glasses, NightEyes hand-written; three of them derive from ModernUO's own Gargish*Type1/Type2 classes rather than a ported parent. Green first cycle (95 s), 41/41 reflected, headless save/reload clean. Reading the 19 in-row artifacts batch 1 supposedly unblocked found 6 more absorption users and 5 set pieces on gargish jewellery, so only 8 were plain - S9's in-row bucket checked one member per file."
+    },
+    {
       "name": "CC9 batch 1: artifacts and equipment (31 files, 34 types)",
       "task": "CC9",
       "source": "ServUO Items/Artifacts/{Consumables,Decorative,Equipment,Tools}, Items/Equipment/{Armor,Jewelry,Weapons,Suits}",
@@ -481,7 +488,7 @@
     ]
   },
   "counted": {
-    "customization_files": 229,
+    "customization_files": 269,
     "patch_files": 20,
     "stale_migrations_present": false,
     "test_files": 6,
@@ -489,22 +496,22 @@
   },
   "content_progress": [
     {
+      "area": "Items/Equipment",
+      "total": 148,
+      "done": 50,
+      "pct": 33.8
+    },
+    {
       "area": "Items/Artifacts",
       "total": 325,
-      "done": 33,
-      "pct": 10.2
+      "done": 40,
+      "pct": 12.3
     },
     {
       "area": "Items/Resource",
       "total": 61,
       "done": 29,
       "pct": 47.5
-    },
-    {
-      "area": "Items/Equipment",
-      "total": 148,
-      "done": 17,
-      "pct": 11.5
     },
     {
       "area": "Services/Expansions",
@@ -734,7 +741,7 @@
       "id": "C6",
       "title": "Artifacts and equipment",
       "status": "in-progress",
-      "note": "CC9 batch 1 done 2026-09-08: 31 files / 34 types, green through build.sh first time (86 s gated cycle), 33/33 types reflected, headless save/reload clean. S9's '88% needs nothing built' does not survive reading: 18 of the 320 are already in ModernUO by content (gargish cloth/leather/stone armour as Gargish*Type1/Type2, SerpentstoneStaff), 83 are set armour that must be re-parented onto BaseSetArmor, 13 set pieces and 17 absorption users sit on bases with no carrier. Corrected: 437 real candidates, 272 (62%) need nothing built, 30 wait on the carrier family that is also the no-patch route for ReforgedSuffix (Q-037). On the 34-type sample, 8 would not have compiled as a mechanical conversion and 3 must not be ported; pre-flight caught all of them before the build. Gargoyle cluster: 6 of S9's 9 ported, 3 already present. Nine deviations logged in notes/cc9-artifacts.md, D-1 (IsArtifact) and D-2 (CanBeWornByGargoyles) once for the whole row. Next: the 34 costumes and the 19 in-row artifacts batch 1 unblocked."
+      "note": "CC9 batches 1 and 2 done 2026-09-08: 71 files / 75 types, each green through build.sh on its first cycle (86 s and 95 s gated), 74/74 concrete types reflected, four clean headless save/reload runs. Batch 1 was the category-spread sample; batch 2 the 33 costumes and 7 artifacts it unblocked. Remaining: 169 plain, 79 set-armour re-parents, 41 carrier-blocked (Q-037); next batch named in notes/cc9-artifacts.md section 11. S9's '88% needs nothing built' does not survive reading: 18 of the 320 are already in ModernUO by content (gargish cloth/leather/stone armour as Gargish*Type1/Type2, SerpentstoneStaff), 83 are set armour that must be re-parented onto BaseSetArmor, 13 set pieces and 17 absorption users sit on bases with no carrier. Corrected: 437 real candidates, 272 (62%) need nothing built, 30 wait on the carrier family that is also the no-patch route for ReforgedSuffix (Q-037). On the 34-type sample, 8 would not have compiled as a mechanical conversion and 3 must not be ported; pre-flight caught all of them before the build. Gargoyle cluster: 6 of S9's 9 ported, 3 already present. Nine deviations logged in notes/cc9-artifacts.md, D-1 (IsArtifact) and D-2 (CanBeWornByGargoyles) once for the whole row. Next: the 34 costumes and the 19 in-row artifacts batch 1 unblocked."
     },
     {
       "id": "C7",
