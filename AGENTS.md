@@ -145,22 +145,14 @@ it, never build in it, never migrate to it.
 
 ## Setup defects: all seven closed 2026-09-06
 
-Kept as history because each one taught a rule. Findings in `notes/f2-patch-runner.md`,
-`notes/f3-patch-triage.md`, `notes/f4-f5-foundation-cleanup.md`.
+**The rule they paid for: verify state, do not trust a status line.** A green build proved
+nothing while `apply-patches.sh` converted patch failures to warnings and exited 0. Eight patches
+were broken, six had never been valid diffs, and MAKE X, PetMimic attribute aggregation and
+talisman durability had never worked. A commit titled "Normalize patch runner" had changed three
+lines of a Dockerfile.
 
-1. **`server/customizations` did not compile on its own.** Three pieces were missing and were
-   recovered from `server/uo/`. Verified by a clean Docker build during F3, which is only
-   meaningful now that a patch failure can no longer pass silently.
-2. **`apply-patches.sh` was not a verification gate.** It converted patch failures to warnings
-   and exited 0. It now fails the build, and it mirrors customization subdirectories by path.
-   **Eight** patches were broken, not seven; **six had never been valid diffs** at all, and
-   **none** was obsolete because ModernUO changed. Real effects: MAKE X never worked, PetMimic
-   attributes were never aggregated, talisman durability never applied.
-3. **Stale divergent migration JSONs** in `server/customizations/migrations/` are deleted.
-
-**The rule all three paid for: verify state, do not trust a status line.** A green build
-proved nothing while the runner could not fail, and a commit titled "Normalize patch runner"
-had changed three lines of a Dockerfile.
+Detail in `notes/f2-patch-runner.md`, `notes/f3-patch-triage.md`,
+`notes/f4-f5-foundation-cleanup.md`.
 
 ## Five files are upstream replacements, not additions
 
@@ -244,6 +236,11 @@ why a failing patch beats copied upstream logic, and why a ported subsystem ship
 - **Losing a behaviour is not automatically a decline either.** `Saurosaurus` lost two of its
   three abilities and was still ported: correct stats, loot and taming beat no creature at all.
   Decline when the content is meaningless without what it loses. Log the deviation either way.
+- **Any patch to an upstream file gets its alternatives argued in `notes/` first**, not just core
+  ones. S8's patch was to a *test* project and it still listed what it rejected and why: a shared
+  helper that needs remembering, a `[ModuleInitializer]` that runs too early, copying the method
+  body (which policy forbids), and a second collection fixture that is impossible because
+  `UOContentFixture.Dispose` throws on a second disposal. Write that down before you patch.
 - **Check for name collisions against ModernUO before porting.** ServUO has 5,902 script type
   names and ModernUO has its own; a collision is a duplicate-type build failure. Use
   `tools/modernuo-stems.txt` for this and **only** this: it is a filename-stem list, correct for
@@ -267,9 +264,13 @@ S6's phrasing, and it is now the rule. When you add a test, a patch check, or an
 watch it go green. Then say in the note that you did.
 
 This project spent F2 and F3 on a patch runner that converted failures to warnings and exited 0.
-Eight patches had been failing silently for who knows how long, and three real gameplay features
-never worked. Every gate added since exists because of that, and a gate that has only ever been
-observed passing is indistinguishable from the thing we were fixing.
+Every gate added since exists because of that, and a gate only ever observed passing is
+indistinguishable from the thing we were fixing.
+
+**And when a change is supposed to leave the running server alone, prove that too.** S8 patched a
+test fixture and showed `Server.dll`, `ModernUO.dll` and `UOContent.dll` byte-identical to the
+previous image, so only the test assembly differed. That is a much stronger claim than "the tests
+still pass".
 
 ## Commit to `main`. Do not branch.
 
