@@ -155,3 +155,10 @@ The alternative here was free and was rejected on **fidelity**: deleting the `Re
 costs nothing and ships 136 items with wrong names, which is the exact failure
 `docs/fidelity-principle.md` exists to prevent, arriving all at once.
 
+**Outcome, same day: the prediction that mattered held, the size estimate did not.** Zero patches
+and zero migrations, exactly as argued — `server/patches` is 15 files before and after. The line
+count was **1,426 against ~1,000**, because a ModernUO shield is a `BaseArmor` but not a
+`BaseSetArmor`, so the shield carrier is a full copy rather than a thin one. **That is the right
+way round for this test to fail**: the question the policy asks is what a bump has to reconcile,
+and it answered that correctly while being 40% off on volume.
+

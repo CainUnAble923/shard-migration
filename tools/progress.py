@@ -19,6 +19,22 @@ SERVUO  = Path(os.environ.get("SL_SERVUO", r"D:\UO\ServUO-pub57"))
 MIGRATE = Path(os.environ.get("SL_MIGRATE", Path(__file__).resolve().parent.parent))
 STATE   = MIGRATE / "tools" / "progress-state.json"
 
+def check_inputs():
+    """Refuse to write a degraded README. If the shard or ServUO tree is not where
+    this expects, the content section and the counted-from-the-trees line silently
+    become empty and the commit looks like real progress data. That is the same
+    failure mode as the patch runner that exited 0 on a failed patch, so this
+    aborts instead. Use SL_SHARD / SL_SERVUO to point it at another checkout."""
+    missing = []
+    if not (SHARD / "server" / "customizations").is_dir():
+        missing.append(f"shard customizations at {SHARD}  (set SL_SHARD)")
+    if not (SERVUO / "Scripts").is_dir():
+        missing.append(f"ServUO scripts at {SERVUO}  (set SL_SERVUO)")
+    if missing:
+        print("  refusing to write: cannot see " + "; ".join(missing), file=sys.stderr)
+        print("  (--dry-run prints what it can without writing)", file=sys.stderr)
+        sys.exit(2)
+
 def load():
     try:
         return json.loads(STATE.read_text(encoding="utf-8"))
@@ -227,6 +243,7 @@ def build():
 START, END = "<!-- PROGRESS:START -->", "<!-- PROGRESS:END -->"
 
 def main():
+    if "--dry-run" not in sys.argv: check_inputs()
     rep = build(); _emit(rep)
     if "--dry-run" in sys.argv: return
     rm = MIGRATE / "README.md"

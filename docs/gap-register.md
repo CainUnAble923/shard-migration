@@ -140,11 +140,12 @@ rather than assume it.
 
 ### Follow-on from S6
 
-**B1b — the carrier class.** S6's "57 unblocked" was a *reference* count. Resolved through the
-inheritance chain (Q-028): **8 finished, 5 carrier-ready, 31 one small carrier class away, 13
-blocked by other subsystems all along.** The **31** are a bounded, concrete follow-on rather than
-a subsystem, and may be the best ratio left now that S6 has landed. **Cost it before scheduling
-it** — that is the whole lesson of this row.
+**B1b — the carrier class. CLOSED by S10, 2026-09-08.** S6's "57 unblocked" was a *reference*
+count. Resolved through the inheritance chain (Q-028): **8 finished, 5 carrier-ready, 31 one small
+carrier class away, 13 blocked by other subsystems all along.** S10 built all five carriers, so
+the **31** are buildable now, along with CC9's 41 and the CC4 gargoyle wearables. The lesson this
+row exists for still stands: **cost it before scheduling it.** The 31 was worth acting on because
+it was a measured number, not because it was large.
 
 ### From S10
 

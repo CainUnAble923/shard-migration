@@ -148,13 +148,9 @@ it, never build in it, never migrate to it.
 ## Setup defects: all seven closed 2026-09-06
 
 **The rule they paid for: verify state, do not trust a status line.** A green build proved
-nothing while `apply-patches.sh` converted patch failures to warnings and exited 0. Eight patches
-were broken, six had never been valid diffs, and MAKE X, PetMimic attribute aggregation and
-talisman durability had never worked. A commit titled "Normalize patch runner" had changed three
-lines of a Dockerfile.
-
-Detail in `notes/f2-patch-runner.md`, `notes/f3-patch-triage.md`,
-`notes/f4-f5-foundation-cleanup.md`.
+nothing while `apply-patches.sh` converted patch failures to warnings and exited 0 — eight
+patches broken, six never valid diffs, three features that had never worked. Detail in
+`notes/f2-patch-runner.md`, `notes/f3-patch-triage.md`, `notes/f4-f5-foundation-cleanup.md`.
 
 ## Five files are upstream replacements, not additions
 
@@ -251,10 +247,8 @@ why a failing patch beats copied upstream logic, and why a ported subsystem ship
   three abilities and was still ported: correct stats, loot and taming beat no creature at all.
   Decline when the content is meaningless without what it loses. Log the deviation either way.
 - **Any patch to an upstream file gets its alternatives argued in `notes/` first**, not just core
-  ones. S8's patch was to a *test* project and it still listed what it rejected and why: a shared
-  helper that needs remembering, a `[ModuleInitializer]` that runs too early, copying the method
-  body (which policy forbids), and a second collection fixture that is impossible because
-  `UOContentFixture.Dispose` throws on a second disposal. Write that down before you patch.
+  ones. S8's patch was to a *test* project and it still listed the four it rejected and why
+  (`notes/s8-test-route.md`). Write that down before you patch, not after.
 - **Check for name collisions against ModernUO before porting.** ServUO has 5,902 script type
   names and ModernUO has its own; a collision is a duplicate-type build failure. Use
   `tools/modernuo-stems.txt` for this and **only** this: it is a filename-stem list, correct for
@@ -269,6 +263,14 @@ why a failing patch beats copied upstream logic, and why a ported subsystem ship
   a version int becomes ModernUO's `[SerializationGenerator]` partial class with
   `[SerializableField]` members. ServUO's `[Constructable]` is ModernUO's `[Constructible]`.
   `Serial` is signed in ServUO and `uint` in ModernUO.
+- **Give a base its final parent the first time you port it.** Deriving a type from one of our
+  carriers *later* inserts an ancestor, which changes the save chain and is **not expressible as a
+  migration** — it is free only while no instance exists in any save, and that window closes on
+  the next deploy. So before porting any base class, grep ServUO for `class \w+ : ThatType` and
+  check whether any descendant touches `AbsorptionAttributes`, `SetAttributes`, `SetSelfRepair`,
+  `SetID` or `ISetItem`. If one does, the base derives from the matching carrier now, even though
+  the base itself is not a set piece: `SetID` defaults to `SetItem.None` and it stays inert.
+  Verified this way in S10 (four gargish bases) and again for CC9 batch 3 (eight more).
 - **Each port lands in `server/customizations` and must build** before the next one starts.
 
 ## A green build is not proof the port is right

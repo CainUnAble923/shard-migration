@@ -401,7 +401,11 @@ it gates two clusters currently sitting in the deferred list. Not scheduled; cos
 **Status table calls this `C6`.** Measured by S9 and it is the cheapest row on the whole backlog,
 which is the reverse of how this plan used to be ordered.
 
-**IN PROGRESS. 71 files ported across two batches; 269 customizations in the tree.**
+**IN PROGRESS. 71 files ported across two batches; 274 customizations in the tree.**
+
+**S10 landed, so the 41 carrier-blocked files are no longer blocked.** What remains, by bucket:
+**169 plain**, **79 set-armour re-parents**, **41 carrier-blocked** (now buildable). Batches 3 and
+4 are defined at the end of this section.
 
 **Re-costed from a build rather than a count, by CC9 batch 1, and S9's figures were optimistic.**
 S9 said 455 candidates with 320 dropping straight in, 88% needing nothing built. Reading the
@@ -439,9 +443,45 @@ Expect some of the 320 to fail and report how many.
 **Batch it.** A changed-file build measured 86s and 95s in CC9, not the ~266s, so group files per build rather than rebuilding per
 file. Report the real per-batch cost; the old estimates predate S4 and are optimistic by ~6x.
 
+### CC9 batch 3 — the plain remainder, 48 named
+
+Weapons (21), jewellery (11), armour and shields (16), listed in `notes/cc9-artifacts.md` §11.
+All plain ports, the `GargishKatana` shape, generator-friendly.
+
+**Eight of the 48 are not plain, and the difference is a save-format decision, not a style one.**
+A base whose ServUO descendants use `AbsorptionAttributes`, `SetAttributes`, `SetSelfRepair`,
+`SetID` or `ISetItem` must derive from the matching carrier **at port time**, because adding the
+ancestor later is not expressible as a migration. Grepped ServUO for every one of the 48; these
+eight have such a descendant:
+
+| Port with parent | Types | Descendant that forces it |
+|---|---|---|
+| `BaseSetArmor` | `GargishPlateArms` | `VirtuososArmbands` (`SetID`, `Pieces`, `BardMasteryBonus`) |
+| `BaseSetArmor` | `GargishPlateKilt` | `VoidInfusedKilt` (`AbsorptionAttributes.EaterDamage`) |
+| `BaseSetArmor` | `DragonTurtleHideArms`, `Bustier`, `Chest`, `Helm`, `Legs` | Darden's set, all five |
+| `BaseSetShield` | `GargishKiteShield` | `DragonHideShield` (`AbsorptionAttributes.EaterFire`) |
+
+The other 40 stay on their stock ModernUO base. `SetID` defaults to `SetItem.None`, so a carrier
+parent on a non-set base is inert — this is exactly what S10 did for the four gargish bases.
+
+### CC9 batch 4 — the carrier-blocked 41, plus four re-parents
+
+Unblocked by S10. Before the re-parents, **re-verify that no instance exists in any save**
+(`docs/gap-register.md`, "The re-parenting window closes on the next deploy"). Q-039 approved
+`LargeStoneShield` onto `BaseSetShield` and three gargish weapons onto `BaseSetWeapon`.
+
+Then the **79 set-armour re-parents**, mechanical once the stock parent's members are looked up.
+
 ## S10. The carrier family
 
-**Decided 2026-09-08 (Q-037). Runs before CC4.** Deferred by S1 and again by S6, both times
+**DONE 2026-09-08.** Five carriers, 1,426 lines against the ~1,000 below, **zero patches and zero
+migrations** as predicted, 42 tests green, all five gates watched fail. The gargish question at
+the end of this section was settled YES and applied in the same commit; Q-039 extends it to four
+more types for batch 4. Two deviations recorded: `SetSelfRepair` is inert on weapon, clothing and
+shield (Q-038, `docs/gap-register.md`), and the Bestial berserk line is omitted as on
+`BaseSetArmor`. See `notes/s10-carriers.md`.
+
+**Decided 2026-09-08 (Q-037). Ran before CC4.** Deferred by S1 and again by S6, both times
 "until a batch needs them". Two rows need them now.
 
 Build `BaseSetWeapon`, `BaseSetJewel`, `BaseSetClothing`, `BaseSetQuiver` and a shield carrier,
