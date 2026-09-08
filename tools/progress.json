@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-08T14:21:01+00:00",
+  "generated": "2026-09-08T10:11:51-05:00",
   "direction": "stay on ModernUO; pull ServUO content selectively",
   "setup_defects": {
     "CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered": true,
@@ -305,6 +305,13 @@
       "source": "ServUO Items/Artifacts/{Consumables,Decorative,Equipment,Tools}, Items/Equipment/{Armor,Jewelry,Weapons,Suits}",
       "dest": "server/customizations/Items/",
       "note": "2,604 ServUO lines in, 1,324 out. Category-spread sample chosen to test S9's 'drops straight in' claim: 20 of 34 types needed only the standard conversion, 8 would not have compiled mechanically (four set pieces re-parented, fishing-pole attributes, BattleLust, two non-virtual overrides on earrings/necklace, IRepairable), 3 must not be ported at all (already in ModernUO). Real persisted state exercised on GobletOfCelebration (SerializableProperty + DeltaDateTime + AfterDeserialization timer rebuild), AmuletOfRighteousness (IUsesRemaining) and BaseCostume. Deviations D-3 AxeOfAbandon BattleLust, D-4 XenrrFishingPole SpellChanneling/CastSpeed (ModernUO's FishingPole has no attribute block and AosAttributes.GetValue aggregates only the seven equipment bases), D-5 costume damage hook. Gated build 86 s; 33/33 types reflected; headless save and reload clean."
+    },
+    {
+      "name": "The carrier family: BaseSetWeapon, BaseSetJewel, BaseSetClothing, BaseSetQuiver, BaseSetShield (5 files)",
+      "task": "S10",
+      "source": "ServUO set regions of Items/Equipment/{Weapons/BaseWeapon,Jewelry/BaseJewel,Clothing/BaseClothing,Quivers/BaseQuiver}.cs and BaseArmor via BaseShield",
+      "dest": "server/customizations/Items/Artifacts/Equipment/Armor/Sets/",
+      "note": "Subsystem, not content: the set state ServUO puts on each base class, on an additive intermediate class of ours instead (the S1 decision, applied four more times). 1,426 lines, zero patches, zero migrations, 15 tests, every gate watched fail. Field layout identical to BaseSetArmor on every carrier (0-9, then SetSelfRepair 10 and absorption 11 where the ServUO base has them; jewel has absorption at 10; quiver has neither). SetSelfRepair inert on weapon/clothing/shield (Q-038). The four ported gargish armour-class bases were re-parented onto BaseSetArmor in the same commit, before any instance reached a save. Unblocks CC9 batch 4 (13 set pieces + 9 non-armour absorption users + 5 gargish-jewellery set pieces) and CC4's ReforgedSuffix route C."
     }
   ],
   "declined_content": [
@@ -488,11 +495,11 @@
     ]
   },
   "counted": {
-    "customization_files": 269,
+    "customization_files": 274,
     "patch_files": 20,
     "stale_migrations_present": false,
-    "test_files": 6,
-    "test_cases": 28
+    "test_files": 11,
+    "test_cases": 43
   },
   "content_progress": [
     {
@@ -716,8 +723,8 @@
     {
       "id": "S10",
       "title": "The carrier family",
-      "status": "todo",
-      "note": "Decided 2026-09-08 (Q-037), runs before CC4. BaseSetWeapon/Jewel/Clothing/Quiver plus a shield carrier, ~1,000 lines, zero patches, zero migrations. Frees 41 in CC9, 110-141 in CC4, 8 more. Deferred by S1 and S6 'until a batch needs them'; two rows need them now. Alternative rejected on fidelity: deleting ReforgedSuffix ships 136 items with wrong names."
+      "status": "done",
+      "note": "Five carriers built and gated: BaseSetWeapon, BaseSetJewel, BaseSetClothing, BaseSetQuiver, BaseSetShield, each BaseSetArmor transcribed against its own ModernUO base, 1,426 lines against the ~1,000 estimate (the shield is a full BaseSetArmor copy because a ModernUO shield is a BaseArmor but not a BaseSetArmor, and ServUO's clothing carries the whole armour resist arithmetic). ZERO PATCHES, ZERO MIGRATIONS: server/patches is 15 files before and after, server/migrations 9, no upstream serialization version moves. SetHelper, the AOS aggregation patch and the resistance hook were already kind-agnostic and none changed. 15 new tests (3 per carrier, test-local set pieces because the real ones are CC9 batch 4's), 42 green through build.sh; all five gates watched fail in one run (5 failed/37 passed, each at its own carrier's LastEquipped assertion with the S1 partner piece still passing beside it). Gargish decision: YES, the four ported armour-class bases (GargishEarrings, GargishNecklace+2, GargishPlateChest/Legs) now derive from BaseSetArmor, applied in this commit because inserting an ancestor changes the save chain and is not expressible as a migration; no instance exists in any save (latest image predates batch 1, live container stopped since June). Deviations: SetSelfRepair is INERT on weapon/clothing/shield (no SelfRepair hook in ModernUO's BaseWeapon/BaseClothing/BaseShield.OnHit; three S1-shaped patches would close it, raised as Q-038, tooltip line suppressed per S1 D-2); Bestial berserk line omitted as on BaseSetArmor; tooltip ordering cosmetic. NegativeAttributes: absent from pinned ModernUO, carriers provide nothing, nothing added. Q-039 asks whether the gargish rule extends to LargeStoneShield and the three ported gargish weapons. See notes/s10-carriers.md."
     },
     {
       "id": "C2",

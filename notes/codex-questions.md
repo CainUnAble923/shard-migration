@@ -2020,3 +2020,60 @@ carrier gets written first.
 well; momentum is worth keeping while the batches are building green on the first cycle.
 
 Status: **[ANSWERED]** — build them, as S10, before CC4.
+
+---
+
+## Q-038 [OPEN] 2026-09-08 `SetSelfRepair` is inert on three of the five S10 carriers; three small patches would close it
+
+**Question:** S10 shipped `BaseSetWeapon`, `BaseSetClothing` and `BaseSetShield` with
+`SetSelfRepair` stored, serialized and settable but **inert**, and its tooltip line suppressed.
+Do you want the three hooks that give it effect, at one patch each, or does the omission stand?
+Non-blocking; S10 is complete either way.
+
+**Context:** S1 gave armour its set self repair through `BaseArmor-set-self-repair.patch`, a
+three-line hook (`EffectiveSelfRepair`) at the one call site in `BaseArmor.OnHit`. The same
+mechanic on the other kinds has no such hook in pinned ModernUO:
+
+| Kind | ServUO adds `SetSelfRepair` at | ModernUO reads `SelfRepair` at | Hook needed |
+|---|---|---|---|
+| Weapon | `BaseWeapon.cs:2320` | `Items/Weapons/BaseWeapon.cs:2088`, inside `OnHit` | 3 lines, the S1 shape |
+| Clothing | `BaseClothing.cs:789` | `Items/Clothing/BaseClothing.cs:351`, inside `OnHit` | 3 lines, the S1 shape |
+| Shield | inherits `BaseArmor` | `Items/Shields/BaseShield.cs:35`, its own `OnHit` override, which never consults `BaseArmor.EffectiveSelfRepair` | 1 line: point it at `EffectiveSelfRepair` |
+
+S10 was approved on **zero patches** ("If you find yourself reaching for a patch, stop and say
+so, because that changes the basis on which it was approved"), so none was written. The field is
+kept so that Evocaricus (`SetSelfRepair = 3`), Cloak of Humility (`5`) and Maleki's Honor (`3`)
+compile and keep their value in the save; the day the hooks land, the effect switches on with no
+migration. The tooltip line is dropped rather than shown, per S1 D-2: advertising a bonus the
+player does not get is worse than omitting it. Jewellery and quivers carry no `SetSelfRepair` in
+ServUO either, so they are unaffected.
+
+**Your best guess:** take the three hooks as a small follow-on when CC9 batch 4 ports the pieces
+that use the value, not before. Each is the exact shape of patch 3 in `notes/s1-armour-sets.md`
+section 3 and carries the same bump risk profile (the self-repair formula is the part of upstream
+most likely to move). Seven affected files in the whole backlog is not enough to widen S10 for.
+
+---
+
+## Q-039 [OPEN] 2026-09-08 The gargish re-parent rule: does it extend to `LargeStoneShield` and the three ported gargish weapons?
+
+**Question:** S10 re-parented the four ported gargish armour-class bases (`GargishEarrings`,
+`GargishNecklace` with its two subtypes, `GargishPlateChest`, `GargishPlateLegs`) from `BaseArmor`
+onto `BaseSetArmor`, as Q-037 asked. The same reasoning applies to five more ported bases and
+S10 did **not** touch them, because the brief scoped the decision to the four. Should the rule be
+general? Non-blocking, but cheaper before deployment than after, for the same save-format reason.
+
+**Context:** the argument for the four is in `notes/s10-carriers.md` section 4: ServUO carries set
+and absorption state on every `BaseArmor`, `BaseWeapon`, `BaseJewel` and `BaseClothing`, so for a
+*ported* base the carrier is the more faithful parent and `SetID.None` is inert. Applied
+consistently that also covers `LargeStoneShield` (: `BaseShield`, now `BaseSetShield` exists) and
+`GargishKatana`, `GargishDagger`, `GargishGnarledStaff` (: `BaseWeapon`, now `BaseSetWeapon`
+exists), all ported in CC9 batch 1 and none yet in a deployed image. Today none of them has a
+dependant that needs it: `PillarOfStrength : LargeStoneShield` is plain, and the weapon
+dependants are CC4's. So it frees nothing now and is purely a rule about which parent a ported
+equipment base gets, decided once rather than per file.
+
+**Your best guess:** yes, as a one-line rule in `notes/port-recipe.md` for CC9 to apply: "a ported
+ServUO equipment base derives from the set carrier of its kind". Apply it to the five now, before
+`sl-modernuo:latest` is rebuilt for deployment. If no, the four stay as S10 left them and the
+five stay on their stock parents; nothing else changes.
