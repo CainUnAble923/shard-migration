@@ -365,6 +365,32 @@ behaviour under test is broken; S5's and S6's fixtures are moved onto the route'
 both, so the workarounds do not survive as examples; and `notes/s8-test-route.md` documents how to
 write a creature test and how to advance time.
 
+## S9. Re-measure the remaining content backlog — START HERE
+
+**Measurement only. Do not port anything.** The last task of this shape, S3, shipped no code and
+removed 223 files of backlog that did not exist. It was the highest-value hour this project has
+spent.
+
+**Every remaining content row is still an unfiltered ServUO file count.** Revamped Dungeons at
+255, Artifacts and equipment at 466, Decoration/housing/crafting at 297, High Seas cheap half at
+~78. The creatures row went **462 to 137** when the S3 filter was applied. These four are the
+biggest items left on the plan and none has had that filter applied.
+
+Apply the two-step S3/S6 method to each:
+
+1. **Filter by what ModernUO already declares.** 3,134 of ServUO's 6,144 files are types ModernUO
+   has; those are duplicate-type build failures, not candidates.
+2. **Then resolve, because a reference count is an upper bound on work, not the work.** For what
+   remains: how many are clean, how many are blocked and by what, and how many are blocked by
+   something already built (armour sets, absorption, ML quests) and are therefore now free.
+
+**Publish the file list beside every count.** Ten counts on this project have moved under
+scrutiny; none of these four has been checked at all.
+
+**Done when:** `notes/s9-backlog-remeasure.md` has a row per content task with filtered count,
+resolved breakdown, blockers named, and a recommended order. Update `docs/tasks.md`'s figures via
+`tools/progress-state.json` and run `python tools\progress.py`.
+
 ## S7. `Services/PointsSystems`
 
 12 files, 2,857 lines, unblocks 55. A hard dependency of both Vice vs Virtue and City Loyalty, so

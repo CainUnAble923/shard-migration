@@ -380,6 +380,12 @@
       "note": "Both S4-route defects fixed in the route, not in consumers. (1) UOContentFixture-npc-speeds.patch adds the NPCSpeeds.Configure call the upstream test fixture omits, so any test constructs a stock or ported BaseCreature with no scaffolding - Q-026, whose STATED CAUSE was wrong: the data file was always in the test output directory, nothing ever called Configure (Q-031). (2) server/tests/Route/ShardTestClock.cs is the one correct way to advance time; Timer.Slice turns the wheel without moving Core.Now, which made S6's first eater test measure regeneration - Q-029. apply-patches.sh now fails the build for a test that drives the wheel or registers speeds by hand, and S5's and S6's workarounds are deleted rather than relocated. Five negative proofs run and reverted. 27 tests green through build.sh; Server.dll, ModernUO.dll and UOContent.dll are byte-identical to the S6 image, so the shipped server is provably unchanged."
     },
     {
+      "id": "S9",
+      "title": "Re-measure the remaining content backlog",
+      "status": "todo",
+      "note": "Measurement only. Dungeons 255, artifacts 466, decoration 297, High Seas ~78 are all unfiltered ServUO counts. Creatures went 462 to 137 under the same filter. Also resolve what is now free because S1, S5 and S6 shipped."
+    },
+    {
       "id": "S7",
       "title": "Services/PointsSystems",
       "status": "todo",
