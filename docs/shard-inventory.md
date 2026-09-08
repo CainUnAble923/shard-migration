@@ -1,5 +1,10 @@
 # Shattered Legacy: what we actually have to migrate
 
+> **COUNTS SUPERSEDED 2026-09-07.** This says 111 customizations with 106 additive. It is now
+> **198 files, 15 patches and 5 full-file replacements**, and the live figures come from
+> `python tools/progress.py`. The *method* here (per-file classification against pinned ModernUO)
+> is still how a customization gets triaged; only the numbers are historical.
+
 Measured 2026-09-06 from `D:\ShatteredLegacy`.
 Repo: https://github.com/CainUnAble923/shattered-legacy-infrastructure
 

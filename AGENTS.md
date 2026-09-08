@@ -34,6 +34,8 @@ deviation in `docs/fidelity-principle.md`. Full reasoning there.
 ## Ground rules
 
 1. **Decisions live in `docs/`.** If you make or change one, write it there in the same change.
+   **`docs/README.md` says which of the twenty documents there actually govern** — read that
+   before planning from any of them. Several are kept as history and say so at the top.
 2. **Verify against the source trees, not documentation.** Neither ModernUO nor ServUO
    documents its content coverage accurately. Every content claim in `docs/` came from
    reading and counting files. Hold new claims to the same bar.

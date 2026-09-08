@@ -1,5 +1,10 @@
 # Workstreams
 
+> **SUPERSEDED 2026-09-07.** Written before Foundation was finished, when the seven failing
+> patches were still untriaged and the work was split between two agents. Both premises are gone:
+> Foundation is 7/7 and one agent does one task per chat. **`tasks.md` is the live plan.** Kept
+> for the reasoning about how work was divided, not for its content.
+
 Five streams. This is a long-running effort with no completion date, so these are ongoing
 areas of work rather than phases with an end.
 

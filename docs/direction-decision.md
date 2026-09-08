@@ -53,7 +53,7 @@ Peerless — are builds, not ports, and gate the content resting on them. Those 
 - **No SHA2 password window.** There is no cutover; hashes never need another engine to read
   them. That urgency is cancelled.
 - **No account or world migration**, and no spawner conversion. Our data stays put.
-- **The 111 custom scripts are never rewritten.** They keep working as they are.
+- **Our existing custom scripts are never rewritten.** They keep working as they are.
 - `D:\UO\ServUO-pub57` is a **read-only content source**. Never edit, never build in, never
   migrate to.
 

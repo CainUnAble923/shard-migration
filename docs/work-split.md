@@ -1,5 +1,9 @@
 # Work split: Claude and Codex
 
+> **SUPERSEDED 2026-09-07.** Describes a two-agent split from the project's first day.
+> **`how-this-works.md` is the current description** of who does what and why the line falls
+> where it does.
+
 Updated 2026-09-06 for the current direction: **the shard stays on ModernUO** and ServUO
 content is pulled in selectively.
 
