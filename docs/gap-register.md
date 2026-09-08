@@ -98,7 +98,7 @@ B5 is the shape to aim for**, and S3 measured them separately for exactly that r
 | C4 | **Myrmidex Threat quest line** | 10 quests | OURS, gated on B8 |
 | C5 | The eight **Aloron pieces** and the **TigerPelt set** | done | **CLOSED by S1** |
 | C6 | `MoonstonePowerGenerator` — Myrmidex content, reached the CC3 list because "moonstone" matched a keyword | 1 file | WON'T, gated on B8 |
-| C7 | **The unmeasured rows.** Revamped Dungeons at 255, artifacts at 466, decoration at 297 are all *unfiltered* counts. The creatures row went 462 → 137 when filtered. These are plausibly inflated by a similar factor | unknown | **Measure before scheduling** |
+| ~~C7~~ | ~~The unmeasured rows~~ **MEASURED 2026-09-07 by S9.** Artifacts **455** (not 466), Dungeons **255**, Decoration **303 + 57**, High Seas **77**. Three of the four published figures were wrong, and the old counts were weak-filtered rather than raw. **Artifacts is the cheapest row on the backlog: 88% needs nothing built.** | — | S9 | **DONE** |
 
 ---
 

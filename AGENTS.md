@@ -194,6 +194,13 @@ and both times it cost real content:
   `BaseCreature.cs:512` and `:1316`), same semantics for three of ServUO's four tribe pairs. Made
   53 files look blocked; only the goblin pair needs anything, ~25 additive lines and no patch.
 
+- **`FlipableAttribute`** -> ModernUO's **`FlippableAttribute`**. One extra letter, and the
+  `Flip` body is identical statement for statement. **86 files of false blocking.** With `ITool`,
+  `IRepairable`, `IFlipable`, `ItemQuality` and four more, 169 file-references resolve to a
+  one-token transformation.
+- **`IsArtifact`** looked like a top-two blocker at 280 files. It is worth **zero**: pinned
+  ModernUO has no consumer of the name at all. Delete the line and log it.
+
 **Before recording anything as missing, search pinned ModernUO for what it *does*, not what
 ServUO *calls* it.** Zero occurrences of an identifier is evidence about a name, not about a
 capability.

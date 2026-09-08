@@ -1,44 +1,34 @@
 # ServUO content menu
 
-What ServUO pub57 has that ModernUO does not, measured 2026-09-06 by comparing
-ServUO's 6,144 scripts against ModernUO's 3,565 UOContent type names at pinned commit
-`7c9215d97`. **3,091 candidate files, 548,912 lines.**
+> **REWRITTEN 2026-09-07 after S9. Read this box before any number below it.**
+>
+> **The old counts here were not raw ServUO counts, and every later document read them as if
+> they were.** They were filtered once, on 2026-09-06, against ModernUO's **3,565 `UOContent`
+> type names** — not against the **7,093 tree-wide types** S3 later indexed. So they sat between
+> the raw number and the real one, and nothing on the page said which. `Items/Artifacts` is 583
+> raw and 318 here; `Mobiles/Normal` is 462 raw and 132 here, against S3's 137.
+>
+> **The `dep%` column is deleted, not corrected.** It was "share of files touching one of nine
+> named subsystems", which is the *touches* measure `AGENTS.md` says is an upper bound and not
+> the work. It also claimed `Items/Addons` at 0% while 41 of its files need `DirectionType`. A
+> corrected version would preserve a number in the shape that keeps misleading us.
 
-Nobody is going to port all of that, and nobody should try. This is a menu to choose from.
+## The four rows that have been measured properly
 
-## How cost was measured
+Filtered with S3's definition (a primary type ModernUO already declares, tree-wide), then
+**resolved**, because a reference count is an upper bound on work and not the work. Full method,
+file lists and four-bucket breakdown in `notes/s9-backlog-remeasure.md`.
 
-Each candidate was scanned for references to subsystems ModernUO ships **zero** files for:
-Skill Masteries, Shadowguard, Myrmidex Invasion, Vendor Searching, Instanced Peerless,
-Vice vs Virtue, City Loyalty, Khaldun, Exploring the Deep. The `dep%` column is the share of
-files in that area touching one. High `dep%` means porting the content means building a
-subsystem first.
+| Area | Raw | Candidates | What resolving found |
+|---|---|---|---|
+| **Items/Artifacts + equipment** | 1,022 | **455** | **320 drop straight in, 81 need one more file from the same two directories. 88% needs nothing built.** Cheapest row on the backlog |
+| Services/Revamped Dungeons | 255 | **255** | the only row where the filter removes nothing. `docs/tasks.md` also said 150 elsewhere; **255 is the answer** |
+| Decoration / housing / crafting | 745 | **303** | plus 57 more from two directories the old 297 never covered. `DirectionType` + `AddonOptionGump` is ~71 additive lines and frees 34 |
+| High Seas, cheap half | 78 | **77** | the one published figure that survived |
 
-| ServUO area | Files | Lines | dep% | Cost |
-|---|---|---|---|---|
-| Items/Artifacts | 318 | 33,618 | 2% | cheap |
-| **Services/Revamped Dungeons** | 255 | 28,828 | 2% | **cheap** |
-| Mobiles/NPCs | 222 | 40,053 | 0% | cheap |
-| Services/Expansions (HS + TOL) | 176 | 47,220 | 12% | medium, **declined** |
-| Items/Addons | 169 | 21,618 | 0% | cheap |
-| Services/Seasonal Events | 154 | 22,106 | 25% | medium |
-| Items/Equipment | 148 | 11,854 | 1% | cheap |
-| Mobiles/Normal | 132 | 16,286 | 0% | cheap |
-| **Services/XmlSpawner** | 97 | 63,630 | 1% | **cheap** |
-| Items/Decorative | 88 | 6,486 | 0% | cheap |
-| Items/Quest | 78 | 6,879 | 0% | cheap |
-| Services/ExploringTheDeep | 70 | 10,341 | 29% | expensive |
-| Items/Resource | 61 | 3,433 | 0% | cheap |
-| Items/Consumables | 59 | 8,382 | 2% | cheap |
-| Services/ViceVsVirtue | 55 | 9,445 | 100% | expensive |
-| Services/CleanUpBritannia | 52 | 6,148 | 0% | cheap |
-| Items/StoreBought | 51 | 6,799 | 0% | cheap |
-| Items/Functional | 49 | 10,041 | 0% | cheap |
-| Spells/Skill Masteries | 45 | 8,559 | 100% | expensive |
-| Services/New Magincia | 40 | 10,963 | 0% | cheap |
-| Quests | 34 | 7,824 | 0% | cheap |
-| Items/Containers | 31 | 3,578 | 0% | cheap |
-| Services/BulkOrders | 28 | 4,788 | 0% | cheap |
+**Everything else on this page is unverified.** Treat any other row as an upper bound of unknown
+tightness until someone applies the same two steps to it.
+
 
 ## Recommended first picks, for a family-and-classroom shard
 

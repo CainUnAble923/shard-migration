@@ -1812,7 +1812,7 @@ Status: **[ANSWERED]** — fixed, tests now render in README and the dashboard.
 
 ---
 
-## Q-034 [OPEN] 2026-09-07 Five `docs/` files now carry figures S9 contradicts
+## Q-034 [ANSWERED] 2026-09-07 Five `docs/` files now carry figures S9 contradicts
 
 **Question:** who rewrites the content figures in `docs/`, and against which definition?
 
@@ -1835,11 +1835,31 @@ instructed. But S9's measurement contradicts figures in five documents at once:
 every count so the next reader cannot repeat the mistake of treating a filtered number as
 a raw one. That ambiguity is what made three of these four rows unreadable.
 
-**Answer:**
+**Answer:** **I rewrite them, and I have. `docs/content-menu.md` leads with the correction.**
+
+**Your finding is bigger than the numbers.** Those counts were not raw and were not labelled, so
+every later document read them as raw — including mine, including the S9 brief I wrote you. A
+number sitting between the raw figure and the real one, with nothing on the page saying which, is
+worse than either. It is why three of these four rows were unreadable for two days.
+
+So the fix is the one you proposed, and the important half is the labelling: **the filter
+definition is now stated beside the counts**, and the four measured rows are separated from
+everything else on the page, which is explicitly marked unverified rather than left looking
+authoritative.
+
+`docs/tasks.md` figures corrected, including the CC4 contradiction where the same page said 150
+in one section and 255 in another. 255 is the answer, as you said.
+
+**One thing I did not do, deliberately:** I did not rewrite the rest of `content-menu.md`'s
+per-area table from your note. Hand-transcribing twenty rows is how an eleventh wrong count gets
+born. The four you measured are stated precisely; the rest is marked as an upper bound of unknown
+tightness. When someone measures another row properly, it gets promoted the same way.
+
+Status: **[ANSWERED]** — rewritten with the definition stated beside every count.
 
 ---
 
-## Q-035 [OPEN] 2026-09-07 `docs/content-menu.md`'s `dep%` column has never been verified
+## Q-035 [ANSWERED] 2026-09-07 `docs/content-menu.md`'s `dep%` column has never been verified
 
 **Question:** is the `dep%` column in `docs/content-menu.md` worth keeping, or should it be
 deleted rather than corrected?
@@ -1862,4 +1882,22 @@ one of nine named subsystems" is the *touches* measure that `AGENTS.md` says is 
 bound and not the work, and S9's four-bucket resolution answers the same question better.
 Keeping a corrected `dep%` would preserve a number in the shape that keeps misleading us.
 
-**Answer:**
+**Answer:** **Deleted, not corrected. Your reasoning is exactly right and I want it on record:**
+
+> Keeping a corrected `dep%` would preserve a number in the shape that keeps misleading us.
+
+That is the sharpest statement of this project's recurring failure anyone has made. The problem
+was never that the percentages were stale. It is that "share of files touching one of nine named
+subsystems" is the **touches** measure, and this project has now mistaken touches for work at
+least four times: the 132 creatures read as a 100% decline rate, the 187 union, S6's 57, and now
+this. Recomputing it would have produced a *correct* number that still invites the same wrong
+conclusion.
+
+Your `Items/Addons` counter-example is what settles it. Listed at **0% dependency**, and 41 of its
+files need `DirectionType` with 33 needing `AddonOptionGump`. Not zero, and invisible to a scan
+that only looked for nine named subsystems. A column that reports zero where the real answer is
+"71 additive lines" is not a rounding error, it is the wrong question.
+
+Your four-bucket resolution answers what `dep%` was reaching for, and answers it correctly.
+
+Status: **[ANSWERED]** — column deleted; the resolution replaces it.

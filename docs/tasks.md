@@ -58,7 +58,7 @@ session, and the work itself lives in git.
   DespiseRevamped (4 files), then Shame (11), Wrong (26), Covetous (29), Exodus (38),
   Blackthorn (147). Blackthorn is volume rather than complexity: many small armour variants.
 - **CC6 Creatures and NPCs** (~360 files) - one chat per batch of roughly 20.
-- **CC5 High Seas cheap half** (~78 files) - two or three chats.
+- **CC5 High Seas cheap half** (**77 candidates** (S9)) - two or three chats.
 
 **Signs the current session has run too long**, regardless of the percentage shown: it
 re-reads files it already read, repeats work, restates conclusions it reached earlier, or
