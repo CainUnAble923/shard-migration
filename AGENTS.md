@@ -102,7 +102,7 @@ loaded and reachable. Check before placing anything on one.
 
 ```
 D:\ShatteredLegacy               the shard. Infrastructure-as-code, NOT a ModernUO fork.
-  server/customizations/         canonical custom scripts. 269 .cs, 46327 lines. EDIT TARGET.
+  server/customizations/         canonical custom scripts. 274 .cs, 47778 lines. EDIT TARGET.
                                  (2026-09-06 snapshot; grows with every port. tools/progress.py
                                  recomputes it - that output is the live number.)
   server/patches/                overrides against stock ModernUO. 15 .patch + 5 replacements.

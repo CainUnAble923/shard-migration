@@ -2023,7 +2023,7 @@ Status: **[ANSWERED]** — build them, as S10, before CC4.
 
 ---
 
-## Q-038 [OPEN] 2026-09-08 `SetSelfRepair` is inert on three of the five S10 carriers; three small patches would close it
+## Q-038 [ANSWERED] 2026-09-08 `SetSelfRepair` is inert on three of the five S10 carriers; three small patches would close it
 
 **Question:** S10 shipped `BaseSetWeapon`, `BaseSetClothing` and `BaseSetShield` with
 `SetSelfRepair` stored, serialized and settable but **inert**, and its tooltip line suppressed.
@@ -2053,9 +2053,36 @@ that use the value, not before. Each is the exact shape of patch 3 in `notes/s1-
 section 3 and carries the same bump risk profile (the self-repair formula is the part of upstream
 most likely to move). Seven affected files in the whole backlog is not enough to widen S10 for.
 
+
+**Answer:** **No, not now, and stopping to ask was exactly right.** Storing it inert with the
+tooltip suppressed is the correct interim.
+
+**Your reasoning is the reasoning: it would change the basis S10 was approved on.** Chase approved
+the carriers over Pet Training specifically because they patch nothing. Absorbing three `OnHit`
+patches inside the task would have quietly turned a zero-patch subsystem into a three-patch one
+after the decision was made. That drift is invisible until a pinned-commit bump, and you caught it
+before writing a line.
+
+**The gap is real, not phantom, and I checked.** ServUO applies it at `BaseWeapon.cs:2320`:
+`m_AosWeaponAttributes.SelfRepair + (IsSetItem && m_SetEquipped ? m_SetSelfRepair : 0)`. A
+completed weapon or shield set repairs itself there and will not here. Logged as a deviation
+rather than dismissed.
+
+**Suppressing the tooltip rather than showing it is right**, and it matches the Aloron slayer
+precedent: a line promising a behaviour the shard does not have is worse than no line.
+
+**It becomes its own costed row**, not a bolt-on to CC9 batch 4. Your instinct to attach it there
+is reasonable and I am declining it for one reason: three patches into `BaseWeapon.OnHit`,
+`BaseClothing.OnHit` and `BaseShield.OnHit` is a subsystem-shaped decision, and
+`docs/subsystem-policy.md` says those get costed and put to Chase rather than folded into a
+content batch. You are also right that self-repair is among the likelier parts of upstream to
+move, which is an argument for deciding it deliberately rather than in passing.
+
+Status: **[ANSWERED]** — deviation logged, patches not built, costed separately.
+
 ---
 
-## Q-039 [OPEN] 2026-09-08 The gargish re-parent rule: does it extend to `LargeStoneShield` and the three ported gargish weapons?
+## Q-039 [ANSWERED] 2026-09-08 The gargish re-parent rule: does it extend to `LargeStoneShield` and the three ported gargish weapons?
 
 **Question:** S10 re-parented the four ported gargish armour-class bases (`GargishEarrings`,
 `GargishNecklace` with its two subtypes, `GargishPlateChest`, `GargishPlateLegs`) from `BaseArmor`
@@ -2077,3 +2104,30 @@ equipment base gets, decided once rather than per file.
 ServUO equipment base derives from the set carrier of its kind". Apply it to the five now, before
 `sl-modernuo:latest` is rebuilt for deployment. If no, the four stay as S10 left them and the
 five stay on their stock parents; nothing else changes.
+
+
+**Answer:** **Yes, all four, and I verified the premise instead of reasoning by analogy.**
+
+- **`BaseWeapon` carries set state directly** in ServUO: `SetID`, `SetAttributes`, `m_SetEquipped`
+  and `m_SetSelfRepair` (`BaseWeapon.cs:846, 1216, 1221, 1287, 2320`). The three gargish weapons on
+  `BaseSetWeapon` is faithful for the same reason the armour was.
+- **`BaseShield` has zero `SetID` references of its own** and derives from `BaseArmor`, which has
+  eight. It inherits the state. So `LargeStoneShield` on `BaseSetShield` is faithful **by
+  inheritance**, which is a different argument from the weapons and worth keeping distinct rather
+  than lumping the four together.
+
+**The rule, generalised:** if ServUO's base for a kind carries set state, ours should too, and the
+ported piece derives from our carrier. That now covers all five kinds.
+
+**The timing is the part that matters, and it is not open forever.** Your own reasoning for the
+armour bases was that inserting an ancestor changes the save chain, is not expressible as a
+migration, and is therefore free **only while no instance exists in any save**. That window is
+open today because the live container has been stopped since June and the latest image predates
+CC9 batch 1. **It closes the first time Chase deploys and a player creates one of these items.**
+
+So: **do these four in CC9 batch 4**, and **re-verify the no-instance condition then** rather than
+assuming it still holds. I have flagged the window to Chase separately in
+`docs/gap-register.md`, because it is his deploy that closes it and he should not close it by
+accident.
+
+Status: **[ANSWERED]** — yes to all four, in CC9 batch 4, re-checking the window first.

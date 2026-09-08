@@ -124,6 +124,20 @@ B5 is the shape to aim for**, and S3 measured them separately for exactly that r
 
 ---
 
+### The re-parenting window closes on the next deploy
+
+**Deriving a ported type from one of our carriers inserts an ancestor, which changes the save
+chain and is not expressible as a migration.** It is free only while **no instance of that type
+exists in any save**. That window is open today: the live container has been stopped since June
+and the latest image predates CC9 batch 1.
+
+**It closes the first time Chase deploys and a player creates one of these items.** S10 took the
+four gargish armour bases inside it. Q-039 approves four more, `LargeStoneShield` and three
+gargish weapons, for CC9 batch 4, and that task must **re-verify the no-instance condition**
+rather than assume it.
+
+**This is the only item on this page with a deadline attached to an action of Chase's.**
+
 ### Follow-on from S6
 
 **B1b — the carrier class.** S6's "57 unblocked" was a *reference* count. Resolved through the
@@ -131,6 +145,15 @@ inheritance chain (Q-028): **8 finished, 5 carrier-ready, 31 one small carrier c
 blocked by other subsystems all along.** The **31** are a bounded, concrete follow-on rather than
 a subsystem, and may be the best ratio left now that S6 has landed. **Cost it before scheduling
 it** — that is the whole lesson of this row.
+
+### From S10
+
+**`SetSelfRepair` is stored but inert on weapon, clothing and shield.** ModernUO's
+`BaseWeapon.OnHit`, `BaseClothing.OnHit` and `BaseShield.OnHit` read `SelfRepair` directly with no
+hook. **ServUO does apply it** (`BaseWeapon.cs:2320`), so a completed weapon or shield set repairs
+itself there and will not here. **Tooltip suppressed rather than shown**, per the Aloron slayer
+precedent. Closing it costs three S1-shaped patches into busier upstream files than the item
+bases, so `subsystem-policy.md`'s timing check applies. Q-038. Not scheduled.
 
 ## Standing decisions
 
