@@ -1,8 +1,8 @@
 # CC9 — Artifacts and equipment: batch 1, and the row re-costed
 
-**Status: two batches ported (71 files, 75 types), each built green through `build.sh` on its
-first cycle and headless-verified. The row is NOT "88% needs nothing built". Partial row with
-an honest boundary; next batch named in §11.**
+**Status: three batches ported (120 files, 124 types), each built green through `build.sh` on
+its first cycle and headless-verified. The row is NOT "88% needs nothing built". Partial row with
+an honest boundary; batch 3 is §13, what remains is §11.**
 
 Task CC9 (`C6` in the status table). Brief: test S9's "320 drop straight in" claim with a real
 build, batch the work, report the real per-batch cost, deliver the gargoyle files, cost
@@ -203,6 +203,10 @@ Each: what a player notices, what reverses it.
 | D-7 | `GreymistGloves` is not `IArcaneEquip` | Nothing: an artifact glove is never crafted arcane | paper only |
 | D-8 | `GobletOfCelebration` clamps a negative refill delay to zero after a load; `DateTime.Now` → `Core.Now` | Nothing observable | paper only |
 | D-9 | `BaseCostume.OnRemoved` calls `base.OnRemoved` once; ServUO calls it twice | Nothing | paper only |
+| **D-10** | `GargishWarHammer` flips to `0x48C1`, not ServUO's `0x481` | Nothing a player would call wrong: `0x481` is a Prism of Light pillar graphic and every other gargish weapon flips to itemID+1, so ServUO's value is a typo that would have turned a flipped war hammer into a pillar | never; ServUO's is the bug |
+| D-11 | `EvilOrcHelm` drops `UseIntOrDexProperty` / `IntOrDexPropertyValue` | Nothing: both are `BaseArmor` virtuals with zero readers in ServUO (grep over `Scripts/` finds only the declaration and this file). The -10 int-or-dex swap in `OnEquip`/`OnRemoved` is kept | paper only |
+| D-12 | `OrcishBow` shows one durability line (1060410) where ServUO shows two | ServUO's `BaseWeapon.GetProperties` also emits 1151780 ("durability +~1_VAL~%") for `DurabilityBonus`; pinned ModernUO's emits nothing for weapons, so the bow's own `AddWeightProperty` line is the only one. One line instead of two saying the same thing | paper only |
+| D-13 | `StaffRing` tests `AccessLevel == Player` instead of ServUO's `Mobile.IsPlayer()` | Nothing; same predicate (`Server/Mobile.cs:3603`). Note the ring is not OSI content at all: a ServUO staff tool ("By Nerun") ported because it was on the list | paper only |
 
 D-1 and D-2 are logged **once for the whole row**, per the brief; they will not be repeated per
 file or per batch.
@@ -291,41 +295,28 @@ Also observed: `sl-portainer` has a restart policy and came up with the daemon; 
 
 ## 11. What is done, what remains, and the next batch
 
-**Done:** two batches, **71 files / 75 types** in `server/customizations/Items/`, each green on
-its first `build.sh` cycle, all reflected, four clean headless runs (§9). Two commits per repo.
-`tools/progress-state.json` updated; `python tools/progress.py` run.
+**Done:** three batches, **120 files / 124 types** in `server/customizations/Items/`, each green
+on its first `build.sh` cycle, all reflected, six clean headless runs (§9, §13). Three commits per
+repo. `tools/progress-state.json` updated; `python tools/progress.py` run.
 
-**Remaining in the row, by bucket (§4):**
+**Remaining in the row, by bucket (§4).** Counted 2026-09-08 after batch 3, not carried forward
+from the sentence that used to be here (which said "~35 files" and "the 19 remaining" gargish
+weapons; ServUO has 20 `Gargish*` weapon files, three were in batch 1 and `GargishTalwar` is
+ModernUO's, so the honest number was 16, and the list was right while the count was wrong):
 
 | Bucket | Left | Note |
 |---|---|---|
-| Plain, from the 320 | **169** | 189 − 20 ported in batch 1 |
-| Set armour re-parents | **79** | 83 − the 4 Greymist |
+| Plain, from the 320 | **120** | 189 − 20 (batch 1) − 49 (batch 3). All 49 of batch 3 are in S9's appendix and none is a set piece or absorption user itself |
+| Set armour re-parents | **79** | 83 − the 4 Greymist. Batch 4 |
 | In-row 81 | **40** | − 34 costumes − 7 artifact files; **11 of the 40 are carrier-blocked** (§4) |
-| Carrier-blocked | **41** | 30 from the 320 + 11 from the in-row. Wait on Q-037 |
+| Carrier-blocked | **41** | 30 from the 320 + 11 from the in-row. S10 built the carriers; batch 4, after re-verifying the no-instance condition (Q-039, `docs/gap-register.md`) |
 | Co-port 10, upstream/carrier 44 | as S9 | untouched |
 | Not candidates | 18 | already in ModernUO (§12) |
 
-**Next batch (CC9 batch 3), ~35 files, all plain, pre-flighted with the §3 method:**
-
-1. `Items/Equipment/Weapons/Gargish*` — the 19 remaining (`GargishAxe`, `Bardiche`,
-   `BattleAxe`, `BoneHarvester`, `ButcherKnife`, `Cleaver`, `Daisho`, `Kryss`, `Lance`, `Maul`,
-   `Pike`, `Scythe`, `Tekagi`, `Tessen`, `WarFork`, `WarHammer`) plus `OrcishBow`, `PaladinSword`,
-   `Shortblade`, `StoneWarSword`, `RandomWand`. All the `GargishKatana` shape; a generator like
-   the costume one would fit them.
-2. `Items/Equipment/Jewelry/` — the 11 remaining (`BlueDiamondRing`, `BrilliantAmberBracelet`,
-   `DarkSapphireBracelet`, `EcruCitrineRing`, `FireRubyBracelet`, `GargishBracelet`,
-   `GargishRing`, `PerfectEmeraldRing`, `StaffRing`, `TurqouiseRing`, `WhitePearlBracelet`).
-   Check whether `GargishBracelet`/`GargishRing` are `BaseJewel` (fine) or `BaseArmor` like the
-   earrings (then the §12 `BaseSetArmor` option applies).
-3. `Items/Equipment/Armor/` plain remainder: `GargishPlateArms`, `GargishPlateKilt`,
-   `GargishChaosShield`, `GargishKiteShield`, `GargishOrderShield`, `LargePlateShield`,
-   `MediumPlateShield`, `SmallPlateShield`, `AssassinsCowl`, `ElegantCollar`, `EvilOrcHelm`,
-   `MagesHood`, and the five `DragonTurtleHide*` (which the Darden set then re-parents).
-   **Skip** `GargishStoneArms/Kilt/Legs`, `GargishLeather*`, `FemaleGargish*`: already present.
-
-Then the set-armour re-parents (79), which are mechanical once the stock parent's members are
-looked up. Do **not** start the 41 carrier-blocked files or CC4 until Q-037 is answered.
+**Next: CC9 batch 4** as `docs/tasks.md` defines it: the 41 carrier-blocked files, the five
+Q-039 re-parents (`LargeStoneShield`, `GargishKatana`, `GargishDagger`, `GargishGnarledStaff`,
+plus whatever Q-040 decides for batch 3's 40 stock-parented files), then the 79 set-armour
+re-parents. Re-verify that no instance of any re-parented type exists in any save first.
 
 ---
 
@@ -365,6 +356,40 @@ Items/Artifacts/Equipment/Armor/Sets/Acolyte/GreymistChest.cs
 Items/Artifacts/Equipment/Armor/Sets/Acolyte/GreymistGloves.cs
 Items/Artifacts/Equipment/Armor/Sets/Acolyte/GreymistLegs.cs
 Items/Equipment/Suits/BaseCostume.cs
+```
+
+### Batch 3 (49 ServUO files, 49 types; 9 on a carrier, marked)
+
+```
+Items/Equipment/Weapons/GargishAxe.cs                 Items/Equipment/Jewelry/BlueDiamondRing.cs
+Items/Equipment/Weapons/GargishBardiche.cs            Items/Equipment/Jewelry/BrilliantAmberBracelet.cs
+Items/Equipment/Weapons/GargishBattleAxe.cs   [BaseSetWeapon]   Items/Equipment/Jewelry/DarkSapphireBracelet.cs
+Items/Equipment/Weapons/GargishBoneHarvester.cs       Items/Equipment/Jewelry/EcruCitrineRing.cs
+Items/Equipment/Weapons/GargishButcherKnife.cs        Items/Equipment/Jewelry/FireRubyBracelet.cs
+Items/Equipment/Weapons/GargishCleaver.cs             Items/Equipment/Jewelry/GargishBracelet.cs
+Items/Equipment/Weapons/GargishDaisho.cs              Items/Equipment/Jewelry/GargishRing.cs
+Items/Equipment/Weapons/GargishKryss.cs               Items/Equipment/Jewelry/PerfectEmeraldRing.cs
+Items/Equipment/Weapons/GargishLance.cs               Items/Equipment/Jewelry/StaffRing.cs
+Items/Equipment/Weapons/GargishMaul.cs                Items/Equipment/Jewelry/TurqouiseRing.cs
+Items/Equipment/Weapons/GargishPike.cs                Items/Equipment/Jewelry/WhitePearlBracelet.cs
+Items/Equipment/Weapons/GargishScythe.cs
+Items/Equipment/Weapons/GargishTekagi.cs              Items/Equipment/Armor/GargishPlateArms.cs      [BaseSetArmor]
+Items/Equipment/Weapons/GargishTessen.cs              Items/Equipment/Armor/GargishPlateKilt.cs      [BaseSetArmor]
+Items/Equipment/Weapons/GargishWarFork.cs             Items/Equipment/Armor/GargishKiteShield.cs     [BaseSetShield]
+Items/Equipment/Weapons/GargishWarHammer.cs           Items/Equipment/Armor/GargishChaosShield.cs
+Items/Equipment/Weapons/OrcishBow.cs                  Items/Equipment/Armor/GargishOrderShield.cs
+Items/Equipment/Weapons/PaladinSword.cs               Items/Equipment/Armor/LargePlateShield.cs
+Items/Equipment/Weapons/Shortblade.cs                 Items/Equipment/Armor/MediumPlateShield.cs
+Items/Equipment/Weapons/StoneWarSword.cs              Items/Equipment/Armor/SmallPlateShield.cs
+Items/Equipment/Weapons/RandomWand.cs  (static helper, not an item)   Items/Equipment/Armor/AssassinsCowl.cs
+                                                      Items/Equipment/Armor/ElegantCollar.cs
+                                                      Items/Equipment/Armor/EvilOrcHelm.cs
+                                                      Items/Equipment/Armor/MagesHood.cs
+                                                      Items/Equipment/Armor/DragonTurtleHideArms.cs    [BaseSetArmor]
+                                                      Items/Equipment/Armor/DragonTurtleHideBustier.cs [BaseSetArmor]
+                                                      Items/Equipment/Armor/DragonTurtleHideChest.cs   [BaseSetArmor]
+                                                      Items/Equipment/Armor/DragonTurtleHideHelm.cs    [BaseSetArmor]
+                                                      Items/Equipment/Armor/DragonTurtleHideLegs.cs    [BaseSetArmor]
 ```
 
 ### Already in ModernUO by content (18) — remove from the row
@@ -476,3 +501,163 @@ for f in (l.strip() for l in open(sys.argv[1]) if l.strip()):
         if b and num(b.group(1)) in idx:
             print(f, m.group(1), b.group(1), "==", ", ".join(idx[num(b.group(1))][:4]))
 ```
+
+---
+
+## 13. Batch 3 — the plain remainder, 49 files, 2026-09-08
+
+**Result: green on the first `build.sh` cycle (101 s, 42 tests, `structured customizations
+installed: 208 file(s)` = 159 + 49), 49 of 49 types reflected, headless fresh save and reload
+both clean. 4,636 ServUO lines in, 1,740 out.** Files listed in §12; every one carries a header
+comment naming its ServUO source and any deviation.
+
+### 13.1 The count, checked before anything else
+
+The brief said 49 (21 weapons, 11 jewellery, 17 armour and shields) and said the old §11 was
+wrong. Both checked: all 49 present under `D:\UO\ServUO-pub57\Scripts\Items\Equipment\`, all 49
+absent from `server/customizations` and from `tools/modernuo-stems.txt`, and all 49 present in
+S9's appendix lists (grep, 49 of 49). ServUO has 20 `Gargish*` files in `Items/Equipment/Weapons`;
+minus `GargishKatana`, `GargishDagger`, `GargishGnarledStaff` (batch 1) and `GargishTalwar`
+(ModernUO's own, `Items/Weapons/Swords/GargishTalwar.cs`) leaves **16**, which is what the list
+has. §11 is corrected above.
+
+### 13.2 Pre-flight, the §3 method, and what it found
+
+Run over all 49 before a line was written. Steps 1–3 as greps against `D:\UO\ModernUO-pinned`,
+step 4 with the §12 script, step 5 as the descendant walk below.
+
+| Check | Result |
+|---|---|
+| (1) Base class exists in ModernUO | 49 of 49. `BaseAxe`, `BasePoleArm`, `BaseSword`, `BaseKnife`, `BaseBashing`, `BaseSpear`, `Bow`, `GoldRing`, `GoldBracelet`, `BaseRing`, `BaseBracelet`, `BaseShield`, `BaseArmor`, `BaseHat`, `OrcHelm` all present |
+| (2) Every override is virtual in the pinned tree | 47 of 49. The two misses are `EvilOrcHelm`'s `UseIntOrDexProperty` / `IntOrDexPropertyValue`: ServUO `BaseArmor` virtuals with **zero readers in ServUO itself** (`grep -rln` over `Scripts/` finds the declaration and this file), absent from ModernUO. Dropped, D-11 |
+| (3) Every attribute member is in the matching `Aos*` enum | 49 of 49. `LowerManaCost`, `CastSpeed`, `CastRecovery`, `SpellDamage`, `LowerRegCost`, `RegenMana/Hits/Stam`, `EnhancePotions`, `BonusStr/Int/Dex`, `WeaponSpeed`, `WeaponDamage`, `NightSight`, `AttackChance` in `AosAttribute`; `DurabilityBonus` in `AosWeaponAttribute`; `Resistances.Cold/Fire/Poison` on `BaseJewel` |
+| (4) Item-ID cross-check | one hit, `StaffRing` at `0x108A` = `GoldRing`, expected: it is a gold ring with a name, and §12 already lists it as not a duplicate. `0xA40F`–`0xA411` (collar, cowl, hood) and `0x782A`–`0x782E` (dragon turtle hide) collide with nothing |
+| (5) Set / absorption presence, transitively | **9 bases need a carrier parent**, §13.3 |
+| WeaponAbility names | all 14 used exist unchanged: `CrushingBlow`, `Dismount`, `ParalyzingBlow`, `BleedAttack`, `ConcussionBlow`, `MortalStrike`, `InfectiousStrike`, `Disarm`, `Feint`, `DoubleStrike`, `ArmorIgnore`, `DualWield`, `TalonStrike`, `WhirlwindAttack` |
+| Other members | `BaseRunicTool.ApplyAttributesTo(BaseJewel, bool, int, int, int, int)` same arity (`BaseRunicTool.cs:938`); `IDyable` and `Dye(Mobile, DyeTub)` (`DyeTub.cs:10`); `Titles.AwardKarma(Mobile, int, bool)` (`Misc/Titles.cs:216`); `Item.AddWeightProperty(IPropertyList)` virtual (`Item.cs:1917`) and `IPropertyList.Add(int, string)`; `BaseClothing.StrRequirement` settable (`BaseClothing.cs:144`); `Loot.RandomWand()` (`Misc/Loot.cs:338`); `BasePoleArm.HarvestSystem` virtual (`BasePoleArm.cs:32`) |
+
+Three things the name scan could not have seen, each caught here rather than at the compiler:
+
+- **`RandomWand` is not an item.** It is a 10-line static class wrapping `Loot.RandomWand()`,
+  called by two ServUO NPCs (`Braen.cs:98`, `Canir.cs:49`). Ported as the same static class so
+  those NPCs port unchanged when their turn comes; it has no serialization and no `[Constructible]`.
+- **`OrcishBow` shows a durability line ServUO shows twice** (D-12): ServUO's `BaseWeapon.GetProperties`
+  emits 1151780 for `DurabilityBonus` and the bow adds 1060410 on top; pinned ModernUO's `BaseWeapon`
+  emits neither (`grep 1060410\|1151780` over `Items/Weapons/` is empty), so the bow's override is
+  the only line.
+- **`GargishWarHammer` flips to `0x481` in ServUO** (D-10). Every other gargish weapon flips to
+  itemID+1 and `0x481` is used in ServUO only as a Prism of Light pillar graphic
+  (`Commands/DecorateDelete.cs:1282`), so it is a typo; `0x48C1` here.
+
+Nothing else needed more than the standard conversion: `[Constructable]` pairs collapsed to one
+optional parameter (`GargishPlateArms/Kilt(int hue = 0)`, `AssassinsCowl/MagesHood(int hue = 0)`),
+`Weight = x` to `DefaultWeight => x`, `Race RequiredRace => Race.Gargoyle` to
+`int RequiredRaces => Race.AllowGargoylesOnly`, `IsArtifact` / `CanBeWornByGargoyles` dropped per
+D-1/D-2, `OnRemoved(object)` to `OnRemoved(IEntity)`, `Mobile.IsPlayer()` to
+`AccessLevel == AccessLevel.Player` (D-13). Where ServUO leaves the weight commented out
+(`Shortblade`, `StoneWarSword`, `GargishKiteShield`, `GargishOrderShield`, `MediumPlateShield`,
+`GargishBracelet`, `GargishRing`) or unset (`LargePlateShield`) the port inherits the base default,
+the `LargeStoneShield` precedent.
+
+### 13.3 Nine carrier parents, not eight — verified, not taken from the brief
+
+The rule (AGENTS.md, "Give a base its final parent the first time you port it"): grep ServUO for
+`class \w+ : <Type>` and read the descendants. Done for all 49, then walked **transitively** (a
+descendant's descendants too; the walk found no second-level subclasses), with the grep widened
+from the five tokens in AGENTS.md to
+`AbsorptionAttributes|SetAttributes|SetSelfRepair|SetID|ISetItem|SetHue|SetSkillBonuses|Set\w+Bonus|Pieces|BardMastery`.
+41 direct descendants read.
+
+| Port with parent | Type | Descendant that forces it, and the member |
+|---|---|---|
+| `BaseSetArmor` | `GargishPlateArms` | `VirtuososArmbands` (`Sets/Virtuosos/VirtuososArmbands.cs:11-29`): `SetID`, `Pieces`, `BardMasteryBonus`, `SetHue` |
+| `BaseSetArmor` | `GargishPlateKilt` | `VoidInfusedKilt` (`:20`): `AbsorptionAttributes.EaterDamage = 10` |
+| `BaseSetArmor` | `DragonTurtleHideArms`, `Bustier`, `Chest`, `Helm`, `Legs` | `DardensSleeves/Bustier/Tunic/Helm/Legs` (`Sets/Dardens Set/`): `SetID`, `Pieces`, `AbsorptionAttributes`, `SetAttributes`, `SetSelfRepair`, the five `Set*Bonus` |
+| `BaseSetShield` | `GargishKiteShield` | `DragonHideShield` (`:13`): `AbsorptionAttributes.EaterFire = 20` |
+| **`BaseSetWeapon`** | **`GargishBattleAxe`** | **`GargishPincer`** (`Items/Artifacts/Equipment/Weapons/Pincer.cs:60`): `SetSkillBonuses.SetValues(0, Lumberjacking, 10)`. Set-carrier state on ServUO's `BaseWeapon` (`BaseWeapon.cs:847, 4140, 4185`); on a `SetID.None` weapon it is inert on ServUO too, so porting `GargishPincer` faithfully means keeping it inert, which needs the member, which needs the carrier |
+
+The ninth is the one the brief's token list could not find, and it is the reason the list should
+grow (Q-040). The other 32 descendants (`GargishSmugglersEdge`, `HailstormGargoyle`,
+`TheRedeemer`, `MocapotlsObsidianSword`, `BladeOfBattle`, `AbyssalBlade`, `GargishDupresSword`,
+the Epiphany kilts and arms, `VvVGargishPlateArms`, `GargishKiltOfFeudalVise`,
+`GargishSignOfChaos/Order`, `GargishHephaestus`, `CowlOfTheMaceAndShield`,
+`ElegantCollarOfFortune`, `MagesHoodOfScholarlyInsight`, and the rest) touch none of the tokens;
+their bases stay stock. `GargishBracelet` and `GargishRing` are `BaseJewel`s in ServUO, not
+armour-class like the earrings and necklace, so the §12 `BaseSetArmor` option does not arise.
+
+`SetID` defaults to `SetItem.None` on every carrier, so all nine are inert today; S10 §4 has the
+serialization consequence and `TigerPeltAloneIsNotASetItem` is the proof that `None` is inert.
+**The no-instance condition held at port time:** `sl-modernuo:latest` is still the 2026-09-07 02:49
+image (predates CC9 batch 1), the live `sl-modernuo` container has been `Exited` for two months,
+and these nine types did not exist before this batch. Nothing here was deployed.
+
+### 13.4 Verification — read, not just compiled
+
+1. **Value diff against ServUO, after writing.** A script parsed every `override X => V` from
+   each ServUO file (getter blocks collapsed) and from its port, applied the expected renames
+   (`RequiredRace` → `RequiredRaces`, `Weight` → `DefaultWeight`, `Name` → `DefaultName`,
+   `IsArtifact`/`CanBeWornByGargoyles` dropped), and compared. **524 overrides compared, 0
+   mismatches**; the ten lines it flagged were its own inability to read an expression-bodied
+   constructor (`=> Layer = Layer.TwoHanded`) plus the intended D-10 flip. The 19 uniform weapons
+   were generated from the ServUO source by a script (`gen_weapons.py`, in the task's work
+   folder) that asserts every override name is one it knows; the five Dragon Turtle Hide pieces
+   were transcribed from a table and are the ones the diff was for.
+2. **`build.sh -t sl-modernuo:cc9c`**: exit 0 in 101 s, 15 patches applied, 208 structured
+   customizations, **42 tests passed**, image built. Log `build-batch3.log` in the work folder.
+3. **Reflection over `/modernuo/UOContent.dll` in the built image** (`reflect.cs`, the CC2 probe):
+   **49 ok, 0 bad.** All 48 item types report `generated=[Deserialize Serialize]` and a `(Serial)`
+   constructor; the four with a collapsed optional parameter report `(Int32)`; the nine carrier
+   children report their carrier as `BaseType`; `RandomWand` is present and static. One trap:
+   `dotnet run` on a file-based app restores from NuGet, so the probe container cannot take
+   `--network=none` (it fails with NU1301); the runtime containers did.
+4. **Headless run 5** (fresh scratch `Saves/`, S10's loopback `Configuration/`, `--network=none`,
+   `--rm`): `Loading world done (618 items, 90 mobiles)`, `Listening: 127.0.0.1:2593` only,
+   `Saving world done`, snapshot written, clean shutdown, exit 0, zero errors or warnings in 58 lines.
+   **Run 6** on run 5's save: `Loading world done (622 items, 91 mobiles)`, save, clean shutdown,
+   exit 0, 50 lines, zero errors.
+   **618, not the 617 of every earlier run**: checked rather than assumed. The two saves'
+   `SerializedTypes.db` differ only in stock NPC outfit types (`CompositeBow`/`QuarterStaff`,
+   `FeatheredHat`/`FancyShirt`, …), so the seeders' vendor equipment is random and the count
+   varies by one; no batch-3 type has an instance in either save, as expected, since nothing
+   places one.
+
+**Not verified headlessly, per the standing rule:** an instance of any of the 49 surviving a
+save/reload, appearance of the EJ-era graphics (`0xA40F`–`0xA411`, `0x782A`–`0x782E`, the
+`0x48xx` gargish weapons) in the client, the jewellery's random rolls, the `EvilOrcHelm` stat swap
+and karma loss, the order shield's guild check. Batched for the client spot check.
+
+### 13.5 What it cost
+
+Wall clock 2026-09-08, this machine, Docker already up (no §10 recovery this time).
+
+| Phase | Elapsed |
+|---|---|
+| Orientation: `AGENTS.md`, `docs/tasks.md`, this note, `port-recipe.md`, S10 §4–6, Q-038/Q-039, batch-1 reference ports | ~12 min |
+| Pre-flight over 49 files: the 41-descendant grep and transitive walk, five §3 checks, ModernUO member lookups | ~10 min, overlapped with orientation |
+| Writing: the weapon generator (19 files), the Dragon Turtle table (5), 25 by hand | ~6 min |
+| Post-write value diff (524 overrides) | ~1 min |
+| **`build.sh` gated cycle** | **101 s** |
+| Reflection (one failed attempt on `--network=none`, then 9 s) | ~2 min |
+| Two headless runs | ~3.5 min |
+| Note, Q-040, progress | ~12 min |
+
+**About 45 minutes for 49 files**, against §8's "roughly 35 minutes for 30". The generator is
+why: the 16 gargish weapons plus three more are one shape, and a script that refuses any file
+whose overrides it does not recognise is both faster and safer than 19 hand transcriptions.
+One trap worth recording for the next agent: the shell tool here silently truncates a command
+at about 8 KB, which turned two multi-file heredoc writes into "unexpected EOF" errors that
+looked like quoting bugs. Keep each write under that, or write files from a Python script.
+
+### 13.6 What batch 3 leaves
+
+- **Q-040**, two decisions for Chase before `latest` is rebuilt: whether the 40 stock-parented
+  files should be on carriers after all (Q-039's general wording says yes; `docs/tasks.md` and the
+  brief said no, and no was done), and widening the AGENTS.md descendant-grep token list to
+  include `SetSkillBonuses`, `SetHue`, `Set*Bonus` and `Pieces`, which is what found the ninth.
+- **`StaffRing` is not OSI content** and is now in the tree because it was on the list. If the
+  shard does not want a ServUO staff tool, deleting the file before deployment costs nothing.
+- **Batch 4** as `docs/tasks.md` defines it, and nothing from it was started here: the 41
+  carrier-blocked files, the Q-039 re-parents, the 79 set-armour re-parents, all after
+  re-verifying the no-instance condition. `GargishPincer`, `HailstormGargoyle`,
+  `GargishSmugglersEdge`, `DragonHideShield`, `VoidInfusedKilt`, `VirtuososArmbands` and the five
+  Darden pieces now have the parent they need.

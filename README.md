@@ -79,12 +79,12 @@ Setup health   █████████████████████�
 
 **Patches:** 15 total, **0 currently failing to apply**, 8 triaged, 3 found obsolete. `apply-patches.sh` fails the build on a failed patch, so a green build means every patch applied.
 
-### Content moved over: 131 of 2,045 candidate files (6.4%)
+### Content moved over: 180 of 2,045 candidate files (8.8%)
 
 ```
-TOTAL                          █░░░░░░░░░░░░░░░░░  131/2045    6.4%
+TOTAL                          ██░░░░░░░░░░░░░░░░  180/2045    8.8%
 
-Items/Equipment                ██████░░░░░░░░░░░░   50/148    33.8%
+Items/Equipment                ████████████░░░░░░   99/148    66.9%
 Items/Artifacts                ██░░░░░░░░░░░░░░░░   40/325    12.3%
 Items/Resource                 █████████░░░░░░░░░   29/61     47.5%
 Services/Expansions            █░░░░░░░░░░░░░░░░░    6/175     3.4%
@@ -107,7 +107,7 @@ Services/BulkOrders            ░░░░░░░░░░░░░░░░�
 
 _Counted by matching ServUO file stems (excluding those stock ModernUO already has) against `server/customizations`. Auto-counted, never hand-edited._
 
-**Ported systems logged: 42**
+**Ported systems logged: 43**
 
 | Content | Task | Notes |
 |---|---|---|
@@ -153,6 +153,7 @@ _Counted by matching ServUO file stems (excluding those stock ModernUO already h
 | CC9 batch 2: 33 costumes + 7 unblocked artifacts (40 files, 41 types) | CC9 | The 33 costumes are one template on BaseCostume (body, one hue, creature name, cliloc or default name) and were generated from the ServUO values by a script that refuses any file whose constructor or overrides differ from the template; it refused none. CastOffZombieSkin, CuffsOfTheArchmage (2 types), PillarOfStrength, BreastplateOfTheBerserker, GiantSteps, Glasses, NightEyes hand-written; three of them derive from ModernUO's own Gargish*Type1/Type2 classes rather than a ported parent. Green first cycle (95 s), 41/41 reflected, headless save/reload clean. Reading the 19 in-row artifacts batch 1 supposedly unblocked found 6 more absorption users and 5 set pieces on gargish jewellery, so only 8 were plain - S9's in-row bucket checked one member per file. |
 | CC9 batch 1: artifacts and equipment (31 files, 34 types) | CC9 | 2,604 ServUO lines in, 1,324 out. Category-spread sample chosen to test S9's 'drops straight in' claim: 20 of 34 types needed only the standard conversion, 8 would not have compiled mechanically (four set pieces re-parented, fishing-pole attributes, BattleLust, two non-virtual overrides on earrings/necklace, IRepairable), 3 must not be ported at all (already in ModernUO). Real persisted state exercised on GobletOfCelebration (SerializableProperty + DeltaDateTime + AfterDeserialization timer rebuild), AmuletOfRighteousness (IUsesRemaining) and BaseCostume. Deviations D-3 AxeOfAbandon BattleLust, D-4 XenrrFishingPole SpellChanneling/CastSpeed (ModernUO's FishingPole has no attribute block and AosAttributes.GetValue aggregates only the seven equipment bases), D-5 costume damage hook. Gated build 86 s; 33/33 types reflected; headless save and reload clean. |
 | The carrier family: BaseSetWeapon, BaseSetJewel, BaseSetClothing, BaseSetQuiver, BaseSetShield (5 files) | S10 | Subsystem, not content: the set state ServUO puts on each base class, on an additive intermediate class of ours instead (the S1 decision, applied four more times). 1,426 lines, zero patches, zero migrations, 15 tests, every gate watched fail. Field layout identical to BaseSetArmor on every carrier (0-9, then SetSelfRepair 10 and absorption 11 where the ServUO base has them; jewel has absorption at 10; quiver has neither). SetSelfRepair inert on weapon/clothing/shield (Q-038). The four ported gargish armour-class bases were re-parented onto BaseSetArmor in the same commit, before any instance reached a save. Unblocks CC9 batch 4 (13 set pieces + 9 non-armour absorption users + 5 gargish-jewellery set pieces) and CC4's ReforgedSuffix route C. |
+| CC9 batch 3: the plain remainder (49 files, 49 types) | CC9 | 21 weapons, 11 jewellery, 17 armour and shields; 4,636 ServUO lines in, 1,740 out. Pre-flighted with the section-3 method before any build: every override checked against a pinned ModernUO virtual, every attribute member against the Aos* enums, item IDs cross-checked, and every ServUO descendant of all 49 walked transitively for set or absorption state. Nine bases got a carrier parent at port time because a descendant needs it (GargishPlateArms, GargishPlateKilt, the five DragonTurtleHide pieces on BaseSetArmor; GargishKiteShield on BaseSetShield; GargishBattleAxe on BaseSetWeapon, the ninth, found because GargishPincer assigns SetSkillBonuses, a token the AGENTS.md grep does not list - Q-040). The other 40 are on stock bases per docs/tasks.md. RandomWand is a static helper, not an item. Every override value re-diffed mechanically against ServUO after writing: 524 compared, 0 mismatches. Deviations D-10 (GargishWarHammer flip typo 0x481 -> 0x48C1), D-11 (EvilOrcHelm's two zero-reader virtuals), D-12 (OrcishBow one durability line, not two), D-13 (StaffRing IsPlayer; not OSI content). Gated build green first cycle, 101 s, 42 tests; 49/49 reflected; headless fresh save and reload clean. |
 
 ### Task list (17 of 24 done)
 
@@ -220,7 +221,7 @@ What a MODERNUO_COMMIT bump must reconcile. Patches fail LOUDLY - apply-patches.
 - **S3 costed menu - declines upheld with their ratios recorded** — Measured 2026-09-07, notes/s3-decline-costs.md. Skill Masteries (45 files/8,542 lines, unblocks 14, patches 35 upstream files - fails the layering test). Vice vs Virtue (57/9,613, unblocks 5, patches 21). Exploring the Deep (70/10,292, unblocks 2 - structurally the safest build here and the worst ratio). Shadowguard (14/11,222, unblocks 8). City Loyalty (28/8,177, unblocks 15 - decline on ratio, not structure; revisit with Town Cryer). Instanced Peerless (13/1,543, unblocks 2, and BasePeerless and PeerlessAltar are both absent from ModernUO, so there is no base to instance - cost Services/Peerless first). ServUO's ML quest framework (22 files/6,269 lines, not the 21/5,625 the brief stated) - declined because ModernUO already ships the same OSI system. NOT declined and recommended instead: SAAbsorptionAttributes, the TribeType transformation, and a one-quest spike onto ModernUO's ML quest engine. Vendor Searching (4/2,545) is a player feature, not content; the unblock ratio is the wrong test and it is Chase's call.
 - **ServUO ML quest framework - decline REAFFIRMED by S5** — S5 translated one quest end to end and the objective mapping holds for 4 of 5 types, two of them pinned by tests. Porting ServUO's 22-file, 6,269-line framework would put a second engine in the tree to do a job the engine we already have does correctly. The decline was always on two-engines-for-one-job; it now rests on measurement rather than on principle alone. What is NOT declined: the 164 of 203 missing quests that use a single standard objective type. The 39 that hand-write a BaseObjective subclass (25 InternalObjective, 3 CollectionsObtain, 2 QuestionAndAnswer, ~9 one-offs) are per-quest work, not a framework port, and are the thing to cost before the next quest batch.
 
-Counted from the trees: 274 customization files, 20 patch files, 43 tests in 11 files.
+Counted from the trees: 323 customization files, 20 patch files, 43 tests in 11 files.
 Shard status: running on ModernUO.
 <!-- PROGRESS:END -->
 
@@ -229,18 +230,18 @@ Shard status: running on ModernUO.
 <!-- EXPANSION:START -->
 ### Content by expansion
 
-**3,174 of 6,144 ServUO files present** (52%), of which **135 ported by us**.
+**3,223 of 6,144 ServUO files present** (52%), of which **184 ported by us**.
 
 ```
-Pre-AoS (T2A/UOR/LBR)     ███████████░░░░░░░░░  2336/4294    54%   +113
-Age of Shadows            █████████████░░░░░░░   202/309     65%   +1
+Pre-AoS (T2A/UOR/LBR)     ███████████░░░░░░░░░  2355/4294    55%   +132
+Age of Shadows            █████████████░░░░░░░   204/309     66%   +3
 Samurai Empire            ███████████████░░░░░    88/115     76%   +1
 Mondain's Legacy          ██████████░░░░░░░░░░   242/471     51%   +1
-Stygian Abyss (Ter Mur)   ██████░░░░░░░░░░░░░░   136/444     31%   +11
+Stygian Abyss (Ter Mur)   ███████░░░░░░░░░░░░░   164/444     37%   +39
 High Seas                 ██████░░░░░░░░░░░░░░    96/334     29%
 Time of Legends (Eodon)   ████████░░░░░░░░░░░░    60/157     38%   +7
 Endless Journey           ██████████████░░░░░░    14/20      70%   +1
-TOTAL                     ██████████░░░░░░░░░░  3174/6144    52%   +135
+TOTAL                     ██████████░░░░░░░░░░  3223/6144    52%   +184
 ```
 
 _Filename-stem matching: a proxy for presence, not behaviour. Unclassified files fall into Pre-AoS, inflating it. Directional, not a completion percentage._

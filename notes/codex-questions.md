@@ -2131,3 +2131,36 @@ assuming it still holds. I have flagged the window to Chase separately in
 accident.
 
 Status: **[ANSWERED]** — yes to all four, in CC9 batch 4, re-checking the window first.
+
+---
+
+## Q-040 [OPEN] 2026-09-08 Batch 3 followed "41 on stock"; Q-039's generalised rule says otherwise, and the grep token list is short by one
+
+**Question:** two things CC9 batch 3 met that the brief and the docs answer differently, both
+non-blocking, both recorded as assumptions and worked through. Decide them before `latest` is
+rebuilt for deployment, because both are save-format choices and the re-parenting window closes
+on the first deploy (`docs/gap-register.md`).
+
+**1. Which parent does a plain ported equipment base get?** `docs/tasks.md` (batch 3) and the
+brief say the 41 non-forced files "stay on their stock ModernUO base". Q-039's answer says the
+general rule is "if ServUO's base for a kind carries set state, ours should too, and the ported
+piece derives from our carrier", which read literally puts every one of the 49 on a carrier.
+Batch 3 did what the brief said: **9 on a carrier (forced by a descendant), 40 on stock.** If the
+Q-039 reading is the intended one, the 40 need re-parenting in batch 4 alongside the five Q-039
+already named, and the same no-instance check covers them. What I checked: `tasks.md` postdates
+Q-039 (`39ba4d5` after `de760a9`) and states the narrower rule deliberately, so I took it as the
+later decision.
+
+**2. The descendant grep in AGENTS.md lists five tokens and missed a ninth base.** The rule says
+to check descendants for `AbsorptionAttributes`, `SetAttributes`, `SetSelfRepair`, `SetID` or
+`ISetItem`. `GargishPincer : GargishBattleAxe` (`Items/Artifacts/Equipment/Weapons/Pincer.cs:60`)
+touches none of those and assigns **`SetSkillBonuses`**, which is set-carrier state on ServUO's
+`BaseWeapon` (`BaseWeapon.cs:847, 4140, 4185`). So `GargishBattleAxe` is on `BaseSetWeapon`, a
+ninth carrier parent the brief's eight did not include, found only because the grep was widened
+to `SetSkillBonuses|SetHue|Set\w+Bonus|Pieces`. The token list in AGENTS.md should carry those
+too. (Nothing else among the 49's 41 direct and transitive descendants touched any of them.)
+
+**Your best guess:** (1) keep the narrow rule the brief used; a carrier parent on a base with no
+set-bearing descendant buys nothing today and costs two bytes per saved instance forever, and
+the descendant grep is cheap and now proven. (2) widen the token list in AGENTS.md. Both are
+`docs/` edits, so raised here rather than made.
