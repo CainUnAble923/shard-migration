@@ -309,7 +309,7 @@ Ranked outcome:
   only **4** are genuinely hard-blocked, all four by a single override or guard. The rest degrade
   to deleting a one-line call, which is the `Saurosaurus` precedent and already settled.
 
-## S5. Translate one ML quest onto ModernUO's engine — START HERE
+## S5. Translate one ML quest onto ModernUO's engine — DONE
 
 A spike, with permission to fail, run the way S1 was. S3 established that ModernUO's `Engines/ML
 Quests` **exists** and is **the same OSI system**; it did not establish that it is behaviourally
@@ -337,7 +337,7 @@ Cost at **~1,120 lines**, not ~350. The ~350 buys the property and its tooltips;
 `GetValue`'s `RunicReforging` term is a 16-line type switch, and the `Enhancement` and
 `SkillMasterySpell` terms both return 0 on a shard without those systems.
 
-## S8. Finish the test route — START HERE
+## S8. Finish the test route — DONE
 
 **Runs before CC6.** The S4 route has now needed extending on contact with a real case three
 times, which is normal for infrastructure and is the argument for having built it before the
@@ -365,7 +365,7 @@ behaviour under test is broken; S5's and S6's fixtures are moved onto the route'
 both, so the workarounds do not survive as examples; and `notes/s8-test-route.md` documents how to
 write a creature test and how to advance time.
 
-## S9. Re-measure the remaining content backlog — START HERE
+## S9. Re-measure the remaining content backlog — DONE
 
 **Measurement only. Do not port anything.** The last task of this shape, S3, shipped no code and
 removed 223 files of backlog that did not exist. It was the highest-value hour this project has
@@ -395,6 +395,40 @@ resolved breakdown, blockers named, and a recommended order. Update `docs/tasks.
 
 12 files, 2,857 lines, unblocks 55. A hard dependency of both Vice vs Virtue and City Loyalty, so
 it gates two clusters currently sitting in the deferred list. Not scheduled; costed and available.
+
+## CC9. Artifacts and equipment — START HERE
+
+**Status table calls this `C6`.** Measured by S9 and it is the cheapest row on the whole backlog,
+which is the reverse of how this plan used to be ordered.
+
+**455 candidates**, not the 466 carried before, filtered from 1,022 raw against ModernUO's
+tree-wide types. Resolved:
+
+- **320 drop straight in.**
+- **81 more need only another file from the same two directories.**
+- So **88% needs nothing built**: no subsystem, no patch, no fidelity deviation to log.
+
+Two findings that removed most of the apparent blocking, both verified:
+
+- **`FlipableAttribute` is ModernUO's `FlippableAttribute`.** One extra letter, `Flip` body
+  identical statement for statement. **86 files** of false blocking. With `ITool`, `IRepairable`,
+  `IFlipable`, `ItemQuality` and four more, 169 file-references are a one-token transformation.
+- **`IsArtifact` is worth zero.** It looked like a top-two blocker at 280 files here. Pinned
+  ModernUO has no consumer of the name at all. Delete the line, log it once.
+
+**`ReforgedSuffix`**: 138 hits, of which **136 are single cosmetic assignments and 2 are real
+uses**. Delete the line for free, or build a ~100-line naming carrier plus four serialization
+patches and four migrations, which frees 110, or **141 with the gargoyle wearables**. That
+overlap is +24 over the sum of the two costed separately.
+
+**Do this before the decoration row.** It delivers 9 of the 14 gargoyle files, which sequences the
+two carrier classes correctly instead of building them twice.
+
+**S9 compiled nothing.** Every "drops straight in" is a claim about names, not a build result.
+Expect some of the 320 to fail and report how many.
+
+**Batch it.** A changed-file build is ~266s, so group files per build rather than rebuilding per
+file. Report the real per-batch cost; the old estimates predate S4 and are optimistic by ~6x.
 
 ## CC4. Revamped Dungeons
 150 candidate files. Despise, Shame, Wrong, Covetous Void Spawn, Blackthorn, Exodus. Best
