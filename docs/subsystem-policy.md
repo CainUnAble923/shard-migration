@@ -139,3 +139,19 @@ above as a timing check, not a fourth gate.
 set-bonus system both stay available and neither expires. Recorded in section E of the register
 so they are not forgotten rather than declined.
 
+**2026-09-08, the carrier family: BUILD.** The mirror image of the Pet Training decision, and
+worth keeping the pair together because the contrast is the lesson.
+
+Pet Training was declined **on timing**: good ratio, but six or seven upstream patches while
+upstream rewrites `BaseCreature`. The carriers are ~1,000 lines with **zero patches and zero
+migrations**, so a pinned-commit bump cannot touch them, and the objection that stopped Pet
+Training simply does not exist.
+
+**Ratio was never the deciding factor in either case.** What decided both was what a bump would
+have to reconcile. Add that to the three questions above as the first thing to check on a
+subsystem that otherwise passes: **how much of it is patch, and how much is additive.**
+
+The alternative here was free and was rejected on **fidelity**: deleting the `ReforgedSuffix` line
+costs nothing and ships 136 items with wrong names, which is the exact failure
+`docs/fidelity-principle.md` exists to prevent, arriving all at once.
+

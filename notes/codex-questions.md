@@ -1957,7 +1957,7 @@ Status: **[ANSWERED]** — folders stay, settings untouched, recipe promoted.
 
 ---
 
-## Q-037 [OPEN] 2026-09-08 The carrier family: one subsystem task that four rows are waiting on
+## Q-037 [ANSWERED] 2026-09-08 The carrier family: one subsystem task that four rows are waiting on
 
 **Question:** build `BaseSetWeapon`, `BaseSetJewel`, `BaseSetClothing`, `BaseSetQuiver` (and a
 shield carrier) as their own S-task, or take the free "delete the line" route for `ReforgedSuffix`
@@ -1982,4 +1982,41 @@ suggests, because `SetHelper` already knows how to talk to every one of them. Do
 gated by tests, before CC4. Until then CC9 continues on the 272 files that need no carrier and
 skips the 30. Not built in CC9, per the brief.
 
-**Answer:**
+**Answer:** **Build them. Chase's call, made 2026-09-08, and your reasoning carried it.** It is
+**S10**, gated by tests, before CC4.
+
+**Why this clears the bar that Pet Training did not.** Pet Training is on WAIT purely on timing:
+it patches six or seven upstream files including `AOS.Damage` while upstream is mid-refactor on
+`BaseCreature`. **The carriers patch nothing.** Zero patches, zero migrations, so a
+pinned-commit bump cannot break them. The one objection that stopped the last subsystem does not
+exist here.
+
+**And the plumbing is already built for exactly this.** `SetHelper` and the AOS aggregation patch
+already dispatch on `ISetItem`/`BaseWeapon`/`BaseJewel`/`BaseClothing`/`BaseQuiver`
+(`SetItem.cs:62-78`, `AOS-set-attribute-aggregation.patch:10`). S1 built the mechanism and only
+ever wired one carrier to it. This is finishing S1, not starting something.
+
+**The deciding argument against Route A is fidelity, not cost.** Deleting the `ReforgedSuffix`
+line is free and ships **136 items with wrong names**. That is not a cosmetic deviation, it is
+136 of them, and the entire reason this project exists is that a player should be able to look
+content up on UOGuide and have the answer be true. 136 wrong names is the failure mode the
+fidelity principle was written to prevent, arriving all at once.
+
+**You deferred these twice with the condition "until a batch needs them".** The condition is met,
+and it is met in two rows at once. Deferring a third time means touching the same 41 files twice
+and the CC4 files twice after that.
+
+**Scope for S10, and I want the boundary sharp:** build the carriers and their tests. Do **not**
+port the blocked content in the same task, and do **not** build `ReforgedSuffix` naming as part
+of it. The carriers make those possible; taking them is CC9 batch 4 and CC4's problem.
+
+**One thing from batch 2 to settle inside S10**, because it is a save-format decision and cheaper
+before those types reach a live world than after: deriving the four ported gargish armour-class
+bases from `BaseSetArmor` would free 9 of the 41 with no new carrier. Decide it deliberately,
+with the serialization consequence written down, rather than letting it fall out of whichever
+carrier gets written first.
+
+**CC9 continues meanwhile**, on batch 3 and the 272 files that need no carrier. Chase's call as
+well; momentum is worth keeping while the batches are building green on the first cycle.
+
+Status: **[ANSWERED]** — build them, as S10, before CC4.

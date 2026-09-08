@@ -267,8 +267,7 @@
       "source": "ServUO Scripts/Misc/AOS.cs:2726-3058 and Scripts/Abilities/SAPropEffects.cs",
       "dest": "server/customizations/SAAbsorptionAttributes.cs, server/customizations/Abilities/SAPropEffects.cs",
       "note": "Subsystem, not content. Additive against BaseAttributes, which ModernUO already ships. The property reaches items through an additive IAbsorptionItem interface rather than fields on BaseArmor/BaseWeapon/BaseJewel/BaseClothing, so no upstream serialization version is bumped - S1's decision, reused. BaseSetArmor is the only carrier today, at serialization field 11. The effect reaches combat through AOS-damage-eater-hook.patch, 16 added lines in Projects/UOContent/Misc/AOS.cs at ServUO's own call site. Pinned by six tests in ShatteredLegacy.Tests.AbsorptionAttributesVerification, of which ColdDamageThroughAosDamageReachesTheEater was proved to fail with the patch skipped."
-    }
-    ,
+    },
     {
       "name": "Gargoyle wearables, row share (9 files, 11 types)",
       "task": "CC9",
@@ -426,6 +425,12 @@
       "title": "Services/PointsSystems",
       "status": "todo",
       "note": "12 files, 2,857 lines, unblocks 55. Hard dependency of both Vice vs Virtue and City Loyalty. Costed and available, not scheduled."
+    },
+    {
+      "id": "S10",
+      "title": "The carrier family",
+      "status": "todo",
+      "note": "Decided 2026-09-08 (Q-037), runs before CC4. BaseSetWeapon/Jewel/Clothing/Quiver plus a shield carrier, ~1,000 lines, zero patches, zero migrations. Frees 41 in CC9, 110-141 in CC4, 8 more. Deferred by S1 and S6 'until a batch needs them'; two rows need them now. Alternative rejected on fidelity: deleting ReforgedSuffix ships 136 items with wrong names."
     },
     {
       "id": "C2",

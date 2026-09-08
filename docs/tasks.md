@@ -439,6 +439,34 @@ Expect some of the 320 to fail and report how many.
 **Batch it.** A changed-file build measured 86s and 95s in CC9, not the ~266s, so group files per build rather than rebuilding per
 file. Report the real per-batch cost; the old estimates predate S4 and are optimistic by ~6x.
 
+## S10. The carrier family
+
+**Decided 2026-09-08 (Q-037). Runs before CC4.** Deferred by S1 and again by S6, both times
+"until a batch needs them". Two rows need them now.
+
+Build `BaseSetWeapon`, `BaseSetJewel`, `BaseSetClothing`, `BaseSetQuiver` and a shield carrier,
+modelled on `BaseSetArmor` (394 lines including absorption). Roughly **250 lines each, ~1,000
+total, zero patches, zero migrations**, plus one test per carrier.
+
+**Frees:** 41 files in CC9, 110-141 in CC4, and 8 more carrying `NegativeAttributes`.
+
+**Why it clears the bar Pet Training did not:** zero patches means a pinned-commit bump cannot
+break it, and the timing objection that put Pet Training on WAIT does not apply. `SetHelper` and
+the AOS aggregation patch already dispatch on all five bases (`SetItem.cs:62-78`). S1 built the
+mechanism and wired one carrier to it; this finishes that.
+
+**The alternative was rejected on fidelity, not cost.** Deleting the `ReforgedSuffix` line is free
+and ships 136 items with wrong names. A player looking those up on UOGuide finds the wrong thing,
+136 times, which is precisely what `docs/fidelity-principle.md` exists to prevent.
+
+**Scope boundary:** carriers and their tests only. Do **not** port the blocked content here and do
+**not** build `ReforgedSuffix` naming here. Those are CC9 batch 4 and CC4.
+
+**Settle inside this task:** deriving the four ported gargish armour-class bases from
+`BaseSetArmor` would free 9 of the 41 with no new carrier. It is a save-format decision, so make
+it deliberately with the serialization consequence written down, and make it before those types
+reach a live world.
+
 ## CC4. Revamped Dungeons
 150 candidate files. Despise, Shame, Wrong, Covetous Void Spawn, Blackthorn, Exodus. Best
 value on the backlog: places to go and things to fight, 2% dependency.
