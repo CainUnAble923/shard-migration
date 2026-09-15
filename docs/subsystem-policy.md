@@ -151,6 +151,23 @@ Training simply does not exist.
 have to reconcile. Add that to the three questions above as the first thing to check on a
 subsystem that otherwise passes: **how much of it is patch, and how much is additive.**
 
+**2026-09-15, a sixth carrier for ranged set weapons: NO, and this completes the set of three.**
+`Swiftflight` is the only ranged type in all of ServUO carrying set or absorption state, and zero
+ranged types use `ReforgedSuffix`, so a `BaseSetRanged` would free one file forever. It was also
+unnecessary: the aggregation patch dispatches on `obj is ISetItem` and `SetHelper` tests
+`is BaseWeapon` first, which a `Bow` satisfies. Ported as `Swiftflight : Bow, ISetItem` instead.
+
+**Put the three decisions together, because the contrast is the whole method.** Pet Training:
+good ratio, declined on **timing** (six or seven patches while upstream rewrites `BaseCreature`).
+The carrier family: modest ratio, built because **zero patches** meant a bump could not touch it.
+A ranged carrier: zero patches too, and declined anyway because **the mechanism already existed**
+one level up, at the interface. So the questions, in order: what must a bump reconcile, is there
+already a seam that does this, and only then how many files does it free.
+
+**And a sixth abstract base is a sixth place to repeat a mistake.** Batch 4 had to correct
+`BaseSetWeapon` because S10 missed `BaseMeleeWeapon.AbsorbDamage`. That cost is invisible when
+you count lines and real every time a carrier changes.
+
 The alternative here was free and was rejected on **fidelity**: deleting the `ReforgedSuffix` line
 costs nothing and ships 136 items with wrong names, which is the exact failure
 `docs/fidelity-principle.md` exists to prevent, arriving all at once.

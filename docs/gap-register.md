@@ -33,6 +33,16 @@ Ordered by how likely someone is to hit it. Every one traces to section B.
 | A9 | **The Fountain of Fortune is not placed**, so `LuckyCoin` only ever shows its failure message | nothing calls `MoveToWorld` | **Q-021: Ter Mur `(1121, 957, -42)`, three lines** | OURS |
 | A10 | S5's `MinionOfScelestus` loses `SetSpecialAbility` and `TaintedLifeAura` | Pet Training | B2 | OURS |
 
+| A11 | **A full Bestial set never rages**: no damage shrug, no heal block, no hue shift. The helper is ported and uncalled | two engine hooks | hooks row | OURS |
+| A12 | **The 12 Epiphany pieces never burst** and show no "Set Ability" lines | two engine hooks | hooks row | OURS |
+| A13 | **The Tenth Anniversary Sculpture says "Your luck just improved!" and then does nothing for an hour** | `PlayerMobile.Luck` term | hooks row | OURS |
+| A14 | **No completed weapon, clothing or shield set self-repairs.** Armour sets do | three `OnHit` hooks | hooks row | OURS |
+| A15 | **Three shields lose soul charge**, three head pieces lose hit-lower-defend, the Despicable Quiver loses its resistance and Archery bonus | members absent from ModernUO's attribute enums | a field plus an aggregation arm each | OURS |
+| A16 | **`FirstAidBelt` does not speed up bandages** | no read in `BandageContext` | one read, deliberately off the hooks row | OURS |
+
+**A11 to A14 all close on the same eight-change row**, which is the cheapest cluster on this
+page: four of the eight land in an empty override or a line we already patch.
+
 **A1 is the one I would fix first for feel.** A *buff* is worse than a loss: a player reading
 UOGuide will not notice a number that is wrong in their favour, so it never gets reported and
 never gets fixed.
@@ -171,7 +181,7 @@ the **31** are buildable now, along with CC9's 41 and the CC4 gargoyle wearables
 row exists for still stands: **cost it before scheduling it.** The 31 was worth acting on because
 it was a measured number, not because it was large.
 
-### The set-mechanic hooks row — Q-038 + Q-042, costed, unscheduled
+### The set-mechanic hooks row — Q-038, Q-042, Q-043, costed, unscheduled
 
 **Five small additive patches** that make two already-ported sets actually work. Costed
 2026-09-08; **Chase's call to schedule**, because five patches is five things a pinned-commit bump

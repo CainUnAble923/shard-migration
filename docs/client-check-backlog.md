@@ -1,19 +1,26 @@
 # Client spot-check backlog
 
 Everything ported since P1 is verified **structurally**: it compiles, its type registers, the
-world saves and reloads, and 28 tests pass. None of it has been **looked at**. This is the list of
-what a client session would actually settle, accumulated across eight tasks.
+world saves and reloads, and 44 tests pass. None of it has been **looked at**. This is the list of
+what a client session would actually settle.
 
-**Chase runs the client. No agent does.** Nothing here is urgent, and none of it blocks porting.
+**Chase runs the client. No agent does.** No agent can: there is no client in the sandbox, and
+the check needs a server built from current source, which is a deploy decision and his alone.
 
 ## When to do this
 
-**After CC9 lands, in one sitting.** Batching is the whole point: standing up a client, logging
-in and spawning things costs the same whether you check five items or fifty, and CC9 will add a
-few hundred artifacts whose entire risk is visual.
+**CC9 has landed. This is due now**, in one sitting. It covers **381 ported files** across
+S1, S2, S5, S6, S10 and CC9's five batches, plus one real defect pending since P1.
 
-**Bring it forward only if** a ported item turns up looking wrong in normal play, or if something
-below starts blocking a decision.
+**Two things to settle before you start, or two sections are wasted:**
+
+1. **You need a gargoyle character.** Most of CC9 is gargish equipment with
+   `RequiredRaces => AllowGargoylesOnly`. On a human everything below reads "you cannot wear
+   that", which is correct behaviour and looks exactly like a defect. Make a gargoyle before you
+   begin.
+2. **Nothing places a Fountain of Fortune** (checked 2026-09-15: no placement exists in
+   `server/customizations`). Section 4 cannot run. Q-021 has the coordinates and it is three
+   lines. Either land it first or skip section 4 and keep it on this list.
 
 ## What only a client can tell us
 
@@ -72,14 +79,61 @@ Take it from its quester, complete both objectives, and collect the reward. This
 where the *headless* result is weakest: the objective mapping was proven by test, but "a player
 can be offered this quest and finish it" was never observed.
 
-### 6. Artifacts, CC9 — the big one
+### 6. CC9, 381 files — run it in four tiers, not file by file
 
-Whatever CC9 ships. Spawn a sample across each directory rather than all of them, since the risk
-is uniform: wrong art, wrong hue, missing property lines. **Prioritise anything where
-`IsArtifact` or `ReforgedSuffix` was deleted**, since those are the deliberate deviations.
+The risk is uniform in *kind* (wrong art, wrong hue, missing property line) but it is not uniform
+in *consequence*. Work down these tiers and stop when you run out of patience; tier 1 is twelve
+minutes and settles the things nothing else can.
+
+**Tier 1 — the two places we overrode the source on our own judgment.** Everything else in CC9
+was copied from ServUO and diffed. These two are ours, and only a client proves them.
+
+    [add GargishWarHammer     equip it, flip it. Expect a war hammer.
+                              If it becomes a stone pillar, D-10 is wrong and ServUO's 0x481 was right.
+    [add DarkwoodCrown        equip it, flip it. Expect a crown.
+                              If it becomes a vulture helm, D-16 is wrong.
+
+**Tier 2 — the seventeen types whose parent we changed.** Re-parenting onto a carrier means the
+stock parent's members were reproduced by hand. Batch 3 got this wrong once and batch 4 caught it,
+which is exactly why this tier exists.
+
+    [add GargishBattleAxe     two-handed, axe swing sounds, and CHOP A TREE with it.
+                              This is the one that actually broke. Batch 3 left it one-handed
+                              with sword sounds and unable to harvest; batch 4 restored BaseAxe.
+    [add LeatherTalons        shoes: footwear layer, wearable, correct art.
+    [add GargishKiteShield [add GargishPlateArms [add GargishPlateKilt
+    [add DragonTurtleHideChest (and Arms, Bustier, Helm, Legs)
+    [add GargishDagger        knife: double-click should target for carving.
+    [add SorcererHat [add VirtuososCap [add HumilityCloak [add BearMask
+                              each should behave as its stock kind, not as a generic item.
+
+**Tier 3 — sets completing.** The newest mechanism on the shard and the least exercised.
+
+    Marksman   Feathernock + Swiftflight. Brand new shape: Swiftflight is a Bow implementing
+               ISetItem directly, not a carrier child. Two pieces, set bonus should apply.
+    Darden's   the five Dragon Turtle Hide pieces. Expect NO "Myrmidex Slayer" line (D-26).
+    Virtuoso   four pieces including VirtuososArmbands.
+    Bestial    bonus should apply; the set should NEVER rage, hue-shift or block heals.
+               That is D-14 and it is expected, not a bug, until the hooks row lands.
+    Aloron     still unverified from S1/S6. Completed set eats cold damage as a CAPPED DELAYED
+               HEAL three seconds after the hit. Watch health recover, not a smaller number.
+
+**Tier 4 — the wide sample.** Twenty or so, spread across `Items/Equipment/{Weapons,Armor,
+Jewelry,Clothing,Suits}` and `Items/Artifacts`. Looking only for art, hue and a property list
+that reads sanely. Pick a few costumes too: they should stay on when you take damage, which is
+D-5 and is a known deviation from ServUO, not a defect.
+
+**What is expected to be missing, so you do not report it as broken:** soul charge on the two
+Signs of Chaos and `MysticsGuard` (D-21); hit-lower-defend on the three mace-and-shield head
+pieces (D-22); the Despicable Quiver's resistance and Archery bonus (D-23); Epiphany's burst and
+its "Set Ability" lines (D-24); the Tenth Anniversary Sculpture doing anything after "Your luck
+just improved!" (D-28); `FirstAidBelt` speeding up bandages (D-27); self-repair on any completed
+weapon, clothing or shield set (Q-038). Eight of those close together on the set-mechanic hooks
+row in `docs/gap-register.md`, which is costed and waiting on your decision.
 
 ## How to run it
 
-Same throwaway loopback-only container the agents use, not the live shard. `build.sh` produces
-the image; bring it up, log in with a GM account, and work down the list. Anything that looks
+Same throwaway loopback-only container the agents use, **not the live shard**. `build.sh`
+produces the image; bring it up, log in with a GM account, make a gargoyle, and work down the
+list. Nothing here should ever touch `sl-modernuo`. Anything that looks
 wrong goes in `notes/` as a finding, and I will turn it into a task.
