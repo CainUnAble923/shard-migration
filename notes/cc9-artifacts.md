@@ -295,27 +295,29 @@ Also observed: `sl-portainer` has a restart policy and came up with the daemon; 
 
 ## 11. What is done, what remains, and the next batch
 
-**Done:** three batches, **120 files / 124 types** in `server/customizations/Items/`, each green
-on its first `build.sh` cycle, all reflected, six clean headless runs (§9, §13). Three commits per
-repo. `tools/progress-state.json` updated; `python tools/progress.py` run.
+**Done:** five batches, **381 ServUO files** ported into `server/customizations/Items/` (31 + 40 + 49 + 125 + 136),
+each green on `build.sh`, all reflected, ten clean headless runs. Five commits per repo.
+`tools/progress-state.json` updated; `python tools/progress.py` run.
 
-**Remaining in the row, by bucket (§4).** Counted 2026-09-08 after batch 3, not carried forward
-from the sentence that used to be here (which said "~35 files" and "the 19 remaining" gargish
-weapons; ServUO has 20 `Gargish*` weapon files, three were in batch 1 and `GargishTalwar` is
-ModernUO's, so the honest number was 16, and the list was right while the count was wrong):
+**Remaining in the row, by S9 list.** Counted 2026-09-15 after batch 5 from the trees (`buckets.py` in
+`D:\UO\cc9-batch5-work`: for every file in S9's four appendix lists, are all of its classes declared in
+`server/customizations`), not carried forward from an earlier table. The batch 3 snapshot that used to sit here
+said "120 plain, 29 in-row"; the trees said 107 and 30, and section 15.1 records why.
 
-| Bucket | Left | Note |
-|---|---|---|
-| Plain, from the 320 | **120** | 189 − 20 (batch 1) − 49 (batch 3). All 49 of batch 3 are in S9's appendix and none is a set piece or absorption user itself |
-| Set armour re-parents | **79** | 83 − the 4 Greymist. Batch 4 |
-| In-row 81 | **40** | − 34 costumes − 7 artifact files; **11 of the 40 are carrier-blocked** (§4) |
-| Carrier-blocked | **41** | 30 from the 320 + 11 from the in-row. S10 built the carriers; batch 4, after re-verifying the no-instance condition (Q-039, `docs/gap-register.md`) |
-| Co-port 10, upstream/carrier 44 | as S9 | untouched |
-| Not candidates | 18 | already in ModernUO (§12) |
+| S9 list | Files | Ported | Not candidates (section 12) | **Left** |
+|---|---|---|---|---|
+| drops straight in | 320 | 299 | 21 | **0** |
+| in-row | 81 | 81 | 0 | **0** |
+| co-port | 10 | 0 | 0 | **10** |
+| upstream/carrier | 44 | 1 (`EpiphanyHelper`, batch 5) | 0 | **43** (`SnakeCharmerFlute` half-present: `CharmTarget` exists) |
 
-**Next was CC9 batch 4**, and this paragraph used to say "the five Q-039 re-parents" and list four; Q-040
-then measured every ported type's ServUO descendants and the list is **one** (`GargishDagger`).
-Batch 4 is done: §14.
+**53 files** stand between the tree and S9's 455, and none is a plain port: the 10 need a ServUO file from
+outside this row, the 43 need a member, a carrier or a reading decision (`Attributes.Brittle`, `NegativeAttributes`,
+`ReforgedSuffix`, and the now-cheap `VirtuousEpiphany`, one template away since batch 5 ported the Epiphany enums,
+interface and helper). Every earlier bucket (set armour, carrier-blocked, plain, in-row) is empty.
+
+**Next** is not a CC9 batch. It is the client spot check (`docs/client-check-backlog.md`, 381 files), and the
+"set-mechanic hooks" row (Q-038, Q-042, Q-043) for Chase.
 
 ---
 
@@ -391,7 +393,7 @@ Items/Equipment/Weapons/RandomWand.cs  (static helper, not an item)   Items/Equi
                                                       Items/Equipment/Armor/DragonTurtleHideLegs.cs    [BaseSetArmor]
 ```
 
-### Already in ModernUO by content (18) — remove from the row
+### Already in ModernUO by content (21) — remove from the row
 
 ```
 Items/Equipment/Armor/GargishClothArmor.cs        -> GargishCloth{Arms,Chest,Legs,Kilt}Type1/Type2 (8 types)
@@ -400,7 +402,7 @@ Items/Equipment/Armor/GargishLeatherChest.cs      -> GargishLeatherChestType1  (
 Items/Equipment/Armor/GargishLeatherKilt.cs       -> GargishLeatherKiltType1   (0x311)
 Items/Equipment/Armor/GargishLeatherLegs.cs       -> GargishLeatherLegsType1   (0x305)
 Items/Equipment/Armor/FemaleGargishLeatherArms.cs -> GargishLeatherArmsType1   (0x301)
-Items/Equipment/Armor/FemaleGargishLeatherChest.cs-> GargishLeatherChestType2  (0x303)
+Items/Equipment/Armor/FemaleGargishLeatherChest.cs -> GargishLeatherChestType2  (0x303)
 Items/Equipment/Armor/FemaleGargishLeatherKilt.cs -> GargishLeatherKiltType2   (0x310)
 Items/Equipment/Armor/FemaleGargishLeatherLegs.cs -> GargishLeatherLegsType1   (0x305)
 Items/Equipment/Armor/GargishStoneArms.cs         -> GargishStoneArmsType1     (0x284)
@@ -412,6 +414,9 @@ Items/Equipment/Armor/FemaleGargishStoneChest.cs  -> GargishStoneChestType2    (
 Items/Equipment/Armor/FemaleGargishStoneKilt.cs   -> GargishStoneKiltType2     (0x287)
 Items/Equipment/Armor/FemaleGargishStoneLegs.cs   -> GargishStoneLegsType2     (0x289)
 Items/Equipment/Weapons/SerpentStoneStaff.cs      -> SerpentstoneStaff         (0x906)
+Items/Equipment/Clothing/Arms.cs                       -> GargishClothArmsType1 / Type2 (3 types; batch 5, section 15.1)
+Items/Artifacts/Decorative/MLDecorationArtifacts.cs    -> ShipModelOfTheHMSCape (batch 5, section 15.1)
+Items/Equipment/Spellbooks/MysticBook.cs               -> MysticSpellbook (batch 5, section 15.1)
 ```
 
 (ModernUO's `GargishStudded*Type1/2` share the stone item IDs; that is upstream's choice.)
@@ -791,7 +796,7 @@ tooltip line) stands.
 | **D-14** | Bestial berserk mechanic inert: `BestialSetHelper.OnDamage`/`OnHeal` have no caller | A full Bestial set never enters a rage: no damage shrug, no heal block, no hue shift | +1 line to `AOS-damage-eater-hook.patch` and one call in each heal path (Q-042) |
 | **D-15** | `FrostguardTalisman`, `JadeSnakeHead` lose `EaterCold = 5` / `EaterPoison = 5` | One tooltip line. **Behaviour identical**: ServUO never aggregates a talisman's absorption (§14.3) | a talisman carrier, which nothing else wants |
 | D-16 | `DarkwoodCrown` flips to `0x3168`, not ServUO's `0x3169` | Nothing a player would call wrong: `0x3169` is the flipped Vulture Helm | never; ServUO's is the bug |
-| **D-17** | `Swiftflight` not ported; Marksman set cannot complete | Feathernock shows "part of a set (2 pieces)" for a set with one obtainable piece | `BaseSetRanged` (Q-041) |
+| **D-17** | `Swiftflight` not ported; Marksman set cannot complete | Feathernock shows "part of a set (2 pieces)" for a set with one obtainable piece | `BaseSetRanged` (Q-041) | **Removed by batch 5 (section 15.2): ported as `Bow, ISetItem`, no carrier.**
 | D-18 | `SorcererHat`, `VirtuososCap` drop `BaseHat`'s `IsShipwreckedItem` field, its two shipwreck lines and its exceptional-craft bonus | Nothing: artifact hats are neither fished up nor crafted | paper only |
 | D-19 | `JadeWarAxe` drops `BaseAxe`'s two `IUsesRemaining` fields | Nothing: `WarAxe.HarvestSystem => null`, so uses could never be consumed or shown | paper only |
 | D-7 (extended) | `AssassinGloves`, `InitiationGloves`, `DeathGloves`, `SorcererGloves`, `VirtuososKidGloves`, `HunterGloves` are not `IArcaneEquip` | Nothing | paper only |
@@ -1014,4 +1019,411 @@ Items/Artifacts/Equipment/Armor/Sets/Bestial/BeastialSetHelper.cs
 Items/Artifacts/Equipment/Armor/Sets/Bestial/BestialArms.cs
 Items/Artifacts/Equipment/Armor/Sets/Bestial/BestialEarrings.cs
 Items/Artifacts/Equipment/Armor/Sets/Bestial/BestialNecklace.cs
+```
+
+---
+
+## 15. Batch 5 — Swiftflight, the in-row remainder, and the whole plain bucket, 2026-09-15
+
+**Result: 136 ServUO files ported as 136 new files / 240 types (213 generated, 23 hand-written, plus the Epiphany
+helper's static class, interface and two enums), one new regression test. Three `build.sh` cycles: two failed on
+one compiler error each (§15.5), the third green (15 patches, 44 tests, `structured customizations installed: 469` = 333 + 136). Reflection 237/237 types ok. Headless fresh save and reload both clean, exit 0. 14,275 ServUO
+lines in, 7,475 out. Every override and constructor value re-diffed against ServUO: 135 files, 1,085 overrides
+and 821 constructor assignments, 0 findings, and the diff was proved red first (three injected faults, three
+findings, then 0 after restore).** Work folder `D:\UO\cc9-batch5-work` (generator, job table, verifier, scans,
+logs); nothing in it is needed to rebuild.
+
+This closes the **320** and the **81** buckets entirely. What is left of the row is the co-port 10 and 43 of the
+upstream/carrier 44 (§15.7).
+
+### 15.1 The count, from the trees, and where the brief's figures came from
+
+The brief said "29 in-row" and "120 plain". Per AGENTS.md rule 3 both were counted before anything was written,
+by taking S9's four appendix lists and asking, for every file, whether all of its classes are declared in
+`server/customizations` today (`buckets.py`):
+
+| S9 list | Files | Ported before this batch | Not candidates | Remaining |
+|---|---|---|---|---|
+| drops straight in | 320 | 194 (every one in the batch 1/3/4 lists) | 18 (§12) | **108** = 107 plain + `Swiftflight` |
+| in-row | 81 | 51 (33 costumes, 7 artifacts, 11 carrier-blocked) | 0 | **30** |
+| co-port | 10 | 0 | 0 | 10 |
+| upstream/carrier | 44 | 0 | 0 | 44 |
+
+So **107, not 120**: the 120 was 189 − 20 − 49, arithmetic on bucket sizes that was never re-counted after batch 4
+took 116 files out of the 320 rather than the 113 the buckets implied. And **30, not 29**: the 29 assumed 34
+costumes in the in-row list, but `BaseCostume` itself is in the 320, so 33. Neither error changed what was
+ported; both are logged because the rule is that a number stated without counting is wrong until counted.
+
+Then the §12 item-ID cross-check over all 138 files, every hit read: **three of the 107 are already in ModernUO
+under other names** and are not ported:
+
+| ServUO file | Types | ModernUO already has |
+|---|---|---|
+| `Items/Equipment/Clothing/Arms.cs` | `GargishClothArms`, `FemaleGargishClothArms`, `MaleGargishClothArms` | `GargishClothArmsType1` (0x404) / `Type2` (0x403), the same family as the 17 gargish cloth/leather/stone files in §12 |
+| `Items/Artifacts/Decorative/MLDecorationArtifacts.cs` | `AncientShipModelOfTheHMSCape` | `ShipModelOfTheHMSCape` (`Items/Minor Artifacts/`): same 0x14F3, hue 0x37B, cliloc 1063476 |
+| `Items/Equipment/Spellbooks/MysticBook.cs` | `MysticBook` | `MysticSpellbook` (`Items/Skill Items/Magical/`): same 0x2D9D, `SpellbookType.Mystic`, offset 677, count 16 |
+
+The §12 "already in ModernUO" list is therefore **21 files**, not 18 (and one of the 18,
+`FemaleGargishLeatherChest.cs`, was mis-formatted in that list; fixed below). The other hits of the cross-check
+(elixirs sharing 0x99B with batch 1's, the four Royal Zoo statues sharing graphics with mounts, the cloaks with
+`CloakOfDeath`, the talismans with ModernUO's minor artifacts, `FNPitchfork` with `Pitchfork`, `InfusedGlassStave`
+with `GlassStaff`, `SternAnchorOfBmvArarat` with `GhostShipAnchor`) are different items on the same graphic.
+
+Ported this batch: **104 plain + 30 in-row + Swiftflight + `EpiphanyHelper.cs`** (from the 44, the one file
+`VillainousEpiphany` could not be read without) = 136 ServUO files.
+
+### 15.2 Swiftflight — `Bow, ISetItem`, no sixth carrier (Q-041)
+
+Done as the answer says: `Swiftflight : Bow, ISetItem`, with `BaseSetWeapon`'s eleven fields reproduced
+(`SetAttributes`, `SetSkillBonuses`, the five `Set*Bonus`, `SetHue`, `SetEquipped`, `LastEquipped`,
+`SetSelfRepair`), no absorption block and no `IAbsorptionItem`, the same `OnAdded`/`OnRemoved`/`GetProperties`
+bodies, and `SetID`/`Pieces`/`BardMasteryBonus`/`IsSetItem` as plain interface properties. Nothing else changed:
+`AOS-set-attribute-aggregation.patch` keys on the interface and `SetHelper.GetSetProperties` branches on
+`BaseWeapon` first. `SetSelfRepair = 3` is stored, inert, and its tooltip line suppressed, logged under the gap
+register's **D-16** as instructed (that number collides with §14.6's D-16 for `DarkwoodCrown`; Q-043). **D-17 is
+removed**: the Marksman set can complete.
+
+**Proven, not just compiled:** `server/tests/.../MarksmanSetVerification.cs` is the first test on real content
+pieces rather than a carrier. `ABowImplementingISetItemCompletesTheSetWithTheQuiver` wears the real `Swiftflight`
+and `Feathernock` on a `PlayerMobile` and asserts the set completes through the interface alone (`bow is
+ISetItem`, `bow is not BaseSetWeapon`), that the last-equipped piece's set attributes aggregate once (attack chance
+15, swing speed 30, damage 40 + 10 + 20, dex +8), the hue swap, and both orders of equipping.
+`SwiftflightSetStateSurvivesASerializationRoundTrip` proves the generated serializer on a `Bow` subclass carries
+the set fields, including the inert self-repair value. Both pass in the gate (44 tests: S1-S10's 42 plus these two).
+
+### 15.3 Pre-flight — read, scripted, and the regex re-generated
+
+1. **Every one of the 138 files was read** before a line was written (14,468 ServUO lines), boilerplate stripped.
+2. **`preflight.py`** parsed all 240 classes: base and whether it exists in pinned ModernUO or ours, every
+   override, every constructor statement outside the plain shape, methods, fields, attributes, and the
+   **transitive ServUO-descendant carrier walk** with the regex regenerated from the six `BaseSet*.cs`
+   (`regen_regex.py`: it reproduces the AGENTS.md list exactly plus `IAbsorptionItem`, so no carrier has gained a
+   member and AGENTS.md is not edited).
+3. **The walk found exactly one base that needs a carrier: `LeatherTalons`** (5 ServUO descendants;
+   `UnicornManeWovenTalons` in `DespiseArtifacts.cs` assigns `SAAbsorptionAttributes`). It is on `BaseSetClothing`
+   with `BaseShoes.Scissor` reproduced. The other new bases (`DaggerBelt`, `MaceBelt`, `SwordBelt`, `PlateTalons`,
+   the two gargoyle tails, `FirstAidBelt`, four female gargish plates) have no descendant that touches a carrier
+   member and stay on stock bases. **One trap for the next agent:** the first run of the walk used a word boundary
+   before `AbsorptionAttributes` and so did **not** match ServUO's `SAAbsorptionAttributes` spelling. The three
+   affected files were caught by reading, the walk was re-run without the boundary, and the answer above is from
+   the corrected run. Match the token as a suffix, not a word.
+4. **Every attribute member the 138 files assign was checked against the pinned enums** by script
+   (`AosAttribute`, `AosWeaponAttribute`, `AosArmorAttribute`, `AosElementAttribute`, our `SAAbsorptionAttributes`):
+   66 (block, member) pairs, **7 absent** — `ArmorAttributes.SoulCharge` ×3, `WeaponAttributes.BattleLust` ×3,
+   `Attributes.LowerAmmoCost` ×1 — all logged (§15.6). This check was written *after* build cycle 2 found the third
+   `SoulCharge`; it belongs in the pre-flight and is there now.
+5. **Every other API** the hand-written files touch was grepped in the pinned tree first: `BaseImprisonedMobile`
+   (same double-click/confirm flow), `ISecurable` and `SetSecureLevelEntry.AddTo(from, this, ref list)`,
+   `Mobile.OnKarmaChange` (virtual, `Mobile.cs:6812`), `Titles.MaxKarma` (15000 here, 32000 on ServUO),
+   `RewardSystem.GetRewardLevel(Account)`, `SOS.ValidateDeepWater` (private, reproduced), `Container.CheckHold`
+   signature, `BaseTalisman`'s `Skill`/`Blessed`/`Removal`/`MaxChargeTime`/`Protection`/`Summoner` and its three
+   `GetRandom*` statics, `TalismanAttribute(type, name, amount)`, `MonsterStatuetteType.Santa`, `BaseSetClothing`'s
+   `(itemID, layer, hue)` constructor, the `FlippableAttribute` no-id form (calls the item's `Flip()`).
+
+**Equivalents under different names, found here, not holes:** ServUO's `TalismanSkill` enum is ModernUO's
+`SkillName` on `BaseTalisman.Skill` (same craft-bonus check, `CraftItem.cs:803`; `Inscription` → `Inscribe`);
+`RandomTalisman.GetRandomBlessed()` is `BaseTalisman.GetRandomBlessed()`; `ItemQuality.Exceptional` on
+`ElvenGlasses` is `ArmorQuality.Exceptional`; `ObjectPropertyList.Enabled` is `Core.AOS`; `DateTime.UtcNow` is
+`Core.Now`. §4 counted `TalismanSkill` as a hole; it is a rename.
+
+### 15.4 How it was written
+
+**`gen_batch5.py` + `jobs_batch5.py`: 116 files, 213 classes.** Batch 4's generator, extended for multi-class
+files (kept in ServUO's file layout), constructor pairs (`X() : this(0)` + `X(int hue)` collapse to `X(int hue = 0)`),
+`switch` blocks in constructors (kept verbatim, or dropped with a logged reason), version fix-ups in `Deserialize`
+(detected and dropped: `GlovesOfFeudalGrip`, `GargishKiltOfFeudalVise`, `MysticsGarb` — no old instances exist),
+per-class drops with a reason that lands in the file header, interface members and method text per class (the 12
+Epiphany pieces, the three `OnCraft` overrides, the two `GetDamageTypes`, the four Bestial `OnAdded`/`OnRemoved`),
+and carrier children with the stock parent inlined from a members dump (`dump_parents5.py`: `BearMask`, `Cloak`,
+`Sandals` added to batch 4's). It refuses anything it does not recognise; it refused nothing in the final run
+because everything it would have refused was hand-written.
+
+**Hand-written, 19 files / 23 classes**, each for a reason the generator cannot cover: `Swiftflight` (§15.2);
+`GrapeVine` (a persisted `DateTime`); `PhoenixTicket`, the four elixirs (batch 1's `ElixirofAgapiteConversion`
+by substitution: same shape, different ingots; the Metal elixir's `switch` is ServUO's case order 0, 2, 1, 3 in
+1, 2 order, same uniform choice); `MagicalDoor` (a get/set `ItemID` override); `FallenMysticsSpellbook` (derives
+from ModernUO's `MysticSpellbook`, the `PetrifiedSnake`/`SerpentstoneStaff` shape); `KingsGildedStatue` and
+the two `KingsPainting`s (ServUO hides the rarity line with `ShowArtifactRarity => false`; ModernUO's
+`BaseDecorationArtifact` has no such switch, so they derive from `Item` and reproduce the base's other two
+members, the batch 4 "stock base cannot be re-parented, inline it" shape); the two addons and their deeds;
+`FerretImprisonedInCrystal` + `ShimmeringFerret`; `LargeFishingNet` (deep-water test reproduced from the private
+`SOS.ValidateDeepWater`); `MapOfTheKnownWorld` (securable, context menu, one-image gump);
+`TenthAnniversarySculpture` (static tables, a defrag `Timer`, `AfterDeserialization` re-registration);
+`BarreraaksRing` (body-mod on equip, `AfterDeserialization` re-apply); `FirstAidBelt` (a bandage-only
+`Container` with weight reduction and its own attributes); `EpiphanyHelper` (§15.6, D-24).
+
+**Carrier children this batch (7):** `UnicornManeWovenSandals` (`BaseSetClothing` + `Sandals` and
+`BaseShoes.Scissor`), `RangersCloakOfAugmentation` (`BaseSetClothing` + `Cloak`, its `Flip()` reproduced,
+`IArcaneEquip` dropped), `BestialHelm` (`BaseSetClothing` + `BearMask`), `BestialGloves`/`Gorget`/`Legs`
+(`BaseSetArmor` + `LeatherGloves`/`Gorget`/`Legs`), `LeatherTalons` (above). Each reviewed against the **pinned
+parent's dump**, not against ServUO (the batch 4 lesson): every parent override not overridden by the piece is
+reproduced, `Dye`/`Scissor`/`Flip` bodies statement for statement.
+
+### 15.5 Verification — read, not just compiled
+
+1. **Value diff, proved red.** `verify5.py` (batch 4's, extended for multi-class files, the batch 5 renames and
+   its logged drops) compares every ServUO `override` and constructor assignment with its port over all 135
+   ported files: **0 findings**. Then `AxesOfFury` was mutated (one override value, one constructor value, one
+   override deleted): **3 findings, exactly the three**, then 0 again after restore. 1,085 overrides and 821
+   constructor assignments over 236 ServUO classes. It skips the random `switch` blocks in the seven rolled items
+   (`UnicornManeWovenSandals`/`Talons`, `UnforgivenVeil`, `MarkOfTravesty`, `LegendaryMapmakersGlasses`,
+   the Metal elixir, `MagicalDoor`'s id list), which were read by eye against ServUO.
+2. **`build.sh -t sl-modernuo:cc9e`**, three cycles. Cycle 1 (failed in the builder stage, one `CS0115`):
+   `FirstAidBelt.CheckStack(Mobile, Item)` has nothing to override — ModernUO's `Container` has no `CheckStack`;
+   both of its stacking paths (`TryDropItem`, `OnStackAttempt`) call `CheckHold` with `checkItems` false first, and
+   the belt's `CheckHold` override already carries the type-and-amount gate on that path, so the override was
+   redundant, not missing; removed with a comment. Cycle 2 (failed, three errors): `DespicableQuiver`'s
+   `SkillBonuses` (ModernUO's `BaseQuiver` has none; D-23), `MysticsGuard`'s `ArmorAttributes.SoulCharge = 30`
+   (the third SoulCharge, missed on reading; D-21), and a missing `using Server.Mobiles` for `SummonedOrcBrute`.
+   The enum sweep in §15.3 was written then. Cycle 3: exit 0, 15 patches applied, 469 structured customizations installed, 44 tests passed (the two Marksman tests at 1 ms and 2 ms), image `sl-modernuo:cc9e`. Logs `build-batch5*.log` in the work folder.
+3. **Reflection** over `/modernuo/Distribution/UOContent.dll` in the builder image (`reflect.cs`, the CC2 probe,
+   run with `dotnet run` against the freshly published assemblies): **237 ok, 0 bad**: every item type reports `generated=[Deserialize Serialize]` and a `(Serial)` constructor; `Swiftflight` reports `Bow` as its base, `LeatherTalons`/`BestialHelm`/`RangersCloakOfAugmentation`/`UnicornManeWovenSandals` report `BaseSetClothing`, the three Bestial leather pieces `BaseSetArmor`, `EpiphanyHelper` is static. One false "bad" on the first pass: the CC2 probe only looks in `Server.Items` and `Server`, and `ShimmeringFerret` is in `Server.Mobiles`; the probe now looks there too (`reflect.cs`).
+4. **Headless run 1** (fresh scratch `Saves/`, loopback-only copy of the live `Configuration/`, `--network=none`,
+   `--rm`): `Loading world done (618 items, 90 mobiles)`, `Listening: 127.0.0.1:2593` only, save, snapshot, clean shutdown, exit 0, 59 lines. **Run 2** on run 1's save: `Loading world done (622 items, 91 mobiles)`, save, clean shutdown, exit 0, 51 lines. The same three `WRN` lines as batch 4 (two account prompts, the pre-existing `Command stats already registered`). **618/622 where every earlier batch reported 617/621:** checked before writing it down. The fresh save's `SerializedTypes.db` holds 164 type names and **none of this batch's 237**; diffed against batch 4's scratch save (163 names) the difference is stock vendor outfit pieces only (`CompositeBowW`, `Kilt`, `QuarterStaff`, `RingmailChest`, `ShortPantsU` in; `CompositeBow`, `KiltU`, `ShepherdsCrook`, `ShortPantsW` out): the seeders dress their 44 gargoyle vendors at random and this run dealt one more item. Seeder noise, not a batch 5 instance.
+
+**Not verified headlessly, per the standing rule:** any instance surviving a save/reload (the round-trip test
+covers Swiftflight's fields, nothing else), the set bonus of any of the five sets touched (Bestial's four new
+pieces, Darden's five, Virtuoso's armbands, Marksman through the test only, Epiphany inert), the seven random
+rolls, the three `OnCraft` overrides, the belt's container rules, the net, the map gump, the sculpture's timer,
+the ring's body mod. Batched for the client spot check, now **381 files** over five batches.
+
+### 15.6 Deviations added by this batch — for `docs/fidelity-principle.md`
+
+| # | Deviation | Player notices | Reverses when |
+|---|---|---|---|
+| D-16 (gap register numbering; Q-043) | `Swiftflight.SetSelfRepair = 3` stored, inert, tooltip suppressed | A completed Marksman set does not self-repair the bow | the weapon `OnHit` hook on the set-mechanic hooks row (Q-038) |
+| **D-17 removed** | `Swiftflight` ported; Marksman set completes | — | — |
+| D-20 | `[Alterable]` dropped from 8 classes (`RangersCloakOfAugmentation`, the five human library glasses, `SkullGnarledStaff`, `SkullLongsword`) | Nothing: pinned ModernUO has no alter-item system and no consumer of the name (the `IsArtifact` shape) | an alter-item system |
+| **D-21** | `ArmorAttributes.SoulCharge` dropped: `GargishSignOfChaos` (20), `HumanSignOfChaos` (20), `MysticsGuard` (30) | Three shields lose their soul-charge line and effect | `SoulCharge` in `AosArmorAttribute` and a hook in damage handling (a patch) |
+| **D-22** | `WeaponAttributes.HitLowerDefend = 30` dropped from `MaceAndShieldGlasses`, `GargishMaceAndShieldGlasses`, `CowlOfTheMaceAndShield` | Three head pieces lose hit-lower-defence | ModernUO's `BaseArmor`/`BaseClothing` have no `WeaponAttributes` (only `ElvenGlasses` carries its own, and `AOS.cs:874` aggregates it by type); the D-4 shape: a field plus an aggregation arm in a patch |
+| **D-23** | `DespicableQuiver` loses its random 10-point resistance and `SkillBonuses` (Archery +5) | The quiver shows neither line | ModernUO's `BaseQuiver` has neither block; a quiver carrier extension |
+| **D-24** | Epiphany burst mechanic inert: `EpiphanyHelper.OnHit`/`OnKarmaChange` have no caller; `AddProperties` emits nothing (`Hooked = false`) | The 12 Villainous pieces are dragon/plate/gargish armour with `MageArmor`; no burst, no "Set Ability" lines | +1 line in `AOS-damage-eater-hook.patch` and an additive `PlayerMobile.OnKarmaChange` override (Q-043); flip `Hooked` |
+| D-25 | `RunedDriftwoodBow` loses `Attributes.LowerAmmoCost = 15` | One line; ModernUO keeps lower ammo cost on quivers | `LowerAmmoCost` in `AosAttribute` (the §4 known hole) |
+| D-26 | The five Darden pieces do not emit "Myrmidex Slayer" (1156346) | No line; there is no set slayer to apply either (S1 D-2, the Aloron precedent, extended) | `Myrmidex` in `SlayerName` and `GetSetSlayer` |
+| **D-27** | `FirstAidBelt.HealingBonus` stored, inert, line suppressed; its `Attributes` shown but not aggregated | No bandage bonus. The attribute lines are cosmetic **on ServUO too**: its `AosAttributes.GetValue` never reads a `FirstAidBelt` (grep of `Misc/AOS.cs`) | one read in `BandageContext.BeginHeal` (Q-043) |
+| **D-28** | `TenthAnniversarySculpture` luck inert: `GetLuckBonus` uncalled; cooldowns and "Your luck just improved!" run as on ServUO | An hour of nothing after the message | +1 term on S2's `PlayerMobile-fountain-luck-bonus.patch` line (Q-043) |
+| D-3 (extended) | `BattleLust` dropped: `BladeOfBattle`, `ClawsOfTheBerserker`, `StormCaller` | as D-3 | as D-3 |
+| D-7 (extended) | `BestialGloves` not `IArcaneEquip` (`LeatherGloves`'s), `RangersCloakOfAugmentation` not `IArcaneEquip` (`Cloak`'s) | Nothing | paper only |
+| D-18 (extended) | `BestialHelm` drops `BaseHat`'s shipwreck field and craft bonus | Nothing | paper only |
+| D-1, D-2 | row-wide, not repeated | | |
+
+Paper-only, not deviations: the four `VesperCollection*` jewels carry `[Constructible]` (ServUO omits the attribute,
+which would leave them unspawnable; nothing places them yet); `ObiDiEnse` and `SashOfMight` chain `base()` where
+ServUO passes an item id into a hue parameter and then overwrites the hue (same result); `ObiDiEnse`'s
+`[Flippable(0x1515, 0x1530)]` names cloak graphics and is inert on both emulators, kept as written;
+`SantaStatue`'s flip pair (0x4A9A/0x4A9B) does not match the statuette's 0x4A98 on either emulator, kept;
+`EpiphanyHelper.GetBonus` scales by the shard's `Titles.MaxKarma` (15000) rather than ServUO's 32000, so "20 at max
+karma" stays true here (moot while D-24 holds); the three `OnCraft` overrides skip ModernUO's `DoNotColor` context
+exactly as they skip ServUO's; `KingsGildedStatue`/`KingsPainting` keep `ArtifactRarity` as a plain property nothing
+reads.
+
+### 15.7 What batch 5 leaves — §11 rebuilt from the trees
+
+**Done:** five batches, **381 ServUO files** ported into `server/customizations/Items/` (31 + 40 + 49 + 125 + 136),
+each green on `build.sh`, all reflected, ten clean headless runs. Counted 2026-09-15 with `buckets.py` after this batch's files were in the tree:
+
+| S9 list | Files | Ported | Not candidates (§12) | **Left** |
+|---|---|---|---|---|
+| drops straight in | 320 | 299 | 21 | **0** |
+| in-row | 81 | 81 | 0 | **0** |
+| co-port | 10 | 0 | 0 | **10** |
+| upstream/carrier | 44 | 1 (`EpiphanyHelper`) | 0 | **43**, of which `SnakeCharmerFlute` is half-present (`CharmTarget` exists) |
+
+So the row is **10 co-port + 43 upstream/carrier = 53 files** away from S9's 455, and every one of those needs
+either a file from outside the row (the 10) or a member/carrier/reading decision (the 43: `Brittle` ×?,
+`VirtuousEpiphany` — now one template away, since `Alignment`, `SurgeType`, `IEpiphanyArmor` and the helper
+exist — and the rest as S9 listed them). Nothing in either list is a plain port.
+
+Also left:
+
+- **Q-043** (three more inert mechanics for the hooks row; the D-16 collision; the counts), non-blocking.
+- **The client spot check**, five batches deep: 382 files.
+- **The deploy that closes the window.** Everything re-parented in S10 and batches 3–5 (this batch adds
+  `LeatherTalons`) is free only until `sl-modernuo:latest` is rebuilt and deployed. `docs/gap-register.md` carries
+  it.
+- **The 33 costume files show as modified in `git status` with an empty diff** (line-ending/stat noise predating
+  this batch) and were not staged. `docker/uo/docker-compose.yml` and the dashboard config are the pre-existing
+  uncommitted changes Q-009 covers; not staged either.
+
+### 15.8 What it cost
+
+Wall clock 2026-09-15, this machine. Docker Desktop was down and hung on the first launch (the Q-036 "init
+control API" hang); the §10 recipe fixed it in about two minutes.
+
+| Phase | Elapsed |
+|---|---|
+| Orientation: `AGENTS.md`, `tasks.md`, Q-038..042, §11–14, S10 carriers, batch 4 tooling | ~15 min |
+| Counting the buckets from the trees, reconciling the brief's 120/29 | ~10 min |
+| Pre-flight: 138 files read, scanner written and run, regex regenerated, walk (twice), ~45 API lookups | ~40 min |
+| Writing: Swiftflight + test, Epiphany helper, generator + job table, 19 hand files, parents dump | ~40 min |
+| Value diff and its red test | ~3 min |
+| **`build.sh`**: cycle 1 failed in the builder stage at 23 s (~1 min), cycle 2 the same at 31 s (~1 min), cycle 3 green in ~4.5 min (builder 65 s, tests 1.1 s, image) | ~7 min |
+| Reflection, two headless runs | ~5 min |
+| Note, question, progress | ~20 min |
+
+About **two and a half hours for 136 files**, against batch 4's 80 minutes for 125. The difference is again
+reading: this batch's 138 files were the least uniform of the row (33 hand-written classes, 12 with engine hooks,
+eight ModernUO APIs that had to be confirmed by reading their bodies), and two of the three build cycles were
+spent on things a sharper pre-flight would have caught — the enum sweep now exists for that reason.
+
+### 15.9 File list — batch 5 (136 new files)
+
+New test:
+```
+tests/Items/Artifacts/Equipment/Armor/Sets/MarksmanSetVerification.cs
+```
+
+Swiftflight (Q-041) and the Epiphany helper (from the upstream/carrier 44):
+```
+Items/Artifacts/Equipment/Armor/Sets/Epiphany/EpiphanyHelper.cs
+Items/Artifacts/Equipment/Armor/Sets/Marksman/Swiftflight.cs
+```
+
+In-row bucket (30 ServUO files; `Gargoyle Accessories.cs` is written as `GargoyleAccessories.cs`):
+```
+Items/Artifacts/Decorative/GrapeVine.cs
+Items/Artifacts/DespiseArtifacts.cs
+Items/Artifacts/Equipment/Armor/DragonHideShield.cs
+Items/Artifacts/Equipment/Armor/GargishSignOfChaos.cs
+Items/Artifacts/Equipment/Armor/GargishSignOfOrder.cs
+Items/Artifacts/Equipment/Armor/GlovesOfFeudalGrip.cs
+Items/Artifacts/Equipment/Armor/Sets/Bestial/BestialGloves.cs
+Items/Artifacts/Equipment/Armor/Sets/Bestial/BestialGorget.cs
+Items/Artifacts/Equipment/Armor/Sets/Bestial/BestialHelm.cs
+Items/Artifacts/Equipment/Armor/Sets/Bestial/BestialLegs.cs
+Items/Artifacts/Equipment/Armor/Sets/Dardens Set/DardensBustier.cs
+Items/Artifacts/Equipment/Armor/Sets/Dardens Set/DardensHelm.cs
+Items/Artifacts/Equipment/Armor/Sets/Dardens Set/DardensLegs.cs
+Items/Artifacts/Equipment/Armor/Sets/Dardens Set/DardensSleeves.cs
+Items/Artifacts/Equipment/Armor/Sets/Dardens Set/DardensTunic.cs
+Items/Artifacts/Equipment/Armor/Sets/Epiphany/VillainousEpiphany.cs
+Items/Artifacts/Equipment/Armor/Sets/Initiation/InitiationBag.cs
+Items/Artifacts/Equipment/Armor/Sets/Phoenix/PhoenixTicket.cs
+Items/Artifacts/Equipment/Armor/Sets/Virtuosos/VirtuososArmbands.cs
+Items/Artifacts/Equipment/Armor/VoidInfusedKilt.cs
+Items/Artifacts/Equipment/Clothing/RangersCloakOfAugmentation.cs
+Items/Artifacts/Equipment/Glasses/CollectionsBritLibraryGlasses.cs
+Items/Artifacts/Equipment/Weapons/BladeOfBattle.cs
+Items/Artifacts/Equipment/Weapons/TheRedeemer.cs
+Items/Equipment/Armor/CowlOfTheMaceAndShield.cs
+Items/Equipment/Armor/CrimsonDaggerBelt.cs
+Items/Equipment/Armor/CrimsonMaceBelt.cs
+Items/Equipment/Armor/CrimsonSwordBelt.cs
+Items/Equipment/Armor/ElegantCollarOfFortune.cs
+Items/Equipment/Armor/MagesHoodOfScholarlyInsight.cs
+```
+
+Plain bucket (104 ServUO files):
+```
+Items/Artifacts/Consumables/ElixirofGoldConversion.cs
+Items/Artifacts/Consumables/ElixirofMetalConversion.cs
+Items/Artifacts/Consumables/ElixirofValoriteConversion.cs
+Items/Artifacts/Consumables/ElixirofVeriteConversion.cs
+Items/Artifacts/Decorative/ChangelingStatue.cs
+Items/Artifacts/Decorative/CollectionsBritLibraryMisc.cs
+Items/Artifacts/Decorative/FerretImprisonedInCrystal.cs
+Items/Artifacts/Decorative/FigureheadOfBmvArarat.cs
+Items/Artifacts/Decorative/GildedStatue.cs
+Items/Artifacts/Decorative/KingsPainting.cs
+Items/Artifacts/Decorative/LargeFishingNet.cs
+Items/Artifacts/Decorative/LordBritishThroneAddon.cs
+Items/Artifacts/Decorative/MapOfTheKnownWorld.cs
+Items/Artifacts/Decorative/MedusaStatue.cs
+Items/Artifacts/Decorative/MedusasFloorTileAddon.cs
+Items/Artifacts/Decorative/MummifiedCorpse.cs
+Items/Artifacts/Decorative/PolarBearStatue.cs
+Items/Artifacts/Decorative/QuagmireStatue.cs
+Items/Artifacts/Decorative/ReptalonStatue.cs
+Items/Artifacts/Decorative/SADecorationArtifacts.cs
+Items/Artifacts/Decorative/SantaStatue.cs
+Items/Artifacts/Decorative/ShipsBellOfBmvArarat.cs
+Items/Artifacts/Decorative/SnakeStatue.cs
+Items/Artifacts/Decorative/SternAnchorOfBmvArarat.cs
+Items/Artifacts/Decorative/TenthAnniversarySculpture.cs
+Items/Artifacts/Decorative/WolfStatue.cs
+Items/Artifacts/Equipment/Armor/BronzedArmoroftheValkyrie.cs
+Items/Artifacts/Equipment/Armor/GauntletsOfAnger.cs
+Items/Artifacts/Equipment/Armor/HumanFeyLeggings.cs
+Items/Artifacts/Equipment/Armor/HumanSignOfChaos.cs
+Items/Artifacts/Equipment/Armor/HumanSignOfOrder.cs
+Items/Artifacts/Equipment/Armor/LightsRampart.cs
+Items/Artifacts/Equipment/Armor/MuseumArmor.cs
+Items/Artifacts/Equipment/Armor/MysticsGuard.cs
+Items/Artifacts/Equipment/Armor/RoyalZooLeatherArmor.cs
+Items/Artifacts/Equipment/Armor/RoyalZooPlateArmor.cs
+Items/Artifacts/Equipment/Armor/RoyalZooStuddedArmor.cs
+Items/Artifacts/Equipment/Armor/ShroudOfDeciet.cs
+Items/Artifacts/Equipment/Armor/TongueoftheBeast.cs
+Items/Artifacts/Equipment/Armor/ValkryieArmor.cs
+Items/Artifacts/Equipment/Clothing/AnniversaryRobe.cs
+Items/Artifacts/Equipment/Clothing/AntiqueWeddingDress.cs
+Items/Artifacts/Equipment/Clothing/CloakOfLife.cs
+Items/Artifacts/Equipment/Clothing/CloakOfPower.cs
+Items/Artifacts/Equipment/Clothing/CloakOfSilence.cs
+Items/Artifacts/Equipment/Clothing/ConjurersGarb.cs
+Items/Artifacts/Equipment/Clothing/ConjurersGarbHarbringer.cs
+Items/Artifacts/Equipment/Clothing/MagicalDoor.cs
+Items/Artifacts/Equipment/Clothing/MarkOfTravesty.cs
+Items/Artifacts/Equipment/Clothing/MysticsGarb.cs
+Items/Artifacts/Equipment/Clothing/ObiDiEnse.cs
+Items/Artifacts/Equipment/Clothing/RoyalGuardInvestigatorCloak.cs
+Items/Artifacts/Equipment/Clothing/SashOfMight.cs
+Items/Artifacts/Equipment/Clothing/ShroudOfTheCondemned.cs
+Items/Artifacts/Equipment/Glasses/LegendaryMapmakersGlasses.cs
+Items/Artifacts/Equipment/Jewelry/BarreraakRing.cs
+Items/Artifacts/Equipment/Jewelry/BurningAmber.cs
+Items/Artifacts/Equipment/Jewelry/CrystallineRing.cs
+Items/Artifacts/Equipment/Jewelry/DemonBridleRing.cs
+Items/Artifacts/Equipment/Jewelry/JadeArmband.cs
+Items/Artifacts/Equipment/Jewelry/MuseumJewlery.cs
+Items/Artifacts/Equipment/Jewelry/NecklaceofDiligence.cs
+Items/Artifacts/Equipment/Jewelry/PetrifiedMatriarchsTongue.cs
+Items/Artifacts/Equipment/Jewelry/TokenofHolyFavor.cs
+Items/Artifacts/Equipment/Jewelry/TorcOfTheGuardians.cs
+Items/Artifacts/Equipment/Spellbooks/ConjurersGrimoire.cs
+Items/Artifacts/Equipment/Spellbooks/FallenMysticsSpellbook.cs
+Items/Artifacts/Equipment/Spellbooks/ScrappersCompendium.cs
+Items/Artifacts/Equipment/Weapons/AxesOfFury.cs
+Items/Artifacts/Equipment/Weapons/CavalrysFolly.cs
+Items/Artifacts/Equipment/Weapons/ChannelersDefender.cs
+Items/Artifacts/Equipment/Weapons/ClawsOfTheBerserker.cs
+Items/Artifacts/Equipment/Weapons/DemonHuntersStandard.cs
+Items/Artifacts/Equipment/Weapons/DreadsRevenge.cs
+Items/Artifacts/Equipment/Weapons/EternalGuardianStaff.cs
+Items/Artifacts/Equipment/Weapons/FNPitchfork.cs
+Items/Artifacts/Equipment/Weapons/InfusedGlassStave.cs
+Items/Artifacts/Equipment/Weapons/IronwoodCompositeBow.cs
+Items/Artifacts/Equipment/Weapons/LightInTheVoid.cs
+Items/Artifacts/Equipment/Weapons/Mangler.cs
+Items/Artifacts/Equipment/Weapons/RunedDriftwoodBow.cs
+Items/Artifacts/Equipment/Weapons/ScepterOfTheChief.cs
+Items/Artifacts/Equipment/Weapons/StandardOfChaos.cs
+Items/Artifacts/Equipment/Weapons/StandardOfChaosG.cs
+Items/Artifacts/Equipment/Weapons/StoneSlithClaw.cs
+Items/Artifacts/Equipment/Weapons/StormCaller.cs
+Items/Artifacts/Equipment/Weapons/ValkyriesGlaive.cs
+Items/Artifacts/Equipment/Weapons/WindOfCorruption.cs
+Items/Equipment/Armor/FemaleGargishPlateArms.cs
+Items/Equipment/Armor/FemaleGargishPlateChest.cs
+Items/Equipment/Armor/FemaleGargishPlateKilt.cs
+Items/Equipment/Armor/FemaleGargishPlateLegs.cs
+Items/Equipment/Clothing/DaggerBelt.cs
+Items/Equipment/Clothing/FirstAidBelt.cs
+Items/Equipment/Clothing/GargoyleAccessories.cs
+Items/Equipment/Clothing/LeatherTalons.cs
+Items/Equipment/Clothing/MaceBelt.cs
+Items/Equipment/Clothing/PlateTalons.cs
+Items/Equipment/Clothing/SwordBelt.cs
+Items/Equipment/Instruments/AudChar.cs
+Items/Equipment/Talismans/CollectionsBritLibraryTalismans.cs
+Items/Equipment/Talismans/Slither.cs
+Items/Equipment/Weapons/SkullGnarledStaff.cs
+Items/Equipment/Weapons/SkullLongsword.cs
+```
+
+Not ported, already in ModernUO (3; added to section 12):
+```
+Items/Artifacts/Decorative/MLDecorationArtifacts.cs
+Items/Equipment/Clothing/Arms.cs
+Items/Equipment/Spellbooks/MysticBook.cs
 ```

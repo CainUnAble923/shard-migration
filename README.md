@@ -79,13 +79,13 @@ Setup health   █████████████████████�
 
 **Patches:** 15 total, **0 currently failing to apply**, 8 triaged, 3 found obsolete. `apply-patches.sh` fails the build on a failed patch, so a green build means every patch applied.
 
-### Content moved over: 305 of 2,045 candidate files (14.9%)
+### Content moved over: 438 of 2,045 candidate files (21.4%)
 
 ```
-TOTAL                          ███░░░░░░░░░░░░░░░  305/2045   14.9%
+TOTAL                          ████░░░░░░░░░░░░░░  438/2045   21.4%
 
-Items/Artifacts                █████████░░░░░░░░░  165/325    50.8%
-Items/Equipment                ████████████░░░░░░   99/148    66.9%
+Items/Artifacts                ███████████████░░░  277/325    85.2%
+Items/Equipment                ███████████████░░░  120/148    81.1%
 Items/Resource                 █████████░░░░░░░░░   29/61     47.5%
 Services/Expansions            █░░░░░░░░░░░░░░░░░    6/175     3.4%
 Mobiles/Normal                 █░░░░░░░░░░░░░░░░░    4/138     2.9%
@@ -107,10 +107,11 @@ Services/BulkOrders            ░░░░░░░░░░░░░░░░�
 
 _Counted by matching ServUO file stems (excluding those stock ModernUO already has) against `server/customizations`. Auto-counted, never hand-edited._
 
-**Ported systems logged: 44**
+**Ported systems logged: 45**
 
 | Content | Task | Notes |
 |---|---|---|
+| CC9 batch 5: Swiftflight, the in-row remainder, the whole plain bucket (136 files, 240 types) | CC9 | Closes the 320 and 81 buckets. Swiftflight is Bow, ISetItem with BaseSetWeapon's fields inlined and no carrier (Q-041), proven by the first content-level set test (real Feathernock + Swiftflight complete the Marksman set through the interface alone; round-trip of the set fields on a Bow subclass). 116 files generated from ServUO values by a refusing generator, 19 hand-written; every override and constructor value re-diffed (1,085 + 821, 0 findings, diff proved red). One base needs a carrier (LeatherTalons -> BaseSetClothing, for UnicornManeWovenTalons' absorption). Three more mechanics ported whole and inert pending engine hooks, the D-14 shape: Epiphany burst (12 Villainous pieces), TenthAnniversarySculpture luck, FirstAidBelt healing bonus (Q-043). Three files found already in ModernUO under other names and not ported (gargish cloth arms, HMS Cape model, mystic book). Three build cycles (two single-error failures: a Container.CheckStack that ModernUO gates through CheckHold, a third SoulCharge, a missing using), then green in 4.5 min, 44 tests. 237/237 reflected; headless fresh save and reload clean. The brief's 120/29 were 107/30 when counted from the trees. Nothing seen in a client; spot check now 381 files. |
 | PlagueRat | P1 | P1 reference port. 88 lines to 55. Builds, spawns, survives save/reload. No speed override: SpeedClass Medium, per the Q-008 answer (ModernUO's npc-speeds.json fallback is the standing rule for all ported creatures). |
 | GreaterPoisonElemental | P2 | P2 timed port, headless. 123 lines to 80. Compiles clean, server starts, world saves and reloads; type registration proven by reflection over the shipped assembly. Adds PackItem, multi-AddLoot, an OnDeath override, AI_Mage and the two-argument stat overloads over what PlagueRat covered. No speed override, per Q-008. An instance in a saved world is NOT verified: headless has no spawn - batched for a later client spot check. |
 | LuckyCoin | P2, completed by S2 | Forced dependency of GreaterPoisonElemental; ModernUO has no LuckyCoin. P2 ported it without OnDoubleClick because that targets a FountainOfFortune (Q-010). S2 built the Fountain and RESTORED OnDoubleClick and its InternalTarget, so Q-010 is CLOSED and docs/fidelity-principle.md should drop its entry. Pinned by ShatteredLegacy.Tests.FountainOfFortuneVerification.DoubleClickingACoinInTheBackpackAsksForATarget. Reused by 12 Mobiles/Normal creatures, of which 1 (GreaterPoisonElemental) is in the tree today. |
@@ -222,7 +223,7 @@ What a MODERNUO_COMMIT bump must reconcile. Patches fail LOUDLY - apply-patches.
 - **S3 costed menu - declines upheld with their ratios recorded** — Measured 2026-09-07, notes/s3-decline-costs.md. Skill Masteries (45 files/8,542 lines, unblocks 14, patches 35 upstream files - fails the layering test). Vice vs Virtue (57/9,613, unblocks 5, patches 21). Exploring the Deep (70/10,292, unblocks 2 - structurally the safest build here and the worst ratio). Shadowguard (14/11,222, unblocks 8). City Loyalty (28/8,177, unblocks 15 - decline on ratio, not structure; revisit with Town Cryer). Instanced Peerless (13/1,543, unblocks 2, and BasePeerless and PeerlessAltar are both absent from ModernUO, so there is no base to instance - cost Services/Peerless first). ServUO's ML quest framework (22 files/6,269 lines, not the 21/5,625 the brief stated) - declined because ModernUO already ships the same OSI system. NOT declined and recommended instead: SAAbsorptionAttributes, the TribeType transformation, and a one-quest spike onto ModernUO's ML quest engine. Vendor Searching (4/2,545) is a player feature, not content; the unblock ratio is the wrong test and it is Chase's call.
 - **ServUO ML quest framework - decline REAFFIRMED by S5** — S5 translated one quest end to end and the objective mapping holds for 4 of 5 types, two of them pinned by tests. Porting ServUO's 22-file, 6,269-line framework would put a second engine in the tree to do a job the engine we already have does correctly. The decline was always on two-engines-for-one-job; it now rests on measurement rather than on principle alone. What is NOT declined: the 164 of 203 missing quests that use a single standard objective type. The 39 that hand-write a BaseObjective subclass (25 InternalObjective, 3 CollectionsObtain, 2 QuestionAndAnswer, ~9 one-offs) are per-quest work, not a framework port, and are the thing to cost before the next quest batch.
 
-Counted from the trees: 448 customization files, 20 patch files, 43 tests in 11 files.
+Counted from the trees: 584 customization files, 20 patch files, 45 tests in 12 files.
 Shard status: running on ModernUO.
 <!-- PROGRESS:END -->
 
@@ -231,18 +232,18 @@ Shard status: running on ModernUO.
 <!-- EXPANSION:START -->
 ### Content by expansion
 
-**3,348 of 6,144 ServUO files present** (54%), of which **309 ported by us**.
+**3,481 of 6,144 ServUO files present** (57%), of which **442 ported by us**.
 
 ```
-Pre-AoS (T2A/UOR/LBR)     ███████████░░░░░░░░░  2454/4294    57%   +231
-Age of Shadows            ██████████████░░░░░░   216/309     70%   +15
+Pre-AoS (T2A/UOR/LBR)     ████████████░░░░░░░░  2558/4294    60%   +335
+Age of Shadows            ██████████████░░░░░░   220/309     71%   +19
 Samurai Empire            ███████████████░░░░░    88/115     76%   +1
 Mondain's Legacy          ███████████░░░░░░░░░   248/471     53%   +7
-Stygian Abyss (Ter Mur)   ████████░░░░░░░░░░░░   172/444     39%   +47
-High Seas                 ██████░░░░░░░░░░░░░░    96/334     29%
-Time of Legends (Eodon)   ████████░░░░░░░░░░░░    60/157     38%   +7
+Stygian Abyss (Ter Mur)   █████████░░░░░░░░░░░   189/444     43%   +64
+High Seas                 ██████░░░░░░░░░░░░░░    99/334     30%   +3
+Time of Legends (Eodon)   ████████░░░░░░░░░░░░    65/157     41%   +12
 Endless Journey           ██████████████░░░░░░    14/20      70%   +1
-TOTAL                     ███████████░░░░░░░░░  3348/6144    54%   +309
+TOTAL                     ███████████░░░░░░░░░  3481/6144    57%   +442
 ```
 
 _Filename-stem matching: a proxy for presence, not behaviour. Unclassified files fall into Pre-AoS, inflating it. Directional, not a completion percentage._

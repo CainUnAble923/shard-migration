@@ -2356,3 +2356,39 @@ Leave the helper inert until then. D-14 stands and is accurate.
 
 Status: **[ANSWERED]** — one row, "set-mechanic hooks", Q-038 + Q-042 together, five additive
 patches, costed and unscheduled pending Chase.
+
+## Q-043 [OPEN] 2026-09-15 Batch 5: three more inert mechanics for the hooks row, a D-16 numbering collision, and three counts the brief had wrong
+
+**Question:** three things from CC9 batch 5 that touch `docs/`, which is yours. None blocks; all three are recorded in
+`notes/cc9-artifacts.md` §15 and I proceeded on the assumptions below.
+
+**1. Three more inert mechanics, same shape as Q-042.** Each is ported whole with its engine call site absent and its
+tooltip suppressed per the Aloron precedent, and each closes with one small additive change into a file we already
+patch or a virtual ModernUO already declares. Should they join the "set-mechanic hooks" row in `docs/gap-register.md`?
+
+| Content | ServUO call site | Pinned ModernUO | Cost to close |
+|---|---|---|---|
+| Epiphany armour (12 Villainous pieces + `EpiphanyHelper`, D-24) | `AOS.Damage` → `EpiphanyHelper.OnHit` (`AOS.cs:304`); `PlayerMobile.OnKarmaChange` → `EpiphanyHelper.OnKarmaChange` (`PlayerMobile.cs:5859`) | no call; `Mobile.OnKarmaChange(int)` is a virtual (`Mobiles/Mobile.cs:6812`) that `PlayerMobile` does not override | +1 line in `AOS-damage-eater-hook.patch`; one additive `OnKarmaChange` override in `PlayerMobile` (the Q-042 heal-hook shape). Flip `EpiphanyHelper.Hooked` to true |
+| `TenthAnniversarySculpture` luck (D-28) | `PlayerMobile.Luck` adds `TenthAnniversarySculpture.GetLuckBonus(this)` (`PlayerMobile.cs:4395`) | `PlayerMobile.Luck` is the line S2 already patches (`PlayerMobile-fountain-luck-bonus.patch`) | +1 term on that patched line |
+| `FirstAidBelt.HealingBonus` (D-27) | `Bandage.cs:493` adds `belt.HealingBonus` to the heal | `BandageContext.BeginHeal` (`Items/Skill Items/Misc/Bandage.cs:454`) has no read | one read in `BandageContext`, a busier upstream file than the other two; cost it separately if you want |
+
+I did not write any of them (subsystem-policy: patches go to Chase as a row, not into a content batch). The helpers are
+correct and uncalled, so each switches on the day its line lands, with no migration.
+
+**2. `D-16` names two different deviations.** `docs/gap-register.md` ("From S10") uses D-16 for "`SetSelfRepair` is
+stored but inert on weapon, clothing and shield", which is what Q-041 told me to log Swiftflight under, and I did.
+`notes/cc9-artifacts.md` §14.6 uses D-16 for `DarkwoodCrown`'s flip id. The Swiftflight file cites "the gap register's
+D-16". Which numbering does `docs/fidelity-principle.md` carry? If the gap register's, §14.6's DarkwoodCrown entry
+needs a new number when it is promoted; if the note's, the Swiftflight comment and §15 need the other one.
+
+**3. Three counts in the brief were derived, not counted, and the trees disagree.** "120 plain" is **107** (108 with
+Swiftflight): 320 − 18 not-candidates − 194 already ported (all 194 in the batch 1/3/4 lists; the 120 came from
+189 − 20 − 49, which double-subtracted nothing but never re-counted after batch 4 took 116 of the 320, not 113).
+"29 in-row" is **30**: 81 − 51 ported (33 costumes, not 34; `BaseCostume` is in the 320). And three of the 107 are
+not candidates at all, found by the §12 item-ID cross-check and read: `Items/Equipment/Clothing/Arms.cs` (3 types
+= `GargishClothArmsType1/2`), `Items/Artifacts/Decorative/MLDecorationArtifacts.cs` (`AncientShipModelOfTheHMSCape`
+= `ShipModelOfTheHMSCape`, same id, hue and cliloc), `Items/Equipment/Spellbooks/MysticBook.cs` (= `MysticSpellbook`).
+§11 and §12 are rebuilt from the trees in §15; `docs/tasks.md`'s "Remaining" line is yours.
+
+**Your best guess:** (1) yes, one row, now eight small changes instead of five; (2) the gap register's, since docs/
+outranks notes/; (3) nothing to decide, just the numbers to carry into `tasks.md`. Non-blocking.

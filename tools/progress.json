@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-08T14:28:14-05:00",
+  "generated": "2026-09-15T09:20:21-05:00",
   "direction": "stay on ModernUO; pull ServUO content selectively",
   "setup_defects": {
     "CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered": true,
@@ -19,6 +19,13 @@
     "obsolete": 3
   },
   "ported_content": [
+    {
+      "name": "CC9 batch 5: Swiftflight, the in-row remainder, the whole plain bucket (136 files, 240 types)",
+      "task": "CC9",
+      "source": "ServUO Items/Artifacts/**, Items/Equipment/** (S9's 320 and 81 lists, remainder) + Sets/Epiphany/EpiphanyHelper.cs",
+      "dest": "server/customizations/Items/**, server/tests/Items/Artifacts/Equipment/Armor/Sets/MarksmanSetVerification.cs",
+      "note": "Closes the 320 and 81 buckets. Swiftflight is Bow, ISetItem with BaseSetWeapon's fields inlined and no carrier (Q-041), proven by the first content-level set test (real Feathernock + Swiftflight complete the Marksman set through the interface alone; round-trip of the set fields on a Bow subclass). 116 files generated from ServUO values by a refusing generator, 19 hand-written; every override and constructor value re-diffed (1,085 + 821, 0 findings, diff proved red). One base needs a carrier (LeatherTalons -> BaseSetClothing, for UnicornManeWovenTalons' absorption). Three more mechanics ported whole and inert pending engine hooks, the D-14 shape: Epiphany burst (12 Villainous pieces), TenthAnniversarySculpture luck, FirstAidBelt healing bonus (Q-043). Three files found already in ModernUO under other names and not ported (gargish cloth arms, HMS Cape model, mystic book). Three build cycles (two single-error failures: a Container.CheckStack that ModernUO gates through CheckHold, a third SoulCharge, a missing using), then green in 4.5 min, 44 tests. 237/237 reflected; headless fresh save and reload clean. The brief's 120/29 were 107/30 when counted from the trees. Nothing seen in a client; spot check now 381 files."
+    },
     {
       "name": "PlagueRat",
       "task": "P1",
@@ -509,24 +516,24 @@
     ]
   },
   "counted": {
-    "customization_files": 448,
+    "customization_files": 584,
     "patch_files": 20,
     "stale_migrations_present": false,
-    "test_files": 11,
-    "test_cases": 43
+    "test_files": 12,
+    "test_cases": 45
   },
   "content_progress": [
     {
       "area": "Items/Artifacts",
       "total": 325,
-      "done": 165,
-      "pct": 50.8
+      "done": 277,
+      "pct": 85.2
     },
     {
       "area": "Items/Equipment",
       "total": 148,
-      "done": 99,
-      "pct": 66.9
+      "done": 120,
+      "pct": 81.1
     },
     {
       "area": "Items/Resource",
