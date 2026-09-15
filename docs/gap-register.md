@@ -177,14 +177,31 @@ it was a measured number, not because it was large.
 2026-09-08; **Chase's call to schedule**, because five patches is five things a pinned-commit bump
 has to reconcile.
 
-| Hook | Change | Shape |
-|---|---|---|
-| Bestial berserk, damage side | +1 line in `AOS.Damage` | a patch we already own (`AOS-damage-eater-hook.patch`) |
-| Bestial berserk, heal side | additive `OnHeal` override in `PlayerMobile` | ModernUO already declares `Mobile.OnHeal` (`Mobile.cs:6104`) and `PlayerMobile` does not override it |
-| `SetSelfRepair` on weapon, clothing, shield | three `OnHit` hooks | same shape as `BaseArmor-set-self-repair.patch`, which works |
+**Eight changes, revised 2026-09-15 after batch 5 (Q-043).**
 
-No serialization change, no core-project patch. Until it lands, a full Bestial set gives its
-bonuses and never rages (D-14), and a completed weapon or shield set does not self-repair (D-16).
+| # | Hook | Change | Shape |
+|---|---|---|---|
+| 1 | Bestial berserk, damage | +1 line in `AOS.Damage` | a patch we already own (`AOS-damage-eater-hook.patch`) |
+| 2 | Bestial berserk, heal | `PlayerMobile.OnHeal` | `Mobile.OnHeal` is a virtual (`Mobile.cs:6104`) |
+| 3 | Epiphany burst, damage | +1 line, same `AOS.Damage` hunk as 1 | free-riding on 1 |
+| 4 | Epiphany burst, karma | one line into `PlayerMobile.OnKarmaChange` | **the safest of the eight**: pinned `PlayerMobile.cs:4139` is an empty override |
+| 5 | `TenthAnniversarySculpture` luck | +1 term on S2's already-patched `PlayerMobile.Luck` line | a line we already own |
+| 6-8 | `SetSelfRepair` on weapon, clothing, shield | three `OnHit` hooks | same shape as `BaseArmor-set-self-repair.patch`, which works |
+
+No serialization change, no core-project patch, and every one lands in an empty override, a line
+we already patch, or a proven hook shape.
+
+**`FirstAidBelt.HealingBonus` is deliberately NOT in this row.** It needs a read inside
+`BandageContext`'s heal computation, which is live upstream logic rather than an empty or
+already-patched line, and it buys one item's bonus. `notes/cc9-artifacts.md` D-27. Take it only
+if someone plays with the belt and misses it.
+
+Until this lands: a full Bestial set never rages, the 12 Epiphany pieces never burst, the
+sculpture's luck does nothing for its hour, and a completed weapon or shield set does not
+self-repair (Q-038).
+
+**D-numbers belong to `notes/`.** This register cites them; it does not mint them. An earlier
+version of this section used "D-16" for the self-repair gap, colliding with `DarkwoodCrown`.
 
 ### From S10
 

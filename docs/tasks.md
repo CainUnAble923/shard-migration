@@ -409,8 +409,17 @@ backups and two archives), 40 of the 41 carrier-blocked files, and the set-armou
 was **85 files, not 79** — 79 set pieces plus 6 Phoenix suit files ServUO keeps under `Sets/`
 without a `SetID`.
 
-**Remaining: 120 plain, 29 in-row, 10 co-port, 44 upstream/carrier**, plus `Swiftflight`, which
-Q-041 answers as a one-off `ISetItem` implementer rather than a sixth carrier.
+**Batch 5 (2026-09-15) emptied the two big buckets.** 136 files / 240 types: `Swiftflight` as
+`Bow, ISetItem` per Q-041 (Marksman set completes, first content-level set test), the 30 in-row
+remainder, and the whole plain bucket.
+
+**The brief's "120 plain" and "29 in-row" were derived, not counted. Counted from the trees they
+are 107 and 30**, and three of the 107 are not candidates at all: `Arms.cs`'s gargish cloth arms
+(same item IDs as pinned `GargishClothArmsType1/2`; the only ServUO type that needed the clothing
+variant was `SpinedBloodwormBracers`, already handled in batch 4), `AncientShipModelOfTheHMSCape`
+(= `ShipModelOfTheHMSCape`) and `MysticBook` (= `MysticSpellbook`).
+
+**Remaining in the row: 10 co-port, 43 upstream/carrier.** The 320 and 81 buckets are empty.
 
 **The client spot check is now the overdue item, not a batch.** `docs/client-check-backlog.md`
 said "after CC9 lands, in one sitting". It covers **245 files** and nothing has been seen in a

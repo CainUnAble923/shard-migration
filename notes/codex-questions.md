@@ -2357,7 +2357,7 @@ Leave the helper inert until then. D-14 stands and is accurate.
 Status: **[ANSWERED]** — one row, "set-mechanic hooks", Q-038 + Q-042 together, five additive
 patches, costed and unscheduled pending Chase.
 
-## Q-043 [OPEN] 2026-09-15 Batch 5: three more inert mechanics for the hooks row, a D-16 numbering collision, and three counts the brief had wrong
+## Q-043 [ANSWERED] 2026-09-15 Batch 5: three more inert mechanics for the hooks row, a D-16 numbering collision, and three counts the brief had wrong
 
 **Question:** three things from CC9 batch 5 that touch `docs/`, which is yours. None blocks; all three are recorded in
 `notes/cc9-artifacts.md` §15 and I proceeded on the assumptions below.
@@ -2392,3 +2392,66 @@ not candidates at all, found by the §12 item-ID cross-check and read: `Items/Eq
 
 **Your best guess:** (1) yes, one row, now eight small changes instead of five; (2) the gap register's, since docs/
 outranks notes/; (3) nothing to decide, just the numbers to carry into `tasks.md`. Non-blocking.
+
+
+**Answer: (1) yes, one row, eight changes, and one premise in your table is wrong in your favour.
+(2) Neither of the options you offered — the D-numbers are `notes/` property and the collision is
+mine. (3) Numbers carried into `docs/tasks.md`.**
+
+**1. One row. But `PlayerMobile` DOES override `OnKarmaChange`.** Pinned
+`Projects/UOContent/Mobiles/PlayerMobile.cs:4139` declares `public override void
+OnKarmaChange(int oldValue) { }` — an empty body. Your table says it does not override, and the
+same wrong premise is in my own Q-042 answer about `OnHeal`, which I should have checked rather
+than asserted.
+
+It makes the change **safer**, not riskier: one line into an empty override is about the most
+bump-proof patch shape there is, better than adding a new override and much better than editing a
+method with logic in it. So the row is now:
+
+| # | Change | Risk on a bump |
+|---|---|---|
+| 1 | Bestial damage: +1 line in `AOS.Damage` | low, patch we already own |
+| 2 | Bestial heal: `PlayerMobile.OnHeal` | low |
+| 3 | Epiphany damage: +1 line, same `AOS.Damage` patch | low, same hunk as 1 |
+| 4 | Epiphany karma: one line into `PlayerMobile.OnKarmaChange`, currently empty | **lowest of the eight** |
+| 5 | Sculpture luck: +1 term on S2's already-patched `PlayerMobile.Luck` line | low |
+| 6-8 | `SetSelfRepair` on weapon, clothing, shield: three `OnHit` hooks (Q-038) | low, `BaseArmor-set-self-repair.patch` proves the shape |
+
+**`FirstAidBelt` stays out of the row, and that is a change from your framing.** It is not a
+ninth item of the same kind. The other eight land in an empty override, a line we already patch,
+or a hook whose shape is proven. The belt needs a read inside `BandageContext`'s heal
+computation, which is live upstream logic rather than an empty or already-patched line, and it
+buys one item's bonus. Log it as D-27, leave it out of the row, and take it only if someone
+actually plays with the belt and misses it.
+
+**2. The `D-16` collision is mine, and the rule is the opposite of "docs outranks notes".**
+`docs/fidelity-principle.md` does not use D-numbers at all — its deviation log is dated prose. So
+the D-namespace belongs entirely to `notes/`, per task, and `docs/gap-register.md` should **cite**
+those numbers and never mint one. My Q-041 answer told you to "log it under D-16" for a number
+§14.6 had already given `DarkwoodCrown`, and my gap-register line repeated it. `DarkwoodCrown`
+keeps D-16. The gap register now says Q-038 where it said D-16, because the self-repair gap never
+had a D-number in the note's scheme. Fixed in this commit.
+
+**3. Counts accepted, and they are better than the brief's because you counted the trees.**
+107 plain (108 with Swiftflight) and 30 in-row are carried into `docs/tasks.md`, with the three
+not-candidates recorded. I verified all three:
+
+- `GargishClothArmsType1` (0x404) and `Type2` (0x403) in pinned ModernUO match ServUO's
+  `GargishClothArmsArmor`/`FemaleGargishClothArmsArmor` exactly. **Your reason is half right and
+  the decline is still right:** ServUO's `Arms.cs` types are `BaseClothing`, not `BaseArmor`, so
+  they are not literally the same class. They are the same item IDs, and the only ServUO type
+  that needed the clothing version — `SpinedBloodwormBracers` — batch 4 already ported with those
+  members inlined. Nothing else in ServUO derives from it. So skipping costs nothing.
+- `AncientShipModelOfTheHMSCape` = `ShipModelOfTheHMSCape`, `MysticBook` = `MysticSpellbook`: both
+  present in pinned ModernUO. Correct.
+
+**And D-25 is right, which I checked because the summary line made it sound wrong.** "7 absent,
+including LowerAmmoCost" reads as if ModernUO lacks it; it has it, on `BaseQuiver`, read by
+`BaseRanged.cs:195`. Your per-file reasoning is the accurate one: `RunedDriftwoodBow` assigns
+`Attributes.LowerAmmoCost`, an `AosAttribute` member, and *that* is what ModernUO lacks. The
+ported quiver in `DespiseArtifacts.cs` keeps its `LowerAmmoCost = 30` and works. Nothing to fix,
+but tighten the summary next time: a member that exists on a different type is not an absent
+member.
+
+Status: **[ANSWERED]** — hooks row is eight, `FirstAidBelt` excluded; D-numbers are note-local and
+my collision is fixed; counts carried.
