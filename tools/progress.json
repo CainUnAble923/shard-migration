@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-15T09:20:21-05:00",
+  "generated": "2026-09-19T12:02:17-05:00",
   "direction": "stay on ModernUO; pull ServUO content selectively",
   "setup_defects": {
     "CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered": true,
@@ -13,7 +13,7 @@
   "setup_done": 7,
   "setup_total": 7,
   "patches": {
-    "total": 15,
+    "total": 16,
     "failing": 0,
     "triaged": 8,
     "obsolete": 3
@@ -333,6 +333,13 @@
       "source": "ServUO Items/Artifacts/Equipment/Armor/Sets/**, Items/Artifacts/Equipment/{Armor,Clothing,Jewelry,Weapons}, Items/Artifacts/Talismans",
       "dest": "server/customizations/Items/Artifacts/Equipment/, Items/Artifacts/Talismans/",
       "note": "GargishDagger moved from BaseKnife to BaseSetWeapon (Q-040: StoneDragonsTooth needs AbsorptionAttributes), after re-verifying no instance in any save by reading the type tables of the live save (2026-07-06, 1,468 types, no Gargish* at all), the three Backups snapshots and the newest daily and hourly Archives (decompressed), not by date alone. The 41 carrier-blocked: 40 ported, Swiftflight declined (Bow sits on BaseRanged, no carrier can sit above it; Q-041). Two talismans ported on stock BaseTalisman with the eater dropped, which is behaviour-identical: ServUO never aggregates a talisman's absorption (RunicReforging.GetSAAbsorptionAttributes). The set-armour bucket counts 85, not 79: 79 set pieces plus the 6 Phoenix suit files that sit under Sets/ with no SetID and stay on stock parents. All 85 generated from ServUO values plus a dump of the pinned stock parent's members ([Flippable] copied because ModernUO reads it inherit:false; IArcaneEquip dropped on 6 gloves per D-7). Two corrections found by reading the parents: batch 3's GargishBattleAxe had lost BaseAxe (Slash1H, sword sounds, no harvesting) and S10's BaseSetWeapon skipped BaseMeleeWeapon's AbsorbDamage; both fixed, both save-neutral today. Bestial pieces ported with the berserk helper inert (its AOS.Damage/heal hooks do not exist here; Q-042). Deviations D-14..D-19. Value diff over 126 files: 0 findings, proved red with three injected faults. One failed build cycle (28 s, one inlined member), then green in 99 s with 42 tests; 130/130 reflected; headless fresh save and reload clean. 10,062 ServUO lines in, 6,363 out. See notes/cc9-artifacts.md section 14."
+    },
+    {
+      "name": "CC4 Despise: the Revamped Despise dungeon (12 ServUO files + XmlSpawner XML -> 14 files, 4,684 lines)",
+      "task": "CC4",
+      "source": "ServUO Services/Revamped Dungeons/DespiseRevamped/{AI,DespiseController,Region,Setup}.cs, Mobiles/Normal/Despise{Creature,GoodCreatures,EvilCreatures}.cs, Mobiles/Bosses/DespiseBosses.cs, Items/Quest/{WispOrb,PutridHeart}.cs, Items/Functional/DespiseAnkh.cs, Items/Internal/DespiseTeleporter.cs, Misc/WeakEntityCollection.cs, RevampedSpawns/DespiseRevamped.xml",
+      "dest": "server/customizations/Services/Revamped Dungeons/DespiseRevamped/, Mobiles/Normal/, Mobiles/Bosses/, Items/Quest/, Items/Functional/, Items/Internal/, Misc/; server/tests/Services/Revamped Dungeons/DespiseRevamped/; server/patches/BaseCreature-PlayerMobile-can-auto-stable.patch",
+      "note": "Regions are ServUO dynamic BaseRegions re-created by the controller; ModernUO's Region maps member for member except CheckTravel (now on BaseRegion with an out message), the absent EventSink.OnEnterRegion (DespiseRegion.OnExit instead), and priority: every pinned region is Dynamic so the tie with regions.json's Despise dungeon went to list order - priority 51. XmlSpawner XML became a 47-row table plus DespiseSpawner (PowerMin/PowerMax) applied in OnAfterSpawn, because ModernUO entries take fixed parameters. Headless on the real map: 227 creatures generated in bounds (capacity 227 of 229 requested: two XML rows exceed their entries), power 1-5 upper / 4-8 lower, 15+15 army spawners found, save/reload identical. 48 tests green, auto-stable gate proved red. Deviations (note-local D-29..D-36 in notes/cc4-despise.md): PutridHeart inert, MysteriousWisp not placed, Town Cryer hooks dropped, Silenii/Phantom Discordance dropped, ForceNotoriety absent, Container orb hook absent, lower level 4-8 vs a broken 2-arg XML, FightMode.Good/Evil -> Closest (behaviour-identical on pub57)."
     }
   ],
   "declined_content": [
@@ -490,6 +497,24 @@
         "risk": "low",
         "why": "one call, NPCSpeeds.Configure, added to the upstream TEST fixture so a BaseCreature can be constructed in a test at all. The only patch here that touches a test project, so it cannot change the shipped server - proved by hashing the runtime assemblies against the S6 image",
         "breaks": "any upstream edit to UOContentFixture's constructor near SkillsInfo.Configure, or a change to what NPCSpeeds.Configure does; either way every creature test fails loudly in the constructor"
+      },
+      {
+        "file": "Projects/UOContent/Mobiles/BaseCreature.cs",
+        "patch": "BaseCreature-PlayerMobile-can-auto-stable",
+        "d": "+4/-0",
+        "task": "CC4",
+        "risk": "low",
+        "why": "ServUO's virtual CanAutoStable so a Wisp-Orb-possessed creature is not stabled on logout",
+        "breaks": "nothing likely; an added virtual next to IsBondable"
+      },
+      {
+        "file": "Projects/UOContent/Mobiles/PlayerMobile.cs",
+        "patch": "BaseCreature-PlayerMobile-can-auto-stable",
+        "d": "+6/-0",
+        "task": "CC4",
+        "risk": "low",
+        "why": "the one guard in AutoStablePets that honours CanAutoStable",
+        "breaks": "a rewrite of AutoStablePets; three patches now share PlayerMobile.cs"
       }
     ],
     "replacements": [
@@ -516,11 +541,11 @@
     ]
   },
   "counted": {
-    "customization_files": 584,
-    "patch_files": 20,
+    "customization_files": 598,
+    "patch_files": 21,
     "stale_migrations_present": false,
-    "test_files": 12,
-    "test_cases": 45
+    "test_files": 13,
+    "test_cases": 49
   },
   "content_progress": [
     {
@@ -542,22 +567,46 @@
       "pct": 47.5
     },
     {
+      "area": "Mobiles/Normal",
+      "total": 138,
+      "done": 7,
+      "pct": 5.1
+    },
+    {
       "area": "Services/Expansions",
       "total": 175,
       "done": 6,
       "pct": 3.4
     },
     {
-      "area": "Mobiles/Normal",
-      "total": 138,
+      "area": "Services/Revamped Dungeons",
+      "total": 150,
       "done": 4,
-      "pct": 2.9
+      "pct": 2.7
+    },
+    {
+      "area": "Items/Quest",
+      "total": 78,
+      "done": 2,
+      "pct": 2.6
     },
     {
       "area": "Items/Addons",
       "total": 169,
       "done": 1,
       "pct": 0.6
+    },
+    {
+      "area": "Items/Functional",
+      "total": 49,
+      "done": 1,
+      "pct": 2.0
+    },
+    {
+      "area": "Services/New Magincia",
+      "total": 40,
+      "done": 1,
+      "pct": 2.5
     },
     {
       "area": "Items/Containers",
@@ -568,12 +617,6 @@
     {
       "area": "Mobiles/NPCs",
       "total": 222,
-      "done": 0,
-      "pct": 0.0
-    },
-    {
-      "area": "Services/Revamped Dungeons",
-      "total": 150,
       "done": 0,
       "pct": 0.0
     },
@@ -596,12 +639,6 @@
       "pct": 0.0
     },
     {
-      "area": "Items/Quest",
-      "total": 78,
-      "done": 0,
-      "pct": 0.0
-    },
-    {
       "area": "Items/Consumables",
       "total": 59,
       "done": 0,
@@ -616,18 +653,6 @@
     {
       "area": "Items/StoreBought",
       "total": 51,
-      "done": 0,
-      "pct": 0.0
-    },
-    {
-      "area": "Items/Functional",
-      "total": 49,
-      "done": 0,
-      "pct": 0.0
-    },
-    {
-      "area": "Services/New Magincia",
-      "total": 40,
       "done": 0,
       "pct": 0.0
     },
@@ -750,8 +775,8 @@
     {
       "id": "C2",
       "title": "Revamped Dungeons",
-      "status": "todo",
-      "note": "255 raw and 255 candidates - the only row where the filter removes nothing (S9). 31 drop straight in, 25 need another CC4 file, 140 need ServUO files elsewhere, 59 need an upstream member. 138 reference ReforgedSuffix and 136 use it as a single cosmetic line: delete it (free, 136 logged name-suffix deviations) or build the ~100-line naming carrier plus 4 serialization patches, which frees 110. One chat per dungeon: Despise 4, Shame 11, Wrong 26, Covetous 29, Exodus 38, Blackthorn 147."
+      "status": "in-progress",
+      "note": "CC4 Despise done 2026-09-19: the '4 files' were a hub of 12 ServUO .cs files (4,269 lines) plus a 1,975-line XmlSpawner XML, ported as 14 files (4,684 lines) + a 331-line test + one 3-line patch. build.sh green at 48 tests; headless on the real map: 47 spawners, 227 creatures in bounds, controller finds 15+15 army spawners, save/reload clean. Exposed: all pinned ModernUO regions are Dynamic so a runtime region ties with the static dungeon (priority 51 fixes it); the 30 lower-level XML spawners cannot construct on pub57 (Q-044); CanAutoStable needed a patch. Declined: MysteriousWisp (S7 + reforging + Town Cryer). Re-cost of the row in notes/cc4-despise.md. Remaining: Shame 11, Wrong 26, Covetous 29, Exodus 38, Blackthorn 147. | 255 raw and 255 candidates - the only row where the filter removes nothing (S9). 31 drop straight in, 25 need another CC4 file, 140 need ServUO files elsewhere, 59 need an upstream member. 138 reference ReforgedSuffix and 136 use it as a single cosmetic line: delete it (free, 136 logged name-suffix deviations) or build the ~100-line naming carrier plus 4 serialization patches, which frees 110. One chat per dungeon: Despise 4, Shame 11, Wrong 26, Covetous 29, Exodus 38, Blackthorn 147."
     },
     {
       "id": "C3",

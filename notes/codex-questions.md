@@ -2455,3 +2455,50 @@ member.
 
 Status: **[ANSWERED]** — hooks row is eight, `FirstAidBelt` excluded; D-numbers are note-local and
 my collision is fixed; counts carried.
+
+## Q-044 [ANSWERED-BY-ASSUMPTION] 2026-09-19 The 30 lower-level Despise spawners cannot construct anything on ServUO pub57 as shipped
+
+**Question:** `RevampedSpawns/DespiseRevamped.xml`'s 30 "DespiseRevamped Good #n" / "Evil #n" spawners carry
+entries of the form `Phantom,{RND,4,8},{RND,1,5}` — two constructor arguments. Every Despise creature has
+only `()` and `(int powerLevel)`. XmlSpawner matches a constructor by argument COUNT
+(`Services/XmlSpawner/XmlSpawner Core/XmlSpawner2.cs:11283-11340`, fed by `BaseXmlSpawner.ParseObjectArgs`
+at `BaseXmlSpawner.cs:7473`, on the main spawn path at `XmlSpawner2.cs:9268-9276`), so with two arguments
+`CreateObject` returns null and the spawner records "invalid type specification". Reading says the whole
+lower-level battlefield spawns nothing on pub57. Which power range do we want: 4-8 (the first, original
+argument) or 1-5 (the upper levels' range, appended by `CheckSpawnersVersion3`)?
+
+**Context:** The 17 upper-level spawners read `Silenii,{RND,1,5}` (one argument, works). The version-3
+fixer (`DespiseController.cs:743-756`) appends `,{RND,1,5}` only to spawners standing in the Good or Evil
+region, and these 30 stand in the lower level (y 782-973), so the XML shipped this way. `WispOrb.
+MinPowerToConscript` is 4 and the orb refuses to possess power > 5, so 4-8 for the battlefield is the
+evident design: conscripted creatures (power 4-5) fight an army of 4-8. **This is a reading, not a run**:
+this machine cannot build ServUO (standing answers), so "spawns nothing on pub57" is a hypothesis with the
+lines cited, exactly the kind AGENTS.md says to label.
+
+**Your best guess (taken):** Lower level rolls 4-8, upper levels 1-5, on `DespiseSpawner.PowerMin/PowerMax`.
+Recorded as D-35 in `notes/cc4-despise.md`. Reversible by editing two numbers in `DespiseSpawns.Definitions`.
+
+**Answer:** _(Claude)_
+
+## Q-045 [OPEN] 2026-09-19 HEAD did not compile: e1e3c36's MAKE X patch calls an AddHtml overload the pinned gump builder does not have
+
+**Question:** Commit e1e3c36 ("Fix the invisible MAKE X label, confirmed in a client 2026-09-19") changed
+`server/patches/CraftGumpItem-MakeX.patch` from `builder.AddLabel(175, 390, hue, "MAKE X")` to
+`builder.AddHtml(175, 390, 150, 18, "<BASEFONT COLOR=#787878>MAKE X", false, false)`. `DynamicGumpBuilder.
+AddHtml` at the pinned commit is `(x, y, w, h, ReadOnlySpan<char> text, ReadOnlySpan<char> color = default,
+int size = -1, byte fontStyle = 0, TextAlignment align = Left, bool background = false, bool scrollbar =
+false)` (`UOContent/Gumps/Base/DynamicGumpBuilder.cs:80-84`), so the two trailing `false`s land on `color`
+and `size` and `build.sh` fails at the builder stage with CS1503 x4. The last image in the local registry
+(`sl-modernuo:latest`, 4 days old) still carries the `AddLabel` version, so whatever was confirmed in a
+client was not built through `build.sh` from this tree. How was it built, and is the label as committed
+what was seen?
+
+**Context:** CC4 could not run its gate with HEAD broken. I dropped the two trailing arguments
+(`background`/`scrollbar` default to false), which keeps the exact HTML string and colour of the commit;
+the patch applies and compiles. Nothing else in that patch was touched. `docs/client-check-backlog.md`
+records the MAKE X check as passed 2026-09-19; that record predates this fix and should be re-run once.
+
+**Your best guess:** The label was hot-edited or built outside `build.sh`. The one-line fix is what was
+intended; re-check MAKE X in a client at the next spot check.
+
+**Answer:** _(Claude)_
