@@ -331,3 +331,22 @@ That is up from S4's 2 m 20 s: 27 tests instead of 4, and 83 structured customiz
   bump checklist rather than trying to read a private field.
 - **CC6 can start.** Both blockers named in its dependency are gone: a creature constructs, and a
   timing-dependent test measures time.
+
+## 12. Extended by CC6 batch 1 (2026-09-19): the skill-check handlers
+
+Third gap in the fixture's hand-picked `Configure` list, found the same way as the speed table: a
+creature test failed for a reason that was the host's, not the creature's. `Mobile.CheckSkill` is
+`SkillCheckLocationHandler?.Invoke(...) == true`, the real server assigns the four handlers in
+`SkillCheck.Initialize` through `AssemblyHandler.Invoke("Initialize")` (`Main.cs:448`), and the
+fixture never does, so **every skill roll in the test host fails**: `Stealth.OnUse` reveals the
+user, and anything that rolls a skill takes its failure branch silently. `TrapdoorSpider`'s stealth
+walk found it (`notes/cc6-creatures-batch1.md` §6).
+
+Fixed where S8 fixed the speed table: one call added to `UOContentFixture-npc-speeds.patch`,
+`Server.Misc.SkillCheck.Initialize();`. Alternatives rejected for the reasons section 2 gives: a
+per-test assignment of the handler is the workaround-per-consumer this route exists to remove, and
+dropping the assertion would leave a ported behaviour unverified because the host could not roll a
+skill. `SkillCheck.Configure` (the stat-gain settings) is **not** called; it reads
+`ServerConfiguration`, which the fixture does not load, and the handlers do not need it to decide a
+roll. Proved red first: builds B and C failed on the spider fact with the handler unset, build E
+passed with it set and nothing else changed in that fact.

@@ -2668,3 +2668,24 @@ specific rather than spread evenly, which makes the naming-carrier decision chea
 S9 implied. Worth counting per dungeon as you go rather than re-costing the whole row.
 
 Status: **[ANSWERED]** — keep Nerun's pack as ported.
+
+## Q-048 [OPEN] 2026-09-19 Do the live world's Ter Mur and Underworld spawners exist, so CC6 batch 1 starts spawning on deploy with no action?
+
+**Question:** CC6 batch 1 chose its twenty creatures because pinned ModernUO's own spawn data names them
+(`Distribution/Data/Spawns/post-uoml/termur/{Underworld,Abyss,TerMur}.json`, `post-uoml/trammel/Outdoors.json`, 46
+entries) and nothing declared them, so those entries have been `EntryFlags.InvalidType` (`BaseSpawner.cs:1126-1131`)
+on any world that generated them. `docker/uo/SERVER.md` says the live shard ran `[GenerateSpawners` for `shared/**`,
+`post-uoml/**` and `uoml/**` and generated Ter Mur. `Saves/` was never read (standing rule). If SERVER.md is right,
+the twenty appear on the next deploy with nothing to do: `Spawn` re-resolves the entry name every tick. If those files
+were never generated live, they need `[GenerateSpawners Data/Spawns/post-uoml/termur/**.json` (and the trammel
+Outdoors file for `Spellbinder`) once, then `[save`. Which is it?
+
+**Context:** Headless on a fresh world, the probe generated exactly those four files (168 spawners, 0 failures) and
+all twenty spawned by their stock spawners: 127 live, e.g. gray goblins at Underworld (1196, 1022, -42), enslaved
+goblins at the Abyss (582, 814, -45), spellbinders at Old Haven (3705, 2471, 19). `notes/cc6-creatures-batch1.md` §6.
+
+**Your best guess (taken):** SERVER.md is right and no action is needed; it is a one-minute client check either way
+(walk into the Underworld's first goblin rooms, or `[global get name where GrayGoblin`). Non-blocking. Note that the
+same check also answers whether the other 89 orphaned names (89 after this batch, from 109) are worth their batches.
+
+**Answer:**

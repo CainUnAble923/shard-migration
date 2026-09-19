@@ -339,6 +339,13 @@
       "note": "Regions are ServUO dynamic BaseRegions re-created by the controller; ModernUO's Region maps member for member except CheckTravel (now on BaseRegion with an out message), the absent EventSink.OnEnterRegion (DespiseRegion.OnExit instead), and priority: every pinned region is Dynamic so the tie with regions.json's Despise dungeon went to list order - priority 51. XmlSpawner XML became a 47-row table plus DespiseSpawner (PowerMin/PowerMax) applied in OnAfterSpawn, because ModernUO entries take fixed parameters. Headless on the real map: 227 creatures generated in bounds (capacity 227 of 229 requested: two XML rows exceed their entries), power 1-5 upper / 4-8 lower, 15+15 army spawners found, save/reload identical. 48 tests green, auto-stable gate proved red. Deviations (note-local D-29..D-36 in notes/cc4-despise.md): PutridHeart inert, MysteriousWisp not placed, Town Cryer hooks dropped, Silenii/Phantom Discordance dropped, ForceNotoriety absent, Container orb hook absent, lower level 4-8 vs a broken 2-arg XML, FightMode.Good/Evil -> Closest (behaviour-identical on pub57)."
     },
     {
+      "name": "CC6 batch 1: twenty creatures the stock spawn data places and could not spawn (20 files + GoblinOppositionGroup, 1 test)",
+      "task": "CC6",
+      "source": "ServUO Scripts/Mobiles/Normal/{GrayGoblin,GrayGoblinMage,GrayGoblinKeeper,GreenGoblin,GreenGoblinAlchemist,GreenGoblinScout,EnslavedGrayGoblin,EnslavedGreenGoblin,EnslavedGoblinScout,EnslavedGoblinKeeper,EnslavedGreenGoblinAlchemist,EnslavedGoblinMage,TanglingRoots,SentinelSpider,Gremlin,TrapdoorSpider,Skree,UndeadGuardian,PutridUndeadGuardian,Spellbinder}.cs",
+      "dest": "server/customizations/Mobiles/Normal/, server/customizations/Mobiles/AI/GoblinOppositionGroup.cs, server/tests/Mobiles/Normal/CC6Batch1CreatureVerification.cs",
+      "note": "Selection rule: pinned ModernUO's Distribution/Data/Spawns names 109 types no loaded assembly declares (BaseSpawner marks them InvalidType and spawns nothing); the twenty are the low-to-mid-level Mobiles/Normal part that is clean to port (Underworld goblins, Abyss enslaved goblins, Ter Mur spiders/skree/undead guardians, Old Haven spellbinders). Headless on the real map: the probe imported the four stock files (168 spawners, 0 failures), all twenty spawned by their stock spawners (127 live), save and reload identical; 60 tests green incl. 6 new (values, every stock entry now resolves and 89 names remain, gray/green goblin enmity, trapdoor stealth walk, tangling roots entangle+acid, the rest's shape). TribeType -> a fourth OppositionGroup, additive; CanStealth -> ServUO's BaseCreature.OnMove branch inlined in TrapdoorSpider. Deviations D-44 GreenGoblinScout on AI_Melee (no OrcScout AI), D-45 Spellbinder on AI_Mage (no Spellbinder AI), Skree on AI_Mage (D-41's shape), D-46 ShameWall constructor sets Visible (Q-046). Route extended: the test fixture never wired the skill-check handlers, so every CheckSkill failed in the test host; SkillCheck.Initialize added to the S8 fixture patch, proved red first. Nothing seen in a client; Q-048 asks whether the live world's Ter Mur spawners exist so these start on deploy."
+    },
+    {
       "name": "CC4 Shame: the Revamped Shame dungeon on both facets (19 ServUO files + XmlSpawner XML -> 20 files, 3,772 lines)",
       "task": "CC4",
       "source": "ServUO Services/Revamped Dungeons/Shame Revamped/** (11 files), Services/PointsSystems/ShameCrystals.cs (as a seam), Items/Containers/{BaseTreasureChestMod,TreasureChestMod}.cs (TreasureLevel1-4), Items/Resource/VoidCore.cs, Services/Expansions/High Seas/Items/Resources/{SaltPeter,Potash,Charcoal,BlackPowder}.cs, RevampedSpawns/ShameRevamped.xml",
@@ -490,7 +497,7 @@
       "id": "C4",
       "title": "Creatures and NPCs",
       "status": "todo",
-      "note": "~360 files. Only 275 (60%) are clean on both dependency checks: 89 (19%) reference a type ModernUO lacks, 132 (29%) call a BaseCreature method it does not have. Batches of ~20, drawn from the clean 60%, about an hour each per the P2 measurement. See notes/cc2-timed-port.md."
+      "note": "IN PROGRESS. Batch 1 (2026-09-19): 20 creatures + the goblin tribe group, chosen because pinned ModernUO's own spawn data names them and nothing declared them (109 such names; 46 entries for these 20; all 20 spawn by their stock spawners headlessly, 127 live, reload identical). P2's 275 of 462 reproduces exactly but is the wrong denominator: 325 of the 462 are ModernUO's own types; of the 130 candidates 62 are clean, 6 clean but for SetWeaponAbility, 28 need a leaf type, 18 a Pet Training method, 16 both. 0 of 20 needed a body, hue or sound; 9 needed a method (3 AI types, CanStealth, TribeType x6). Cost: ~48 min to the final image, 5 build cycles (1 signature, 2 test-host gaps: HitsTimer regen and the unwired skill-check handler, now in the S8 fixture patch). See notes/cc6-creatures-batch1.md."
     },
     {
       "id": "C5",
@@ -712,7 +719,7 @@
       {
         "name": "Things to fight",
         "done": false,
-        "detail": "7 of 138 Mobiles/Normal, 0 of 222 Mobiles/NPCs. THE BIGGEST PLAYABILITY GAP. CC6 draws from the clean 60% (275 of 462)."
+        "detail": "27 of 137 Mobiles/Normal (CC6 batch 1: 20, 2026-09-19), 0 of 222 Mobiles/NPCs. THE BIGGEST PLAYABILITY GAP. CC6 now draws from the 109 names the shard's own spawn data places and cannot spawn (89 left, 33 of them Mobiles/Normal), not from the clean 60%: that figure is over all 462 files and the real clean pool was 68 of 130 candidates, now 48."
       },
       {
         "name": "A new character can train without hitting a wall",
