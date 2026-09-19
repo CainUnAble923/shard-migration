@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-19T12:02:17-05:00",
+  "generated": "2026-09-19T18:48:51+00:00",
   "direction": "stay on ModernUO; pull ServUO content selectively",
   "setup_defects": {
     "CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered": true,
@@ -776,7 +776,7 @@
       "id": "C2",
       "title": "Revamped Dungeons",
       "status": "in-progress",
-      "note": "CC4 Despise done 2026-09-19: the '4 files' were a hub of 12 ServUO .cs files (4,269 lines) plus a 1,975-line XmlSpawner XML, ported as 14 files (4,684 lines) + a 331-line test + one 3-line patch. build.sh green at 48 tests; headless on the real map: 47 spawners, 227 creatures in bounds, controller finds 15+15 army spawners, save/reload clean. Exposed: all pinned ModernUO regions are Dynamic so a runtime region ties with the static dungeon (priority 51 fixes it); the 30 lower-level XML spawners cannot construct on pub57 (Q-044); CanAutoStable needed a patch. Declined: MysteriousWisp (S7 + reforging + Town Cryer). Re-cost of the row in notes/cc4-despise.md. Remaining: Shame 11, Wrong 26, Covetous 29, Exodus 38, Blackthorn 147. | 255 raw and 255 candidates - the only row where the filter removes nothing (S9). 31 drop straight in, 25 need another CC4 file, 140 need ServUO files elsewhere, 59 need an upstream member. 138 reference ReforgedSuffix and 136 use it as a single cosmetic line: delete it (free, 136 logged name-suffix deviations) or build the ~100-line naming carrier plus 4 serialization patches, which frees 110. One chat per dungeon: Despise 4, Shame 11, Wrong 26, Covetous 29, Exodus 38, Blackthorn 147."
+      "note": "CC4 Despise done 2026-09-19 and VERIFIED IN A CLIENT 2026-09-20 (seven checks, zero failures). The '4 files' were a hub of 12 ServUO .cs (4,269 lines) plus a 1,975-line XmlSpawner XML, ported into 14 files, one 28-line patch, 48 tests. In-world: gates move the player, creatures carry power levels, THE TWO ARMIES LAND IN THE RIGHT REGIONS (the check that matters, because the first headless run had Region.Find returning the static dungeon everywhere - every region in pinned ModernUO is Dynamic so the dynamic-first tie-break never separates them; fixed at priority 51), the ankh hands out a WispOrb, and possession takes control of a creature. Unverified: the 90-minute boss sequence, and DespiseTeleporter conversion, which converts teleporters a fresh world does not have and will first run on the live deploy. Q-044 answered (lower level rolls 4-8: MinPowerToConscript is 4 and the orb refuses above 5). Shame next."
     },
     {
       "id": "C3",
@@ -799,8 +799,8 @@
     {
       "id": "C6",
       "title": "Artifacts and equipment",
-      "status": "in-progress",
-      "note": "CC9 batches 1-4 done 2026-09-08: 245 files / 251 types, every batch green through build.sh (batch 4 after one failed cycle on a single inlined member), every type reflected, eight clean headless save/reload runs. Batch 3 (49 plain, nine on carriers) and batch 4 (GargishDagger re-parent after measuring the no-instance condition; 40 of the 41 carrier-blocked; the 85-file set-armour bucket = 79 set pieces + 6 Phoenix) are in notes/cc9-artifacts.md sections 13-14. Remaining: 120 plain from the 320, 29 in-row, co-port 10, upstream/carrier 44; Swiftflight declined pending a ranged carrier (Q-041). S9's '88% needs nothing built' does not survive reading: 18 of the 320 are already in ModernUO by content, 85 are set armour re-parented onto BaseSetArmor, 13 set pieces and 17 absorption users needed the S10 carriers. Nineteen deviations logged in notes/cc9-artifacts.md, D-1 (IsArtifact) and D-2 (CanBeWornByGargoyles) once for the whole row. The client spot check has never happened and now covers all 245 files. The re-parenting window (S10, batch 3, batch 4) closes on the first deploy; docs/gap-register.md."
+      "status": "done",
+      "note": "CC9 COMPLETE, five batches, 381 files, and VERIFIED IN A CLIENT 2026-09-19/20 (thirteen checks, zero content regressions - docs/client-check-backlog.md). Batch 5 closed the 320 and 81 buckets: Swiftflight as Bow+ISetItem with no sixth carrier (Q-041), proven by the first content-level set test and then watched completing the Marksman set in-world; the 30 in-row remainder; the whole plain bucket. The brief's 120/29 were 107/30 counted from the trees, and three of the 107 are already in ModernUO under other names. Remaining in the row: 10 co-port, 43 upstream/carrier. What the client settled that nothing else could: the two flip IDs we overrode ServUO on (D-10 GargishWarHammer, D-16 DarkwoodCrown, both correct), Q-040's narrow re-parent rule via the Darden set, batch 4's parent-member repair via GargishBattleAxe chopping wood, and A5 - the Aloron cold eater fired, cliloc 1113617, built in S1 and never seen working until now."
     },
     {
       "id": "C7",
@@ -809,5 +809,5 @@
       "note": "~54 files. Means extending BaseBoat. Do not start; Chase decides from the proposal."
     }
   ],
-  "shard_status": "running on ModernUO"
+  "shard_status": "running on ModernUO; CC9's 381 files and CC4 Despise both verified in a client 2026-09-19/20"
 }
