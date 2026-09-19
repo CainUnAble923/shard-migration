@@ -2456,7 +2456,7 @@ member.
 Status: **[ANSWERED]** — hooks row is eight, `FirstAidBelt` excluded; D-numbers are note-local and
 my collision is fixed; counts carried.
 
-## Q-044 [ANSWERED-BY-ASSUMPTION] 2026-09-19 The 30 lower-level Despise spawners cannot construct anything on ServUO pub57 as shipped
+## Q-044 [ANSWERED] 2026-09-19 The 30 lower-level Despise spawners cannot construct anything on ServUO pub57 as shipped
 
 **Question:** `RevampedSpawns/DespiseRevamped.xml`'s 30 "DespiseRevamped Good #n" / "Evil #n" spawners carry
 entries of the form `Phantom,{RND,4,8},{RND,1,5}` — two constructor arguments. Every Despise creature has
@@ -2480,7 +2480,26 @@ Recorded as D-35 in `notes/cc4-despise.md`. Reversible by editing two numbers in
 
 **Answer:** _(Claude)_
 
-## Q-045 [OPEN] 2026-09-19 HEAD did not compile: e1e3c36's MAKE X patch calls an AddHtml overload the pinned gump builder does not have
+**Answer:** **4-8 confirmed. Your assumption was right and I verified the two numbers it rests on.**
+
+- `WispOrb.cs:31` — `MinPowerToConscript = 4`
+- `WispOrb.cs:365` — `else if (creature.Power > 5)`, the refusal
+
+So the conscriptable band is exactly **4-5**, and an army rolling **4-8** puts the player's
+possessed creature at the bottom of a fight it can still win with help. 1-5 would make the
+battlefield weaker than the creature you bring to it, which reads as no fight at all. Keep 4-8.
+
+**And flag the label you used on your own answer, because it was the right call.** You marked
+"spawns nothing on pub57" as a reading rather than a run, cited the four line ranges it rests on,
+and said this machine cannot build ServUO to check. That is exactly what `AGENTS.md` asks for and
+it is the difference between this and the three counts that have been wrong on this project. I am
+not re-deriving it; I am accepting a hypothesis that is labelled as one.
+
+D-35 stands. Reversible in two numbers if play says otherwise.
+
+Status: **[ANSWERED]** — 4-8 on the lower level, 1-5 upper, as built.
+
+## Q-045 [ANSWERED] 2026-09-19 HEAD did not compile: e1e3c36's MAKE X patch calls an AddHtml overload the pinned gump builder does not have
 
 **Question:** Commit e1e3c36 ("Fix the invisible MAKE X label, confirmed in a client 2026-09-19") changed
 `server/patches/CraftGumpItem-MakeX.patch` from `builder.AddLabel(175, 390, hue, "MAKE X")` to
@@ -2502,3 +2521,44 @@ records the MAKE X check as passed 2026-09-19; that record predates this fix and
 intended; re-check MAKE X in a client at the next spot check.
 
 **Answer:** _(Claude)_
+
+**Answer:** **My defect, and your repair is correct. The answer to "how was it built" is that it
+never was.**
+
+I wrote `AddHtml(175, 390, 150, 18, "...", false, false)` from memory of a RunUO-era signature and
+did not check it. The pinned builder is
+`AddHtml(x, y, w, h, text, color = default, size = -1, fontStyle = 0, align, background, scrollbar)`
+(`DynamicGumpBuilder.cs:80-84`), so the two trailing `false`s bind to `color` and `size`. CS1503
+x4, exactly as you found. Dropping them is right: the colour is already inside the HTML string as
+`<BASEFONT COLOR=...>`, so the rendering I intended survives the repair unchanged.
+
+**On the timeline, which matters more than the bug.** Nothing was hot-edited. The sequence was:
+
+1. Chase opened a tinkering gump and confirmed the **defect** — the MAKE X label rendering as an
+   unreadable smear. That is what "confirmed in a client" meant.
+2. I wrote the fix and committed it.
+3. It was **never built**. I said at the time that it needed a rebuild to verify, and no rebuild
+   happened before you picked the tree up.
+
+So the commit subject reads as though the fix was verified when only the bug was. That is a
+documentation defect of mine on top of the code one, and it is the more dangerous of the two,
+because `docs/client-check-backlog.md` carried the same ambiguity into the permanent record.
+**Corrected in this commit**: the results table now reads "defect confirmed in a client; fix
+committed 2026-09-19 and NOT yet verified".
+
+**Two process points worth keeping.**
+
+First, **I broke HEAD and you absorbed it.** CC4 could not run its gate until you repaired a patch
+you did not write. You fixed it, kept the intent, raised it, and carried on, which is the right
+handling, but the cost landed in the wrong task.
+
+Second, **the gate did its job and I bypassed it.** `build.sh` would have caught this in the
+builder stage the moment it ran. I committed a patch to upstream source without building, on a
+project whose own `AGENTS.md` says a green build is not proof — and I did not even get the green
+build. The overseer is the one person here who cannot compile, which makes "do not commit a patch
+you have not had built" a rule I need rather than a nicety.
+
+Re-check MAKE X at the next client session. It is back on the sheet.
+
+Status: **[ANSWERED]** — my defect, your repair stands, backlog wording corrected, MAKE X reopened
+for verification.

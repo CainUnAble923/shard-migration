@@ -297,6 +297,19 @@ names. The build was green the whole time.
 already have this under another name, does the base class still mean the same thing, and is the
 behaviour reachable. A batch that compiles is the start of the check, not the end of it.
 
+## Do not commit a patch you have not had built
+
+**The overseer cannot compile. That makes this a rule, not a courtesy.** On 2026-09-19 a one-line
+MAKE X fix was committed straight to `server/patches/` from reading the source. It called an
+`AddHtml` overload the pinned gump builder does not have, broke HEAD, and the next content task
+could not run its gate until it repaired a patch it had not written. `build.sh` would have caught
+it in the builder stage in under a minute.
+
+So: **a patch or a code change written by anyone who cannot run `build.sh` is a draft.** It goes
+to the implementer to build, or it waits. And a commit subject says what was actually verified:
+"defect confirmed in a client" and "fix verified in a client" are different claims, and conflating
+them put a wrong entry in `docs/client-check-backlog.md` that outlived the mistake.
+
 ## A gate nobody has watched fail is not a gate
 
 S6's phrasing, and it is now the rule. When you add a test, a patch check, or any other gate,

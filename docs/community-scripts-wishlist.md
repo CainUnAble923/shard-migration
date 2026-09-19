@@ -58,6 +58,20 @@ the end. Re-read the channel before treating it as the full list.
 | Set of traps | CloneTrap spawns a hostile copy of the player; CurseTrap makes an item immovable; LandMobTrap spawns skeletons; MagnetTrap forces players to drop metal items; ItemSealingTrap locks items in a chest needing a scroll | Entirely invented. Likely the most fun for a young audience, and the most wiki debt |
 | LoginStats | announces arrivals and departures, shows total playtime, grants 10s invulnerability and invisibility on login | The invulnerability window is a real gameplay rule, not cosmetic |
 
+## Chase's own ideas, uncosted
+
+**Drop them here the moment they are said, in one line, even half-formed.** An idea that only
+exists in a chat is gone at the next compaction. Costing can wait; capture cannot.
+
+The move from here to the costed section below is research: what does pinned ModernUO already
+ship, what would it cost, what does it deviate from, and what wiki debt does it carry. That
+research has already changed what an idea *was* once: the quest board arrived as a convenience
+and turned out to be the thing that makes 26 quests reachable at all under our skill-gain rate.
+
+| Idea | Said | Status |
+|---|---|---|
+| _(none open)_ | | |
+
 ## Chase's own ideas, costed
 
 Not from the Discord. These are ours, and they carry the same wiki debt as anything else in this
