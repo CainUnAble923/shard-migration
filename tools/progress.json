@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-19T19:05:29+00:00",
+  "generated": "2026-09-19T14:59:31-05:00",
   "direction": "stay on ModernUO; pull ServUO content selectively",
   "setup_defects": {
     "CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered": true,
@@ -340,6 +340,13 @@
       "source": "ServUO Services/Revamped Dungeons/DespiseRevamped/{AI,DespiseController,Region,Setup}.cs, Mobiles/Normal/Despise{Creature,GoodCreatures,EvilCreatures}.cs, Mobiles/Bosses/DespiseBosses.cs, Items/Quest/{WispOrb,PutridHeart}.cs, Items/Functional/DespiseAnkh.cs, Items/Internal/DespiseTeleporter.cs, Misc/WeakEntityCollection.cs, RevampedSpawns/DespiseRevamped.xml",
       "dest": "server/customizations/Services/Revamped Dungeons/DespiseRevamped/, Mobiles/Normal/, Mobiles/Bosses/, Items/Quest/, Items/Functional/, Items/Internal/, Misc/; server/tests/Services/Revamped Dungeons/DespiseRevamped/; server/patches/BaseCreature-PlayerMobile-can-auto-stable.patch",
       "note": "Regions are ServUO dynamic BaseRegions re-created by the controller; ModernUO's Region maps member for member except CheckTravel (now on BaseRegion with an out message), the absent EventSink.OnEnterRegion (DespiseRegion.OnExit instead), and priority: every pinned region is Dynamic so the tie with regions.json's Despise dungeon went to list order - priority 51. XmlSpawner XML became a 47-row table plus DespiseSpawner (PowerMin/PowerMax) applied in OnAfterSpawn, because ModernUO entries take fixed parameters. Headless on the real map: 227 creatures generated in bounds (capacity 227 of 229 requested: two XML rows exceed their entries), power 1-5 upper / 4-8 lower, 15+15 army spawners found, save/reload identical. 48 tests green, auto-stable gate proved red. Deviations (note-local D-29..D-36 in notes/cc4-despise.md): PutridHeart inert, MysteriousWisp not placed, Town Cryer hooks dropped, Silenii/Phantom Discordance dropped, ForceNotoriety absent, Container orb hook absent, lower level 4-8 vs a broken 2-arg XML, FightMode.Good/Evil -> Closest (behaviour-identical on pub57)."
+    },
+    {
+      "name": "CC4 Shame: the Revamped Shame dungeon on both facets (19 ServUO files + XmlSpawner XML -> 20 files, 3,772 lines)",
+      "task": "CC4",
+      "source": "ServUO Services/Revamped Dungeons/Shame Revamped/** (11 files), Services/PointsSystems/ShameCrystals.cs (as a seam), Items/Containers/{BaseTreasureChestMod,TreasureChestMod}.cs (TreasureLevel1-4), Items/Resource/VoidCore.cs, Services/Expansions/High Seas/Items/Resources/{SaltPeter,Potash,Charcoal,BlackPowder}.cs, RevampedSpawns/ShameRevamped.xml",
+      "dest": "server/customizations/Services/Revamped Dungeons/Shame Revamped/, Services/PointsSystems/, Items/Containers/, Items/Resource/, Services/Expansions/High Seas/Items/Resources/; server/tests/Services/Revamped Dungeons/Shame Revamped/",
+      "note": "The brief's 11 files are 19 plus the XML: 116 of the XML's 194 rows spawn TreasureLevel1-4 (Nerun's chest pack, not in ModernUO, ported levels 1-4; Q-047), and the cave troll's four High Seas powder ingredients and the vortex's VoidCore are leaf items ported at ServUO's paths. No region layer: Shame constructs none, the creatures test regions.json's static Shame DungeonRegion by name on both facets, so Despise's priority trap does not arise. XmlSpawner XML became a 194-row table on plain Spawners (no constructor arguments in this file; Q-044's shape does not occur), 97 per facet and identical. Headless on the real map: 384 of 386 requested (two rows exceed their entries) all inside their rectangles and inside the Shame region on both facets, 58 locked chests with loot per facet, 6 altars / 6 walls / 6 trolls / 22 wall teleporters, save/reload identical, 54 tests green, ClayGolem gate proved red, no patch. Deviations (note-local D-37..D-43 in notes/cc4-shame.md): crystal points inert behind a seam for S7 so the altars answer 'not yet worthy' and the guardians are GM-only until then; chest loot unreforged and no refinement roll; StickySkin/ColossalRage/SearingWounds dropped; LifeLeech is DrainLifeAttack; CrazedMage on AI_Mage; TreasureMapChance absent; a timed-out challenge now frees the altar (ServUO leaves it stuck). ServUO's wall teleporters reproduced as read - inert until the first troll dies, then active whenever the wall stands (Q-046)."
     }
   ],
   "declined_content": [
@@ -541,11 +548,11 @@
     ]
   },
   "counted": {
-    "customization_files": 604,
+    "customization_files": 618,
     "patch_files": 21,
     "stale_migrations_present": false,
-    "test_files": 13,
-    "test_cases": 49
+    "test_files": 14,
+    "test_cases": 55
   },
   "content_progress": [
     {
@@ -567,10 +574,16 @@
       "pct": 49.2
     },
     {
+      "area": "Services/Revamped Dungeons",
+      "total": 150,
+      "done": 15,
+      "pct": 10.0
+    },
+    {
       "area": "Services/Expansions",
       "total": 175,
-      "done": 10,
-      "pct": 5.7
+      "done": 12,
+      "pct": 6.9
     },
     {
       "area": "Mobiles/Normal",
@@ -579,10 +592,16 @@
       "pct": 5.1
     },
     {
-      "area": "Services/Revamped Dungeons",
-      "total": 150,
-      "done": 4,
-      "pct": 2.7
+      "area": "Items/Containers",
+      "total": 31,
+      "done": 3,
+      "pct": 9.7
+    },
+    {
+      "area": "Quests",
+      "total": 84,
+      "done": 2,
+      "pct": 2.4
     },
     {
       "area": "Items/Quest",
@@ -609,12 +628,6 @@
       "pct": 2.5
     },
     {
-      "area": "Items/Containers",
-      "total": 31,
-      "done": 1,
-      "pct": 3.2
-    },
-    {
       "area": "Mobiles/NPCs",
       "total": 222,
       "done": 0,
@@ -629,12 +642,6 @@
     {
       "area": "Items/Decorative",
       "total": 88,
-      "done": 0,
-      "pct": 0.0
-    },
-    {
-      "area": "Quests",
-      "total": 84,
       "done": 0,
       "pct": 0.0
     },
@@ -776,7 +783,7 @@
       "id": "C2",
       "title": "Revamped Dungeons",
       "status": "in-progress",
-      "note": "CC4 Despise done 2026-09-19 and VERIFIED IN A CLIENT 2026-09-20 (seven checks, zero failures). The '4 files' were a hub of 12 ServUO .cs (4,269 lines) plus a 1,975-line XmlSpawner XML, ported into 14 files, one 28-line patch, 48 tests. In-world: gates move the player, creatures carry power levels, THE TWO ARMIES LAND IN THE RIGHT REGIONS (the check that matters, because the first headless run had Region.Find returning the static dungeon everywhere - every region in pinned ModernUO is Dynamic so the dynamic-first tie-break never separates them; fixed at priority 51), the ankh hands out a WispOrb, and possession takes control of a creature. Unverified: the 90-minute boss sequence, and DespiseTeleporter conversion, which converts teleporters a fresh world does not have and will first run on the live deploy. Q-044 answered (lower level rolls 4-8: MinPowerToConscript is 4 and the orb refuses above 5). Shame next."
+      "note": "CC4 Despise done 2026-09-19 and VERIFIED IN A CLIENT 2026-09-20 (seven checks, zero failures). The '4 files' were a hub of 12 ServUO .cs (4,269 lines) plus a 1,975-line XmlSpawner XML, ported into 14 files, one 28-line patch, 48 tests. In-world: gates move the player, creatures carry power levels, THE TWO ARMIES LAND IN THE RIGHT REGIONS (the check that matters, because the first headless run had Region.Find returning the static dungeon everywhere - every region in pinned ModernUO is Dynamic so the dynamic-first tie-break never separates them; fixed at priority 51), the ankh hands out a WispOrb, and possession takes control of a creature. Unverified: the 90-minute boss sequence, and DespiseTeleporter conversion, which converts teleporters a fresh world does not have and will first run on the live deploy. Q-044 answered (lower level rolls 4-8: MinPowerToConscript is 4 and the orb refuses above 5). CC4 Shame done 2026-09-19, NOT yet seen in a client: 19 ServUO files + an 8,159-line XML -> 20 files, 3,772 lines, 6 tests, no patch; 194 spawners on both facets generate 384 spawns on the real map, save/reload identical. Its point economy is inert until S7 (D-37: altars refuse, crystals kept) - two dungeons carry that now and Shame's loss is the level guardians. Wrong next."
     },
     {
       "id": "C3",

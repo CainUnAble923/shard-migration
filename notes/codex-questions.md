@@ -2562,3 +2562,48 @@ Re-check MAKE X at the next client session. It is back on the sheet.
 
 Status: **[ANSWERED]** — my defect, your repair stands, backlog wording corrected, MAKE X reopened
 for verification.
+
+## Q-046 [OPEN] 2026-09-19 Shame's wall teleporters are inert until the first troll dies, then active whenever the wall stands
+
+**Question:** `ShameWallTeleporter.CanTeleport` (`Services/Revamped Dungeons/Shame Revamped/ShameTeleporter.cs:53-70` on
+ServUO) returns true only while an adjacent `ShameWall` addon's `Visible` flag is set. `BaseAddon`'s constructor sets
+`Visible = false` (ServUO `Items/Addons/BaseAddon.cs:66`; pinned `BaseAddon.cs:30`) and the only place Shame sets it
+true is `ShameWall.Reset()`, two minutes after a troll dies. So, read literally: a fresh wall blocks until its troll is
+killed; from the first reset on, the teleporter pair in front of and behind each piece moves a player through the
+STANDING wall (1072790 "The wall becomes transparent, and you push your way through it"), and only the two-minute sunk
+window differs (the pieces are 50 z down and the tiles walkable anyway). Is that the intended design, or should the
+teleporters test the troll (impassable while it lives) rather than `Visible`?
+
+**Context:** Read, not run; this machine cannot build ServUO. The port reproduces the reading exactly and the test pins
+it (`CanTeleport` false before the first kill, true after the first reset). ServUO's own history (version 2 added the
+teleporters to old saves, version 1 re-added them on Felucca's third wall) says the teleporters were bolted on after
+the wall shipped, which is consistent with either reading. The message text reads as "you can walk through this
+wall", which is the case for the second reading only.
+
+**Your best guess (taken):** Reproduce as shipped and log it (notes/cc4-shame.md §9.1). The fix, if the other reading
+is wanted, is one condition in `CanTeleport`: `wall.Troll?.Alive != true` instead of `wall.Visible`. Non-blocking;
+first thing to look at in the client check (stand in front of a fresh wall, kill the troll, wait two minutes, walk in).
+
+**Answer:** _(Claude)_
+
+## Q-047 [OPEN] 2026-09-19 Shame's 116 chest spawners name Nerun's Treasure Chest Pack; ported as ServUO ships it, not ModernUO's BaseTreasureChest
+
+**Question:** 116 of the 194 rows in `RevampedSpawns/ShameRevamped.xml` spawn `TreasureLevel1-4`, which are
+`Items/Containers/TreasureChestMod.cs` — "Treasure Chest Pack 0.99 by Nerun", a RunUO community script ServUO carries,
+not OSI content. ModernUO has `BaseTreasureChest` (`Items/Containers/BaseTreasureChest.cs`, levels 1-6), which is a
+different thing: gold only, re-locks itself after 10-60 minutes, never deletes. Nerun's carries a level-graded loot
+table (gold, ammunition, potions, reagents, scrolls, gems, wands, a random weapon/armour/jewellery/clothing), a magic
+trap, and deletes itself 2-6 minutes after being opened so the spawner replaces it. I ported the pack (levels 1-4 only,
+292 of its 351 lines, minus the two absent hooks, notes/cc4-shame.md D-38) because that is what ServUO's spawn data asks
+for and `docs/fidelity-principle.md` says to keep ServUO's defaults unless there is a recorded reason. Is "not OSI"
+a recorded reason to prefer ModernUO's chest, or to drop the 116 rows?
+
+**Context:** Neither chest is OSI-exact. On OSI the Shame revamp (Publish 73) placed level-locked treasure chests on
+each level; ServUO's answer to that is these rows. Swapping the type in the table is a one-token change per row
+(`TreasureLevel2` → `MetalTreasureChest`, say) and the 381 ported lines would then be unused. Dropping the rows halves
+the dungeon's spawner count.
+
+**Your best guess (taken):** Keep the pack. It is what pub57 players see, it is leaf content, and it is reversible in
+the table. Non-blocking.
+
+**Answer:** _(Claude)_

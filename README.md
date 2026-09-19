@@ -63,10 +63,10 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-## Overall: 22% of candidate content ported
+## Overall: 23% of candidate content ported
 
 ```
-Content   █████░░░░░░░░░░░░░░░░░  454/2045   22.2%
+Content   █████░░░░░░░░░░░░░░░░░  471/2045   23.0%
 Setup     ██████████████████████  7/7     blocking defects resolved
 ```
 
@@ -98,26 +98,26 @@ Setup     ██████████████████████  7/
 
 **Patches:** 16 total, **0 currently failing to apply**, 8 triaged, 3 found obsolete. `apply-patches.sh` fails the build on a failed patch, so a green build means every patch applied.
 
-### Content moved over: 454 of 2,045 candidate files (22.2%)
+### Content moved over: 471 of 2,045 candidate files (23.0%)
 
 ```
-TOTAL                          ████░░░░░░░░░░░░░░  454/2045   22.2%
+TOTAL                          ████░░░░░░░░░░░░░░  471/2045   23.0%
 
 Items/Artifacts                ███████████████░░░  277/325    85.2%
 Items/Equipment                ███████████████░░░  120/148    81.1%
 Items/Resource                 █████████░░░░░░░░░   30/61     49.2%
-Services/Expansions            █░░░░░░░░░░░░░░░░░   10/175     5.7%
+Services/Revamped Dungeons     ██░░░░░░░░░░░░░░░░   15/150    10.0%
+Services/Expansions            █░░░░░░░░░░░░░░░░░   12/175     6.9%
 Mobiles/Normal                 █░░░░░░░░░░░░░░░░░    7/138     5.1%
-Services/Revamped Dungeons     █░░░░░░░░░░░░░░░░░    4/150     2.7%
+Items/Containers               ██░░░░░░░░░░░░░░░░    3/31      9.7%
+Quests                         █░░░░░░░░░░░░░░░░░    2/84      2.4%
 Items/Quest                    █░░░░░░░░░░░░░░░░░    2/78      2.6%
 Items/Addons                   █░░░░░░░░░░░░░░░░░    1/169     0.6%
 Items/Functional               █░░░░░░░░░░░░░░░░░    1/49      2.0%
 Services/New Magincia          █░░░░░░░░░░░░░░░░░    1/40      2.5%
-Items/Containers               █░░░░░░░░░░░░░░░░░    1/31      3.2%
 Mobiles/NPCs                   ░░░░░░░░░░░░░░░░░░    0/222     0.0%
 Services/XmlSpawner            ░░░░░░░░░░░░░░░░░░    0/97      0.0%
 Items/Decorative               ░░░░░░░░░░░░░░░░░░    0/88      0.0%
-Quests                         ░░░░░░░░░░░░░░░░░░    0/84      0.0%
 Items/Consumables              ░░░░░░░░░░░░░░░░░░    0/59      0.0%
 Services/CleanUpBritannia      ░░░░░░░░░░░░░░░░░░    0/52      0.0%
 Items/StoreBought              ░░░░░░░░░░░░░░░░░░    0/51      0.0%
@@ -126,7 +126,7 @@ Services/BulkOrders            ░░░░░░░░░░░░░░░░�
 
 _Counted by matching ServUO file stems (excluding those stock ModernUO already has) against `server/customizations`. Auto-counted, never hand-edited._
 
-**Ported systems logged: 46**
+**Ported systems logged: 47**
 
 | Content | Task | Notes |
 |---|---|---|
@@ -176,6 +176,7 @@ _Counted by matching ServUO file stems (excluding those stock ModernUO already h
 | CC9 batch 3: the plain remainder (49 files, 49 types) | CC9 | 21 weapons, 11 jewellery, 17 armour and shields; 4,636 ServUO lines in, 1,740 out. Pre-flighted with the section-3 method before any build: every override checked against a pinned ModernUO virtual, every attribute member against the Aos* enums, item IDs cross-checked, and every ServUO descendant of all 49 walked transitively for set or absorption state. Nine bases got a carrier parent at port time because a descendant needs it (GargishPlateArms, GargishPlateKilt, the five DragonTurtleHide pieces on BaseSetArmor; GargishKiteShield on BaseSetShield; GargishBattleAxe on BaseSetWeapon, the ninth, found because GargishPincer assigns SetSkillBonuses, a token the AGENTS.md grep does not list - Q-040). The other 40 are on stock bases per docs/tasks.md. RandomWand is a static helper, not an item. Every override value re-diffed mechanically against ServUO after writing: 524 compared, 0 mismatches. Deviations D-10 (GargishWarHammer flip typo 0x481 -> 0x48C1), D-11 (EvilOrcHelm's two zero-reader virtuals), D-12 (OrcishBow one durability line, not two), D-13 (StaffRing IsPlayer; not OSI content). Gated build green first cycle, 101 s, 42 tests; 49/49 reflected; headless fresh save and reload clean. |
 | CC9 batch 4: the one re-parent, the 41 carrier-blocked, the set-armour bucket (125 files, 127 types; 3 edited) | CC9 | GargishDagger moved from BaseKnife to BaseSetWeapon (Q-040: StoneDragonsTooth needs AbsorptionAttributes), after re-verifying no instance in any save by reading the type tables of the live save (2026-07-06, 1,468 types, no Gargish* at all), the three Backups snapshots and the newest daily and hourly Archives (decompressed), not by date alone. The 41 carrier-blocked: 40 ported, Swiftflight declined (Bow sits on BaseRanged, no carrier can sit above it; Q-041). Two talismans ported on stock BaseTalisman with the eater dropped, which is behaviour-identical: ServUO never aggregates a talisman's absorption (RunicReforging.GetSAAbsorptionAttributes). The set-armour bucket counts 85, not 79: 79 set pieces plus the 6 Phoenix suit files that sit under Sets/ with no SetID and stay on stock parents. All 85 generated from ServUO values plus a dump of the pinned stock parent's members ([Flippable] copied because ModernUO reads it inherit:false; IArcaneEquip dropped on 6 gloves per D-7). Two corrections found by reading the parents: batch 3's GargishBattleAxe had lost BaseAxe (Slash1H, sword sounds, no harvesting) and S10's BaseSetWeapon skipped BaseMeleeWeapon's AbsorbDamage; both fixed, both save-neutral today. Bestial pieces ported with the berserk helper inert (its AOS.Damage/heal hooks do not exist here; Q-042). Deviations D-14..D-19. Value diff over 126 files: 0 findings, proved red with three injected faults. One failed build cycle (28 s, one inlined member), then green in 99 s with 42 tests; 130/130 reflected; headless fresh save and reload clean. 10,062 ServUO lines in, 6,363 out. See notes/cc9-artifacts.md section 14. |
 | CC4 Despise: the Revamped Despise dungeon (12 ServUO files + XmlSpawner XML -> 14 files, 4,684 lines) | CC4 | Regions are ServUO dynamic BaseRegions re-created by the controller; ModernUO's Region maps member for member except CheckTravel (now on BaseRegion with an out message), the absent EventSink.OnEnterRegion (DespiseRegion.OnExit instead), and priority: every pinned region is Dynamic so the tie with regions.json's Despise dungeon went to list order - priority 51. XmlSpawner XML became a 47-row table plus DespiseSpawner (PowerMin/PowerMax) applied in OnAfterSpawn, because ModernUO entries take fixed parameters. Headless on the real map: 227 creatures generated in bounds (capacity 227 of 229 requested: two XML rows exceed their entries), power 1-5 upper / 4-8 lower, 15+15 army spawners found, save/reload identical. 48 tests green, auto-stable gate proved red. Deviations (note-local D-29..D-36 in notes/cc4-despise.md): PutridHeart inert, MysteriousWisp not placed, Town Cryer hooks dropped, Silenii/Phantom Discordance dropped, ForceNotoriety absent, Container orb hook absent, lower level 4-8 vs a broken 2-arg XML, FightMode.Good/Evil -> Closest (behaviour-identical on pub57). |
+| CC4 Shame: the Revamped Shame dungeon on both facets (19 ServUO files + XmlSpawner XML -> 20 files, 3,772 lines) | CC4 | The brief's 11 files are 19 plus the XML: 116 of the XML's 194 rows spawn TreasureLevel1-4 (Nerun's chest pack, not in ModernUO, ported levels 1-4; Q-047), and the cave troll's four High Seas powder ingredients and the vortex's VoidCore are leaf items ported at ServUO's paths. No region layer: Shame constructs none, the creatures test regions.json's static Shame DungeonRegion by name on both facets, so Despise's priority trap does not arise. XmlSpawner XML became a 194-row table on plain Spawners (no constructor arguments in this file; Q-044's shape does not occur), 97 per facet and identical. Headless on the real map: 384 of 386 requested (two rows exceed their entries) all inside their rectangles and inside the Shame region on both facets, 58 locked chests with loot per facet, 6 altars / 6 walls / 6 trolls / 22 wall teleporters, save/reload identical, 54 tests green, ClayGolem gate proved red, no patch. Deviations (note-local D-37..D-43 in notes/cc4-shame.md): crystal points inert behind a seam for S7 so the altars answer 'not yet worthy' and the guardians are GM-only until then; chest loot unreforged and no refinement roll; StickySkin/ColossalRage/SearingWounds dropped; LifeLeech is DrainLifeAttack; CrazedMage on AI_Mage; TreasureMapChance absent; a timed-out challenge now frees the altar (ServUO leaves it stuck). ServUO's wall teleporters reproduced as read - inert until the first troll dies, then active whenever the wall stands (Q-046). |
 
 ### Task list (18 of 24 done)
 
@@ -203,7 +204,7 @@ Tasks          ████████████████░░░░░�
 | `S9` | Re-measure the remaining content backlog | done | Measurement only; nothing ported. Three of the four rows were NOT raw counts - they were already weak-filtered by docs/content-menu.md against ModernUO's 3,565 UOContent names, not S3's 7,093 tree-wide types. Re-filtered: Revamped Dungeons 255 raw -> 255 candidates (0 duplicates, the only such row); artifacts+equipment 1,022 raw -> 455 (567 duplicates, NOT 466); decoration/housing 745 raw -> 303 (442 duplicates, NOT 297); High Seas cheap half 78 -> 77, the one figure that was right. Resolved: artifacts is 88% free (320 drop straight in), and FlipableAttribute is ModernUO's FlippableAttribute with one extra letter - 86 files of false blocking, a third SetWeaponAbility. IsArtifact looked like 280+153 blocked and is worth zero: pinned ModernUO has no consumer of it. CC4's 138 ReforgedSuffix hits are 136 one-line cosmetic assignments; the naming carrier is ~100 lines + 4 serialization patches and frees 110, or 141 with the gargoyle wearables cluster. CC7's DirectionType + AddonOptionGump is ~71 lines, no patch, frees 34. S1/S5/S6 made only 10 files newly free here - their value was already banked. A transitive-closure method was built, produced clean numbers, and was discarded as artefact: one artifact breastplate reaches 758 files and every subsystem. See notes/s9-backlog-remeasure.md. |
 | `S7` | Services/PointsSystems | todo | 12 files, 2,857 lines, unblocks 55. Hard dependency of both Vice vs Virtue and City Loyalty. Costed and available, not scheduled. |
 | `S10` | The carrier family | done | Five carriers built and gated: BaseSetWeapon, BaseSetJewel, BaseSetClothing, BaseSetQuiver, BaseSetShield, each BaseSetArmor transcribed against its own ModernUO base, 1,426 lines against the ~1,000 estimate (the shield is a full BaseSetArmor copy because a ModernUO shield is a BaseArmor but not a BaseSetArmor, and ServUO's clothing carries the whole armour resist arithmetic). ZERO PATCHES, ZERO MIGRATIONS: server/patches is 15 files before and after, server/migrations 9, no upstream serialization version moves. SetHelper, the AOS aggregation patch and the resistance hook were already kind-agnostic and none changed. 15 new tests (3 per carrier, test-local set pieces because the real ones are CC9 batch 4's), 42 green through build.sh; all five gates watched fail in one run (5 failed/37 passed, each at its own carrier's LastEquipped assertion with the S1 partner piece still passing beside it). Gargish decision: YES, the four ported armour-class bases (GargishEarrings, GargishNecklace+2, GargishPlateChest/Legs) now derive from BaseSetArmor, applied in this commit because inserting an ancestor changes the save chain and is not expressible as a migration; no instance exists in any save (latest image predates batch 1, live container stopped since June). Deviations: SetSelfRepair is INERT on weapon/clothing/shield (no SelfRepair hook in ModernUO's BaseWeapon/BaseClothing/BaseShield.OnHit; three S1-shaped patches would close it, raised as Q-038, tooltip line suppressed per S1 D-2); Bestial berserk line omitted as on BaseSetArmor; tooltip ordering cosmetic. NegativeAttributes: absent from pinned ModernUO, carriers provide nothing, nothing added. Q-039 asks whether the gargish rule extends to LargeStoneShield and the three ported gargish weapons. See notes/s10-carriers.md. |
-| `C2` | Revamped Dungeons | **in progress** | CC4 Despise done 2026-09-19 and VERIFIED IN A CLIENT 2026-09-20 (seven checks, zero failures). The '4 files' were a hub of 12 ServUO .cs (4,269 lines) plus a 1,975-line XmlSpawner XML, ported into 14 files, one 28-line patch, 48 tests. In-world: gates move the player, creatures carry power levels, THE TWO ARMIES LAND IN THE RIGHT REGIONS (the check that matters, because the first headless run had Region.Find returning the static dungeon everywhere - every region in pinned ModernUO is Dynamic so the dynamic-first tie-break never separates them; fixed at priority 51), the ankh hands out a WispOrb, and possession takes control of a creature. Unverified: the 90-minute boss sequence, and DespiseTeleporter conversion, which converts teleporters a fresh world does not have and will first run on the live deploy. Q-044 answered (lower level rolls 4-8: MinPowerToConscript is 4 and the orb refuses above 5). Shame next. |
+| `C2` | Revamped Dungeons | **in progress** | CC4 Despise done 2026-09-19 and VERIFIED IN A CLIENT 2026-09-20 (seven checks, zero failures). The '4 files' were a hub of 12 ServUO .cs (4,269 lines) plus a 1,975-line XmlSpawner XML, ported into 14 files, one 28-line patch, 48 tests. In-world: gates move the player, creatures carry power levels, THE TWO ARMIES LAND IN THE RIGHT REGIONS (the check that matters, because the first headless run had Region.Find returning the static dungeon everywhere - every region in pinned ModernUO is Dynamic so the dynamic-first tie-break never separates them; fixed at priority 51), the ankh hands out a WispOrb, and possession takes control of a creature. Unverified: the 90-minute boss sequence, and DespiseTeleporter conversion, which converts teleporters a fresh world does not have and will first run on the live deploy. Q-044 answered (lower level rolls 4-8: MinPowerToConscript is 4 and the orb refuses above 5). CC4 Shame done 2026-09-19, NOT yet seen in a client: 19 ServUO files + an 8,159-line XML -> 20 files, 3,772 lines, 6 tests, no patch; 194 spawners on both facets generate 384 spawns on the real map, save/reload identical. Its point economy is inert until S7 (D-37: altars refuse, crystals kept) - two dungeons carry that now and Shame's loss is the level guardians. Wrong next. |
 | `C3` | High Seas, cheap half | todo | 78 raw, 77 candidates, 16,940 lines - the one published figure S9 confirmed. 31 drop straight in, 17 need another file in the row, 17 need an upstream member. The 'skip BaseGalleon/cannons' instruction costs exactly 12 of the 77, now enumerated in notes/s9-backlog-remeasure.md. |
 | `C4` | Creatures and NPCs | todo | ~360 files. Only 275 (60%) are clean on both dependency checks: 89 (19%) reference a type ModernUO lacks, 132 (29%) call a BaseCreature method it does not have. Batches of ~20, drawn from the clean 60%, about an hour each per the P2 measurement. See notes/cc2-timed-port.md. |
 | `C5` | Decoration, housing, crafting | todo | S9: the 297 was Addons+Decorative+New Magincia already weak-filtered. Raw 745, 442 duplicates, 303 candidates; 159 drop straight in. DirectionType (7 lines) + AddonOptionGump (64 lines, models a gump ModernUO already ships) is ~71 additive lines with no patch and frees 34 - the best ratio measured in S9. Items/Resource + BulkOrders add 57 more candidates from 191 raw. |
@@ -245,7 +246,7 @@ What a MODERNUO_COMMIT bump must reconcile. Patches fail LOUDLY - apply-patches.
 - **S3 costed menu - declines upheld with their ratios recorded** — Measured 2026-09-07, notes/s3-decline-costs.md. Skill Masteries (45 files/8,542 lines, unblocks 14, patches 35 upstream files - fails the layering test). Vice vs Virtue (57/9,613, unblocks 5, patches 21). Exploring the Deep (70/10,292, unblocks 2 - structurally the safest build here and the worst ratio). Shadowguard (14/11,222, unblocks 8). City Loyalty (28/8,177, unblocks 15 - decline on ratio, not structure; revisit with Town Cryer). Instanced Peerless (13/1,543, unblocks 2, and BasePeerless and PeerlessAltar are both absent from ModernUO, so there is no base to instance - cost Services/Peerless first). ServUO's ML quest framework (22 files/6,269 lines, not the 21/5,625 the brief stated) - declined because ModernUO already ships the same OSI system. NOT declined and recommended instead: SAAbsorptionAttributes, the TribeType transformation, and a one-quest spike onto ModernUO's ML quest engine. Vendor Searching (4/2,545) is a player feature, not content; the unblock ratio is the wrong test and it is Chase's call.
 - **ServUO ML quest framework - decline REAFFIRMED by S5** — S5 translated one quest end to end and the objective mapping holds for 4 of 5 types, two of them pinned by tests. Porting ServUO's 22-file, 6,269-line framework would put a second engine in the tree to do a job the engine we already have does correctly. The decline was always on two-engines-for-one-job; it now rests on measurement rather than on principle alone. What is NOT declined: the 164 of 203 missing quests that use a single standard objective type. The 39 that hand-write a BaseObjective subclass (25 InternalObjective, 3 CollectionsObtain, 2 QuestionAndAnswer, ~9 one-offs) are per-quest work, not a framework port, and are the thing to cost before the next quest batch.
 
-Counted from the trees: 604 customization files, 21 patch files, 49 tests in 13 files.
+Counted from the trees: 618 customization files, 21 patch files, 55 tests in 14 files.
 Shard status: running on ModernUO; CC9's 381 files and CC4 Despise both verified in a client 2026-09-19/20.
 <!-- PROGRESS:END -->
 
@@ -254,18 +255,18 @@ Shard status: running on ModernUO; CC9's 381 files and CC4 Despise both verified
 <!-- EXPANSION:START -->
 ### Content by expansion
 
-**3,510 of 6,144 ServUO files present** (57%), of which **471 ported by us**.
+**3,541 of 6,144 ServUO files present** (58%), of which **502 ported by us**.
 
 ```
-Pre-AoS (T2A/UOR/LBR)     ████████████░░░░░░░░  2575/4294    60%   +352
-Age of Shadows            ██████████████░░░░░░   223/309     72%   +22
+Pre-AoS (T2A/UOR/LBR)     ████████████░░░░░░░░  2590/4294    60%   +367
+Age of Shadows            ███████████████░░░░░   226/309     73%   +25
 Samurai Empire            ███████████████░░░░░    89/115     77%   +2
-Mondain's Legacy          ███████████░░░░░░░░░   248/471     53%   +7
-Stygian Abyss (Ter Mur)   █████████░░░░░░░░░░░   193/444     44%   +68
-High Seas                 ██████░░░░░░░░░░░░░░   103/334     31%   +7
-Time of Legends (Eodon)   ████████░░░░░░░░░░░░    65/157     41%   +12
-Endless Journey           ██████████████░░░░░░    14/20      70%   +1
-TOTAL                     ███████████░░░░░░░░░  3510/6144    57%   +471
+Mondain's Legacy          ███████████░░░░░░░░░   249/471     53%   +8
+Stygian Abyss (Ter Mur)   █████████░░░░░░░░░░░   196/444     44%   +71
+High Seas                 ██████░░░░░░░░░░░░░░   106/334     32%   +10
+Time of Legends (Eodon)   █████████░░░░░░░░░░░    69/157     44%   +16
+Endless Journey           ████████████████░░░░    16/20      80%   +3
+TOTAL                     ████████████░░░░░░░░  3541/6144    58%   +502
 ```
 
 _Filename-stem matching: a proxy for presence, not behaviour. Unclassified files fall into Pre-AoS, inflating it. Directional, not a completion percentage._
