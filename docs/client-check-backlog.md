@@ -1,5 +1,9 @@
 # Client spot-check backlog
 
+**RUN AND PASSED 2026-09-19.** Results at the bottom. 381 ported files, twelve checks,
+**one real defect found** (MAKE X, now fixed) and **zero content regressions**. The list below
+is kept as the method; the Results section is what it produced.
+
 Everything ported since P1 is verified **structurally**: it compiles, its type registers, the
 world saves and reloads, and 44 tests pass. None of it has been **looked at**. This is the list of
 what a client session would actually settle.
@@ -137,3 +141,74 @@ Same throwaway loopback-only container the agents use, **not the live shard**. `
 produces the image; bring it up, log in with a GM account, make a gargoyle, and work down the
 list. Nothing here should ever touch `sl-modernuo`. Anything that looks
 wrong goes in `notes/` as a finding, and I will turn it into a task.
+
+
+---
+
+# Results, 2026-09-19
+
+First client verification on this project. Everything ported since P1 had been proven
+structurally: it compiled, its type registered, the world saved and reloaded, 44 tests passed.
+None of it had been **looked at**. Now it has.
+
+## Content: twelve checks, zero regressions
+
+| # | Check | Result |
+|---|---|---|
+| 1 | `GargishWarHammer` flip → `0x48C1` | **PASS.** Still a war hammer. D-10 was right; ServUO's `0x481` is a typo |
+| 2 | `DarkwoodCrown` flip → `0x3168` | **PASS.** Still a crown. D-16 was right |
+| 3 | **Marksman set** completes (`Feathernock` + `Swiftflight`) | **PASS.** Hue change and set effect observed |
+| 4 | `DragonTurtleHideChest` equips | **PASS** |
+| 5 | `SorcererHat`, `HumilityCloak` equip | **PASS.** Batch 5 carrier children, stock parent members reproduced by hand |
+| 6 | `ZombieCostume` survives damage (D-5) | **PASS.** Stays on, as designed |
+| 7 | **Darden set** completes | **PASS.** No Myrmidex Slayer line, per D-26 |
+| 8 | **Aloron set** eats cold damage | **PASS.** Cliloc 1113617 observed. **Closes A5** |
+| 9 | **`GargishBattleAxe`** two-handed, axe sounds, chops wood | **PASS.** Batch 4's repair verified |
+| 10 | Gargish block: `WarHammer`, `Dagger`, `KiteShield`, `PlateArms`, `PlateKilt`, `LeatherTalons`, `StoneWarSword`, `LargePlateShield` | **PASS.** All equip on correct layers |
+| 11 | `MAKE X` label | **DEFECT CONFIRMED**, fixed same session |
+| 12 | Race-gated items reject non-gargoyles | **PASS**, incidentally |
+
+**The two that could never have been checked any other way** are 1 and 2. Everything else in the
+381 files was copied from ServUO and diffed against it. Those two are places we decided ServUO's
+own value was wrong and overrode it on reasoning alone.
+
+**Three decisions were validated, not just the content:**
+
+- **Q-041, Swiftflight as `Bow, ISetItem` rather than a sixth carrier.** The argument was that
+  `AOS-set-attribute-aggregation.patch` dispatches on `obj is ISetItem`, so the interface alone
+  suffices. Check 3 is that being true in a client.
+- **Q-040, the narrow re-parent rule.** Darden's pieces derive from the `DragonTurtleHide` types,
+  which only works because batch 3 put those on `BaseSetArmor` **at port time**. Doing it later
+  would have been unmigratable. Check 7 is that call paying out.
+- **Batch 4's parent-member rule.** Check 9 is the `BaseAxe` repair working.
+
+## The one defect: MAKE X
+
+Pending since P1 in June, the oldest item on this list, and the only thing tested that affects
+the **live** shard rather than ported content. `AddLabel(175, 390, LabelColor, "MAKE X")` passed
+`0x7FFF`, an RGB555 colour, where `AddLabel` wants a hue index. Fixed with `AddHtml` and a
+`BASEFONT` colour so both states render through the same path as the `MAKE NOW` label beside
+them. **Needs a rebuild to verify.**
+
+## What the exercise actually cost, and what it caught
+
+Getting to the first `[add` took a week, and **every blocker was in the test rig, not the
+content**:
+
+1. **The test shard relayed clients onto the LIVE shard.** `Configuration-test` is a copy of the
+   live config, which advertises `192.168.1.58` with `autoDetect` false.
+2. **The test container mounted the live world save.** A test session would have written several
+   hundred spawned artifacts into the real world.
+3. **A fresh world blocks on `AccountPrompt` forever.** No accounts means
+   `ConsoleInputHandler.ReadLine()` on stdin. `docker ps` says Up, the listener never opens, the
+   client hangs at "verifying account" with no symptom on its own side. The prompt fires at
+   container start, so attaching later shows nothing to answer.
+
+All three are fixed in `docker/uo/`. All three were invisible until someone tried to connect,
+which is the argument for having done this months earlier.
+
+**And a process failure worth keeping.** Three fixes were written for "stuck on verifying
+account" before anyone established whether a server was listening. The evidence was on disk the
+whole time: `Saves-test` was empty, and a running ModernUO writes a save within minutes. It was
+read twice and explained away. `AGENTS.md` already says a cause deduced from reading source is a
+hypothesis and you probe the running system first. Four fixes were written without probing.

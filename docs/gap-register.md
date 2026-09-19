@@ -18,6 +18,11 @@ Three dispositions, and every row has one:
 
 ## A. Live gaps a player can notice
 
+**Verified in a client 2026-09-19 for the first time.** Twelve checks across 381 ported files,
+zero content regressions, one defect found (MAKE X, fixed). A5 is now observed working rather
+than merely tested: the Aloron set's cold eating fired in-world and sent cliloc 1113617. Full
+results in `docs/client-check-backlog.md`.
+
 Ordered by how likely someone is to hit it. Every one traces to section B.
 
 | # | What a player sees | Root cause | Closed by | Disp. |
@@ -122,6 +127,13 @@ B5 is the shape to aim for**, and S3 measured them separately for exactly that r
 | D4 | **Build cost is 6x what the estimate says.** 20s unchanged, **266s with one changed file**, against `cc2-timed-port.md`'s 0:44 which predates S4 and did not compile or run tests | every batch estimate is optimistic | fix the estimate |
 | D6 | **The runtime image ships 16 test-infrastructure assemblies of 53.** Pre-existing since S4, because the Dockerfile publishes `ModernUO.slnx` | inert, cosmetic | **Recorded, not scheduled.** Q-032. **The trap:** that same publish line provides the compile gate. Any fix must lose the test assemblies *and* still fail the build on a deliberately broken test |
 | D5 | **`server/uo/` build tree is stale**, missing five current customizations, and predates the F1 recovery | confusing, not harmful | leave; it is gitignored and generated |
+
+---
+
+| D7 | **A fresh test world blocks on `AccountPrompt` forever.** No accounts means `ConsoleInputHandler.ReadLine()` on stdin. `docker ps` reports Up, the listener never opens, the client hangs at "verifying account" with nothing wrong on its own side. The prompt fires at container start, so attaching later shows nothing to answer | cost a week, 2026-09-19 | **FIXED.** Both seeders pre-seed accounts into `Saves-test` |
+| D8 | **The test shard relayed clients onto the LIVE shard.** `Configuration-test` copies the live config, which advertises `192.168.1.58` with `autoDetect` false | a test session could silently run against live | **FIXED.** Seeders rewrite the address; the launcher sets `ignore_relay_ip` on `-Test` |
+| D9 | **`docker-compose.yml` mounts the live world save**, so testing writes into the real world | one stray account reached the live save before this was caught | **FIXED.** `docker-compose.test.yml` uses `Saves-test` |
+| D10 | **`MAKE X` label invisible.** `AddLabel` given `0x7FFF`, an RGB555 colour, where a hue index belongs | affects the **live** shard, not ported content. Pending since P1 in June | **FIXED 2026-09-19**, needs a rebuild to verify |
 
 ---
 
