@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-19T16:12:44-05:00",
+  "generated": "2026-09-19T21:27:58+00:00",
   "direction": "stay on ModernUO; pull ServUO content selectively",
   "setup_defects": {
     "CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered": true,
@@ -801,8 +801,8 @@
     {
       "id": "C4",
       "title": "Creatures and NPCs",
-      "status": "todo",
-      "note": "IN PROGRESS. Batch 1 (2026-09-19): 20 creatures + the goblin tribe group, chosen because pinned ModernUO's own spawn data names them and nothing declared them (109 such names; 46 entries for these 20; all 20 spawn by their stock spawners headlessly, 127 live, reload identical). P2's 275 of 462 reproduces exactly but is the wrong denominator: 325 of the 462 are ModernUO's own types; of the 130 candidates 62 are clean, 6 clean but for SetWeaponAbility, 28 need a leaf type, 18 a Pet Training method, 16 both. 0 of 20 needed a body, hue or sound; 9 needed a method (3 AI types, CanStealth, TribeType x6). Cost: ~48 min to the final image, 5 build cycles (1 signature, 2 test-host gaps: HitsTimer regen and the unwired skill-check handler, now in the S8 fixture patch). See notes/cc6-creatures-batch1.md."
+      "status": "in-progress",
+      "note": "CC6 batch 1 done 2026-09-19: twenty creatures, 60 tests, all twenty spawned by ModernUO's OWN stock spawners on the real map (168 spawners imported, 0 failures, 127 live), reload identical. THE SELECTION RULE IS THE FINDING: pinned ModernUO ships spawn data naming 109 types no assembly declares, so BaseSpawner marks them EntryFlags.InvalidType (BaseSpawner.cs:1130) and a player walking up finds nothing. These twenty are the clean low-to-mid part of that list; 46 stock entries name them. Q-048 answered from the live save: all four spawn files were generated, so they start spawning on the next deploy with no action, and the other 89 orphans are worth their batches. P2's '275 of 462 clean' reproduces but measured the wrong pool: 325 of the 462 are ModernUO's own types, so the real candidate set is 130, of which 62 are clean. 0 of 20 needed a body, hue or sound ModernUO lacks; 9 needed a method (three AI types, CanStealth, TribeType via a fourth OppositionGroup, additive, no patch). ~50 min, five build cycles, two of them the TEST HOST not the creatures: the fixture never called SkillCheck.Initialize so every Mobile.CheckSkill was false in tests (one line added to the npc-speeds patch, proved red first). Also carried the Q-046 ShameWall fix. Nothing seen in a client."
     },
     {
       "id": "C5",

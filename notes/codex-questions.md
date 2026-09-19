@@ -2669,7 +2669,7 @@ S9 implied. Worth counting per dungeon as you go rather than re-costing the whol
 
 Status: **[ANSWERED]** — keep Nerun's pack as ported.
 
-## Q-048 [OPEN] 2026-09-19 Do the live world's Ter Mur and Underworld spawners exist, so CC6 batch 1 starts spawning on deploy with no action?
+## Q-048 [ANSWERED] 2026-09-19 Do the live world's Ter Mur and Underworld spawners exist, so CC6 batch 1 starts spawning on deploy with no action?
 
 **Question:** CC6 batch 1 chose its twenty creatures because pinned ModernUO's own spawn data names them
 (`Distribution/Data/Spawns/post-uoml/termur/{Underworld,Abyss,TerMur}.json`, `post-uoml/trammel/Outdoors.json`, 46
@@ -2689,3 +2689,41 @@ goblins at the Abyss (582, 814, -45), spellbinders at Old Haven (3705, 2471, 19)
 same check also answers whether the other 89 orphaned names (89 after this batch, from 109) are worth their batches.
 
 **Answer:**
+
+**Answer: SERVER.md is right. All four files were generated live, so the twenty start spawning on
+the next deploy with no action. I read the save rather than deferring to a client check.**
+
+Every one of the four spawn files is represented in the live world save:
+
+| Probe | In the live save |
+|---|---|
+| `GrayGoblin` | 8 |
+| `Skree` | 3 |
+| `GreenGoblinScout`, `EnslavedGrayGoblin`, `SentinelSpider` | 1 each |
+| `tanglingroots` | 1 |
+| `spellbinder` | 2 |
+| control: `Corpser` 178, `Bogling` 45, `Gaman` 40, `BrigandCamp` 4 | trammel/Outdoors.json is definitely generated |
+
+So those spawner entries have been sitting in your world as `InvalidType` for months, resolving to
+nothing every tick. They resolve the moment the types exist.
+
+**And there is a trap in there that would have bitten a later batch, so it is worth recording.**
+`post-uoml/termur/Underworld.json` writes its entry names inconsistently: `GrayGoblin` and
+`SentinelSpider` in PascalCase, but `tanglingroots`, `gremlin`, `acidslug`, `bloodworm`, `rotworm`
+and `wolfspider` in lowercase. My first search of the save missed two of your twenty for exactly
+that reason and I nearly reported them absent.
+
+It does not break anything, because `BaseSpawner` resolves through
+`AssemblyHandler.FindTypeByName`, whose signature is
+`FindTypeByName(string name, bool fullName = false, bool ignoreCase = true)`
+(`Projects/Server/AssemblyHandler.cs:189`). Case-insensitive by default. **Worth knowing anyway**:
+any future tooling that matches spawn-data names against ported type names by string equality will
+silently miss those six, and the orphan list is built by exactly that kind of match.
+
+**On the wider point your note raises**, which is the more valuable half: the same evidence says
+the remaining **89 orphaned names are worth their batches**. These are not speculative ports; they
+are holes ModernUO's own shipped data already declares and cannot fill, in places a player can
+already walk to. That is the sharpest selection rule anyone has produced on this project, and it
+is better than the "choose for playability" instruction it came from.
+
+Status: **[ANSWERED]** — no action needed on deploy; casing quirk recorded.
