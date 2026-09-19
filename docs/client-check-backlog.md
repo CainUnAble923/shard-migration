@@ -1,6 +1,6 @@
 # Client spot-check backlog
 
-**RUN AND PASSED 2026-09-19.** Results at the bottom. 381 ported files, twelve checks,
+**RUN AND PASSED 2026-09-19.** Results at the bottom. 381 ported files, thirteen checks,
 **one real defect found** (MAKE X, now fixed) and **zero content regressions**. The list below
 is kept as the method; the Results section is what it produced.
 
@@ -151,7 +151,7 @@ First client verification on this project. Everything ported since P1 had been p
 structurally: it compiled, its type registered, the world saved and reloaded, 44 tests passed.
 None of it had been **looked at**. Now it has.
 
-## Content: twelve checks, zero regressions
+## Content: thirteen checks, zero regressions
 
 | # | Check | Result |
 |---|---|---|
@@ -167,6 +167,7 @@ None of it had been **looked at**. Now it has.
 | 10 | Gargish block: `WarHammer`, `Dagger`, `KiteShield`, `PlateArms`, `PlateKilt`, `LeatherTalons`, `StoneWarSword`, `LargePlateShield` | **PASS.** All equip on correct layers |
 | 11 | `MAKE X` label | **DEFECT CONFIRMED**, fixed same session |
 | 12 | Race-gated items reject non-gargoyles | **PASS**, incidentally |
+| 13 | Tier 4 art sample: `OrcishBow`, `PaladinSword`, `BlueDiamondRing`, `FireRubyBracelet`, `AssassinsCowl`, `MagesHood`, `VoidInfusedKilt`, `EvilOrcHelm` | **PASS.** All spawn with sane art |
 
 **The two that could never have been checked any other way** are 1 and 2. Everything else in the
 381 files was copied from ServUO and diffed against it. Those two are places we decided ServUO's
