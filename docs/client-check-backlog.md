@@ -218,3 +218,28 @@ account" before anyone established whether a server was listening. The evidence 
 whole time: `Saves-test` was empty, and a running ModernUO writes a save within minutes. It was
 read twice and explained away. `AGENTS.md` already says a cause deduced from reading source is a
 hypothesis and you probe the running system first. Four fixes were written without probing.
+
+
+---
+
+# Results, CC4 Despise, 2026-09-20
+
+Verified the same session as the MAKE X re-check, on the throwaway test shard, fresh world.
+
+| Check | Result |
+|---|---|
+| `[SetupDespise` completes | **PASS.** Controller, 2 ankhs, 6 gates, 47 spawners |
+| Creatures spawn with power levels | **PASS.** "Hellion, Power Level: 1: Normal"; Rat, Darkmane, Skeletrus, Sagittarri, Fairy, Unicorn all present |
+| **The two armies land in the right regions** | **PASS.** Evil side gave Hellion and Darkmane; good side gave Fairy, Sagittarri and Unicorn. This is the check that matters most, because CC4's first headless run had `Region.Find` returning the static dungeon everywhere and the controller finding zero spawners |
+| Gates move the player | **PASS**, both pairs tested (`5476 737 5` ↔ `5458 610 50`, and the second pair) |
+| Ankh hands out a `WispOrb` | **PASS.** Alignment offered, orb received |
+| **Possession** | **PASS.** "Your Wisp Orb takes control of the creature!" and the creature reports itself under the player's control. Range refusal ("That is too far away") also fired correctly |
+| The Call to Arms refusal | **PASS.** "your forces are not yet strong enough to heed it" with nothing conscripted, which is the designed behaviour |
+
+**Still unverified, and two of them cannot be checked on this world:**
+
+- **The boss sequence end to end.** Call to Arms → transport → overlord → cleanup, roughly 90 minutes of timers. Skippable rather than blocked.
+- **`DespiseTeleporter` conversion.** `[SetupDespise` *converts* existing teleporters at the dungeon mouth (`5588, 631, 30`) so a possessed creature cannot follow the player out. A fresh world has none to convert, so this path has never run. **It will fire the first time this lands on the live shard, which does have decoration.** Worth watching for on that deploy.
+- **`[DeleteDespise` with players inside.** Needs players.
+
+**What this run establishes beyond the dungeon:** CC4's region work holds in a live world, not just in a headless probe. Every region in pinned ModernUO is Dynamic, so the "dynamic first" tie-break never separated the Despise regions from the static dungeon at equal priority, and the fix was to run them at priority 51. Two armies landing in two correct regions is that fix observed.
