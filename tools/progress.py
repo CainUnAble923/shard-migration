@@ -110,13 +110,59 @@ def build():
     done, total = sum(1 for v in d.values() if v), len(d)
 
     L = []
-    L.append("**Direction: staying on ModernUO.** ServUO content is pulled in piece by piece. "
-             "There is no total to reach, so there is no single completion percentage here by design.")
+    L.append("**Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.")
     L.append("")
-    L.append("```")
-    L.append(f"Setup health   {bar(done,total)}  {done}/{total}   blocking defects resolved")
-    L.append("```")
-    L.append("")
+
+    # Overall headline. This used to say a single percentage was impossible by design,
+    # which was true when written: ported content had no denominator. S3 and S9 built one
+    # by filtering ServUO against what ModernUO already ships, so the number exists now.
+    # It is still SOFT and the caveat travels with it - see below.
+    cp = content_progress()
+    if cp:
+        ctot = sum(r["done"] for r in cp)
+        call = sum(r["total"] for r in cp)
+        pct = (100.0 * ctot / call) if call else 0.0
+        L.append(f"## Overall: {pct:.0f}% of candidate content ported")
+        L.append("")
+        L.append("```")
+        L.append(f"Content   {bar(ctot, call)}  {ctot}/{call}   {pct:.1f}%")
+        L.append(f"Setup     {bar(done, total)}  {done}/{total}     blocking defects resolved")
+        L.append("```")
+        L.append("")
+        L.append("**Read that denominator with suspicion.** 'Candidate files' is ServUO's tree "
+                 "filtered against the names ModernUO already declares, and **every count on this "
+                 "project has moved when someone actually read the files**: CC9's row went 455 -> "
+                 "437, its buckets moved twice more, CC4 Despise was '4 files' and was 14, and the "
+                 "brief's 120/29 were 107/30. The percentage is a useful direction of travel and a "
+                 "poor promise. Setup health is the only figure here with a denominator that cannot "
+                 "move.")
+        L.append("")
+    else:
+        # No content denominator available; fall back to the setup bar alone.
+        L.append("```")
+        L.append(f"Setup health   {bar(done,total)}  {done}/{total}   blocking defects resolved")
+        L.append("```")
+        L.append("")
+    pg = st.get("playable_gates")
+    if pg:
+        gates = pg.get("gates", [])
+        met = sum(1 for g in gates if g.get("done"))
+        blockers = [g for g in gates if not g.get("done")]
+        if blockers:
+            L.append(f"### Playable? **Not yet: {met} of {len(gates)} gates met.** "
+                     f"The next one to fall is *{blockers[0]['name']}*.")
+        else:
+            L.append(f"### Playable? **Yes, all {len(gates)} gates met.**")
+        L.append("")
+        L.append(pg.get("note", ""))
+        L.append("")
+        L.append("| | Gate | Where it stands |")
+        L.append("|---|---|---|")
+        for g in gates:
+            mark = "**yes**" if g.get("done") else "no"
+            L.append(f"| {mark} | {g['name']} | {g.get('detail','')} |")
+        L.append("")
+
     L.append("| Setup defect | Resolved |")
     L.append("|---|---|")
     for k, v in d.items():

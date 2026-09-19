@@ -61,11 +61,30 @@ notes/    working notes, scratch findings, anything not yet a decision
 ## Migration progress
 
 <!-- PROGRESS:START -->
-**Direction: staying on ModernUO.** ServUO content is pulled in piece by piece. There is no total to reach, so there is no single completion percentage here by design.
+**Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
+
+## Overall: 22% of candidate content ported
 
 ```
-Setup health   ██████████████████████  7/7   blocking defects resolved
+Content   █████░░░░░░░░░░░░░░░░░  449/2045   22.0%
+Setup     ██████████████████████  7/7     blocking defects resolved
 ```
+
+**Read that denominator with suspicion.** 'Candidate files' is ServUO's tree filtered against the names ModernUO already declares, and **every count on this project has moved when someone actually read the files**: CC9's row went 455 -> 437, its buckets moved twice more, CC4 Despise was '4 files' and was 14, and the brief's 120/29 were 107/30. The percentage is a useful direction of travel and a poor promise. Setup health is the only figure here with a denominator that cannot move.
+
+### Playable? **Not yet: 2 of 7 gates met.** The next one to fall is *Somewhere to go*.
+
+'Playable' is a judgement, so it is written down as gates rather than felt. Each one is a thing a player would actually hit. Edit this list when the judgement changes, not the rendered line.
+
+| | Gate | Where it stands |
+|---|---|---|
+| **yes** | The shard runs and holds a world | Running on ModernUO since June. Saves, reloads, 49 tests. |
+| **yes** | Ported content is verified in-world, not just compiled | 381 CC9 files and CC4 Despise, 2026-09-19/20, 20 checks, zero content regressions. |
+| no | Somewhere to go | Despise done and client-verified. Shame in progress. 4 of 150 Revamped Dungeons files. Needs 2-3 dungeons to feel like a world. |
+| no | Things to fight | 7 of 138 Mobiles/Normal, 0 of 222 Mobiles/NPCs. THE BIGGEST PLAYABILITY GAP. CC6 draws from the clean 60% (275 of 462). |
+| no | A new character can train without hitting a wall | BLOCKED BY OUR OWN CHANGE. ClusterFSkillGain runs 5x, and New Haven's 26 training quests lock out permanently at skill 50 (GainSkillObjective.CanOffer, cliloc 1077772). The quest board is costed in docs/community-scripts-wishlist.md and fixes it. |
+| no | Set mechanics actually fire | Armour sets and absorption work and are client-verified. Bestial rage, Epiphany burst, the sculpture's luck and weapon/clothing/shield self-repair are ported-but-inert pending the eight-patch hooks row. Costed, awaiting Chase. |
+| no | No live gap a player would call a bug | 15 open rows in docs/gap-register.md section A. Cheapest is A9: nothing places a Fountain of Fortune, three lines, coordinates in Q-021. |
 
 | Setup defect | Resolved |
 |---|---|

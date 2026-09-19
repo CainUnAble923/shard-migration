@@ -683,5 +683,45 @@
         "risk": "silent"
       }
     ]
+  },
+  "playable_gates": {
+    "note": "'Playable' is a judgement, so it is written down as gates rather than felt. Each one is a thing a player would actually hit. Edit this list when the judgement changes, not the rendered line.",
+    "gates": [
+      {
+        "name": "The shard runs and holds a world",
+        "done": true,
+        "detail": "Running on ModernUO since June. Saves, reloads, 49 tests."
+      },
+      {
+        "name": "Ported content is verified in-world, not just compiled",
+        "done": true,
+        "detail": "381 CC9 files and CC4 Despise, 2026-09-19/20, 20 checks, zero content regressions."
+      },
+      {
+        "name": "Somewhere to go",
+        "done": false,
+        "detail": "Despise done and client-verified. Shame in progress. 4 of 150 Revamped Dungeons files. Needs 2-3 dungeons to feel like a world."
+      },
+      {
+        "name": "Things to fight",
+        "done": false,
+        "detail": "7 of 138 Mobiles/Normal, 0 of 222 Mobiles/NPCs. THE BIGGEST PLAYABILITY GAP. CC6 draws from the clean 60% (275 of 462)."
+      },
+      {
+        "name": "A new character can train without hitting a wall",
+        "done": false,
+        "detail": "BLOCKED BY OUR OWN CHANGE. ClusterFSkillGain runs 5x, and New Haven's 26 training quests lock out permanently at skill 50 (GainSkillObjective.CanOffer, cliloc 1077772). The quest board is costed in docs/community-scripts-wishlist.md and fixes it."
+      },
+      {
+        "name": "Set mechanics actually fire",
+        "done": false,
+        "detail": "Armour sets and absorption work and are client-verified. Bestial rage, Epiphany burst, the sculpture's luck and weapon/clothing/shield self-repair are ported-but-inert pending the eight-patch hooks row. Costed, awaiting Chase."
+      },
+      {
+        "name": "No live gap a player would call a bug",
+        "done": false,
+        "detail": "15 open rows in docs/gap-register.md section A. Cheapest is A9: nothing places a Fountain of Fortune, three lines, coordinates in Q-021."
+      }
+    ]
   }
 }
