@@ -2727,3 +2727,29 @@ already walk to. That is the sharpest selection rule anyone has produced on this
 is better than the "choose for playability" instruction it came from.
 
 Status: **[ANSWERED]** — no action needed on deploy; casing quirk recorded.
+
+## Q-049 [OPEN] 2026-09-19 Two ServUO carve-yield virtuals have no ModernUO counterpart: DragonBlood (16 creatures) and corpse-shear Fur (5). Decline stands, or a small additive hook?
+
+**Question:** ServUO's `BaseCreature` has `int DragonBlood` (`:3893`) and `int Fur` / `FurType FurType`
+(`:3881-3882`), and its corpse carve (`:2118`, `:2323`, `:2338`) turns them into `DragonBlood` reagents and `Fur` left
+on the corpse. Pinned ModernUO has none of the three virtuals and a corpse carve that yields hides, meat, wool,
+feathers and scales only; the reagent itself is stock (`DragonsBlood : BaseReagent`, ItemID 0x4077, the same item as
+ServUO's `DragonBlood`), so nothing needs porting on the item side. CC6 batch 2 ported eight creatures that override `DragonBlood` (the three
+boura, two kepetch, three sliths) and five that bear fur, dropped the overrides, ported the live shear route only, and
+logged D-48 and D-50. ServUO has **16** `Mobiles/Normal` files with a `DragonBlood` override, so the loss recurs on
+every reptile batch. The layering rule says content does not patch `BaseCreature`; `docs/subsystem-policy.md` says
+cost the smallest useful subset. Is a hook worth it: an `IDragonBloodBearer` / `IFurBearer` interface in customizations and a patch of about 20
+lines in `Corpse.Carve` or `BaseCreature.OnCarve` that checks for them?
+
+**Context:** `notes/cc6-creatures-batch2.md` §4 and §5 (D-48, D-50). What a player loses today: no dragon's blood
+from any creature on the shard, while four Mysticism spells (Bombard, Cleansing Winds, Hail Storm, Spell Plague) and
+five Inscription recipes consume it here, so a mystic depends on whatever else supplies the reagent; and no fur from a
+boura or kepetch killed before it was sheared (nothing in pinned ModernUO consumes `Fur`, which is ours).
+
+**Your best guess (taken):** stay declined for this batch and keep logging the D-numbers, but the dragon's-blood
+half is worth its hook sooner than the fur half: the reagent is consumed by stock content today, the patch is small,
+and 16 creatures share it. The fur half has no consumer. Decide when the next reptile batch (the Underworld's
+`rotworm`, `wolfspider`, `acidslug` are not carriers; the Abyss's `FairyDragon` and `CrystalHydra` are not either, so
+the next carrier is a dragon batch) makes it a recurring cost. Non-blocking.
+
+**Answer:**
