@@ -2563,7 +2563,7 @@ Re-check MAKE X at the next client session. It is back on the sheet.
 Status: **[ANSWERED]** — my defect, your repair stands, backlog wording corrected, MAKE X reopened
 for verification.
 
-## Q-046 [OPEN] 2026-09-19 Shame's wall teleporters are inert until the first troll dies, then active whenever the wall stands
+## Q-046 [ANSWERED] 2026-09-19 Shame's wall teleporters are inert until the first troll dies, then active whenever the wall stands
 
 **Question:** `ShameWallTeleporter.CanTeleport` (`Services/Revamped Dungeons/Shame Revamped/ShameTeleporter.cs:53-70` on
 ServUO) returns true only while an adjacent `ShameWall` addon's `Visible` flag is set. `BaseAddon`'s constructor sets
@@ -2586,7 +2586,7 @@ first thing to look at in the client check (stand in front of a fresh wall, kill
 
 **Answer:** _(Claude)_
 
-## Q-047 [OPEN] 2026-09-19 Shame's 116 chest spawners name Nerun's Treasure Chest Pack; ported as ServUO ships it, not ModernUO's BaseTreasureChest
+## Q-047 [ANSWERED] 2026-09-19 Shame's 116 chest spawners name Nerun's Treasure Chest Pack; ported as ServUO ships it, not ModernUO's BaseTreasureChest
 
 **Question:** 116 of the 194 rows in `RevampedSpawns/ShameRevamped.xml` spawn `TreasureLevel1-4`, which are
 `Items/Containers/TreasureChestMod.cs` — "Treasure Chest Pack 0.99 by Nerun", a RunUO community script ServUO carries,
@@ -2607,3 +2607,64 @@ the dungeon's spawner count.
 the table. Non-blocking.
 
 **Answer:** _(Claude)_
+\n**Answer: neither reading. It is an initialization bug in ServUO, and the fix is one line in the
+constructor, not in `CanTeleport`.**
+
+The pairing settles what `Visible` means here, and it is not "rendered":
+
+- `OnTrollKilled`: `Z -= 50; Visible = false` — the wall **sinks**
+- `Reset`: `MoveToWorld(StartSpot); Visible = true` — the wall **comes back up**
+
+So `Visible` is being used as a state flag for *the wall is standing*, and `CanTeleport` reads it
+correctly: the teleporter is the way **through a standing wall** ("the wall becomes transparent, and
+you push your way through it"), and it is deliberately dead while the wall is sunk, because then you
+simply walk over it. That is coherent design.
+
+What is not design: **`ShameWall`'s constructor never sets `Visible = true`.** `BaseAddon`'s
+constructor sets it false (pinned `BaseAddon.cs:30`), the constructor adds components, spawns the
+troll, and stops. So a freshly generated wall is standing, blocking, with a live troll, and flagged
+as not-standing. The flag only becomes correct after the first kill-and-reset cycle, and from then
+on it is correct forever.
+
+**So: set `Visible = true` at the end of the `ShameWall` constructor.** That reproduces ServUO's
+own post-reset state exactly, leaves `CanTeleport` untouched, and makes a fresh wall behave
+identically to a reset one. Your alternative — testing `wall.Troll?.Alive != true` — would change
+the semantics rather than fix the initialization, and it would break the sunk-window case where
+the troll is dead and the teleporter should be off.
+
+**I corrected myself once writing this and it is worth recording.** My first reading was that
+`Visible = false` would make the wall invisible in a client, which would have been a dramatic
+symptom. It would not: `BaseAddon` is a holder item at ItemID 1, the visible geometry is the
+`AddonComponent`s, and the sink that a player actually sees is the `Z -= 50`. The flag is only a
+flag. The real symptom is narrow and easy to miss: **teleporters inert on every fresh wall until
+someone kills that wall's troll once.**
+
+Same class as D-10 and D-16, the two flip IDs where ServUO's literal value was wrong and we
+overrode it. Both were confirmed correct in a client. Log this as a deviation with that precedent
+cited, and **the client check still wants the walk-through test**: stand at a fresh wall and try to
+push through before killing anything. Before the fix that fails; after it, it should work.
+
+Status: **[ANSWERED]** — one line in the constructor, `CanTeleport` untouched, logged as a
+deviation.
+\n**Answer: keep the pack. Agreed, and "not OSI" is not a reason here.**
+
+Your own context defeats the objection: **neither chest is OSI-exact.** OSI's Publish 73 Shame put
+level-locked treasure chests on each level; Nerun's pack is ServUO's answer to that and
+`BaseTreasureChest` is ModernUO's. Choosing ModernUO's would not be closer to OSI, it would be a
+different non-OSI answer, and it would be a worse one for this dungeon: gold only, re-locks itself,
+never deletes, so the spawner never replaces it. The level-graded loot and the delete-after-opening
+are what make 116 spawners behave like a dungeon rather than 116 permanent gold boxes.
+
+`docs/fidelity-principle.md` is about **what a player can look up**. A player reading about Shame
+finds "locked treasure chests by level", and Nerun's pack is the closer match to that description.
+The principle points at keeping it, not at dropping it.
+
+The three things that make this low-risk are all in your note: it is leaf content, it is what the
+spawn table already asks for, and it is one token per row to reverse.
+
+**One thing to carry forward.** This is the second cluster in this row with **zero `ReforgedSuffix`
+hits** (Despise was the first). The row-wide figure of 138 is therefore concentrated somewhere
+specific rather than spread evenly, which makes the naming-carrier decision cheaper to defer than
+S9 implied. Worth counting per dungeon as you go rather than re-costing the whole row.
+
+Status: **[ANSWERED]** — keep Nerun's pack as ported.

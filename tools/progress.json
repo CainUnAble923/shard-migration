@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-19T14:59:31-05:00",
+  "generated": "2026-09-19T20:19:13+00:00",
   "direction": "stay on ModernUO; pull ServUO content selectively",
   "setup_defects": {
     "CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered": true,
@@ -783,7 +783,7 @@
       "id": "C2",
       "title": "Revamped Dungeons",
       "status": "in-progress",
-      "note": "CC4 Despise done 2026-09-19 and VERIFIED IN A CLIENT 2026-09-20 (seven checks, zero failures). The '4 files' were a hub of 12 ServUO .cs (4,269 lines) plus a 1,975-line XmlSpawner XML, ported into 14 files, one 28-line patch, 48 tests. In-world: gates move the player, creatures carry power levels, THE TWO ARMIES LAND IN THE RIGHT REGIONS (the check that matters, because the first headless run had Region.Find returning the static dungeon everywhere - every region in pinned ModernUO is Dynamic so the dynamic-first tie-break never separates them; fixed at priority 51), the ankh hands out a WispOrb, and possession takes control of a creature. Unverified: the 90-minute boss sequence, and DespiseTeleporter conversion, which converts teleporters a fresh world does not have and will first run on the live deploy. Q-044 answered (lower level rolls 4-8: MinPowerToConscript is 4 and the orb refuses above 5). CC4 Shame done 2026-09-19, NOT yet seen in a client: 19 ServUO files + an 8,159-line XML -> 20 files, 3,772 lines, 6 tests, no patch; 194 spawners on both facets generate 384 spawns on the real map, save/reload identical. Its point economy is inert until S7 (D-37: altars refuse, crystals kept) - two dungeons carry that now and Shame's loss is the level guardians. Wrong next."
+      "note": "CC4: Despise done 2026-09-19 and client-verified 09-20 (gates, spawns, region assignment, ankh, possession; 7 checks, 0 failures). Shame done 2026-09-19: 20 files from '11', no upstream patch, 54 tests, 194 spawners and 384 spawns across BOTH facets, 58 locked chests per facet, reload identical. Shame needed no region work - it reads the static Shame DungeonRegion from regions.json by name, so Despise's priority-51 trap does not arise; and no XmlSpawner argument mismatch (Q-044's shape is absent here). ReforgedSuffix is ZERO in both clusters, so the row-wide 138 is concentrated elsewhere and the naming carrier is cheaper to defer than S9 implied. ShameCrystals ported as a SEAM (Enabled => false) pending S7 PointsSystems, so altars refuse and level guardians are GM-only for now. Q-046 answered: ShameWall's constructor never sets Visible = true, which ServUO's own Reset() does, so every fresh wall's teleporters are inert until that wall's troll is killed once - an initialization bug, fixed in the constructor rather than in CanTeleport. Q-047 answered: keep Nerun's chest pack; neither it nor ModernUO's BaseTreasureChest is OSI-exact and the pack is the closer match to what a player reads. Nothing in Shame seen in a client yet. Wrong (26) next."
     },
     {
       "id": "C3",
