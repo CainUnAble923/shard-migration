@@ -58,6 +58,66 @@ the end. Re-read the channel before treating it as the full list.
 | Set of traps | CloneTrap spawns a hostile copy of the player; CurseTrap makes an item immovable; LandMobTrap spawns skeletons; MagnetTrap forces players to drop metal items; ItemSealingTrap locks items in a chest needing a scroll | Entirely invented. Likely the most fun for a young audience, and the most wiki debt |
 | LoginStats | announces arrivals and departures, shows total playtime, grants 10s invulnerability and invisibility on login | The invulnerability window is a real gameplay rule, not cosmetic |
 
+## Chase's own ideas, costed
+
+Not from the Discord. These are ours, and they carry the same wiki debt as anything else in this
+lane.
+
+### The New Haven quest board — costed 2026-09-19, ready to build
+
+**The idea (Chase):** a stone or bulletin board in New Haven where a new player can pick up the
+New Haven training quests from one place, instead of walking the town finding trainers before
+their skills pass 50.
+
+**This is not a convenience on our shard. It is what makes the content reachable at all.**
+
+Pinned ModernUO ships **26 New Haven skill-training quests**
+(`Engines/ML Quests/Definitions/NewHavenSkillTraining.cs`), each one
+`GainSkillObjective(skill, 500, useReal: true, accelerate: true)` — "raise this skill to 50.0",
+with the New Haven gain bonus. `GainSkillObjective.CanOffer` refuses the moment the skill reaches
+the threshold, with cliloc 1077772, *"I cannot teach you, for you know all I can teach!"* Past
+50, that quest is gone permanently.
+
+**We run `ClusterFSkillGain` at 3 attempts and 5x gain.** So the window between the starting value
+and the lockout is minutes of play, not days. Whatever a new player does not claim early, they
+lose forever. On stock rates a player has time to wander and find trainers; on ours they do not.
+
+**Cost: one file, roughly 80 lines, no patch.**
+
+- Stock ModernUO already ships `Engines/ML Quests/Items/QuestGiverItem.cs`, an abstract `Item`
+  implementing `IQuestGiver` that routes `OnDoubleClick` into the normal offer flow. The board is
+  a subclass of it, registered as the quester for the 26 quests.
+- Because it uses the stock path, the **real offer gump with the real quest text** appears.
+  Quests already held or completed are filtered by the existing system, not by us.
+- **One override needed:** `QuestGiverItem.OnDoubleClick` requires `IsChildOf(from.Backpack)`. A
+  fixed board in the world is not in a backpack, so our subclass relaxes that check. Small
+  override in our own file, not a patch.
+- Plus a placement line, the same shape as the Fountain of Fortune placement (Q-021).
+
+**Place it where new characters arrive**, not decoratively in the square. The value is in being
+double-clickable in the first minute, before anything has been used enough to gain.
+
+**Leave `MLQuestSystem.MaxConcurrentQuests = 10` alone.** Verified 2026-09-19 that we have not
+touched it and have no quest patches at all. Raising it changes every quest in the game, not just
+New Haven, and the cap is not what costs us the content — the gain rate is. Skills only rise from
+use and nobody exercises 26 at once, so the real loop is: take ten matching what you are about to
+do, push them to 50, turn them in, take ten more. Revisit only if that proves annoying in play.
+
+**One trap worth putting on the board's own text.** These quests pass `useReal: true`, so
+`CanOffer` tests `skill.Fixed`, the **effective** value including item bonuses, not the base. A
+new player who equips something with a skill bonus can be pushed over 50 on paper and lose the
+quest while their base skill is still far below it. Claim the quests before gearing up.
+
+**Starting skills are 30** (`Distribution/Data/Professions/SA/Prof.txt`), so nothing is locked at
+character creation. All 26 are takeable by a brand-new character.
+
+**Wiki debt:** real. A player who looks up New Haven training will not find a quest board
+anywhere. It needs a shard-wiki entry saying it exists, that it gives the standard quests, and
+that the 50-point lockout is OSI behaviour rather than ours.
+
+**Status:** costed, not scheduled. Small enough to slot in whenever Chase wants a break from
+dungeon porting.
+
 ## Suggested order, if these get picked up
 
 1. **`[gmtool`** - no wiki debt, helps administer the shard, and it is the one with discussion.
@@ -69,3 +129,7 @@ the end. Re-read the channel before treating it as the full list.
    wiki somewhere else.
 
 Nothing here is scheduled. It sits until Chase says otherwise.
+
+**The New Haven quest board is the exception in spirit**: it is costed, it is ours rather than
+someone's Discord post, so it carries no licensing question, and it fixes a problem our own
+skill-gain rate created. If anything in this lane gets built first, it should be that.
