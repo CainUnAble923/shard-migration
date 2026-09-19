@@ -165,7 +165,7 @@ None of it had been **looked at**. Now it has.
 | 8 | **Aloron set** eats cold damage | **PASS.** Cliloc 1113617 observed. **Closes A5** |
 | 9 | **`GargishBattleAxe`** two-handed, axe sounds, chops wood | **PASS.** Batch 4's repair verified |
 | 10 | Gargish block: `WarHammer`, `Dagger`, `KiteShield`, `PlateArms`, `PlateKilt`, `LeatherTalons`, `StoneWarSword`, `LargePlateShield` | **PASS.** All equip on correct layers |
-| 11 | `MAKE X` label | **DEFECT CONFIRMED.** Fix committed same session and **NOT yet verified** — it did not compile at the pinned commit and was repaired by CC4 (Q-045). **Re-check this one.** |
+| 11 | `MAKE X` label | **DEFECT CONFIRMED** 2026-09-19, **FIX VERIFIED** 2026-09-20. Renders white beside MAKE NOW. The first fix did not compile at the pinned commit and was repaired during CC4 (Q-045); this is the repaired version, built clean through `build.sh` and seen in a client |
 | 12 | Race-gated items reject non-gargoyles | **PASS**, incidentally |
 | 13 | Tier 4 art sample: `OrcishBow`, `PaladinSword`, `BlueDiamondRing`, `FireRubyBracelet`, `AssassinsCowl`, `MagesHood`, `VoidInfusedKilt`, `EvilOrcHelm` | **PASS.** All spawn with sane art |
 
@@ -189,7 +189,12 @@ Pending since P1 in June, the oldest item on this list, and the only thing teste
 the **live** shard rather than ported content. `AddLabel(175, 390, LabelColor, "MAKE X")` passed
 `0x7FFF`, an RGB555 colour, where `AddLabel` wants a hue index. Fixed with `AddHtml` and a
 `BASEFONT` colour so both states render through the same path as the `MAKE NOW` label beside
-them. **Never built.** The fix as committed called an `AddHtml` overload the pinned gump builder does not have, broke HEAD, and was repaired during CC4 (Q-045). What was confirmed in a client was the **defect**, not the fix. Re-check at the next client session.
+them. **Closed 2026-09-20.** The label renders. Worth keeping the whole arc, because the failure was in
+the record rather than the code: the fix as first committed called an `AddHtml` overload the pinned
+gump builder does not have, broke HEAD, and was repaired during CC4 (Q-045). For a day this table
+recorded MAKE X as passed when what had been confirmed in a client was the **defect**. The repaired
+version was then built clean through `build.sh` and verified in a client. **Confirming a bug and
+confirming its fix are two different entries.**
 
 ## What the exercise actually cost, and what it caught
 
