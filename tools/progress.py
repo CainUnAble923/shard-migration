@@ -279,6 +279,7 @@ def build():
             "setup_defects": d, "setup_done": done, "setup_total": total,
             "patches": p, "ported_content": pc, "declined_content": dc,
             "upstream_patches": st.get("upstream_patches"), "counted": cnt, "content_progress": content_progress(), "tasks": st.get("tasks", []),
+            "playable_gates": st.get("playable_gates"),
             "shard_status": st.get("shard_status")}
     try:
         (MIGRATE / "tools" / "progress.json").write_text(json.dumps(snap, indent=2) + "\n", encoding="utf-8", newline="\n")

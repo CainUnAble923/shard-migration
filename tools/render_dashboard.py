@@ -32,6 +32,41 @@ def minibar(done, total):
     return (f'<span class="mini{z}" role="img" aria-label="{pct:.0f} percent">'
             f'<i style="width:{w:.1f}%"></i></span>')
 
+def headline_html(pg):
+    """Overall percentage plus the playable verdict. The caveat rides with the number."""
+    cp = pg.get("content_progress") or []
+    done = sum(r["done"] for r in cp); total = sum(r["total"] for r in cp)
+    pct = 100*done/total if total else 0
+    return (f'<div class="card"><div class="hero"><span class="big">{pct:.0f}%</span>'
+            f'<span class="cap"><strong>of candidate content ported.</strong> {done} of {total} '
+            f'ServUO files that ModernUO does not already ship.</span></div>'
+            f'<span class="track"><span class="fill" style="width:{pct:.0f}%"></span></span></div>'
+            f'<p class="foot"><strong>Read that denominator with suspicion.</strong> "Candidate" is '
+            f'ServUO filtered against the names ModernUO already declares, and every count on this '
+            f'project has moved once someone read the files: CC9 went 455 &rarr; 437, Despise was '
+            f'"4 files" and was 14. A direction of travel, not a promise.</p>')
+
+def playable_html(pg):
+    g = pg.get("playable_gates")
+    if not g:
+        return ""
+    gates = g.get("gates", [])
+    met = sum(1 for x in gates if x.get("done"))
+    blockers = [x for x in gates if not x.get("done")]
+    pct = 100*met/len(gates) if gates else 0
+    verdict = (f'Not yet. Next to fall: <em>{esc(blockers[0]["name"])}</em>.'
+               if blockers else "Yes, every gate met.")
+    rows = "".join(
+        f'<tr><td><span class="pill {"p-ok" if x.get("done") else "p-todo"}">'
+        f'{"yes" if x.get("done") else "no"}</span></td><td>{esc(x["name"])}</td>'
+        f'<td class="foot">{esc(x.get("detail",""))}</td></tr>' for x in gates)
+    return (f'<div class="card"><div class="hero"><span class="big">{met} / {len(gates)}</span>'
+            f'<span class="cap"><strong>Playable? {verdict}</strong> "Playable" is a judgement, so '
+            f'it is written down as gates rather than felt. Each is something a player would hit.'
+            f'</span></div><span class="track"><span class="fill" style="width:{pct:.0f}%"></span>'
+            f'</span></div><div class="scroller"><table><thead><tr><th class="n">Met</th>'
+            f'<th>Gate</th><th>Where it stands</th></tr></thead><tbody>{rows}</tbody></table></div>')
+
 def foundation_html(pg):
     d = pg["setup_defects"]; done = pg["setup_done"]; tot = pg["setup_total"]
     pct = 100*done/tot if tot else 0
@@ -149,7 +184,9 @@ def main():
     pg, ex = load("progress.json"), load("expansion-coverage.json")
     if not pg: print("  progress.json missing; run progress.py first", file=sys.stderr); return 1
     txt = DASH.read_text(encoding="utf-8"); hit = []
-    for tag, body in (("FOUNDATION", foundation_html(pg)),
+    for tag, body in (("HEADLINE", headline_html(pg)),
+                      ("PLAYABLE", playable_html(pg)),
+                      ("FOUNDATION", foundation_html(pg)),
                       ("EXPANSION", expansion_html(ex)),
                       ("CONTENT", content_html(pg)),
                       ("TASKS", tasks_html(pg)),

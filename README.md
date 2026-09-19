@@ -66,7 +66,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 ## Overall: 22% of candidate content ported
 
 ```
-Content   █████░░░░░░░░░░░░░░░░░  449/2045   22.0%
+Content   █████░░░░░░░░░░░░░░░░░  454/2045   22.2%
 Setup     ██████████████████████  7/7     blocking defects resolved
 ```
 
@@ -98,16 +98,16 @@ Setup     ██████████████████████  7/
 
 **Patches:** 16 total, **0 currently failing to apply**, 8 triaged, 3 found obsolete. `apply-patches.sh` fails the build on a failed patch, so a green build means every patch applied.
 
-### Content moved over: 449 of 2,045 candidate files (22.0%)
+### Content moved over: 454 of 2,045 candidate files (22.2%)
 
 ```
-TOTAL                          ████░░░░░░░░░░░░░░  449/2045   22.0%
+TOTAL                          ████░░░░░░░░░░░░░░  454/2045   22.2%
 
 Items/Artifacts                ███████████████░░░  277/325    85.2%
 Items/Equipment                ███████████████░░░  120/148    81.1%
-Items/Resource                 █████████░░░░░░░░░   29/61     47.5%
+Items/Resource                 █████████░░░░░░░░░   30/61     49.2%
+Services/Expansions            █░░░░░░░░░░░░░░░░░   10/175     5.7%
 Mobiles/Normal                 █░░░░░░░░░░░░░░░░░    7/138     5.1%
-Services/Expansions            █░░░░░░░░░░░░░░░░░    6/175     3.4%
 Services/Revamped Dungeons     █░░░░░░░░░░░░░░░░░    4/150     2.7%
 Items/Quest                    █░░░░░░░░░░░░░░░░░    2/78      2.6%
 Items/Addons                   █░░░░░░░░░░░░░░░░░    1/169     0.6%
@@ -245,7 +245,7 @@ What a MODERNUO_COMMIT bump must reconcile. Patches fail LOUDLY - apply-patches.
 - **S3 costed menu - declines upheld with their ratios recorded** — Measured 2026-09-07, notes/s3-decline-costs.md. Skill Masteries (45 files/8,542 lines, unblocks 14, patches 35 upstream files - fails the layering test). Vice vs Virtue (57/9,613, unblocks 5, patches 21). Exploring the Deep (70/10,292, unblocks 2 - structurally the safest build here and the worst ratio). Shadowguard (14/11,222, unblocks 8). City Loyalty (28/8,177, unblocks 15 - decline on ratio, not structure; revisit with Town Cryer). Instanced Peerless (13/1,543, unblocks 2, and BasePeerless and PeerlessAltar are both absent from ModernUO, so there is no base to instance - cost Services/Peerless first). ServUO's ML quest framework (22 files/6,269 lines, not the 21/5,625 the brief stated) - declined because ModernUO already ships the same OSI system. NOT declined and recommended instead: SAAbsorptionAttributes, the TribeType transformation, and a one-quest spike onto ModernUO's ML quest engine. Vendor Searching (4/2,545) is a player feature, not content; the unblock ratio is the wrong test and it is Chase's call.
 - **ServUO ML quest framework - decline REAFFIRMED by S5** — S5 translated one quest end to end and the objective mapping holds for 4 of 5 types, two of them pinned by tests. Porting ServUO's 22-file, 6,269-line framework would put a second engine in the tree to do a job the engine we already have does correctly. The decline was always on two-engines-for-one-job; it now rests on measurement rather than on principle alone. What is NOT declined: the 164 of 203 missing quests that use a single standard objective type. The 39 that hand-write a BaseObjective subclass (25 InternalObjective, 3 CollectionsObtain, 2 QuestionAndAnswer, ~9 one-offs) are per-quest work, not a framework port, and are the thing to cost before the next quest batch.
 
-Counted from the trees: 598 customization files, 21 patch files, 49 tests in 13 files.
+Counted from the trees: 604 customization files, 21 patch files, 49 tests in 13 files.
 Shard status: running on ModernUO; CC9's 381 files and CC4 Despise both verified in a client 2026-09-19/20.
 <!-- PROGRESS:END -->
 
@@ -254,18 +254,18 @@ Shard status: running on ModernUO; CC9's 381 files and CC4 Despise both verified
 <!-- EXPANSION:START -->
 ### Content by expansion
 
-**3,504 of 6,144 ServUO files present** (57%), of which **465 ported by us**.
+**3,510 of 6,144 ServUO files present** (57%), of which **471 ported by us**.
 
 ```
-Pre-AoS (T2A/UOR/LBR)     ████████████░░░░░░░░  2573/4294    60%   +350
+Pre-AoS (T2A/UOR/LBR)     ████████████░░░░░░░░  2575/4294    60%   +352
 Age of Shadows            ██████████████░░░░░░   223/309     72%   +22
 Samurai Empire            ███████████████░░░░░    89/115     77%   +2
 Mondain's Legacy          ███████████░░░░░░░░░   248/471     53%   +7
 Stygian Abyss (Ter Mur)   █████████░░░░░░░░░░░   193/444     44%   +68
-High Seas                 ██████░░░░░░░░░░░░░░    99/334     30%   +3
+High Seas                 ██████░░░░░░░░░░░░░░   103/334     31%   +7
 Time of Legends (Eodon)   ████████░░░░░░░░░░░░    65/157     41%   +12
 Endless Journey           ██████████████░░░░░░    14/20      70%   +1
-TOTAL                     ███████████░░░░░░░░░  3504/6144    57%   +465
+TOTAL                     ███████████░░░░░░░░░  3510/6144    57%   +471
 ```
 
 _Filename-stem matching: a proxy for presence, not behaviour. Unclassified files fall into Pre-AoS, inflating it. Directional, not a completion percentage._

@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-19T18:58:28+00:00",
+  "generated": "2026-09-19T19:05:29+00:00",
   "direction": "stay on ModernUO; pull ServUO content selectively",
   "setup_defects": {
     "CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered": true,
@@ -541,7 +541,7 @@
     ]
   },
   "counted": {
-    "customization_files": 598,
+    "customization_files": 604,
     "patch_files": 21,
     "stale_migrations_present": false,
     "test_files": 13,
@@ -563,20 +563,20 @@
     {
       "area": "Items/Resource",
       "total": 61,
-      "done": 29,
-      "pct": 47.5
+      "done": 30,
+      "pct": 49.2
+    },
+    {
+      "area": "Services/Expansions",
+      "total": 175,
+      "done": 10,
+      "pct": 5.7
     },
     {
       "area": "Mobiles/Normal",
       "total": 138,
       "done": 7,
       "pct": 5.1
-    },
-    {
-      "area": "Services/Expansions",
-      "total": 175,
-      "done": 6,
-      "pct": 3.4
     },
     {
       "area": "Services/Revamped Dungeons",
@@ -809,5 +809,45 @@
       "note": "~54 files. Means extending BaseBoat. Do not start; Chase decides from the proposal."
     }
   ],
+  "playable_gates": {
+    "note": "'Playable' is a judgement, so it is written down as gates rather than felt. Each one is a thing a player would actually hit. Edit this list when the judgement changes, not the rendered line.",
+    "gates": [
+      {
+        "name": "The shard runs and holds a world",
+        "done": true,
+        "detail": "Running on ModernUO since June. Saves, reloads, 49 tests."
+      },
+      {
+        "name": "Ported content is verified in-world, not just compiled",
+        "done": true,
+        "detail": "381 CC9 files and CC4 Despise, 2026-09-19/20, 20 checks, zero content regressions."
+      },
+      {
+        "name": "Somewhere to go",
+        "done": false,
+        "detail": "Despise done and client-verified. Shame in progress. 4 of 150 Revamped Dungeons files. Needs 2-3 dungeons to feel like a world."
+      },
+      {
+        "name": "Things to fight",
+        "done": false,
+        "detail": "7 of 138 Mobiles/Normal, 0 of 222 Mobiles/NPCs. THE BIGGEST PLAYABILITY GAP. CC6 draws from the clean 60% (275 of 462)."
+      },
+      {
+        "name": "A new character can train without hitting a wall",
+        "done": false,
+        "detail": "BLOCKED BY OUR OWN CHANGE. ClusterFSkillGain runs 5x, and New Haven's 26 training quests lock out permanently at skill 50 (GainSkillObjective.CanOffer, cliloc 1077772). The quest board is costed in docs/community-scripts-wishlist.md and fixes it."
+      },
+      {
+        "name": "Set mechanics actually fire",
+        "done": false,
+        "detail": "Armour sets and absorption work and are client-verified. Bestial rage, Epiphany burst, the sculpture's luck and weapon/clothing/shield self-repair are ported-but-inert pending the eight-patch hooks row. Costed, awaiting Chase."
+      },
+      {
+        "name": "No live gap a player would call a bug",
+        "done": false,
+        "detail": "15 open rows in docs/gap-register.md section A. Cheapest is A9: nothing places a Fountain of Fortune, three lines, coordinates in Q-021."
+      }
+    ]
+  },
   "shard_status": "running on ModernUO; CC9's 381 files and CC4 Despise both verified in a client 2026-09-19/20"
 }
