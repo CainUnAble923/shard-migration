@@ -2753,3 +2753,51 @@ and 16 creatures share it. The fur half has no consumer. Decide when the next re
 the next carrier is a dragon batch) makes it a recurring cost. Non-blocking.
 
 **Answer:**
+
+## Q-050 [ANSWERED] 2026-09-20 D-47 is wrong: pinned ModernUO's stock `MageAI` already casts Necromancy, so `SkeletalLich` never lost what the note says it lost
+
+**Not a question from CC6 batch 2 — a correction to it, raised in review.** Recorded here because
+`notes/` is where the batch record lives and a wrong D-number propagates into `docs/`.
+
+**What D-47 says:** `SkeletalLich` runs `AI_Mage` because pinned ModernUO has no `AI_NecroMage`,
+and so "it casts Magery only; its 100-120 Necromancy is set and unused."
+
+**The second half is false.** `Mobiles/AI/MageAI.cs` in pinned ModernUO carries the necromancer
+branch itself:
+
+- `IsNecromancer => Core.AOS && Mobile.Skills.Necromancy.Value > 50` (`:70`)
+- `UseNecromancy() => IsNecromancer && Utility.Random(magery + necro) >= magery` (`:252-257`)
+- `GetRandomDamageSpell() => UseNecromancy() ? …Necro() : …Mage()` (`:259-260`)
+- `GetRandomDamageSpellNecro()` (`:262-274`): Pain Spike, Poison Strike, Strangle, Wither, and
+  Vengeful Spirit once Necromancy is 100+
+- `GetRandomCurseSpellNecro()` (`:301-310`): Blood Oath, Corpse Skin, Evil Omen, Mind Rot
+
+Against ServUO's `Mobiles/AI/Magical AI/NecromageAI.cs`: the damage set matches four of four plus
+one, and **the curse set matches four of four**. `SkeletalLich` is set at Magery 127.2 and
+Necromancy 100-120, so `Random(1272 + 1000..1200) >= 1272` fires the necro branch about **44 to 48
+percent** of the time, against ServUO's flat 50.
+
+**What is actually lost** is much smaller than D-47 claims, and is not worth a patch:
+
+1. ServUO gates the pick on the creature's **current mana** (4 spells at 29+, down to 1 below 17);
+   ModernUO gates on skill and lets the caster fail on mana.
+2. ServUO's buff rotation can cast **`CurseWeapon`** on a non-SmartAI caster, and has a summon
+   path. ModernUO's has neither in the necro branch.
+
+**Disposition:** D-47 should read as a minor gating difference, not a lost subsystem, and the
+`AI_NecroMage` row is **withdrawn** from `docs/patch-backlog.md`. `AI_Mystic`, `AI_Spellweaving`
+and `AI_OrcScout` were checked the same way and are genuinely absent — there is no Mysticism or
+Spellweaving anywhere under `Mobiles/AI/`, so D-41, D-44 and D-45 stand.
+
+**Consequence for CC6 batch 3:** batch 2's §9 says `MaddeningHorror` "is another `AI_NecroMage`
+(D-47's shape)" and therefore needs an AI port. **It does not.** It ships on stock `AI_Mage` and
+casts Necromancy at its own skill weighting, with no D-number beyond the gating note above.
+
+**How this got written, since the cause matters more than the fact:** the batch 2 note reasoned
+from ServUO's `AIType` having a member that ModernUO's does not, and stopped there. A missing enum
+member is evidence about the enum, not about the behaviour. The check that settles it is reading
+the pinned AI class, which takes one grep. `AGENTS.md`'s "verify against the pinned tree, not
+against a description of it" covers this; this is the third time the project has paid for skipping
+it (Q-031, the CC9 `head -5` truncation, this).
+
+Status: **[ANSWERED]** — D-47 downgraded, P1's top row withdrawn, batch 3 unblocked.

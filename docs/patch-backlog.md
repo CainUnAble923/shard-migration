@@ -26,7 +26,7 @@ not estimated.
 
 | # | Patch | Closes | Reach | Shape | Measured size | Status |
 |---|---|---|---|---|---|---|
-| **P1** | **The missing AI types.** ModernUO's `AIType` has 10 members (`Mobiles/AI/BaseAI/AIType.cs`); ServUO has nine more that creatures actually select | D-41, D-44, D-45, D-47 | **46 ServUO `Mobiles/Normal` files**, plus every later batch that meets one | 1 patch (the enum) + N additive AI classes | 2,153 lines for all nine | **BEST VALUE. Unscheduled** |
+| **P1** | **The missing AI types.** ModernUO's `AIType` has 10 members (`Mobiles/AI/BaseAI/AIType.cs`); ServUO has nine more that creatures select. **Necromancy is not among them — see the correction below** | D-41, D-44, D-45 | **26 ServUO `Mobiles/Normal` files** | 1 patch (the enum) + N additive AI classes | 1,964 lines for the eight that are genuinely absent | unscheduled |
 | **P2** | **Carve-yield hooks.** Two `BaseCreature` virtuals with no counterpart: `DragonBlood` and corpse-shear `Fur` | D-48, D-50 | 16 creatures (dragon's blood) + 5 (fur) | patch to the corpse-carve path + 2 virtuals | ~20 lines | **OPEN as Q-049** |
 | **P3** | **The set-mechanic hooks row.** Eight additive patches that make ported set and artifact mechanics actually fire | D-5, D-14, D-21, D-24, D-27, D-28 | the CC9 artifact row, 123 set-bearing types | 8 patches | costed in the gap register | **AWAITING CHASE.** Q-038, Q-042, Q-043 |
 | **P4** | **Attribute enum members and their hooks.** `AosArmorAttribute` has 4 members here against ServUO's larger set; `AosWeaponAttribute` likewise | D-3, D-21, D-22, D-49 | scattered artifacts | patch to `AOS.cs` (the file S6 already patches for B1) + a branch in `BaseWeapon.OnHit` | small per attribute | unscheduled |
@@ -37,14 +37,38 @@ not estimated.
 
 ---
 
-## P1 in detail, because it is the best row on the board
+## P1 in detail, and the correction that shrank it
+
+**Read this first: on 2026-09-20 the top of this row turned out not to exist.** It was written on
+2026-09-19 claiming `AI_NecroMage` as the best slice on the board, 189 lines for 20 creatures,
+sourced from CC6 batch 2's D-47. Checking pinned ModernUO's own `MageAI` instead of the note
+shows **Necromancy is already built into it**: `IsNecromancer`, `UseNecromancy()`,
+`GetRandomDamageSpellNecro()` and `GetRandomCurseSpellNecro()` (`Mobiles/AI/MageAI.cs:68-325`).
+
+The spell sets are the same ones ServUO's `NecroMageAI` casts. Damage: Pain Spike, Poison Strike,
+Strangle, Wither, four of four, plus Vengeful Spirit at Necromancy 100+. Curse: Corpse Skin, Evil
+Omen, Blood Oath, Mind Rot, **four of four**. The mix differs only in how it is gated — ServUO
+rolls a flat 50% and then gates the pick on current mana; ModernUO weights by skill,
+`Random(magery + necro) >= magery`. For `SkeletalLich` at Magery 127.2 and Necromancy 100-120 that
+is **about 44 to 48 percent Necromancy casts against ServUO's 50**.
+
+So D-47's claim that the lich's "100-120 Necromancy is set and unused" is wrong, and the row it
+justified is withdrawn. What is genuinely missing is small: `CurseWeapon` in the buff rotation, the
+summon path, and mana-gating instead of skill-gating. Not a patch worth scheduling. See Q-050.
+
+**The general lesson, which is the one that keeps costing this project:** a note saying ModernUO
+lacks something is not evidence that it does. Check the pinned tree. This was caught before any
+work was scheduled against it; the same claim also told CC6 batch 3 that `MaddeningHorror` needs an
+AI port, and it does not.
+
+## The eight that are genuinely absent
 
 Measured from `D:\UO\ServUO-pub57\Scripts\Mobiles`. "Normal" is files in `Mobiles/Normal` that select
 that AI; "all" includes `Named`, `Bosses` and the rest.
 
 | ServUO AI | file | lines | Normal | all | Our deviation |
 |---|---|---|---|---|---|
-| `AI_NecroMage` | `Magical AI/NecromageAI.cs` | **189** | **20** | 29 | **D-47** (`SkeletalLich`); `MaddeningHorror` will want it in batch 3 |
+| ~~`AI_NecroMage`~~ | ~~`Magical AI/NecromageAI.cs`~~ | ~~189~~ | ~~20~~ | — | **WITHDRAWN.** Stock `MageAI` already casts Necromancy; D-47 is wrong (Q-050) |
 | `AI_Mystic` | `Magical AI/MysticAI.cs` | **171** | 8 | 12 | **D-41** (`CrazedMage`, Shame) |
 | `AI_Spellweaving` | `Magical AI/SpellweavingAI.cs` | **125** | 7 | 12 | none yet; will appear |
 | `AI_OrcScout` | `OrcScoutAI.cs` | 329 | 3 | 4 | **D-44** (`GreenGoblinScout`, and `OrcScout` in batch 3) |
@@ -54,17 +78,17 @@ that AI; "all" includes `Named`, `Bosses` and the rest.
 | `AI_Paladin` | `Magical AI/PaladinAI.cs` | 85 | 2 | 4 | none yet |
 | `AI_Spellbinder` | `Magical AI/SpellbinderAI.cs` | **819** | 2 | 3 | **D-45** (`Spellbinder`). Worst ratio here: the largest file for the smallest reach |
 
-**The slice to buy first is `AI_NecroMage` alone: 189 lines for 20 creatures.** It also carries the
-most player-visible loss on the list, since a lich that casts only Magery is a different fight from
-one that half the time casts Pain Spike, Poison Strike, Wither and Strangle.
+**The slice to buy first is now `AI_Mystic`: 171 lines for 8 creatures**, and it closes D-41, the
+Shame `CrazedMage` that runs Magery in place of Mysticism. `AI_Spellweaving` is next at 125 lines
+for 7, and closes nothing yet but will.
 
 **The enum is the only upstream patch**, and it is additive in the safest sense: appending members
 to `AIType` changes no existing member's value, so nothing in a save shifts. Every AI class beside
 it is a new file. That is a 1-patch, N-file shape, which is the same shape as S1's armour sets, the
 best-value thing this project has built.
 
-**Order by ratio, not by appetite:** NecroMage (20 creatures / 189 lines), Mystic (8 / 171),
-Spellweaving (7 / 125), OrcScout (3 / 329). Stop there. Ninja, Samurai, Necro and Paladin are two
+**Order by ratio, not by appetite:** Mystic (8 creatures / 171 lines), Spellweaving (7 / 125),
+OrcScout (3 / 329). Stop there. Ninja, Samurai, Necro and Paladin are two
 creatures each and can wait for a batch that needs them. **Spellbinder is a decline** at 819 lines
 for two creatures unless one of them turns out to matter.
 
