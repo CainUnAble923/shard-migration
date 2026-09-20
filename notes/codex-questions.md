@@ -2801,3 +2801,41 @@ against a description of it" covers this; this is the third time the project has
 it (Q-031, the CC9 `head -5` truncation, this).
 
 Status: **[ANSWERED]** — D-47 downgraded, P1's top row withdrawn, batch 3 unblocked.
+
+## Q-051 [OPEN] 2026-09-19 `CrystalHydra` and `FairyDragon` want `PeerlessKey`; the cheap answer is to port the base itself, inert, so the keys get their final parent once
+**Question:** `ShatteredCrystals` (dropped by `CrystalHydra`, 2 spawn entries, Prism of Light) and
+`DraconicOrb` (dropped by `FairyDragon`, 1 entry, the Abyss) both derive from `PeerlessKey`
+(`Services/Peerless/PeerlessKey.cs`, 184 lines), which pinned ModernUO lacks (B14, a standing
+WON'T: "no base to instance"). Which parent do the two keys get?
+
+**Context:** Batch 3 (`notes/cc6-creatures-batch3.md`) left both creatures unported on the brief's
+instruction that the parent is a final-parent decision and Chase's. Read for this question:
+
+- `PeerlessKey` is **not** the peerless system. It is an `Item` with a blessed loot type, a
+  `Map _Map` command property that adds a facet line to the property list, and a `Lifespan`
+  (default 604,800 s, one week) counted down by a 10-second timer into a `TimeLeft` property line,
+  ending in `Decay()`: a "The ~1_name~ expired..." message, a puff of smoke and `Delete()`. Its
+  only references outside itself are `Map`, `Effects`, `EffectItem` and `Timer`, all stock. It
+  reads nothing from `PeerlessAltar`; the altars read *it*.
+- The two keys' consumers in ServUO are `Items/Functional/PrismOfLightAltar.cs` (shattered
+  crystals) and `Services/InstancedPeerless/StygianDragon/StygianDragonPlatform.cs` (the orb),
+  plus a `CraftItem.cs` line. None of the three is here, so on this shard a key is a one-week
+  blessed drop with a lifespan line and nothing to put it in. That is what an OSI player sees too
+  until they reach the altar.
+- Pinned ModernUO has **no** file matching `Peerless` anywhere under `Projects/` (grep, 0 hits),
+  so there is no name to collide with and no stock equivalent hiding under another name.
+- `AGENTS.md`: a base gets its final parent the first time. Parenting the keys on `Item` now and on
+  `PeerlessKey` later inserts an ancestor, which changes the save chain and is not expressible as a
+  migration. Parenting them on a ported `PeerlessKey` now costs one additive 184-line file with no
+  consumer and no patch, and it never needs revisiting: when B14 is ever reopened, the altars find
+  the keys already on the right base.
+
+**Your best guess:** port `PeerlessKey` as an additive base under `server/customizations/Services/
+Peerless/PeerlessKey.cs` in batch 4, with the lifespan timer and the facet line working as
+written (both are self-contained), and derive `ShatteredCrystals` (40 lines) and `DraconicOrb`
+(58 lines) from it unchanged. Then `CrystalHydra` and `FairyDragon` are ordinary one-ability
+ports (D-numbers for the abilities, the Saurosaurus precedent). B14 stays WON'T: this is the key,
+not the instance. If Chase would rather the keys never exist without their altars, the
+alternative is to leave both creatures unported until B14 moves, and batch 4 says so in its §1.
+
+**Answer:**
