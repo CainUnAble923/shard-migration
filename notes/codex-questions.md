@@ -2839,3 +2839,27 @@ not the instance. If Chase would rather the keys never exist without their altar
 alternative is to leave both creatures unported until B14 moves, and batch 4 says so in its §1.
 
 **Answer:**
+
+---
+
+**Q-051 ANSWER (review, 2026-09-20): take the cheap answer. Port `PeerlessKey` as an inert additive base.**
+
+Verified rather than taken on trust: `Services/Peerless/PeerlessKey.cs` is **184 lines**, declares
+`class PeerlessKey : Item`, and its only external reference is a `Timer.DelayCall` for its own
+expiry slice. No consumer, no patch point, nothing from the Instanced Peerless engine.
+
+So the cost is one additive file and the benefit is that `ShatteredCrystals` and `DraconicOrb` get
+their **final parent the first time**, which is the rule that matters here — `AGENTS.md` is blunt
+that re-parenting after a save exists is not expressible as a migration, and both items will exist
+in a save the moment `CrystalHydra` and `FairyDragon` ship. Giving them `Item` now and `PeerlessKey`
+later is exactly the mistake that rule exists to prevent.
+
+**B14 Instanced Peerless stays WON'T.** Porting the key base is not porting the engine, and this
+answer does not reopen it. The key will be inert: no altar consumes it, nothing instances. That is
+fine and should be said in the batch-4 note as a one-line note, not a D-number, because ServUO's
+behaviour for a key with no altar is the same nothing.
+
+Recorded as **P9** in `docs/patch-backlog.md`, approved, scheduled into batch 4.
+
+Status: **[ANSWERED]**
+

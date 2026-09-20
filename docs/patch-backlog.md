@@ -33,6 +33,9 @@ not estimated.
 | **P5** | **Carrier extensions.** `BaseSetRanged` and the quiver/talisman carriers | D-4, D-15, D-17, D-23 | completes the **Marksman set** (blocked on `Swiftflight`) | additive, the S10 family | S10 has the shape | **Q-041 open** |
 | **P6** | **Pet Training, groups B2-B4** (`SpecialAbility`, `MagicalAbility`, `AreaEffect`). Not B5, which is the expensive half and buys almost nothing | D-32, D-39, D-51 through D-57 | **88 files** (53+18+17) | 6 patches + `AOS.Damage` | S3 measured it | **WAIT** since 2026-09-07 |
 | **P7** | **`Services/PointsSystems`** | D-29, D-37 | 55 files; hard dependency of B9 and B13 | additive | 2,857 lines | **queued as S7** |
+| **P9** | **`PeerlessKey` as an inert additive base.** 184 lines, `: Item`, its only external reference a `Timer`. No consumer, no patch. Porting it gives `ShatteredCrystals` and `DraconicOrb` their **final parent once**, which is the whole point — B14 Instanced Peerless stays WON'T | unblocks `CrystalHydra` and `FairyDragon` | 2 orphan names, 3 spawn entries | additive, 1 file | 184 lines, measured | **APPROVED (Q-051).** Take it in batch 4 |
+| **P10** | **`IRepairableMobile`** (`Mobiles/MobileInterfaces.cs`, 3 members) plus the branch in `Engines/Craft/Core/Repair.cs:169`, which today special-cases `targeted is Golem` | D-64 | tinker-repairable constructs; `ClockworkScorpion` today, more later | 6-line additive interface **+ 1 patch** | 6 lines + a small hunk | unscheduled |
+| **P11** | **`MeatType.Rotworm` and `RawRotwormMeat`.** ModernUO's enum is `Ribs`/`Bird`/`LambLeg` (`BaseCreature.cs:106`) | D-59 | cooking content; 1 creature today | 1 enum member **+ 1 patch** + 1 item | small | unscheduled, low value |
 | **P8** | **Three standalone one-liners.** `WispOrb.CheckDrop` in `Container.DropToWorld` (D-31); a `ForceNotoriety` virtual plus two guards in `Notoriety.cs` (D-33); a `TreasureMapChance` virtual (D-42) | D-31, D-33, D-42 | 1 item, possessed creatures, 1 creature | 3 tiny patches | 1 to 5 lines each | D-42 **judged not worth a patch**; the other two unscheduled |
 
 ---
@@ -93,6 +96,18 @@ creatures each and can wait for a batch that needs them. **Spellbinder is a decl
 for two creatures unless one of them turns out to matter.
 
 ---
+
+## The partial-class trick, found in batch 3 and worth reusing
+
+Adding a **marker interface to a stock ModernUO type needs no patch at all.** Every stock creature is
+declared `partial` because the serialization generator requires it, so
+`public partial class AcidElemental : IAcidCreature { }` in a new file under a non-colliding path
+does the whole job additively. Batch 3 used this to plan `IAcidCreature` and `IBloodCreature` onto
+stock `AcidElemental` and `BloodElemental` when the `Vernix` and `ATangledWeb` quests are ported.
+
+This applies to any interface whose members the stock type already satisfies. It does **not** apply
+when the interface needs a member the stock type lacks, and it is not a way around re-parenting: a
+base class is still a base class.
 
 ## Not coming back, and why
 
