@@ -2863,3 +2863,78 @@ Recorded as **P9** in `docs/patch-backlog.md`, approved, scheduled into batch 4.
 
 Status: **[ANSWERED]**
 
+---
+
+## Q-052 [OPEN] 2026-09-20 `Niporailem` is parented on B14's creature base, not on items; is the creature half of Instanced Peerless worth reopening for four orphan names?
+
+**Question:** Batch 3's §9 priced `Niporailem` as "14 Virtuous Epiphany pieces + treasure + sword", an
+item problem. It is not. Which parent does it get, and is that a decision for a content batch at all?
+
+**Context, measured from `D:\UO\ServUO-pub57\Scripts` and `D:\UO\ModernUO-pinned` for this question:**
+
+- `Niporailem : BaseSABoss` (`Mobiles/Normal/Niporailem.cs`, 220 lines); `BaseSABoss : BasePeerless`
+  (`Mobiles/Normal/BaseSABosses.cs:8`, abstract, 190 lines, whose only external call is `GiveArtifact`
+  twice, the SA artifact hand-out over its `UniqueSAList`/`SharedSAList`); `BasePeerless : BaseCreature`
+  (`Services/Peerless/BasePeerless.cs:8`, 367 lines). `BasePeerless` sits in the 6-file, 1,590-line
+  Peerless engine (B14, WON'T); with `PeerlessKey` (184) now ported, 1,406 lines of it remain.
+- **The altar coupling inside `BasePeerless` is small:** 3 references to `PeerlessAltar`, 11 lines that
+  touch `m_Altar`. The rest is creature-side: `CanBeParagon`, `OnThink`/`OnDeath` loot and primer logic,
+  `CanSpawnWave`/`SpawnHelpers`, `PackResources`/`PackItems`/`PackTalismans`, `FireRing`. An altar-less
+  `BasePeerless` plus `BaseSABoss` is about **546 lines, additive, no patch** — but it is a creature
+  base for a declined subsystem, and porting it is a subsystem task, not a content one.
+- **Reach:** `BasePeerless` has 11 ServUO descendants: 7 ML peerless bosses directly (`ChiefParoxysmus`,
+  `CrimsonDragon`, `DreadHorn`, `LadyMelisande`, `MonstrousInterredGrizzle`, `ShimmeringEffusion`,
+  `Travesty`) and 4 through `BaseSABoss` (`Niporailem`, `Medusa`, `SlasherOfVeils`, `StygianDragon`).
+  **Pinned ModernUO has none of the 11** (each class name checked). **Four are on the orphan list**:
+  `Niporailem` and the whole 3-name `Mobiles/Bosses` row, 4 spawn entries in all.
+- **The items are nearly there and were mis-named:** the 14 unique pieces are the *Villainous* Epiphany
+  set, all 14 already ours (CC9), not Virtuous; of the 4 shared, `BladeOfBattle`, `DemonBridleRing` and
+  `GiantSteps` are ours and `SwordOfShatteredHopes` is not; `NiporailemsTreasure` is not; `SpectralArmour`
+  is stock. Two items short, and neither is what blocks it.
+- `AGENTS.md`: a base gets its final parent the first time. Shipping `Niporailem` on `BaseCreature` now and
+  re-parenting onto a ported `BasePeerless` later inserts an ancestor into a saved chain, which is not a
+  migration. So it is `BaseCreature` forever, or `BasePeerless` first.
+
+**Your best guess:** leave all four unported and do not put `Niporailem` on `BaseCreature`. If the four
+are wanted, the honest unit is "the creature half of B14": an inert, altar-less `BasePeerless` +
+`BaseSABoss` (~546 lines additive) costed and built as its own subsystem task under
+`docs/subsystem-policy.md`, then the four as ordinary ports. The ratio is 4 orphan names (and 7 ML bosses
+ModernUO lacks) for ~546 additive lines and no patch, which is better than several rows B14's decline was
+measured against — but it reopens a WON'T, and that is Chase's call, not a batch's. Not blocking: batch 4
+ports around it.
+
+**Answer:**
+
+---
+
+## Q-053 [OPEN] 2026-09-20 The chicken lizard egg is not self-contained: it needs `Incubator` and two one-line hunks to do anything; take them as a small follow-up?
+
+**Question:** Batch 4's brief said the egg "needs nothing else beyond the two lizards." It needs an
+`Incubator` to advance at all and a `Beverage.cs` branch to be watered. Both are recorded as deviations
+(D-69, D-70). Are they worth a follow-up task?
+
+**Context:**
+
+- `ChickenLizardEgg.Incubating` is only ever set true by ServUO's `Items/Functional/Incubator.cs`
+  (158 lines, `Container, ISecurable`), and `CheckStatus()` is only ever called from it. Without it a wild
+  or laid egg stays at `New` forever and crumbles when hatched. The incubator's own dependencies are all
+  stock in pinned: `ISecurable` (`Gumps/Houses/SetSecureLevelGump.cs`), `SecureLevel` and
+  `BaseHouse.CheckSecured` (`Multis/Houses/BaseHouse.cs:1304`). It is obtained only by crafting:
+  `DefCarpentry.cs:229`, Carpentry 90-115, 100 boards — one line that would be **1 patch hunk** in pinned
+  `Engines/Craft/DefCarpentry.cs`. Its `[IncreaseStage` staff command lives in the same file.
+- Watering is `BaseBeverage.Pour_OnTarget` → `targ is ChickenLizardEgg` → `egg.Pour(from, this)`
+  (ServUO `Beverage.cs:1489`). Pinned `Items/Food/Beverage.cs:587` has the same method with the
+  `BaseBeverage`, self, `BaseWaterContainer`, `PlantItem` and water-vat branches and no egg branch, and
+  no interface hook to reach one: **1 patch hunk**, one `else if`. The egg's `Pour` is ported and works.
+- Without watering the mechanic is half-alive even with an incubator: an unwatered egg is `Dehydrated`
+  at both burn rolls (50%, then 75%) and has a 0% mutation chance, so a battle chicken lizard is
+  unreachable. With both hunks it is 5% (the 10% "Moist" branch is unreachable on ServUO too, batch 4 §5).
+- Reach: 1 item here, and ServUO's `DragonTurtleEgg : ChickenLizardEgg` (Time of Legends) when it comes.
+
+**Your best guess:** yes, as one small task: 158 additive lines and two one-line hunks against files we
+do not otherwise patch (`DefCarpentry.cs`, `Beverage.cs`). The highest-entry creature on the orphan list
+carries this egg, and it is dead without the incubator. Not urgent and not blocking; D-69 and D-70 hold
+the place until then.
+
+**Answer:**
+
