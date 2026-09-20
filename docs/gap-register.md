@@ -1,5 +1,7 @@
 # Gap register: everything declined, degraded, or left broken
 
+**Two companion files split this one by what you are looking for.** `patch-backlog.md` takes every D-number's "reverses when" column and ranks it as a schedulable patch, so a dropped mechanic is a queued fix rather than a loss. `bug-list.md` holds the things that are simply *wrong*: our open defects, the ServUO bugs copied on purpose and the rule that decides which get fixed, and the two ModernUO defects worth sending upstream. This file stays the register of declines and gaps.
+
 **One place for every gap, with what a player notices and what closes it.** Compiled 2026-09-07
 from `docs/fidelity-principle.md`, `docs/subsystem-policy.md`, `notes/s3-decline-costs.md`
 (the measured menu), and the S1, S2, S5 and CC3 notes.

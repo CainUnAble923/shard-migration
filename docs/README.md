@@ -12,6 +12,8 @@ from it.**
 | `subsystem-policy.md` | when to build a missing subsystem, when to patch upstream, standing decisions |
 | `fidelity-principle.md` | port unchanged, and the running log of every deliberate deviation |
 | `gap-register.md` | every decline and gap in one place, with what closes each |
+| `patch-backlog.md` | what ModernUO is missing and the patch that would close it, ranked by leverage |
+| `bug-list.md` | defects to look at fixing: ours, ServUO's copied on purpose, and ModernUO's |
 | `how-this-works.md` | the loop, who does what, why the lines fall where they do |
 | `upstream-watch.md` | what ModernUO is building, and what a pinned-commit bump risks |
 | `community-scripts-wishlist.md` | the separate custom-content lane and its rules |

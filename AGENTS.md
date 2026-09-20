@@ -357,6 +357,19 @@ stop that thread, and pick up something else. Claude answers in the same file.
 `notes/` is Codex's to write freely. `docs/` is Claude's: put findings in `notes/` and they
 get promoted after review.
 
+**Two of those promotions have a fixed destination, so write them in the shape they will land in.**
+`docs/patch-backlog.md` ranks every missing ModernUO capability by the patch that would close it,
+and `docs/bug-list.md` holds defects. So:
+
+- **Every D-number needs a "reverses when" that names the patch**, not just the subsystem. "Pet
+  Training" is a subsystem; "a `ReactiveParalyze` member on `AosArmorAttribute` and a branch in
+  `BaseWeapon.OnHit`" is a patch. The second one can be scheduled; the first cannot. Say how many
+  files or creatures it would reach, measured from the ServUO source.
+- **A bug you hit goes in your notes with what proved it**, and say which kind it is: ours to fix,
+  ServUO's to copy faithfully (S2's D-4 rule: a bug that makes something *missing* is copied, a bug
+  that makes something *broken* is fixed), or ModernUO's to report. Do not fix a ServUO bug without
+  arguing it in the note first.
+
 ## Keeping progress current
 
 `tools/progress.py` counts real state from the working trees.
