@@ -2938,3 +2938,38 @@ the place until then.
 
 **Answer:**
 
+
+---
+
+## Q-054 [OPEN] 2026-09-20 D-55, D-56, D-62 and D-68 recorded DragonBreath as a loss; pinned ModernUO has it as `MonsterAbilities.FireBreath`, and four earlier ports could have it back in one line each
+
+**Question:** Batches 2, 3 and 4 dropped `SetSpecialAbility(SpecialAbility.DragonBreath)` from `Slith` (D-55),
+`ToxicSlith` (D-56), `FireDaemon` (D-62) and `CrystalHydra` (D-68) as a P6 Pet Training loss. It is not one. Do I
+restore it in those four files as a follow-up and retire the four D-numbers?
+
+**Context, measured for CC6 batch 5:**
+
+- Pinned `BaseCreature.GetMonsterAbilities()` (`Mobiles/BaseCreature.cs:1131`) and `Mobiles/Abilities/Fire Breath/
+  FireBreath.cs` carry the same numbers as ServUO's default `DragonBreathDefinition` (`Services/Pet Training/
+  SpecialAbility.cs:862-879`): 0.16 of current hits, 100% fire, 30-45 s between breaths, 1.0 s stall, 1.3 s effect
+  delay, item 0x36D4, sound 0x227, animation 12. `ColdBreath.cs` is the SkeletalDragon definition (100% cold, hue
+  0x480). Stock `Drake.cs:56` and `SkeletalDragon.cs:60` use them. **CC4 Shame already made this mapping**
+  (`notes/cc4-shame.md` section on Pet Training abilities), and batch 5 uses it for `SkeletalDragonRenowned`
+  (ColdBreath) and inherits it on `Grim : Drake`.
+- All four earlier creatures take ServUO's default (fire) definition: none is in any `Uses` list.
+- Cadence differs, as CC4 accepted: ServUO triggers on think at 10% per think while off cooldown and costs 30 mana
+  (`SpecialAbility.cs:176-185`, `CheckMana`); ModernUO triggers on a combat action at 50% while off cooldown with no
+  mana cost. Same 30-45 s cooldown after a breath, so the rate in a fight is close; a mana-starved creature breathes here
+  where it would not there.
+- The fix is one line per file: `private static MonsterAbility[] _abilities = { MonsterAbilities.FireBreath };` plus
+  `public override MonsterAbility[] GetMonsterAbilities() => _abilities;`. No save-chain change (no field). Reach: 4
+  of our files today, and every later port that calls `SetSpecialAbility(DragonBreath)` (34 `Mobiles/Normal` files in
+  ServUO, D-62's row) should use it rather than P6.
+- `docs/patch-backlog.md` lists D-55 and D-56 in P6's Closes column; D-62 and D-68 are in notes only.
+
+**Your best guess:** yes, one small follow-up: the two lines in each of the four files, a fact per creature that
+`GetMonsterAbilities()` is a `FireBreath`, retire D-55/D-56/D-62/D-68, and take DragonBreath out of P6's reach
+(P6 is then B2-B4 minus the breath: still the aura and the rest). Not done in batch 5 because it edits four earlier
+ports and a docs row, which is a review decision, not a batch's. Not blocking.
+
+**Answer:**
