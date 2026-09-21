@@ -361,6 +361,17 @@ get promoted after review.
 `docs/patch-backlog.md` ranks every missing ModernUO capability by the patch that would close it,
 and `docs/bug-list.md` holds defects. So:
 
+- **Before a D-number claims a loss, prove the loss.** ServUO calling something `X` and pinned
+  ModernUO having no `X` is evidence about the **name**, not the capability. Grep pinned for what the
+  thing *does* — the effect, the damage type, the trigger, the property it reads — not for what
+  ServUO calls it. Also check `[TypeAlias]`: `AssemblyHandler` resolves alias strings as real type
+  names (`AssemblyHandler.cs:251-263`), so a type absent by name may still resolve. This project has
+  written five wrong D-numbers and one withdrawn patch row for want of that one grep; `docs/bug-list.md`
+  §1b lists them. Known traps already paid for: `SetSpecialAbility(DragonBreath)` is
+  `GetMonsterAbilities`/`FireBreath`, `SetAreaEffect(AuraDamage)` is `HasAura`, `HealChance` is
+  `CanHeal`, `AI_NecroMage` is stock `MageAI`. A keyword hit is not a loss; a grep hit inside a
+  comment block is not a definition; and a call that only runs inside a `Deserialize` version branch
+  is not live content.
 - **Every D-number needs a "reverses when" that names the patch**, not just the subsystem. "Pet
   Training" is a subsystem; "a `ReactiveParalyze` member on `AosArmorAttribute` and a branch in
   `BaseWeapon.OnHit`" is a patch. The second one can be scheduled; the first cannot. Say how many

@@ -31,11 +31,14 @@ not estimated.
 | **P3** | **The set-mechanic hooks row.** Eight additive patches that make ported set and artifact mechanics actually fire | D-5, D-14, D-21, D-24, D-27, D-28 | the CC9 artifact row, 123 set-bearing types | 8 patches | costed in the gap register | **AWAITING CHASE.** Q-038, Q-042, Q-043 |
 | **P4** | **Attribute enum members and their hooks.** `AosArmorAttribute` has 4 members here against ServUO's larger set; `AosWeaponAttribute` likewise | D-3, D-21, D-22, D-49 | scattered artifacts | patch to `AOS.cs` (the file S6 already patches for B1) + a branch in `BaseWeapon.OnHit` | small per attribute | unscheduled |
 | **P5** | **Carrier extensions.** `BaseSetRanged` and the quiver/talisman carriers | D-4, D-15, D-17, D-23 | completes the **Marksman set** (blocked on `Swiftflight`) | additive, the S10 family | S10 has the shape | **Q-041 open** |
-| **P6** | **Pet Training, groups B2-B4** (`SpecialAbility`, `MagicalAbility`, `AreaEffect`). Not B5, which is the expensive half and buys almost nothing | D-32, D-39, D-51 through D-57 | **88 files** (53+18+17) | 6 patches + `AOS.Damage` | S3 measured it | **WAIT** since 2026-09-07 |
+| **P6** | **Pet Training, groups B2-B4** (`SpecialAbility`, `MagicalAbility`, `AreaEffect`). Not B5, which is the expensive half and buys almost nothing. **Its case is weaker than the raw file count suggests — see the two corrections below** | D-32, D-39, D-51 to D-54, D-57 (**not** D-55, D-56, D-62, D-68: those were wrong, Q-054) | 88 files nominally (53+18+17), but **34 of them want only `DragonBreath`, which pinned already has** | 6 patches + `AOS.Damage` | S3 measured it | **WAIT** since 2026-09-07 |
 | **P7** | **`Services/PointsSystems`** | D-29, D-37 | 55 files; hard dependency of B9 and B13 | additive | 2,857 lines | **queued as S7** |
 | **P9** | **`PeerlessKey` as an inert additive base.** 184 lines, `: Item`, its only external reference a `Timer`. No consumer, no patch. Porting it gives `ShatteredCrystals` and `DraconicOrb` their **final parent once**, which is the whole point — B14 Instanced Peerless stays WON'T | unblocks `CrystalHydra` and `FairyDragon` | 2 orphan names, 3 spawn entries | additive, 1 file | 184 lines, measured | **APPROVED (Q-051).** Take it in batch 4 |
 | **P10** | **`IRepairableMobile`** (`Mobiles/MobileInterfaces.cs`, 3 members) plus the branch in `Engines/Craft/Core/Repair.cs:169`, which today special-cases `targeted is Golem` | D-64 | tinker-repairable constructs; `ClockworkScorpion` today, more later | 6-line additive interface **+ 1 patch** | 6 lines + a small hunk | unscheduled |
 | **P11** | **`MeatType.Rotworm` and `RawRotwormMeat`.** ModernUO's enum is `Ribs`/`Bird`/`LambLeg` (`BaseCreature.cs:106`) | D-59 | cooking content; 1 creature today | 1 enum member **+ 1 patch** + 1 item | small | unscheduled, low value |
+| **P12** | **`Incubator`** (ServUO `Items/Functional/Incubator.cs`, 158 lines) plus two one-line hunks, in `DefCarpentry.cs` and `Beverage.Pour_OnTarget` | D-69, D-70 | **makes `ChickenLizard` reachable at all** — 8 spawn entries, and `BattleChickenLizard` has no other source | 158 additive + 2 tiny patches | **APPROVED (Q-053).** Take it next |
+| **P13** | **An `OnAfterTame(Mobile)` virtual** on `BaseCreature`, called from `AnimalTaming.cs:444` where it today calls the non-virtual `SetControlMaster` | D-71 | any tamed creature with post-tame state to settle; 1 today | 1 virtual + 1 small hunk | unscheduled, low value |
+| **P14** | **`ParrotItem`** (ServUO `Items/Addons/Parrot.cs`, 112 lines, needs `PetParrot`, 199) plus un-commenting pinned `LootPack.cs:515-523`, which already carries the 10% pack inside a `/* TODO */` block | D-72 | 1 creature today | 311 additive + 1 hunk | unscheduled |
 | **P8** | **Three standalone one-liners.** `WispOrb.CheckDrop` in `Container.DropToWorld` (D-31); a `ForceNotoriety` virtual plus two guards in `Notoriety.cs` (D-33); a `TreasureMapChance` virtual (D-42) | D-31, D-33, D-42 | 1 item, possessed creatures, 1 creature | 3 tiny patches | 1 to 5 lines each | D-42 **judged not worth a patch**; the other two unscheduled |
 
 ---
@@ -96,6 +99,41 @@ creatures each and can wait for a batch that needs them. **Spellbinder is a decl
 for two creatures unless one of them turns out to matter.
 
 ---
+
+## Two corrections that shrank P6, and the lesson under them
+
+**On 2026-09-20 four D-numbers were retired as wrong** (Q-054). D-55 (`Slith`), D-56 (`ToxicSlith`),
+D-62 (`FireDaemon`) and D-68 (`CrystalHydra`) each recorded `SetSpecialAbility(DragonBreath)` as a
+Pet Training loss. **Pinned ModernUO has the ability**, as `MonsterAbilities.FireBreath` from
+`BaseCreature.GetMonsterAbilities()` (`:1131`), with `Mobiles/Abilities/Fire Breath/FireBreath.cs`
+carrying ServUO's fire numbers line for line and `ColdBreath : FireBreath` overriding
+`ColdDamage => 100`, `FireDamage => 0`, `BreathEffectHue => 0x480`. CC4 had already used it. Those
+four creatures should have shipped breathing, and **34 of the ServUO `Mobiles/Normal` files counted
+into P6's 88 want only this**, so P6's real reach is materially smaller than the row's file count.
+
+Earlier, batch 3 found the same shape three times in one task: `SetAreaEffect(AuraDamage)` is
+pinned's `HasAura`/`AuraDamage()`, `HealChance` is `CanHeal` with the same 0.78 trigger, and a
+`SetMagicalAbility(Poisoning)` that only ever ran inside a `Deserialize` version branch was never
+live content at all.
+
+**The lesson, since it has now cost this project five wrong D-numbers and one withdrawn patch row
+(the `AI_NecroMage` withdrawal, Q-050):** ServUO calling something `X` and pinned ModernUO having no
+`X` is evidence about the *name*, not about the *capability*. Before a D-number claims a loss, grep
+pinned for what the thing **does** — the effect, the damage type, the trigger — not for what ServUO
+calls it. `AGENTS.md` now asks for this explicitly.
+
+## The `[TypeAlias]` trap, found in batch 5
+
+**A name absent from pinned ModernUO may still resolve.** `AssemblyHandler` registers every
+`[TypeAlias]` string in the same lookup as real type names (`AssemblyHandler.cs:251-263`), so
+`FindTypeByName("GargishClothChest")` returns stock `GargishClothChestType1` even though no type is
+declared under that name. Porting the ServUO type would have put **two types under one name**.
+
+So a "missing" type needs the alias check as well as the name check, and this applies directly to
+the gargish cloth family: pinned models ServUO's gargish cloth *clothing* and cloth *armour* as one
+stock armour type per slot and gender. **Any later port deriving from `GargishClothArms/Chest/Kilt/
+Legs` goes straight onto a carrier with the ServUO parent's members inlined**, never onto a ported
+clothing base. This also retires CC9 §2b's listing of `GargishClothKilt` as an extract still to do.
 
 ## The partial-class trick, found in batch 3 and worth reusing
 

@@ -26,6 +26,27 @@ is everything left alone.
 | **new** | **`progress.py` and `build.sh` disagree on the test count**: 69 by `[Fact]` count in 16 files, 68 run by the gate. Disclosed in CC6 batch 2's commit, cause not chased | a reported number nobody can reproduce exactly | find the one test and make the two agree, or document why they cannot |
 | **D2** | ModernUO has no `Quest.StartingItem` equivalent. **How many of the 203 quests need one is unmeasured** | blocks an unknown slice of the quest row | Q-025, measure before the quest batch |
 
+## 1b. Our own documentation defects, because a wrong note costs as much as a wrong line
+
+Five D-numbers and one patch row have now been written claiming ModernUO lacks something it has.
+All were caught in review or by a later batch, none reached a player, and all share one cause.
+
+| What was wrong | Found by | Cause |
+|---|---|---|
+| **D-47**: `SkeletalLich` "casts Magery only; its Necromancy is set and unused" | review, Q-050 | stock `MageAI` carries the necromancer branch; it casts necro 44-48% of the time |
+| **P1's top row**: `AI_NecroMage`, "189 lines for 20 creatures, best value on the board" | review, Q-050 | written from D-47 without checking pinned. Withdrawn |
+| **D-55, D-56, D-62, D-68**: `DragonBreath` dropped as a Pet Training loss on four creatures | CC6 batch 5, Q-054 | pinned has it as `MonsterAbilities.FireBreath`/`ColdBreath`. **CC4 had already used it** |
+| Three "losses" in one CC6 batch 3 brief: `SetAreaEffect(AuraDamage)`, `HealChance`, `SetMagicalAbility(Poisoning)` | CC6 batch 3, in pre-flight | the first two exist under other names; the third only ever ran in a `Deserialize` branch |
+| CC9 §2b listing `GargishClothKilt` as an extract still to do | CC6 batch 5 | pinned registers that name as a `[TypeAlias]` of its stock armour |
+
+**The single cause:** reasoning from ServUO's vocabulary to ModernUO's capability. A missing enum
+member, a missing method name or a missing type name is evidence about the *name*. The check that
+settles it is to grep pinned for what the thing **does**, and it takes one command.
+
+**The counter-habit that works**, and the reason none of these shipped: every batch's pre-flight
+greps both trees for every type it is about to touch, and reports what it finds rather than what the
+brief told it. Batches 3, 4 and 5 each corrected their own brief this way, three times over.
+
 ## 2. Fixed, kept so the cause is not re-learned
 
 | # | What it was | Cost |

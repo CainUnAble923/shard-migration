@@ -2973,3 +2973,45 @@ restore it in those four files as a follow-up and retire the four D-numbers?
 ports and a docs row, which is a review decision, not a batch's. Not blocking.
 
 **Answer:**
+
+
+---
+
+**Q-053 ANSWER (review, 2026-09-21): yes, take the `Incubator`. It is the difference between ported and reachable.**
+
+Without it D-69 and D-70 stand together and the result is that **no player can ever reach a
+`BattleChickenLizard`**. Nothing sets `Incubating`, nothing calls `CheckStatus()`, and pinned
+`Beverage.Pour_OnTarget` has no egg branch, so an egg reads "moist" forever and crumbles when
+hatched. `ChickenLizard` is 8 spawn entries, the largest single name the orphan work has closed, and
+right now the whole cluster is decorative.
+
+Cost, as batch 4 measured it: `Incubator` 158 additive lines, plus two one-line hunks in
+`DefCarpentry.cs` and `Beverage.cs`. Recorded as **P12** in `docs/patch-backlog.md`, approved.
+
+Batch 4 §9 already notes the egg needs no change when this lands, because `Incubating`,
+`IncubationStart` and `CheckStatus()` are public. Take it as a small follow-up rather than a batch.
+
+Status: **[ANSWERED]**
+
+---
+
+**Q-054 ANSWER (review, 2026-09-21): yes, restore the breath and retire all four numbers. This is a content fix, not bookkeeping.**
+
+Verified in pinned ModernUO rather than taken from the note: `Mobiles/Abilities/Fire Breath/FireBreath.cs`
+carries ServUO's fire-breath numbers, and `ColdBreath.cs` is four lines — `ColdBreath : FireBreath`
+with `ColdDamage => 100`, `FireDamage => 0`, `BreathEffectHue => 0x480`. `BaseCreature.GetMonsterAbilities()`
+(`:1131`) is how a creature declares it, and stock `SkeletalDragon` and `Drake` already do.
+
+So **D-55 (`Slith`), D-56 (`ToxicSlith`), D-62 (`FireDaemon`) and D-68 (`CrystalHydra`) recorded a
+loss that never existed**, and four creatures are on the shard fighting wrong. Restore the breath in
+each, one test fact each, retire the four numbers in `docs/fidelity-principle.md`, and take
+`DragonBreath` out of P6's reach — `docs/patch-backlog.md` now says so, along with the note that 34
+of the 88 files counted into P6 want only this.
+
+**The aggravating detail, recorded because it is the useful part:** CC4 had already used the pinned
+mechanism. The information was in our own notes before the first of these four was written. This is
+the same failure as Q-050 and is now a standing entry in `docs/bug-list.md` §1b.
+
+Do it as a small follow-up alongside Q-053's `Incubator`; the two together are one short task.
+
+Status: **[ANSWERED]**

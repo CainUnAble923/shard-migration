@@ -48,6 +48,16 @@ That is also a reason to be careful about "improving" ported content: it silentl
 set of things that need explaining, and it grows it in the places players are least expecting
 surprises.
 
+## Four entries below are withdrawn, 2026-09-21
+
+**D-55, D-56, D-62 and D-68 are not deviations and never were.** Each recorded
+`SetSpecialAbility(DragonBreath)` as a Pet Training loss on `Slith`, `ToxicSlith`, `FireDaemon` and
+`CrystalHydra`. Pinned ModernUO has the ability as `MonsterAbilities.FireBreath` from
+`BaseCreature.GetMonsterAbilities()` (`:1131`), with `ColdBreath : FireBreath` for the cold variant,
+and CC4 had already used it. The four creatures are on the shard fighting wrong until the follow-up
+lands; **they are defects to fix, not deviations to accept**. Q-054 has the decision,
+`docs/bug-list.md` §1b has the cause. Leave the rows in place until the fix ships, then strike them.
+
 ## Deliberate deviations
 
 Every entry gets a date, the task that made it, what a player would notice, and what would
