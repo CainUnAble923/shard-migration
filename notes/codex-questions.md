@@ -3018,7 +3018,7 @@ Status: **[ANSWERED]**
 
 ---
 
-## Q-055 [OPEN] 2026-09-21 Do we want stock ModernUO types wearing `[TypeAlias]` names invented by a spawn-file author? (CC6 batch 6, the name-mapping row)
+## Q-055 [ANSWERED] 2026-09-21 Do we want stock ModernUO types wearing `[TypeAlias]` names invented by a spawn-file author? (CC6 batch 6, the name-mapping row)
 
 **Question:** Pinned ModernUO's own spawn data (`Distribution/Data/Spawns`, a converted Nerun's Distro, commit
 `0d1fffd9f`) names nine types that pinned already ships under spellings no assembly declares, so those spawners run
@@ -3053,5 +3053,65 @@ principle is about what players experience, and under "leave it" they experience
 and a Heartwood with no quest givers, for content the shard is entitled to. But the brief names this as Chase's
 call, and the spike is one file to delete if the answer is no. Not blocking: nothing else waits on it, and the
 leaf-creature row (§9) is the next batch either way.
+
+**Answer:**
+**Q-055 ANSWER (review, 2026-09-21): yes — alias the nine, with two conditions.**
+
+Batch 6 argued this honestly in both directions and the case against is real: the names are a spawn-file author's,
+not OSI's, and `[TypeAlias]` was built to record a type's own earlier spelling rather than to absorb someone
+else's typos.
+
+What decides it is who sees the cost. **An alias changes nothing a player sees** — the creature that spawns is
+stock `EliteNinja`, with the stock name, corpse, loot and UOGuide page, and the alias is a string in a lookup
+table. The fidelity cost falls on a GM typing `[add EliteNinjaWarrior` and finding a creature no wiki explains.
+The cost of "leave it" falls on players: the Citadel with no elite ninjas, the Twisted Weald with no dryads, and
+Heartwood with no quest givers, indefinitely, for content this shard is entitled to. **Empty rooms are the larger
+fidelity failure, because players actually encounter them.**
+
+The strongest objection is that the real fix belongs upstream, and batch 6's own answer resolves it: do both.
+
+**Condition 1.** Every alias file carries a comment saying what it reconciles, that the defect is pinned's data
+disagreeing with pinned's assembly, and that the alias is expected to be deleted once upstream fixes it.
+
+**Condition 2.** The misnames are reported upstream, so the aliases have a retirement date rather than becoming
+permanent local furniture.
+
+Status: **[ANSWERED]**
+
+---
+
+## Q-056 [OPEN] 2026-09-21 A ported type's name when ServUO's type name and the spawn-data entry disagree: which spelling does the type take? (CC6 batch 7, the leaf-creature row)
+
+**Question:** Eight creatures in batch 7 are named one way in ServUO and another in pinned's spawn data, and the
+name we give a ported type is ours to choose because neither is OSI's (OSI names the creature a player sees, not
+the class). The seven Clan ratmen are ServUO's `ClanCA`, `ClanCT`, `ClanRC`, `ClanRS`, `ClanSH`, `ClanSS`, `ClanSSW`
+and the data's `ClanChitterAssistant`, `ClanChitterTinkerer`, `ClanRibbonCourtier`, `ClanRibbonSupplicant`,
+`ClanScratchHenchrat`, `ClanScratchScrounger`, `ClanScratchSavageWolf`; the Citadel's grand mage is ServUO's
+`DragonsFlameGrandMage` and the data's `magedragonsflamemage`. Two coherent answers:
+
+1. **Port under ServUO's name and alias the spawn spelling** (`[TypeAlias("Server.Mobiles.ClanChitterAssistant")]`
+   on our `ClanCA`). Consistent with Part A's mechanism, keeps ServUO's grep-able names, but puts a `[TypeAlias]` on a
+   type we author, for a spelling that was never that type's own, and that alias can never retire: upstream cannot
+   rename an entry to a type it does not ship.
+2. **Port under the spawn-data spelling directly.** One file, no alias. The rats' full-word names are better than
+   ServUO's abbreviations and match how both trees already name the family's eighth member, `ClanRibbonPlagueRat`;
+   the grand mage's `MageDragonsFlameMage` is odder than `DragonsFlameGrandMage` but not wrong. A GM used to ServUO
+   who types `[add ClanCA` gets nothing, and the file header carries the ServUO name for grep.
+
+Either way the creature's `DefaultName` is what players see and is faithful to OSI, which for `ClanCT` means the
+name ServUO's own file gets wrong (D-76: "Clan Chitter Tinkerer", per UOGuide and the data, not ServUO's "Clan
+Scratch Tinkerer").
+
+**Context:** `notes/cc6-batch7.md` §3 and §5. This binds every later port whose ServUO type name differs from its
+spawn entry: on the remaining orphan list, the Underworld NPCs (`ElderDugan` vs ServUO `Dugan`, `FiddlingTobin` vs
+`Tobin`, `NevilleBrightwhistle` vs `Neville`, `NavreyNightEyes` vs `Navrey`) and `escortablewanderinghealer` vs
+`EscortableHealer` are the same shape.
+
+**Your best guess, and what batch 7 built:** option 2. The spawn data is the consumer, it is pinned, and for a type
+upstream lacks it will never be corrected, so the spelling that has to resolve is the durable one; it keeps
+`[TypeAlias]` to its two meanings in our tree (a type's own earlier spelling, and reconciling upstream's data with
+upstream's own types); and the ratmen read better. The cost is one odd class name (`MageDragonsFlameMage`) and the
+GM habit. If the answer is option 1, each file gains one attribute line and its class name changes; nothing else
+moves, and no save exists yet. Not blocking.
 
 **Answer:**
