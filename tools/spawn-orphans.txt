@@ -1,16 +1,15 @@
 # Spawn orphans: names in pinned ModernUO's own Distribution/Data/Spawns that no
-# loaded assembly declares. BaseSpawner flags these EntryFlags.InvalidType
-# (BaseSpawner.cs:1130) and a player standing there sees nothing.
+# loaded assembly declares or aliases ([TypeAlias]). BaseSpawner flags these
+# EntryFlags.InvalidType (BaseSpawner.cs:1130) and a player standing there sees nothing.
 #
 # Regenerate: python tools/spawn_orphans.py. Matching is CASE-INSENSITIVE on purpose -
 # the spawn data mixes PascalCase and lowercase (tanglingroots, gremlin, acidslug,
 # bloodworm, rotworm, wolfspider), and AssemblyHandler.FindTypeByName defaults to
 # ignoreCase = true, so a case-sensitive match silently under-reports.
 #
-# 41 remaining as of 2026-09-20.
+# 40 remaining as of 2026-09-21.
 #
 # entries  name                              spawn files
-        7  eliteninjawarrior                 shared/malas/Citadel.json
         4  magedragonsflamemage              shared/malas/Citadel.json
         4  treasurelevel1h                   post-uoml/felucca/Vendors.json, post-uoml/trammel/Vendors.json
         2  abbein                            shared/felucca/TownsPeople.json, shared/trammel/TownsPeople.json

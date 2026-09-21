@@ -3015,3 +3015,43 @@ the same failure as Q-050 and is now a standing entry in `docs/bug-list.md` §1b
 Do it as a small follow-up alongside Q-053's `Incubator`; the two together are one short task.
 
 Status: **[ANSWERED]**
+
+---
+
+## Q-055 [OPEN] 2026-09-21 Do we want stock ModernUO types wearing `[TypeAlias]` names invented by a spawn-file author? (CC6 batch 6, the name-mapping row)
+
+**Question:** Pinned ModernUO's own spawn data (`Distribution/Data/Spawns`, a converted Nerun's Distro, commit
+`0d1fffd9f`) names nine types that pinned already ships under spellings no assembly declares, so those spawners run
+`EntryFlags.InvalidType` and the rooms are empty: `eliteninjawarrior` (7 Citadel entries) for stock `EliteNinja`,
+`DryadA`/`Dryada` (2, Twisted Weald, maxCount 8 and 12) for stock `MLDryad`, and `abbein`, `alethanian`, `aneen`,
+`jothan`, `mallew`, `taellia`, `vicaie` (2 each, Heartwood) for pinned's own ML-quest NPCs `ElderAbbein`,
+`ElderAlethanian`, `LorekeeperAneen`, `ElderJothan`, `ElderMallew`, `ElderTaellia`, `ElderVicaie`. 23 entries. We do
+not patch data, so the only additive route is a `[TypeAlias("Server.Mobiles.EliteNinjaWarrior")]` on a second
+partial-class part of the stock type, which `AssemblyHandler.TypeCache` registers in the same lookup
+`FindTypeByName` reads (`AssemblyHandler.cs:251-263`). Batch 6 built that for exactly one name as a spike and proved
+it in the gate both ways (red without the file, green with it). Three options:
+
+1. **Keep the spike and roll it out** to the other eight names: eight files of the same four-line shape, one test
+   fact each, 16 more entries filled, no port.
+2. **Revert the spike** (delete `server/customizations/Mobiles/Aliases/EliteNinjaSpawnAlias.cs`, put the orphan
+   count the five CC6 batch tests pin back to 41, regenerate `tools/spawn-orphans.txt`) and leave the rooms empty,
+   as every other ModernUO shard running this data has them.
+3. **Either of the above, plus report the misnames upstream** so a pinned bump eventually fixes the data and the
+   aliases can retire.
+
+**Context:** `notes/cc6-batch6-name-mapping.md` §2 has the evidence per name (ServUO's Premium Spawner XML naming
+the ServUO type at the same coordinates; the pinned types' own `Name` strings), §3 the spike and its test, §4 both
+sides of the argument in full. The short form: **for** — cheap, additive, reversible, invisible to players (the
+creature that spawns is the stock one), and the data is upstream's own naming upstream's own types wrongly;
+**against** — the names are a spawn-file author's, not OSI's, so our tree carries strings no wiki explains; it
+repurposes a save-compatibility attribute; and the real fix is an upstream data change, of which this is a local
+workaround with a small pinned-bump maintenance surface (a future upstream `[TypeAlias]` on the same type is a
+loud CS0579).
+
+**Your best guess:** option 3 with option 1: keep the nine aliases, and file the misnames upstream. The fidelity
+principle is about what players experience, and under "leave it" they experience an empty Citadel, an empty Weald
+and a Heartwood with no quest givers, for content the shard is entitled to. But the brief names this as Chase's
+call, and the spike is one file to delete if the answer is no. Not blocking: nothing else waits on it, and the
+leaf-creature row (§9) is the next batch either way.
+
+**Answer:**

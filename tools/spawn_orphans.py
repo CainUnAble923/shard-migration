@@ -7,8 +7,13 @@ and BaseSpawner.Spawn (EntryFlags.InvalidType, BaseSpawner.cs:1130) see them.
 
 Declared types are read from the source trees, not from a description of them: every class/struct/enum/interface/
 record declaration under D:\\UO\\ModernUO-pinned\\Projects\\{Server,UOContent} plus D:\\ShatteredLegacy\\server\\
-customizations. The match is on the simple type name, which is what FindTypeByName resolves a spawn entry with.
+customizations, AND every [TypeAlias("...")] string in the same files, because AssemblyHandler.TypeCache registers
+alias names in the same lookup FindTypeByName reads (AssemblyHandler.cs:251-263), so a name absent as a declaration
+may still resolve (batch 5's GargishClothChest). The match is on the simple type name - for an alias, its last dotted
+segment - which is what FindTypeByName resolves a spawn entry with.
 Written for CC6 batch 2 (2026-09-19) to replace the by-hand method 391db6c used; it reproduces that file exactly.
+Alias registration added for CC6 batch 6 (2026-09-21); measured that day, no alias in either tree covered an orphan,
+so it changed nothing until the batch-6 spike added one.
 """
 
 import collections
@@ -24,10 +29,13 @@ SHARD = r"D:\ShatteredLegacy"
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "spawn-orphans.txt")
 
 DECL = re.compile(r"\b(?:class|struct|enum|interface|record)\s+([A-Za-z_][A-Za-z0-9_]*)")
+# [TypeAlias("Server.Items.A", "Server.Items.B")]: the attribute's params string[] (Attributes.cs:89-94).
+ALIAS = re.compile(r"\bTypeAlias\s*\(([^)]*)\)")
+ALIAS_STRING = re.compile(r'"([^"]+)"')
 
 HEADER = """# Spawn orphans: names in pinned ModernUO's own Distribution/Data/Spawns that no
-# loaded assembly declares. BaseSpawner flags these EntryFlags.InvalidType
-# (BaseSpawner.cs:1130) and a player standing there sees nothing.
+# loaded assembly declares or aliases ([TypeAlias]). BaseSpawner flags these
+# EntryFlags.InvalidType (BaseSpawner.cs:1130) and a player standing there sees nothing.
 #
 # Regenerate: python tools/spawn_orphans.py. Matching is CASE-INSENSITIVE on purpose -
 # the spawn data mixes PascalCase and lowercase (tanglingroots, gremlin, acidslug,
@@ -44,8 +52,12 @@ def declared_types(roots):
     for root in roots:
         for path in glob.glob(os.path.join(root, "**", "*.cs"), recursive=True):
             with open(path, encoding="utf-8-sig", errors="replace") as f:
-                for m in DECL.finditer(f.read()):
-                    names.add(m.group(1).lower())
+                text = f.read()
+            for m in DECL.finditer(text):
+                names.add(m.group(1).lower())
+            for m in ALIAS.finditer(text):
+                for full in ALIAS_STRING.findall(m.group(1)):
+                    names.add(full.rsplit(".", 1)[-1].lower())  # TypeCache: fullTypeName[(LastIndexOf('.') + 1)..]
     return names
 
 
