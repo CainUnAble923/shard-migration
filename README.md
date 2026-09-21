@@ -63,10 +63,10 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-## Overall: 26% of candidate content ported
+## Overall: 27% of candidate content ported
 
 ```
-Content   ██████░░░░░░░░░░░░░░░░  541/2045   26.5%
+Content   ██████░░░░░░░░░░░░░░░░  542/2045   26.5%
 Setup     ██████████████████████  7/7     blocking defects resolved
 ```
 
@@ -98,10 +98,10 @@ Setup     ██████████████████████  7/
 
 **Patches:** 16 total, **0 currently failing to apply**, 8 triaged, 3 found obsolete. `apply-patches.sh` fails the build on a failed patch, so a green build means every patch applied.
 
-### Content moved over: 541 of 2,045 candidate files (26.5%)
+### Content moved over: 542 of 2,045 candidate files (26.5%)
 
 ```
-TOTAL                          █████░░░░░░░░░░░░░  541/2045   26.5%
+TOTAL                          █████░░░░░░░░░░░░░  542/2045   26.5%
 
 Items/Artifacts                ████████████████░░  283/325    87.1%
 Items/Equipment                ███████████████░░░  120/148    81.1%
@@ -110,10 +110,10 @@ Items/Resource                 ██████████░░░░░░�
 Services/Revamped Dungeons     ██░░░░░░░░░░░░░░░░   15/150    10.0%
 Services/Expansions            █░░░░░░░░░░░░░░░░░   12/175     6.9%
 Items/Quest                    █░░░░░░░░░░░░░░░░░    6/78      7.7%
+Items/Functional               █░░░░░░░░░░░░░░░░░    3/49      6.1%
 Items/Containers               ██░░░░░░░░░░░░░░░░    3/31      9.7%
 Items/Decorative               █░░░░░░░░░░░░░░░░░    2/88      2.3%
 Quests                         █░░░░░░░░░░░░░░░░░    2/84      2.4%
-Items/Functional               █░░░░░░░░░░░░░░░░░    2/49      4.1%
 Services/New Magincia          █░░░░░░░░░░░░░░░░░    2/40      5.0%
 Items/Addons                   █░░░░░░░░░░░░░░░░░    1/169     0.6%
 Mobiles/NPCs                   ░░░░░░░░░░░░░░░░░░    0/222     0.0%
@@ -247,7 +247,7 @@ What a MODERNUO_COMMIT bump must reconcile. Patches fail LOUDLY - apply-patches.
 - **S3 costed menu - declines upheld with their ratios recorded** — Measured 2026-09-07, notes/s3-decline-costs.md. Skill Masteries (45 files/8,542 lines, unblocks 14, patches 35 upstream files - fails the layering test). Vice vs Virtue (57/9,613, unblocks 5, patches 21). Exploring the Deep (70/10,292, unblocks 2 - structurally the safest build here and the worst ratio). Shadowguard (14/11,222, unblocks 8). City Loyalty (28/8,177, unblocks 15 - decline on ratio, not structure; revisit with Town Cryer). Instanced Peerless (13/1,543, unblocks 2, and BasePeerless and PeerlessAltar are both absent from ModernUO, so there is no base to instance - cost Services/Peerless first). ServUO's ML quest framework (22 files/6,269 lines, not the 21/5,625 the brief stated) - declined because ModernUO already ships the same OSI system. NOT declined and recommended instead: SAAbsorptionAttributes, the TribeType transformation, and a one-quest spike onto ModernUO's ML quest engine. Vendor Searching (4/2,545) is a player feature, not content; the unblock ratio is the wrong test and it is Chase's call.
 - **ServUO ML quest framework - decline REAFFIRMED by S5** — S5 translated one quest end to end and the objective mapping holds for 4 of 5 types, two of them pinned by tests. Porting ServUO's 22-file, 6,269-line framework would put a second engine in the tree to do a job the engine we already have does correctly. The decline was always on two-engines-for-one-job; it now rests on measurement rather than on principle alone. What is NOT declined: the 164 of 203 missing quests that use a single standard objective type. The 39 that hand-write a BaseObjective subclass (25 InternalObjective, 3 CollectionsObtain, 2 QuestionAndAnswer, ~9 one-offs) are per-quest work, not a framework port, and are the thing to cost before the next quest batch.
 
-Counted from the trees: 716 customization files, 21 patch files, 91 tests in 19 files.
+Counted from the trees: 719 customization files, 22 patch files, 98 tests in 20 files.
 Shard status: running on ModernUO; CC9's 381 files and CC4 Despise both verified in a client 2026-09-19/20.
 <!-- PROGRESS:END -->
 
@@ -256,10 +256,10 @@ Shard status: running on ModernUO; CC9's 381 files and CC4 Despise both verified
 <!-- EXPANSION:START -->
 ### Content by expansion
 
-**3,630 of 6,144 ServUO files present** (59%), of which **591 ported by us**.
+**3,631 of 6,144 ServUO files present** (59%), of which **592 ported by us**.
 
 ```
-Pre-AoS (T2A/UOR/LBR)     ████████████░░░░░░░░  2665/4294    62%   +442
+Pre-AoS (T2A/UOR/LBR)     ████████████░░░░░░░░  2666/4294    62%   +443
 Age of Shadows            ███████████████░░░░░   230/309     74%   +29
 Samurai Empire            ████████████████░░░░    93/115     81%   +6
 Mondain's Legacy          ███████████░░░░░░░░░   249/471     53%   +8
@@ -267,7 +267,7 @@ Stygian Abyss (Ter Mur)   █████████░░░░░░░░░
 High Seas                 ██████░░░░░░░░░░░░░░   108/334     32%   +12
 Time of Legends (Eodon)   █████████░░░░░░░░░░░    69/157     44%   +16
 Endless Journey           ████████████████░░░░    16/20      80%   +3
-TOTAL                     ████████████░░░░░░░░  3630/6144    59%   +591
+TOTAL                     ████████████░░░░░░░░  3631/6144    59%   +592
 ```
 
 _Filename-stem matching: a proxy for presence, not behaviour. Unclassified files fall into Pre-AoS, inflating it. Directional, not a completion percentage._
