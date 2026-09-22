@@ -2865,7 +2865,7 @@ Status: **[ANSWERED]**
 
 ---
 
-## Q-052 [OPEN] 2026-09-20 `Niporailem` is parented on B14's creature base, not on items; is the creature half of Instanced Peerless worth reopening for four orphan names?
+## Q-052 [ANSWERED] 2026-09-20 `Niporailem` is parented on B14's creature base, not on items; is the creature half of Instanced Peerless worth reopening for four orphan names?
 
 **Question:** Batch 3's §9 priced `Niporailem` as "14 Virtuous Epiphany pieces + treasure + sword", an
 item problem. It is not. Which parent does it get, and is that a decision for a content batch at all?
@@ -2904,6 +2904,17 @@ measured against — but it reopens a WON'T, and that is Chase's call, not a bat
 ports around it.
 
 **Answer:**
+**Q-052 ANSWER (review, 2026-09-22): yes — port the creature half of B14.**
+
+What it buys is the entire boss tier of the Stygian Abyss, which is the expansion this project exists to fill.
+Under "leave it" those rooms stay empty indefinitely, and empty rooms are the fidelity failure players actually
+encounter.
+
+**B14 Instanced Peerless stays WON'T.** This ports the creature base, not the engine. No altar, no instancing, no
+teleporters. The bosses become walk-up fights. That is a deliberate, accepted difference, recorded once as a
+D-number and not re-litigated per boss.
+
+Status: **[ANSWERED]**
 
 ---
 
@@ -3113,5 +3124,32 @@ upstream lacks it will never be corrected, so the spelling that has to resolve i
 upstream's own types); and the ratmen read better. The cost is one odd class name (`MageDragonsFlameMage`) and the
 GM habit. If the answer is option 1, each file gains one attribute line and its class name changes; nothing else
 moves, and no save exists yet. Not blocking.
+
+**Answer:**
+
+---
+
+## Q-057 [OPEN] 2026-09-22 With `BasePeerless` in the tree, are the seven Mondain's Legacy peerless bosses wanted as walk-up GM-placed creatures, or do they wait for an engine that will never come? (CC6 batch 8)
+
+**Question:** Q-052's answer put `BasePeerless` and `BaseSABoss` in `server/customizations` (batch 8), which makes
+ServUO's seven ML peerless bosses - `ChiefParoxysmus`, `CrimsonDragon`, `DreadHorn`, `LadyMelisande`,
+`MonstrousInterredGrizzle`, `ShimmeringEffusion`, `Travesty` (`Mobiles/Bosses/`, measured 2026-09-22: 182-440 lines
+each, 2,135 in all) - ordinary creature ports with a final parent already in place. But unlike the four Abyss bosses,
+**no stock spawn entry names any of them**: on OSI they exist only inside an altar-made instance, and pinned's spawn
+data (checked, 109 files) has no entry for the seven. Ported, they would be reachable by `[add` and by a spawner Chase
+places, and by nothing else. Three options:
+
+1. **Port them** as a batch 9 row: seven walk-up bosses for GM placement, each with its ML loot (their altar
+   ingredients are pinned's own `Items/Resources/MiscMLResources.cs`, which no altar here would consume; the loot
+   tables want checking against CC9 the way batch 8 checked the SA ones).
+2. **Leave them** until an engine exists; nothing on the orphan list needs them and no room is empty for want of them.
+3. **Port only those whose room already has a stock spawner nearby** - measured, that is none of the seven.
+
+**Context:** `notes/cc6-batch8.md` section 9. The four Abyss bosses were worth their base because their spawners
+were empty; these seven have no spawner to fill, so the fidelity argument that decided Q-052 does not apply to them.
+
+**Your best guess:** option 2. Batch 8's base is already their final parent, so nothing is lost by waiting, and a
+creature no stock spawner places is a GM toy rather than content a player meets. Not blocking: batch 9 has Niporailem
+(one orphan entry, on the same base, ~220 lines + two items) and the quest row ahead of it either way.
 
 **Answer:**
