@@ -2802,7 +2802,7 @@ it (Q-031, the CC9 `head -5` truncation, this).
 
 Status: **[ANSWERED]** — D-47 downgraded, P1's top row withdrawn, batch 3 unblocked.
 
-## Q-051 [OPEN] 2026-09-19 `CrystalHydra` and `FairyDragon` want `PeerlessKey`; the cheap answer is to port the base itself, inert, so the keys get their final parent once
+## Q-051 [ANSWERED] 2026-09-19 `CrystalHydra` and `FairyDragon` want `PeerlessKey`; the cheap answer is to port the base itself, inert, so the keys get their final parent once
 **Question:** `ShatteredCrystals` (dropped by `CrystalHydra`, 2 spawn entries, Prism of Light) and
 `DraconicOrb` (dropped by `FairyDragon`, 1 entry, the Abyss) both derive from `PeerlessKey`
 (`Services/Peerless/PeerlessKey.cs`, 184 lines), which pinned ModernUO lacks (B14, a standing
@@ -2918,7 +2918,7 @@ Status: **[ANSWERED]**
 
 ---
 
-## Q-053 [OPEN] 2026-09-20 The chicken lizard egg is not self-contained: it needs `Incubator` and two one-line hunks to do anything; take them as a small follow-up?
+## Q-053 [ANSWERED] 2026-09-20 The chicken lizard egg is not self-contained: it needs `Incubator` and two one-line hunks to do anything; take them as a small follow-up?
 
 **Question:** Batch 4's brief said the egg "needs nothing else beyond the two lizards." It needs an
 `Incubator` to advance at all and a `Beverage.cs` branch to be watered. Both are recorded as deviations
@@ -2952,7 +2952,7 @@ the place until then.
 
 ---
 
-## Q-054 [OPEN] 2026-09-20 D-55, D-56, D-62 and D-68 recorded DragonBreath as a loss; pinned ModernUO has it as `MonsterAbilities.FireBreath`, and four earlier ports could have it back in one line each
+## Q-054 [ANSWERED] 2026-09-20 D-55, D-56, D-62 and D-68 recorded DragonBreath as a loss; pinned ModernUO has it as `MonsterAbilities.FireBreath`, and four earlier ports could have it back in one line each
 
 **Question:** Batches 2, 3 and 4 dropped `SetSpecialAbility(SpecialAbility.DragonBreath)` from `Slith` (D-55),
 `ToxicSlith` (D-56), `FireDaemon` (D-62) and `CrystalHydra` (D-68) as a P6 Pet Training loss. It is not one. Do I
@@ -3091,7 +3091,7 @@ Status: **[ANSWERED]**
 
 ---
 
-## Q-056 [OPEN] 2026-09-21 A ported type's name when ServUO's type name and the spawn-data entry disagree: which spelling does the type take? (CC6 batch 7, the leaf-creature row)
+## Q-056 [ANSWERED] 2026-09-21 A ported type's name when ServUO's type name and the spawn-data entry disagree: which spelling does the type take? (CC6 batch 7, the leaf-creature row)
 
 **Question:** Eight creatures in batch 7 are named one way in ServUO and another in pinned's spawn data, and the
 name we give a ported type is ours to choose because neither is OSI's (OSI names the creature a player sees, not
@@ -3153,3 +3153,48 @@ creature no stock spawner places is a GM toy rather than content a player meets.
 (one orphan entry, on the same base, ~220 lines + two items) and the quest row ahead of it either way.
 
 **Answer:**
+
+---
+
+**Q-056 ANSWER (review, 2026-09-22): option 2 stands. A ported type takes the spawn-data spelling.**
+
+Batch 7 built option 2 provisionally and its reasoning holds, so this confirms rather than overturns it. Restating
+the rule so later batches can apply it without re-arguing:
+
+> **When a ported type's ServUO name and its pinned spawn entry disagree, the type takes the spawn-data spelling.
+> No `[TypeAlias]`. The ServUO name goes in the file header so the source stays grep-able.**
+
+Why, in the order the reasons actually weigh:
+
+1. **The spawn spelling is the only one that must resolve, and it is permanent.** Upstream cannot rename an entry to
+   a type it does not ship, so unlike the Q-055 aliases these names have no retirement date. Option 1 would add a
+   `[TypeAlias]` per file that can never be removed. Option 2 adds nothing.
+2. **It keeps `[TypeAlias]` honest.** Our tree uses it for two things: a type's own earlier spelling, and reconciling
+   upstream's data with upstream's own types (Q-055). Putting one on a type we author, for a spelling that was never
+   that type's own, would be a third meaning and the next reader would not know which they were looking at.
+3. **It tracks UOGuide better than ServUO does.** Batch 7 fetched the page and found "Clan Chitter Tinkerer" with no
+   "Clan Scratch Tinkerer" page at all. The full-word spawn names are closer to the reference this project tells
+   players to use than ServUO's `ClanCT`-style abbreviations, and they match how both trees already name the
+   family's eighth member, `ClanRibbonPlagueRat`.
+4. **Nothing a player sees is affected either way.** `DefaultName` carries the OSI name, which the fidelity principle
+   governs and which neither option touches. A class name is developer-facing, so this is a convention question, not
+   a fidelity one.
+
+**The cost, stated plainly and accepted:** `MageDragonsFlameMage` is an ugly class name, a spawn-file author's
+mangling of ServUO's `DragonsFlameGrandMage`. A GM habituated to ServUO who types `[add ClanCA` gets nothing. Those
+are real and they are worth less than one mechanical rule applied the same way fourteen times. A rule with a
+judgment call in it ("take the spawn name unless it is ugly") would be applied inconsistently across batches, which
+is worse than either pure rule.
+
+**What this binds**, per batch 7 §4 and batch 8 §4: the Underworld NPCs (`ElderDugan`/`Dugan`,
+`FiddlingTobin`/`Tobin`, `NevilleBrightwhistle`/`Neville`), `escortablewanderinghealer`/`EscortableHealer`, and
+`NavreyNightEyes`/`Navrey`, which batch 8 already shipped under the spawn spelling on this provisional rule. No file
+changes; batches 7 and 8 are already correct.
+
+**One thing that is time-sensitive.** Batch 7 noted "no save exists" for these types, which is what made option 1
+still free. **That window closes on the next deploy.** Once a ratman or the grand mage is in a world save, renaming
+the class breaks the save unless it gains the very `[TypeAlias]` this answer declines, which would be an unpleasant
+irony. This is settled now partly so it is settled before that happens.
+
+Status: **[ANSWERED]**
+
