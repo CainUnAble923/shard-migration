@@ -1,7 +1,10 @@
 # Gate integrity: the fireball flake and gumps in the test host
 
 2026-09-26. Two defects in `docker/uo/build.sh`'s gate, both found by the New Haven quest board task
-(`notes/new-haven-quest-board.md` 6.1 and 6.2), filed as **D7** and **D8** in `docs/bug-list.md`. Both are fixed.
+(`notes/new-haven-quest-board.md` 6.1 and 6.2), filed as **D11** and **D12** in `docs/bug-list.md`. Both are fixed.
+**Renumbered 2026-09-26 by Claude:** this note was written against D7 and D8, which were already taken by two 2026
+test-rig bugs in section 2 of that file. My collision, not this task's. Every D7 below means D11 and every D8 means
+D12.
 **No D-number**: nothing here changes what a player sees. The changes are one test fact, one new test fact and one
 new Dockerfile layer, and the running server's assemblies are byte-identical (B.4).
 

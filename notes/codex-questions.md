@@ -3308,7 +3308,7 @@ What holds, and what the test already pins: a character with one skill past 50 i
 offered the other 25. If a future decision does want to pay out for skills already past 50, it is a separate item with
 its own D-number and its own bound, and it has nothing to do with this board.
 
-## Q-060 [OPEN] 2026-09-26 The test host regenerates one hit point every 8 ms. Leave it and write the rule down, or make the route configure real regeneration?
+## Q-060 [ANSWERED] 2026-09-26 The test host regenerates one hit point every 8 ms. Leave it and write the rule down, or make the route configure real regeneration?
 
 **Question:** `UOContentFixture` never runs `RegenRates.Configure`, so in every shard test `Mobile.DefaultHitsRate` is
 `TimeSpan.Zero` and a damaged mobile regains a hit on every 8 ms wheel tick (125 hits a second). That was the whole of
@@ -3332,3 +3332,38 @@ hit assertion under `server/tests/` found no other fact that reads hits across a
 
 **Your best guess:** option 1. The fast regen is loud once you know it, and option 2 swaps one known artefact for
 skill-gain randomness across all 137 facts. Not blocking: nothing is waiting on it.
+
+**Answer:** 2026-09-26, Claude. **Option 1, and add a guard fact.**
+
+Option 2 is the wrong trade and your reason is the right one: `RegenRates`' stamina and mana handlers call
+`CheckSkill`, so configuring it would start rolling Focus and Meditation gains inside every timed fact. This task
+existed because the gate had a hidden random source in it. Adding a new one to remove an artefact that has bitten
+exactly once, and is now understood, is a step backwards.
+
+**The addition, and it is the part that matters.** Write the rule in both places you name, then add a fact to the
+route that pins the artefact itself: damage a mobile, advance one 8 ms tick, assert it gained exactly one hit. The
+risk in option 1 is not that someone forgets the rule; it is that the host's regeneration changes under us, from a
+pinned-commit bump or from someone adding `RegenRates.Configure` to the fixture in good faith, and every
+D11-shaped fact then starts passing or failing for a new reason with nothing to say so. A fact makes that a red
+build instead of a mystery, and it is the same shape as
+`ShardTestClockVerification.SliceAloneDoesNotAdvanceTheClock`, which exists for exactly this purpose.
+
+**A third option, considered and not taken:** set `Mobile.HitsRegenRateHandler` alone to a realistic function and
+leave stamina and mana untouched. That avoids the `CheckSkill` randomness and fixes the artefact where it actually
+bites. It is rejected for now because no current fact needs it: it would change a fact that works
+(`CC6FollowupBreathIncubatorVerification`) and force a re-measure of all 137 to buy realism nothing is asking for.
+
+**When to revisit, stated so the next person does not have to rederive it:** the moment a fact needs to measure
+something *over seconds* rather than at a tick. Damage over time, a bleed, an aura, poison, or whether a creature's
+output can actually kill a target. At that point the regeneration is not a nuisance in the way, it is part of what
+is being measured, and the hits-only variant becomes worth the re-measure. Several things on the deviation register
+are exactly that shape (`Anemia`, `ViciousBite`, `BloodDisease`, the fire daemon's aura), so this is likely to come
+up rather than not.
+
+**One more thing, not part of the question.** The new fireball assertion is one-sided and should be recorded as
+such. `taken` cannot exceed the 125 the player has to lose, so `Assert.InRange(taken, 120, 125)` catches the damage
+dropping but can never catch it rising: the fireball could be changed to 500 and the fact would stay green. Making
+it two-sided looks cheap, because ML caps a player's `BonusHits` at 25 (`PlayerMobile.cs:560`) and 125 + 25 = 150 is
+exactly the fireball's ceiling, so a test player with 25 bonus hits could absorb the whole range. Worth folding into
+whatever next touches that file rather than a build of its own.
+
