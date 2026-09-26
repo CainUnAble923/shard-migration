@@ -98,7 +98,10 @@ def counted(shard):
     if t.is_dir():
         files = list(t.rglob("*.cs"))
         out["test_files"] = len(files)
-        out["test_cases"] = sum(f.read_text(encoding="utf-8", errors="replace").count("[Fact]")
+        # Attribute lines only: a bare substring count also counted "[Fact]" inside a comment
+        # (AthenaeumIsleQuestVerification.cs:7) and reported one more test than the gate runs.
+        out["test_cases"] = sum(len(re.findall(r"^\s*\[(?:Fact|Theory)\b",
+                                               f.read_text(encoding="utf-8", errors="replace"), re.M))
                                 for f in files)
     else:
         out["test_files"] = out["test_cases"] = None

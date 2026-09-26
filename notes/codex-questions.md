@@ -3370,3 +3370,37 @@ it two-sided looks cheap, because ML caps a player's `BonusHits` at 25 (`PlayerM
 exactly the fireball's ceiling, so a test player with 25 bonus hits could absorb the whole range. Worth folding into
 whatever next touches that file rather than a build of its own.
 
+
+## Q-061 [OPEN] 2026-09-26 "The gargoyle leggings were missing the kilt section": which item, and was the kilt worn? (armour-set completion, Part B)
+
+**Question:** the client report behind `docs/client-test-sheet-cc6.md:6` and `:13` ("Gargoyle leggings only cover the
+shin") names no item. Which leggings were they, and was a kilt worn with them?
+
+**Context, checked:** it is one of the four kilt incidents the brief asked me to explain, and it is the only one I
+could not trace. Our `GargishPlateLegs` (`0x30E`) and `GargishPlateKilt` (`0x30C`) match ServUO's graphics exactly,
+and on both emulators the gargoyle legs and the gargoyle kilt are separate items on separate layers (the kilt on
+`Layer.Gloves`). The stock `GargishLeather/Stone/ClothLegsType1/2` are the same shape. So a gargoyle wearing leggings
+and no kilt shows shins only, and that is the design. Nothing in git history, `docs/` or `notes/` records the item.
+
+**Your best guess:** not a defect: leggings worn without the kilt, which OSI draws the same way. If the kilt *was*
+worn and the thigh was still bare, it is a real layer or graphic defect and worth a client re-check with the item
+name written down. Non-blocking; `notes/armour-set-completion.md` B.3 states it as unexplained, not as explained.
+
+## Q-062 [OPEN] 2026-09-26 Part B found kilts and gargoyle twins no instrument could see. Pick them up as their own batch? (armour-set completion)
+
+**Question:** the S3/S9 index cannot see `[TypeAlias]` names or a filtered file's unreferenced secondary types
+(`notes/armour-set-completion.md` Part B, proposed as bug-list D20). Reading its output by hand found leaf content
+that is simply absent: `GargishKiltOfMining` (twin of the stock Gloves of Mining), the three tailoring-recipe kilts
+`GuildedKilt`/`CheckeredKilt`/`FancyKilt`, five gargoyle artifact twins (`GargishCrimsonCincture`, `GargishTangle1`,
+`GargishLieutenantOfTheBritannianRoyalGuard`, `GargishBrightsightLenses`, `GargishFoldedSteelGlasses`), and seven
+gargoyle clothing bases pinned never merged (`GargishRobe`, `GargishFancyRobe`, `GargishSash`, `GargishClothWingArmor`,
+`GargoyleHalfApron`, `GargishApron`, `GargishEpaulette`) with 26 absent descendants, 18 of them Blackthorn. Do you
+want the artifacts-row part of that as a small batch, and the instrument fixed first?
+
+**Context, checked:** the list is read one by one for the kilt- and twin-shaped rows only; the full 482-type output is
+an unresolved upper bound and is published as such. None of these is part of a set, so nothing is unfinishable today.
+The tailoring kilts need the recipe entries in `DefTailoring` as well as the types; that has not been costed.
+
+**Your best guess:** fix the instrument first (~80 lines, both scripts exist), re-run S9's artifacts row with it, then
+port what it finds as an ordinary CC9-style batch. Porting from my hand-read list instead would repeat the mistake
+Part B is about: acting on a list nobody has measured. Non-blocking.

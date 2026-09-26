@@ -56,3 +56,29 @@ preservation remains unresolved because ServUO's in-memory account model uses `d
 
 Compilation is verified against ModernUO `7c9215d97`; executing it against live accounts
 and loading the result in ServUO remain unverified.
+
+## `index_blindspots/` (armour-set completion, 2026-09-26)
+
+Two read-only measurements of what the S3/S9 content index cannot see. Both read the three trees at their
+standard paths and print file lists, not just counts. See `notes/armour-set-completion.md` Part B.
+
+```console
+python tools/index_blindspots/aliases.py            # names pinned has only as [TypeAlias] strings, and who they hide
+python tools/index_blindspots/secondary.py garg     # gargoyle secondary types lost with a filtered file
+python tools/index_blindspots/secondary.py items    # every such type under Items/
+python tools/index_blindspots/secondary.py desc     # absent ServUO classes whose parent chain reaches one
+```
+
+`aliases.py` imports `secondary.py` from its own folder. Output is an **upper bound**: helper
+types, known equivalents and gumps are in it. Resolve before quoting.
+
+## `save_instance_check.py`
+
+The re-parenting window check (`docs/gap-register.md`) as a script: does any save artefact on this machine hold
+an instance of the named types? Reads every `SerializedTypes.db` under the live save, `Saves-test`, each
+`Backups/Automatic` snapshot and the two newest archives of each kind (needs `pip install --user zstandard`), with
+`Server.Items.Dagger` as a positive control on each. Read-only.
+
+```console
+python tools/save_instance_check.py SpiritualityHelm ValorGauntlets
+```
