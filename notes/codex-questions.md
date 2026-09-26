@@ -3198,3 +3198,69 @@ irony. This is settled now partly so it is settled before that happens.
 
 Status: **[ANSWERED]**
 
+
+---
+
+## Q-058 [OPEN] 2026-09-26 The stock offer path gives the New Haven board ONE quest at a time, picked at random. The wishlist's "take ten" loop is not reachable through it. Keep it, or add a picker?
+
+**Question:** `docs/community-scripts-wishlist.md` (the New Haven quest board section) designs the board on the stock
+path and argues `MaxConcurrentQuests = 10` is fine because the loop is "take ten matching what you are about to do,
+push them to 50, turn them in, take ten more." **The stock path does not allow that from one quester.** Built as
+specified (`notes/new-haven-quest-board.md` section 4), a player can hold one board quest at a time and cannot choose
+which one. Keep that, or add a small picker to the board?
+
+**Context, from pinned and proved headless:** `MLQuestSystem.FindQuest` (`MLQuestSystem.cs:315-367`):
+
+1. **Step 1** returns any quest the player already holds from a quester of this type. With one held, every
+   double-click shows that quest's progress gump. Headless run 1: holding `TheMagesApprentice`, **10 clicks, 0 offer
+   gumps, 10 progress gumps**. A second quest cannot be taken from the board until the first is turned in.
+2. **Step 4** is `RandomStarterQuest` (`:663-695`): a uniformly random pick among the eligible quests. A player who
+   wants Fencing from a fresh character's 26 refuses and clicks again, 26 clicks on average.
+
+Both are stock behaviour for any quester holding more than one quest; the trainers never show it because each holds one.
+The 10-quest cap still applies across all questers, so a player can take one from the board and nine from trainers.
+
+The board's own text tells the truth about the stock path ("One quest at a time here. Say no to see a different one.").
+
+**Options:**
+
+1. **Keep the stock path** (built, committed). One at a time, random, turn in at the board.
+2. **Add a picker, in our own file, no patch.** The board's `OnDoubleClick` opens a small gump listing the 26 with
+   their state (available / held / ready to turn in / done / locked at 50). Picking one calls the stock paths:
+   `quest.SendOffer(board, pm)` for available, and `SendProgressGump` / `SendReportBackGump` / `SendRewardOffer` on
+   the player's own instance for held. The offer, accept, progress and reward gumps stay stock; only the choosing is
+   ours. Estimated at ~120-150 lines plus test facts, one build cycle. It makes "take ten" real, and it widens D-90 from
+   "a stock quester in an unusual place" to "a stock quester with our own menu".
+
+**Your best guess:** option 2 if the board is meant to carry the ten-at-a-time loop the wishlist describes, because
+option 1 turns a player's first ten minutes into refuse-and-click. Not blocking: option 1 is built and works, and
+option 2 adds to the same file without changing its type or its save shape.
+
+**Answer:**
+
+---
+
+## Q-059 [OPEN] 2026-09-26 The brief asks that a character past 50 can still accept that skill's quest from the board. The board does not do that, and doing it is a second, larger deviation.
+
+**Question:** The New Haven board brief's "done when" includes *"A character past 50 in a skill can still accept that
+skill's quest through it,"* and asks for the test fact that would go red on it. The same brief asks the board to say
+*"past 50 the quest is gone,"* and the wishlist says the same. Which is intended?
+
+**Context:** The lockout at 50 is not the backpack check the override removes. It is `GainSkillObjective.CanOffer`
+(`Objectives/GainSkillObjective.cs`, `(UseReal ? skill.Fixed : skill.BaseFixedPoint) >= ThresholdFixed`), on the quest
+object that the board and Recaro share. Built as specified, the board refuses at 50.0 exactly as Recaro does: pinned in
+`SkillAtFiftyLocksTheQuestOnTheBoardToo`, and over the wire in headless run 1 (cliloc 1077772). Lifting it would take
+the board's own offer path around the objective's `CanOffer`. A quest accepted at 50 or more is complete on accept
+(`GainSkillObjectiveInstance.IsCompleted` is the same comparison), so the board would hand **every existing character
+the reward for every skill they already have at 50**: up to 26 items each (`BulwarkLeggings`, `RecarosRiposte`,
+`EmberStaff` and the rest), veterans included. That is a much larger deviation than D-90 and it is not built.
+
+What the board **does** do for a character like Chase's, pinned in the same fact and seen in the headless run: with
+Fencing past 50, **the other 25 quests stay on offer**. Only the one past 50 is gone. If that is what "does offer one
+whose skill is past 50" meant, it holds.
+
+**Your best guess / assumption in force:** keep the stock lockout. The board exists to reach the quests before 50, and
+its text says past 50 the quest is gone. A reward handout for skills already past 50 would be a separate decision
+with its own D-number, and a per-character one-time rule to stop it paying out 26 times.
+
+**Answer:**
