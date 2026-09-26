@@ -77,7 +77,7 @@ That is also a reason to be careful about "improving" ported content: it silentl
 set of things that need explaining, and it grows it in the places players are least expecting
 surprises.
 
-## Withdrawn: six entries that were never deviations
+## Withdrawn: six entries that were never deviations, and one overstated
 
 These were recorded as losses and are not. Every one has the same cause, which
 `docs/bug-list.md` §1b carries as a standing entry: **reasoning from ServUO's vocabulary to
@@ -108,13 +108,22 @@ evidence about the name.
   `HealChance` trap already named in `AGENTS.md`, which means the trap was documented and the
   entry it had already produced was never revisited.
 
-**One entry is not verified either way and should not be trusted until it is: D-44
-(`GreenGoblinScout`).** It records the loss of hiding, a 4% teleport and fleeing below 20% hits
-against ServUO's `AI_OrcScout`. Pinned `MageAI:23` says `FleeHealthThreshold => 0.2` with the
-comment "20% is default", which suggests fleeing at 20% is stock behaviour the scout keeps, and the
-entry would then be overstated in the same way as D-45. I could not check it here: pinned's AI base
-class is not in the checkout under any `*AI.cs` name, so `FleeHealthThreshold`'s default needs
-finding before the row is either confirmed or withdrawn.
+- **D-44 (`GreenGoblinScout`): one of its three claims withdrawn, 2026-09-26.** It recorded the loss
+  of hiding while wandering, a 4% combat teleport, and fleeing below 20% hits, against ServUO's
+  `AI_OrcScout`. **The flee is stock.** The scout runs `AI_Melee`, and pinned `MeleeAI` overrides
+  `BaseAI`'s `FleeHealthThreshold => 0.0` to **`0.2` with `FleeChance => 0.1`** (`MeleeAI.cs:9-10`),
+  then flees in `DoActionFlee` (`:142`). So it does flee below 20% hits, at a 10% chance per check.
+  **The other two claims stand:** pinned has no self-hiding for a wandering creature and no combat
+  teleport outside `MageAI`, so D-44 is real at two thirds of its recorded size and should be
+  restated at that size.
+
+  **How I got this wrong the first time, because the method matters more than the entry.** I wrote
+  in this document earlier today that pinned's AI base class "is not in the checkout under any
+  `*AI.cs` name". It is, at `Projects/UOContent/Mobiles/AI/BaseAI/BaseAI.cs`. I had searched the
+  cloud container, where only the files I had staged exist, and read the empty result as a fact
+  about the pinned tree. That is the same error this section is about, one level up: an absence in
+  the place I happened to look, taken as an absence in the thing itself. The check that settles it
+  is to list the directory on the machine that holds the tree.
 
 ## Deliberate deviations, before D-numbering
 
@@ -256,7 +265,7 @@ and `visible`.
 | D-41 | `CrazedMage` runs `AI_Mage`; ServUO's is `AI_Mystic` | it casts Magery, not Mysticism | `visible` | `cc4-shame` |
 | D-42 | `TreasureMapChance => 1.0` has no counterpart; the stock roll applies | a level-5 map sometimes rather than always | `visible` | `cc4-shame` |
 | D-43 | A timed-out challenge clears the altar; ServUO leaves it stuck until restart | the altar can be challenged again after a failed hour, as the design reads | `fix` | `cc4-shame` |
-| D-44 | `GreenGoblinScout` runs `AI_Melee`, not `AI_OrcScout` | recorded as no hide, no blink, no flee. **Unverified: see the withdrawn section** | `visible?` | `cc6-creatures-batch1` |
+| D-44 | `GreenGoblinScout` runs `AI_Melee`, not `AI_OrcScout`: no hiding while wandering, no 4% combat teleport | **the flee claim is withdrawn**, `MeleeAI` flees below 20% at a 10% chance. Two thirds of the recorded size; restate it | `visible` | `cc6-creatures-batch1` |
 | D-45 | `Spellbinder` runs `AI_Mage`, not `AI_Spellbinder` | withdrawn 2026-09-26: pinned `MageAI` heals, teleports and dispels. Real difference is 5 points of heal chance | `retired` | `cc6-creatures-batch1` |
 | D-46 | `ShameWall` is `Visible = true` from the start; ServUO leaves it invisible until its troll dies | nothing; the wall now behaves the same before and after its first troll | `fix` | `cc6-creatures-batch1` |
 | D-47 | `SkeletalLich` runs `AI_Mage`, not `AI_NecroMage` | withdrawn, Q-050: pinned `MageAI` gates Necromancy on skill, not AI type | `retired` | `cc6-creatures-batch2` |
