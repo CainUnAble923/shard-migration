@@ -3201,7 +3201,7 @@ Status: **[ANSWERED]**
 
 ---
 
-## Q-058 [OPEN] 2026-09-26 The stock offer path gives the New Haven board ONE quest at a time, picked at random. The wishlist's "take ten" loop is not reachable through it. Keep it, or add a picker?
+## Q-058 [ANSWERED] 2026-09-26 The stock offer path gives the New Haven board ONE quest at a time, picked at random. The wishlist's "take ten" loop is not reachable through it. Keep it, or add a picker?
 
 **Question:** `docs/community-scripts-wishlist.md` (the New Haven quest board section) designs the board on the stock
 path and argues `MaxConcurrentQuests = 10` is fine because the loop is "take ten matching what you are about to do,
@@ -3236,11 +3236,41 @@ The board's own text tells the truth about the stock path ("One quest at a time 
 option 1 turns a player's first ten minutes into refuse-and-click. Not blocking: option 1 is built and works, and
 option 2 adds to the same file without changing its type or its save shape.
 
-**Answer:**
+**Answer:** 2026-09-26, Claude. **Option 2, the picker.** Build it.
+
+The reason is that option 1 does not do the job the board exists for. A board that hands one random quest and then
+shows that quest's progress until it is turned in saves a new player exactly one walk across town. The lockout window
+on this shard is minutes wide, and the 10-quest cap sits unused. Refuse-and-click 26 times is not a fix, it is a worse
+version of finding the trainers.
+
+Chase has settled the fidelity side of this: content we invent is ours to design, and it goes on our own wiki. The
+board is already invented. A menu on it does not cross a line the board itself did not already cross, and everything a
+wiki would document (the quests, their text, their rewards, the lockout) stays stock.
+
+Constraints on the picker:
+
+1. **Nothing but the choosing is ours.** The offer, accept, progress, report-back and reward gumps stay the stock ones,
+   reached through the stock methods on the player's own instance. The picker must not decide eligibility; it displays
+   what the stock predicates already say.
+2. **No change to the type name, the save shape or the serialization version.** A board is already in nobody's save
+   yet, but a player's held quest is saved against the board's serial (section 4.4), so the type must stay stable from
+   the moment the first board is placed on the live shard.
+3. **Show why a quest is unavailable**, not just that it is. Available, held, ready to turn in, done, and locked at 50
+   are five different states and a player who cannot see which one applies will ask us.
+4. **Respect `MaxConcurrentQuests = 10` and say so when it refuses.** Do not change the constant.
+5. **The gump cannot be asserted in the shard test host** until the builder stage has `libdeflate` (section 6.1). Either
+   that is fixed first, in which case assert the gump, or the picker's proof is headless again and the note says which
+   facts are headless-only.
+6. **Restate D-90** when it lands, as the note already says it must.
+
+One defect to fold in while the file is open: **`Place()` searches Trammel only**
+(`if (item is NewHavenQuestBoard { Deleted: false } board && board.Map == Map.Trammel)`). A board that ends up on any
+other map, including `Map.Internal`, is invisible to the search, so `Place()` creates a second one and the first keeps
+every quest held from it. Search all maps, keep the Trammel count in the message, and move a board found elsewhere.
 
 ---
 
-## Q-059 [OPEN] 2026-09-26 The brief asks that a character past 50 can still accept that skill's quest from the board. The board does not do that, and doing it is a second, larger deviation.
+## Q-059 [ANSWERED] 2026-09-26 The brief asks that a character past 50 can still accept that skill's quest from the board. The board does not do that, and doing it is a second, larger deviation.
 
 **Question:** The New Haven board brief's "done when" includes *"A character past 50 in a skill can still accept that
 skill's quest through it,"* and asks for the test fact that would go red on it. The same brief asks the board to say
@@ -3263,4 +3293,17 @@ whose skill is past 50" meant, it holds.
 its text says past 50 the quest is gone. A reward handout for skills already past 50 would be a separate decision
 with its own D-number, and a per-character one-time rule to stop it paying out 26 times.
 
-**Answer:**
+**Answer:** 2026-09-26, Claude. **Keep the stock lockout. Closed, not deferred.**
+
+The brief was wrong, and wrong against itself: it asked the board to say "past 50 the quest is gone" and to let a
+character past 50 take the quest anyway. Mine to own.
+
+The reason to close it rather than park it is the one this note found. A `GainSkillObjective` at or past its threshold
+is complete on accept, so an offer path that skips `CanOffer` does not give a veteran a quest, it gives them the
+reward. Every existing character would be owed up to 26 items for skills they already have, on the first click. That is
+not a fidelity deviation, it is a faucet, and it would need a per-character one-time rule to bound it. Nothing about
+the board's purpose asks for it: the board exists so the quests can be reached **before** 50.
+
+What holds, and what the test already pins: a character with one skill past 50 is refused that one quest and still
+offered the other 25. If a future decision does want to pay out for skills already past 50, it is a separate item with
+its own D-number and its own bound, and it has nothing to do with this board.

@@ -19,21 +19,27 @@ is everything left alone.
 
 | # | What | Impact | Where |
 |---|---|---|---|
+| **D7** | **The build gate is flaky.** `CC6Batch8Verification.TheDragonsFireColumn…` fails its last assertion ("the stygian fireball did no damage in 4 s") in roughly **4 full runs out of 10**, measured with the quest board work absent from the tree. Passed 6 of 6 run alone, and fails in streaks of consecutive runs rather than scattered | **every green build we have claimed rests on this gate.** It took four attempts to land a green FINAL build on 2026-09-26, three of the reds not the task's own | prompt written 2026-09-26. Not xUnit parallelism: every class involved already carries `[Collection("Sequential UOContent Tests")]` |
+| **D8** | **No shard test can assert on a gump.** The builder stage installs no native `libdeflate` (`Dockerfile:6`; the runtime stage gets it at `:56`). Every gump is deflate-packed on compile, so the first one thrown from a test kills the test host in `LibDeflateBinding`'s finalizer | every quest, vendor or gump task has to prove its gumps headless instead, which is most of what the quest board task's hour and a half went on | found by `notes/new-haven-quest-board.md` §6.1. Same prompt as D7 |
+| **D9** | **`NewHavenQuestBoard.Place()` searches Trammel only.** A board on any other map, `Map.Internal` included, is invisible to the search, so `Place()` builds a second one and the first keeps every quest held from it | GM-only, and no board is placed yet | one line. Folded into the Q-058 picker task |
+| **D10** | **Nothing places a Fountain of Fortune**, three weeks after Q-021 answered where it goes (Ter Mur `1121, 957, -42`). `grep -rn "1121, 957\|FountainOfFortune()" server/` finds only the constructor and its test | the LuckyCoin's only reachable outcome is still its failure message, which is what D-4 of S2 said in September | an answered question that was never implemented. Small task |
 | **Q-009 / D3** | `docker-compose.yml` carries an **uncommitted change** repointing the live script mount at `server/customizations` read-only. Directionally right, never verified, deploy-affecting | live shard | **CHASE decides.** Oldest open item on the project |
 | **D4** | **Build cost is 6x the published estimate.** 20s unchanged, 266s with one changed file, against `cc2-timed-port.md`'s 0:44 which predates S4 and neither compiled nor ran tests | every batch estimate is optimistic | fix the estimate, not the build |
 | **D6** | The runtime image ships **16 test-infrastructure assemblies of 53**, because the Dockerfile publishes `ModernUO.slnx` | inert, cosmetic | Q-032. **The trap:** that same publish line is the compile gate. Any fix must lose the test assemblies *and* still fail the build on a deliberately broken test |
 | **D5** | `server/uo/` build tree is stale and predates the F1 recovery | confusing, not harmful | leave; gitignored and generated |
-| **new** | **`progress.py` and `build.sh` disagree on the test count**: 69 by `[Fact]` count in 16 files, 68 run by the gate. Disclosed in CC6 batch 2's commit, cause not chased | a reported number nobody can reproduce exactly | find the one test and make the two agree, or document why they cannot |
+| **D11** | **`progress.py` and `build.sh` disagree on the test count**, and have since CC6 batch 2: first 69 against 68, now **137 against 136**. The gap has been exactly one throughout, which says it is one test and not a drift | a reported number nobody can reproduce exactly | find the one test and make the two agree, or document why they cannot |
 | **D2** | ModernUO has no `Quest.StartingItem` equivalent. **How many of the 203 quests need one is unmeasured** | blocks an unknown slice of the quest row | Q-025, measure before the quest batch |
 
 ## 1b. Our own documentation defects, because a wrong note costs as much as a wrong line
 
-Five D-numbers and one patch row have now been written claiming ModernUO lacks something it has.
+Six D-numbers and one patch row have now been written claiming ModernUO lacks something it has.
 All were caught in review or by a later batch, none reached a player, and all share one cause.
 
 | What was wrong | Found by | Cause |
 |---|---|---|
 | **D-47**: `SkeletalLich` "casts Magery only; its Necromancy is set and unused" | review, Q-050 | stock `MageAI` carries the necromancer branch; it casts necro 44-48% of the time |
+| **D-45**: `Spellbinder` loses "spirit-speak heal, teleport and dispel" | review, 2026-09-26, while building the D-register | pinned `MageAI` has all three as its own constants: `HealChance = 0.10`, `TeleportChance = 0.05`, `DispelChance = 0.75` (`:18-20`). ServUO's are 5%, 5%, 75%. **The whole deviation is 5 points of heal chance.** This is the `HealChance` trap already named in `AGENTS.md`, so the trap was written down and the entry it had already produced was never revisited |
+| **D-44**: `GreenGoblinScout` loses "hide, blink and flee below 20%" | **not settled.** Flagged 2026-09-26 | `MageAI:23` says `FleeHealthThreshold => 0.2` with the comment "20% is default", which suggests fleeing is stock and the row is overstated the same way D-45 was. Pinned's AI base class is not in the checkout under any `*AI.cs` name, so the default needs finding before the row is confirmed or withdrawn |
 | **P1's top row**: `AI_NecroMage`, "189 lines for 20 creatures, best value on the board" | review, Q-050 | written from D-47 without checking pinned. Withdrawn |
 | **D-55, D-56, D-62, D-68**: `DragonBreath` dropped as a Pet Training loss on four creatures | CC6 batch 5, Q-054 | pinned has it as `MonsterAbilities.FireBreath`/`ColdBreath`. **CC4 had already used it** |
 | Three "losses" in one CC6 batch 3 brief: `SetAreaEffect(AuraDamage)`, `HealChance`, `SetMagicalAbility(Poisoning)` | CC6 batch 3, in pre-flight | the first two exist under other names; the third only ever ran in a `Deserialize` branch |
@@ -62,7 +68,7 @@ the rig quietly point at production. None was found by reasoning; each was found
 machine. The week D7 cost was spent on four plausible fixes applied without first probing whether
 the thing being fixed was the thing that was broken.
 
-## 3. ServUO behavior copied on purpose — do not "fix" these
+## 3. ServUO behavior copied on purpose, do not "fix" these
 
 Every one of these reads like a typo and is ServUO's. They are here so the next reader does not
 correct them, and so that if we ever change the rule we know what the list is.
@@ -107,6 +113,7 @@ correct them, and so that if we ever change the rule we know what the list is.
 | # | What | Evidence | Disposition |
 |---|---|---|---|
 | **E1** | **`SetPassword` stores an unverifiable hash under SHA1/SHA2.** `_passwordAlgorithm` is still the enum default at the first `SetPassword`, so the phrase choice and the stamped algorithm disagree and `CheckPassword` can never match. With auto-account-creation on, a new player logs in once and never again | proven three ways in P1: the stored hash was exactly `SHA512("p1testpass")`, a packet capture confirmed correct credentials, and rewriting the hash to `SHA512("p1adminp1testpass")` fixed login immediately | **report upstream.** Costs us nothing now; the SHA2 block is reverted |
+| **E3** | **A held ML quest is saved against its giver's serial only**, with no type (`MLQuestEntry.cs:520`, and upstream's own TODO at `:536` says "Serialize quester TYPE too"). `Deserialize` drops the instance if that serial is gone. **So deleting a quest giver silently removes that quest from every player's log at the next restart**, even though a replacement giver takes the quests over while the server keeps running | read from pinned source in `notes/new-haven-quest-board.md` §4.4; not probed across a restart | **report upstream.** Live hazard for us in two places: never `[remove` the New Haven board, and the New Haven seeder's `replace` mode for the 26 trainers has the same effect. `NewHavenQuestBoard.Place()` moves a board and never replaces one, for this reason |
 | **E2** | ModernUO has **no armour set-bonus system**. Standard OSI content. We built it in 387 lines plus three small patches | S1, five passing tests, 111 files unblocked | **contribute upstream.** If taken, our maintenance on the highest-value thing we have built drops to zero |
 
 ---

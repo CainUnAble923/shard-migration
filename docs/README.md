@@ -10,7 +10,7 @@ from it.**
 |---|---|
 | `tasks.md` | **The** task list. Everything else defers to it |
 | `subsystem-policy.md` | when to build a missing subsystem, when to patch upstream, standing decisions |
-| `fidelity-principle.md` | port unchanged, and the running log of every deliberate deviation |
+| `fidelity-principle.md` | port unchanged; what invented content is allowed to be; **the numbered register of all 90 deviations** |
 | `gap-register.md` | every decline and gap in one place, with what closes each |
 | `patch-backlog.md` | what ModernUO is missing and the patch that would close it, ranked by leverage |
 | `bug-list.md` | defects to look at fixing: ours, ServUO's copied on purpose, and ModernUO's |
@@ -26,11 +26,11 @@ from it.**
 
 ## History: do not plan from these
 
-`migration-plan.md`, `port-triage.md`, `implementation-status.md` — written for a
+`migration-plan.md`, `port-triage.md`, `implementation-status.md`: written for a
 migrate-to-ServUO plan that was not taken.
-`backlog.md` — absorbed into `tasks.md`.
-`workstreams.md`, `work-split.md`, `shard-inventory.md` — superseded; each says so at the top.
-`direction-decision.md` — the decision is settled and still binding; the document is the record
+`backlog.md`: absorbed into `tasks.md`.
+`workstreams.md`, `work-split.md`, `shard-inventory.md`: superseded; each says so at the top.
+`direction-decision.md`: the decision is settled and still binding; the document is the record
 of how it was reached, including four reversals. Do not reopen it.
 
 ## The rule that produced this file
