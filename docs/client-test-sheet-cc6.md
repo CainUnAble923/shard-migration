@@ -82,6 +82,31 @@ Each of these is the first of its kind ported, which is where the defects live.
 
 ---
 
+## The New Haven training board and its quest menu: passed in a client, 2026-09-26
+
+Chase, on the test shard (`-Fresh` world, Owner character, `sl-modernuo:picker`). **Five of nine
+checks passed, none failed.** These were the only things the gate could not see, so this is the pass
+that mattered.
+
+| # | Check | Result |
+|---|---|---|
+| B.1 | `0xA0C5` draws as a free-standing bulletin board, not a wall fixture floating in the open | **pass.** The reason it was chosen over the three other candidates, unverified until now |
+| B.2 | Double-click from the ground opens the menu | **pass** |
+| B.3 | A row's button reaches the stock offer gump, and the quest can be accepted | **pass.** The whole pick path, previously proved only in bytes |
+| B.4 | At ten held, the eleventh row reads "No room: 10 held" and the header counts | **pass.** One of the two states CC added beyond the five asked for; stock would have shown a bare 1080107 with no reason |
+| B.5 | A skill past 50 shows "Past 50: gone" | **pass.** The lockout, which is the board's whole reason to exist |
+
+**Still unchecked on the board, and worth ten minutes when someone is next in game:**
+
+| # | Check | Why it is still open |
+|---|---|---|
+| B.6 | **Label clipping.** Skill names and quest titles sit in 125 px labels. Look at the long ones: "Bruises, Bandages and Blood", "Becoming One with the Shadows", "Channeling the Supernatural" | The most likely remaining defect in this build, and the easiest to miss. Asked twice, not yet answered |
+| B.7 | **The five tooltip lines**, none truncated. Line 4 should read "Double-click for all 26 quests. Take the ones you want." | Five is the hard ceiling of `ObjectPropertyList` and the board sits exactly on it |
+| B.8 | **Turn-in at the board**: finish a quest, double-click the board, report-back gump, reward gump, item in the pack. The row then reads "Done", not "Past 50" | The other half of the loop. Stock is doing the work, but the tooltip promises it |
+| B.9 | **Reach from the arrival tile without walking.** Spawn a new character and double-click without stepping | The entire placement argument. Proved in a headless range check, not in a client |
+
+---
+
 ## Tier 4 — The long tail, if there is time
 
 - Kepetch ambusher and trapdoor spider **hide effects**, and whether they reveal on a run.
