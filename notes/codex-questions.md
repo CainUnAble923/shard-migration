@@ -3404,3 +3404,23 @@ The tailoring kilts need the recipe entries in `DefTailoring` as well as the typ
 **Your best guess:** fix the instrument first (~80 lines, both scripts exist), re-run S9's artifacts row with it, then
 port what it finds as an ordinary CC9-style batch. Porting from my hand-read list instead would repeat the mistake
 Part B is about: acting on a list nobody has measured. Non-blocking.
+
+## Q-063 [OPEN] 2026-09-26 The server's client data is 7.0.114.40; every new player will run EA's current 7.0.117.0. Update the server's data? (player package)
+
+**Question:** should `D:\ShatteredLegacy\client-data\classic-client` (bind-mounted into live, auto-detected as
+7.0.114.40) be replaced with EA's current 7.0.117.0 data, so the server collides with the same world the players draw?
+
+**Context, checked:** EA's only download (`uo.com/client-download/`, verified 2026-09-26) is a 7.0.24.0 stub that
+patches itself to current, 7.0.117.0 on this machine. We cannot ship older data (no EA files in the package). Hash
+and block comparison in `notes/player-package.md` Part C: statics differ in 338 Felucca and 1,149 Trammel blocks, at
+the east edge (x 6144-7167, y 3072-3583) and around Skara Brae. `tiledata`, `hues` and every map UOP also differ,
+and the land has not been compared cell by cell. The server accepts the newer client (`Restricting client version
+to 7.0.114.40 or newer`). A data swap changes the server's collision map under existing houses and spawns, which
+is why this is not an agent's call.
+
+**Your best guess:** yes, but on the test shard first: point a copy of the test stack at 7.0.117.0 data and walk
+Skara Brae and the east edge in a client, and check that no house footprint in those blocks becomes invalid. Then
+swap live at a restart you were planning anyway. Non-blocking: players can play now, with localised visual
+mismatches in those two areas.
+
+**Answer:**
