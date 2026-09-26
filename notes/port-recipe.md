@@ -650,3 +650,41 @@ autosave.enabled           -> "False"
 so `pingServer.enabled=False` turns every `shutdown` into an unhandled exception and a crash
 report. The save completes first, so it does not corrupt anything — it just wastes a cycle and
 makes the log look like the port broke something. The scratch config is not a place to tidy.
+
+## Writing a shard test fact that reads hit points, the clock, or a gump
+
+Added 2026-09-26 by the New Haven quest menu task (`notes/new-haven-quest-picker.md`), for D15 and D16 in
+`docs/bug-list.md` and the three traps that task hit. `server/tests/Route/ShardTestClock.cs`'s header carries the
+first two as well.
+
+**Hit points: read them on the tick the damage lands, never after an `Advance`.** The test host regenerates one hit
+every 8 ms, 125 a second: `UOContentFixture` never runs `RegenRates.Configure`, so `Mobile.DefaultHitsRate` is zero
+and a damaged mobile gets a hit back on every wheel tick. A fact that damages, advances a second and then reads `Hits`
+is measuring regeneration; D11, the stygian fireball flake, was exactly that. To catch a hit that lands inside an
+`Advance`, advance in 8 ms steps and keep the lowest reading (`CC6Batch8Verification`'s fireball fact).
+`ShardTestClockVerification.ADamagedMobileRegainsExactlyOneHitPerWheelTick` pins the rate, so if it ever changes the
+build goes red there first. **When a fact needs to measure something over seconds** (a bleed, poison, an aura,
+whether a creature's output can kill), the regeneration is part of what is being measured: revisit Q-060 then rather
+than working around it.
+
+**The clock: never measure from `ShardTestClock.Epoch`.** `Arm()` only raises `Core.Now` to `Epoch` when it is lower,
+and `PacketTestUtilities.CreateTestNetState` sets it to the wall clock. So after any fact that makes a test NetState,
+`Core.Now` is real time carried forward. Read `Core.Now` inside the fact and measure from that. Do not assert on the
+date or the time of day. Create anything with a timer after `Arm()`, not before.
+
+**Gumps: assert them on the wire.** Since D12 the builder can compile a gump. Attach the player to
+`PacketTestUtilities.CreateTestNetState()`, send, find the 0xDD on `ns.SendBuffer` by the gump's serial and type id,
+and inflate it with the managed `ZLibStream` (`GumpOnTheWireVerification` for one gump,
+`NewHavenQuestBoardVerification.OnTheWire` for any). Send a button back as a client does, through
+`GumpSystem.DisplayGumpResponse` with a 0xB1 body (serial, type id, button id, zero switches, zero text entries), not
+by calling `OnResponse`: the gump system's lookup and removal are then part of the test.
+
+**Three test-NetState traps, each of which cost a build:**
+
+1. **`pm.NetState = ns` does not set `ns.Mobile`.** Login sets both. Without it every gump reply's `sender.Mobile` is
+   null and the stock quest gumps silently do nothing. Set `ns.Mobile = pm` as well, and clear it before disposing.
+2. **Moving a player with a test NetState to another facet throws** in `OutgoingAccountPackets.SendSupportedFeature`,
+   because a test NetState has no account. Set `pm.NetState = null` for the move and put it back.
+3. **`Kill()` deletes an account-less `PlayerMobile`** (probed: `Deleted` true, `Map` null). A fact that kills a
+   player and then checks it is dead is checking that it is deleted. For "dead", set `pm.Player = true` and a ghost
+   body (`0x192`): `Alive` is false and the mobile stays in the world.

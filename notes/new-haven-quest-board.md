@@ -3,6 +3,10 @@
 Date: 2026-09-26. Agent: Claude Code. Pinned ModernUO `7c9215d97`. Spec: `docs/community-scripts-wishlist.md`,
 "The New Haven quest board - costed 2026-09-19, ready to build".
 
+**Superseded in part, 2026-09-26:** the board now opens a quest menu (Q-058 option 2). Sections 3 (tooltip line 4),
+4.1 (one quest at a time) and 6.1 (no gumps in the test host) no longer describe the board, and D-90 is restated in
+`notes/new-haven-quest-picker.md` section 7. The rest stands.
+
 **Status: built, gated, proved headless, committed. Not placed on the live shard: placing it is a deploy, and deploys
 are Chase's.** One deviation, **D-90**. Two questions, **Q-058** and **Q-059**, neither blocking.
 

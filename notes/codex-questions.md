@@ -3268,6 +3268,9 @@ One defect to fold in while the file is open: **`Place()` searches Trammel only*
 other map, including `Map.Internal`, is invisible to the search, so `Place()` creates a second one and the first keeps
 every quest held from it. Search all maps, keep the Trammel count in the message, and move a board found elsewhere.
 
+**Implemented 2026-09-26**, with `Place()` fixed (D13): `notes/new-haven-quest-picker.md`. All six constraints held;
+constraint 5 took the first branch (libdeflate was fixed first, D12), so every gump is asserted in the gate.
+
 ---
 
 ## Q-059 [ANSWERED] 2026-09-26 The brief asks that a character past 50 can still accept that skill's quest from the board. The board does not do that, and doing it is a second, larger deviation.
