@@ -3307,3 +3307,28 @@ the board's purpose asks for it: the board exists so the quests can be reached *
 What holds, and what the test already pins: a character with one skill past 50 is refused that one quest and still
 offered the other 25. If a future decision does want to pay out for skills already past 50, it is a separate item with
 its own D-number and its own bound, and it has nothing to do with this board.
+
+## Q-060 [OPEN] 2026-09-26 The test host regenerates one hit point every 8 ms. Leave it and write the rule down, or make the route configure real regeneration?
+
+**Question:** `UOContentFixture` never runs `RegenRates.Configure`, so in every shard test `Mobile.DefaultHitsRate` is
+`TimeSpan.Zero` and a damaged mobile regains a hit on every 8 ms wheel tick (125 hits a second). That was the whole of
+D7, the fireball flake (`notes/gate-integrity.md` Part A). Should the route keep this and state the rule, or configure
+regeneration the way the server does?
+
+**Context, checked:** one fact was bitten (D7, now fixed by reading the hit on the tick it lands). Two already work
+around it on purpose: S6's `AbsorptionAttributesVerification` asserts on the eater's context rather than on hits, and
+`CC6FollowupBreathIncubatorVerification.cs:149` counts on the fast regen to kill its five hit players. A grep of every
+hit assertion under `server/tests/` found no other fact that reads hits across an `Advance` after damage.
+
+**Options:**
+
+1. **Leave the host as it is. Write the rule where the next timed fact will see it**: the `ShardTestClock` header and
+   `notes/port-recipe.md`. "Read hit points on the tick the damage lands, never after an Advance: the host regenerates
+   a hit every 8 ms." No gate change.
+2. **Call `RegenRates.Configure` in the route**, for example once in `ShardTestClock.Arm()`. The regen becomes the
+   server's. But it is process-wide, so every later fact in the collection changes too. The breath-incubator fact
+   would need rewriting. And `RegenRates`' stamina and mana handlers call `CheckSkill` (`RegenRates.cs:28-42`), so
+   every timed fact would start rolling Focus and Meditation gains, which is new random state in the gate.
+
+**Your best guess:** option 1. The fast regen is loud once you know it, and option 2 swaps one known artefact for
+skill-gain randomness across all 137 facts. Not blocking: nothing is waiting on it.
