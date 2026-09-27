@@ -3473,3 +3473,22 @@ instrument task, because the answer decides whether anything here is urgent.**
 
 Nothing else on the list is urgent: none of it is part of a set, so nothing is unfinishable, and the gargoyle twins
 and clothing bases are exactly the kind of long tail that deserves a measured ranking rather than a rush.
+
+## Q-064 [OPEN] 2026-09-27 Seven absent garments are recipe-only in ServUO, and pinned has none of their recipes. Port them uncraftable, add the recipes, or leave them? (index blind spots)
+
+**Question:** `GuildedKilt`, `CheckeredKilt`, `FancyKilt`, `FloweredDress`, `EveningGown` and `JesterShoes` are item types
+the fixed index found inside discarded ServUO files (`OuterLegs.cs`, `OuterTorso.cs`, `Shoes.cs`); `ChefsToque` is the
+seventh, in `Hats.cs`, a candidate file in the co-port bucket. In ServUO all seven are crafted by tailors through
+recipes 560 to 566 (`DefTailoring.cs:254`, `:376-389`, `:550`, `TailorRecipe` enum). Pinned declares none of the seven
+and registers only recipes 501 to 505. Which of these do you want?
+
+1. **Port the items only.** They would exist as GM or loot items and never be craftable. Fidelity cost: a wiki reader
+   looking for the recipe finds nothing.
+2. **Port the items and add the recipes.** That needs the `AddCraft`/`AddRecipe` lines in `DefTailoring`, which is an
+   upstream file, so it means a patch. It also needs a source of the scrolls (satchels draw only from registered
+   recipes, so registering them may be the whole job; not verified).
+3. **Leave them** until something else needs tailoring recipes.
+
+**Context, checked:** this is not a live defect. Part A of `notes/index-blindspots.md` shows no player can learn
+recipes 560 to 566 on this shard today. A GM-spawned `RecipeScroll 562` is inert. `FancyKilt` is also worn by an NPC in ServUO's
+`APleaFromMinocQuest.cs:317`.

@@ -57,20 +57,22 @@ preservation remains unresolved because ServUO's in-memory account model uses `d
 Compilation is verified against ModernUO `7c9215d97`; executing it against live accounts
 and loading the result in ServUO remain unverified.
 
-## `index_blindspots/` (armour-set completion, 2026-09-26)
+## `content_index.py` (D20, 2026-09-27)
 
-Two read-only measurements of what the S3/S9 content index cannot see. Both read the three trees at their
-standard paths and print file lists, not just counts. See `notes/armour-set-completion.md` Part B.
+The S3/S9 content index, kept as a tool instead of rebuilt and thrown away. Read-only against all three trees.
+`--legacy` is S9's method and reproduces S9's artifacts row file for file; the default adds the D20 fixes (alias strings
+count as declarations, every secondary type of a discarded file is reported) and splits S9's `upstream` bucket into
+`upstream` (a patch), `extract` (a type inside a discarded file) and `unknown` (read it). See `notes/index-blindspots.md`.
 
 ```console
-python tools/index_blindspots/aliases.py            # names pinned has only as [TypeAlias] strings, and who they hide
-python tools/index_blindspots/secondary.py garg     # gargoyle secondary types lost with a filtered file
-python tools/index_blindspots/secondary.py items    # every such type under Items/
-python tools/index_blindspots/secondary.py desc     # absent ServUO classes whose parent chain reaches one
+python tools/content_index.py row artifacts             # candidates bucketed; also cc4, cc7, cc7extra, cc5
+python tools/content_index.py hidden artifacts          # secondary types of discarded files, classified. NOT a backlog
+python tools/content_index.py filter                    # step 1 alone
+python tools/content_index.py compare-s9 artifacts --ours <tree>   # legacy vs S9's appendix, then S9 -> fixed
+python -m unittest tools/test_content_index.py          # regression, ~8 s
 ```
 
-`aliases.py` imports `secondary.py` from its own folder. Output is an **upper bound**: helper
-types, known equivalents and gumps are in it. Resolve before quoting.
+`hidden` output is classified mechanically; `unresolved` means read it. Never quote its total as content.
 
 ## `save_instance_check.py`
 
