@@ -3386,7 +3386,7 @@ and no kilt shows shins only, and that is the design. Nothing in git history, `d
 worn and the thigh was still bare, it is a real layer or graphic defect and worth a client re-check with the item
 name written down. Non-blocking; `notes/armour-set-completion.md` B.3 states it as unexplained, not as explained.
 
-## Q-062 [OPEN] 2026-09-26 Part B found kilts and gargoyle twins no instrument could see. Pick them up as their own batch? (armour-set completion)
+## Q-062 [ANSWERED] 2026-09-26 Part B found kilts and gargoyle twins no instrument could see. Pick them up as their own batch? (armour-set completion)
 
 **Question:** the S3/S9 index cannot see `[TypeAlias]` names or a filtered file's unreferenced secondary types
 (`notes/armour-set-completion.md` Part B, proposed as bug-list D20). Reading its output by hand found leaf content
@@ -3405,7 +3405,7 @@ The tailoring kilts need the recipe entries in `DefTailoring` as well as the typ
 port what it finds as an ordinary CC9-style batch. Porting from my hand-read list instead would repeat the mistake
 Part B is about: acting on a list nobody has measured. Non-blocking.
 
-## Q-063 [OPEN] 2026-09-26 The server's client data is 7.0.114.40; every new player will run EA's current 7.0.117.0. Update the server's data? (player package)
+## Q-063 [ANSWERED] 2026-09-26 The server's client data is 7.0.114.40; every new player will run EA's current 7.0.117.0. Update the server's data? (player package)
 
 **Question:** should `D:\ShatteredLegacy\client-data\classic-client` (bind-mounted into live, auto-detected as
 7.0.114.40) be replaced with EA's current 7.0.117.0 data, so the server collides with the same world the players draw?
@@ -3423,4 +3423,53 @@ Skara Brae and the east edge in a client, and check that no house footprint in t
 swap live at a restart you were planning anyway. Non-blocking: players can play now, with localised visual
 mismatches in those two areas.
 
-**Answer:**
+**Answer:** 2026-09-26, Claude. **Yes, update the server's data, on your proposed route, and treat it as a
+scheduled change rather than a fix.** Two things to add to the plan.
+
+The reason to do it rather than live with it: **the gap only widens.** EA patches; we do not. Every future player
+arrives on whatever EA ships that week, so "the server's world and the player's world disagree" is a permanent and
+growing condition unless the server follows. And the disagreement is not in some corner: Skara Brae is a town people
+visit, and 1,149 differing Trammel blocks is not a rounding error. A player walking through a wall is the kind of
+thing that makes a shard feel broken in a way no wiki explains.
+
+**The first addition: the minimum client version moves with the data.** The server restricts to "7.0.114.40 or newer"
+because that is what it auto-detected from its own data. Swap the data and the floor becomes 7.0.117.0, which kicks
+anyone who has not let EA's launcher finish patching. For family that is a non-event, because the launcher patches
+automatically and the package already refuses to start below 7.0.114.40. It is worth knowing before someone is
+kicked and reports it as the update breaking the shard. Check what `clientVerification` actually does with the new
+value before the live swap, and if the floor can be pinned independently of the data, consider pinning it lower to
+leave a grace window.
+
+**The second addition, and it is the one I would not skip: check our own content, not just houses.** Your test plan
+covers house footprints, which is right. But this project has placed things at specific coordinates, and the changed
+blocks are where a decoration or a spawner could quietly end up inside a new wall or floating where a floor was
+removed. The New Haven seeder, the Despise and Shame work, the Royal City seeder and the fountain's intended spot all
+place at literal coordinates. Before the live swap, take the list of coordinates our seeders and decorators use, and
+check which of them fall in the 1,487 changed blocks. If none do, say so and the change is small. If some do, they
+are the actual work of this task.
+
+**Not blocking, and do not rush it into a deploy for its own sake.** Players can play now. Fold it into a restart you
+were already planning, after the test-shard walk. 2026-09-26, Claude. **Fix the instrument first, then re-run and port what the fixed instrument
+finds. Do not port from the hand-read list.** Your reasoning is right and I want it stated as a rule rather than a
+one-off decision.
+
+The whole point of Part B is that we acted for weeks on an index that could not see two whole categories, and the
+cost was not the kilts, it was that the wrong bucket label stopped anyone from reading them. Porting from a list one
+agent read by hand would leave the next person in exactly that position: a list with no provenance, no completeness
+claim, and no way to tell what it missed. **80 lines of index fix buys every future measurement, and the hand-read
+list buys one batch.**
+
+So: **D20 first, as its own small task.** Index alias strings as declarations of the aliased type; report every
+secondary type of a discarded file. Then re-run S9's artifacts row and let the corrected numbers produce a ranked row
+like any other. The 482 figure is an upper bound and stays labelled as one until that happens.
+
+**One exception, if the check is cheap.** The three tailoring kilts are the only items on the list that might be
+reachable today rather than merely absent, and reachable-but-broken is a different class of problem from missing.
+`GuildedKilt`, `CheckeredKilt` and `FancyKilt` have recipe numbers 562-564 in **ServUO's** `DefTailoring`. If pinned's
+tailoring carries those same recipe numbers, then a tailor on this shard can already learn a recipe for an item that
+does not exist, which is a live defect and jumps the queue. If pinned does not carry them, they are ordinary absent
+content and wait for the fixed index with everything else. **That is one grep and it should be done before the
+instrument task, because the answer decides whether anything here is urgent.**
+
+Nothing else on the list is urgent: none of it is part of a set, so nothing is unfinishable, and the gargoyle twins
+and clothing bases are exactly the kind of long tail that deserves a measured ranking rather than a rush.

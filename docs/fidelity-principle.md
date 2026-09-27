@@ -216,7 +216,7 @@ Status, and how it was assigned:
 - `retired` recorded in error, never true. See the withdrawn section above.
 - `ours` content we invented. Owed a wiki entry, not a fix.
 
-Counts: 90 numbers issued, 89 with a table row in a note (D-36 was issued and has no row, which
+Counts: 91 numbers issued, 90 with a table row in a note (D-36 was issued and has no row, which
 is itself a loose end). 6 retired, 3 closed, 1 ours, 6 fixes, and the rest split between `paper`
 and `visible`.
 
@@ -311,6 +311,7 @@ and `visible`.
 | D-87 | `LifeSyphon` and `VampiricEssence` lose `BloodDrinker 1` | the bleed is not doubled and does not heal the wielder | `visible` | `cc6-batch8` |
 | D-88 | The Gorgon Lens does not exist, so nothing deflects Medusa's gaze | every gaze petrifies; on OSI a lens-wearer is deflected | `visible` | `cc6-batch8` |
 | D-89 | A petrified `MedusaClone` does not animate as a statue | the copy stands still at hue 761 instead of the statue pose | `visible` | `cc6-batch8` |
+| D-91 | Gargish cloth **clothing** artifacts do not swap to the female graphic. ServUO's four cloth bases set `ItemID` to the female art in `OnAdded`; the five of ours that sit on a set carrier instead do not (`SpinedBloodwormBracers`, `MantleOfTheFallen`, `SummonersKilt`, `BestialKilt`, `VirtuososKilt`) | a female gargoyle wearing one sees the male art (`0x408` rather than `0x407`) | `visible`, cosmetic | `armour-set-completion` |
 | D-90 | **Our own content.** A New Haven training board at `(3502, 2573, 14)` Trammel offering the 26 stock skill-training quests through the stock ML quest path | a new player can take the training quests from the tile they arrive on. Quests, text, rewards and the 50-point lockout are unchanged; only the place is new. No wiki mentions the board | `ours` | `new-haven-quest-board` |
 
 ### What the register says about wiki scope
