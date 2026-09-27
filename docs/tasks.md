@@ -577,6 +577,35 @@ deviation logged.
 **Batch from the clean set, state the filter you used, and never recompute a percentage against
 462.**
 
+## CC9 remainder, re-measured 2026-09-27 by the fixed index
+
+**Supersedes S9's artifacts row.** S9's numbers were produced by an index that could not see
+`[TypeAlias]` names or a discarded file's unreferenced types (bug-list D20, now fixed). Re-run any
+figure below with `python tools/content_index.py row artifacts` rather than quoting it from here;
+these are the current tree at `f50f7a6`. Raw 1,022, discarded 978 (19 of them aliased),
+**44 candidates left**.
+
+| # | What | Size | Shape |
+|---|---|---|---|
+| 1 | **Drops straight in** | 3 files: `MLDecorationArtifacts.cs`, `VirtuousEpiphany.cs`, `Spellbooks/MysticBook.cs` | conversion only. A static claim about names, never compiled |
+| 2 | **Extracts** | 5 files plus 2 extracted types: `InstrumentedAddonComponent` unlocks four instruments, `GargishClothWingArmor` unlocks `ShadowCloakOfRejuvenation` | copy a class, no patch |
+| 3 | **Hidden item types, no twin found** | **43 types** in this row's discarded files | per type: extract and read. **Not 43 items to port.** Two sub-groups have a catch, below |
+| 4 | **Co-port** | 10 files, pulling in 4 more ServUO files | `Enhancement.cs` and `BaseCollectionItem.cs` belong to subsystems pinned lacks |
+| 5 | **Unknown, read them** | 4 files | S9 read a sample as enum renames; unverified per file, and bug-list D24 says the index cannot see enum owners yet |
+| 6 | **Upstream, genuine patch work** | 22 files | `NegativeAttributes` x10, SA weapon attributes x9, and five others. S9 section 5.1 still holds |
+
+**Rows 1, 2 and 3 are the cheap content work the old label hid.** Row 3's catches: six of its types
+are the recipe garments of **Q-064**, and nine are `ZooMember*` / `LibraryFriend*` rewards with no
+collection system in pinned, so they would exist only as NPC dress or GM items.
+
+**One live trap this re-measure found, unrelated to the buckets: 19 phantom candidates.** S9 lists
+19 files as dropping straight in whose primary type pinned already resolves through an alias, and
+running S9's method on today's tree still says so. Porting any one puts a second type under a name
+`AssemblyHandler` already resolves. CC9 and batch 5 each caught these by reading; the instrument
+catches them now. **Do not work from S9's appendix directly.**
+
+---
+
 ## CC7. Decoration, housing, crafting
 Addons, Decorative, New Magincia, Items/Resource, BulkOrders. 0% dependency. Cheap and
 visible; this is what players spend time on.

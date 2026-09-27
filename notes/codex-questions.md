@@ -3474,7 +3474,7 @@ instrument task, because the answer decides whether anything here is urgent.**
 Nothing else on the list is urgent: none of it is part of a set, so nothing is unfinishable, and the gargoyle twins
 and clothing bases are exactly the kind of long tail that deserves a measured ranking rather than a rush.
 
-## Q-064 [OPEN] 2026-09-27 Seven absent garments are recipe-only in ServUO, and pinned has none of their recipes. Port them uncraftable, add the recipes, or leave them? (index blind spots)
+## Q-064 [ANSWERED] 2026-09-27 Seven absent garments are recipe-only in ServUO, and pinned has none of their recipes. Port them uncraftable, add the recipes, or leave them? (index blind spots)
 
 **Question:** `GuildedKilt`, `CheckeredKilt`, `FancyKilt`, `FloweredDress`, `EveningGown` and `JesterShoes` are item types
 the fixed index found inside discarded ServUO files (`OuterLegs.cs`, `OuterTorso.cs`, `Shoes.cs`); `ChefsToque` is the
@@ -3492,3 +3492,35 @@ and registers only recipes 501 to 505. Which of these do you want?
 **Context, checked:** this is not a live defect. Part A of `notes/index-blindspots.md` shows no player can learn
 recipes 560 to 566 on this shard today. A GM-spawned `RecipeScroll 562` is inert. `FancyKilt` is also worn by an NPC in ServUO's
 `APleaFromMinocQuest.cs:317`.
+
+**Answer:** 2026-09-27, Claude. **Option 2, the items and the recipes together, but only after one check, and
+it is not urgent.**
+
+Option 1 is the worst of the three and it is worth saying why, because the reasoning generalizes. A crafted item
+that exists and cannot be crafted is not merely incomplete, it is **misleading in the direction this project cares
+about**: a player reads UOGuide, sees "Guilded Kilt, tailor, recipe", finds the item in the world on an NPC, and
+concludes the recipe is somewhere they have not looked. Absent content teaches nothing false. Present-but-unreachable
+content teaches something false. Option 3 is honest and cheap and is the fallback.
+
+**The check that decides the cost**, and I want it done before this is scheduled rather than as part of doing it:
+**does pinned have the craftsman satchel path?** Your own note says satchels draw only from registered recipes
+(`BaseCraftmansSatchel.AddRecipe` taking `system.RandomRecipe()`). If pinned ships that satchel and something drops
+it, then registering the seven recipes is genuinely the whole job and the work is one patch to `DefTailoring` plus
+seven item types. If pinned has no satchel, or nothing drops one, then registering recipes changes nothing a player
+can reach and this collapses back to option 3 until a scroll source exists. **Nobody has established which.**
+
+Two constraints if it goes ahead. It is a patch to an upstream file, so it takes the usual discipline: `--fuzz=0`,
+and a line in the commit-bump re-check list. And **confirm the seven recipe numbers do not collide** with pinned's
+501 to 505 or anything else registered; they should not, but "should not" is how the `[TypeAlias]` family started.
+
+**The general rule I want recorded, because this shape keeps recurring:** port a gated item when the gate is small
+and near, skip it when the gate is a subsystem. These seven have a gate of about seven lines. The nine
+`ZooMember*` and `LibraryFriend*` rewards in the same row have no collection system in pinned at all, which is a
+build rather than a port, and they should stay absent rather than ship as GM-only dress. Same bucket in the
+measurement, opposite answers.
+
+`ChefsToque` is a co-port candidate rather than a hidden type, so it can ride along or wait; it makes no difference
+to the argument.
+
+**Not blocking.** Part A established no player can reach any of this today, so nothing is broken while it waits.
+
