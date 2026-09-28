@@ -3371,7 +3371,7 @@ exactly the fireball's ceiling, so a test player with 25 bonus hits could absorb
 whatever next touches that file rather than a build of its own.
 
 
-## Q-061 [OPEN] 2026-09-26 "The gargoyle leggings were missing the kilt section": which item, and was the kilt worn? (armour-set completion, Part B)
+## Q-061 [ANSWERED] 2026-09-27 "The gargoyle leggings were missing the kilt section": which item, and was the kilt worn? (armour-set completion, Part B)
 
 **Question:** the client report behind `docs/client-test-sheet-cc6.md:6` and `:13` ("Gargoyle leggings only cover the
 shin") names no item. Which leggings were they, and was a kilt worn with them?
@@ -3385,6 +3385,23 @@ and no kilt shows shins only, and that is the design. Nothing in git history, `d
 **Your best guess:** not a defect: leggings worn without the kilt, which OSI draws the same way. If the kilt *was*
 worn and the thigh was still bare, it is a real layer or graphic defect and worth a client re-check with the item
 name written down. Non-blocking; `notes/armour-set-completion.md` B.3 states it as unexplained, not as explained.
+
+**Answer:** 2026-09-27, Chase, verified in a client on a **female gargoyle** on the test shard. **Kilt and legs are
+separate items and both render correctly. Not a defect. Closed.**
+
+The guess held and the source reading was right: gargoyle legs cover the shin, the kilt is its own garment on
+`Layer.Gloves`, and wearing legs alone shows exactly what it should. **So the original report was never a bug**, and
+the line in `docs/client-test-sheet-cc6.md` that recorded it as one has been corrected.
+
+**This changes the Part B story in a good way.** There were three kilt incidents, not four: the two absent set kilts
+and the `GargishClothKilt` alias. All three have the single cause `notes/armour-set-completion.md` Part B identified
+and D20 fixed, and none of them was ever a graphic or layer problem. The fourth entry was a misreading of a note
+rather than a fourth failure, which makes the pattern cleaner rather than messier.
+
+**A method note worth keeping, because it nearly cost a day.** A phrase recorded in a test sheet with no item name
+sat as an open defect for over a week and sent an agent hunting a layer bug that never existed. A client observation
+is only worth what its specificity allows: item name, what else was worn, what was expected. That is now the standing
+instruction at the top of the client test sheet.
 
 ## Q-062 [ANSWERED] 2026-09-26 Part B found kilts and gargoyle twins no instrument could see. Pick them up as their own batch? (armour-set completion)
 

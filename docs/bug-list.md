@@ -15,7 +15,7 @@ is everything left alone.
 
 **The `Dn` numbers in this file are local to this file** and are not the `D-n` deviations in
 `fidelity-principle.md`. Only the hyphen tells them apart, which is thin, so: **the next free number
-here is D25.** I collided four of them on 2026-09-26 by numbering new rows from the highest in
+here is D28.** I collided four of them on 2026-09-26 by numbering new rows from the highest in
 section 1 without reading section 2, and `notes/gate-integrity.md` was written against the wrong
 two as a result. Read the whole file before taking a number.
 
@@ -25,6 +25,9 @@ two as a result. Read the whole file before taking a number.
 
 | # | What | Impact | Where |
 |---|---|---|---|
+| **D27** | **Every item built in a shard test reads tiledata row 0, so every piece of armour is `Layer.Invalid` and silently goes to the backpack instead of being worn.** `TileData`'s static constructor returns early under `Core.IsRunningFromXUnit` (pinned `Server/TileData.cs:293-301`), so `MaxItemValue` stays 0; `Item.ItemData` is `ItemTable[m_ItemID & TileData.MaxItemValue]` (`Server/Items/Item.cs:732`), and that **mask** is why seeding rows alone changes nothing. `BaseArmor` takes its layer from `ItemData.Quality` (`Items/Armor/BaseArmor.cs:166`), `Item.CanEquip` rejects `Invalid` (`Server/Items/Item.cs:2150`), and the creation path's `EquipItem` then packs the piece without complaint | **any fact that equips armour and asserts on what is worn is asserting nothing**, and it passes. The existing armour-set facts set `item.Layer` by hand, which is why this went four months unnoticed. Same family as D15: the test host quietly differs from the shard | found while writing the D26 fact, which could not assert "worn" until it seeded the six gargish cloth rows **and** set `MaxItemValue` to `0xFFFF` by reflection, restoring both in `finally`. All 148 tests pass with that in place. `notes/d26-gargoyle-kilt.md` §3.2 has the tiledata parser. **Belongs in `notes/port-recipe.md` and the `ShardTestClock` family of written-down test-host truths**, with D15 and D16 |
+| **D26** | **A gargoyle created without a profession is dressed in a cloth chest and cloth *legs*, and no kilt.** `CharacterCreation.AddPants` (ours and pinned's, byte for byte) equips `GargishClothLegsType1/2` for `Race.AllowGargoylesOnly`. ServUO pub57's `AddPants` equips `GargishClothKiltArmor` there (`Scripts/Misc/CharacterCreation.cs:140`). Gargish legs cover the shin; the kilt covers the pelvis, and they sit on different layers, so legs alone leave the character in underwear | **every gargoyle a family member makes starts undressed**, on the first screen they ever see. Chase observed it in a client on 2026-09-27 and confirmed separately that kilt and legs are distinct wearable items (Q-061) | inherited from upstream, see §5 E4. Our `server/customizations/CharacterCreation.cs` is already a full-file replacement whose only delta from pinned is `ConstructAvailableStartingCities`, so the fix is one line in a file we own. Both `GargishClothKiltType1` and `Type2` already exist in pinned, with `Type1` carrying the `[TypeAlias]` for ServUO's `GargishClothKiltArmor`, which is what proves the intended mapping. Resists, weight and `AosStrReq` are identical between kilt and legs, so nothing but appearance changes. **FIXED 2026-09-27**, two lines, byte-neutral ("Legs" and "Kilt" are the same length, so the file is still 46,333 bytes and still LF). Red was watched: the unfixed file with the finished test failed on `expected no GargishClothLegsType*, found GargishClothLegsType1`, both sexes, 146/148. Green is a full `build.sh`, 148/148. `notes/d26-gargoyle-kilt.md`. **Verified in a client 2026-09-28**: a new gargoyle with no profession wears the kilt. The first client check showed leggings and no kilt because `sl-modernuo-test` was still running the pre-fix `sl-modernuo:latest`; Docker does not swap the image under a running container, and a `compose up --force-recreate` fixed it. **Closed.** Still **not deployed to live** (D25) |
+| **D25** | **The live shard runs an image that predates everything since early September.** `docker inspect sl-modernuo --format "{{.Config.Image}}"` returns **`uo-modernuo`**, not `sl-modernuo:latest`. Its serialized type table holds no CC9 type at all, not even `GargishDagger` (measured across the live save, `Saves-test`, every automatic backup and the daily, hourly and monthly archives during the armour-set task) | **anything tested on the live shard will appear to be missing.** Chase searched the Add Menu for `gargishwarhammer` on 2026-09-27, found nothing, and the type has been in the tree since 2026-09-08. Roughly 250 files of ported content exist only in images never deployed | not a defect, a deployment state, recorded so nobody diagnoses it twice. **Test on the test shard.** Deploying is its own task and Chase's: months of content arriving at once against a live world save, with the re-parenting work resting on a no-instance condition that was true as of 2026-09-26, and Q-063's client data question settled first |
 | **D21** | **Docker Desktop's port publishing hides every client address.** Every connection reaches ModernUO from `172.19.0.1`, the bridge gateway, whether it came from loopback, the LAN or the internet: 34 of 34 `Client:` lines on live, and probes from both `127.0.0.1` and `192.168.1.58` logged identically | **three features are silently off.** `ServerList` cannot tell a LAN client from an internet one, so `autoDetect` relays everyone to the container's own address; `maxAccountsPerIP` is a **shard-wide total**, not per household; and `IPRateLimiter` exempts every client as private (`IPRateLimiter.cs:59`). Any per-IP ban would ban everybody | `notes/player-package.md` A.1. Reverses under host networking, or on a Linux host where Docker preserves the source address. Neither is small. **Until then, treat every per-IP feature as off** |
 | **D22** | **`docker compose -f docker-compose.test.yml down --remove-orphans` would stop the live shard.** Both compose files sit in the same directory and so share the project name `uo`, which makes compose report `sl-modernuo` and `sl-ddns` as orphans of the test stack | one flag away from a live outage, on a command that reads as safe | one line, `name: sl-uo-test` at the top of the test file, then remove the old test container once by hand. Not done in the task that found it: it changes the test stack's network |
 | **D23** | **`sl-ddns` is unhealthy and rewrites Cloudflare every ten minutes.** It reads the record back through the router's split DNS, which answers `192.168.1.58`, so it never sees the value as correct although Cloudflare already holds `216.247.206.76` | API churn, and a health status nobody can trust | give ddns-updater a public resolver. Which setting does that is unverified |
@@ -91,6 +94,14 @@ the rig quietly point at production. None was found by reasoning; each was found
 machine. The week D7 cost was spent on four plausible fixes applied without first probing whether
 the thing being fixed was the thing that was broken.
 
+**Tooling, 2026-09-27: `device_commit_files` caches by staged path.** Committing the same
+container path twice in a session writes the **first** version's bytes the second time, and still
+reports `written`. Two doc edits were silently lost to this before it was spotted; the earlier
+"the write was lost" incident in this section was very likely the same cause, not a stale read.
+The rule: **give every commit a new file name**, then verify with `device_list_dir` and check the
+byte count against what was written. Staging the file back immediately after a commit also serves
+a stale copy, so it is not a check either.
+
 ## 3. ServUO behavior copied on purpose, do not "fix" these
 
 Every one of these reads like a typo and is ServUO's. They are here so the next reader does not
@@ -123,6 +134,21 @@ correct them, and so that if we ever change the rule we know what the list is.
   `UndeadGuardian` set no Fame or Karma. `ForgottenServant` has no `[CorpseName]`.
 - `GargoyleShade` has no Energy resistance.
 
+**The eighteen character-creation differences found by D26's sweep are left alone on purpose.**
+`notes/d26-gargoyle-kilt.md` §4 lists them: a different starting sword, a different staff, an apron
+a gargoyle probably cannot wear that lands in the backpack, a branch unreachable on both sides, and
+so on. D26 itself cleared the bar because the result was *visibly broken*, which is the D-4 rule at
+the top of this file. The rest do not: **nobody consults a wiki about which weapon a gargoyle
+swordsman starts holding**, so the misleading test does not bite, and changing them means diverging
+from pinned for no player-visible gain. S13 (pinned sets no `FaceItemID`) matters only to the
+Enhanced Client, which we do not ship.
+
+**One correction to that sweep, which scoped itself to pinned as briefed.** It records
+`GargishDagger` and `GargishPlateChest/Arms/Legs/Kilt` as absent and needing a port. They are absent
+from **pinned** but present in **ours**, in `server/customizations/Items`. So S2, S16 and S17 are
+cheaper than the note implies. S2 still has a real blocker: pinned sets the race *after*
+`AddBackpack`, so a race branch there would see Human.
+
 ## 4. ServUO bugs we did fix, and why each cleared the bar
 
 | # | What | Why it is "broken", not "missing" |
@@ -137,6 +163,7 @@ correct them, and so that if we ever change the rule we know what the list is.
 |---|---|---|---|
 | **E1** | **`SetPassword` stores an unverifiable hash under SHA1/SHA2.** `_passwordAlgorithm` is still the enum default at the first `SetPassword`, so the phrase choice and the stamped algorithm disagree and `CheckPassword` can never match. With auto-account-creation on, a new player logs in once and never again | proven three ways in P1: the stored hash was exactly `SHA512("p1testpass")`, a packet capture confirmed correct credentials, and rewriting the hash to `SHA512("p1adminp1testpass")` fixed login immediately | **report upstream.** Costs us nothing now; the SHA2 block is reverted |
 | **E3** | **A held ML quest is saved against its giver's serial only**, with no type (`MLQuestEntry.cs:520`, and upstream's own TODO at `:536` says "Serialize quester TYPE too"). `Deserialize` drops the instance if that serial is gone. **So deleting a quest giver silently removes that quest from every player's log at the next restart**, even though a replacement giver takes the quests over while the server keeps running | read from pinned source in `notes/new-haven-quest-board.md` §4.4; not probed across a restart | **report upstream.** Live hazard for us in two places: never `[remove` the New Haven board, and the New Haven seeder's `replace` mode for the 26 trainers has the same effect. `NewHavenQuestBoard.Place()` moves a board and never replaces one, for this reason |
+| **E4** | **`CharacterCreation.AddPants` dresses a gargoyle in cloth legs where ServUO dresses it in a cloth kilt**, so a professionless gargoyle spawns with its pelvis bare. The port substituted `GargishClothLegs` for `GargishClothKilt` in the one branch; the profession branches all equip a kilt correctly (`:539`, `:576`, `:612`, `:649`, `:689`) | pinned `Engines/Character Creation/CharacterCreation.cs:787-809` against ServUO pub57 `Scripts/Misc/CharacterCreation.cs:103-142`, read side by side 2026-09-27. `GargishClothKiltType1` carries `[TypeAlias("Server.Items.GargishClothKiltArmor")]`, ServUO's exact type name, so the porter knew the mapping. Observed in a client | **fixed locally 2026-09-27 (D26); still to report upstream.** A transcription slip, one line, no save impact: the change affects newly created characters only and the two items carry identical stats |
 | **E2** | ModernUO has **no armour set-bonus system**. Standard OSI content. We built it in 387 lines plus three small patches | S1, five passing tests, 111 files unblocked | **contribute upstream.** If taken, our maintenance on the highest-value thing we have built drops to zero |
 
 ---
