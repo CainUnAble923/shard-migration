@@ -14,7 +14,7 @@ Running list of feature ideas from play testing. Kept by the overseer (Claude); 
 4. Chase commits with `Commit-ShardWork.ps1`.
 
 F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and questions (Q-n).
-**Next free: F-4.**
+**Next free: F-5.**
 
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
@@ -184,9 +184,43 @@ Answered 2026-09-29 (Chase):
   NPCs open the same store, with our items in their own section or marked, so the OSI list stays
   recognizable.
 
+- **Both NPCs** (Cleanup Officer and Sanitation Warden) open the one store (Chase, 2026-09-29).
+- **Store order may be sorted by price.** That is the only deviation in the store itself (Chase).
+  OSI's items, prices and point values stay exactly as OSI has them.
+- **Our items priced close to OSI's model** (Chase). OSI's catalog (pub57
+  `CleanUpBritanniaRewards.cs`, 134 rewards): 6 at 1,000; 7 at 5,000; 39 at 10,000; 3 at 15,000;
+  10 at 20,000; 30 at 50,000; 2 at 75,000; 2 at 80,000; 4 at 150,000; 24 at 250,000 (pigments);
+  6 at 300,000; 1 at 500,000. It sells no consumables.
+  Anchor: an iron ingot earns 0.10 points and a blacksmith sells it for 5 gp, so 1 point is about
+  50 gp of junk. A dumped iron weapon earns about 1 point.
+  Proposed (overseer, awaiting Chase): consumables at about gold value, rounded up, so the store is
+  never cheaper than a vendor: 100 bandages 15 (vendor 500 gp), 5 refresh potions 3 (vendor 75 gp),
+  3 greater heal potions 5 (no vendor sells them). Trash bag: first one free from either NPC,
+  replacements 1,000 (OSI's lowest tier; it is a tool that earns points, not a consumable).
+
 Open questions:
-- Prices for our items in Clean Up points (they were in Civic Tokens; an iron ingot is 0.10 points).
-- Keep both NPCs (Officer and Warden) opening the one store, or just one of them?
+- Approve or change the proposed prices above.
+
+### F-4: One character per account (added 2026-09-29)
+
+**Ours.** OSI allows several characters per account; this shard will allow one. Fits the vision
+("One life. Every skill."). Decided by Chase; timing "eventually", not yet scheduled.
+
+What it touches (overseer, to check when it is scheduled):
+- ModernUO's character-slot limit on the login side (verify the real setting in pinned, do not reason
+  from ServUO's names), and what an account with more than one character does after the change.
+- The fresh world makes the migration question small: set it before the fresh world opens.
+- `maxAccountsPerIP` (raised to 25) and bug-list D21: every client arrives from one Docker address, so
+  one character per account is not enforceable per person. Alts are one new account away. Decide
+  whether that matters for a family shard.
+- The launcher, README and wiki account pages, which may describe multiple characters.
+- Anything account-wide in our own systems (`ClusterFAccountPersistence`) that becomes simply
+  per character.
+- F-3: with one character, the Cleanup Point Exchange stone is left out (a registered deviation).
+
+Open questions:
+- When: with the fresh world, or later?
+- Staff and test accounts exempt?
 
 ## Batched
 
