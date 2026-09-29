@@ -606,6 +606,123 @@ catches them now. **Do not work from S9's appendix directly.**
 
 ---
 
+## The backlog, re-measured 2026-09-28 on the fixed index. This supersedes the CC9 remainder row.
+
+`notes/backlog-remeasure-2026-09-28.md`. Measured on the D20 + D24 + P2 instrument against
+ShatteredLegacy `8a52998`. **Every number is that instrument's answer, not ground truth.**
+
+**The finding that changes planning.** Only 41 of 725 candidate files, 5.7%, were ever merely
+waiting on a name the index could not resolve, so the backlog did not shrink much. But legacy
+labels **229 files "needs an upstream member"**, which reads as patch work, and on the fixed
+instrument **only 84 still do. 145 of 229, 63%, never needed a patch at all.** The backlog was not
+mostly smaller, it was **mostly misfiled as patch work**, which is why it has felt heavier than it
+is.
+
+### Batch 1: close CC9. 11 files, about 25 types, 2 extracted types
+
+`Sets/Epiphany/VirtuousEpiphany.cs` (10 types, take the bases from our `VillainousEpiphany.cs`),
+`Spellbooks/MysticBook.cs` (also unblocks cc5's `CorgulsHandbookOnMysticism.cs`, ride it along),
+5 of the 8 absent types in `Clothing/Hats.cs`, `MalabellesDress` from `Clothing/Pants.cs`, plus
+extracting `InstrumentedAddonComponent` and `GargishClothWingArmor`.
+
+After it, CC9 holds **only patch work** (24 `upstream`), 2 core-API files and collection-gated
+content, so the row closes and its tail moves to `patch-backlog.md`.
+
+**Do not port**, all three found by a scratch same-graphic run over candidate files, which the
+instrument itself does not do: `MaleGargishClothLegs` (pinned's `GargishClothLegsType1`, the kilt
+pattern again), `AncientShipModelOfTheHMSCape` (pinned's `ShipModelOfTheHMSCape` renamed), and the
+`ZooMember*` / `LibraryFriend*` hats and pants, which Q-064's no-collection-system rule keeps out.
+`ChefsToque` belongs to **Q-064**, not here.
+
+**`VirtuousEpiphany`'s drop source is unverified.** Its only ServUO referrer is `Niporailem.cs`,
+which neither tree has.
+
+### Batch 2: CC7 furniture that carpentry and masonry make. 45 files, ~3,100 lines, no patch
+
+Every group-portable file whose only ServUO referrer is `DefCarpentry.cs` or `DefMasonry.cs`.
+
+**The hook is not a patch**, which is the point of the batch.
+`server/customizations/Engines/Craft/IncubatorCarpentryRecipe.cs` (P12, Q-053) already appends to
+`DefCarpentry.CraftSystem` from `EventSink.ServerStarted`, and pinned's `DefMasonry` exposes the
+same property. So it is 45 types plus **two registration files**, one per craft system.
+
+**That pair is what unblocks the other 24 craft-only files** named by `DefTinkering`, glassblowing,
+alchemy, cartography, cooking, inscription, blacksmithy and tailoring. Without a hook, "drops
+straight in" ships items nobody can make, which is what P12 exists to prevent.
+
+**Walk the `AddCraft` arrays before the first build.** The index never read them, so their
+resources, skills and expansion gates are unwalked, and some name resources that are themselves
+unported (`WoodPulp`, `WorkableGlass`). `SoulForge.cs` needs a decision: pinned has no imbuing, so
+it would be decoration only.
+
+### Batch 3: craft addons and distillation (New Magincia). 19 files, ~2,600 lines
+
+`Items/Addons/Craft Addons/` plus the whole of `Services/New Magincia/Distillation/`.
+
+**This batch exists because of D24.** On the old instrument 4 of its 7 distillation files were
+`unknown` on the system's own enum members, which read as "open each file and find out". On the
+fixed one they are `in-row` and the group closes with two outside names, both core API. **D20 could
+not have proposed this batch at all.**
+
+Confirm pinned's equivalent of `EventSink.WorldSave` / `WorldSaveEventArgs` before the first build:
+the batch is only a group if core-API names count as conversions.
+
+### Two corrections to this file
+
+- **CC5's "0% dependency" is not true under this instrument.** The fishing core is not portable as
+  a group even with core conversions, and the cluster reaches CC8's galleons through
+  `Charybdis` and `BaseSeaChampion`. It is a proposal-first job: three cuts, each a logged
+  deviation, plus one patch to argue.
+- **CC4 got no cheaper and is not one-dungeon-shaped.** 33 of 240 files are group-portable, spread
+  across Exodus, Wrong, Covetous and Blackthorn, and this file wants one complete dungeon at a time.
+
+---
+
+## Q-064. The seven recipe-gated garments, and the Eodon drop they hang on
+
+Sized 2026-09-28 by P3 (`notes/q-064-recipe-garments.md`); the disposition is in
+`notes/codex-questions.md` under "Q-064, the overseer's disposition".
+
+**Do the spawn check first, before any code.** Whether Eodon has live spawns on this shard decides
+whether the drop hook fires at all. If it has none, this whole task is correct and inert, and the
+spawns come first.
+
+Then, in one batch:
+
+- seven trivial item types (`JesterShoes`, `ChefsToque`, `GuildedKilt`, `CheckeredKilt`,
+  `FancyKilt`, `FloweredDress`, `EveningGown`), all four parents already in pinned;
+- seven `AddCraft` pairs in `DefTailoring`, which is an upstream file, so a `--fuzz=0` patch and a
+  line in the bump re-check list;
+- one customizations file of about forty lines on `BaseCreature.CreatureDeathEvent`, plus a copied
+  six-line `IsEodon`.
+
+**Three things that are decided and must not be re-opened by the implementer:**
+
+1. **`AddQuestRecipe`, never `AddRecipe`.** Pinned's craftsman satchel draws from every
+   `AddRecipe`-registered tailor recipe, so the obvious call leaks these into quest satchels, which
+   ServUO never does, and dilutes the quiver pool. This looks like a fix and is a deviation.
+2. **Drop table (b): 560-566 only**, not all twenty. Thirteen inert scrolls would be *broken*, and
+   D-4 fixes broken and copies missing. The rate deviation this creates takes a `D-n` in
+   `fidelity-principle.md` **at implementation**, written with its end state: the table grows back
+   toward all twenty as the armour recipes land, so the deviation expires.
+3. `RealLuck` does not exist in pinned. Use `Mobile.Luck`, and **measure whether it differs** rather
+   than assuming; if it does, that is a second recorded deviation.
+
+Blocks **Q-066**, which needs the same drop hook.
+
+---
+
+## Q-066. Thirteen ported pieces no player can obtain
+
+Bug-list **D32**. The Tiger Pelt and Dragon Turtle Hide sets are in the tree with no source: their
+recipes come only from the Eodon drop or an Eodon treasure chest, and nothing constructs them.
+
+**Behind Q-064**, which builds the drop hook both need. What is wanted first is a measurement, not
+code: the size of the `TigerPelt` and `DragonTurtleScute` resource ports and the `WildTiger`
+creature port, and whether the two sets are independent. See `notes/codex-questions.md` Q-066.
+
+---
+
 ## CC7. Decoration, housing, crafting
 Addons, Decorative, New Magincia, Items/Resource, BulkOrders. 0% dependency. Cheap and
 visible; this is what players spend time on.

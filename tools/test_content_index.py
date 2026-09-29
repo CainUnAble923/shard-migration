@@ -88,6 +88,155 @@ class ContentIndexTest(unittest.TestCase):
         self.assertEqual(self.legacy.resolve_name('GargishClothWingArmor', set())[0], 'upstream')
         self.assertEqual(self.fixed.resolve_name('TempDamageAbsorb', set())[0], 'upstream')
 
+    # ---- D24 fix 3: an enum member is owned by the file declaring its enum ---------------------
+    def test_enum_member_resolves_to_the_file_declaring_its_enum(self):
+        # S9 printed `unknown: Good` for the Epiphany set. `Alignment.Good`: that enum is declared
+        # in DespiseCreature.cs. On the S9-era tree, because ours has since ported Alignment itself.
+        if not self.s9_tree:
+            self.skipTest('cannot export the S9-era customizations tree')
+        rel = 'Items/Artifacts/Equipment/Armor/Sets/Epiphany/EpiphanyHelper.cs'
+        fixed, legacy = ci.Index(self.s9_tree), ci.Index(self.s9_tree, legacy=True)
+        got = fixed.row('artifacts')['files'][rel]
+        self.assertEqual(got['bucket'], 'elsewhere')
+        self.assertEqual(got['names']['elsewhere'], ['Good'])
+        self.assertEqual(fixed.resolve_name('Good', set(), fixed.sv[rel]), ('elsewhere', 'Mobiles/Normal/DespiseCreature.cs'))
+        self.assertIn('Good', legacy.missing(legacy.sv[rel]))
+        self.assertEqual(legacy.resolve_name('Good', set(), legacy.sv[rel])[0], 'unknown')
+
+    def test_member_missing_from_an_enum_pinned_ships_is_upstream(self):
+        # Pinned's TalismanSlayerName stops at Bovine: a patch to that enum, not an unknown name.
+        rel = 'Items/Equipment/Talismans/TalismanofGoblinSlaying.cs'
+        self.assertIn('Goblin', self.fixed.missing(self.fixed.sv[rel]))
+        self.assertEqual(self.fixed.resolve_name('Goblin', set(), self.fixed.sv[rel]), ('upstream', None))
+        self.assertEqual(self.legacy.resolve_name('Goblin', set(), self.legacy.sv[rel])[0], 'unknown')
+
+    def test_qualifier_breaks_the_enum_member_type_tie(self):
+        # `HuntType.Lion` is the enum member in HuntingTrophyInfo.cs, not the Lion mobile.
+        f = self.fixed.sv['Services/HuntmasterChallenge/HuntingSystem.cs']
+        self.assertIn('Lion', self.fixed.missing(f))
+        self.assertEqual(self.fixed.resolve_name('Lion', set(), f),
+                         ('elsewhere', 'Services/HuntmasterChallenge/HuntingTrophyInfo.cs'))
+        self.assertEqual(self.legacy.resolve_name('Lion', set(), self.legacy.sv[f.rel]),
+                         ('elsewhere', 'Mobiles/Normal/Lion.cs'))
+        # A file's own enum member is its own only when every use is qualified by that enum.
+        # Trophies.cs writes only `TrophyStyle.Crab`; AmmoInfo.cs also writes `typeof(Cannonball)`.
+        trophies = self.fixed.sv['Services/Expansions/High Seas/Items/Fish/Trophies.cs']
+        self.assertNotIn('Crab', self.fixed.missing(trophies))
+        self.assertIn('Crab', self.legacy.missing(self.legacy.sv[trophies.rel]))
+        ammo = self.fixed.sv['Services/Expansions/High Seas/Items/Cannons and Ammo/AmmoInfo.cs']
+        self.assertIn('Cannonball', ammo.enums['AmmunitionType'])
+        self.assertIn('Cannonball', self.fixed.missing(ammo))
+
+    # ---- D24 fix 4: [SerializableField] names are the generated property's -----------------------
+    def test_generated_name_matches_the_generator(self):
+        # Each pair was produced by ModernUO.Serialization.Generator 2.14.3's own GetPropertyName.
+        for field, prop in [('_recipeID', 'RecipeID'), ('_bardingHP', 'BardingHP'), ('_loginIPs', 'LoginIPs'),
+                            ('_line1', 'Line1'), ('_hue', 'Hue'), ('m_Hue', 'Hue'), ('_max_hits', 'MaxHits'),
+                            ('_a2b', 'A2b')]:
+            self.assertEqual(ci.generated_name(field), prop, field)
+        # The one pinned field written with no space before its name.
+        self.assertIn('DamageEntries', self.fixed.muo['UOContent/Engines/CannedEvil/ChampionSpawn.cs'].generated)
+
+    def test_generated_property_resolves_only_when_fixed(self):
+        rel = 'Items/Books/SpecialScrollBooks/RecipeBook/RecipeBookGump.cs'
+        self.assertNotIn('RecipeID', self.fixed.missing(self.fixed.sv[rel]))
+        self.assertIn('RecipeID', self.legacy.missing(self.legacy.sv[rel]))
+        self.assertEqual(self.fixed.tree.generated_only['RecipeID'], 'UOContent/Items/Skill Items/Misc/RecipeScroll.cs')
+
+    # ---- D24: the same-graphic check says when it did not run ----------------------------------
+    def test_graphic_check_distinguishes_not_run_from_none_found(self):
+        rows = {r['type']: r for r in self.fixed.hidden(ci.ROWS['artifacts'])}
+        self.assertEqual(rows['MaleGargishClothKilt']['graphic_check'], 'twin')
+        self.assertEqual(rows['GuildedKilt']['graphic_check'], 'none found')
+        self.assertEqual(rows['ZooMemberCloak']['graphic_check'], 'not run')         # base(hue), inherited
+        self.assertEqual(rows['GargishKiltOfMining']['graphic_check'], 'not run')    # base(bonus, 0x030C)
+
+    # ---- P2: a #region label is not a name ------------------------------------------------------
+    def test_preprocessor_lines_are_not_names_when_fixed(self):
+        rel = 'Items/Addons/GargishCotEastAddon.cs'                     # `#region Mondain's Legacy`
+        self.assertIn('Mondain', self.legacy.missing(self.legacy.sv[rel]))
+        self.assertNotIn('Mondain', self.fixed.missing(self.fixed.sv[rel]))
+        # The resolving side too: pinned spells `Stygian` only in a #region. (`Helpers` is the same in
+        # BasePeerless.cs, but Medusa's `_helpers` generates it, so it still resolves: by name, as ever.)
+        self.assertIn('Stygian', self.legacy.tree.idents)
+        self.assertNotIn('Stygian', self.fixed.tree.idents)
+
+    # ---- P2: decimal graphics are read, clilocs are not ------------------------------------------
+    def test_graphic_check_reads_decimal_literals_in_art_range(self):
+        rows = {r['type']: r for r in self.fixed.hidden(ci.ROWS['artifacts'])}
+        self.assertEqual(rows['HangingPlatemailArms']['graphic'], hex(40681))       # base(40681)
+        self.assertEqual(rows['HangingPlatemailArms']['graphic_check'], 'none found')
+        self.assertEqual(rows['CompleteNecromancerSpellbook']['graphic_check'], 'not run')  # base((ulong)0x1FFFF)
+        f = ci.FileInfo('x.cs', 'class A : Item { public A() : base(1094954) {} } '
+                                'class B : Item { public B(int n) : base(1) {} } '
+                                'class C : Item { public C() : base(4014) {} }')
+        self.assertEqual(f.graphics, {'C': 4014})                                  # cliloc and amount skipped
+
+    # ---- D33 reach: what puts a type in the world, not what names it ----------------------------
+    # Facts about the tree as it stands. Like the spawn-orphan facts in the shard tests, they are meant to
+    # move when a gate is built; change the expectation then, with a line saying which gate did it.
+    @classmethod
+    def reach(cls):
+        if not hasattr(cls, '_reach'):
+            cls._reach = ci.Reach()
+        return cls._reach
+
+    def test_reach_spawn_entries_resolve_case_insensitively(self):
+        # Underworld.json:258 writes `tanglingroots`; BaseSpawner resolves it like FindTypeByName (Q-048).
+        e = self.reach().reached['TanglingRoots']
+        self.assertEqual((e[1], e[4], e[5]), ('spawn', 'data/Spawns/post-uoml/termur/Underworld.json', 258))
+
+    def test_reach_a_string_table_read_by_static_access_creates_its_entries(self):
+        # DespiseSpawns holds entry names as strings and is only ever read as `DespiseSpawns.Definitions`.
+        e = self.reach().reached['Silenii']
+        self.assertEqual((e[1], e[3]), ('string', 'DespiseSpawns'))
+
+    def test_reach_static_access_runs_no_instance_code(self):
+        # The fountain is live (`FountainOfFortune.UnderProtection`) but nothing makes one, so the satchel
+        # its reward code constructs is not reached either (S2 D-3: only `[add` places a fountain).
+        r = self.reach()
+        self.assertIn('FountainOfFortune', r.live)
+        self.assertNotIn('FountainOfFortune', r.reached)
+        self.assertNotIn('GemologistsSatchel', r.reached)
+
+    def test_reach_a_list_that_reads_types_does_not_create_them(self):
+        # GemologistsSatchel.IngredTypes says what the satchel accepts, not where reagents come from.
+        r = self.reach()
+        self.assertNotIn('DaemonClaw', r.reached)
+        self.assertEqual({(x[1], x[2]) for x in r.by_target['DaemonClaw']}, {('check', 'IngredTypes')})
+
+    def test_reach_a_base_is_reached_through_children_unless_it_is_an_item_itself(self):
+        r = self.reach()
+        self.assertEqual(r.reached['ShameGuardian'][1], 'base')                  # no [Constructible]
+        created = r.what_if({'AloronsBustier'})
+        self.assertIn('AloronsBustier', created)
+        self.assertNotIn('TigerPeltBustier', created)                            # an item in its own right
+
+    def test_reach_a_data_file_that_only_lists_names_places_nothing(self):
+        # bodyTable.cfg names Allosaurus; no spawn file does (notes/cc3-eodon.md).
+        r = self.reach()
+        self.assertNotIn('Allosaurus', r.reached)
+        self.assertIn('data-mention', {x[1] for x in r.by_target['Allosaurus']})
+
+    def test_reach_pinned_code_left_commented_out_is_reported(self):
+        # LadyLissith.cs:53, under `// TODO: uncomment once added`.
+        hits = [x for x in self.reach().by_target['GreymistChest'] if x[1] == 'pinned-comment:new']
+        self.assertEqual([(x[4], x[5]) for x in hits],
+                         [('pinned/UOContent/Mobiles/Monsters/ML/Twisted Weald/LadyLissith.cs', 53)])
+
+    def test_reach_servuo_turn_in_table_is_not_a_source(self):
+        # CleanUpBritanniaData.Entries is what a player hands in; CleanUpBritanniaRewards hands out.
+        src = ci.servuo_sources(self.reach(), ['BestialArms', 'AntiqueWeddingDress'])
+        self.assertEqual({x[4] for x in src['BestialArms']}, {'Scripts/Services/CleanUpBritannia/CleanUpBritanniaRewards.cs'})
+        # Turned in for points (CleanUpBritanniaData.cs), never handed out by Clean Up.
+        self.assertNotIn('Scripts/Services/PointsSystems/CleanUpBritanniaData.cs', {x[4] for x in src['AntiqueWeddingDress']})
+        self.assertTrue(src['AntiqueWeddingDress'])
+
+    def test_twin_sweep_finds_a_pinned_type_under_a_misspelling(self):
+        # Pinned ships the champion artifact as `GuantletsOfAnger`, same cliloc 1094902.
+        hits = {(n, test, m) for n, f, test, m, where in ci.twins(self.reach(), ci.C)}
+        self.assertIn(('GauntletsOfAnger', 'cliloc', 'GuantletsOfAnger'), hits)
+
 
 if __name__ == '__main__':
     unittest.main()

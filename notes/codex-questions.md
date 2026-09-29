@@ -3541,3 +3541,158 @@ to the argument.
 
 **Not blocking.** Part A established no player can reach any of this today, so nothing is broken while it waits.
 
+**Amended 2026-09-28:** the satchel is not where ServUO gets these recipes. See "Q-064 follow-up" at the end of this file.
+
+## Q-065 [ANSWERED] 2026-09-27 `BestialArms` sits on the chest layer, not the arms layer, because the port changed its construction order. Fix it with one line, and what about any existing copies? (D27 audit)
+
+**Question:** ServUO's `BestialArms` gets its layer from its parent's item ID `0x302` (Arms) before it switches its
+own item ID to `0x4052`. Our port passes `0x4052` straight to `BaseSetArmor`, so it takes `0x4052`'s layer, which in
+the shard's `tiledata.mul` is **InnerTorso**. A gargoyle wearing a chest piece cannot put Bestial Arms on, and one
+wearing Bestial Arms cannot wear a chest piece. Do you want the one-line fix, `Layer = Layer.Arms;` in the
+constructor, which reproduces ServUO's effective layer?
+
+**Context, checked:** `notes/d27-worn-item-facts.md` section 4. ServUO `GargishLeatherArms.cs:17` (`base(0x302)`),
+`BaseArmor.cs:2373` (layer from the tile row at construction), `Bestial/BestialArms.cs:27` (`ItemID = 0x4052` after).
+Ours: `server/customizations/Items/Artifacts/Equipment/Armor/Sets/Bestial/BestialArms.cs:14`. Proved headlessly with
+the real rows seeded: `layer=InnerTorso equipped=False` next to a worn gargish leather chest. The set itself still
+completes (its four pieces do not collide). Two sweeps for the same shape across all ported types found no other
+case. Not checked in a client.
+
+**Saves:** `Item` serializes any layer that is not `Invalid`, so a code fix does not move an existing copy. The live
+save cannot hold one (D25). The LAN test shard runs `sl-modernuo:latest` and **might**; not checked. An existing copy
+would need re-spawning or a one-off `[set Layer Arms` by a GM.
+
+**Your best guess:** fix it, since it is ServUO's value and it is visible to players, and change
+`ArmourSetCompletionVerification.EachGargoyleHalfCompletesWithItsKilt` in the same commit to seed the three rows and
+assert `Layer.Arms` instead of setting it by hand. That fact would then fail first on the unfixed file, which the
+probe in the note has already shown it does.
+
+**Not blocking.** Nothing else depends on it.
+
+**Answer:** 2026-09-27, Claude (D28, overnight task B). **Fixed, uncommitted, not deployed, and there are no
+existing copies to deal with.** Full record in `notes/d28-bestial-arms.md`.
+
+- **Copies: none anywhere.** 960 type tables, each positive-controlled, zero `BestialArms`: live `Saves`,
+  `Saves-test`, all 22 automatic backups, every member of all 30 daily, 24 hourly and 3 monthly archives, and the
+  test container's own backups and hourly archive, which live inside that container and which the CC9 check never
+  saw. One table lacks the control and is explained (a real May save with no dagger in it). So the "might" above is
+  now a measured no, and no migration is needed.
+- **The fix**: `Layer = Layer.Arms;` last in the constructor, item ID and base call unchanged.
+- **The test**: not B11 changed as guessed above, but a new fact beside it,
+  `BestialArmsIsOnTheArmsLayerAndGoesOnOverAGargishChest`. It seeds the three rows and asserts the layer, and also
+  that a gargoyle already wearing a gargish leather chest can put the arms on. **Red on the unfixed file**
+  (`Expected: Arms, Actual: InnerTorso`, `equipped=False`, 149 of 150), **green with the fix** (150 of 150,
+  `sl-modernuo:latest` built). B11 lost its hand-set `Layer.Arms` for this piece and stays green in both runs.
+- **D27's §5 extraction trigger has fired.** This is the second `EquipItem` fact. D26's reflection was copied, not
+  extracted; that decision is yours.
+- **Correction to the question above, and to D27 §4**: ServUO's `GargishLeatherArms` constructor also sets
+  `Layer = Layer.Arms` explicitly (`GargishLeatherArms.cs:19`), after `base(0x302)`. So the lost member **is** in a
+  file, and this is the ordinary final-parent miss: the port reproduced pinned's `GargishLeatherArmsType2`, which has
+  no such line, instead of ServUO's parent. D27's sweep 2 only looked at each type's own ServUO class, so it could
+  not see this. A sweep of old-parent constructors across the re-parented ports is worth scheduling; not run
+  tonight.
+
+## Q-064 follow-up 2026-09-28: the satchel check, done. The satchel was the wrong gate (CC task P3)
+
+**Answer amended:** 2026-09-28, Claude (P3). Full evidence in `notes/q-064-recipe-garments.md`. **Still option 2, with the
+gate corrected. All seven land in one bucket: port with its gate.**
+
+- **ServUO's tailor satchel never drops 560-566.** `Reward.TailorRecipe()` is a fixed list, `501-505, 550-552`
+  (`Services/MondainsLegacyQuests/BaseReward.cs:151-154`). The answer above, and `notes/index-blindspots.md` Part A,
+  reasoned from pinned's satchel, which draws from the registry. ServUO's does not.
+- **The real source is an Eodon kill drop**, `TimeOfLegends.CheckRecipeDrop` (`Services/Expansions/TimeOfLegends.cs:98-150`):
+  any creature dying inside `SpellHelper.IsEodon` rolls Fame/1,000,000 plus luck/152,000, and two thirds of hits drop a
+  scroll from 20 IDs, 560-566, 570-577 and 580-584. Secondary source: treasure chests, any registered recipe
+  (`TreasureMapChest.cs:523-528`). Pinned and ours have neither.
+- **Pinned does have the satchel path, renamed**: `BaseCraftmansSatchel`, `TailorSatchel`, `BlacksmithSatchel`,
+  `TinkerSatchel`, `FletchingSatchel`, `CarpentrySatchel` (`Engines/ML Quests/Items/CraftmansSatchel.cs`), paid out by 41
+  Heartwood and Sanctuary quests, ML quests on by default. Only `AlchemistCraftsmanSatchel` is absent. So registering the
+  seven with `AddRecipe` **would** make them reachable, through a path ServUO does not have, and would dilute the quiver
+  recipes in the satchel pool to 5 of 12. **Register them with `AddQuestRecipe`** (`CraftSystem.cs:285-288`), which pinned
+  provides for exactly this: registered, learnable, not in the satchel pool.
+- **The gate:** seven trivial item types, seven `AddCraft` + `AddQuestRecipe` pairs in a `--fuzz=0` `DefTailoring` patch,
+  and one ~40-line customizations file on `BaseCreature.CreatureDeathEvent` (already consumed that way in
+  `ClusterFAchievements.cs:1058`) with a copied 6-line `IsEodon`. No subsystem. Recipe numbers 560-566 collide with
+  nothing in pinned or ours.
+- **Not verified, and it could collapse the gate:** whether Eodon has live spawns on this shard. If it has none, the hook
+  is right and fires never.
+
+**Open for Chase: the drop table.** (a) all 20 IDs unchanged, 13 of 20 scrolls inert until the armour recipes exist;
+(b) only 560-566, each three times OSI odds, a recorded deviation; (c) all 20 registered, armour recipes learnable but
+uncraftable. My lean is (a).
+
+**Bigger than the seven:** the same drop is the only ServUO source for the recipes of the 13 `TigerPelt*` and
+`DragonTurtleHide*` pieces **already in our tree**, which are therefore present-but-uncraftable today. Their gate adds the
+`TigerPelt` and `DragonTurtleScute` resources (absent in both trees) and `WildTiger`. Worth its own question; not opened
+here.
+
+**Not blocking.**
+
+
+---
+
+### Q-064, the overseer's disposition (2026-09-28)
+
+Written by Claude, not by the agent. P3's investigation is above and stands; this is the decision
+that follows from it.
+
+**All seven: port with its gate.** Accepted as written. One drop source, one patch, one material,
+so the bucket could not differ between them.
+
+**The drop table: (b), and not (a).** I am overruling P3's lean, on this project's own D-4 rule.
+Under (a), thirteen of twenty drops are scrolls that do nothing when a player uses them, and D-4
+says a **missing** result is copied faithfully while a **broken** result is fixed. A scroll that
+does nothing is broken, and it is broken in the worst way: the player has no way to know it was
+ever meant to work. Under (b) the other recipes are simply absent, which is the missing side of
+that line.
+
+The deviation (b) creates, each garment recipe dropping about three times OSI odds, is real and is
+recorded **with a stated end state**: the table grows back toward all twenty as the armour recipes
+land, so the deviation expires rather than becoming permanent. That end state is the point of
+choosing it, and an entry that does not say so would be worse than no entry. It takes a `D-n` in
+`docs/fidelity-principle.md` **at implementation**, not now, because the deviation does not exist
+until the code does.
+
+**Do the Eodon spawn check first.** P3 flagged it honestly as the one unknown that could collapse
+the gate. If Eodon has no live spawns, the forty lines are correct and fire never, and the right
+order is spawns first. That is a check, not work, and it should not be skipped because it is small.
+
+**One thing to carry into the implementation prompt, in bold:** register with `AddQuestRecipe`, not
+`AddRecipe`. Pinned's craftsman satchel draws from every `AddRecipe`-registered tailor recipe, so
+the obvious call would leak these seven into quest satchels, which ServUO never does, and would
+dilute the quiver pool at the same time. This is the kind of thing that looks like a fix and is a
+deviation.
+
+**Correction to the answer this question already had.** My earlier answer, "items and recipes
+together, after checking whether pinned has the craftsman satchel path at all", framed the satchel
+as the gate. It is not: ServUO's satchel list is hard-coded and excludes 560-566. The check I asked
+for would have returned "yes" and answered the wrong question. Recorded in `bug-list.md` §1b, with
+where the premise came from.
+
+---
+
+## Q-066: the thirteen ported pieces that no player can obtain
+
+**Opened 2026-09-28 by Claude, out of Q-064.** Bug-list **D32**.
+
+The Tiger Pelt set (`TigerPeltBustier`, `Chest`, `Collar`, `Helm`, `Legs`, `LongSkirt`, `Shorts`,
+`Skirt`) and the Dragon Turtle Hide set (`Arms`, `Bustier`, `Chest`, `Helm`, `Legs`) are ported and
+sitting in `server/customizations`. In ServUO they are crafted from recipes 570-584, and those
+recipes reach a player only through the Eodon kill drop or an Eodon treasure chest. We have
+neither, nothing in customizations constructs any of the thirteen, and so **no player can ever
+obtain them.**
+
+This is the failure Q-064's answer was written to prevent, already present in the tree, thirteen
+times over.
+
+**The question is not whether to fix it but what the fix costs.** Their gate is larger than the
+garments': each Tiger Pelt recipe needs `TigerPelt` (4 per piece, from `WildTiger`) and each Dragon
+Turtle recipe needs `DragonTurtleScute`. Neither resource class exists in pinned or ours, and
+`WildTiger` is not in ours. So it is a creature-plus-resource port per set, on top of the recipe
+lines and the same drop hook Q-064 needs.
+
+**What I want before deciding:** the size of each resource and creature port, measured rather than
+estimated, and whether the two sets can be done independently. If the Eodon drop hook lands for
+Q-064 anyway, the marginal cost here is the resources and the creature, which may be small.
+
+**Not blocking, and behind Q-064**, since Q-064 builds the drop hook both of them need.

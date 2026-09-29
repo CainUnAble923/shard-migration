@@ -651,11 +651,16 @@ so `pingServer.enabled=False` turns every `shutdown` into an unhandled exception
 report. The save completes first, so it does not corrupt anything — it just wastes a cycle and
 makes the log look like the port broke something. The scratch config is not a place to tidy.
 
-## Writing a shard test fact that reads hit points, the clock, or a gump
+## Writing a shard test fact that reads hit points, the clock, a worn item, or a gump
 
 Added 2026-09-26 by the New Haven quest menu task (`notes/new-haven-quest-picker.md`), for D15 and D16 in
 `docs/bug-list.md` and the three traps that task hit. `server/tests/Route/ShardTestClock.cs`'s header carries the
-first two as well.
+first two as well. Extended 2026-09-28 (`notes/test-host-truths.md`) for D27 and the second half of D16.
+
+**All three are the same fact about the host: it quietly differs from the shard, and each difference has cost a fact
+that looked right.** D15 (hit points) and D27 (tile data) each have a guard fact that goes red if the difference
+changes, so a fixture change cannot alter what every fact measures without someone deciding it. D16 (the clock and
+timers) is written down here and in the `ShardTestClock` header, but no fact pins either half of it.
 
 **Hit points: read them on the tick the damage lands, never after an `Advance`.** The test host regenerates one hit
 every 8 ms, 125 a second: `UOContentFixture` never runs `RegenRates.Configure`, so `Mobile.DefaultHitsRate` is zero
@@ -670,7 +675,27 @@ than working around it.
 **The clock: never measure from `ShardTestClock.Epoch`.** `Arm()` only raises `Core.Now` to `Epoch` when it is lower,
 and `PacketTestUtilities.CreateTestNetState` sets it to the wall clock. So after any fact that makes a test NetState,
 `Core.Now` is real time carried forward. Read `Core.Now` inside the fact and measure from that. Do not assert on the
-date or the time of day. Create anything with a timer after `Arm()`, not before.
+date or the time of day. **Create anything with a timer after `Arm()`, not before.** `Arm()` empties the timer wheel
+but leaves every timer that was on it flagged `Running`, and `Start()` returns at once while `Running` (pinned
+`Timer.cs:108`), so a mobile, creature or item built before `Arm()` holds a timer that never fires and that a
+`Start()` cannot revive; only a `Stop()` first clears the flag (D16).
+
+**Worn items, layers and tile weights: the host has no tile data (D27).** `MaxItemValue` is 0 in a test, so every item
+reads tile row 0, which is empty. Every piece of armour or weapon that does not set its own layer is on
+`Layer.Invalid`, `EquipItem` refuses it without complaint (character creation then packs it), and every item without a
+weight of its own weighs 0. `Mobile.AddItem` never checks a layer, which is why most facts never notice. So:
+
+- A fact that asserts what is **worn**, what **layer** a piece is on, or a **tile weight** opens a scope naming the rows
+  it depends on, before it builds the items: `using var tiles = TestTileRows.Seed(TileRows.GargishLeatherChestType1,
+  TileRows.BestialArms);`. The scope raises `MaxItemValue` and writes those rows, and puts both back on dispose.
+  Seeding rows without raising the mask does nothing; that was measured, not deduced (`notes/test-host-truths.md` §2).
+- A row the fact needs and `TileRows` lacks is added there, read from the shard's
+  `client-data/classic-client/tiledata.mul` by a parser that follows `TileData.Load`, with the source in its comment.
+  Never read `tiledata.mul` at test time; it is outside the build context.
+- **Do not set a layer by hand** (`item.Layer = ...` before `AddItem`) to make a fact look like it wears something. It
+  protects nothing a set fact asserts, and it is what hid D28, a live item on the wrong layer.
+- Never set `MaxItemValue` in the fixture. `TestHostTileDataVerification` goes red if anything does, and that is a
+  decision about what every fact measures, not a fix.
 
 **Gumps: assert them on the wire.** Since D12 the builder can compile a gump. Attach the player to
 `PacketTestUtilities.CreateTestNetState()`, send, find the 0xDD on `ns.SendBuffer` by the gump's serial and type id,
