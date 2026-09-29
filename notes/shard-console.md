@@ -481,6 +481,40 @@ only the spawn line and the table shows that run.
 run with `-NoNewWindow`. A real click opens a real window through `Start-Process` with no redirection, which is
 T-017 and T-018. Those are Chase's to re-run, and they stay as they are in the queue.
 
+### 6.2 A DRY RUN toggle in the form, 2026-09-29
+
+Asked for after 6.1. A checkbox by Refresh, **DRY RUN: buttons print, nothing runs**, flips the buttons at runtime.
+
+**One flag became two.** `$script:dry` now means only "buttons print". `$script:fromCapture` means "the status panel
+reads a capture file", and only launching with `-DryRun` sets it. So:
+
+- **Launched normally**, the box starts off. Ticked, every button behaves as it does under `-DryRun`: here-actions print,
+  window actions go through the real dialogs and open a window that prints. **The status stays live from docker.** The
+  window title and the box both turn DRY RUN, and the output pane logs each change.
+- **Launched with `-DryRun`**, the box is ticked and greyed out, labelled locked. A plan built from a capture file must
+  never run for real. `Set-ConsoleDryRun` (`scripts/Shard-Console.ps1:1652`) will not turn it off. Behind the lock,
+  `Invoke-ConsoleButton` refuses outright if the status is a capture and dry is off (`:1685`).
+- **A dry child spawned from a docker-status console** gets `-StatusFromDocker`, a new switch, so it builds its plan from
+  the same docker state the parent showed, not from the capture fixture. It still decides its mode and prints its banner
+  before reading anything. A real child is never given the switch.
+
+**Facts** (68 now, all green): the toggle over all 13 window cases gives `-Mode DryRun` and `-StatusFromDocker`; a
+capture console with dry off opens and runs nothing, in all 13; a form built with docker status (state stubbed) starts off
+and usable, ticking flips `$script:dry` and the title, and the status reads stayed non-dry throughout; a `-DryRun` form's
+box is ticked, disabled, and cannot be turned off from code. **End to end**, the real child of a toggled `live.stop`, with
+the recording `docker.exe`, exits 0 with the DRY RUN banner, reads docker, and makes no call whose verb changes anything.
+
+**Watched failing**, one break at a time, restored byte-identical each time: the toggle not reaching `$script:dry` (the form
+fact red), the lock removed (the lock fact red), the guard behind it removed (the capture fact red), the child not told
+`-StatusFromDocker` (2 red), and `-Mode DryRun` no longer honoured (4 red).
+
+**Not proven:** the "no mutating verb" filter in that end-to-end fact has never been seen failing. The recorder answers
+every call with exit 1, so the child sees live as missing and its plan stops before any stop step. I checked the regex
+separately against `stop -t 60 sl-modernuo` and `restart ...` (match) and the read verbs (no match). And a slip of mine:
+the first version of that regex held a literal backspace instead of `\b`, so it matched nothing, and the fact passed
+anyway. The ASCII-only fact caught the byte. **Rendered, not clicked:** I drew the real form with the box ticked. The
+title read `Shard Console - DRY RUN - ...` and the box showed amber and bold. Clicking it by hand is for the client pass.
+
 ## 7. Section 3 of the brief: what `docker inspect` and the logs can and cannot give
 
 Everything asked for is shown. Where it comes from, and the limits:
