@@ -17,6 +17,7 @@ from it.**
 | `how-this-works.md` | the loop, who does what, why the lines fall where they do |
 | `upstream-watch.md` | what ModernUO is building, and what a pinned-commit bump risks |
 | `community-scripts-wishlist.md` | the separate custom-content lane and its rules |
+| `feature-queue.md` | feature ideas from play testing (F-numbers), gathered into cc-P batches |
 
 ## Reference: correct, but narrow
 

@@ -204,4 +204,139 @@ The cooldown lives in memory, so a server restart clears it. On a test shard tha
   `Items/Resource/*` and `Items/Quest/*` `ICommodity` items are ServUO ports (OSI content), not our own, so they are
   **not** registered.
 
-(Test runs and the deletion gates follow.)
+---
+
+## 5. Part E: what the probe found, and the patch as a guard
+
+**The brief's suspicion is half right.** The mechanism is real: with `AccountHandler` initialized while the Test Center
+is off, a Test Center shard answers a one-second-old character's deletion with `CharTooYoung` (test 5a, red against
+unpatched pinned, section 6). But the trigger the brief proposed does not fire at 7c9215d97. A temporary probe
+reproduced `AssemblyHandler.Invoke("Configure")` exactly as production runs it (`Server.dll` from `Core.Assembly`, then
+`Data/assemblies.json` = `["UOContent.dll"]`, the same `GetMethod` filter, the same `CallPriorityComparer`, the same
+`List.Sort` over the same compiled assembly):
+
+| Build | Configure methods | `TestCenter.Configure` | `AccountHandler.Configure` | `SkillsInfo.Configure` |
+|---|---|---|---|---|
+| with P9's `TestCenterKitEntries.Configure` | 232 | index 66 | index 107 | 208 |
+| same list without it | 231 | 67 | 108 | |
+
+So TestCenter configures first and the field would come out `false`, correctly. "`Accounting/` compiles before
+`Special Systems/`" does not decide it: the sort reorders everything with equal priority. The "without" row is the
+P9 build minus one method, not the image that was running before this task (which also predates P7/P8 content), so it
+is close to that image but not proof of it. The probe cannot see an earlier touch of `AccountHandler`'s statics from
+some other code before index 66; I found none by grep, but that is a search, not a proof.
+
+**Kept anyway, as a guard, and labeled that way** in the patch comment and `apply-patches.sh`: the order comes from an
+unstable sort over 232 methods, and this repo adds `Configure` methods with nearly every port, so today's luck can flip
+with no change to either file. The patch costs one line. **Chase may prefer to drop it** since the defect is latent; if
+so, delete the patch, its `apply-patches.sh` block and nothing else. Test 5a still passes without it today (the probe
+says so), but it would then be testing luck. The probe was deleted before the green run; a copy is in the session
+scratchpad only.
+
+## 6. Every deletion gate
+
+`AccountHandler.DeleteRequest` (`:187-240`), in order, with the patch applied:
+
+| # | Gate | Result sent | Time delay? |
+|---|---|---|---|
+| 1 | `state.Account` is not an `Account` | disconnect | no |
+| 2 | index out of range | `BadRequest` | no |
+| 3 | slot empty | `CharNotExist` | no |
+| 4 | `m.NetState != null`, the character is being played | `CharBeingPlayed` | no. Kept, per brief |
+| 5 | **Player account and `RestrictDeletion` and `Core.Now < m.Created + 7 days`** | `CharTooYoung` | **yes, the only one**. Off on a Test Center shard, on elsewhere |
+| 6 | Player character whose logout point is in a `JailRegion` | `BadRequest` | no. Kept, per brief |
+
+The client path: `0x83` is registered with `outgameOnly: true` (`IncomingAccountPackets.cs:49`); the handler skips 30
+bytes of password and reads the index (`:184-191`). `outgameOnly` is a state rule (not while in game), not a timer.
+`Account` has no deletion cooldown, "recently logged out" wait or deletion field (grep of `Account.cs` for delete,
+created, last, delay). `DeleteResultType.CharQueued` exists (`OutgoingAccountPackets.cs:50`) and nothing sends it.
+Nothing in `server/customizations` or `server/patches` touches deletion (grep for `DeleteRequest`, `0x83`,
+`CharTooYoung`, `RestrictDeletion`). Gate 4 needs the game connection gone; on a Test Center shard logout is instant
+(`PlayerMobile.cs:4333`), so logging out to character select is enough.
+
+---
+
+## 7. Test runs
+
+All `docker/uo/build.sh --tests-only`: builder stage (patch gate) and the shard tests; **no runtime image built by
+this task**. Logs in the session scratchpad (`p9-red1.log`, `p9-red2.log`, `p9-green.log`). Every deliberate break was
+tagged `P9-RED`; `grep -rn P9-RED server docker` is empty after the revert.
+
+`server/tests/Misc/TestCenterVerification.cs`, 10 facts:
+
+| Fact | Brief's test | Watched red | Red because |
+|---|---|---|---|
+| `Test1_MultiplierLeavesEveryGainFactorAlone...` | 1 | run 1 | break: the enabled check skipped. `Assert.False` got True |
+| `Test2_MultiplierIsExactlyFiveTimes...DoesNotCompound` | 2 | run 1 | break: `*=` instead of from the original. "Alchemy: 25 is not 5 x 1" |
+| `Test3_TCFillIsNotRegisteredWhenTheTestCenterIsOff` | 3 | run 1 | break: registered unconditionally |
+| `Test4And6_ANewTestCenterCharacterHasAFilledBankAndTheTestKit` | 4, 6 | run 1 and run 2 | run 1 break: pinned fill removed from creation, "bank has no 'Various Potion Kegs'". Run 2 break: kit hook removed, "Assert.Single() Failure: The collection was empty" |
+| `Test5a_OnATestCenterAPlayerDeletesACharacterMadeOneSecondAgo` | 5 (E.1) | run 1 | **no break: unpatched pinned**, with `AccountHandler` initialized while off (what production does if its statics are touched first). `CharTooYoung` |
+| `Test5b_WithTheTestCenterOffTheSameDeletionIsCharTooYoung` | 5 (E.4) | run 2 | break: patch set to `=> false`. "Expected: CharTooYoung, Actual: null" |
+| `Test6_WithTheTestCenterOffNoFillAndNoKitIsEverPlaced` | 6 | run 1 | break: `PlaceKit` ungated. A `Bag` was placed |
+| `TCFillRestocksAnExistingCharacterKeepsOurCapsAndCoolsDown` | D | run 1 | break: caps not restored. **"Anatomy cap is 120 after [TCFill; ours is 300"**: the lowering in section 4 is real |
+| `TheLivePortGuardTripsOnlyForTheTestCenterOnPort2593` | B | run 1 | break: condition inverted |
+| `EveryShatteredLegacyKitEntryMakesAStackOfItsAmount` | F | run 1 | break: one registration commented out. 31, not 32 |
+
+- **Run 1** (plus the probe): 259 tests, 249 passed, 10 failed: the nine above marked run 1 and the probe.
+  5b passed, as expected against unpatched pinned. Builder: all 22 patches applied (P9's pulled for the run).
+- **Run 2** (plus the probe): 259, 256 passed, 3 failed: 4/6 (kit), 5b, the probe.
+- **Green**: **258/258** (248 before P9 + 10). All 23 patches applied, `AccountHandler-test-center-deletion.patch` among
+  them. `[tests] 258 test(s) passed.`
+
+Pinned's whole AOS fill (artifacts, ethereals, treasure maps, bottles) runs in the test host without map files; test 4
+asserts every container `FillBankAOS` names plus the 500,000 check.
+
+---
+
+## 8. What a reader should not trust, and what happened around this task
+
+- **The test shard was recreated during this task, not by me.** At 20:39:53Z a new `sl-modernuo:latest` was built and
+  `sl-modernuo-test` recreated from it 8 s later (`docker inspect`). My runs were all `--tests-only`. It came up on the
+  Test Center config (log: "Test Center skill gain multiplier 5 applied to 58 skills", listening on 2594, no guard
+  error). Because it was built while I was switching red and green, I compared it: the container's `UOContent.dll`
+  (`b8fd0084...`) and `Server.dll` (`917dc6a9...`) are **byte-identical** to the builder my green run tested, and that
+  builder's source has the correct patch line and no `P9-RED`. So the test shard runs exactly the green code. Live
+  (`sl-modernuo`) was not touched and still runs its earlier image.
+- **An automated "Shard work, 2026-09-29 15:29" commit (`6f8d8bd`) in this repo swept up an early draft of this note.**
+  This version supersedes it.
+- `D:\ShatteredLegacy` is **uncommitted**, per the brief. `docs/bug-list.md` shows modified in this repo; that is not
+  mine.
+- `sl-uo-builder:latest` was overwritten by my runs, as every `build.sh` run does.
+- Not verified in a client: everything in section 9.
+- `ClusterFSkillGain` already makes gains fast on both shards (section 1), so checklist step 5's "noticeably faster"
+  compares 5x-on-top-of-ClusterF against ClusterF alone. A GM `[props` on a skill's `Info.GainFactor` is the exact check.
+- `tools/progress.py` not run; nothing was committed.
+
+---
+
+## 9. Checklist for Chase
+
+Step 1 is **already done by whoever recreated the test shard at 15:39 local** (section 8); skip to step 2 unless the
+tree has changed since. If redoing it, PowerShell 5.1, one per line:
+
+1. Build through the gates, then recreate the **test** shard only:
+
+       cd D:\ShatteredLegacy
+       bash docker/uo/build.sh
+       docker compose -f docker/uo/docker-compose.test.yml up -d --no-deps modernuo-test
+
+   (Or `.\docker\uo\Start-TestShard.ps1`, which does both and waits for "Listening".) Before it, confirm
+   `server\uo\modernuo\Configuration-test\modernuo.json` still says `"testCenter.enable": "True"` and
+   `"testCenter.skillGainMultiplier": "5.0"`. In the log expect `Test Center skill gain multiplier 5 applied to 58
+   skills` and **no** `TEST CENTER IS ON AND THIS SHARD LISTENS ON THE LIVE PORT`.
+2. Log in to the test shard (2594) with a **new non-staff** character. Bank: pinned's boxes and bags (money box with
+   checks, potion kegs, tool bag, raw materials, spell casting stuff, ethereals, artifacts, bows) and a bag named
+   **"Shattered Legacy Test Kit"** with 8 ores and 8 logs of 1000 and 8 ingots and 8 boards of 5000, Platinum..Celestial
+   and Ironwood..Starwood. Say `help` (gump), `set magery 100`, `set str 100`.
+3. On an **old** test character (made before this), `[TCFill`. Bank restocked with the same plus the kit; skill caps
+   still 300 (`[props` on a skill, or `[ClusterFSkillCaps` reports). Again at once: "You can restock your bank again
+   in 10 minutes."
+4. Make a throwaway character, log out, delete it at once from character select. It must go with no "too young"
+   message.
+5. Train one skill for a minute; gains should come faster than on live (see the caveat in section 8).
+6. On the **live** shard (2593): `set magery 100` does nothing; `[TCFill` is an unknown command; a brand new character
+   still cannot be deleted (7 days). Live changes only when its own image is rebuilt, and even then only if its
+   config says `testCenter.enable` True.
+
+**Decision for Chase:** keep or drop the AccountHandler patch (section 5); log-only or refuse-to-start for the live
+port guard (section 4, Part B).
