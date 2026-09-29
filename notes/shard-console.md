@@ -399,6 +399,10 @@ returned false on Cancel. One dry-run button was driven through `Invoke-ConsoleB
    was run for real only for test actions; **the quoting of `-ConfirmLive "stop live"` through `Start-Process` has not been
    run**, because running it means stopping live. If the quoting were wrong, the executor refuses (the phrase will not match),
    which fails safe. Worth one `-DryRun` click to see the window say `DRY RUN`.
+   **Wrong, and it cost a live stop (bug-list D37).** Under the code as written, a `-DryRun` click never opened a window
+   at all: the parent printed the plan and returned before the dialog. And the argument line it would have built carried
+   no mode, so a child it did open ran for real. The "one dry-run button driven through `Invoke-ConsoleButton`" above was
+   a button that runs in the console, which never builds that line. See 6.1.
 3. **The yes/no box for deleting a snapshot**, and that "No" is the default button (it is set to Button2).
 4. **The Copy buttons** on World setup (clipboard needs STA; `powershell.exe` 5.1 is STA by default).
 5. **The 30-second auto-refresh.** It runs about eight docker calls on the UI thread; expect the form to hitch for a second
@@ -411,6 +415,71 @@ returned false on Cancel. One dry-run button was driven through `Invoke-ConsoleB
    container name and a confirmation changed, and those were run for real on test. `docker start|stop|restart` on
    `sl-modernuo` are unexercised by this tool.
 10. **High-DPI scaling.** Screenshots were at this machine's scaling only.
+
+### 6.1 D37, 2026-09-29: the mode is explicit and a missing one fails safe
+
+**What happened.** T-018 pressed Stop on live and typed the phrase, and `sl-modernuo` stopped. T-017 created, restored and
+deleted a test snapshot for real. `scripts/shard-console.log` has `live.stop` at 13:50:52 and the snapshot runs at
+14:28-14:33.
+
+**What I found, and what I could not.** The child's argument line never carried `-DryRun`, as reported. But in the
+committed code a dry console could not reach it: `Invoke-ConsoleButton` printed the plan and returned *before* the phrase
+dialog and `Start-Process` when `$script:dry` was set. I checked that the click handler sees the flag with a small
+WinForms repro run with `-File`: the handler read `dry=True`. So **the console that showed the phrase dialog was not in
+`-DryRun`**. The log does not record the mode, and I cannot tell how the console came to be live. Whatever the cause, the
+child did whatever its command line said, and that is what is fixed.
+
+**What changed** (`D:\ShatteredLegacy\scripts\Shard-Console.ps1`):
+
+1. **The parent always names the mode.** `Get-ChildArgumentLine` (`:488`) builds the line and puts `-Mode DryRun` or
+   `-Mode Execute` straight after `-File`. `Invoke-ConsoleButton` (`:1685`) calls it with `-DryRun:$script:dry`.
+2. **The child refuses without one.** `Resolve-RunMode` (`:507`): `-DryRun` or `-Mode DryRun` gives `dry` and wins over
+   `Execute`; `-Mode Execute` gives `execute`; no mode gives `refuse` for any action marked `Mutates` and for an unknown
+   key, and `execute` only for the read-and-open actions (`diag.*`, tail, client, list). The headless entry decides this
+   first and exits 2 before reading any state (`:2023-2028`). **Headless use is now `-Mode Execute -Action ...`.**
+   Nothing in either repo called it any other way (grepped).
+3. **Every spawned window says its mode first.** `Get-ModeBanner` (`:519`) prints a four-line banner, `DRY RUN`,
+   `RUNNING FOR REAL` or `REFUSED`, before any state is read, and sets the window title to the same word.
+4. **A dry click now takes the real path.** For a window action, a dry console prints the plan and then goes on through
+   the same phrase dialog and yes/no box and opens the window, which prints and exits. That is what T-018 expected. The
+   dialogs carry `DRY RUN` in their titles, the yes/no box is now `Show-YesNo` (`:1642`) so it can be stubbed, and a dry
+   run that ever reaches `Invoke-Plan` from the form throws (`:1690`). Actions that run in the console still only print.
+5. **D36, the related one.** The typed confirmation now opens with `BEFORE YOU TYPE: A stop does not save...` for every
+   plan that stops a shard (`Get-ConfirmPreface`, `:472`). I did not make the console send `[save`: I have not worked
+   out or tested a way to put a command into the server console inside the container.
+
+**The facts** (`scripts/tests/Shard-Console.Tests.ps1:633-820`; 53 before, 63 now, 63 green under 5.1):
+
+- `Invoke-ClickCapture` runs `Invoke-ConsoleButton`, the function a click calls, with the dialogs answered yes, the
+  state given, and `Start-Process` and `Invoke-Plan` replaced by recorders. It covers **every `RunIn = 'window'` action on
+  every shard it can act on, 13 cases**, dry and real: exactly one window, `-Mode DryRun` or `-Mode Execute` and never the
+  other, nothing run in the console. `live.start` gets a copy of the capture with live stopped, because on the capture it
+  correctly refuses ("already running") and opens nothing. A named fact pins the three that hit D37: `live.stop` with
+  `-ConfirmLive "stop live"`, `snapshot.restore` with the selected `-Snapshot`, `snapshot.delete` with `-Snapshot` and `-Yes`.
+- **Then the real child.** A `docker.exe` compiled by the facts, which appends its arguments to a file and exits 1, goes
+  first on PATH. It is an `.exe` because `Invoke-DockerRead` uses `ProcessStartInfo`, which does not find `.cmd`. Before
+  any child runs, both `Get-Command` and `where.exe` must resolve to it, or no child is launched. For `live.stop`,
+  `snapshot.restore` and `snapshot.delete` on live, `powershell.exe` runs on the captured line: dry, it exits 0, the
+  banner's second line is `DRY RUN  <action>`, the plan prints, **zero docker calls**; given the old line with the mode
+  removed, it exits 2, says `REFUSED`, **zero docker calls**.
+
+**Each gate watched failing**, one break at a time in the real file, facts run, file restored and checked
+byte-identical by hash:
+
+| Broken | Red |
+|---|---|
+| parent drops `-Mode` (the D37 shape) | 4: both click facts, the named three, the dry child (it refused) |
+| parent always passes `Execute` | 3: dry click, named three, dry child (**4 docker calls, all to the recorder**) |
+| child runs when no mode is given | 2: the mode fact, the old-line child (**4 docker calls, all to the recorder**) |
+| child prints no banner | 2: both real-child facts |
+
+My first try at the second break used a replacement string that also matched two `Get-ConsoleState` calls, so it was
+wider than one line, and the form fact made read-only `docker inspect` calls against real docker. I re-ran it against
+only the spawn line and the table shows that run.
+
+**Not verified:** the change in a client. The facts stop at `Start-Process`'s argument string and at `powershell.exe`
+run with `-NoNewWindow`. A real click opens a real window through `Start-Process` with no redirection, which is
+T-017 and T-018. Those are Chase's to re-run, and they stay as they are in the queue.
 
 ## 7. Section 3 of the brief: what `docker inspect` and the logs can and cannot give
 
