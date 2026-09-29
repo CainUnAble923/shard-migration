@@ -195,11 +195,14 @@ Answered 2026-09-29 (Chase):
   50 gp of junk. A dumped iron weapon earns about 1 point.
   Proposed (overseer, awaiting Chase): consumables at about gold value, rounded up, so the store is
   never cheaper than a vendor: 100 bandages 15 (vendor 500 gp), 5 refresh potions 3 (vendor 75 gp),
-  3 greater heal potions 5 (no vendor sells them). Trash bag: first one free from either NPC,
-  replacements 1,000 (OSI's lowest tier; it is a tool that earns points, not a consumable).
+  3 greater heal potions 5 (no vendor sells them).
+- **Trash bag: always free, one per character at a time** (Chase, 2026-09-29). Overseer suggests
+  enforcing it by owner, not by searching the pack: the bag records its owner, and asking for a new
+  one deletes the old one wherever it is (house, bank, lost on the ground). That also covers a lost
+  bag with no special case.
 
 Open questions:
-- Approve or change the proposed prices above.
+- Approve or change the proposed consumable prices above (15 / 3 / 5).
 
 ### F-4: One character per account (added 2026-09-29)
 
