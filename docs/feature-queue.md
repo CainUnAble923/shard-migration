@@ -19,25 +19,28 @@ F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and qu
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
 
-## Where things stand (handoff, updated 2026-09-30)
+## Where things stand (handoff, updated 2026-09-30, afternoon)
 
 For a new overseer chat: read this section, then the entries it names.
 
-- **Batched:** F-9 (cc-P15), F-7 + F-5 + F-1 (cc-P18, after P15 and cc-P17 bugs are committed),
+- **Batched:** F-9 (cc-P15, ran), F-7 + F-5 + F-1 (cc-P18, after P15 and cc-P17 bugs are committed),
   F-12 research only (cc-P20, read-only, can run any time).
 - **Ready to batch, no open questions:** F-8 (runestone art test; Chase downloads the art from
   ServUO), F-11 (bank resources for guild upgrades), F-15 (date version and patch notes in the MOTD,
-  full notes on the wiki; the first notes start with the batch after F-15 ships).
+  full notes on the wiki; the first notes start with the batch after F-15 ships), F-3 (consumable
+  prices approved 2026-09-30; brings the Custodian trash bag route that cc-P18 held back).
+  Offered as cc-P21.
 - **Waiting on Chase:**
-  - F-3: consumable prices in Clean Up points (15 / 3 / 5 proposed).
-  - F-6: fog of war scope (look only, or exploration counts; facets; map items). Server half exists.
+  - F-6: react to the cartography ideas; whether areas revealed by a map count for achievements;
+    Cartography gain from walking. Scope answered 2026-09-30 (exploring earns; all facets and dungeons).
+  - F-9 follow-up: where the fighting pit is, for a lower-rank Thieves' Den member.
   - F-12: loop ladder draft (names, steps, scroll tiers, 3-for-1 merge) to react to; how each League
-    metal rank is earned. P20's findings may change the ladder.
-  - F-13: first list of League shop items (overseer offered to draft).
-  - F-14: repurpose Item Identification, or add levels to Anatomy / Animal Lore / Eval Int.
+    metal rank is earned. Wait for P20's findings before drafting.
+  - F-13: react to the draft shop list (overseer, 2026-09-30).
+  - F-14: rename Item Identification for everyone, or mark the quest another way; the skill steps.
   - F-4, F-10: not scheduled.
-- **Design documents changed this round:** `D:\ShatteredLegacy\roadmap.md` (loop model, mandatory
-  resets, scroll gating). Uncommitted until Chase runs `Commit-ShardWork.ps1`.
+- **Commits verified 2026-09-30 15:27:** both repos pushed (docs 4b7654e, code 5a8b67f). `roadmap.md`
+  went in with the 15:00 commit (897e7ae).
 
 ## Open
 
@@ -223,8 +226,10 @@ Answered 2026-09-29 (Chase):
   one deletes the old one wherever it is (house, bank, lost on the ground). That also covers a lost
   bag with no special case.
 
-Open questions:
-- Approve or change the proposed consumable prices above (15 / 3 / 5).
+Answered 2026-09-30 (Chase): **consumable prices approved as proposed**: 100 bandages 15, 5 refresh
+potions 3, 3 greater heal potions 5.
+
+Open questions: none.
 
 ### F-4: One character per account (added 2026-09-29)
 
@@ -319,11 +324,29 @@ was started under ClusterF. Chase (2026-09-30): the fork's fog code did not make
 server half exists and the client half has to be ported to TazUO. Check first: where that fork's
 source is (for `FogOfWarManager` and its 0xF4 handler), and how much of it carries over to TazUO.
 
+Answered 2026-09-30 (Chase): **exploring earns something**, so option **B** (the server tracks, TazUO
+draws). **Dungeons and every facet**, not only the surface. **Tie it into Cartography.**
+
+Found 2026-09-30: the tracker already stores chunks per facet for all six (Felucca, Trammel, Ilshenar,
+Malas, Tokuno, Ter Mur; `ClusterFExplorationManager.cs:31-38`). The Felucca and Trammel dungeons sit on
+the same maps east of x 5120, so they are covered. The account data is already large (cc-P15 measured a
+912 KB blob, mostly exploration bits); keep an eye on it.
+
+Suggested (overseer), for Chase to react to:
+- **Cartographers sell what they have walked.** A map a cartographer draws (local, city, sea or world,
+  as in OSI) records the chunks its maker explored inside its bounds. Reading it reveals those chunks
+  for the reader. Higher skill, bigger map. A player can buy a map of Ilshenar instead of walking it.
+- **Decoding a treasure map** reveals the chunks around the chest.
+- **Exploration achievements by percent explored**, per facet and per dungeon (25 / 50 / 75 / 100),
+  paying AP and Renown like the rest. The seven exploration achievements today only mark a visit.
+- Maybe: walking an unexplored chunk gives a small chance at a Cartography gain. That changes OSI's
+  gain rules, so only if Chase wants it.
+
 Open questions:
-- Just the look, or should exploring count for something (a cartographer's reward, an achievement,
-  Custodian-style points for mapping)? That decides A versus B.
-- Dungeons and other facets too, or the surface first?
-- Can a player reveal areas without walking them (buy or craft a regional map, cartography)?
+- React to the cartography ideas above.
+- Do chunks revealed by a map count toward exploration achievements, or only walked ones? (Suggested:
+  only walked, so bought maps cannot farm achievements.)
+- Is Cartography gain from walking wanted?
 
 ### F-7: Player-usable account reset, for play testing (added 2026-09-30)
 
@@ -637,7 +660,10 @@ still applies to that tab. Nothing is placed or removed on live by this change.
   failing silently.
 
 Open questions:
-- The exact tile for the Thieves' Den guildmaster by the fighting pit.
+- Where the fighting pit is. Chase, 2026-09-30: the guildmaster stays in the tavern's back room
+  (cc-P15 seeded it in the inn's stone storeroom, 3495,2515,27). The NPC by the fighting pit is a
+  **lower-rank Thieves' Den member** who sends players to the guildmaster. cc-P15 found no pit in or
+  by the inn, so its location is still needed.
 - Answered 2026-09-30: tools are the creation items (above); starter items are free once per loop.
 - Answered 2026-09-30: the new guilds are named **the Twin Paths Dojo** and **the Keepers of the
   Last Door**.
@@ -1056,8 +1082,39 @@ and never go backwards; Renown is the price.
   League category, and the 100 and 500 AP achievements are League achievements. Overseer suggests a
   button in the achievements gump that opens the same store too.
 
+Read 2026-09-30 (`ClusterFAchievements.cs`): 74 achievements; a player who earns all of them has
+**2,505 AP and 6,505 Renown**. Most pay 10 to 100 Renown; Skills is about half of it (3,280).
+
+Draft list (overseer, 2026-09-30), for Chase to react to. AP opens the tier and never closes it;
+Renown is the price. Totals about 4,400 Renown, so a completionist can buy most of it, not all.
+
+| AP needed | Item | Renown | Kind |
+|---|---|---|---|
+| 0 | Title: "Registered Adventurer" | 25 | title |
+| 0 | League tabard, League hue, cannot be dyed | 50 | cosmetic |
+| 0 | System's Loot Box, Bronze | 40 | loot box |
+| 100 | Hair restyling deed (pinned `HairRestylingDeed`) | 75 | convenience |
+| 100 | League rune: blessed recall rune marked to the League Registrar | 60 | convenience |
+| 250 | League banner, wall decor | 150 | decor |
+| 250 | League cloak in a hue sold nowhere else | 200 | cosmetic |
+| 250 | System's Loot Box, Silver | 150 | loot box |
+| 500 | Achievement trophy: statuette showing the owner's name and AP | 250 | decor |
+| 500 | League-hue pigment, one use (like the Clean Up pigments) | 300 | cosmetic |
+| 500 | Title: "Veteran of the League" | 200 | title |
+| 1000 | Ethereal mount, one type | 750 | convenience |
+| 1000 | System's Loot Box, Gold | 400 | loot box |
+| 1750 | League regalia: robe, cloak and sandals in a unique hue | 1000 | cosmetic |
+| 1750 | Title: "the System's Favorite" | 500 | title |
+
+Guardrails: no item properties, power scrolls, artifacts, bless deeds, or skill and stat items.
+Loot boxes draw only from the kinds above, with a line in the System's voice.
+
 Open questions:
-- What should it sell? A first list to react to can come from the overseer.
+- React to the list: cut, add, reprice.
+- The ethereal mount: OSI gives these as veteran rewards by account age. Keep it (register a
+  deviation) or drop it?
+- Loot boxes: only from this list, or their own pool of decor and cosmetics?
+- Level gates from F-12 get added when levels exist; any tier that should wait for them?
 
 ### F-14: Creature levels, so players can tell what they can fight (added 2026-09-30)
 
@@ -1111,9 +1168,26 @@ color. Overseer:
 - Check first: what Item Identification does in pinned today (cite), and what uses it (Imbuing,
   quests, anything else), before taking it over.
 
+Answered 2026-09-30 (Chase): **repurpose Item Identification** (a deviation; register it when
+batched). Two more ideas from Chase:
+- **Rename it after a quest.** Overseer: the name in the skills window comes from the client's files,
+  not the server, so it cannot differ from player to player. Options: (a) rename it for everyone
+  through the updater (for example "Identification" or "Appraisal"), and a quest unlocks the creature
+  half; (b) keep the client's name and mark the quest another way (a title, or a line in the skill's
+  gump). Check first: where TazUO reads skill names (`skills.mul` or cliloc) and whether our updater
+  (cc-P5) can ship that change.
+- **What it shows grows with skill**, from a line like the existing lore skills to a stat card.
+  Proposed steps:
+  - 0 to 29.9: the con color, plus one vague line ("It looks like it could hurt you.").
+  - 30 to 59.9: the level number and a line in the style of Anatomy and Animal Lore.
+  - 60 to 89.9: adds hits, main stats and resistances as short text.
+  - 90 and up: a stat card gump: level, hits, stats, resists, damage types, special abilities, and
+    whether it is a paragon or a boss.
+  On items it keeps its current use and adds level and loop requirements (F-12) from 30.
+
 Open questions:
-- Repurpose Item Identification, or add the level to Anatomy / Animal Lore / Evaluating
-  Intelligence?
+- Rename for everyone (a) or mark the quest another way (b)? If a, which name?
+- The skill steps above: fine as a start?
 
 ### F-15: Version number and patch notes in the MOTD, linked to the website (added 2026-09-30)
 
