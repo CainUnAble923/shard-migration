@@ -37,8 +37,8 @@ For a new overseer chat: read this section, then the entries it names.
   - F-9 follow-up: confirm the pit at 3445,2557,30 in game; the thief goes on the stool at 3440,2558,55.
   - F-12: loop ladder draft (names, steps, scroll tiers, 3-for-1 merge) to react to; how each League
     metal rank is earned. Wait for P20's findings before drafting.
-  - F-13: react to the draft shop list; react to the veteran cap proposal (+1 skill cap per level to
-    712, +5 stat cap at level 6).
+  - F-13: react to the draft shop list. (Vet rewards decided: no cap bonuses; +1% XP per reward
+    level, up to +12%, once F-12 XP exists.)
   - F-14: the skill steps. (Renamed Appraisal for everyone; con color for everyone.)
   - F-4, F-10: not scheduled.
 - **Commits verified 2026-09-30 15:27:** both repos pushed (docs 4b7654e, code 5a8b67f). `roadmap.md`
@@ -1131,11 +1131,18 @@ Open questions:
   react to:
   - Pinned gives +5 skill cap per level, up to 720 at level 4 (four months at 30 days), and +5 stat
     cap once at half a level (15 days). Too fast next to F-12's loops and scroll gating.
-  - **Skill cap: +1 per reward level, up to +12 at level 12** (one year): 700 to 712.
-  - **Stat cap: +5 once at reward level 6** (six months), instead of at 15 days.
-  - Pinned hard-codes both in `RewardSystem.OnLogin` (`:576-594`, only for caps 700 to 720), so the
-    change goes through a hook, not a pinned edit; turn `vetRewards.skillCapRewards` off and apply
-    ours. Check first how a reset (F-7) and loops (F-12) treat these caps.
+  - Chase asked which fits us better (2026-09-30). Overseer: **neither cap.** F-12 already decided
+    the total skill cap is unlimited and each skill is capped by the max level, so a vet skill cap
+    bonus does nothing; the stat cap is a loop reward, so a vet stat bonus competes with loops.
+  - **Decided 2026-09-30 (Chase): a small XP bonus per reward level instead**, +1% per level up to +12% at one year,
+    applied to F-12 XP. It helps a long-time player through each loop without touching any cap, and
+    matches F-12's "later loops go faster". Until F-12 ships, vet levels give only their reward items.
+  - Reward level N needs N x 30 days of real account age (Chase, 2026-09-30); that is pinned's
+    current setting, no change.
+  - Pinned hard-codes both bonuses in `RewardSystem.OnLogin` (`:576-594`). Turning them off: set
+    `vetRewards.skillCapRewards` to False, and stop the one-time +5 stat cap through a hook, not a
+    pinned edit. Check first what existing characters already got (the stat bonus sets
+    `HasStatReward`) and whether any need putting back.
 - Loot boxes: only from this list, or their own pool of decor and cosmetics?
 - Level gates from F-12 get added when levels exist; any tier that should wait for them?
 
