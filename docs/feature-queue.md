@@ -14,7 +14,7 @@ Running list of feature ideas from play testing. Kept by the overseer (Claude); 
 4. Chase commits with `Commit-ShardWork.ps1`.
 
 F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and questions (Q-n).
-**Next free: F-15.**
+**Next free: F-16.**
 
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
@@ -916,8 +916,72 @@ returns, or give it new effects past 120), plus a first XP curve for a 500 to 10
    of each loop's cap, or scrolls are the loop's gate).
 4. The Legacy Awakening stage names may be the loop names.
 
+**Conflict 3 settled 2026-09-30 (Chase): loops set the cap; scrolls are needed to loop higher.**
+Phase 4F's additive cap scrolls are replaced. A scroll (Legacy Scroll or similar) is the key to start
+the next loop past some point. **Scroll merging**: lower scrolls can be combined into higher scrolls
+later on. `D:\ShatteredLegacy\roadmap.md` updated to match (principles, Extended Resources, Champion
+Spawn and Mastery Rewrite, Legacy Awakening).
+
+Answered 2026-09-30 (Chase):
+- ~~Scrolls required from past 200~~ **Changed: scrolls required from past 100** (the loop that raises
+  the cap above 100), with the lowest tier **much easier to find than champion spawns**: "akin to
+  paragons or worse" (Chase, 2026-09-30).
+- **OSI's 105/110/115/120 power scrolls fold into the new line**; no scroll gates at 105-120.
+- **Merging is a League service**, gated by League rank and paid in Renown.
+- Chase asked for a list of loop names and tiers (overseer draft below).
+
+Overseer draft, loop ladder (to react to; numbers placeholders):
+
+| Loop | Cap (level and each skill) | Realm and stage | Key to enter |
+|---|---|---|---|
+| 0 | 50 | Unawakened | none (start) |
+| 1 | 100 | Soul Awakening I | none |
+| 2 | 150 | Soul Awakening II | Awakening Scroll |
+| 3 | 200 | Soul Awakening III | Awakening Scroll |
+| 4 | 250 | Foundation Tempering I | Tempering Scroll |
+| 5 | 300 | Foundation Tempering II | Tempering Scroll |
+| 6 | 350 | Foundation Tempering III | Tempering Scroll |
+| 7 | 400 | Inner Core I | Core Scroll |
+| 8 | 500 | Inner Core II | Core Scroll |
+| 9 | 600 | Inner Core III | Core Scroll |
+| 10 | 700 | Spirit Ascension I | Ascension Scroll |
+| 11 | 800 | Spirit Ascension II | Ascension Scroll |
+| 12 | 900 | Spirit Ascension III | Ascension Scroll |
+| 13 | 1000 | Legacy Embodiment | Embodiment Scroll |
+
+Realm names are the roadmap's Legacy Awakening stages. Steps of 50 up to 400, then 100, so the early
+loops come quickly and the late ones stretch. 13 loops; scrolls gate 12 of them (all but loop 1).
+
+Scroll line (draft): Awakening, Tempering, Core, Ascension, Embodiment (could be called "Legacy
+Scroll of Tempering" and so on, or "Sigils").
+Sources (draft):
+- **Awakening Scrolls, the common tier**: **paragons** drop them at a good rate (pinned already has
+  paragons: the gold-hued, stronger versions of ordinary creatures, with their own loot rules; check
+  `Paragon.cs`), plus a small chance from any creature at or above the player's level (F-14), League
+  contracts, and treasure chests. Easy enough that a steady player finds the two they need for loops
+  2 and 3 without hunting for them.
+- **Tempering and Core**: champion spawns (replacing old power scroll drops), bosses, high-level
+  paragons, and merging.
+- **Ascension and Embodiment**: mostly merging, plus rare drops from the hardest content.
+
+Merging at the League (draft): 3 of one tier into 1 of the next, for Renown, needing a League rank
+per target tier, using the League's existing ore-named citizen ranks
+(`design\systems\league_of_extraordinary_citizens.md`): Core needs Agapite Citizen, Ascension
+needs Platinum Citizen, Embodiment needs Mythril Citizen, and Tempering (from Awakening) needs
+Copper Citizen. Chase (2026-09-30): yes, and **League ranks must sync with our custom metals**.
+Checked 2026-09-30: the League design's 17 citizen ranks are already the shard's full metal chain,
+in order (Iron, Dull Copper, Shadow Iron, Copper, Bronze, Gold, Agapite, Verite, Valorite, then our
+customs Platinum, Toxic, Blaze, Frost, Obsidian, Mythril, Adamantium, Celestial), matching
+`server\customizations\ResourceInfo.cs:9-27` and `design\systems\extended_resources.md:27-50`.
+But **only three statuses are built** (`ClusterFLeagueSystem.cs:51-55`: Unregistered, Registered
+Citizen, Recognized Citizen); the metal ranks are design only. Building them (and the rule for
+earning each) is part of this feature or F-13. Keep them generated from the metal list so a future
+metal gets a rank automatically.
+Sources noted: pinned paragons are `Mobiles/Special/Paragon.cs` and `Items/Containers/ParagonChest.cs`.
+
 Open questions:
-- How scrolls (Phase 4F / Legacy Scrolls) and loops share the one cap (conflict 3).
+- React to the ladder, names and merge rule above.
+- Conflict 4 (loop names) answered by the draft if accepted.
 - Power scrolls kept as they are for 105 to 120 (OSI), with a new, rebranded line beyond 120? Or
   rebrand the whole line?
 - **What does a level give?** (answered above; kept for the record of options) Stat or skill points would change UO's caps (skill cap 700, stat
@@ -1030,6 +1094,57 @@ color. Overseer:
 Open questions:
 - Repurpose Item Identification, or add the level to Anatomy / Animal Lore / Evaluating
   Intelligence?
+
+### F-15: Version number and patch notes in the MOTD, linked to the website (added 2026-09-30)
+
+**Ours.** Test shard only (the only world that matters).
+
+What Chase wants:
+- A **version** for the test server.
+- A **MOTD** on login showing what was **updated, fixed and added**, with **expanded notes on the
+  website**.
+
+What exists (read 2026-09-30):
+- **The MOTD system is built**: `server\customizations\ClusterFBulletin.cs` (449 lines). Bulletins
+  with categories (critical, dispatch, guild, event, personal), an unread gump on login (tracked by
+  `LastSeenBulletinId` per account), admin commands `[ClusterFBulletin add/list/remove/load`, and a
+  file source `Configuration/bulletins.txt` (one line per bulletin, `category|message`).
+- **Pinned can open a web page from the game**: `Mobile.LaunchBrowser(url)`
+  (`Server/Mobiles/Mobile.cs:7812`), so a gump button can open the full notes.
+- **The website is live on Haven** (`shatteredlegacyuo.com`, `wiki.`), deployed by hand with
+  `D:\UO\haven-migration\Deploy-Website.ps1`; `status.json` (P6) is already published there.
+- **No version exists** anywhere today.
+
+Suggested (overseer):
+- **One source of truth: `D:\ShatteredLegacy\CHANGELOG.md`**, newest first, one section per
+  version: Added, Changed, Fixed, each a one-line player-facing item, optionally with a link anchor.
+  The version lives in its heading (and a one-line `VERSION` file the build reads).
+- ~~Version scheme `0.MINOR.PATCH`~~ superseded: date versions (see answers below).
+- **In game**: on first login after an update, the bulletin gump shows "Shattered Legacy 2026.10.02" and
+  the short list, with a **"Full notes" button** that opens the version's section of the wiki
+  patch-notes page via `LaunchBrowser`. Generated from the
+  changelog at build or load time, so nobody types it twice. A `[version` player command shows the
+  current version and reopens the notes.
+- **Wiki**: the patch-notes page rendered from the same `CHANGELOG.md`; the version also goes in
+  `status.json`, so the website's "Online now" widget can show it.
+- **Workflow**: at each batch, the overseer drafts the player-facing notes from the cc notes and the
+  bug list, Chase approves, it goes in with the commit. Internal detail stays out of player notes.
+
+Check first:
+1. How `bulletins.txt` gets into the image (and whether `load` must be run by hand), so a new version
+   posts itself.
+2. Whether TazUO honors the launch-browser packet (and asks the player first).
+3. How the website is built today (static page or generated), to render the changelog there.
+
+Answered 2026-09-30 (Chase):
+- **Date versions**, e.g. `2026.09.30`. Overseer: a second update the same day gets a suffix,
+  `2026.09.30.2`.
+- **Expanded notes on the wiki**, not the website: a patch-notes page on `wiki.shatteredlegacyuo.com`,
+  one section per version. Check how DokuWiki forms heading anchors (dots may be dropped), and
+  generate the MOTD link to match.
+- **Start fresh at the next batch after this is implemented.** No baseline entry for earlier work.
+
+Open questions: none.
 
 ## Batched
 

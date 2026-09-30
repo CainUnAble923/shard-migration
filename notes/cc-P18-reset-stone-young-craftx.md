@@ -3,7 +3,11 @@
 Date: 2026-09-30. Agent: Claude Code. Pinned ModernUO `7c9215d97`. Brief: `D:\UO\cc-prompts\cc-P18-reset-stone-young-craftx.md`.
 Specs: `docs/feature-queue.md` F-7, F-5, F-1. Built in `D:\ShatteredLegacy`, **not committed** (Chase runs `Commit-ShardWork.ps1`).
 No world was changed: nothing placed, moved or removed, no shard deployed, restarted or recreated. `sl-modernuo:latest`
-was not moved (`16b0f49e6828` before and after). Image: `sl-modernuo:cc-p18` = `dbc1036aa991`.
+was not moved (`16b0f49e6828` before and after). Image: `sl-modernuo:cc-p18` = `dbc1036aa991` (F-7 and F-5), then
+`e517984f4699` (F-1 added, section 3.8).
+
+**Two rounds.** F-7 and F-5 were built first; Chase committed them as `88d5153` ("Shard work, 2026-09-30 14:06"). Chase then
+answered F-1's three questions and asked for it to be built in the same session (section 3.8); that work is uncommitted.
 
 **Gate before starting.** `git --no-optional-locks status` in `D:\ShatteredLegacy` was clean at `bb51fad`. P15's
 `GuildStarterRecord` (ClusterFAccountData v14) is in `99d5273`; P17's files (for example
@@ -21,10 +25,9 @@ except P17 section 7 (PT-04), which F-1 builds on.
 > 2. **F-5 built, all green, every brief fact watched red first.** 336 hours of account game time; no skill rule; the
 >    murder rule kept; "I want to grow up!" opens OSI's confirm; countdown in days and hours. **Two small patches** to
 >    pinned (`Account.cs`, `PlayerMobile.cs`): no hook reaches either rule (section 2.2).
-> 3. **F-1 stopped at Part A, as the brief allows.** It is clearly more than a moderate change: make-X is **ours, not
->    pinned's**, woven into our 1,486-line `CraftItem.cs` replacement; "gump closed" has no gump to close today; and the
->    salvage bag's own code salvages **the whole bag**, which collides with "nothing else is touched". Findings, a plan
->    and three decisions for Chase are in section 3.
+> 3. **F-1 first stopped at Part A, as the brief allows**, with three questions for Chase (section 3.6). Chase answered
+>    them and asked for the build: **F-1 is built** (section 3.8), all green, every brief fact watched red first.
+>    **318 shard tests pass.** Two more one-word patches to pinned make its own smelt and Salvage All callable.
 > 4. **One file outside the brief's list was changed:** `docker/uo/apply-patches.sh` gained the two `apply_patch` lines
 >    for F-5's patches. The gate fails any patch it does not name, so a patch cannot exist without its line (section 2.3).
 > 5. **ASCII.** Every file touched is ASCII now. Most of the 33 guild files carried box-drawing rules and em dashes
@@ -276,7 +279,7 @@ Young; the countdown reads "14 days", "13 days and 23 hours", "1 day and 1 hour"
 
 ---
 
-## 3. F-1: craft X, keep going on failure (stopped after Part A)
+## 3. F-1: craft X, keep going on failure (Part A, then built: section 3.8)
 
 ### 3.1 A1: is there a make-X already?
 
@@ -332,13 +335,15 @@ them across restarts is not cheap (new persistence) and not recommended.
 
 **About 1,100 lines, one new pinned patch, and three decisions only Chase can make:**
 
-1. **Salvage bag:** salvage only this run's rejects (needs the patch above; recommended), or accept that the bag's own
-   salvage takes the whole bag?
-2. **"Gump closed":** during a make-X run no gump is open today (`CraftItem.cs:1283-1287` goes straight to the next
-   attempt), so there is nothing to close. Proposed: a small progress gump ("Made 12 of 20, 3 failed ... [Stop]"),
-   closing it stops the run. Or drop that stop.
-3. **Caps, clamp or refuse:** the custom field today clamps to 200 and says "1-200". Proposed: clamp to the cap and say so
-   in the summary line.
+1. **Salvage bag: answered (Chase, 2026-09-30): salvage whatever is in the salvage bag.** Rejects go into the bag and
+   the bag's own Salvage All runs on everything in it. Its methods are still private (`SalvageBag.cs:289`), so the patch
+   shrinks to making `SalvageAll` callable (one word, `private` to `internal`), not a new per-item method.
+2. **"Gump closed": answered (Chase, 2026-09-30): the progress gump.** During a make-X run no gump is open today
+   (`CraftItem.cs:1283-1287` goes straight to the next attempt), so a small progress gump is added ("Made 12 of 20,
+   3 failed ... [Stop]"); pressing Stop or closing it ends the run with the summary line.
+3. **Caps: answered (Chase, 2026-09-30): lower to the cap.** A count over the cap (100 items, 500 attempts) is lowered to
+   the cap and the summary says so, e.g. "Made 100 (capped at 100)". Today's custom field clamps to 200 and says "1-200";
+   both change.
 
 ### 3.7 Proposed plan (for a later prompt)
 
@@ -353,6 +358,48 @@ them across restarts is not cheap (new persistence) and not recommended.
 4. `CraftItem.cs`: replace the two repeat blocks with calls into the run engine, and route the three pre-check exits
    through `End`, which also fixes P17's "stays armed".
 5. Tests: the five from the brief, with P17's harness (`ShardTestClock`, `BuiltInRng`).
+
+### 3.8 Built (after Chase's answers, 2026-09-30)
+
+The plan above, with the salvage bag as Chase decided: rejects go into the bag and the bag's **own Salvage All** runs once
+at the end of the run, on everything in it. So no per-item method: the patch only makes `SalvageAll` internal.
+
+| Piece | What |
+|---|---|
+| `ClusterFCraftRun.cs` (new) | `MakeXRun` (counts, target, mode, start tile, rejects bag), `Begin`, `AfterAttempt`, `Refused`, `End`, the summary line, caps `ItemsCap = 100` and `AttemptsCap = 500`; `MakeXProgressGump`: "3 of 10 made / Made 3, 1 failed, 0 exceptional / [Stop]". Stop or closing it ends the run when the attempt in hand finishes. Re-sending it to update it replaces it without a response (pinned `NetStateGumps.cs:88-99`), so only the player's close counts |
+| `ClusterFCraftRejects.cs` (new) | per reject, in order: salvage bag if it can salvage the item; Blacksmithy smelt through the craft menu's own recycle; Tailoring cut with scissors in the pack; the rejects bag; else left where made. `// F-3 HOOK` marked, not routed |
+| `CraftCountGump.cs` | count mode (items / attempts) as radio buttons, "exceptional only" as a check box shown only when the item can be exceptional, the caps named on the gump; a count over the cap is lowered by the run and said in the summary; exceptional only asks for a rejects bag in the pack (Esc: leave rejects where they are made); button ids unchanged |
+| `CraftContext.cs` (our replacement) | the run, the last run, and the two toggles, remembered per player per craft system until restart. `RepeatCount` / `RepeatItem` / `RepeatTypeRes` stay for the two make-X patches: clearing `RepeatItem` (a craft started by hand) ends the run |
+| `CraftItem.cs` (our replacement) | the two old repeat blocks replaced by `AfterAttempt` (success, and now also skill failure); all 13 refusal exits offer their message to `Refused` first; a maker's-mark prompt is skipped during a run (prompt marks) |
+| `server/patches/Resmelt-smelt-one.patch` (new) | pinned `Resmelt.cs`: `InternalTarget` and its `Resmelt` from private to internal |
+| `server/patches/SalvageBag-salvage-all.patch` (new) | pinned `SalvageBag.cs:289`: `SalvageAll` from private to internal |
+| `docker/uo/apply-patches.sh` | the two `apply_patch` lines |
+| `server/tests/Engines/Craft/CraftXVerification.cs` (new) | 14 facts, below |
+| `server/tests/Engines/Craft/MakeXRepeatVerification.cs` | P17's facts 2 and 3 pinned the old behavior (a failure ended the run; out of material left it armed); now a failure keeps going and running out ends the run disarmed, saying why |
+
+**Hard stops and their messages** (journal, then the craft gump back with the reason): "Craft X stopped: out of
+materials." / "...: your tool wore out." / "...: your backpack is full." (the pack's item count, or a result that did not
+fit and fell at the crafter's feet) / "...: you are carrying too much." (pinned `StaminaSystem.IsOverloaded`) / "...: you
+moved." / "...: you died." / "Craft X stopped." (Stop, or the gump closed) / "...: you cannot make that here now." (the anvil
+out of reach, the skill) / "...: you started another craft." Then the summary: "Made 20 (7 failed, 1 exceptional)." with
+"Capped at 100." and "Rejects: 3 smelted, 2 to the rejects bag." when they apply. A refusal after death or a step away is
+reported as that, not as "cannot make that here".
+
+**Tests** (`CraftXVerification.cs`, real craft timers, the random source pinned, skills held by their caps):
+
+| Brief | Fact |
+|---|---|
+| 1 | `ItemsModeMakesExactlyXThroughFailuresAndUsesMaterialsAsByHand`: tinkering rings, alternating success and failure: 4 made, 3 failed, and the ingots used equal 4 hand-made successes plus 3 hand-made failures, measured by hand first |
+| 2 | `AttemptsModeMakesExactlyXAttempts`: 5 attempts, 3 made, 2 failed |
+| 3 | `OverTheCapIsLoweredToTheCapAndSaid`: 101 items becomes 100, 501 attempts becomes 500, "Capped at ..." in the summary; 100 is not capped |
+| 4 | `ExceptionalOnlySmeltsASmithsRejectsAndTouchesNothingElse`: daggers, three rejects smelted back to ingots, stops at 2 exceptional, the player's own dagger and pickaxe untouched |
+| 4 | `ExceptionalOnlyPutsRejectsInTheSalvageBagWhichSalvagesItAll`: rejects into the salvage bag, its Salvage All salvages them and the dagger already in the bag |
+| 4 | `ExceptionalOnlyBagsATailorsRejectsWithoutScissorsAndCutsThemWith`: shirts, rejects into the picked bag; with scissors, cut back to cloth; the player's own shirt stays out of the bag |
+| 4 | `ExceptionalOnlyIsNotOfferedForAnItemThatCannotBeExceptional`: rings cannot, daggers can; asked anyway, the run counts items |
+| 5 | `OutOfMaterialsStopsTheRun` (and nothing left armed), `AWornOutToolStopsTheRun`, `AFullBackpackStopsTheRun`, `BeingOverweightStopsTheRun`, `MovingStopsTheRun`, `DyingStopsTheRun`, `ClosingTheProgressGumpStopsTheRun`: each ends with its reason, its message on the wire, and the progress gump gone |
+
+**Not verified:** nothing run in a client (the gumps' layout, the rejects target). Tinkering and the other crafts without
+a recycle path were exercised only through rings, which cannot be exceptional.
 
 ---
 
@@ -404,9 +451,13 @@ Green: 293 before this task (P17's count; not rerun on `bb51fad`); **304** after
 | red A | a: guild data keyed per account (`GetOrCreateGuild` and `GetGuild` use serial 0); b: the seeder never sees an existing stone; c: `Duration` 337 h; d: the phrase matched exactly | **296 passed, 8 failed**: F-7 fact 1 ("Assert.False" at `IsJoined(second, "thieves")`, line 136), fact 6 (`second.Placed` true, line 355), F-5 fact 2 (still Young at 336 h, line 166), the duration fact (14.01:00:00), F-5 fact 3 (message "I want to grow up", the spelling without "!", line 207). a also failed F-7 fact 4 (2 records expected, 1) and P15 facts 2 and 9, all expected with one shared record |
 | red B | e: an old save's guild data given to a character (serial 0); f: Apprentice marks neither written nor read; g: the reset leaves exploration; h: `[ResetMyAccount` honours an account name; i: pinned's skill rule back (patch skipped by name); j: countdown in hours only | **297 passed, 7 failed**, exactly the targets: F-7 fact 2 (v14 and v13 loads: `GuildDataCount` 0 expected, 1), fact 3 (round trip: Apprentice `["mining"]` expected, `[]`), fact 4 (exploration 0 expected, 2), fact 5 (the other account's gump: expected p180e..., actual p1861...), F-5 fact 1 (not Young at 335 h with 490.0), countdown ("14 days" expected, "336 hours") |
 
+| red C (F-1) | k: items mode counts attempts; l: no cap; m: rejects left alone; n: moving not checked; o: Stop ignored | **310 passed, 8 failed**: fact 1 (4 made expected), fact 3 (Target 101 where 100), fact 4, all three reject facts (exceptional 2 expected, 0; bagged 3 expected, 0; salvage bag 1 expected, 0: with k the run stopped early), moved (Done where Moved), gump closed (Done where Stopped); P17's fact 2 also (k) |
+| red D (F-1) | p: an attempt counted only when it makes something; q: tool not checked; r: pack not checked; s: weight not checked; t: death not recognised on a refusal; u: out of materials reported as another reason | **309 passed, 9 failed**: tool (CannotCraft where Tool), pack full (10 made where 2), overweight (10 where 1), died (CannotCraft where Died), materials (CannotCraft where Materials, and P17's facts 2 and 3), fact 1 and **fact 2** (Done expected). Fact 2's failure is **not clean**: with p its run went on until u turned running out into CannotCraft, so p and u both reached it |
+
 After each run every broken file was restored from its backup and matched its first SHA-256
 (`ClusterFAccountData.cs f555d396...`, `ClusterFResetStone.cs f908082c...`, `ClusterFYoungPlayer.cs d75cfc9b...`,
-`ClusterFDevTools.cs 42a5a49a...`, `apply-patches.sh aeb6f06e...`). The final build ran after both restorations.
+`ClusterFDevTools.cs 42a5a49a...`, `apply-patches.sh aeb6f06e...`). The final build ran after both restorations. F-1's red runs restored `ClusterFCraftRun.cs 4f48ca7b...` and
+`ClusterFCraftRejects.cs 20b0bb1d...` the same way; its final full build (**318 passed**, image `e517984f4699`) ran after.
 
 **Not watched red:** `AMurderCountStillEndsYoung` (pinned's rule is untouched; a red would mean patching it away);
 the unknown-`CharacterGuildData`-version assert.
@@ -423,6 +474,8 @@ the unknown-`CharacterGuildData`-version assert.
 | F-5d | login countdown in hours | days and hours, plus how to end it sooner | 336 hours reads badly as a number |
 | F-7a | (ours) guild membership, rank, rep, scrip, work orders, commissions per account | per character | Chase: characters on one account are separate play tests until F-4 |
 | F-7b | no player reset | Reset Stone in New Haven and `[ResetMyAccount`, own account only | test-shard tool; removed at the live rebirth |
+| F-1a | no make-X at all (pinned has MAKE LAST and MAKE NOW) | Craft X: X items or X attempts, keeps going through failures, capped 100 / 500, a progress gump with Stop, a summary | Chase: saves clicks for bulk orders and training, not time (normal craft delay kept) |
+| F-1b | none | "exceptional only": rejects smelted, cut, put through the salvage bag's Salvage All, or bagged | Chase: keeps the pack clear on long runs; OSI's own recycle code does the work |
 
 ---
 
@@ -438,6 +491,11 @@ the unknown-`CharacterGuildData`-version assert.
 4. **AGENTS.md repo facts are stale:** "15 .patch + 5 replacements" in `server/patches`; counted now: **25 `.patch` and 5
    `.cs`** (23 at `bb51fad`).
 5. **`[ResetGuild`** (GameMaster, `ClusterFGuildSystem.cs`) now resets the caller's character only; its description says so.
+6. **`roadmap.md` (not this task's):** in the F-1 round, `D:\ShatteredLegacy\roadmap.md` was already modified by someone
+   else (uncommitted: the Legacy Awakening skill-cap decisions). This task's ASCII script ran over every modified file and
+   converted 32 of its lines (em dashes to `-`). **Undone** by matching each line against `HEAD`: its diff is now only the
+   owner's edits. Its owner's new lines held no dash or arrow the script could have changed, so nothing of theirs was lost.
+   It is not part of this task and should be committed, or not, by whoever wrote it.
 
 ## 8. Not verified
 
@@ -447,7 +505,7 @@ the unknown-`CharacterGuildData`-version assert.
 
 ## 9. For Chase to decide
 
-1. F-1: the three decisions in section 3.6, then a prompt for the build.
+1. F-1: the three decisions in section 3.6 were answered and F-1 is built (section 3.8).
 2. Discoveries and encountered creatures: stay per account (recommended) or move per character (section 1.2).
 3. Whether to add `[ClusterFSeedResetStone` to the console's World setup list, or set
    `clusterf.resetStone.seedOnWorldLoad` true on the test shard.
@@ -470,4 +528,15 @@ the unknown-`CharacterGuildData`-version assert.
    3. Double-click the stone from 2 tiles: the same gump. From 3 tiles: "That is too far away."
 4. **Young:** log in with a Young character. The login line reads "... for another N days and H hours of play time. Say
    "I want to grow up!" ...". Say `i want to grow up`: the renounce confirm opens; Cancel keeps Young.
-5. **Craft X:** not built (section 3). The make-X that exists today is unchanged.
+5. **Craft X (second commit):** commit again with `Commit-ShardWork.ps1` (the F-1 files in section 3.8; **not**
+   `roadmap.md`, which is someone else's uncommitted edit, see section 7), rebuild through the gates: **318 passed**. At an
+   anvil and forge with a smith's hammer and ingots:
+   1. Make X on a dagger, items mode, 10: a small Craft X gump counts up; failures do not stop it; the journal ends with
+      "Craft X done. Made 10 (N failed, M exceptional)."
+   2. Attempts mode, 10: ten attempts, whatever they make.
+   3. Exceptional only, 2, **without** a salvage bag: target a bag for rejects; rejects are smelted on the spot (ingots come
+      back); it stops at 2 exceptional; the summary says "Rejects: N smelted."
+   4. The same **with** a salvage bag in the pack: rejects go into the salvage bag, and at the end it salvages everything in
+      it.
+   5. Press Stop mid-run, or close the Craft X gump: "Craft X will stop when this attempt finishes", then "Craft X stopped."
+   6. Type 150 in the custom box: it makes 100 and says "Capped at 100." 

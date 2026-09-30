@@ -8,3 +8,4 @@ stone_spot.py      Standable z and statics for the tiles around the New Haven ar
                    (port of pinned Map.CanFit). Chose the Reset Stone's tile, 3501,2575,14.
 redrun.py          The red runs' breaks (A and B), each aimed at one fact; `apply A|B` backs up and breaks, `restore`
                    restores and checks SHA-256. Its paths point at the session scratch folder used on 2026-09-30.
+redrun2.py         F-1 red runs C and D (loads redrun.py for the machinery).
