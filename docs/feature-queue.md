@@ -19,6 +19,26 @@ F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and qu
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
 
+## Where things stand (handoff, updated 2026-09-30)
+
+For a new overseer chat: read this section, then the entries it names.
+
+- **Batched:** F-9 (cc-P15), F-7 + F-5 + F-1 (cc-P18, after P15 and cc-P17 bugs are committed),
+  F-12 research only (cc-P20, read-only, can run any time).
+- **Ready to batch, no open questions:** F-8 (runestone art test; Chase downloads the art from
+  ServUO), F-11 (bank resources for guild upgrades), F-15 (date version and patch notes in the MOTD,
+  full notes on the wiki; the first notes start with the batch after F-15 ships).
+- **Waiting on Chase:**
+  - F-3: consumable prices in Clean Up points (15 / 3 / 5 proposed).
+  - F-6: fog of war scope (look only, or exploration counts; facets; map items). Server half exists.
+  - F-12: loop ladder draft (names, steps, scroll tiers, 3-for-1 merge) to react to; how each League
+    metal rank is earned. P20's findings may change the ladder.
+  - F-13: first list of League shop items (overseer offered to draft).
+  - F-14: repurpose Item Identification, or add levels to Anatomy / Animal Lore / Eval Int.
+  - F-4, F-10: not scheduled.
+- **Design documents changed this round:** `D:\ShatteredLegacy\roadmap.md` (loop model, mandatory
+  resets, scroll gating). Uncommitted until Chase runs `Commit-ShardWork.ps1`.
+
 ## Open
 
 ### F-1: Craft X, keep going on failure (added 2026-09-29)
