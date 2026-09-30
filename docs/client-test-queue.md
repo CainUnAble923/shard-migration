@@ -48,13 +48,12 @@ nobody caught it until the row was read twice.
 | T-006 | ⬜ OPEN | **Fresh world populates** | After `[GenerateSpawners` over the ten spawn files: gate to Ter Mur, the Abyss, the Underworld | Creatures visible in all three. Empty means the spawners did not take | Live-Deploy-Runbook 6b. Nothing spawns on a fresh world until these run |
 | T-007 | ⬜ OPEN | **Shame and Despise** | `[GenerateNewShame` then `[SetupDespise`, then visit both | Populated. 41 types and 37 types respectively | Q-048: 282 of our reachable types exist **only** where these were run by hand |
 | T-008 | ⬜ OPEN | **Eodon** | `[go 719 1863 40` | Decides whether Q-064's forty lines get written | Public moongate Eodon destination, `PublicMoongate.cs:275` |
-| T-009 | ⬜ OPEN | **Gargoyle starts dressed** | Create a gargoyle, male and female, look at the paperdoll | A kilt, not leggings, and not underwear | D26. Verified once in a client; **re-verify on the fresh world** |
+| T-009 | ✅ PASS | **Gargoyle starts dressed** | Create a gargoyle, male and female, look at the paperdoll | A kilt, not leggings, and not underwear | D26. Verified once in a client; **re-verify on the fresh world** |
 | T-010 | ⬜ OPEN | **D34 after a save round trip** | On the fresh world find a Royal City gargoyle alchemist, save, restart, look again | Still an alchemist, not a glassblower | type-identity. The probe passed **in this build**; CC called the ordering an accident, not a guarantee |
 | T-011 | ⬜ OPEN | **Staff are not listed as playing** | Log in as admin, then load the website panel | Your character does **not** appear, and the count does not include you | cc-P6. `HighestListedAccessLevel = AccessLevel.Player`, a decision that can be flipped in one line |
 | T-012 | ⬜ OPEN | **Petrified clone paperdoll** | Whatever a frozen clone's paperdoll renders as | Looks deliberate rather than broken | cc6 sheet, "still unchecked on the board" |
 | T-013 | ⬜ OPEN | **Hybrid treasure chest** | Its crate graphic, lock and trap | Renders as a chest, locks, traps | cc6 sheet, same section |
 | T-023 | ⬜ OPEN | **Stealing `LightInTheVoid`** | Find it on a dungeon spawn and try to steal it | It can actually be stolen | cc-P8 §6. The 58th stealable; it **passed its test only because the test host reads its tiledata weight as 0**, which is D27's trap. `Stealing.cs:256` refuses anything over weight 10, so if its real weight is higher, gate 5 delivered 54 and not 55 |
-
 | T-024 | ⬜ OPEN | **Miasma is actually spawned** | Labyrinth (Malas): confirm a spawner holds Miasma, kill it | It is there and killable. The 2.5% set-piece drop is not the point | cc-P7 §4. **This is the one assumption P7 could not verify from source**: the drop is patched in, but an unreachable carrier means an unreachable item |
 | T-025 | ⬜ OPEN | **Lady Lissith is actually spawned** | Twisted Weald (Ilshenar), `TwistedWeald.json:15`: same shape as T-024 | She is there and killable | cc-P7 §4, same reasoning |
 | T-026 | ⬜ OPEN | **Stealables spawn and can be stolen** | As GM on test: `[GenStealArties`, wait for the next 15-minute check, then TerMur 1134 1204 7 (`HalfEatenSupperArtifact`) | The artifact is there and stealing succeeds | cc-P8 §3. 58 entries added; see also T-023, where one entry's weight is unproven |
@@ -64,7 +63,8 @@ nobody caught it until the row was read twice.
 | T-030 | ✅ PASS | **Test Kit at character creation** | Make a brand new character on test, open the bank | Our own resources are there beside pinned's fill | cc-P9 `TestCenterKitEntries.cs`. Entries register on live too but must never be placed there |
 | T-031 | ⬜ OPEN | **The skill multiplier compounds safely** | On test, raise a skill from 0 and watch the rate | Gain is visibly faster, and ClusterFSkillGain's extra gains still happen on top | cc-P9 `TestCenterSkillGain.cs` scales `GainFactor`, read once at `SkillCheck.cs:119`. **ClusterFSkillGain's bonus gains call `SkillCheck.Gain` directly and never read GainFactor**, so the two stack rather than multiply. Worth confirming in play |
 | T-032 | ⬜ OPEN | **The live guard actually shouts** | Set `testCenter.enable` true in a config on port 2593, start, read the log. Put it back | A loud startup error names the mistake | cc-P9 §4. **It logs and does not refuse to start.** After D40, a protection that only writes a log line is worth proving out loud at least once |
-| T-033 | ⬜ OPEN | **Self-deletion is allowed on test only** | On test, delete your own character from the character screen | It works on test; on live the same attempt is refused | cc-P9 `AccountHandler-test-center-deletion.patch` makes `RestrictDeletion` a property so it is read at deletion time rather than frozen by Configure ordering |
+| T-033 | ✅ PASS | **Self-deletion is allowed on test only** | On test, delete your own character from the character screen | It works on test; on live the same attempt is refused | cc-P9 `AccountHandler-test-center-deletion.patch` makes `RestrictDeletion` a property so it is read at deletion time rather than frozen by Configure ordering |
+
 ## B. Not the client, but still nobody's job but yours
 
 Kept here because they are the same kind of work: a person looking at a screen, settling something
@@ -88,6 +88,10 @@ no build gate can see.
 
 Newest first. One line each: ID, date, what happened. A `FAIL` names the bug-list row it produced.
 
+- T-029, 2026-09-30: **partial, still OPEN.** `[TCFill` on an existing test character filled the bank. Left: a second run inside ten minutes is refused.
+- T-009, 2026-09-30: **PASS.** New gargoyle characters on test start with a kilt, and it is wearable. D26 re-verified on the current image.
+- T-033, 2026-09-30: **PASS on test.** Chase deleted new characters from the character screen. The live half (the same attempt is refused) could not be run, the old live being retired; check it on the next live alongside T-028.
+- T-020, 2026-09-30: **correction, still PASS.** D40 shows the old live shard served nothing after 14:16 on 2026-09-29, so the 15:05 "live" connection only reached Docker's port forwarder. The off-network proof stands on the **test** connection. Chase, 2026-09-30: the old live world is retired; test becomes the base for the next live, and live-only rows (T-011, T-014 to T-016, T-028) apply to that shard.
 - T-030, 2026-09-30: pass. New character made on test; the Test Kit resources were in the bank. Confirms `testCenter.enable` is live in the running process and `TestCenterKitEntries` register and place at creation. The creation path only; `[TCFill` (T-029) is still unproven.
 - T-021, 2026-09-29: **partial, still OPEN.** `Play.ps1 -Update` on the outside computer, same version (2026.09.29.1331) both sides: offer, 76 MB download, unpack, wait-for-game and backup all worked; 0 files to add or replace, so **the replace path is unproven**. Settle it after the next package build and publish.
 - T-020, 2026-09-29: **PASS.** From a computer **outside the home network** (not a phone), downloaded the package from the link and connected to **both test and live** in the client. The off-LAN claim is now proven; a phone on cell data specifically was not used.
