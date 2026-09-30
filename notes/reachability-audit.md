@@ -17,6 +17,8 @@ It is not most of them.
 the cheap end is very cheap:
 
 - **340 ported item and creature files are in no player's reach at HEAD**, not 219 (section 1).
+- *(2026-09-30: the 117 and 167 below are predictions that have since been built against. Delivered: **65** and
+  **69 + 35 still predicted**. Section 3 has the corrected curve and why; D39.)*
 - **Five one-file gates reach 117 of them**: three craft registrations in the `KingsCollectionCarpentryRecipes`
   shape (blacksmithy, tailoring, tinkering) and entries in two tables pinned already ships (treasure chests,
   stealable artifacts). The first ten gates, about 14 units of work, reach **167** (section 3).
@@ -133,6 +135,14 @@ lines only), those data files, and any type of ours with a static `Configure` or
 
 ## 3. The gates, ranked
 
+> **Corrected 2026-09-30 (cc-P12, D39).** Nine of these gates have now been built or attempted. The "Delivered"
+> column records what each actually reached, with the note that established it; the cumulative curve below is
+> restated with delivered and predicted figures kept apart; section 3.1 says why the prediction over-counts and which
+> unbuilt gates to distrust. **The ranked numbers themselves are left as they were measured on 2026-09-29**, so the
+> gap stays visible. Nothing was re-measured. Record of the change: `notes/cc-P12-audit-correction.md`.
+> "Delivered" means established from source and the shard's tests, not seen in a client; P7's two carriers
+> (Miasma, Lady Lissith) are unverified in the live save (`cc-P7` §4).
+
 `--sources` finds, for each of the 487 unreachable types, every ServUO reference that would put it in the world:
 construction, a list, a spawn row. Each carries where its owner stands for us: **pinned** (pinned has the type, so
 the fix is a hook or a patch into it), **absent** (port it first), or **ours** (our copy dropped the line). Pinned code
@@ -148,44 +158,143 @@ small port (up to ~300 lines) plus a hook. **5** = an encounter (a boss, its pla
 system. **10** = a subsystem of about 1,000 lines. **20** = a subsystem of 3,000+ lines. Rough, and costed from line
 counts and wiring, not from building anything.
 
-| # | Gate | New files | Alone | Of the 219 | Cost | What it is | Already half there |
-|---|---|---|---|---|---|---|---|
-| 1 | **Craft: blacksmithy** | **33** | 33 | 21 | 1 | ServUO `DefBlacksmithy`'s SA block, 36 types: **gargish plate (8 pieces), 16 gargish weapons and the Shortblade, six shields** (three gargish, three plate), `GargishAmulet`, two artifacts, two reagents | **Yes.** The pattern exists: `KingsCollectionCarpentryRecipes`, `OrcMaskTailoringRecipe`, `IncubatorCarpentryRecipe` |
-| 2 | **Craft: tailoring** | **26** | 26 | 6 | 1 | masks, belts, cowls, collars, `LeatherTalons`; **13 of the 26 are D32's Tiger Pelt and Dragon Turtle pieces, which also need a recipe drop (gate 8) and a resource nobody has (Q-066)**. So 13 now, 13 later | Yes, same pattern; `OrcMaskTailoringRecipe` is the file |
-| 3 | **Treasure chests: pinned lists** | **24** | 24 | 8 | 1 | entries in pinned `TreasureMapChest`/`TreasureMap` lists: imbuing essences, SOS decor, the dinosaurs as map guardians | Pinned has the chest. **It changes a stock loot distribution**, the `OrcMask`/`HatTypes` question: Chase decides |
-| 4 | **Craft: tinkering** | **17** | 17 | 13 | 1 | gargish jewellery, SA gem jewellery | Yes, same pattern |
-| 5 | **Stealable artifacts: pinned table** | **17** | 17 | 16 | 1 | **55 types**, decorative multi-type files, stolen from dungeon spawns | Pinned ships the spawner and its table (`Engines/Stealables/StealableArtifacts.cs`, 81 entries). A patch to it. Same policy question as gate 3 |
-| 6 | Imbuing ingredient drops | 21 | 36 | 0 | 2 | ServUO `ResourceDrops.cs`, 252 lines, on creature death | Pinned's `[OnEvent(nameof(BaseCreature.CreatureDeathEvent))]` is additive, **but passes only the creature**; ServUO's handler uses the corpse and the killer. The fit needs a probe. **Low value: pinned has no imbuing**, so the 34 reagents would drop and do nothing, bar `GemologistsSatchel` and a few tinkering and quest uses |
-| 7 | Craft: carpentry | 8 | 8 | 8 | 1 | the six Darkwood pieces, `AudChar`, `GargishGnarledStaff` | Yes: `KingsCollectionCarpentryRecipes` is the file |
-| 8 | Time of Legends drops + Eodon spawns | 14 | 19 | 7 | 3 | `TimeOfLegends.CheckRecipeDrop` (about 50 lines: Aloron's and Darden's pieces, recipes 560-584 on Eodon kills), plus a spawn table for **the six Eodon creatures CC3 ported and nothing places** (`Eodon.xml`, 65 spawners) | The death event (as gate 6); the Shame pattern, `ShameSpawns` plus a generate command, for the spawns |
-| 9 | **Pinned's own commented-out drops** | 7 | 11 | 0 | 2 | pinned wrote these and left them under `// TODO: uncomment once added`. `Ilhenir.cs:163-167` drops the five Grizzle pieces; `LadyLissith.cs:53` `GreymistChest`; `Miasma.cs:54` `MyrmidonGloves`; a champion list in `ChampionSpawnInfo.cs:126-128` (Gorilla, Allosaurus, Dimetrosaur); `DefInscription.cs:445` `ScrappersCompendium` | **Yes, entirely.** Pinned wrote the code and is waiting on the type, which we now have. Each is a patch that uncomments |
-| 10 | **Clean Up Britannia** | **47** | 47 | **45** | 20 | 47 of our types among the rewards (`CleanUpBritanniaRewards.cs`): the Knights (10), Scout (9), Sorcerer (8), Bestial (8) and Virtuoso (8) sets, and four jewels (`EtoileBleue`, `LuneRouge`, `NovoBleue`, `SoleilRouge`). ServUO's directory is 52 files and 5,161 lines, most of them reward items, plus `CleanUpBritanniaData.cs` (979, the turn-in values) and `PointsSystem.cs` (463, S7) | **The S7 seam only** (`Services/PointsSystems/ShameCrystals.cs`, a stub). S7 itself is not built; Shame's altars wait on it too |
-| 11 | Craft: alchemy, masonry, bowcraft, inscription | 4 | 6 | 1 | 2 | four registration files | Yes |
-| 12 | Pinned champion lists and bosses | 2 | 6 | 2 | 1 | entries in `ChampionSpawnType` and in Barracoon's and Neira's drops | Pinned has all three. A patch |
-| 13 | Niporailem | 1 | 1 | 0 | done | CC9 close, built, uncommitted | Built |
-| 14 | Underworld generator | 3 | 5 | 0 | 2 | places `FountainOfFortune`, which unlocks its satchel and reagent chain | S2 ported the fountain; nothing places it (S2 D-3) |
-| 15 | Virtue Artifacts system | 7 | 7 | 6 | 5 | 122 lines on S7, **plus S7 (463)**. **Also the real gate for five of CC9's 24** (section 7) | The S7 seam |
-| 16 | Quests: Zosilem and Thepem tiered | 7 | 7 | 6 | 5 | two tiered quest chains | no |
-| 17 | Boss: Primeval Lich | 6 | 6 | 6 | 5 | champion boss | no |
-| 18 | Quests: about ten single quests | 12 | 17 | 9 | 10 | Tyball, Aliabeth, Barreraak, Farmer Nash, Naxatillor, Xenrr, Soulforge ... | no |
-| 19 | Boss: Abyssal Infernal | 5 | 5 | 5 | 5 | champion boss | no |
-| 20 | Community Collections | 17 | 17 | 17 | 20 | Zoo, Library, Museum: 56 types, 2,885 lines plus 12 NPC files | **no, and Q-064's rule declines it** |
-| 21-27 | Dread Horn, Shimmering Effusion, Doom Gauntlet, Travesty, Paroxysmus, ServUO's treasure-map rewrite, gargoyle alteration | 14 | | | 5-20 each | | |
-| | **All gates together** | **292 of 372** | | | | | |
+| # | Gate | New files | Alone | Delivered | Of the 219 | Cost | What it is | Already half there |
+|---|---|---|---|---|---|---|---|---|
+| 1 | **Craft: blacksmithy** | **33** | 33 | **33** (craft-registrations §0) | 21 | 1 | ServUO `DefBlacksmithy`'s SA block, 36 types: **gargish plate (8 pieces), 16 gargish weapons and the Shortblade, six shields** (three gargish, three plate), `GargishAmulet`, two artifacts, two reagents | **Yes.** The pattern exists: `KingsCollectionCarpentryRecipes`, `OrcMaskTailoringRecipe`, `IncubatorCarpentryRecipe` |
+| 2 | **Craft: tailoring** | **26** | 26 | **1** (craft-registrations §0) | 6 | 1 | masks, belts, cowls, collars, `LeatherTalons`; **13 of the 26 are D32's Tiger Pelt and Dragon Turtle pieces, which also need a recipe drop (gate 8) and a resource nobody has (Q-066)**. So 13 now, 13 later | Yes, same pattern; `OrcMaskTailoringRecipe` is the file |
+| 3 | **Treasure chests: pinned lists** | **24** | 24 | **0, stopped** (cc-P8 §2.2) | 8 | 1 | entries in pinned `TreasureMapChest`/`TreasureMap` lists: imbuing essences, SOS decor, the dinosaurs as map guardians | Pinned has the chest. **It changes a stock loot distribution**, the `OrcMask`/`HatTypes` question: Chase decides |
+| 4 | **Craft: tinkering** | **17** | 17 | **14** (craft-registrations §0) | 13 | 1 | gargish jewellery, SA gem jewellery | Yes, same pattern |
+| 5 | **Stealable artifacts: pinned table** | **17** | 17 | **17** (cc-P8 §3) | 16 | 1 | **55 types**, decorative multi-type files, stolen from dungeon spawns | Pinned ships the spawner and its table (`Engines/Stealables/StealableArtifacts.cs`, 81 entries). A patch to it. Same policy question as gate 3 |
+| 6 | Imbuing ingredient drops | 21 | 36 | not built | 0 | 2 | ServUO `ResourceDrops.cs`, 252 lines, on creature death | Pinned's `[OnEvent(nameof(BaseCreature.CreatureDeathEvent))]` is additive, **but passes only the creature**; ServUO's handler uses the corpse and the killer. The fit needs a probe. **Low value: pinned has no imbuing**, so the 34 reagents would drop and do nothing, bar `GemologistsSatchel` and a few tinkering and quest uses |
+| 7 | Craft: carpentry | 8 | 8 | **2** (craft-registrations §0) | 8 | 1 | the six Darkwood pieces, `AudChar`, `GargishGnarledStaff` | Yes: `KingsCollectionCarpentryRecipes` is the file |
+| 8 | Time of Legends drops + Eodon spawns | 14 | 19 | not built | 7 | 3 | `TimeOfLegends.CheckRecipeDrop` (about 50 lines: Aloron's and Darden's pieces, recipes 560-584 on Eodon kills), plus a spawn table for **the six Eodon creatures CC3 ported and nothing places** (`Eodon.xml`, 65 spawners) | The death event (as gate 6); the Shame pattern, `ShameSpawns` plus a generate command, for the spawns |
+| 9 | **Pinned's own commented-out drops** | 7 | 11 | **2** (cc-P7 §0) | 0 | 2 | pinned wrote these and left them under `// TODO: uncomment once added`. `Ilhenir.cs:163-167` drops the five Grizzle pieces; `LadyLissith.cs:53` `GreymistChest`; `Miasma.cs:54` `MyrmidonGloves`; a champion list in `ChampionSpawnInfo.cs:126-128` (Gorilla, Allosaurus, Dimetrosaur); `DefInscription.cs:445` `ScrappersCompendium` | **Yes, entirely.** Pinned wrote the code and is waiting on the type, which we now have. Each is a patch that uncomments |
+| 10 | **Clean Up Britannia** | **47** | 47 | not built | **45** | 20 | 47 of our types among the rewards (`CleanUpBritanniaRewards.cs`): the Knights (10), Scout (9), Sorcerer (8), Bestial (8) and Virtuoso (8) sets, and four jewels (`EtoileBleue`, `LuneRouge`, `NovoBleue`, `SoleilRouge`). ServUO's directory is 52 files and 5,161 lines, most of them reward items, plus `CleanUpBritanniaData.cs` (979, the turn-in values) and `PointsSystem.cs` (463, S7) | **The S7 seam only** (`Services/PointsSystems/ShameCrystals.cs`, a stub). S7 itself is not built; Shame's altars wait on it too |
+| 11 | Craft: alchemy, masonry, bowcraft, inscription | 4 | 6 | not built | 1 | 2 | four registration files | Yes |
+| 12 | Pinned champion lists and bosses | 2 | 6 | **0** (cc-P7 §0, §2.6) | 2 | 1 | entries in `ChampionSpawnType` and in Barracoon's and Neira's drops | Pinned has all three. A patch |
+| 13 | Niporailem | 1 | 1 | **1** (§1.3) | 0 | done | CC9 close, built, uncommitted | Built |
+| 14 | Underworld generator | 3 | 5 | not built | 0 | 2 | places `FountainOfFortune`, which unlocks its satchel and reagent chain | S2 ported the fountain; nothing places it (S2 D-3) |
+| 15 | Virtue Artifacts system | 7 | 7 | not built | 6 | 5 | 122 lines on S7, **plus S7 (463)**. **Also the real gate for five of CC9's 24** (section 7) | The S7 seam |
+| 16 | Quests: Zosilem and Thepem tiered | 7 | 7 | not built | 6 | 5 | two tiered quest chains | no |
+| 17 | Boss: Primeval Lich | 6 | 6 | not built | 6 | 5 | champion boss | no |
+| 18 | Quests: about ten single quests | 12 | 17 | not built | 9 | 10 | Tyball, Aliabeth, Barreraak, Farmer Nash, Naxatillor, Xenrr, Soulforge ... | no |
+| 19 | Boss: Abyssal Infernal | 5 | 5 | not built | 5 | 5 | champion boss | no |
+| 20 | Community Collections | 17 | 17 | not built | 17 | 20 | Zoo, Library, Museum: 56 types, 2,885 lines plus 12 NPC files | **no, and Q-064's rule declines it** |
+| 21-27 | Dread Horn, Shimmering Effusion, Doom Gauntlet, Travesty, Paroxysmus, ServUO's treasure-map rewrite, gargoyle alteration | 14 | | not built | | 5-20 each | | |
+| | **All gates together** | **292 of 372** | | **70 from the 9 built; see the curve** | | | | |
 
 "New files" is the greedy column; "Alone" is what the gate reaches with nothing else built. Of the 219 is from the
 "Alone" set. Both count ported content files, costumes excluded. Two gates reach nothing new once the cheap ones are
 in, but they are **alternatives, not waste**: the Ter Mur vendor stock (28 files alone, cost 2, section 8) and pinned's
 random loot lists (24 alone, cost 1). They sell or drop what blacksmithy makes.
 
-**The cumulative curve, which is the planning number:**
+**The cumulative curve, which is the planning number.** As predicted on 2026-09-29, then restated 2026-09-30:
 
-| After | Cost | Files reached | Of 372 |
+| After | Cost as costed | **Predicted** (2026-09-29) | **Restated**: delivered + still predicted | of which **delivered** | of which **predicted** | Of 372 |
+|---|---|---|---|---|---|---|
+| gates 1-5 | 5 | 117 (31%) | **65** | 65 (gates 1-5 all attempted) | 0 | **17%** |
+| gates 1-9 | 12 | 167 (45%) | **104** | 69 (gates 1-5, 7, 9) | 35 (gate 6: 21, gate 8: 14) | **28%** |
+| + Clean Up Britannia | 32 | 214 (58%) | **151** | 69 | 82 (+ gate 10: 47) | **41%** |
+| all 27 | about 190 | 292 (78%) | **227** | 70 (+ gates 12, 13) | 157 (the 18 unbuilt gates) | **61%** |
+
+How each restated figure is built: take the predicted figure, remove the greedy predictions of the gates that have been
+built (1, 2, 3, 4, 5, 7, 9, 12, 13: **135** predicted), add what they delivered (**70**: 33 + 1 + 0 + 14 + 17 + 2 + 2 +
+0 + 1). 292 - 135 + 70 = 227. The delivered files are disjoint: each note measured its gate against its own Appendix A
+group, and no file appears in two groups.
+
+**Read the "predicted" part with three cautions.**
+
+1. **It is the old greedy figure, not a new one.** The greedy cover assumed each earlier gate took its predicted files.
+   The 65 files that built gates predicted and did not reach (tailoring 25, gate 3's 24, carpentry 6, gate 9's 5,
+   tinkering 3, gate 12's 2) are back in the pool, so a later gate whose "Alone" exceeds its greedy figure may now
+   reach more than its row says: gates 6 (21 greedy, 36 alone), 8 (14, 19), 11 (4, 6), 14 (3, 5) and 18 (12, 17).
+   Which of the 65 they pick up is not known without re-running the cover. **Unverified**, and the only direction in
+   which the restated curve may be low.
+2. **Each unbuilt row still carries the over-count described in section 3.1**, which pushes the other way. Section
+   3.1.3 rates each one.
+3. **The 65 undelivered files are not gone, they are behind work nobody has costed**: a recipe source for 25 tailoring
+   pieces (`craft-registrations` §2), ServUO's chest logic or its EJ rewrite for gate 3's 24 (`cc-P8` §2.4, a fidelity
+   decision for Chase), peerless ingredient drops for six Darkwood pieces, a Corrupt champion placement for the five
+   Grizzle pieces (`cc-P7` §2.3). None of that is in the "Cost" column.
+
+**The denominator is the HEAD of 2026-09-29** (340 unreachable + 32 costumes = 372), kept for comparability. The live
+tree has grown since (613 ported content files, `craft-registrations` §0), so these percentages describe the audit's
+list, not today's tree.
+
+### 3.1 Why the prediction over-counts, and which unbuilt gates to trust
+
+#### 3.1.1 The record
+
+| Gate | Predicted | Delivered | Where the difference went |
 |---|---|---|---|
-| gates 1-5 | 5 | 117 | 31% |
-| gates 1-9 | 12 | 167 | 45% |
-| + Clean Up Britannia | 32 | 214 | 58% |
-| all 27 | about 190 | 292 | 78% |
+| 1 Blacksmithy | 33 | 33 | nowhere |
+| 5 Stealables | 17 | 17 | nowhere (pinned's table is 80 entries, not the 81 above; no file affected) |
+| 13 Niporailem | 1 | 1 | nowhere (measured, not predicted: it was built before the audit ran) |
+| 4 Tinkering | 17 | 14 | an unobtainable resource (`CrystalShards`), a Doom recipe, and a tool fault that read a first resource as a product |
+| 7 Carpentry | 8 | 2 | six Darkwood pieces need peerless ingredients nothing drops |
+| 9 Pinned's commented drops | 7 | 2 | Ilhenir's carrier is never placed; the Valley entry needs six absent creatures and an enum ordinal pinned has already planned; Scrapper's rare recipe can never drop |
+| 2 Tailoring | 26 | 1 | 25 entries are recipe-gated with no recipe source; several also need resources in neither tree |
+| 12 Champion lists, bosses | 2 | 0 | both targets were twins of pinned artifacts players already get |
+| 3 Treasure chests | 24 | 0 | pinned has none of the lists; every file needs new chest or map logic, some with absent types |
+
+#### 3.1.2 The mechanism
+
+The instrument answers one question well: **does some ServUO code site put type X in the world, and does the owner of
+that site exist in pinned?** Its file lists have mostly held up: across nine built gates, one source turned out not to be a
+source (`CrystalShards`, a resource in the `AddCraft` it was credited to, `craft-registrations` §4.1), and one reached
+type is not (`Putrefaction`, through a method nothing calls, same section). What the gate figures then assumed, without the instrument ever testing it, is that **finding that site
+is the same as delivering X**. That holds only when four further things are true, and every miss above is one of them
+failing:
+
+| | Condition | What the instrument did instead | Gates it broke |
+|---|---|---|---|
+| **A** | **The entry has no second condition.** Once the site runs, X is handed over: no recipe to learn, no resource to find, no points to earn, no objective to meet | counted the reference and stopped. `AddRes` is correctly a read, but whether the resource or recipe can itself be had is a second reachability question the tool never asks (`craft-registrations` §4.2) | 2, 4, 7, 9 (Scrapper) |
+| **B** | **The carrier is live.** Whatever runs the site (a boss, a chest, a spawner) is itself placed in a world, not merely a type that exists | treated a pinned owner type as a live owner. Ilhenir exists and is never spawned; no treasure map points at Eodon | 9 (Ilhenir), 3 (guardians) |
+| **C** | **Pinned's owner has the same mechanism.** A cost of "1: entries in a pinned list" needs the list | "owner: pinned" meant only that pinned declares the type; the hand grouping read it as "a patch into pinned's list" | 3 (all 24), 12 |
+| **D** | **Nothing absent or duplicated rides along.** The same entry needs no type in neither tree, and X is not a twin of something pinned already reaches | resolved by name only, and did not look at the rest of the entry | 9 (Valley), 12 (twins), 3 (absent essences and specials) |
+
+A and B are **one-hop blindness** in the instrument: it follows the edge into X and never the edges into the site's own
+preconditions. C and D are **costing and grouping errors** made by hand on top of it (`gatemap.py`), and section 6
+never listed them. Section 6's "Recipe IDs, 13 files" row was the only warning of A, and it undercounted by half in
+tailoring alone.
+
+**Why gates 1 and 5 hit exactly.** In both, the source is *terminal*: its only precondition is something already known
+to be in play, and pinned has the identical slot.
+
+- **Blacksmithy:** every entry takes iron ingots and nothing else, no recipe (A). The carrier is a player with a skill
+  and a stock tool (B). Pinned's `CraftSystem` takes appended entries, and three hooks already did it (C). All 34 types
+  are ours, none a twin (D).
+- **Stealables:** each entry *is* its own carrier, a fixed spawn at a fixed point, and the spawner is enabled on the live
+  world (B). Stealing it needs Stealing 100 and a weight under 10, both checked (A). Pinned ships the same table and
+  P8 appended to it (C). ServUO's entries with absent types (11) were already outside the 17 files (D).
+
+That is the test to apply to a prediction before it is briefed: **is the source terminal, and does pinned have the
+slot?** A craft entry is terminal only if its resources are stock and it has no recipe. A drop is terminal only if the
+creature is spawned. A reward table is terminal only if the currency can be earned.
+
+#### 3.1.3 The unbuilt gates, rated
+
+**Sound** means the source looks terminal on what is already written down; **suspect** means a condition above is
+known or likely to fail; **count sound, cost wrong** means the files will come but the "Cost" column is not the work.
+A rating from existing notes and the table's own text, not a re-measurement.
+
+| Gate | Predicted | Rating | Why |
+|---|---|---|---|
+| 6 Imbuing drops | 21 | **suspect, and low value** | a direct drop on death (A holds), but each reagent drops only from particular creature types, and whether each is spawned is unchecked (B). Pinned's death event lacks the corpse and killer (C, already noted). Worthless in play without imbuing either way |
+| 8 ToL drops + Eodon spawns | 14 | **mostly sound if both halves are built together** | ServUO drops the 12 set pieces directly by `Loot.Construct` (`TimeOfLegends.cs:98-133`, A holds), but only for kills inside Eodon (`SpellHelper.IsEodon`), at Fame/1,000,000 plus luck. The spawn half is pure placement, the stealables shape. Check pinned's death-event arguments and `IsEodon` first. May also pick up gate 3's four dinosaurs and banana (alone 19), unverified |
+| 10 Clean Up Britannia | 47 | **count probably sound; cost is the risk** | a reward table is terminal once points can be earned, and turn-ins are mostly stock items. The unknown is the 20 units, which nothing here tests. Check the reward list for absent types (D) before briefing |
+| 11 Other crafts | 4 | **suspect** | exactly tailoring's shape. Run `craft-registrations`' `parse_defs.py` over the four `Def*` files for recipes and resources before briefing |
+| 14 Underworld generator | 3 | **suspect** | a chain: placement, then the fountain's reward code, then the satchel, then reagents. Each link is a second condition |
+| 15 Virtue Artifacts | 7 | **count probably sound; cost depends on S7** | a system that hands out a list; points are earned by play. S7 is unbuilt and shared with Shame's altars |
+| 16, 18 Quests | 7, 12 | **suspect until each chain is read** | a reward is terminal only if the giver is placed (B) and every objective is reachable (A). Neither has been checked for any of these quests |
+| 17, 19 Primeval Lich, Abyssal Infernal | 6, 5 | **count sound, cost wrong** | both are champion bosses (ServUO `ChampionSpawnType.cs:147,154`): Ilhenir's failure (B) unless a champion spawn of their type is placed. `cc-P7` §2.4 shows those types collide with pinned's commented enum ordinals and must be built with Valley as one piece, not 5 units each |
+| 20 Community Collections | 17 | declined (Q-064) | |
+| 21-27 | 14 | **suspect** | peerless bosses need placement and keys (Lissith's silk is a peerless key in neither tree, `cc-P7` §2.2); the treasure-map rewrite is gate 3's fidelity fork |
+
+**Before briefing any gate: apply A-D to each file's source in writing, and brief the number that survives.** That is a
+reading task of an hour or so per gate, much cheaper than re-running the instrument, and it would have caught every miss
+in 3.1.1. Extending the instrument to follow second hops (recipes, resources, carrier placement) would be a new
+measurement; it is not needed to plan the next few gates.
 
 ### Not worth it, and saying so
 
@@ -271,7 +380,7 @@ of `Shame_Revamped` and `DespiseRevamped` spawners in the save.
 |---|---|---|
 | **The save.** Anything a GM placed with `[add` (the fountain, S2 D-3) or that survives from before | unknown. 31 unreachable files are addons or decoratives, the likeliest candidates | calls them unreachable when a placed copy exists |
 | **Which generation commands a world has had** (section 5) | 282 reachable types depend on it | calls them reachable when that world has not had them |
-| **Recipe IDs.** A recipe-gated `AddCraft` counts as reach | 13 files (D32's garments in gate 2) | overstates gate 2 by 13 |
+| **Recipe IDs.** A recipe-gated `AddCraft` counts as reach | 13 files (D32's garments in gate 2) | overstates gate 2 by 13. *(2026-09-30: by 25, and resources overstate too; section 3.1)* |
 | **`typeof` at a site with no name** | 73 reached types; 18 files read, all genuine | could overstate reach |
 | **The reader list is judgment**: 17 site names, each read | a ServUO reader missing from it overstates a gate; one wrongly on it understates one | both |
 | **Resolution by name.** A ServUO source with our type's name but a different class | not measured; the 219 had none by hand | overstates gates |
@@ -311,7 +420,8 @@ of `Shame_Revamped` and `DespiseRevamped` spawners in the save.
 4. **"Spawn data is the only thing placing creatures at world generation."** Shame and Despise place 78 types,
    creatures among them, through their own commands (section 5).
 5. **"Walking [craft tables] is probably the single highest-value part of this task."** Right. The craft gates are 1, 2,
-   4 and 7 of the ranking, **90 files alone** for four hook files.
+   4 and 7 of the ranking, **90 files alone** for four hook files. *(2026-09-30: the table sums to 84, and 50 were
+delivered; `craft-registrations` §0, §6.2.)*
 
 ---
 
@@ -401,6 +511,9 @@ item 3 is Chase's.
 ---
 
 ## Appendix A. Every unreachable ported content file at HEAD, under the gate that reaches it first
+
+*(2026-09-30: this is HEAD as measured on 2026-09-29. 70 of these files have since been delivered by built gates;
+section 3's "Delivered" column says which groups and where each is recorded.)*
 
 Greedy order, as in section 3. *(not in the 219: reason)* marks the 121 the rough pass counted as named.
 340 files. The 32 costumes follow, outside the 340.

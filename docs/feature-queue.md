@@ -14,7 +14,7 @@ Running list of feature ideas from play testing. Kept by the overseer (Claude); 
 4. Chase commits with `Commit-ShardWork.ps1`.
 
 F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and questions (Q-n).
-**Next free: F-5.**
+**Next free: F-7.**
 
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
@@ -224,6 +224,70 @@ What it touches (overseer, to check when it is scheduled):
 Open questions:
 - When: with the fresh world, or later?
 - Staff and test accounts exempt?
+
+### F-5: Young status by time only, 2 weeks (added 2026-09-30)
+
+**Ours** (a deviation from OSI's rules, to register and document on the wiki).
+
+What Chase wants:
+- Young status ends by **time only, not skill**: **2 weeks**, unless the player ends it early by
+  saying **"I want to grow up!"**
+
+What pinned does today (read 2026-09-30):
+- `Accounting/Account.cs:21` `YoungDuration = 40 hours`, measured in **account game time played**
+  (`CheckYoung`, `:835`). Login message counts down the hours left (`:788`).
+- `Mobiles/PlayerMobile.cs:4149`: skill total 450.0 ends Young. This is the rule to remove.
+- `PlayerMobile.cs:4121`: gaining a murder count ends Young.
+- `Misc/Keywords.cs:40`: "I renounce my young player status" opens `RenounceYoungGump` to confirm.
+
+Suggested (overseer):
+- Keep the confirm gump for the new phrase, so a typo or a joke does not end it. Match the phrase
+  loosely (case and the "!" optional).
+- Keep OSI's phrase working too, so a player reading the wikis is not stuck.
+- Keep the murder rule: attacking players while protected should still end protection.
+- Update the login countdown to days and hours, and the wiki's Young page.
+
+Check first:
+1. Whether our `CharacterCreation.cs` (`:218`) or any custom system also sets or checks Young.
+2. Where "created" is stored (account creation date) if the 2 weeks are calendar time.
+
+Open questions:
+- **2 weeks of calendar time from account creation, or 2 weeks (336 hours) of time played?**
+  OSI counts time played. Calendar time is simpler to explain; played time protects a player who
+  logs in once a week.
+
+### F-6: Fog of war on the world map (added 2026-09-30)
+
+**Ours.** OSI has no fog of war; the world map shows everything.
+
+What Chase wants:
+- The world map starts dark and reveals the areas a player has actually visited.
+
+The hard part (overseer): **the world map is drawn by the client, not the server.** The family package
+ships TazUO; its world map renders straight from the map files on the player's machine. The server
+cannot hide part of it. So the options are:
+- **A. Client side, in TazUO.** The world map darkens unexplored areas, revealed as the player walks.
+  Best result, but it means carrying our own changes to TazUO (a fork, or an upstream feature if
+  TazUO already has or would take one), and every TazUO update has to be merged.
+- **B. Server tracked, client drawn.** The server records explored areas per character (so it survives
+  reinstalls and cannot be edited locally) and sends them to the client; TazUO still has to draw the
+  fog, so this is A plus a server half. Only worth it if exploration should count for something.
+- **C. Server only, no client change.** An in-game explorer's atlas item whose gump shows the
+  explored regions (per region or per grid square, not per tile). Crude next to A, but it touches no
+  client code.
+Whatever is chosen, a player can still open an outside map (wiki, UOAM). Fog is for fun and
+immersion, not secrecy.
+
+Check first:
+1. Whether TazUO (the version we ship) already has a fog or explored-area option on its world map.
+2. Whether TazUO's world map supports overlays or plugins we could use without a fork.
+3. How our package pins and updates TazUO today, i.e. what a fork would cost to keep current.
+
+Open questions:
+- Just the look, or should exploring count for something (a cartographer's reward, an achievement,
+  Custodian-style points for mapping)? That decides A versus B.
+- Dungeons and other facets too, or the surface first?
+- Can a player reveal areas without walking them (buy or craft a regional map, cartography)?
 
 ## Batched
 
