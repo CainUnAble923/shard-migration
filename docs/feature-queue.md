@@ -876,8 +876,48 @@ anything is built (a read-only cc prompt):
 Output: a report and a recommendation per skill (let it scale, soft-cap it with diminishing
 returns, or give it new effects past 120), plus a first XP curve for a 500 to 1000 level range.
 
+**Prior work found 2026-09-30 (read before designing further):**
+- **Skill caps are already raised today**: `server\customizations\ClusterFSkillCaps.cs` sets every
+  skill's cap to **300** and the total to unlimited (config `clusterf.skillCaps.individualCap` 300,
+  `totalCap` 0), re-applied to every player at login and world load (`Apply`, `:106-123`).
+  `ClusterFStatCaps.cs`: individual stat cap 500, total 1500. So "skills past 120" is live now.
+- **Content already uses 0-300**: `roadmap.md:455-470` (mining progression over 0-300, extended ore
+  chain), `ClusterFSmithBODSystem.cs:374` ("extended skill can exceed 300").
+- **Phase 4F, locked 2026-05-20** (`design\phases\phase_4_smiths_guild_extended_crafting.md:746`):
+  individual cap 300 -> 500 through additive scrolls (+5 / +10 / +15 / +20, 200 points of scrolls
+  per skill), from champion spawns and guild reward vendors; achievements at 350/400/450/500 with
+  titles already sketched; claims "natural gain slowdown past 200 is sufficient". Not built.
+- **Roadmap "Champion Spawn and Mastery Rewrite"** (`roadmap.md:915-930`): replace or supplement the
+  105-120 power scrolls with additive "Legacy Scrolls / Mastery Scrolls / Ascendant Scrolls".
+- **Roadmap "Legacy Awakening"** (`roadmap.md:333-362`): the shard's long-term progression concept,
+  cultivation-inspired, with stages Soul Awakening, Foundation Tempering, Inner Core, Spirit
+  Ascension, Legacy Embodiment. It says: **"Do not make it a mandatory treadmill or infinite stat
+  reset loop"** and **"Avoid mandatory resets ... If resets exist, they should be optional and
+  preserve history."**
+- **Mythik already reviewed**: `design\systems\achievement_expansion_mythik_integration.md` (323
+  lines) reached the same conclusion as this entry: take typed categories, do not replace
+  ClusterFAchievements.
+- `design\systems\league_of_extraordinary_citizens.md`: the League's full design (Renown "is not
+  intended to function as gold", citizen ranks). Read before F-13.
+
+**Settled 2026-09-30 (Chase):**
+- **Mandatory resets, yes.** The new cap rule needs them; this **replaces the roadmap's "avoid
+  mandatory resets" line** (`roadmap.md:339` and `:360`), which should be updated to match.
+- **Content behind loops is fine** (0-300 content waits for the loops that reach it).
+- **Max level 1000, and so individual skill cap up to 1000.**
+
+**Conflicts to settle with Chase** (1, 2 settled above; 3 and 4 open):
+1. The early forced loop (skills capped at the level cap, first cap 50) contradicts the roadmap's
+   "avoid mandatory resets" line. Chase's new decision would replace it; confirm.
+2. Today every skill can reach 300. Under the new rule a first-loop character stops at 50. Content
+   tuned for 0-300 (mining tiers, smith BODs) would sit behind loops.
+3. Phase 4F's scrolls (300 -> 500) and the loop caps (50 ... 500-1000) are two ladders for the same
+   number; they need to become one (for example: loops raise the cap, scrolls fill the last stretch
+   of each loop's cap, or scrolls are the loop's gate).
+4. The Legacy Awakening stage names may be the loop names.
+
 Open questions:
-- Max level: 500 or 1000 (or in between)? The research above should inform it.
+- How scrolls (Phase 4F / Legacy Scrolls) and loops share the one cap (conflict 3).
 - Power scrolls kept as they are for 105 to 120 (OSI), with a new, rebranded line beyond 120? Or
   rebrand the whole line?
 - **What does a level give?** (answered above; kept for the record of options) Stat or skill points would change UO's caps (skill cap 700, stat
@@ -998,6 +1038,7 @@ Open questions:
 | F-9 | cc-P15-guild-starter-path | Written 2026-09-30. Entry kept under Open while its open questions stand. |
 | F-7 | cc-P18-reset-stone-young-craftx | Written 2026-09-30. Part 1 of 3. Runs after P15 is committed. |
 | F-5 | cc-P18-reset-stone-young-craftx | Written 2026-09-30. Part 2 of 3. Pinned rules changed via a patch or hook. |
+| F-12 (research only) | cc-P20-skill-scaling-research | Written 2026-09-30. Read-only: skills past 120, gains, power scrolls, creatures, first XP curve. |
 | F-1 | cc-P18-reset-stone-young-craftx | Written 2026-09-30. Part 3 of 3; may stop at findings if larger than expected. Custodian trash bag route held back until F-3. |
 
 ## Dropped
