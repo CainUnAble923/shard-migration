@@ -14,7 +14,7 @@ Running list of feature ideas from play testing. Kept by the overseer (Claude); 
 4. Chase commits with `Commit-ShardWork.ps1`.
 
 F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and questions (Q-n).
-**Next free: F-11.**
+**Next free: F-12.**
 
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
@@ -22,6 +22,8 @@ Port a gated item when the gate is small and near; skip it when the gate is a su
 ## Open
 
 ### F-1: Craft X, keep going on failure (added 2026-09-29)
+
+**Batched: cc-P18** (2026-09-30).
 
 **Ours.** Quality of life for bulk order deeds and skill training. Nothing a player could be misled by.
 
@@ -227,6 +229,8 @@ Open questions:
 
 ### F-5: Young status by time only, 2 weeks (added 2026-09-30)
 
+**Batched: cc-P18** (2026-09-30).
+
 **Ours** (a deviation from OSI's rules, to register and document on the wiki).
 
 What Chase wants:
@@ -251,10 +255,14 @@ Check first:
 1. Whether our `CharacterCreation.cs` (`:218`) or any custom system also sets or checks Young.
 2. Where "created" is stored (account creation date) if the 2 weeks are calendar time.
 
-Open questions:
-- **2 weeks of calendar time from account creation, or 2 weeks (336 hours) of time played?**
-  OSI counts time played. Calendar time is simpler to explain; played time protects a player who
-  logs in once a week.
+Answered 2026-09-30 (Chase): **2 weeks of time played**, i.e. `YoungDuration` 40 hours -> 336 hours
+of game time. Same counter OSI uses, so only the number and the skill rule change. Login message
+should show days and hours (14 days of play will take most players months).
+
+Answered 2026-09-30 (Chase): **Young stays per account**, as pinned has it. Account game time counts,
+and ending Young ends it for every character on the account.
+
+Open questions: none.
 
 ### F-6: Fog of war on the world map (added 2026-09-30)
 
@@ -299,6 +307,8 @@ Open questions:
 
 ### F-7: Player-usable account reset, for play testing (added 2026-09-30)
 
+**Batched: cc-P18** (2026-09-30).
+
 **Ours. Test tool.** Chase is play testing with new characters on one account, and guild membership
 carries across them because our systems store it per account.
 
@@ -336,9 +346,15 @@ way exploration already is.
 
 Answered 2026-09-30: stone plus command, as suggested; test shard only is the only case.
 
-Open questions:
-- Reset tool only, or also make guild membership per character now? (F-9 makes starter kits and
-  items per character either way.)
+Answered 2026-09-30 (Chase): **per character for now.** Guild data moves from the account to the
+character, keyed by character serial the way exploration already is (`_exploredChunks`).
+Overseer: move **joined guilds, guild reputation and guild currency together**; membership without
+its reputation, or reputation shared across characters, would be half the fix. Guild work orders
+likely follow. Keep it easy to fold back to account-wide when F-4 lands. Existing saves: clear guild
+data rather than guess which character it belonged to. Fits F-9, which already makes starter kits
+and items per character.
+
+Open questions: none.
 
 ### F-8: Animated runestone, first custom-art test of the client updater (added 2026-09-30)
 
@@ -636,11 +652,55 @@ Open questions:
 - Which guilds get a Ter Mur guildmaster, and does Ter Mur get its own starter quests (like New Haven's
   26) or only the guild route?
 
+### F-11: Guild upgrades draw resources from the bank as well as the backpack (added 2026-09-30)
+
+**Ours** (guild upgrades are our systems; OSI crafting stays pack-only and is not touched).
+
+What Chase wants:
+- Guild item upgrades (and restorations) count and consume resources from the bank box as well as
+  the backpack.
+
+What exists (read 2026-09-30):
+- **Gold already does this** for the Miners' Compact: `CompactGoldHelper.cs` counts backpack plus bank
+  balance and consumes backpack first, then withdraws the shortfall from the bank. Used by
+  `MinersCompactLiaisonGump.cs`, `ArtificersImbueGump.cs`, `CrossGuildExchangeGump.cs` and the four
+  Jacob's pickaxes.
+- **Resources do not**: e.g. `MinersCompactLiaisonGump.cs:536-549` and `:675-689` check
+  `Backpack.GetAmount` for ingots, and `:871-873`, `:1021-1039` consume with `pack.ConsumeTotal`.
+  Other backpack-only consumers: `ClusterFGuildSystem.cs`, `ClusterFWorkOrderSystem.cs`,
+  `HammerOfHephaestus.cs`, the Jacob's pickaxes.
+
+Suggested (overseer):
+- **One shared helper** beside `CompactGoldHelper` (or generalize it): count a resource type across
+  backpack and bank box, consume backpack first, then bank, and **all-or-nothing** (check the total
+  before consuming anything, so a failure never takes half). Every guild upgrade uses it, so they
+  cannot drift.
+- The gump shows where the materials will come from ("60 valorite: 20 in pack, 40 in bank").
+- Scope: guild upgrades, restorations **and work order turn-ins** (Chase, 2026-09-30).
+
+Check first:
+1. Every guild upgrade and restoration path that consumes resources (list above is a start).
+2. Whether our resource satchels (ore, lumber) in the pack or bank should count too, and how
+   `GetAmount` treats nested containers in pinned (cite).
+3. Whether the bank box is always loaded for an online player in pinned, or only after it is opened.
+
+Answered 2026-09-30 (Chase):
+- **Resources inside satchels count too** (ore satchel, lumber satchel and the like), in the pack or
+  the bank. Consume loose resources first, then satchels, so a player's sorted stock is used last.
+- **Work order turn-ins draw from the bank too.** For turn-ins that need specific crafted items
+  (not raw resources), the same rule: pack first, then bank, all or nothing. Items that are equipped,
+  blessed, or inside a locked or secure container are never taken.
+
+Open questions: none.
+
 ## Batched
 
 | ID | Batch prompt | Notes |
 |---|---|---|
 | F-9 | cc-P15-guild-starter-path | Written 2026-09-30. Entry kept under Open while its open questions stand. |
+| F-7 | cc-P18-reset-stone-young-craftx | Written 2026-09-30. Part 1 of 3. Runs after P15 is committed. |
+| F-5 | cc-P18-reset-stone-young-craftx | Written 2026-09-30. Part 2 of 3. Pinned rules changed via a patch or hook. |
+| F-1 | cc-P18-reset-stone-young-craftx | Written 2026-09-30. Part 3 of 3; may stop at findings if larger than expected. Custodian trash bag route held back until F-3. |
 
 ## Dropped
 
