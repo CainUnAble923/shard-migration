@@ -14,7 +14,7 @@ Running list of feature ideas from play testing. Kept by the overseer (Claude); 
 4. Chase commits with `Commit-ShardWork.ps1`.
 
 F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and questions (Q-n).
-**Next free: F-12.**
+**Next free: F-15.**
 
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
@@ -422,6 +422,9 @@ What exists (read 2026-09-30):
   The guild route gives the **first** copy; both keep their existing reissue and recharge rules
   instead of the scrip replacement below.
 - Each quest also gives a 15-minute skill-gain acceleration on accept. The guild route does not.
+  **Decided 2026-09-30 (Chase): leave it out, deliberately.** Fifteen minutes is too short to matter, and at
+  our skill rates the difference is not observable in play. Do not build parity, and do not treat the absence
+  as an oversight later. The wiki should say the two routes differ only in this, and that it is intentional.
   At our gain rate this is accepted, and is part of the deviation.
 - New characters arrive at 3503,2574,14 (`CharacterCreation.cs:114`); the board is 1 tile away.
 - Deviation text is drafted in P14 section 5 as **D-92**. The overseer promotes it with F-9's
@@ -692,6 +695,301 @@ Answered 2026-09-30 (Chase):
   blessed, or inside a locked or secure container are never taken.
 
 Open questions: none.
+
+### F-12: Player levels and XP, modeled on ServUO's Level System Extreme (added 2026-09-30)
+
+**Ours.** OSI has no levels. Fits the vision (LitRPG, levels, prestige, Dungeon Crawler Carl).
+
+What Chase wants:
+- A level system like **Level System Extreme** (Kamras, v4.0,
+  https://www.servuo.dev/threads/level-system-extreme.12815/): XP from combat and skills, levels,
+  points on level-up, titles by level, pet levels, daily login bonus scaled by level, level
+  requirements on equipment.
+
+Overseer: **borrow the design, not the code.** It needs edits to ServUO core files (SkillCheck,
+BaseArmor, BaseWeapon, BaseClothing, BaseJewel), relies on XmlAttach, and users report data loss
+from serialization changes on its major updates. Built our way it sits on what we have: the
+achievement system (`ClusterFAchievements.cs`, about 80 achievements, AP and Renown), league, and
+the System's snarky voice for level-up messages.
+
+Suggested:
+- XP from what players already do (kills, skill gains, crafting, gathering, discoveries), fed by the
+  hooks the achievement system already has (`NotifyKill`, `NotifyCraftedItem`, `NotifyMining`...).
+- Level-up popup in the System's voice, like the achievement earned popup.
+- **Titles earned** (by level and by achievement), chosen by the player and shown under the name.
+- Level requirements on gear only for **our** items, never OSI items (fidelity).
+
+**Merge direction (Chase, 2026-09-30):** possibly a merge of Level System Extreme and the Mythik
+Achievement System (DarkLotus, MIT, https://github.com/DarkLotus/MythikAchievmentSystem), on top of
+our own achievement system. Chase wants Mythik's achievement framework as the base rather than
+reinventing it.
+
+What each offers (read 2026-09-30):
+- **Level System Extreme** v4.0, updated 2026-05-27, ServUO 57.4, needs XmlSpawner/XmlAttach and
+  distro edits (reduced over time to about one). Features: player and pet levels, XP from skills and
+  from bulk order deeds, dynamic equipment level requirements, mount level requirements, vendor
+  discounts by level, pet special attacks, bonus stats from pets, pet stealing, level items (level
+  bags, coins and tokens, a weightless blessed TreasureTrove at level 100+), an in-game control item
+  (`[levelcontrol`) for settings, a tracking and teleport gump. Terms and XP formulas not visible
+  without the download.
+- **Mythik** (706 lines, cloned and read): achievements are **typed classes**, one line each to
+  define: `HunterAchievement` (kill N of a creature type), `HarvestAchievement` (gather N of a
+  resource type), `DiscoveryAchievement` (enter a named region), `ItemCraftedAchievement` (craft N
+  of an item type), `SkillProgressAchievement` (reach a skill value; disabled in ServUO for lack of
+  a SkillGain event). Each has an ID, **sub-categories** (parent/child tree), an item icon, **hidden
+  until complete**, reward points, a completion target, reward items, a completion date, and the
+  `[feats` / `[achievements` command. Stored per character serial.
+  Gaps found: its prerequisite parameter is accepted but never stored (prereqs do not work); only
+  the first reward item is ever given; points are a flat number per achievement (5 in every
+  example), with no point thresholds or gates; about 30 example achievements; stock gump art only.
+- **Ours already has**: about 80 achievements, AP and Renown, working prerequisites, progress bars,
+  reward items, the System's voice. What Mythik adds is the **typed, data-driven definitions,
+  sub-categories, hidden achievements and icons**.
+
+**Level System Extreme source read 2026-09-30** (downloaded by Chase; unpacked at
+`D:\UO\third-party\level-system-extreme\src\`, 83 files, about 24,000 lines, version of
+2026-05-27). **No license file**, only a credits list: take design, not code.
+- **Levels**: default max 150, raisable to 200 with a `RaiseMaxLevelScroll`
+  (`LevelControlSys.cs:54-56`).
+- **XP to next level = level x tier multiplier**, 100 at levels 2-20 up to 6,000 at 191-200
+  (`LevelHandlerExt.cs:300-333`, `LevelControlSys.cs:66-82`).
+- **XP sources**: kills, by monster tier tables (e.g. 20-40 XP for weak creatures up to 200-225 for
+  the strongest, some creatures none; `LevelCore.cs:93-108`, `ExpTables.cs`), skill use (needs a
+  SkillCheck core edit), crafting armor, bulk order deeds, party sharing, power-hour tokens.
+- **Each level-up grants 4 skill points and 3 stat points** by default (`LevelControlSys.cs:265-300`).
+  **Skill points are spent in its gump to raise a chosen skill by +1.0 directly**
+  (`PlayerLevelGump.cs:486-488`), within configurable total caps that default very high. Also
+  follower slots at every tenth level.
+- **Storage**: a hidden LevelSheet item in the backpack plus an XmlSpawner fork. A hidden control
+  item at Trammel 5427,1081,5 holds all settings (`LevelControlSys.cs`, 5,219 lines).
+- **Extras**: level-gated vendors (19 of them, levels 10 to 250), level gates and tiles, level bags,
+  XP and skill coins, boots of travel, skill-reset and set-level tokens, TreasureTrove (weightless,
+  blessed, level 100+), pet levels with orbs, pet special attacks, pet lock picks (pet stealing).
+- **Core edits** for full features: BaseArmor, BaseClothing, BaseJewel, BaseWeapon (level
+  requirements), SkillCheck (skill XP), Titles (level in name).
+
+**Balance note (overseer):** its core reward is skill and stat points you spend to raise skills
+directly. That replaces UO's use-based skill gain, which is the heart of "stubborn skill grinder".
+Whatever a level gives here should sit beside skill gain, not replace it.
+
+Check first:
+1. Level System Extreme's source: its XP curve, what a level grants, and its level-up and title
+   gumps, as design reference (license first).
+2. How it gates equipment, and whether a customizations hook exists in pinned for the same
+   (`OnEquip` / `CanEquip`) without core edits.
+3. How XP and levels relate to AP and Renown: replace, sit beside, or feed each other.
+
+Answered 2026-09-30 (Chase): **what a level gives**
+- **Titles.**
+- **Follower slots.**
+- **Access to gear, vendors and areas** (level requirements on our own gear, level-gated vendors,
+  level gates to areas).
+- **Small perks.**
+- **Level-gated League shop tiers** (F-13: AP and level both gate tiers; Renown buys).
+- **Not** skill or stat points: skills stay earned by use (overseer's reading of Chase's list; the
+  "stubborn skill grinder" core is untouched).
+- **More ways to raise the level cap** (Chase). Overseer suggests cultivation-style
+  **breakthroughs**: the cap rises in steps (for example 50, 75, 100, 125, 150...), each opened by a
+  trial rather than bought: a boss, a quest, an AP threshold, a set of achievements, or a
+  Raise-Max-Level scroll as a rare drop (Level System Extreme has one). A player at the cap keeps
+  banking XP toward the next level, so nothing is wasted while they work on the breakthrough.
+
+Answered 2026-09-30 (Chase): **the breakthrough is a reset.** Level goes back to 1 and the max level
+advances: the shard's time loop as a prestige system. **First cap 50**, unless resets argue for lower.
+Overseer:
+- Keep 50. Each reset raises the cap by a step (for example 50, 75, 100, 125, 150); an optional
+  "raise max level" scroll can still exist as a rare find.
+- A reset is chosen by the player at the cap, never forced, with a confirm step.
+- Make later loops faster (for example bonus XP per past reset), so repeating 1 to 50 feels like
+  progress, not punishment.
+- What resets and what stays needs deciding (see below).
+
+Answered 2026-09-30 (Chase):
+- **Everything stays through a reset** (titles, perks, follower slots, AP, Renown, shop tiers), but
+  **gear above the player's current level can no longer be used** until they level back up.
+- **A reset needs rewards of its own, possibly tiered.** Chase's candidates: stat cap, skill cap,
+  stat points, skill points, follower slots.
+
+Overseer proposal for the reset rewards (a tier per loop, to react to):
+- **Skill cap is the headline reward.** It fits the vision exactly: one character that can do
+  anything, over and over. Each loop raises the total skill cap (for example +50 per loop from
+  700), so a looped character can hold more skills, but **still has to grind them by use**.
+- **Stat cap** rises by a smaller step (for example +5 per loop, from 225).
+- **Follower slots** at some loops (for example loops 2 and 4).
+- **No free skill or stat points**: points would skip the grind, and the cap raise already gives
+  the grind somewhere to go. (Chase to confirm.)
+- A loop counter in the title ("Looped x3") and a loop achievement per tier.
+- Example ladder: loop 1: cap 75, +50 skill cap, +5 stat cap. Loop 2: cap 100, +50, +5, +1
+  follower slot. Loop 3: cap 125, +50, +5. Loop 4: cap 150, +50, +5, +1 follower slot, a unique
+  title. Numbers are placeholders.
+
+Chase's idea (2026-09-30, "maybe"): **each skill is capped at the player's level cap.** Overseer's
+reading: the **max level** (which only rises through loops), not the current level, so a reset never
+lowers skills. With the ladder above: loop 0 cap 50 means no skill above 50.0; loop 2 cap 100 is the
+first chance to GM a skill.
+Overseer notes:
+- It ties the two systems into one number, and makes the loop the gate to mastery. Strong fit for
+  "stubborn skill grinder with time loops".
+- **Map it, do not copy it past 120**: per-skill cap = min(level cap, 120). OSI's per-skill ceiling
+  is 120 (power scrolls), and plenty of pinned formulas assume it. Loops beyond cap 120 raise the
+  **total** skill cap instead.
+- Power scrolls then only work up to the current level cap (a 120 scroll needs level cap 120).
+- Cost: a new player cannot reach GM in anything until their second loop. Needs the first loops to
+  be quick enough (F-12 later-loop XP bonus, and a first cap reached in days, not weeks), or new
+  players will bounce.
+- A large deviation from OSI; register it and explain it on the wiki's first page.
+- Check first: how pinned stores per-skill caps (`Skill.Cap`, default 100) and whether setting it per
+  player needs a core edit.
+
+**Decided 2026-09-30 (Chase):**
+- **Individual skill cap = the player's level cap (max level).** At cap 50 no skill goes above 50.0;
+  looping is the only way to raise it. This **forces an early loop** by design.
+- **Reset rewards as proposed**, with the individual skill cap taking the place of the "+50 total
+  skill cap per loop" line: stat cap rises per loop, follower slots at some loops, loop counter in
+  the title and a loop achievement per tier, **no free skill or stat points**.
+
+**Decided 2026-09-30 (Chase):**
+- **Total skill cap: unlimited.** (One character that can do everything.)
+- **No 120 ceiling.** Individual skill cap follows the max level all the way up, and the **max level
+  itself lands somewhere between 500 and 1000** (to settle).
+- **Past OSI's 120, progression needs power scrolls, or a rebranded version of them**, for the later
+  loops.
+- **First, find out how skills behave past 120** in pinned and what has to be added so going
+  further works.
+
+Overseer: this is the shard's biggest design commitment, so it gets its own research task before
+anything is built (a read-only cc prompt):
+1. **Storage and client:** how pinned stores skill values and caps (`Skill.Base`, `Skill.Cap`,
+   `SkillsCap`), their numeric limits (tenths of a point in an unsigned 16-bit value would allow up
+   to 6,553.5), what the skill packets send, and whether TazUO shows values over 120 correctly.
+2. **Every skill's formulas past 120**, sorted into: scales sensibly; clamps harmlessly at 100 or
+   120 (no effect past it); **breaks** (chances over 100 percent, divide-by-zero, negative values,
+   overflow, immunity: e.g. Resisting Spells reducing damage to nothing, Parry always blocking,
+   Hiding never failing, damage bonuses running away, crafting exceptional chance past certain).
+   One table per skill with file:line.
+3. **Gains past 120:** how pinned's gain chance behaves as skill rises (it may stall or go
+   negative), since it was tuned for 0 to 120.
+4. **Power scrolls:** how pinned's power scrolls and stat scrolls are defined, what caps them at
+   120, and what a "rebranded" line of scrolls for higher tiers would touch.
+5. **Creatures:** whether creature stats and F-14 levels need to scale to challenge a 500-skill
+   character, or whether the level range is mostly prestige.
+Output: a report and a recommendation per skill (let it scale, soft-cap it with diminishing
+returns, or give it new effects past 120), plus a first XP curve for a 500 to 1000 level range.
+
+Open questions:
+- Max level: 500 or 1000 (or in between)? The research above should inform it.
+- Power scrolls kept as they are for 105 to 120 (OSI), with a new, rebranded line beyond 120? Or
+  rebrand the whole line?
+- **What does a level give?** (answered above; kept for the record of options) Stat or skill points would change UO's caps (skill cap 700, stat
+  cap), which is a big balance decision. Alternatives: titles and cosmetics only, access to
+  content or areas, higher caps in steps (a cultivation-style breakthrough), or perks.
+- Per character or per account? (Achievements are per account today.)
+- Pet levels in the first version, or later?
+- Does the "time loop" / prestige idea reset levels (prestige resets for a permanent bonus)?
+
+### F-13: Achievement reward shop and AP-gated titles (added 2026-09-30)
+
+**Ours.** Goes with F-12 (levels) but can ship without it.
+
+What Chase wants:
+- Achievement points **required** for titles and rewards.
+- An **achievement reward shop**.
+
+What exists (read 2026-09-30, `ClusterFAccountData.cs:5-20`): the design already has two numbers.
+- **AP (Achievement Points): "permanent prestige score, not spendable."** Earned per achievement
+  (`ClusterFAchievements.cs:837`). Only used today for two League achievements at 100 and 500 AP
+  (`:1038-1039`) and shown in the achievements gump (`:1628`).
+- **Renown: "spendable achievement currency."** Earned with each achievement, and
+  `SpendRenown` exists (`:460`), but **nothing spends it yet.** The shop is what it was made for.
+
+Suggested (overseer):
+- **AP unlocks, Renown buys.** AP is a lifetime score, so thresholds on it never go backwards: a
+  title or a shop tier opens at 100, 250, 500... AP and stays open. Renown is what the shop charges,
+  so buying never lowers a player's standing.
+- **Titles**: earned by AP thresholds and by specific achievements; the player picks one to show
+  under their name. Could also be bought in the shop, gated by AP.
+- **Shop tiers by AP**: each item has a Renown price and an AP requirement. Locked items are shown
+  greyed with "Requires 500 AP", so players see what is coming.
+- One store window, shaped like the Clean Up Britannia store (F-3), so the shard's stores feel alike.
+- Content in the System's voice (Dungeon Crawler Carl-style loot boxes would fit: a box whose tier
+  depends on AP, opened with a snarky line).
+- Prices set with the same care as F-3: nothing that breaks OSI balance (no power scrolls or
+  artifacts sold outright). Cosmetics, titles, conveniences, house decor, hues.
+
+Check first:
+1. How much Renown and AP each achievement gives today, and the totals a player could reach, so
+   prices and thresholds are set against real numbers.
+2. How titles can be shown in pinned (the name suffix / title property on `PlayerMobile`) without
+   a core edit.
+3. Where the shop lives: an NPC in New Haven, the achievements gump, or both.
+
+Answered 2026-09-30 (Chase): **AP unlocks, Renown buys.** AP thresholds gate titles and shop tiers
+and never go backwards; Renown is the price.
+
+- **The shop lives with the League, which is the shard's adventurers' guild** (Chase, 2026-09-30):
+  the League Registrar opens it
+  (`ClusterFLeagueSystem.cs`, `LeagueRegistrarGump`). Fits: the achievement system already has a
+  League category, and the 100 and 500 AP achievements are League achievements. Overseer suggests a
+  button in the achievements gump that opens the same store too.
+
+Open questions:
+- What should it sell? A first list to react to can come from the overseer.
+
+### F-14: Creature levels, so players can tell what they can fight (added 2026-09-30)
+
+**Ours.** Goes with F-12 (player levels). OSI shows no creature levels.
+
+What Chase wants:
+- Every monster and NPC gets a level, so a player can judge whether they can take it on.
+
+Bases found (read 2026-09-30):
+- **OSI's own difficulty formula, already in pinned:** `BaseInstrument.GetBaseDifficulty`
+  (`Items/Skill Items/Musical Instruments/BaseInstrument.cs:250`), the Bard difficulty used by
+  Provocation, Peacemaking and Discordance. It scores any creature from its stats: max hits,
+  stamina and mana, total skills, then +100 each for magery, fire breath, poison immunity, +20 per
+  poison level, with a soft cap and a paragon bonus. **Works on every creature automatically,
+  including our custom ones and anything added later.** Recommended base.
+- **Fame**: every OSI creature has a Fame value (used for titles and loot); a second opinion.
+- **Level System Extreme's XP tiers** (`ExpTables.cs`): about 280 creature types hand-sorted into
+  ten tiers (38 no-XP, then 26 / 68 / 4 / 46 / 34 / 17 / 10 / 21 / 11 / 5 from lowest to highest).
+  Useful as a cross-check, not complete.
+
+Suggested (overseer):
+- **Creature level = a mapping of Bard difficulty** onto the player level range (F-12), with a
+  **hand override** for bosses, champions and story NPCs. Computed, so it never goes stale.
+- **"Con" colors** (EverQuest and Dungeon Crawler Carl style), relative to the player's level: grey
+  (trivial), green, blue, yellow (even), orange, red, skull (deadly). Shown in the name or the
+  tooltip, e.g. "a troll [Lv 34]".
+- XP from kills (F-12) scales from the same level, so both systems read one number.
+- A report command for staff listing every creature with its computed level, to review outliers.
+
+Check first:
+1. Run `GetBaseDifficulty` over every creature type in pinned plus customizations (a test or a
+   report command) and look at the spread: does it rank them sensibly (a rat below a dragon below
+   an ancient wyrm)? Where does it go wrong (creatures whose danger is in special abilities the
+   formula ignores)?
+2. How to show a level in pinned without a core edit: name suffix, the property list (tooltip),
+   or both; how name hue interacts with notoriety colors (which must not be broken).
+
+Answered 2026-09-30 (Chase): **color** (con colors relative to the player's level), and **NPCs
+too**, not only things that fight.
+
+Chase's idea: **an Identify skill**, or **repurpose Item Identification**, to learn more than the
+color. Overseer:
+- Suggested split: the **con color is free** for everyone (a glance at the name). The **exact level
+  and details** (level number, notable abilities) need a skill.
+- **Repurposing Item Identification** is a deviation from OSI (register it). Since AOS, item
+  properties show on hover, so the skill does very little today, which makes it the cheapest skill
+  to give a new job without taking anything away. It could identify creatures (level, abilities)
+  and items (level requirements, loop requirements).
+- Alternative without a deviation: add the level to what **Anatomy, Animal Lore and Evaluating
+  Intelligence** already show when used on a creature. Less flavor, no rule change.
+- Check first: what Item Identification does in pinned today (cite), and what uses it (Imbuing,
+  quests, anything else), before taking it over.
+
+Open questions:
+- Repurpose Item Identification, or add the level to Anatomy / Animal Lore / Evaluating
+  Intelligence?
 
 ## Batched
 
