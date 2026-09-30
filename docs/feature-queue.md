@@ -32,12 +32,14 @@ For a new overseer chat: read this section, then the entries it names.
   Offered as cc-P21.
 - **Waiting on Chase:**
   - F-6: react to the cartography ideas; whether areas revealed by a map count for achievements;
-    Cartography gain from walking. Scope answered 2026-09-30 (exploring earns; all facets and dungeons).
-  - F-9 follow-up: where the fighting pit is, for a lower-rank Thieves' Den member.
+    Cartography gain from walking. Scope answered 2026-09-30 (exploring earns; all facets, dungeons
+    and towns).
+  - F-9 follow-up: confirm the pit at 3445,2557,30 in game; the thief goes on the stool at 3440,2558,55.
   - F-12: loop ladder draft (names, steps, scroll tiers, 3-for-1 merge) to react to; how each League
     metal rank is earned. Wait for P20's findings before drafting.
-  - F-13: react to the draft shop list (overseer, 2026-09-30).
-  - F-14: rename Item Identification for everyone, or mark the quest another way; the skill steps.
+  - F-13: react to the draft shop list; react to the veteran cap proposal (+1 skill cap per level to
+    712, +5 stat cap at level 6).
+  - F-14: the skill steps. (Renamed Appraisal for everyone; con color for everyone.)
   - F-4, F-10: not scheduled.
 - **Commits verified 2026-09-30 15:27:** both repos pushed (docs 4b7654e, code 5a8b67f). `roadmap.md`
   went in with the 15:00 commit (897e7ae).
@@ -337,8 +339,9 @@ Suggested (overseer), for Chase to react to:
   as in OSI) records the chunks its maker explored inside its bounds. Reading it reveals those chunks
   for the reader. Higher skill, bigger map. A player can buy a map of Ilshenar instead of walking it.
 - **Decoding a treasure map** reveals the chunks around the chest.
-- **Exploration achievements by percent explored**, per facet and per dungeon (25 / 50 / 75 / 100),
-  paying AP and Renown like the rest. The seven exploration achievements today only mark a visit.
+- **Exploration achievements by percent explored**, per facet, per dungeon and **per town** (Chase,
+  2026-09-30) (25 / 50 / 75 / 100), paying AP and Renown like the rest. The seven exploration
+  achievements today only mark a visit. Towns and dungeons are bounded by their regions in pinned.
 - Maybe: walking an unexplored chunk gives a small chance at a Cartography gain. That changes OSI's
   gain rules, so only if Chase wants it.
 
@@ -660,10 +663,15 @@ still applies to that tab. Nothing is placed or removed on live by this change.
   failing silently.
 
 Open questions:
-- Where the fighting pit is. Chase, 2026-09-30: the guildmaster stays in the tavern's back room
-  (cc-P15 seeded it in the inn's stone storeroom, 3495,2515,27). The NPC by the fighting pit is a
-  **lower-rank Thieves' Den member** who sends players to the guildmaster. cc-P15 found no pit in or
-  by the inn, so its location is still needed.
+- Answered 2026-09-30 (Chase): the guildmaster stays in the tavern's back room (cc-P15 seeded it in
+  the inn's stone storeroom, 3495,2515,27). The NPC by the fighting pit is a **lower-rank Thieves' Den
+  member** who sends players to the guildmaster. The pit is "behind the healers": read from the client
+  map 2026-09-30, it is the sunken floor in the building west of the Healer's Hall, **3442-3448,
+  2554-2560, z30**, with blood stains on it and benches around it at z55. Snapshot:
+  `D:\UO\snapshots\newhaven-pit-closeup.png`. Chase to confirm in game with `[go 3445 2557 30`.
+  **The thief sits on a stool by the pit** (Chase, 2026-09-30). Pick: the stool at **3440,2558,55**
+  (static 0xA2A, upper floor, west of the bench ring, facing east over the pit); CC sets the Z from
+  the stool's tiledata height. Goes in a later batch as a small seeder addition.
 - Answered 2026-09-30: tools are the creation items (above); starter items are free once per loop.
 - Answered 2026-09-30: the new guilds are named **the Twin Paths Dojo** and **the Keepers of the
   Last Door**.
@@ -1101,7 +1109,6 @@ Renown is the price. Totals about 4,400 Renown, so a completionist can buy most 
 | 500 | Achievement trophy: statuette showing the owner's name and AP | 250 | decor |
 | 500 | League-hue pigment, one use (like the Clean Up pigments) | 300 | cosmetic |
 | 500 | Title: "Veteran of the League" | 200 | title |
-| 1000 | Ethereal mount, one type | 750 | convenience |
 | 1000 | System's Loot Box, Gold | 400 | loot box |
 | 1750 | League regalia: robe, cloak and sandals in a unique hue | 1000 | cosmetic |
 | 1750 | Title: "the System's Favorite" | 500 | title |
@@ -1111,8 +1118,24 @@ Loot boxes draw only from the kinds above, with a line in the System's voice.
 
 Open questions:
 - React to the list: cut, add, reprice.
-- The ethereal mount: OSI gives these as veteran rewards by account age. Keep it (register a
-  deviation) or drop it?
+- Answered 2026-09-30 (Chase): **include account age (veteran) rewards, with a short account age.**
+  Found: pinned already has OSI's veteran reward system **on**, one level per **30 days**
+  (`Engines/Veteran Rewards/RewardSystem.cs:559-564`; `vetRewards.rewardInterval` in `modernuo.json`).
+  It gives ethereal mounts, monster statues, cloaks and robes, special dye tubs and house add-ons. It
+  also **raises the skill cap by 5 per level up to 720** and gives +5 stat cap
+  (`RewardSystem.cs:576-593`, `vetRewards.skillCapRewards: True`). So the ethereal mount comes off the
+  League list (the veteran rewards give it), and the shop can show the veteran rewards beside the
+  League items.
+- Answered 2026-09-30 (Chase): **30 days of account age per reward level**, and **the skill cap and
+  stat cap bonuses become something different and appropriate**. Proposed (overseer), for Chase to
+  react to:
+  - Pinned gives +5 skill cap per level, up to 720 at level 4 (four months at 30 days), and +5 stat
+    cap once at half a level (15 days). Too fast next to F-12's loops and scroll gating.
+  - **Skill cap: +1 per reward level, up to +12 at level 12** (one year): 700 to 712.
+  - **Stat cap: +5 once at reward level 6** (six months), instead of at 15 days.
+  - Pinned hard-codes both in `RewardSystem.OnLogin` (`:576-594`, only for caps 700 to 720), so the
+    change goes through a hook, not a pinned edit; turn `vetRewards.skillCapRewards` off and apply
+    ours. Check first how a reset (F-7) and loops (F-12) treat these caps.
 - Loot boxes: only from this list, or their own pool of decor and cosmetics?
 - Level gates from F-12 get added when levels exist; any tier that should wait for them?
 
@@ -1185,8 +1208,13 @@ batched). Two more ideas from Chase:
     whether it is a paragon or a boss.
   On items it keeps its current use and adds level and loop requirements (F-12) from 30.
 
+Answered 2026-09-30 (Chase): **(a), rename it for everyone** through the updater. **Every creature
+shows its con color against the player's level**, whatever its level and whatever the player's skill;
+the skill adds detail on top of the color.
+
+Answered 2026-09-30 (Chase): the new name is **Appraisal**.
+
 Open questions:
-- Rename for everyone (a) or mark the quest another way (b)? If a, which name?
 - The skill steps above: fine as a start?
 
 ### F-15: Version number and patch notes in the MOTD, linked to the website (added 2026-09-30)
