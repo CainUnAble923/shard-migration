@@ -14,45 +14,52 @@ Running list of feature ideas from play testing. Kept by the overseer (Claude); 
 4. Chase commits with `Commit-ShardWork.ps1`.
 
 F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and questions (Q-n).
-**Next free: F-24.**
+**Next free: F-25.**
 
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
 
-## Where things stand (handoff, updated 2026-09-30, 20:25)
+## Where things stand (handoff, updated 2026-10-01, 07:30)
 
-For a new overseer chat: read this section, then the entries it names.
+For a new overseer chat: read this section, then the entries it names. The project-wide picture
+(prompt states, bug numbers, the concurrency rule) is in `notes\passdown-overseer-2026-10-01.md`.
 
-- **Batched:** F-9 (cc-P15, ran), F-7 + F-5 + F-1 (cc-P18), F-12 research only (cc-P20, read-only).
-  **cc-P22-small-features-1** (`D:\UO\cc-prompts\`, written 2026-09-30, runs after P19 is committed
-  and P20 is done): F-16, F-19, the thief at the pit (F-9 follow-up), F-11, F-17, F-15.
-- **Next prompt to write: cc-P23 for F-8** (animated runestone, all four stones as variations; art
+- **Prompt numbers moved overnight.** P23 is the live defect sweep (D42, D43, D41, D13, running) and P24
+  the New Haven dungeon research (running, read only). P25 is reserved for the stats-above-125 research
+  pass (F-12). **F-8's prompt is therefore cc-P26**, not P23 as the 2026-09-30 handoff said.
+- **One builder at a time in `D:\ShatteredLegacy`.** Build order: P23, then **P22** (it shares
+  `ClusterFGuildSystem.cs` and the starter-path quest arrow with P23), then P26 (F-8). Notes-only
+  prompts (P24, P25) run alongside anything.
+- **Batched:** F-9 (cc-P15, ran), F-7 + F-5 + F-1 (cc-P18), F-12 research only (cc-P20, done).
+  **cc-P22-small-features-1**: F-16, F-19, the thief at the pit (F-9 follow-up), F-11, F-17, F-15.
+- **Next prompt to write: cc-P26 for F-8** (animated runestone, all four stones as variations; art
   unpacked in `D:\UO\third-party\animated-runestone\`). Proves the updater ships new art; F-21, F-22
   and F-23 wait on it. **F-22 has a date: on the test shard before December 1.**
 - **Ready to batch, no open questions, each its own batch:**
   - F-3 (Clean Up Britannia with the Custodian layer; about 20 units).
   - F-18 then F-20 (BODs for growth, smithing and tailoring; then other crafts, Carpentry and
     Tinkering first). After P22, which changes the same BOD gumps.
-  - F-13 (League shop starter list; vet rewards give +1% XP per level once F-12 XP exists).
   - F-14 (Appraisal and con colors; the level number waits on F-12).
   - F-6 (fog of war with the Cartography tie-ins; the TazUO client half to scope first).
   - F-22 (winter decor Dec 1 to Jan 6, both layers; art in `D:\UO\third-party\winter-holiday\`;
     skip Vrark's two animated trees). After F-8.
-- **Waiting on downloads** (Chase hit servuo.dev's daily limit 2026-09-30): the rest of F-21's packs
-  (farm carts are in `D:\UO\third-party\farm-carts\`) and F-23's Siege of Sosaria paperdoll kit.
-  Downloads land in Chase's Downloads folder; the overseer copies them to `D:\UO\third-party\`.
+- **F-12 and F-13 are redesigned** in `notes\f12-levels-loops-caps.md` (max level 200; vet reward is now
+  +50 total stat cap). The queue entries carry pointers; that doc governs. F-13 is no longer "ready":
+  re-read it against the new doc before batching.
+- **Waiting on downloads** (servuo.dev daily limit hit 2026-09-30): the rest of F-21's packs (farm carts
+  are in `D:\UO\third-party\farm-carts\`) and F-23's Siege of Sosaria paperdoll kit. Downloads land in
+  Chase's Downloads folder; the overseer copies them to `D:\UO\third-party\`.
 - **Waiting on Chase:**
+  - F-24 (League work): answered 2026-10-01; four overseer defaults to confirm when it is specified.
   - F-9 follow-up: confirm the pit stool at 3440,2558,55 in game (`[go 3440 2558 55`).
-  - F-12: loop ladder draft to react to; how each League metal rank is earned. Wait for P20.
-  - F-23: paperdoll kit for everyone, or opt-in? (Chase also asked about NSFW paperdoll art; the
-    overseer asked who plays first, since the player package is a public download. Unanswered.)
+  - F-12: the three placeholder numbers (reserve cap, echo multipliers, step size above 100); how
+    each League metal rank is earned.
+  - F-23: paperdoll kit for everyone, or opt-in? NSFW paperdoll question still unanswered.
   - F-4, F-10: not scheduled.
-- **Numbering:** two tasks were both named P21 (`notes\cc-P21-console-world-commands.md` and the New
-  Haven dungeon research brief in the overseer's project). P22 is taken; next is P23.
 - **Free art slots:** OSI's "UNUSED" placeholder art marks free slots in `artLegacyMUL.uop` (found
   checking the farm carts, F-21).
-- Tonight's queue edits (F-8 decision, F-21 to F-23, handoff) are uncommitted until Chase runs
-  `Commit-ShardWork.ps1`.
+- **Fixed 2026-10-01:** the F-9 "Open gap" note had been inserted mid-sentence into the 15-minute
+  acceleration decision; the two are separated again.
 
 ## Open
 
@@ -489,7 +496,10 @@ What exists (read 2026-09-30):
   The guild route gives the **first** copy; both keep their existing reissue and recharge rules
   instead of the scrip replacement below.
 - Each quest also gives a 15-minute skill-gain acceleration on accept. The guild route does not.
-  **Decided 2026-09-30 (Chase): leave it out, deliberately.**
+  **Decided 2026-09-30 (Chase): leave it out, deliberately.** Fifteen minutes is too short to matter, and at
+  our skill rates the difference is not observable in play. Do not build parity, and do not treat the absence
+  as an oversight later. The wiki should say the two routes differ only in this, and that it is intentional.
+  At our gain rate this is accepted, and is part of the deviation.
 - **Open gap found in play, 2026-10-01: nothing points a player to the League of Extraordinary
   Citizens.** F-9 specified that the Registrar shows the **guild** list, a second doorway inward. It
   never specified the reverse, so cc-P15 built what it was told and this is **not a defect**. But the
@@ -498,10 +508,20 @@ What exists (read 2026-09-30):
   Guild Directory was built to solve, one level up. **For the features chat to decide**: does the
   League belong in the directory, does it get its own entry point, or is it meant to be found only by
   walking into the office? Related: T-040, and verify separately that the Registrar does show the
-  guild list as F-9 specified; if it does not, that part **is** a cc-P15 defect. Fifteen minutes is too short to matter, and at
-  our skill rates the difference is not observable in play. Do not build parity, and do not treat the absence
-  as an oversight later. The wiki should say the two routes differ only in this, and that it is intentional.
-  At our gain rate this is accepted, and is part of the deviation.
+  guild list as F-9 specified; if it does not, that part **is** a cc-P15 defect.
+  **Decided 2026-10-01 (Chase):** the League is open from day one, and it is **the guild for the
+  guilds**, the organization that ties them all together (not one more guild beside them). Entry
+  points:
+  1. **Guild Directory:** one League row, set apart **at the top** as the umbrella over the guild rows
+     (overseer placed it at the top to match "guild for the guilds"; Chase can move it), with
+     **Show me the way** to the League Registrar.
+  2. **First-login welcome page** names the League in one line next to the Guild Board line.
+  3. **A sign outside the field office** (cc-P19's office), readable from the street.
+  4. The Registrar's greeting introduces the League. Note: this only reaches a player who has
+     already found the office, so 1 to 3 are the real pointers.
+  Same rule as Decision 2.3: `[guild`, the board and the Registrar show the same rows.
+  Size: small, likely folds into the next batch that touches the directory. What the League hands out
+  is F-24.
 - New characters arrive at 3503,2574,14 (`CharacterCreation.cs:114`); the board is 1 tile away.
 - Deviation text is drafted in P14 section 5 as **D-92**. The overseer promotes it with F-9's
   answers filled in, after confirming the number is still free.
@@ -781,6 +801,10 @@ Answered 2026-09-30 (Chase):
 Open questions: none.
 
 ### F-12: Player levels and XP, modeled on ServUO's Level System Extreme (added 2026-09-30)
+
+> **REVISED 2026-10-01. Max level is 200, not 1000, and the ladder below is superseded.**
+> The current design is `notes\f12-levels-loops-caps.md`, decided from cc-P20's research.
+> Where that doc and this entry disagree, that doc governs until this entry is rewritten.
 
 **Ours.** OSI has no levels. Fits the vision (LitRPG, levels, prestige, Dungeon Crawler Carl).
 
@@ -1157,7 +1181,8 @@ Account age (veteran) rewards:
   League items.
 - Reward level N needs N x 30 days of real account age (Chase, 2026-09-30); that is pinned's current
   setting, no change.
-- **Decided 2026-09-30 (Chase): no skill cap or stat cap bonuses.** F-12 already makes the total skill
+- **SUPERSEDED 2026-10-01 (Chase): the veteran reward now raises the total stat cap by 50.** Base total stat cap is 325 and the veteran reward takes it to 375, which is 125 in each stat; the per-stat 125 never moves. This is the stat cap mechanism, and a deviation from OSI's +5 for the register. See `notes\f12-levels-loops-caps.md`. The 2026-09-30 decision below is kept for the reasoning only.
+- ~~Decided 2026-09-30 (Chase): no skill cap or stat cap bonuses.~~ F-12 already makes the total skill
   cap unlimited with each skill capped by max level, and the stat cap is a loop reward, so vet cap
   bonuses would do nothing or compete with loops. **Instead, +1% XP per reward level, up to +12% at
   one year**, applied to F-12 XP. Until F-12 ships, vet levels give only their reward items.
@@ -1649,6 +1674,54 @@ and "Dragon Desktop" are wanted or left out; total size for the updater.
 
 Open questions:
 - Everyone, or an opt-in download?
+
+### F-24: League work: guild quests, monster hunts, culling and dungeon dives (added 2026-10-01)
+
+**Ours.** OSI has nothing like it; closest are the Clean Up Britannia and bounty-style systems.
+
+What Chase wants (2026-10-01): the League of Extraordinary Citizens is the guild for the guilds and
+hands out the shard's adventuring work: **quests for the guilds, monster hunts for monster parts,
+monster culling, dungeon dives, and similar.**
+
+Overseer feedback:
+- This makes the League the shard's main repeatable-content hub, and the natural XP and Renown source
+  for F-12 and the spend side of F-13's shop. Worth designing as one contract framework with types,
+  not four systems.
+- **Hunts** (a named or elite target, drops parts) and **culls** (kill N of a species in a region)
+  both need F-14's creature levels to be sized to the player. Order: F-14 before F-24's hunts and culls.
+- **Dungeon dives** depend on the New Haven dungeon (P24 research) and, for the deeper version, on
+  whether TazUO can read Trammel map edits from the player package.
+- **Monster parts** need a sink: crafting recipes, guild turn-ins, or the F-13 shop. Without one they
+  are vendor trash.
+- Overlap to settle: guildmasters already hand out guild contracts (F-9, Decision 2.5).
+
+Answered 2026-10-01 (Chase):
+1. **Board contents:** the board shows **League jobs**, with tabs for jobs that cross guilds or serve two
+   guilds at once. Start there and expand later.
+2. **Realm-wide boards** in towns, taverns and dungeons, not only the field office.
+3. **Rewards:** Renown, XP and League rank, **plus gold or another currency**, especially when the job
+   is done for a guild other than the player's own (the overseer reads "another currency" as that
+   guild's own scrip or seals, e.g. Smith Seals; confirm when specifying).
+4. **Unlimited** jobs, but a **cap on how many a player holds at once**.
+5. **Dive objectives:** resource gathering, a monster kill limit (culling), and **investigation, which
+   spawns a temporary mini boss**.
+6. **Solo, but shareable with the player's party.**
+
+Overseer suggestions (Chase to confirm or change when the prompt is written):
+- Active-job cap: start at 3, +1 at certain League ranks, so rank has a visible use.
+- Party sharing: party members inside range at the moment of a kill or gather all get progress; each
+  member who accepted the shared job gets the full reward (no splitting), so grouping is never a loss.
+- Investigation mini boss: spawns for the job holder's party only, despawns after a timer if not
+  engaged, drops the parts that hunts are for.
+- Board placement: one board per town bank or tavern, one at each dungeon entrance, starting with New
+  Haven and the dungeons the starter guilds point to.
+
+Open questions: none blocking. The suggestions above are defaults, not questions.
+Order: after F-14 (job sizing by creature level) and with F-12's XP in place; dives after the P24
+dungeon work.
+
+Check first: the League design doc (`design\systems\league_of_extraordinary_citizens.md`, in
+`D:\ShatteredLegacy`), F-3's Clean Up Britannia, pinned's quest and bounty code, and F-14.
 
 ## Batched
 
