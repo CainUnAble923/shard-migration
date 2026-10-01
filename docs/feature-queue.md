@@ -14,34 +14,44 @@ Running list of feature ideas from play testing. Kept by the overseer (Claude); 
 4. Chase commits with `Commit-ShardWork.ps1`.
 
 F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and questions (Q-n).
-**Next free: F-21.**
+**Next free: F-24.**
 
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
 
-## Where things stand (handoff, updated 2026-09-30, evening)
+## Where things stand (handoff, updated 2026-09-30, 20:25)
 
 For a new overseer chat: read this section, then the entries it names.
 
-- **Batched:** F-9 (cc-P15, ran), F-7 + F-5 + F-1 (cc-P18, after P15 and cc-P17 bugs are committed),
-  F-12 research only (cc-P20, read-only, can run any time).
-- **Ready to batch, no open questions:** F-8 (runestone art test; Chase downloads the art from
-  ServUO), F-11 (bank resources for guild upgrades), F-15 (date version and patch notes in the MOTD,
-  full notes on the wiki; the first notes start with the batch after F-15 ships), F-3 (consumable
-  prices approved 2026-09-30; brings the Custodian trash bag route that cc-P18 held back).
-  Also F-16 (cheaper T1/T2 pickaxe restoration), F-17 (OSI's "contained items" button, port from
-  ServUO-pub57), F-18 (BODs for growth; smithing and tailoring), F-19 (bank 1,000 items, +100 per
-  League rank) and F-20 (other crafts' BODs, Carpentry and Tinkering first; after F-18).
-  Decided but bigger, each its own batch: F-6 (fog of war with the Cartography tie-ins; client half
-  in TazUO to scope first), F-14 (Appraisal and con colors; the level number waits on F-12) and
-  F-13 (League shop starter list; vet rewards give +1% XP per level once F-12 XP exists).
-  Offered as the next cc-P prompt (cc-P21 is taken).
+- **Batched:** F-9 (cc-P15, ran), F-7 + F-5 + F-1 (cc-P18), F-12 research only (cc-P20, read-only).
+  **cc-P22-small-features-1** (`D:\UO\cc-prompts\`, written 2026-09-30, runs after P19 is committed
+  and P20 is done): F-16, F-19, the thief at the pit (F-9 follow-up), F-11, F-17, F-15.
+- **Next prompt to write: cc-P23 for F-8** (animated runestone, all four stones as variations; art
+  unpacked in `D:\UO\third-party\animated-runestone\`). Proves the updater ships new art; F-21, F-22
+  and F-23 wait on it. **F-22 has a date: on the test shard before December 1.**
+- **Ready to batch, no open questions, each its own batch:**
+  - F-3 (Clean Up Britannia with the Custodian layer; about 20 units).
+  - F-18 then F-20 (BODs for growth, smithing and tailoring; then other crafts, Carpentry and
+    Tinkering first). After P22, which changes the same BOD gumps.
+  - F-13 (League shop starter list; vet rewards give +1% XP per level once F-12 XP exists).
+  - F-14 (Appraisal and con colors; the level number waits on F-12).
+  - F-6 (fog of war with the Cartography tie-ins; the TazUO client half to scope first).
+  - F-22 (winter decor Dec 1 to Jan 6, both layers; art in `D:\UO\third-party\winter-holiday\`;
+    skip Vrark's two animated trees). After F-8.
+- **Waiting on downloads** (Chase hit servuo.dev's daily limit 2026-09-30): the rest of F-21's packs
+  (farm carts are in `D:\UO\third-party\farm-carts\`) and F-23's Siege of Sosaria paperdoll kit.
+  Downloads land in Chase's Downloads folder; the overseer copies them to `D:\UO\third-party\`.
 - **Waiting on Chase:**
-  - F-9 follow-up: confirm the pit at 3445,2557,30 in game; the thief goes on the stool at 3440,2558,55.
-  - F-12: loop ladder draft (names, steps, scroll tiers, 3-for-1 merge) to react to; how each League
-    metal rank is earned. Wait for P20's findings before drafting.
+  - F-9 follow-up: confirm the pit stool at 3440,2558,55 in game (`[go 3440 2558 55`).
+  - F-12: loop ladder draft to react to; how each League metal rank is earned. Wait for P20.
+  - F-23: paperdoll kit for everyone, or opt-in? (Chase also asked about NSFW paperdoll art; the
+    overseer asked who plays first, since the player package is a public download. Unanswered.)
   - F-4, F-10: not scheduled.
-- Queue edits since the 16:48 commit (F-16 to F-20 and answers) are uncommitted until Chase runs
+- **Numbering:** two tasks were both named P21 (`notes\cc-P21-console-world-commands.md` and the New
+  Haven dungeon research brief in the overseer's project). P22 is taken; next is P23.
+- **Free art slots:** OSI's "UNUSED" placeholder art marks free slots in `artLegacyMUL.uop` (found
+  checking the farm carts, F-21).
+- Tonight's queue edits (F-8 decision, F-21 to F-23, handoff) are uncommitted until Chase runs
   `Commit-ShardWork.ps1`.
 
 ## Open
@@ -425,7 +435,17 @@ Check first:
 3. Which client file it lands in (.mul or .uop) and that file's size, since the updater ships it
    whole.
 
-Open questions: none.
+**Art downloaded 2026-09-30** (Chase, logged in to ServUO): `D:\UO\third-party\animated-runestone\`.
+The zip holds four GIFs and four zips of PNG frames. Unpacked (overseer) to `frames\stone1` to
+`frames\stone4`: **four stone designs, 11 frames each**, RGBA PNG, sizes 66x115, 94x117, 66x124 and
+80x111, frame time 80 to 90 ms (from the GIFs). Preview: `contact-sheet.png`. **No license file in the
+download and none on the page**; the resource is posted for the ServUO community to use. Overseer
+suggests a thank-you post on the thread asking whether shard use is fine, for the record.
+
+Answered 2026-09-30 (Chase): **all four, as variations** of the one item (like OSI items that turn
+between graphics; the reset stone can pick one, or the player turns it).
+
+Open questions: none. Ready to batch.
 
 ### F-9: Guilds replace the New Haven training quests as the starter path (added 2026-09-30)
 
@@ -1435,8 +1455,9 @@ Suggested (overseer):
 - Tests: a bank takes item 1,000 and refuses 1,001 with OSI's message; a backpack and a house
   container keep 125.
 
-Answered 2026-09-30 (Chase): **base 1,000 items**, **+100 per League rank**. Check first how League
-ranks are stored and when a rank changes, so the bank's size follows it (and what a reset does to it).
+Answered 2026-09-30 (Chase): **base 1,000 items**, **+100 per League rank**. Found 2026-09-30: League
+ranks do not exist yet (`ClusterFLeagueSystem.cs:51-66` has only citizen status; F-12's metal ranks
+are undecided), so cc-P22 builds the base and leaves the rank bonus as a method returning 0.
 
 Open questions: none. Ready to batch.
 
@@ -1472,6 +1493,163 @@ homes approved as suggested.**
 
 Open questions: none. Ready to batch after F-18.
 
+### F-21: Community art in and around New Haven (added 2026-09-30)
+
+**Ours** (new art; nothing OSI has is replaced unless noted). Follows F-8, which proves the updater
+can ship new art; do F-8 first.
+
+What Chase wants: art updates in and around New Haven.
+
+Candidates (overseer, from the servuo.dev Art category, 2026-09-30; each needs its license checked):
+
+| Pack | Author | Fit for New Haven |
+|---|---|---|
+| Farm carts | Moonrose | The farms and the market square |
+| Oil lantern | Ems | Street and dock lighting |
+| Satchel | Ems | Art for our ore and lumber satchels |
+| Marble Railings, Bannisters, Ladder | OUTLANDSOwyn | The Registrar's office (P19) and guild halls |
+| Paintings (several sets) | Odin, Hestia | The inn, the Registrar's office, guild halls |
+| Bridge support beam | golfin | The docks |
+| Orc encampment | Vrark | A camp on the outskirts, or the road to the new dungeon |
+| Spooky Graveyard (41 graphics) | DRC1K | The Keepers of the Last Door's grounds |
+| The Ultimate Dungeon Wall Set, New Gray Rocks | DRC1K | The New Haven dungeon (design doc in the overseer's project) |
+| Free Halloween Asset Pack | DRC1K | A seasonal October event in New Haven |
+
+Two kinds, handled differently:
+- **New art** (all of the above): added in free art slots, used by items we place. Only where we put
+  it changes.
+- **Replacements** (for example Zigholtul's static replacements, "Tall Trees & Stuff", the "Trees of
+  Verdant and Autumn leaves" set): change the look of existing art everywhere, not just New Haven.
+  Zigholtul's set is already the back-pocket option in the state doc, with license questions.
+
+Check first, per pack: license or terms; file format (PNG frames, or .mul/.uop already); free art IDs
+from F-8's map, so packs never collide; total size the updater must ship.
+
+**Downloads pending** (Chase hit servuo.dev's daily download limit, 2026-09-30): all but the farm
+carts.
+
+**Farm carts, downloaded 2026-09-30** (`D:\UO\third-party\farm-carts\`): 4 TIFFs named for the art
+slots they are made for, **6784, 6785** (fruit cart, two facings) and **6807, 6808** (vegetable cart,
+two facings). Checked in our client (`artLegacyMUL.uop`): all four slots exist and hold OSI's
+**"UNUSED" placeholder** art, with no tiledata name, so the carts replace nothing. Tip for F-8 and the
+rest: scanning for that placeholder finds free slots. Links are on each pack's servuo.dev page; save to Downloads and the overseer moves
+them to `D:\UO\third-party\`.
+
+Answered 2026-09-30 (Chase): **decorate New Haven appropriately with these packs.** The Halloween pack
+is **kept in the back pocket**, not used this October. Winter and Christmas art is its own entry, F-22.
+
+Open questions: none. Ready to batch after F-8. Placement is the overseer's draft for Chase to walk
+in game before it goes on a world.
+
+### F-22: Winter holiday decorations for New Haven (added 2026-09-30)
+
+**Ported base, ours on top.** Chase, 2026-09-30: Christmas and winter may be the first holiday the
+shard decorates for.
+
+Found 2026-09-30:
+- **Pinned already has OSI's holiday decor**, art that is already in every client: holiday trees
+  (`Items/Special/Holiday/Christmas/HolidayTree.cs`, `Items/Deeds/HolidayTreeDeed.cs`), wreaths,
+  stockings, snowmen, snow globes, snowflakes, poinsettias, holiday bells, holiday foods, the
+  gingerbread house (`Items/Special/Holiday/`), and the 2004 and 2010 winter sets (snow piles,
+  glacial snow, snowy trees, mistletoe, the Light of the Winter Solstice, festive cactus, decorative
+  topiary, rocking horse, angel decoration; `Holiday Stuff/Christmas/`). Pinned also has
+  `WinterGiftGiver`. **A first winter decoration needs no new art at all.**
+- Community art (servuo.dev, licenses to check):
+  - **[MrRiots] Winter/Christmas Related stuff** (2024): snow-covered paintings and shields, snow
+    patches, holiday food, eggnog trays, gingerbread house, candy cane arch, animated stoves, an
+    animated Father Christmas statue, an animated raised firepit, gift wrapping.
+    https://www.servuo.dev/archive/mrriots-winter-christmas-related-stuff.2388/
+  - **Christmas sprites** by Vrark (2025): static sprites and two animated Christmas trees, several
+    directions. Some come from other games (DarkEden) and the Kingdom Reborn client; those carry
+    rights questions, prefer the rest.
+    https://www.servuo.dev/archive/christmas-sprites.2545/
+  - **Publish 103 holiday clothes and mailboxes** (Sareus), **Some 2016 gift items** and **2016
+    holiday bells and ribbon** (Shazzy): smaller sets, mostly OSI publishes.
+
+Suggested (overseer):
+- **Layer 1, OSI art only**: a holiday tree in the square, wreaths on the guild halls, snow piles and
+  snowy trees, holiday bells, a snowman by the inn. Placed by an event seeder that can be switched
+  on and off by date, so it comes down after the holidays without anyone cleaning up by hand.
+- **Layer 2, community art** after F-8 proves the updater: MrRiots' animated Father Christmas and
+  firepit in the square, the candy cane arch at the town entrance.
+- A small event (gift giver, a snowball fight) is its own entry if wanted.
+
+Check first: what `WinterGiftGiver` and the 2004/2010 sets do in pinned and whether they are hooked
+to dates; which of the items above are placeable decorations versus player rewards; the license of
+each community pack.
+
+Answered 2026-09-30 (Chase): **up December 1, down January 6.** **All appropriate decor, both layers.**
+
+**Art downloaded 2026-09-30** (Chase), copied by the overseer to `D:\UO\third-party\winter-holiday\`
+(originals in `_zips\`, unpacked beside them, contact sheets `sheet-*.png`). BMPs use black as
+transparent, as UO art does.
+- **MrRiots, "For ServUO 2"** (87 BMP): candy cane arches and small canes, mistletoe, gift wrap,
+  holiday food (gingerbread houses, eggnog trays, cookie pans, candy cane trays, fruitcake, pie,
+  turkey, platters), **animated raised firepit** (5 frames), snow-covered shields and paintings, snow
+  patches, **animated Father Christmas statue** (5 frames, several facings), **two animated stoves**
+  (stone and metal, 4 frames each). Remade from OSI items; the best fit.
+- **Vrark, "Christmas sprites"** (241 BMP, 1 PNG, usually 2 or 4 facings each): Christmas trees in
+  several styles, wreaths, garland, sleighs, gift boxes and sacks, Santa's bag, stockings, a Christmas
+  fireplace, ornaments, poinsettias, holly, gnomes, snowmen, snowflakes, toys (rocking horse,
+  nutcracker, teddy bear, drum, trumpet), an advent calendar, 16 holiday paintings. Rendered from 3D
+  assets (the file prefixes look like Daz Studio product codes).
+- **Vrark, "Christmas tree 1 (animated)"** (5 BMP frames) and **"Christmas tree 2 (animated)"**
+  (4 PNG frames). **Vrark's page says the two animated trees come from other games** (DarkEden is
+  named): **leave them out** unless their source is cleared. Use the static trees instead.
+- None of the downloads carries a license file.
+
+Placement draft (overseer, for CC to propose tile by tile and Chase to walk in game):
+- **The square by the quest board (3502,2573)**: a large static tree from Vrark's set with presents
+  and Santa's bag, the animated Father Christmas statue, MrRiots' animated firepit, a snowman.
+- **Town entrances and main road**: candy cane arches, OSI holiday bells and wreaths on posts.
+- **Bountiful Harvest Inn**: holiday food and eggnog trays on tables, stockings, the Christmas
+  fireplace, an animated stove in the kitchen, mistletoe in the doorway.
+- **Guild halls and the Registrar's office**: OSI wreaths on doors, garland, holiday paintings and
+  snow-covered paintings and shields.
+- **Everywhere outdoors**: OSI snow piles and snowy trees, MrRiots' snow patches, light enough not to
+  hide paths or block movement.
+- **The docks**: a sleigh as a joke "delivery" on the pier.
+- All of it from one event seeder keyed to the dates, every item flagged as event decor so take-down
+  removes exactly what was placed and nothing else.
+
+Open questions: none. Ready to batch after F-8.
+
+### F-23: Paperdoll art replacements (added 2026-09-30)
+
+**Client art only** (UI, like Fiddle-Me-This), so the fidelity rule is not touched; it changes how
+every player's paperdoll looks.
+
+Chase, 2026-09-30: find paperdoll replacers.
+
+Candidates (servuo.dev, 2026-09-30):
+- **UO Paperdoll Project (Siege of Sosaria) Builder's Kit**, Zigholtul (updated 2026-09-10): replaces
+  the whole paperdoll gump set (bodies, hair, clothing, armor) for humans, elves and gargoyles, through
+  Endless Journey and New Legacy items, plus spell icons, a "Dragon Desktop" and a login splash. PNG.
+  https://www.servuo.dev/archive/uo-paperdoll-project-siege-of-sosaria-builders-kit-pngs-etc-included.2426/
+- **UO Paperdoll Project (Classic UO)**, Zigholtul (2026-08-02): extra hairstyles, weapons, race art,
+  PNG, installed with UOFiddler. https://www.servuo.dev/archive/uo-paperdoll-project-classic-uo.2662/
+- Single pieces: Beholder armor (Cerrera), Lion Masks and Wings (Odin), Polar Bear Mask (Vert-I-Go),
+  Female kimono (Ems), Orc male and female gump art (Odin).
+
+Notes (overseer):
+- **PNG gump art can ship the way Fiddle-Me-This does** (TazUO's `ExternalImages\gumps`, by gump ID),
+  so no client file has to be edited and the updater ships small files. Check each pack's file names
+  map to gump IDs.
+- Fiddle-Me-This already restyles the paperdoll **frame** (P4); these replace what is drawn inside it.
+  Check for overlap.
+- Zigholtul states no license, and the state doc already notes some of his art comes from EA's
+  Enhanced Client. Same caution as the static replacements.
+
+Answered 2026-09-30 (Chase): **the Siege of Sosaria Builder's Kit look.** Not downloaded yet
+(servuo.dev daily limit); save to Downloads when it resets.
+
+Check first, once downloaded: file names against gump IDs (so it ships through `ExternalImages\gumps`);
+overlap with Fiddle-Me-This; which pieces come from EA's Enhanced Client; whether its login splash
+and "Dragon Desktop" are wanted or left out; total size for the updater.
+
+Open questions:
+- Everyone, or an opt-in download?
+
 ## Batched
 
 | ID | Batch prompt | Notes |
@@ -1481,6 +1659,12 @@ Open questions: none. Ready to batch after F-18.
 | F-5 | cc-P18-reset-stone-young-craftx | Written 2026-09-30. Part 2 of 3. Pinned rules changed via a patch or hook. |
 | F-12 (research only) | cc-P20-skill-scaling-research | Written 2026-09-30. Read-only: skills past 120, gains, power scrolls, creatures, first XP curve. |
 | F-1 | cc-P18-reset-stone-young-craftx | Written 2026-09-30. Part 3 of 3; may stop at findings if larger than expected. Custodian trash bag route held back until F-3. |
+| F-16 | cc-P22-small-features-1 | Written 2026-09-30. Part 1 of 6. |
+| F-19 | cc-P22-small-features-1 | Written 2026-09-30. Part 2 of 6. League rank bonus stubbed at 0 until F-12. |
+| F-9 (thief at the pit) | cc-P22-small-features-1 | Written 2026-09-30. Part 3 of 6. Stool 3440,2558,55 from map data; Chase to confirm in game. |
+| F-11 | cc-P22-small-features-1 | Written 2026-09-30. Part 4 of 6; may stop at findings if large. |
+| F-17 | cc-P22-small-features-1 | Written 2026-09-30. Part 5 of 6. Port from ServUO-pub57. |
+| F-15 | cc-P22-small-features-1 | Written 2026-09-30. Part 6 of 6. No deploy; Chase publishes the wiki page. |
 
 ## Dropped
 
