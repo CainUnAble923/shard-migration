@@ -14,12 +14,12 @@ Running list of feature ideas from play testing. Kept by the overseer (Claude); 
 4. Chase commits with `Commit-ShardWork.ps1`.
 
 F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and questions (Q-n).
-**Next free: F-16.**
+**Next free: F-21.**
 
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
 
-## Where things stand (handoff, updated 2026-09-30, afternoon)
+## Where things stand (handoff, updated 2026-09-30, evening)
 
 For a new overseer chat: read this section, then the entries it names.
 
@@ -29,20 +29,20 @@ For a new overseer chat: read this section, then the entries it names.
   ServUO), F-11 (bank resources for guild upgrades), F-15 (date version and patch notes in the MOTD,
   full notes on the wiki; the first notes start with the batch after F-15 ships), F-3 (consumable
   prices approved 2026-09-30; brings the Custodian trash bag route that cc-P18 held back).
-  Offered as cc-P21.
+  Also F-16 (cheaper T1/T2 pickaxe restoration), F-17 (OSI's "contained items" button, port from
+  ServUO-pub57), F-18 (BODs for growth; smithing and tailoring), F-19 (bank 1,000 items, +100 per
+  League rank) and F-20 (other crafts' BODs, Carpentry and Tinkering first; after F-18).
+  Decided but bigger, each its own batch: F-6 (fog of war with the Cartography tie-ins; client half
+  in TazUO to scope first), F-14 (Appraisal and con colors; the level number waits on F-12) and
+  F-13 (League shop starter list; vet rewards give +1% XP per level once F-12 XP exists).
+  Offered as the next cc-P prompt (cc-P21 is taken).
 - **Waiting on Chase:**
-  - F-6: react to the cartography ideas; whether areas revealed by a map count for achievements;
-    Cartography gain from walking. Scope answered 2026-09-30 (exploring earns; all facets, dungeons
-    and towns).
   - F-9 follow-up: confirm the pit at 3445,2557,30 in game; the thief goes on the stool at 3440,2558,55.
   - F-12: loop ladder draft (names, steps, scroll tiers, 3-for-1 merge) to react to; how each League
     metal rank is earned. Wait for P20's findings before drafting.
-  - F-13: react to the draft shop list. (Vet rewards decided: no cap bonuses; +1% XP per reward
-    level, up to +12%, once F-12 XP exists.)
-  - F-14: the skill steps. (Renamed Appraisal for everyone; con color for everyone.)
   - F-4, F-10: not scheduled.
-- **Commits verified 2026-09-30 15:27:** both repos pushed (docs 4b7654e, code 5a8b67f). `roadmap.md`
-  went in with the 15:00 commit (897e7ae).
+- Queue edits since the 16:48 commit (F-16 to F-20 and answers) are uncommitted until Chase runs
+  `Commit-ShardWork.ps1`.
 
 ## Open
 
@@ -345,11 +345,12 @@ Suggested (overseer), for Chase to react to:
 - Maybe: walking an unexplored chunk gives a small chance at a Cartography gain. That changes OSI's
   gain rules, so only if Chase wants it.
 
-Open questions:
-- React to the cartography ideas above.
-- Do chunks revealed by a map count toward exploration achievements, or only walked ones? (Suggested:
-  only walked, so bought maps cannot farm achievements.)
-- Is Cartography gain from walking wanted?
+Answered 2026-09-30 (Chase): **all four approved**: cartographers' maps reveal what their maker
+walked; decoding a treasure map reveals the area around the chest; percent-explored achievements per
+facet, dungeon and town; a small Cartography gain chance on new chunks (a deviation; register it).
+**Only walked chunks count** for achievements; map reveals do not.
+
+Open questions: none. Ready to batch once the TazUO client half is scoped (check first, above).
 
 ### F-7: Player-usable account reset, for play testing (added 2026-09-30)
 
@@ -468,7 +469,16 @@ What exists (read 2026-09-30):
   The guild route gives the **first** copy; both keep their existing reissue and recharge rules
   instead of the scrip replacement below.
 - Each quest also gives a 15-minute skill-gain acceleration on accept. The guild route does not.
-  **Decided 2026-09-30 (Chase): leave it out, deliberately.** Fifteen minutes is too short to matter, and at
+  **Decided 2026-09-30 (Chase): leave it out, deliberately.**
+- **Open gap found in play, 2026-10-01: nothing points a player to the League of Extraordinary
+  Citizens.** F-9 specified that the Registrar shows the **guild** list, a second doorway inward. It
+  never specified the reverse, so cc-P15 built what it was told and this is **not a defect**. But the
+  League has a registrar, member passes, its own system and a field office being decorated in cc-P19,
+  and a new character has no way to learn any of it exists. That is the same visibility problem the
+  Guild Directory was built to solve, one level up. **For the features chat to decide**: does the
+  League belong in the directory, does it get its own entry point, or is it meant to be found only by
+  walking into the office? Related: T-040, and verify separately that the Registrar does show the
+  guild list as F-9 specified; if it does not, that part **is** a cc-P15 defect. Fifteen minutes is too short to matter, and at
   our skill rates the difference is not observable in play. Do not build parity, and do not treat the absence
   as an oversight later. The wiki should say the two routes differ only in this, and that it is intentional.
   At our gain rate this is accepted, and is part of the deviation.
@@ -1116,35 +1126,31 @@ Renown is the price. Totals about 4,400 Renown, so a completionist can buy most 
 Guardrails: no item properties, power scrolls, artifacts, bless deeds, or skill and stat items.
 Loot boxes draw only from the kinds above, with a line in the System's voice.
 
-Open questions:
-- React to the list: cut, add, reprice.
+Account age (veteran) rewards:
 - Answered 2026-09-30 (Chase): **include account age (veteran) rewards, with a short account age.**
   Found: pinned already has OSI's veteran reward system **on**, one level per **30 days**
   (`Engines/Veteran Rewards/RewardSystem.cs:559-564`; `vetRewards.rewardInterval` in `modernuo.json`).
   It gives ethereal mounts, monster statues, cloaks and robes, special dye tubs and house add-ons. It
-  also **raises the skill cap by 5 per level up to 720** and gives +5 stat cap
-  (`RewardSystem.cs:576-593`, `vetRewards.skillCapRewards: True`). So the ethereal mount comes off the
+  also raises the skill cap by 5 per level up to 720 and gives +5 stat cap once at half a level
+  (`RewardSystem.cs:576-594`, `vetRewards.skillCapRewards: True`). So the ethereal mount comes off the
   League list (the veteran rewards give it), and the shop can show the veteran rewards beside the
   League items.
-- Answered 2026-09-30 (Chase): **30 days of account age per reward level**, and **the skill cap and
-  stat cap bonuses become something different and appropriate**. Proposed (overseer), for Chase to
-  react to:
-  - Pinned gives +5 skill cap per level, up to 720 at level 4 (four months at 30 days), and +5 stat
-    cap once at half a level (15 days). Too fast next to F-12's loops and scroll gating.
-  - Chase asked which fits us better (2026-09-30). Overseer: **neither cap.** F-12 already decided
-    the total skill cap is unlimited and each skill is capped by the max level, so a vet skill cap
-    bonus does nothing; the stat cap is a loop reward, so a vet stat bonus competes with loops.
-  - **Decided 2026-09-30 (Chase): a small XP bonus per reward level instead**, +1% per level up to +12% at one year,
-    applied to F-12 XP. It helps a long-time player through each loop without touching any cap, and
-    matches F-12's "later loops go faster". Until F-12 ships, vet levels give only their reward items.
-  - Reward level N needs N x 30 days of real account age (Chase, 2026-09-30); that is pinned's
-    current setting, no change.
-  - Pinned hard-codes both bonuses in `RewardSystem.OnLogin` (`:576-594`). Turning them off: set
-    `vetRewards.skillCapRewards` to False, and stop the one-time +5 stat cap through a hook, not a
-    pinned edit. Check first what existing characters already got (the stat bonus sets
-    `HasStatReward`) and whether any need putting back.
-- Loot boxes: only from this list, or their own pool of decor and cosmetics?
-- Level gates from F-12 get added when levels exist; any tier that should wait for them?
+- Reward level N needs N x 30 days of real account age (Chase, 2026-09-30); that is pinned's current
+  setting, no change.
+- **Decided 2026-09-30 (Chase): no skill cap or stat cap bonuses.** F-12 already makes the total skill
+  cap unlimited with each skill capped by max level, and the stat cap is a loop reward, so vet cap
+  bonuses would do nothing or compete with loops. **Instead, +1% XP per reward level, up to +12% at
+  one year**, applied to F-12 XP. Until F-12 ships, vet levels give only their reward items.
+- Turning the bonuses off: set `vetRewards.skillCapRewards` to False, and stop the one-time +5 stat
+  cap through a hook, not a pinned edit. Check first what existing characters already got (the stat
+  bonus sets `HasStatReward`) and whether any need putting back.
+
+Answered 2026-09-30 (Chase): **the draft list is approved as a starter**; prices get tuned in play
+testing. Loot boxes draw only from the kinds on the list (overseer default; Chase did not ask for a
+separate pool). Level gates from F-12 get added when levels exist.
+
+Open questions: none. Ready to batch (the shop at the League Registrar, with a button from the
+achievements gump).
 
 ### F-14: Creature levels, so players can tell what they can fight (added 2026-09-30)
 
@@ -1221,8 +1227,10 @@ the skill adds detail on top of the color.
 
 Answered 2026-09-30 (Chase): the new name is **Appraisal**.
 
-Open questions:
-- The skill steps above: fine as a start?
+Answered 2026-09-30 (Chase): **skill steps approved** as written.
+
+Open questions: none. Ready to batch (needs F-12 levels for the level number; the con color and
+the stat card can come first if levels are computed from Bard difficulty).
 
 ### F-15: Version number and patch notes in the MOTD, linked to the website (added 2026-09-30)
 
@@ -1274,6 +1282,195 @@ Answered 2026-09-30 (Chase):
 - **Start fresh at the next batch after this is implemented.** No baseline entry for earlier work.
 
 Open questions: none.
+
+### F-16: Jacob's Pickaxe restoration cheaper at the lower tiers (added 2026-09-30)
+
+**Ours.** Tiers and restoration are our Miners' Compact system; OSI's Jacob's Pickaxe has neither.
+
+What Chase wants:
+- Restoring (fixing) an exhausted Jacob's Pickaxe should cost less at the lower tiers.
+
+Today (read 2026-09-30, code repo 29cb496): every tier's restoration is about 20% of that tier's
+upgrade cost (`MinersCompactLiaisonGump.cs:41-69`).
+
+| Tier | Uses | Restoration today |
+|---|---|---|
+| T1 Jacob's Pickaxe | 150 (`patches/JacobsPickaxe.cs:37`) | 5 vouchers, 100 iron, 2,000 gp |
+| T2 Reinforced | 400 | 10 vouchers, 200 iron, 40 dull copper, 5,000 gp |
+| T3 Prospector | 600 | 40 vouchers, 300 iron, 100 agapite, 10,000 gp |
+| T4 Deepdelver | 800 | 70 vouchers, 400 iron, 100 valorite, 30,000 gp |
+| T5 Worldbreaker | 1,200 | 100 vouchers, 600 iron, 200 valorite, 40 adamantium, 60,000 gp |
+
+The problem (overseer): a new player starts with no gold (cc-P15), and the first Compact work order
+(50 iron) pays 5 vouchers and 75 gp. So T1 costs about 27 work orders' worth of gold for 150 uses,
+while a plain pickaxe from a vendor is a few dozen gold. Players will throw T1 away instead.
+
+Proposed (overseer), for Chase to react to:
+- **T1: 1 voucher, 25 iron, 100 gp.** About what the same uses cost in plain pickaxes, so fixing is
+  always the better deal but never free.
+- **T2: 4 vouchers, 100 iron, 15 dull copper, 1,000 gp.**
+- **T3 to T5 unchanged.** By then a player is a Surveyor or higher and earning at that scale.
+
+Check first: that the Liaison gump reads the constants above and nothing else prices restoration (the
+admin tools' bypass, the Hammer of Hephaestus restore at `HammerOfHephaestus.cs:1003-1004` is a
+separate item); a test that each tier charges its new price and refuses with one short.
+
+Answered 2026-09-30 (Chase): **T1 and T2 prices approved as proposed**; T3 to T5 unchanged.
+
+Open questions: none. Ready to batch.
+
+### F-17: Fill a BOD from the backpack (added 2026-09-30)
+
+**Ported, if OSI's version fits.** Later OSI (the bulk order revamp, after pinned's era) added a
+second button to the BOD gump, "Combine this deed with contained items": target a container and every
+matching item inside goes into the deed. **Confirmed 2026-09-30** on the uo.com wiki (Bulk Orders):
+"if your crafted items are contained in a pack within your back pack you can choose the option
+'Combine this deed with contained items'", a targeting cursor that combines every item in the
+targeted pack; the one-item option is "Combine this deed with the item requested".
+
+What Chase wants:
+- A **fill from backpack** button on **every BOD**.
+
+Found 2026-09-30:
+- Pinned has only the one-item combine: `SmallBODGump.cs:81` and `LargeBODGump.cs:102` call
+  `BeginCombine`, which targets one item at a time (`SmallBOD.cs:117`, `LargeBOD.cs:94` `EndCombine`).
+- "Every BOD" today means the smith and tailor deeds, small and large (pinned has no other crafts'
+  BODs). We patch `LargeSmithBOD` already (`patches/LargeSmithBOD.cs`).
+- Our guild work orders (`ClusterFWorkOrderSystem.cs:216-248`, Artificer orders) already take what
+  they need straight from the backpack on turn-in, so they need nothing.
+
+Suggested (overseer):
+- **Port OSI's button**: target a container; targeting your own backpack fills from the backpack.
+  For large BODs it takes the filled small deeds in the container. The fill stops when the deed is
+  full and says how many it took.
+- Each item goes through the same checks as the one-item combine (`EndCombine`): type, exceptional,
+  material, not in someone else's container. Items that fail stay where they are.
+- If Chase prefers one click with no target, that is a small deviation from OSI (register it):
+  the button reads "Fill from backpack" and uses the backpack directly.
+- Tests: a small deed fills from a mixed pack and leaves the wrong material behind; a deed stops at
+  its amount; a large deed takes its small deeds from a bag; nothing outside the targeted container
+  is touched.
+
+Answered 2026-09-30 (Chase): **stick with OSI.** ModernUO does not have it, so it is folded in.
+**Port source found:** `D:\UO\ServUO-pub57\Scripts\Services\BulkOrders\SmallBODs\SmallBODGump.cs:102-103`
+(button, cliloc 1157304 "Combine this deed with contained items") and `:168-176` (case 4: target a
+container, run each item in it through the combine); the large deed's version is in
+`LargeBODs\LargeBODGump.cs`. Port it onto pinned's gumps through partials or patches.
+
+Open questions: none. Ready to batch.
+
+### F-18: BODs as a way to grow skill, not just easy items (added 2026-09-30)
+
+**Ours.** Smith BODs are already ours (guild-only, Seals instead of OSI rewards); this goes further
+from OSI, whose BODs pick any item you can make and give no skill on turn-in.
+
+What Chase wants:
+- BODs should **raise skill** and be **a way to grow at low skill**, not orders for easy things.
+
+Found 2026-09-30 (code repo 29cb496):
+- `ClusterFSmithBODSystem.cs` already moved smith BODs to the Blacksmith Guildmaster (3 small, 1 large
+  at a time, no cooldown) and **turn-in already gives a skill check**: 1 per small deed, 2 per large
+  (3 from gold up), in a skill window by material (`GetSkillRange`, `:343`; plain iron 0 to 55).
+- **The item choice is still OSI's** (pinned `SmallSmithBOD.CreateRandomFor`, `:75-170`): any item
+  with a success chance above 0, picked at random. At low skill that is mostly items the player
+  already makes every time, which give no gain while crafting them. That is the "easy things" problem.
+- **Tailor BODs are still vanilla**: no guild system, no turn-in skill check.
+- Pinned has BODs for smithing and tailoring only.
+
+Suggested (overseer):
+- **Pick items the player can still learn from.** When a BOD is made, prefer items whose crafting
+  skill range contains the player's skill (that is where crafting gains happen), weighted toward the
+  upper half of that range. Fall back to OSI's pick only when none fits. Each order then means
+  real practice: making 15 of them is where the growth comes from.
+- **Turn-in check scales with the size of the order**: 1 check per 5 items (2 / 3 / 4 for 10 / 15 /
+  20), large deeds the sum of their parts. Keeps the existing material windows.
+- **Low-skill track**: under 50 skill, orders are plain material, never exceptional, and smaller
+  (10 items), so a new crafter can finish one in a sitting.
+- **Tailoring joins the same system** under the Tailors' Circle, the way smithing moved to the
+  Society of Smiths.
+- Tests: a 30-skill smith never gets an order for an item at 100% success when a gain-range item
+  exists; turn-in check counts follow the amount; tailor deeds get the same rules.
+
+Check first: how the craft system exposes each item's skill range (`CraftItem` skill min and max) and
+that "gain range" matches how pinned's crafting gain works.
+
+Answered 2026-09-30 (Chase): **tailoring in the same batch as smithing.** **Other crafts: yes**,
+as their own entry (F-20).
+
+Answered 2026-09-30 (Chase): **proposal approved** (gain-range items, 1 check per 5 items, low-skill
+track under 50).
+
+Open questions: none. Ready to batch (smithing and tailoring together).
+
+### F-19: Banks hold far more items (added 2026-09-30)
+
+**Ours** (a deviation from OSI's 125-item bank; register it).
+
+What Chase wants:
+- Banks able to hold **way more items**.
+
+Found 2026-09-30 (pinned):
+- The bank has **no weight limit** (`Server/Items/Containers.cs:23`, `DefaultMaxWeight => 0`) and a
+  **125-item limit** from `Container.GlobalMaxItems` (`Server/Items/Container.cs:154-159`), which
+  counts items inside bags too, so bags do not help.
+- `MaxItems` can be set per container and is saved (`Container.cs:88-103`), so a bank can be given its
+  own number without touching any other container.
+- Pinned already has commodity deeds, which turn a stack into one item; they stay useful.
+
+Suggested (overseer):
+- **Base bank size 1,000 items**, set on the bank box only (a partial or patch on `BankBox`
+  overriding `DefaultMaxItems`), never by raising `GlobalMaxItems`, which would change every
+  container in the game.
+- **It grows**, so there is something to earn: +100 per League rank, or bank upgrades in the League
+  shop (F-13), or +50 per account age reward level. One of these, not all.
+- Watch the client: opening a bank sends every item in it. A thousand is fine; tens of thousands would
+  make the bank slow to open. Test opening a full bank in TazUO before going higher.
+- Fits F-11 (guild upgrades draw from the bank), which makes the bank the shard's storehouse.
+- **Test Center note** (Chase, 2026-09-30: after `[TCFill` he cannot add items by hand). `[TCFill`
+  (`TestCenter/TestCenterFillCommand.cs`) runs pinned's `TestCenter.FillBankbox`
+  (`Special Systems/Engines/TestCenter.cs:549`, about 255 drop calls plus loops, so several hundred
+  items) and our Test Kit, and puts them in with `DropItem`, which skips the 125 limit. The bank ends
+  far over 125, so every hand drop is refused. Each use adds again without clearing. F-19 fixes it for
+  testing; until then, empty some of the fill to make room.
+- Tests: a bank takes item 1,000 and refuses 1,001 with OSI's message; a backpack and a house
+  container keep 125.
+
+Answered 2026-09-30 (Chase): **base 1,000 items**, **+100 per League rank**. Check first how League
+ranks are stored and when a rank changes, so the bank's size follows it (and what a reset does to it).
+
+Open questions: none. Ready to batch.
+
+### F-20: BODs for the other crafts (added 2026-09-30)
+
+**Ported.** OSI has bulk orders for eight crafts (uo.com wiki, Bulk Orders): Alchemy, Blacksmithy,
+Bowcraft (Fletching), Carpentry, Cooking, Inscription, Tailoring, Tinkering. Pinned has only
+Blacksmithy and Tailoring.
+
+What Chase wants (2026-09-30): BODs for the other crafts too.
+
+Suggested (overseer):
+- Port OSI's six missing crafts: which items each asks for, materials, amounts, from the wiki and the
+  later ServUO code (check `D:\UO\ServUO-pub57` and `ServUO-ShatteredLegacy` for an existing port
+  before writing new).
+- Run them through our guild system and F-18's rules, not OSI's NPC rewards: each guild issues its
+  craft's orders and pays in its own currency. Likely homes: Carpentry and Bowcraft with the Foresters'
+  Union, Tinkering with the Tinkers' Union, Inscription and Alchemy with the Arcane Society, Cooking
+  with the Merchants' Exchange. Chase to confirm.
+- F-17's "contained items" button covers these too.
+- Large job; one or two crafts per batch, Carpentry and Tinkering first (most players craft them).
+
+Check first: ServUO's later BOD code (the 2016 revamp) and how much of it fits pinned's
+`SmallBOD` / `LargeBOD` base; reward books (`Books`) for the new crafts.
+
+**Port source found 2026-09-30:** `D:\UO\ServUO-pub57\Scripts\Services\BulkOrders` has all eight
+crafts, small and large (`SmallCarpentryBOD.cs`, `SmallTinkerBOD.cs`, `SmallFletchingBOD.cs`,
+`SmallAlchemyBOD.cs`, `SmallInscriptionBOD.cs`, `SmallCookingBOD.cs` and the large ones), plus
+`BulkOrderSystem.cs`.
+
+Answered 2026-09-30 (Chase): **Carpentry and Tinkering first**, one or two crafts per batch. **Guild
+homes approved as suggested.**
+
+Open questions: none. Ready to batch after F-18.
 
 ## Batched
 

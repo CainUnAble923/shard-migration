@@ -206,7 +206,7 @@ there is no usage to check it against. A dry-run flag nobody can check never rea
   - Seven world commands are in no sequence: `ClusterFOldHavenCleanup`, `ClusterFSeedInstitutions`,
     `ClusterFSeedOldHaven`, `ClusterFSeedResetStone`, `ClusterFSouthMineDecor`, `PlaceNewHavenQuestBoard` and
     `SeedRoyalCity`.
-  - They go in **"Existing world: no order established between these"**, with Copy and Copy dry run per line and no
+  - They go in **"Existing world: no order established between these"**, one row per command (a dry run is its own row just above), and no
     Copy-group button, because copying them as a group would imply an order.
 - **Groups, in the order shown:** the three sequences (each with **Copy group**), no order established, removal, and new
   unclassified.
@@ -232,7 +232,7 @@ One fact then failed on my own guess ("at least 10 dry runs"). The tree has **ni
 instead of guessing a number.
 
 The form was built off-screen with `-DryRun` and the tab rendered to an image. It has 3 Copy-group buttons (15, 5 and 4
-lines), 34 Copy buttons and 4 Copy-dry-run buttons, which matches the groups. I did not click through the live form.
+lines), 34 Copy buttons and 4 Copy-dry-run buttons, which matches the groups (before the section 11 change). I did not click through the live form.
 
 ## 6. Name collisions with pinned (2.2b). Report only; nothing renamed
 
@@ -402,3 +402,28 @@ test(s) passing.` That is 323 before, plus this task's 5. The image is `05ebfdd4
 5. **P19:** `ClusterFSeedRegistrarOffice` needs a `[ShardCommand(...)]` or its build fails. If it belongs in a sequence, it
    also needs an entry in `$script:WorldSetupOrder` with a cited source; until then it appears under "no order
    established".
+
+## 11. Follow-up the same day: one row shape everywhere (Chase)
+
+The first cut showed dry runs two ways:
+- the ordered groups listed a dry run as its own row, as the runbooks do;
+- "no order established" put a **Copy dry run** button beside the command.
+
+Chase asked for one shape. The rule now:
+- **Every row is one command with one Copy button.**
+- A command with a dry run has the dry run as its own row, directly above the command.
+- The Copy dry run button and its column are gone; the table has three columns.
+
+A dry-run row is red only when the command is test only or unclassified. It deletes nothing, so it is never red for
+deleting. `[ClusterFSeedResetStone dryrun` is therefore red, and `[ClusterFOldHavenCleanup dryrun` is not.
+
+Two facts cover it:
+- **New:** `EveryRowIsOneCommandWithOneCopyAndADryRunIsItsOwnRowJustAbove`.
+- **Updated:** the red-rows fact now includes `[ClusterFSeedResetStone dryrun`.
+
+Both were watched red first; they failed on `[ClusterFOldHavenCleanup` carrying a second command, and on the red list.
+**84 facts, all green.** The rendered tab now shows 38 Copy buttons (15 + 5 + 4 + 11 + 3, counted from the built form), 3 Copy group buttons and no Copy dry run buttons.
+
+This change is console only and was made after `29cb496`, which already holds the P21 work. The uncommitted files are
+`scripts/Shard-Console.ps1` and `scripts/tests/Shard-Console.Tests.ps1`. No rebuild was needed, because the console is not
+in the image.

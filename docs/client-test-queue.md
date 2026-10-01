@@ -65,6 +65,21 @@ nobody caught it until the row was read twice.
 | T-032 | ⬜ OPEN | **The live guard actually shouts** | Set `testCenter.enable` true in a config on port 2593, start, read the log. Put it back | A loud startup error names the mistake | cc-P9 §4. **It logs and does not refuse to start.** After D40, a protection that only writes a log line is worth proving out loud at least once |
 | T-033 | ✅ PASS | **Self-deletion is allowed on test only** | On test, delete your own character from the character screen | It works on test; on live the same attempt is refused | cc-P9 `AccountHandler-test-center-deletion.patch` makes `RestrictDeletion` a property so it is read at deletion time rather than frozen by Configure ordering |
 
+| T-034 | ✅ PASS | **The console's new command tab** | Open the console, World setup tab | Every seeder is listed with its dry-run syntax, what it does, and whether re-running duplicates. Nothing shows as "unclassified" | cc-P21. **Do this first: it tells you what to run below and in what order** |
+| T-035 | ✅ PASS | **Seeders run clean on an existing world** | Dry run each, read it, then run for real: NewHavenServices, GuildHalls, MineCamp, MoveMineCampNpcs | Each dry run matches what actually happens; running any of them twice adds nothing | cc-P15/P16/P17. **The test world is not fresh, so none of today's content exists until these run** |
+| T-036 | ✅ PASS | **The 18 sunk New Haven NPCs** | `[ClusterFSeedNewHaven repair` | The Anatomy giver and the other 17 stand on the floor, clickable **without ctrl+shift** | cc-P17 PT-05. World load deliberately does not move them; this command does |
+| T-037 | ✅ PASS | **New Haven has a smithy again** | Go to the smithing area, smelt ore and make something | Forge and anvil present and accepted by the craft | cc-P17 PT-01. Pinned ships no New Haven decoration at all; these 125 entries are ServUO's |
+| T-038 | ✅ PASS | **A ghost can get up in New Haven** | Die, then find a healer or ankh without leaving town | Resurrection works | cc-P17 PT-07. There were **zero** healers and no ankh before this |
+| T-039 | ⬜ OPEN | **A new character is pointed at the board** | Make a fresh character, read the first login message | It tells them where the board is, and the board is findable from where they stand | cc-P15 F-9. This is the whole first-minute experience |
+| T-040 | ❌ FAIL | **Guild Directory and joining** | Board first page, pick a guild, use "Show me the way", join | Directory lists the guilds, the arrow points, joining is one click with no skill or gold | cc-P15 F-9 |
+| T-041 | ⬜ OPEN | **Joining hands over the tools** | After joining, check the pack | The character-creation items for that guild's skills are there. **Joining the Smiths must not take your ingots** | cc-P15. The ingot bug was found and fixed by P15 |
+| T-042 | ⬜ OPEN | **Starter item on request, once** | Take the guild's starter item, then try again | Given once; the matching quest shows as done; asking twice gives nothing | cc-P15 F-9, deviation D-92 |
+| T-043 | ✅ PASS | **Board and NPC are interchangeable** | Take a quest at the board, turn it in at the matching NPC. Then the reverse | Both work, and the reward pays once whichever end you use | cc-P17 PT-03. Turning in at the NPC used to be refused |
+| T-044 | ⬜ OPEN | **Gargish cloth armor is tailorable** | As a gargoyle, open Tailoring | The 8 cloth armor pieces are there and craftable. The **garments** (robe, sash, half apron) are still absent and that is expected | cc-P17 PT-08. Pinned had the types and never registered them |
+| T-045 | ⬜ OPEN | **Second character is not already in a guild** | On an account that has joined a guild, make a second character | Not a member; joining gives that character its own items | cc-P18 F-7, fixes PT-06 |
+| T-046 | ⬜ OPEN | **Reset stone and `[ResetMyAccount`** | Use both; try each scope (this character / all / account) | Same gump from both routes; each scope clears what it says, including joined guilds | cc-P18 F-7. The old reset did **not** clear joined guilds |
+| T-047 | ⬜ OPEN | **Young by time played** | Check Young status and the countdown; try "I want to grow up!" | Countdown in days and hours against 336 hours of account game time; the confirm gump appears | cc-P18 F-5. No skill rule any more; murder rule kept |
+| T-048 | ⬜ OPEN | **Mine camp tents** | Go to the New Haven mine camp | Two tents west of the existing one; Liaison and Survey Archivist at the tent openings | cc-P16 |
 ## B. Not the client, but still nobody's job but yours
 
 Kept here because they are the same kind of work: a person looking at a screen, settling something
@@ -88,6 +103,20 @@ no build gate can see.
 
 Newest first. One line each: ID, date, what happened. A `FAIL` names the bug-list row it produced.
 
+- T-040, 2026-10-01: **FAIL, and it splits in two.** Joining a guild works. (a) **The Guild Directory
+  lists the Artificers twice**, one row per guildmaster rather than per guild: **D41**. (b) **Nothing
+  points a player to the League of Extraordinary Citizens** (the Registrar's organization, not the
+  Rangers' League guild). F-9 only specified the Registrar showing the guild list, not the reverse, so
+  (b) is a **design gap, not a cc-P15 defect**; recorded under F-9 for the features chat. Still to check:
+  whether the Registrar does show the guild list, which would be a defect if it does not.
+- T-043, 2026-10-01: **PASS.** Quest taken at the board, turned in to Jacob. The PT-03 refusal is gone.
+- T-038, 2026-10-01: **PASS.** Healers present in New Haven.
+- T-037, 2026-10-01: **PASS.** Forges present; New Haven can smith again.
+- T-036, 2026-10-01: **PASS.** `[ClusterFSeedNewHaven repair` put the sunk NPCs on the floor.
+- T-035, 2026-10-01: **PASS.** Every seeder ran.
+- T-034, 2026-10-01: **PASS, with a defect.** All commands ran from the tab. **The command text and the
+  dry-run button disagree**; sent back to CC to fix. The tab is usable; the mismatch is the kind that teaches
+  someone to distrust the dry run, so it matters more than it looks.
 - T-029, 2026-09-30: **PASS.** A second `[TCFill` inside ten minutes was refused and said how many minutes until the next restock; after ten minutes it restocked again. The command should still not exist on the next live.
 - T-003, 2026-09-30: **BLOCKED by PT-08** (playtest tracker: gargish clothing not in the Tailoring menu, reported by Chase). Cloth half cannot pass until PT-08 is settled; gargish plate from a smith not yet reported.
 - T-029, 2026-09-30: **partial, still OPEN.** `[TCFill` on an existing test character filled the bank. Left: a second run inside ten minutes is refused.
