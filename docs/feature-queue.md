@@ -19,27 +19,31 @@ F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and qu
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
 
-## Where things stand (handoff, updated 2026-10-01, 07:30)
+## Where things stand (handoff, updated 2026-10-01, 10:50)
 
 For a new overseer chat: read this section, then the entries it names. The project-wide picture
 (prompt states, bug numbers, the concurrency rule) is in `notes\passdown-overseer-2026-10-01.md`.
 
 - **Prompt numbers moved overnight.** P23 is the live defect sweep (D42, D43, D41, D13, running) and P24
   the New Haven dungeon research (running, read only). P25 is reserved for the stats-above-125 research
-  pass (F-12). **F-8's prompt is therefore cc-P26**, not P23 as the 2026-09-30 handoff said.
+  pass (F-12). F-8's prompt is cc-P26.
 - **One builder at a time in `D:\ShatteredLegacy`.** Build order: P23, then **P22** (it shares
-  `ClusterFGuildSystem.cs` and the starter-path quest arrow with P23), then P26 (F-8). Notes-only
+  `ClusterFGuildSystem.cs` and the starter-path quest arrow with P23), then P26 (F-8, written). Notes-only
   prompts (P24, P25) run alongside anything.
 - **Batched:** F-9 (cc-P15, ran), F-7 + F-5 + F-1 (cc-P18), F-12 research only (cc-P20, done).
   **cc-P22-small-features-1**: F-16, F-19, the thief at the pit (F-9 follow-up), F-11, F-17, F-15.
-- **Next prompt to write: cc-P26 for F-8** (animated runestone, all four stones as variations; art
-  unpacked in `D:\UO\third-party\animated-runestone\`). Proves the updater ships new art; F-21, F-22
-  and F-23 wait on it. **F-22 has a date: on the test shard before December 1.**
+- **cc-P26-animated-runestone (F-8) is written** (`D:\UO\cc-prompts\`, 2026-10-01). Runs after P23 and
+  P22 commit. It builds the art pipeline: our PNGs ship, the player's own tiledata and animdata are
+  patched locally, TazUO starts with `-uofilesoverride`. F-21, F-22 and F-23 wait on it. **F-22 has a
+  date: on the test shard before December 1.**
+- **Next prompt to write:** none queued. Candidates in order: F-14, then F-24; F-3; F-18.
 - **Ready to batch, no open questions, each its own batch:**
   - F-3 (Clean Up Britannia with the Custodian layer; about 20 units).
   - F-18 then F-20 (BODs for growth, smithing and tailoring; then other crafts, Carpentry and
     Tinkering first). After P22, which changes the same BOD gumps.
   - F-14 (Appraisal and con colors; the level number waits on F-12).
+  - F-24 (League work: jobs, realm-wide boards, guild currency and banked reputation). After F-14,
+    with F-12's XP in place; dives after the P24 dungeon work.
   - F-6 (fog of war with the Cartography tie-ins; the TazUO client half to scope first).
   - F-22 (winter decor Dec 1 to Jan 6, both layers; art in `D:\UO\third-party\winter-holiday\`;
     skip Vrark's two animated trees). After F-8.
@@ -50,7 +54,6 @@ For a new overseer chat: read this section, then the entries it names. The proje
   are in `D:\UO\third-party\farm-carts\`) and F-23's Siege of Sosaria paperdoll kit. Downloads land in
   Chase's Downloads folder; the overseer copies them to `D:\UO\third-party\`.
 - **Waiting on Chase:**
-  - F-24 (League work): answered 2026-10-01; four overseer defaults to confirm when it is specified.
   - F-9 follow-up: confirm the pit stool at 3440,2558,55 in game (`[go 3440 2558 55`).
   - F-12: the three placeholder numbers (reserve cap, echo multipliers, step size above 100); how
     each League metal rank is earned.
@@ -451,6 +454,38 @@ suggests a thank-you post on the thread asking whether shard use is fine, for th
 
 Answered 2026-09-30 (Chase): **all four, as variations** of the one item (like OSI items that turn
 between graphics; the reset stone can pick one, or the player turns it).
+
+**Found writing cc-P26 (overseer, 2026-10-01), verified in code:**
+- **The plan's step 1 breaks a package rule.** "Add the art to the client files" means shipping a
+  modified `artLegacyMUL.uop`, but the player package ships **nothing of EA's**; the player's own EA
+  install supplies the data (`player-package\Build-PlayerPackage.ps1:19`, `payload\app\Setup.ps1:33-34`).
+- **Still art has a clean route.** TazUO loads PNG overrides by art ID from
+  `ExternalImages\art\<id>.png` (key is id + 0x4000), checked **before** EA's art, for any ID inside
+  the art file's range (TazUO 7deed69, `ClassicUO.Assets/ExternalImageLoader.cs:299-313`,
+  `ClassicUO.Renderer/Arts/Art.cs:183-193`). Our build already ships Fiddle-Me-This's gump PNGs this way
+  from `vendor\`; art PNGs would go the same way. Our own PNGs are not EA's files.
+- **Animation does not.** A static animates only when its `tiledata.mul` entry has the Animation flag
+  and `animdata.mul` lists its frames (`AnimatedStaticsManager.cs:20-46`, `AnimDataLoader.cs:33-48`).
+  Both are EA files and an UNUSED slot has neither. TazUO accepts `-uofilesoverride <file>`, a list of
+  `name=path` lines that redirects any data file (`Main.cs:267-270`, `UOFilesOverrideMap.cs`).
+  So the route that keeps the rule: **ship only our records** (4 tiledata entries, 4 animdata entries)
+  and have Setup/Update **build patched copies on the player's machine from their own EA files**, then
+  launch with `-uofilesoverride`. Play.ps1 starts TazUO at `payload\app\Play.ps1:303`.
+- **The Reset Stone is a test-shard tool** that comes out at the live rebirth
+  (`server\customizations\ClusterFResetStone.cs:3-6`), so art that lives only on it leaves with it.
+  Its graphic is one constant for F-8 to change (`:115-117`).
+- Frame data: animdata stores up to 64 frames as signed offsets from the base ID, so each stone wants
+  11 free IDs close together; 4 stones need 44. Free slots: OSI's UNUSED placeholders (F-21 note).
+
+**Decided 2026-10-01 (Chase):**
+1. **Build on the player's machine.** Ship our PNG frames and our own tiledata and animdata records
+   only; Play.ps1 builds patched copies of the player's own EA files and starts TazUO with
+   `-uofilesoverride`. This is the pipeline F-21 to F-23 reuse.
+2. **Its own item** (a standalone runestone, expected to become the F-12 loop stone later); the Reset
+   Stone borrows its look on the test shard.
+3. **Staff choose the design** per stone; players do not turn public stones.
+
+Batched: **cc-P26-animated-runestone**, written 2026-10-01. Runs after P23 and P22 are committed.
 
 Open questions: none. Ready to batch.
 
@@ -1707,8 +1742,12 @@ Answered 2026-10-01 (Chase):
    spawns a temporary mini boss**.
 6. **Solo, but shareable with the player's party.**
 
+Decided 2026-10-01 (Chase), confirming the overseer's defaults:
+- **Active-job cap: 3 to start, +1 per League rank.** Some jobs are **locked behind League ranks**.
+- **Currency is the paying guild's own** (Smith Seals and the like), **plus that guild's reputation.**
+  If the player is not in that guild, both are **banked and paid out when they join.**
+
 Overseer suggestions (Chase to confirm or change when the prompt is written):
-- Active-job cap: start at 3, +1 at certain League ranks, so rank has a visible use.
 - Party sharing: party members inside range at the moment of a kill or gather all get progress; each
   member who accepted the shared job gets the full reward (no splitting), so grouping is never a loss.
 - Investigation mini boss: spawns for the job holder's party only, despawns after a timer if not
@@ -1716,7 +1755,13 @@ Overseer suggestions (Chase to confirm or change when the prompt is written):
 - Board placement: one board per town bank or tavern, one at each dungeon entrance, starting with New
   Haven and the dungeons the starter guilds point to.
 
-Open questions: none blocking. The suggestions above are defaults, not questions.
+- **Banked reputation waits for the Apprentice task** (Chase, 2026-10-01). Joining is still free and
+  instant at Initiate; the banked reputation (and seals) pay out once the Apprentice task is done, and
+  can then lift the player past Apprentice at once. Chase's picture: a veteran mercenary joining the
+  adventurers' guild after years in the field starts at first rank, then jumps up after onboarding.
+
+Open questions: none. Overseer suggestions above (party sharing, mini boss, board placement) stand
+as defaults unless Chase changes them when the prompt is written.
 Order: after F-14 (job sizing by creature level) and with F-12's XP in place; dives after the P24
 dungeon work.
 
@@ -1738,6 +1783,7 @@ Check first: the League design doc (`design\systems\league_of_extraordinary_citi
 | F-11 | cc-P22-small-features-1 | Written 2026-09-30. Part 4 of 6; may stop at findings if large. |
 | F-17 | cc-P22-small-features-1 | Written 2026-09-30. Part 5 of 6. Port from ServUO-pub57. |
 | F-15 | cc-P22-small-features-1 | Written 2026-09-30. Part 6 of 6. No deploy; Chase publishes the wiki page. |
+| F-8 | cc-P26-animated-runestone | Written 2026-10-01. Runs after P23 and P22 are committed. Builds the art pipeline F-21 to F-23 reuse. |
 
 ## Dropped
 
