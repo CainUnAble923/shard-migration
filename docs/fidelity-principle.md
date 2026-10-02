@@ -1,5 +1,12 @@
 # Fidelity principle: port faithfully, so the existing wikis do our documentation
 
+> **Reset, Chase, 2026-09-30 (recorded by the overseer 2026-10-02):** "We will TRY and be as faithful to OSI as
+> possible but we will have a lot of systems that build on OSI so in the end we may just have one amazing and detailed
+> wiki." This replaces the premise in the title below: the external wikis no longer do our documentation; the
+> shard's own wiki does. Port faithfully still wins wherever OSI has an answer, and this register is still the list
+> of where we differ, because it is the wiki's table of contents. Rows for systems that are entirely ours (the
+> League, levels, guild costs) are registered so the wiki covers them, not because they are debt.
+
 ## The reasoning
 
 The shard should run content players can look up **outside** a custom wiki. Twenty years of
@@ -196,12 +203,12 @@ reasoning lives.
   - **Nothing places a fountain yet**, so the coin's only reachable outcome is its failure
     message. Not a deviation we are keeping: Q-021 answers it with the OSI coordinates,
     Ter Mur `(1121, 957, -42)`, and it is a small follow-on task. **Still true as of 2026-09-26:**
-    nothing in the tree places one. `docs/bug-list.md` §1 carries it as an open loose end.
+    nothing in the tree places one. `docs/bug-list.md` §1 carries it as an open loose end. **2026-10-02:** cc-P27 built `[ClusterFSeedFountainOfFortune`, which places it at that point; D14 closes once Chase confirms the shore is reachable on foot.
   - **ServUO's two unreachable reward cases are ported unchanged** rather than "fixed". Correct
     under "port unchanged": upstream dead code stays dead code, and quietly repairing it would be
     an undocumented divergence from every wiki that describes the fountain.
 
-## The numbered register, D-1 to D-90
+## The numbered register, D-1 to D-102
 
 Every numbered deviation, in one place, current to 2026-09-26. **Each row is a pointer, not the
 entry**: the note named in the last column carries the full statement, the reasoning and what would
@@ -313,6 +320,17 @@ and `visible`.
 | D-89 | A petrified `MedusaClone` does not animate as a statue | the copy stands still at hue 761 instead of the statue pose | `visible` | `cc6-batch8` |
 | D-91 | Gargish cloth **clothing** artifacts do not swap to the female graphic. ServUO's four cloth bases set `ItemID` to the female art in `OnAdded`; the five of ours that sit on a set carrier instead do not (`SpinedBloodwormBracers`, `MantleOfTheFallen`, `SummonersKilt`, `BestialKilt`, `VirtuososKilt`) | a female gargoyle wearing one sees the male art (`0x408` rather than `0x407`) | `visible`, cosmetic | `armour-set-completion` |
 | D-90 | **Our own content.** A New Haven training board at `(3502, 2573, 14)` Trammel offering the 26 stock skill-training quests through the stock ML quest path | a new player can take the training quests from the tile they arrive on. Quests, text, rewards and the 50-point lockout are unchanged; only the place is new. No wiki mentions the board | `ours` | `new-haven-quest-board` |
+| D-92 | **Ours (F-19).** Banks hold 1,000 items, plus 100 per League rank once ranks exist (0 today); backpacks and house containers keep 125. The limit is reapplied at login, so a hand-set bank limit resets | a bank takes far more than OSI's 125 | `visible` | `cc-P22` 2, `p22-decisions-2026-10-01` |
+| D-93 | **Ours (F-11).** Our guild systems take costs and turn-ins from the bank as well as the pack (pack loose, pack satchels, bank loose, bank satchels), never equipped, blessed or locked-up items. Since cc-P27 this includes the essence an Artificers' imbue takes, including from the Essence Satchel. OSI crafting and BODs stay pack-only | guild upgrades, restorations, turn-ins and imbues draw from the bank | `visible` | `cc-P22` 4 and 9, `cc-P27` 2 and 7 |
+| D-94 | **Ours (F-16).** Jacob's Pickaxe restoration costs less at T1 (1 voucher, 25 iron, 100 gp) and T2 (4 vouchers, 100 iron, 15 dull copper, 1,000 gp). OSI has no such item | cheaper restoration | `visible` | `cc-P22` 1 |
+| D-95 | **Ours (F-9 follow-up).** Wren, the Thieves' Den lookout, sits on the stool at Trammel 3440,2558,56 and points to the Thieves' guildmaster. Placed by `[ClusterFSeedGuildHalls` | an NPC OSI does not have | `visible` | `cc-P22` 3, `p22-decisions-2026-10-01` |
+| D-96 | **Ported with two additions (F-17).** "Combine this deed with contained items": the container must be the backpack or inside it (OSI and ServUO accept any container), and it stops when the deed is full and says how many went in (ServUO repeats "maximum already combined" per leftover) | a bag elsewhere cannot be used; a clearer message | `visible` | `cc-P22` 5 and 9 |
+| D-97 | **Ours (F-15).** A date version, patch notes shown in the login bulletin once per account per version, `[version`, and `shard.version` in status.json | patch notes at login | `visible` | `cc-P22` 6 |
+| D-98 | **Ours (D42).** The Smith Guild salvage bag scales its return with Mining past 100 but never returns more than `cost - 1` (floor 2); OSI clamps Mining at 100 (pinned `SalvageBag.cs:94-98`). Vanilla `SalvageBag` is untouched | high Mining returns more, never a profit | `visible` | `cc-P23` 1 |
+| D-99 | **Ours (D43).** The Smith Seal catalog sells no power scrolls (tab removed; F-12 will repoint scrolls at level) | nothing to buy there | `visible` | `cc-P23` 2 |
+| D-100 | **Ours (F-8, a custom static).** A "shattered runestone" with four staff-chosen facings, art by Vrark (servuo.dev "Animated Runestone"; the download's "MMH7" names are a misnaming, art cleared by Chase 2026-10-02), shipped as TazUO PNG overrides in art slots 0x3C10-0x3C3B and animated through tiledata and animdata records the launcher writes into copies of the player's own files. The server's in-memory tiledata for those four IDs is ours, so the stone blocks. The Reset Stone wears design 1 (F-7b amended) | an item OSI does not have | `visible` | `cc-P26` 11, `p26-decisions-2026-10-02` |
+| D-101 | **Ours (stats, Chase 2026-10-02).** Raw stats gain to `stats.statMax = 500` in both configs (OSI 125, set May 2026, `docker/uo/SERVER.md:642`), with **no** per-stat table, total cap or veteran +50. Today `patches/PlayerMobile-individual-stat-cap.patch` clamps effective stats at 500 (OSI 150); F-12 removes that clamp. Stats carry through a reset. Consequences kept on purpose: self-bandage reaches 1.0 s at Dex 200 and instant from effective Dex 220 (pinned `Bandage.cs:493`); pets gain to the same cap; stock bosses were balanced for OSI numbers | stats far above OSI's | `visible` | `cc-P25`, `p25-decisions-2026-10-02` |
+| D-102 | **Ours.** Carry weight is `100 + 3.5 x Str` for humans with no cap (`customizations/ClusterFBackpack.cs:33-42`; 800 stones at Str 200, 1850 at effective 500, against OSI's 550 cap) | carry far more than OSI | `visible` | `p25-decisions-2026-10-02` 2 |
 
 ### What the register says about wiki scope
 

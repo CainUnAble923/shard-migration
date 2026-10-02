@@ -1,4 +1,4 @@
-# F-12 revised: levels, loops and caps (decided 2026-10-01)
+# F-12 revised: levels, loops and caps (decided 2026-10-01; stats rewritten 2026-10-02)
 
 Written 2026-10-01 by the overseer from Chase's decisions in one sitting, against cc-P20's research
 (`notes\cc-P20-skill-scaling-research.md`, 236 KB). **This supersedes the max level 1000 design and the
@@ -40,55 +40,42 @@ above 50**, which is exactly the loop-0 cap, so no character can ever be created
 - **Scroll drops:** champion spawns, paragons and bosses, with the New Haven dungeon's mini champ as
   the first source. This ties the dungeon into progression rather than leaving it a side trip.
 
-## Stats (approved 2026-10-01)
+## Stats (rewritten 2026-10-02: no ceilings)
 
-**Per-stat ceiling rises with max level. Total stat cap rises with current level inside the loop.**
-Both counters get a job.
+**Superseded:** the 2026-10-01 table (per-stat 125 to 200 by max level, total 325 to 550, veteran +50) and the
+stat-lock plan are withdrawn. cc-P25 surveyed stats past 125 (`notes\cc-P25-stats-above-125-research.md`) and
+Chase decided on its findings (`notes\p25-decisions-2026-10-02.md`). Register row: D-101 and D-102.
 
-| max level | per-stat | total base | with veteran |
-|---|---|---|---|
-| 50 | 125 | 325 | 375 |
-| 100 | 140 | 370 | 420 |
-| 125 | 155 | 415 | 465 |
-| 150 | 170 | 460 | 510 |
-| 175 | 185 | 505 | 555 |
-| 200 | 200 | 550 | 600 |
+- **No ceilings of any kind.** No per-stat table, no effective clamp, no total cap, no soft caps inside formulas.
+  Reason (Chase): players will face world bosses and champion spawns solo or in small parties.
+- **Raw stats gain to the one global `stats.statMax`, which is 500 in both configs** and has been since May 2026
+  (`docker\uo\SERVER.md:642`). Every note before cc-P25, this one included, assumed 125.
+- **Effective stats are not clamped.** F-12 removes the `Math.Min` in `patches\PlayerMobile-individual-stat-cap.patch`
+  (or sets `clusterf.statCaps.individualCap` very high). `Mobile.cs:1868`'s 65000 is the only bound left.
+- **A reset keeps stats.** Pinned already never lowers raw stats when `StatCap` drops (`SkillCheck.cs:313-333`).
+- **Carry weight stays uncapped** (`100 + 3.5 x Str`, `customizations\ClusterFBackpack.cs:33-42`).
+- **Self-bandage keeps pinned's formula** (1.0 s at Dex 200, instant from effective Dex 220). **Pets gain to the same
+  cap as players.**
 
-The structure Chase set at the first row holds at every row: **base total + 50 veteran = 3 x the
-per-stat ceiling.** So maxing all three stats is always the final achievement of a tier rather than
-something a character drifts into, and specialization pressure never disappears. Everything tops out
-together at 200: max level 200, skill cap 200, per-stat 200.
+**What this removes from the F-12 build:** the 0x1A stat-lock handler (`arch-f12-stat-lock-verdict-2026-10-01.md`),
+the per-level total in `ClusterFStatCaps.Apply`, the `StatCapScroll` retune and the veteran +50.
 
-**Why per-stat had to move.** A per-stat ceiling of 125 caps the total at 375 no matter what, because
-3 x 125 = 375. Raising only the total would have bought nothing but unusable headroom.
+**Still to do, because they are defects, not ceilings:**
+- **D44**, the talisman and quiver stat-bonus leak (`AOS.cs:598` vs `:620`), now unbounded. Fact first, fix if red.
+- **D45**, meditation's start chance inverts as Int rises (ours `Meditation.cs:83`).
 
-**Implementation.** Totals are free: `Mobile.StatCap` is per-mobile and serialized
-(`Server/Mobiles/Mobile.cs:1731`, written `:2365`, read `:6332`), so our code writes it on login and on
-level-up. The per-stat ceiling is the awkward one, because `_statMax` is a single global static
-(`UOContent/Skills/SkillCheck.cs:23`, enforced `:337-341`). **Do it without patching pinned:** set the
-global `stats.statMax` to the absolute ceiling of 200, then stop each character at their own ceiling
-with **stat locks**. `CanRaise` already requires the lock to be `Up`, so locking a stat at the personal
-max halts gain exactly, needs no patch, and reads correctly to the player because a locked stat visibly
-says "not yet" instead of silently refusing.
-
-`ClusterFStatCaps` already carries `DefaultIndividualStatCap = 500`, so per-stat above 125 was intended
-once; it was simply never wired to anything that works.
-
-**Open: nobody has surveyed stats above 125.** cc-P20 covered all 58 skills past 120 exhaustively but
-spent about five lines on stats (its section 1.4). The two things it did find are encouraging: stats fit
-the status packet, and max hits plateau around 300 to 345 even at 500 Str
-(`Mobiles/PlayerMobile.cs:548-578`). But stats feed damage, hit chance, mana, stamina, carry weight and
-regen at once, and 125 is the value every OSI formula is balanced around. The numbers in the table above
-are approved in shape; the ceiling of 200 should be confirmed by a research pass before it ships.
+**Consequences accepted:** stock bosses and champions were balanced for OSI players (about 150 effective, 150 HP)
+and will be much easier. F-14's level field on our own creatures is where bosses scale to these players. Thrown
+range passes the 18-tile update range from effective Str about 300 (cc-P25 decisions, fact 3).
 
 ## What each counter gates
 
 Three counters, and putting a thing on the wrong one is how loop systems turn frustrating.
 
 **Current level** resets every loop, so it gates what should be re-earned:
-- **Total stat cap**, scaling toward the tier's base as current level approaches max level. This is what
-  makes a reset feel like a reset: skills come back fast because gain is relative to the cap, so without
-  this a freshly reset character would be weak in name only.
+- ~~Total stat cap~~ **withdrawn 2026-10-02** (no stat ceilings; stats carry through a reset). A reset now
+  costs skills and level only, so a reset character keeps full stats. Whether that is enough of a reset is
+  Chase's call once loops are played; current level still needs a job of its own (Still open, item 2).
 - **Level requirements on our gear only**, never on OSI items (the standing F-12 fidelity rule).
   **Exception, Chase 2026-10-01: the newbie dungeon's Tier 1 set carries no level requirement**, so it
   is wearable the moment a character resets. With the set blessed, no-trade and re-obtainable from the
@@ -97,7 +84,6 @@ Three counters, and putting a thing on the wrong one is how loop systems turn fr
 
 **Max level** only ever rises, so it gates permanent capability:
 - Individual skill cap, and the total skill cap at 58 x max level.
-- Per-stat ceiling (table above).
 - **Pet and stable slots (Chase, 2026-10-01).** Deliberately not current level: stabled pets would be
   stranded behind a shrinking slot count on every reset.
 - Bank space (F-19's base of 1,000), extended ore access, housing and vendor slots.
@@ -163,17 +149,15 @@ re-running against this six-loop ladder with the new echo rule. The script is al
 ## Rescaling the 200 ceiling forces
 
 - `ClusterFSkillCaps`: individual cap 300 and the total, now both derived from max level.
-- `ClusterFStatCaps`: `DefaultIndividualStatCap = 500` and `DefaultTotalStatCap = 1500` are both wrong.
-  The 500 looks like dead config, since the global 125 is what governs gain; CC should confirm and
-  remove it rather than leave a second number that does nothing.
+- `ClusterFStatCaps`: the individual cap of 500 is live (it feeds the effective-stat patch), not dead config.
+  Under the 2026-10-02 decision the effective clamp goes; the total of 1500 never binds and can go with it.
 - The `skills.grandmaster` and `skills.triple_grandmaster` achievements are keyed to 300
   (`ClusterFAchievements.cs:950, :984-993`) and become unreachable.
 - `ClusterFMiningExtension.cs:148-181`: the smithing ingot gates run 100 to 300, so everything above
   200 strands content, Celestial included.
 - The Smith Seal catalog sells Blacksmithing scrolls at 305 to 320 (D43). Under this design those
   become level scrolls or they go.
-- Pinned's `StatCapScroll` is built around OSI's base of 225 and defaults to 230, so it displays wrong
-  against a base of 325. Retune or drop it, now that the veteran reward is the mechanism.
+- Pinned's `StatCapScroll` raises a total cap that no longer exists. Drop it from loot, or leave it inert.
 - Two stale comments: `ClusterFMiningExtension.cs:148-150` still says scrolls raise the cap to 500, and
   `roadmap.md:457-500` claims Mining progression uses the full 0-300 range.
 
