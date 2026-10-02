@@ -6,10 +6,10 @@ holds. Read `claude/shattered-legacy-state.md` in the project for machines and t
 ## Numbers (re-derive before trusting: `grep -rhoE "\b(D|Q|F|T)-?[0-9]+\b" notes docs | sort -u`)
 
 - Bugs: **next free D49** (D44 talisman leak, D45 meditation, D46 tool suite, D47 ddns follows a VPN, D48 extract durability, all 2026-10-02).
-- Deviations: **next free D-105** (D-92 to D-104 registered 2026-10-02).
+- Deviations: **next free D-107** (D-92 to D-106 registered 2026-10-02).
 - Features: the **features chat** owns `docs\feature-queue.md` and is writing to it (it took F-25 and F-26 on
   2026-10-02). Do not write there concurrently; hand feature requests to that chat.
-- Prompts: P1 to P32 exist (P29 defect batch 2 done `56cae9d`; P30 ModernUO upgrade research; P31 registrar office cleanup; P32 spawner importer, BODs, Self Repair; P33 F-3 Clean Up Britannia). **Next free P34.** Another chat also writes prompts: re-check `cc-prompts\` and `completed\` right before saving a new one.
+- Prompts: P1 to P32 exist (P29 defect batch 2 done `56cae9d`; P30 ModernUO upgrade research; P31 registrar office cleanup; P32 spawner importer, BODs, Self Repair; P33 F-3 Clean Up Britannia; P34 winter decor, P35 clean-machine test and P36 dungeon build 1 written by other chats). P37 upgrade prep written; P38 (bump) and P39 (test cutover) reserved for the upgrade. **Next free P40.** Another chat also writes prompts: re-check `cc-prompts\` and `completed\` right before saving a new one.
 
 ## Queue
 

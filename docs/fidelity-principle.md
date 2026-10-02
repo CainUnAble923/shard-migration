@@ -208,7 +208,7 @@ reasoning lives.
     under "port unchanged": upstream dead code stays dead code, and quietly repairing it would be
     an undocumented divergence from every wiki that describes the fountain.
 
-## The numbered register, D-1 to D-104
+## The numbered register, D-1 to D-106
 
 Every numbered deviation, in one place, current to 2026-09-26. **Each row is a pointer, not the
 entry**: the note named in the last column carries the full statement, the reasoning and what would
@@ -333,6 +333,8 @@ and `visible`.
 | D-102 | **Ours.** Carry weight is `100 + 3.5 x Str` for humans with no cap (`customizations/ClusterFBackpack.cs:33-42`; 800 stones at Str 200, 1850 at effective 500, against OSI's 550 cap) | carry far more than OSI | `visible` | `p25-decisions-2026-10-02` 2 |
 | D-103 | **Ours (D45).** Meditation's start chance: OSI uses the absolute mana deficit; above a 150-mana pool ours scales the deficit to a 150 pool, so a large pool is not penalized. At or below 150 it is OSI's formula exactly | high-Int characters can start meditating with a large pool partly empty | `visible` | `cc-P29` 2 and 7 |
 | D-104 | **Ours (D14).** Twelve walkable pavers of existing art ("PaverStones Natural") over the decorative stepping rocks to the Fountain of Fortune, ending one tile from it, placed by `[ClusterFSeedFountainSteps`. In OSI's data the rocks are impassable and no walkable tile is within the coin range of 3. The fountain stays at OSI's point | a player can walk out to the fountain | `visible` | `cc-P29` 4 and 7 |
+| D-105 | **Ours (PT-11).** Smith BODs run on two paths: any blacksmith gives and takes them for OSI's rewards (OSI's path); the Blacksmith Guildmaster and the Smithing Guild Book give and take them for Smithing Seals and standing, with no cooldown (at most 3 small and 1 large in the pack; large needs Journeyman). Because the guild path has no cooldown and regular smiths pay OSI's rewards for its deeds, OSI's 1-to-6-hour per-deed throttle (`Blacksmith.cs:78-95`) does not limit deed hunting; accepted by Chase 2026-10-02 | guild members can request deeds as often as they like | `visible` | `cc-P32` B.4, B.5; `p32-decisions-2026-10-02` |
+| D-106 | **Ours (F-27).** Self Repair is out of the ordinary random property table for armor, shields and hats; a separate roll gives it to about 1 in 500 magic weapons and armor from high-end sources only (bosses, champions, paragons), intensity mostly 1 or 2; weapons included; never from runic crafting; named artifacts keep their fixed values. The Artificers' imbue sells it only at a high rank and a much higher price (Chase 2026-10-02; to be built) | Self Repair is extremely rare | `visible` | `cc-P32` C.4; `p32-decisions-2026-10-02` |
 
 ### What the register says about wiki scope
 

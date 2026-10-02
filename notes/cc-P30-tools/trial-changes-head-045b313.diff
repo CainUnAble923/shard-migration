@@ -1,0 +1,3397 @@
+diff --git a/docker/uo/Dockerfile b/docker/uo/Dockerfile
+index 116d717..b536341 100644
+--- a/docker/uo/Dockerfile
++++ b/docker/uo/Dockerfile
+@@ -1,7 +1,7 @@
+ FROM debian:12-slim AS builder
+ 
+ ARG DOTNET_VERSION=10.0.203
+-ARG MODERNUO_COMMIT=7c9215d97
++ARG MODERNUO_COMMIT=d4531cd94b739613155225c234900de9f47d2c88
+ 
+ RUN apt-get update && apt-get install -y --no-install-recommends \
+     curl ca-certificates git libicu-dev gcc patch \
+diff --git a/server/customizations/ClusterFAchievements.cs b/server/customizations/ClusterFAchievements.cs
+index 1f96698..dd45f17 100644
+--- a/server/customizations/ClusterFAchievements.cs
++++ b/server/customizations/ClusterFAchievements.cs
+@@ -1055,7 +1055,7 @@ public static class ClusterFAchievementSystem
+         TryGrant(acct, "combat.first_death");
+     }
+ 
+-    [OnEvent(nameof(BaseCreature.CreatureDeathEvent))]
++    [OnEvent(nameof(CreatureEvents.CreatureDeathEvent))]
+     public static void OnCreatureDeath(BaseCreature bc)
+     {
+         if (bc.LastKiller is PlayerMobile pm)
+diff --git a/server/customizations/ClusterFOldHavenCleanup.cs b/server/customizations/ClusterFOldHavenCleanup.cs
+index 48f878b..b073cb1 100644
+--- a/server/customizations/ClusterFOldHavenCleanup.cs
++++ b/server/customizations/ClusterFOldHavenCleanup.cs
+@@ -1,4 +1,5 @@
+ using System;
++using System.Linq;
+ using System.Collections.Generic;
+ using Server.Engines.Spawners;
+ 
+@@ -194,7 +195,7 @@ public static class ClusterFOldHavenCleanup
+ 
+             if (!matched) continue;
+ 
+-            var entryNames = string.Join(", ", spawner.Entries.ConvertAll(se => se.SpawnedName));
++            var entryNames = string.Join(", ", spawner.Entries.Select(se => se.SpawnedName));
+ 
+             if (dryRun)
+                 e.Mobile.SendMessage($"[DRY RUN] Spawner at ({spawner.X},{spawner.Y}) entries: {entryNames}");
+diff --git a/server/customizations/ClusterFRareSelfRepair.cs b/server/customizations/ClusterFRareSelfRepair.cs
+index 29dfb6d..c4a6851 100644
+--- a/server/customizations/ClusterFRareSelfRepair.cs
++++ b/server/customizations/ClusterFRareSelfRepair.cs
+@@ -39,7 +39,7 @@ public static class ClusterFRareSelfRepair
+ {
+     public const int OneIn = 500;
+ 
+-    [OnEvent(nameof(BaseCreature.CreatureDeathEvent))]
++    [OnEvent(nameof(CreatureEvents.CreatureDeathEvent))]
+     public static void OnCreatureDeath(BaseCreature bc)
+     {
+         if (!IsHighEndSource(bc) || bc.Corpse is not { Deleted: false } corpse)
+diff --git a/server/customizations/CraftContext.cs b/server/customizations/CraftContext.cs
+index e9d51c8..11dc818 100644
+--- a/server/customizations/CraftContext.cs
++++ b/server/customizations/CraftContext.cs
+@@ -1,5 +1,6 @@
+ using System;
+ using System.Collections.Generic;
++using Server.Items;
+ 
+ namespace Server.Engines.Craft
+ {
+@@ -69,6 +70,13 @@ namespace Server.Engines.Craft
+             set { }
+         }
+ 
++        // T2A: last hue used for hue-aware crafting (tailoring cloth)
++        public int LastHue { get; set; } = -1;
++
++        // T2A jewelry: transient gem info set by GemSelectTarget, consumed by BaseJewel.OnCraft
++        public GemType PendingGemType { get; set; }
++        public int PendingGemCount { get; set; }
++
+         public CraftItem LastMade
+         {
+             get
+diff --git a/server/customizations/CraftItem.cs b/server/customizations/CraftItem.cs
+index e5915fd..92df881 100644
+--- a/server/customizations/CraftItem.cs
++++ b/server/customizations/CraftItem.cs
+@@ -1,11 +1,13 @@
+ using System;
+ using System.Collections.Generic;
++using Server.Collections;
+ using Server.Commands;
+ using Server.Factions;
+ using Server.Gumps;
+ using Server.Items;
+ using Server.Logging;
+ using Server.Mobiles;
++using Server.Engines.Craft.T2A;
+ 
+ namespace Server.Engines.Craft
+ {
+@@ -59,34 +61,46 @@ namespace Server.Engines.Craft
+             0x192C, 0x192D, 0x192E, 0x129F, 0x1930, 0x1931, 0x1932, 0x1934
+         };
+ 
+-        private static readonly Type[][] m_TypesTable =
++        private static readonly Type[][] m_TypesTable = InitTypesTable();
++
++        private static Type[][] InitTypesTable()
+         {
+-            new[] { typeof(Log), typeof(Board) },
+-            new[] { typeof(HeartwoodLog), typeof(HeartwoodBoard) },
+-            new[] { typeof(BloodwoodLog), typeof(BloodwoodBoard) },
+-            new[] { typeof(FrostwoodLog), typeof(FrostwoodBoard) },
+-            new[] { typeof(OakLog), typeof(OakBoard) },
+-            new[] { typeof(AshLog), typeof(AshBoard) },
+-            new[] { typeof(YewLog), typeof(YewBoard) },
+-            // -- Shattered Legacy extended lumber -----------------------------
+-            new[] { typeof(IronwoodLog),   typeof(IronwoodBoard)   },
+-            new[] { typeof(GhostwoodLog),  typeof(GhostwoodBoard)  },
+-            new[] { typeof(EmberbarkLog),  typeof(EmberbarkBoard)  },
+-            new[] { typeof(FrostbarkLog),  typeof(FrostbarkBoard)  },
+-            new[] { typeof(ShadowbarkLog), typeof(ShadowbarkBoard) },
+-            new[] { typeof(RunewoodLog),   typeof(RunewoodBoard)   },
+-            new[] { typeof(VoidwoodLog),   typeof(VoidwoodBoard)   },
+-            new[] { typeof(StarwoodLog),   typeof(StarwoodBoard)   },
+-            new[] { typeof(Leather), typeof(Hides) },
+-            new[] { typeof(SpinedLeather), typeof(SpinedHides) },
+-            new[] { typeof(HornedLeather), typeof(HornedHides) },
+-            new[] { typeof(BarbedLeather), typeof(BarbedHides) },
+-            new[] { typeof(BlankMap), typeof(BlankScroll) },
+-            new[] { typeof(Cloth), typeof(UncutCloth) },
+-            new[] { typeof(CheeseWheel), typeof(CheeseWedge) },
+-            new[] { typeof(Pumpkin), typeof(SmallPumpkin) },
+-            new[] { typeof(WoodenBowlOfPeas), typeof(PewterBowlOfPeas) }
+-        };
++            List<Type[]> types =
++            [
++                [typeof(Log), typeof(Board)],
++                [typeof(HeartwoodLog), typeof(HeartwoodBoard)],
++                [typeof(BloodwoodLog), typeof(BloodwoodBoard)],
++                [typeof(FrostwoodLog), typeof(FrostwoodBoard)],
++                [typeof(OakLog), typeof(OakBoard)],
++                [typeof(AshLog), typeof(AshBoard)],
++                [typeof(YewLog), typeof(YewBoard)],
++                // -- Shattered Legacy extended lumber -----------------------------
++                [typeof(IronwoodLog), typeof(IronwoodBoard)],
++                [typeof(GhostwoodLog), typeof(GhostwoodBoard)],
++                [typeof(EmberbarkLog), typeof(EmberbarkBoard)],
++                [typeof(FrostbarkLog), typeof(FrostbarkBoard)],
++                [typeof(ShadowbarkLog), typeof(ShadowbarkBoard)],
++                [typeof(RunewoodLog), typeof(RunewoodBoard)],
++                [typeof(VoidwoodLog), typeof(VoidwoodBoard)],
++                [typeof(StarwoodLog), typeof(StarwoodBoard)],
++                [typeof(Leather), typeof(Hides)],
++                [typeof(SpinedLeather), typeof(SpinedHides)],
++                [typeof(HornedLeather), typeof(HornedHides)],
++                [typeof(BarbedLeather), typeof(BarbedHides)],
++                [typeof(Cloth), typeof(UncutCloth)],
++                [typeof(CheeseWheel), typeof(CheeseWedge)],
++                [typeof(Pumpkin), typeof(SmallPumpkin)],
++                [typeof(WoodenBowlOfPeas), typeof(PewterBowlOfPeas)]
++            ];
++
++            // Gump-based crafting allows blank scrolls as a substitute for blank maps in cartography
++            if (!T2ACraftSystem.Enabled)
++            {
++                types.Add([typeof(BlankMap), typeof(BlankScroll)]);
++            }
++
++            return types.ToArray();
++        }
+ 
+         private static readonly Type[] m_ColoredItemTable =
+         {
+@@ -681,6 +695,10 @@ namespace Server.Engines.Craft
+                 {
+                     amounts[i] = 0;
+                 }
++                else if (isFailure && !Core.UOTD)
++                {
++                    amounts[i] -= amounts[i] / 2;
++                }
+             }
+ 
+             // We adjust the amount of each resource to consume the max possible
+@@ -945,7 +963,11 @@ namespace Server.Engines.Craft
+             if (!allRequiredSkills || chance <= 0.0)
+             {
+                 from.EndAction<CraftSystem>();
+-                if (!ClusterFCraftRun.Refused(from, craftSystem, 1044153, MakeXStop.CannotCraft))
++                if (T2ACraftSystem.Enabled)
++                {
++                    from.SendAsciiMessage("You lack the required skill to craft this item.");
++                }
++                else if (!ClusterFCraftRun.Refused(from, craftSystem, 1044153, MakeXStop.CannotCraft))
+                 {
+                     from.SendGump(
+                         new CraftGump(
+@@ -956,6 +978,7 @@ namespace Server.Engines.Craft
+                         )
+                     );
+                 }
++
+                 return;
+             }
+ 
+@@ -983,7 +1006,7 @@ namespace Server.Engines.Craft
+                 from.EndAction<CraftSystem>();
+                 if (!ClusterFCraftRun.Refused(from, craftSystem, badCraft, MakeXStop.CannotCraft))
+                 {
+-                    from.SendGump(new CraftGump(from, craftSystem, tool, badCraft));
++                    ShowCraftMenu(from, craftSystem, tool, badCraft);
+                 }
+                 return;
+             }
+@@ -997,7 +1020,7 @@ namespace Server.Engines.Craft
+                 from.EndAction<CraftSystem>();
+                 if (!ClusterFCraftRun.Refused(from, craftSystem, message, MakeXStop.Materials))
+                 {
+-                    from.SendGump(new CraftGump(from, craftSystem, tool, message));
++                    ShowCraftMenu(from, craftSystem, tool, message);
+                 }
+                 return;
+             }
+@@ -1009,7 +1032,7 @@ namespace Server.Engines.Craft
+                 from.EndAction<CraftSystem>();
+                 if (!ClusterFCraftRun.Refused(from, craftSystem, message, MakeXStop.CannotCraft))
+                 {
+-                    from.SendGump(new CraftGump(from, craftSystem, tool, message));
++                    ShowCraftMenu(from, craftSystem, tool, message);
+                 }
+                 return;
+             }
+@@ -1025,6 +1048,293 @@ namespace Server.Engines.Craft
+             new InternalTimer(from, craftSystem, this, typeRes, tool, iRandom).Start();
+         }
+ 
++        /// <summary>
++        /// Hue-aware craft entry point. Used by tailoring to carry the targeted resource hue
++        /// through the craft timer to CompleteCraft, ensuring only matching-hue resources are consumed.
++        /// </summary>
++        public void Craft(Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool, int resHue)
++        {
++            if (!from.BeginAction<CraftSystem>())
++            {
++                from.SendLocalizedMessage(500119); // You must wait to perform another action
++                return;
++            }
++
++            if (RequiredExpansion != Expansion.None && from.NetState?.SupportsExpansion(RequiredExpansion) != true)
++            {
++                from.EndAction<CraftSystem>();
++                from.SendGump(
++                    new CraftGump(
++                        from,
++                        craftSystem,
++                        tool,
++                        RequiredExpansionMessage(RequiredExpansion)
++                    )
++                );
++                return;
++            }
++
++            var chance = GetSuccessChance(from, typeRes, craftSystem, false, out var allRequiredSkills);
++
++            if (!allRequiredSkills || chance <= 0.0)
++            {
++                from.EndAction<CraftSystem>();
++                from.SendAsciiMessage("You lack the required skill to craft this item.");
++                return;
++            }
++
++            if (Recipe != null && (from as PlayerMobile)?.HasRecipe(Recipe) == false)
++            {
++                from.EndAction<CraftSystem>();
++                from.SendGump(
++                    new CraftGump(
++                        from,
++                        craftSystem,
++                        tool,
++                        1072847 // You must learn that recipe from a scroll.
++                    )
++                );
++                return;
++            }
++
++            var badCraft = craftSystem.CanCraft(from, tool, ItemType);
++
++            if (badCraft > 0)
++            {
++                from.EndAction<CraftSystem>();
++                ShowCraftMenu(from, craftSystem, tool, badCraft);
++                return;
++            }
++
++            // Dry run: check hued resources are available
++            if (!CheckHuedRes(from, typeRes, craftSystem, resHue))
++            {
++                from.EndAction<CraftSystem>();
++                // You don't have the resources required to make that item.
++                from.SendLocalizedMessage(502925);
++                return;
++            }
++
++            TextDefinition message = null;
++            if (!ConsumeAttributes(from, ref message, false))
++            {
++                from.EndAction<CraftSystem>();
++                ShowCraftMenu(from, craftSystem, tool, message);
++                return;
++            }
++
++            var context = craftSystem.GetContext(from);
++            context?.OnMade(this);
++
++            var iMin = craftSystem.MinCraftEffect;
++            var iMax = craftSystem.MaxCraftEffect - iMin + 1;
++            var iRandom = Utility.Random(iMax);
++            iRandom += iMin + 1;
++            new InternalTimer(from, craftSystem, this, typeRes, tool, iRandom, resHue).Start();
++        }
++
++        /// <summary>
++        /// Checks if the backpack has enough of the specified resource type matching the target hue.
++        /// Used as a dry-run check before starting the craft timer.
++        /// </summary>
++        private bool CheckHuedRes(Mobile from, Type typeRes, CraftSystem craftSystem, int targetHue)
++        {
++            var ourPack = from.Backpack;
++            if (ourPack == null)
++            {
++                return false;
++            }
++
++            var resCol = UseSubRes2 ? craftSystem.CraftSubRes2 : craftSystem.CraftSubRes;
++
++            for (var i = 0; i < Resources.Count; i++)
++            {
++                var craftRes = Resources[i];
++                var baseType = craftRes.ItemType;
++
++                // Resource mutation
++                if (baseType == resCol.ResType && typeRes != null)
++                {
++                    baseType = typeRes;
++                }
++
++                // For the primary resource, count only items matching the target hue
++                if (targetHue >= 0 && i == 0)
++                {
++                    var amount = GetHuedAmount(ourPack, baseType, targetHue);
++                    if (amount < craftRes.Amount)
++                    {
++                        return false;
++                    }
++                }
++                else
++                {
++                    if (ourPack.GetAmount(baseType) < craftRes.Amount)
++                    {
++                        return false;
++                    }
++                }
++            }
++
++            return true;
++        }
++
++        /// <summary>
++        /// Consumes resources from the backpack, restricting the primary resource to items matching the target hue.
++        /// Returns true on success. On success, the exact targetHue is used as the resHue output.
++        /// </summary>
++        private bool ConsumeHuedRes(
++            Mobile from, Type typeRes, CraftSystem craftSystem, int targetHue,
++            ref int resHue, ConsumeType consumeType
++        )
++        {
++            var ourPack = from.Backpack;
++            if (ourPack == null)
++            {
++                return false;
++            }
++
++            if (NeedHeat && !Find(from, m_HeatSources))
++            {
++                return false;
++            }
++
++            if (NeedOven && !Find(from, m_Ovens))
++            {
++                return false;
++            }
++
++            if (NeedMill && !Find(from, m_Mills))
++            {
++                return false;
++            }
++
++            var resCol = UseSubRes2 ? craftSystem.CraftSubRes2 : craftSystem.CraftSubRes;
++
++            for (var i = 0; i < Resources.Count; i++)
++            {
++                var craftRes = Resources[i];
++                var baseType = craftRes.ItemType;
++                var amount = craftRes.Amount;
++
++                // Resource mutation
++                if (baseType == resCol.ResType && typeRes != null)
++                {
++                    baseType = typeRes;
++
++                    var subResource = resCol.SearchFor(baseType);
++                    if (subResource != null && from.Skills[craftSystem.MainSkill].Base < subResource.RequiredSkill)
++                    {
++                        return false;
++                    }
++                }
++
++                if (consumeType == ConsumeType.Half)
++                {
++                    amount = Math.Max(1, amount / 2);
++                }
++
++                // For the primary resource, filter by hue
++                if (targetHue >= 0 && i == 0)
++                {
++                    if (consumeType == ConsumeType.None)
++                    {
++                        // Dry run: just check amount
++                        if (GetHuedAmount(ourPack, baseType, targetHue) < amount)
++                        {
++                            return false;
++                        }
++                    }
++                    else
++                    {
++                        // Actual consumption: consume only matching-hue items
++                        if (!ConsumeHuedAmount(ourPack, baseType, targetHue, amount))
++                        {
++                            return false;
++                        }
++                    }
++                }
++                else
++                {
++                    // Non-hued resource: normal consumption
++                    if (consumeType == ConsumeType.None)
++                    {
++                        if (ourPack.GetAmount(baseType) < amount)
++                        {
++                            return false;
++                        }
++                    }
++                    else
++                    {
++                        if (!ourPack.ConsumeTotal(baseType, amount))
++                        {
++                            return false;
++                        }
++                    }
++                }
++            }
++
++            resHue = targetHue;
++            return true;
++        }
++
++        private static int GetHuedAmount(Container pack, Type type, int hue)
++        {
++            var total = 0;
++
++            foreach (var item in pack.FindItems(true))
++            {
++                if (item.Hue == hue && type.IsInstanceOfType(item))
++                {
++                    total += item.Amount;
++                }
++            }
++
++            return total;
++        }
++
++        private static bool ConsumeHuedAmount(Container pack, Type type, int hue, int amount)
++        {
++            var remaining = amount;
++            using var toDelete = PooledRefList<Item>.Create();
++
++            foreach (var item in pack.FindItems(true))
++            {
++                if (remaining <= 0)
++                {
++                    break;
++                }
++
++                if (item.Hue != hue || !type.IsInstanceOfType(item))
++                {
++                    continue;
++                }
++
++                if (item.Amount <= remaining)
++                {
++                    remaining -= item.Amount;
++                    toDelete.Add(item);
++                }
++                else
++                {
++                    item.Amount -= remaining;
++                    remaining = 0;
++                }
++            }
++
++            if (remaining > 0)
++            {
++                return false;
++            }
++
++            for (var i = 0; i < toDelete.Count; i++)
++            {
++                toDelete[i].Delete();
++            }
++
++            return true;
++        }
++
+         private static TextDefinition RequiredExpansionMessage(Expansion expansion)
+         {
+             return expansion switch
+@@ -1049,7 +1359,7 @@ namespace Server.Engines.Craft
+                 }
+                 else if (tool?.Deleted == false && tool.UsesRemaining > 0)
+                 {
+-                    from.SendGump(new CraftGump(from, craftSystem, tool, badCraft));
++                    ShowCraftMenu(from, craftSystem, tool, badCraft);
+                 }
+                 else
+                 {
+@@ -1081,7 +1391,7 @@ namespace Server.Engines.Craft
+                 }
+                 else if (tool?.Deleted == false && tool.UsesRemaining > 0)
+                 {
+-                    from.SendGump(new CraftGump(from, craftSystem, tool, checkMessage));
++                    ShowCraftMenu(from, craftSystem, tool, checkMessage);
+                 }
+                 else if (checkMessage.Number > 0)
+                 {
+@@ -1124,7 +1434,7 @@ namespace Server.Engines.Craft
+                     }
+                     else if (tool?.Deleted == false && tool.UsesRemaining > 0)
+                     {
+-                        from.SendGump(new CraftGump(from, craftSystem, tool, message));
++                        ShowCraftMenu(from, craftSystem, tool, message);
+                     }
+                     else if (message != null)
+                     {
+@@ -1141,17 +1451,20 @@ namespace Server.Engines.Craft
+                     return;
+                 }
+ 
+-                tool.UsesRemaining--;
+-
+-                if (craftSystem is DefBlacksmithy)
++                if (tool != null)
+                 {
+-                    var hammer = from.FindItemOnLayer<AncientSmithyHammer>(Layer.OneHanded);
+-                    if (hammer != null && hammer != tool)
++                    tool.UsesRemaining--;
++
++                    if (craftSystem is DefBlacksmithy)
+                     {
+-                        hammer.UsesRemaining--;
+-                        if (hammer.UsesRemaining < 1)
++                        var hammer = from.FindItemOnLayer<AncientSmithyHammer>(Layer.OneHanded);
++                        if (hammer != null && hammer != tool)
+                         {
+-                            hammer.Delete();
++                            hammer.UsesRemaining--;
++                            if (hammer.UsesRemaining < 1)
++                            {
++                                hammer.Delete();
++                            }
+                         }
+                     }
+ 
+@@ -1160,16 +1473,16 @@ namespace Server.Engines.Craft
+                         clusterHoh.RecordFamiliarity(typeRes, from);
+                     else if (tool is ReinforcedHammerOfHephaestus clusterRhoh)
+                         clusterRhoh.RecordFamiliarity(typeRes, from);
+-                }
+ 
+-                if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
+-                {
+-                    toolBroken = true;
+-                }
++                    if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
++                    {
++                        toolBroken = true;
++                    }
+ 
+-                if (toolBroken)
+-                {
+-                    tool.Delete();
++                    if (toolBroken)
++                    {
++                        tool.Delete();
++                    }
+                 }
+ 
+                 Item item;
+@@ -1189,6 +1502,9 @@ namespace Server.Engines.Craft
+ 
+                 if (item != null)
+                 {
++                    // Stamped here, not in OnCraft: most craftables do not implement ICraftable.
++                    item.PlayerConstructed = true;
++
+                     if (item is ICraftable craftable)
+                     {
+                         endquality = craftable.OnCraft(quality, makersMark, from, craftSystem, typeRes, tool, this, resHue);
+@@ -1310,7 +1626,18 @@ namespace Server.Engines.Craft
+                 }
+                 else if (tool?.Deleted == false && tool.UsesRemaining > 0)
+                 {
+-                    from.SendGump(new CraftGump(from, craftSystem, tool, num));
++                    if (T2ACraftSystem.Enabled)
++                    {
++                        if (num > 0)
++                        {
++                            from.SendLocalizedMessage(num);
++                        }
++                        ShowCraftMenu(from, craftSystem, tool);
++                    }
++                    else
++                    {
++                        ShowCraftMenu(from, craftSystem, tool, num);
++                    }
+                 }
+                 else if (num > 0)
+                 {
+@@ -1327,13 +1654,12 @@ namespace Server.Engines.Craft
+                 }
+                 else if (tool?.Deleted == false && tool.UsesRemaining > 0)
+                 {
+-                    from.SendGump(new CraftGump(from, craftSystem, tool, 1044153));
++                    from.SendAsciiMessage("You lack the required skill to craft this item.");
+                 }
+                 else
+                 {
+                     from.SendLocalizedMessage(1044153); // You don't have the required skills to attempt this item.
+                 }
+-
+                 return;
+             }
+ 
+@@ -1347,7 +1673,7 @@ namespace Server.Engines.Craft
+                 }
+                 else if (tool?.Deleted == false && tool.UsesRemaining > 0)
+                 {
+-                    from.SendGump(new CraftGump(from, craftSystem, tool, message));
++                    ShowCraftMenu(from, craftSystem, tool, message);
+                 }
+                 else if (message != null)
+                 {
+@@ -1364,16 +1690,19 @@ namespace Server.Engines.Craft
+                 return;
+             }
+ 
+-            tool.UsesRemaining--;
+-
+-            if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
++            if (tool != null)
+             {
+-                toolBroken = true;
+-            }
++                tool.UsesRemaining--;
+ 
+-            if (toolBroken)
+-            {
+-                tool.Delete();
++                if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
++                {
++                    toolBroken = true;
++                }
++
++                if (toolBroken)
++                {
++                    tool.Delete();
++                }
+             }
+ 
+             // SkillCheck failed.
+@@ -1383,9 +1712,211 @@ namespace Server.Engines.Craft
+             {
+                 // cc-P18 (F-1): a Craft X run keeps going through a failed attempt (ClusterFCraftRun.cs).
+             }
+-            else if (!tool.Deleted && tool.UsesRemaining > 0)
++            else if (tool?.Deleted == false && tool.UsesRemaining > 0)
+             {
+-                from.SendGump(new CraftGump(from, craftSystem, tool, num));
++                ShowCraftMenu(from, craftSystem, tool, num);
++            }
++            else if (num > 0)
++            {
++                from.SendLocalizedMessage(num);
++            }
++        }
++
++        /// <summary>
++        /// Hue-aware CompleteCraft. Uses ConsumeHuedRes to consume only resources matching
++        /// the target hue, and applies that hue to the crafted item.
++        /// </summary>
++        public void CompleteCraft(
++            int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes,
++            BaseTool tool, CustomCraft customCraft, int targetHue
++        )
++        {
++            var badCraft = craftSystem.CanCraft(from, tool, ItemType);
++
++            if (badCraft > 0)
++            {
++                if (tool?.Deleted == false && tool.UsesRemaining > 0)
++                {
++                    ShowCraftMenu(from, craftSystem, tool, badCraft);
++                }
++                else
++                {
++                    from.SendLocalizedMessage(badCraft);
++                }
++
++                return;
++            }
++
++            // Dry-run check with hue filtering
++            var checkResHue = 0;
++            if (!ConsumeHuedRes(from, typeRes, craftSystem, targetHue, ref checkResHue, ConsumeType.None))
++            {
++                if (tool?.Deleted == false && tool.UsesRemaining > 0)
++                {
++                    // You don't have the resources required to make that item.
++                    ShowCraftMenu(from, craftSystem, tool, 502925);
++                }
++                else
++                {
++                    from.SendLocalizedMessage(502925);
++                }
++
++                return;
++            }
++
++            TextDefinition checkMessage = null;
++            if (!ConsumeAttributes(from, ref checkMessage, false))
++            {
++                return;
++            }
++
++            var toolBroken = false;
++            var endquality = 1;
++            var resHue = 0;
++            var num = 0;
++
++            if (CheckSkills(from, typeRes, craftSystem, ref quality, out var allRequiredSkills))
++            {
++                var consumeType = UseAllRes ? ConsumeType.Half : ConsumeType.All;
++
++                if (!ConsumeHuedRes(from, typeRes, craftSystem, targetHue, ref resHue, consumeType))
++                {
++                    if (tool?.Deleted == false && tool.UsesRemaining > 0)
++                    {
++                        ShowCraftMenu(from, craftSystem, tool, 502925);
++                    }
++                    else
++                    {
++                        from.SendLocalizedMessage(502925);
++                    }
++
++                    return;
++                }
++
++                if (tool != null)
++                {
++                    tool.UsesRemaining--;
++
++                    if (craftSystem is DefBlacksmithy)
++                    {
++                        var hammer = from.FindItemOnLayer<AncientSmithyHammer>(Layer.OneHanded);
++                        if (hammer != null && hammer != tool)
++                        {
++                            hammer.UsesRemaining--;
++                            if (hammer.UsesRemaining < 1)
++                            {
++                                hammer.Delete();
++                            }
++                        }
++                    }
++
++                    if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
++                    {
++                        toolBroken = true;
++                    }
++
++                    if (toolBroken)
++                    {
++                        tool.Delete();
++                    }
++                }
++
++                Item item;
++                if (customCraft != null)
++                {
++                    item = customCraft.CompleteCraft(out num);
++                }
++                else
++                {
++                    item = ItemType.CreateInstance<Item>();
++                }
++
++                if (item != null)
++                {
++                    // Stamped here, not in OnCraft: most craftables do not implement ICraftable.
++                    item.PlayerConstructed = true;
++
++                    if (item is ICraftable craftable)
++                    {
++                        endquality = craftable.OnCraft(quality, makersMark, from, craftSystem, typeRes, tool, this, resHue);
++                    }
++                    else if (item.Hue == 0)
++                    {
++                        item.Hue = resHue;
++                    }
++
++                    from.AddToBackpack(item);
++
++                    num = craftSystem.PlayEndingEffect(from, false, true, toolBroken, endquality, false, this);
++
++                    if (T2ACraftSystem.Enabled)
++                    {
++                        if (tool?.Deleted == false && tool.UsesRemaining > 0)
++                        {
++                            if (num > 0)
++                            {
++                                from.SendLocalizedMessage(num);
++                            }
++
++                            ShowCraftMenu(from, craftSystem, tool);
++                        }
++                        else if (num > 0)
++                        {
++                            from.SendLocalizedMessage(num);
++                        }
++                    }
++                    else if (tool?.Deleted == false && tool.UsesRemaining > 0)
++                    {
++                        ShowCraftMenu(from, craftSystem, tool, num);
++                    }
++                    else if (num > 0)
++                    {
++                        from.SendLocalizedMessage(num);
++                    }
++
++                    return;
++                }
++            }
++
++            if (!allRequiredSkills)
++            {
++                if (tool?.Deleted == false && tool.UsesRemaining > 0)
++                {
++                    from.SendAsciiMessage("You lack the required skill to craft this item.");
++                }
++                else
++                {
++                    from.SendLocalizedMessage(1044153);
++                }
++
++                return;
++            }
++
++            var failConsumeType = UseAllRes ? ConsumeType.Half : ConsumeType.All;
++
++            // Failure: consume resources (half on failure)
++            ConsumeHuedRes(from, typeRes, craftSystem, targetHue, ref resHue, failConsumeType);
++
++            if (tool != null)
++            {
++                tool.UsesRemaining--;
++
++                if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
++                {
++                    toolBroken = true;
++                }
++
++                if (toolBroken)
++                {
++                    tool.Delete();
++                }
++            }
++
++            num = craftSystem.PlayEndingEffect(from, true, true, toolBroken, endquality, false, this);
++
++            if (tool?.Deleted == false && tool.UsesRemaining > 0)
++            {
++                ShowCraftMenu(from, craftSystem, tool, num);
+             }
+             else if (num > 0)
+             {
+@@ -1401,11 +1932,12 @@ namespace Server.Engines.Craft
+             private readonly int m_iCountMax;
+             private readonly BaseTool m_Tool;
+             private readonly Type m_TypeRes;
++            private readonly int m_ResHue;
+             private int m_iCount;
+ 
+             public InternalTimer(
+                 Mobile from, CraftSystem craftSystem, CraftItem craftItem, Type typeRes, BaseTool tool,
+-                int iCountMax
++                int iCountMax, int resHue = -1
+             ) : base(TimeSpan.Zero, TimeSpan.FromSeconds(craftSystem.Delay), iCountMax)
+             {
+                 m_From = from;
+@@ -1415,6 +1947,7 @@ namespace Server.Engines.Craft
+                 m_CraftSystem = craftSystem;
+                 m_TypeRes = typeRes;
+                 m_Tool = tool;
++                m_ResHue = resHue;
+             }
+ 
+             protected override void OnTick()
+@@ -1440,7 +1973,7 @@ namespace Server.Engines.Craft
+                     }
+                     else if (m_Tool?.Deleted == false && m_Tool.UsesRemaining > 0)
+                     {
+-                        m_From.SendGump(new CraftGump(m_From, m_CraftSystem, m_Tool, badCraft));
++                        ShowCraftMenu(m_From, m_CraftSystem, m_Tool, badCraft);
+                     }
+                     else
+                     {
+@@ -1489,8 +2022,11 @@ namespace Server.Engines.Craft
+                     makersMark = m_CraftItem.IsMarkable(m_CraftItem.ItemType);
+                 }
+ 
++                // T2A menus always prompt for maker's mark (no auto-mark/don't-mark options)
+                 // cc-P18 (F-1): no prompt in the middle of a Craft X run; "prompt" marks, as answering yes would.
+-                if (makersMark && context.MarkOption == CraftMarkOption.PromptForMark && context.Run == null)
++                if (makersMark &&
++                    (T2ACraftSystem.Enabled || context.MarkOption == CraftMarkOption.PromptForMark) &&
++                    context.Run == null)
+                 {
+                     m_From.SendGump(
+                         new QueryMakersMarkGump(
+@@ -1498,7 +2034,8 @@ namespace Server.Engines.Craft
+                             m_CraftItem,
+                             m_CraftSystem,
+                             m_TypeRes,
+-                            m_Tool
++                            m_Tool,
++                            m_ResHue
+                         )
+                     );
+                 }
+@@ -1509,9 +2046,41 @@ namespace Server.Engines.Craft
+                         makersMark = false;
+                     }
+ 
+-                    m_CraftItem.CompleteCraft(quality, makersMark, m_From, m_CraftSystem, m_TypeRes, m_Tool, null);
++                    if (m_ResHue >= 0)
++                    {
++                        m_CraftItem.CompleteCraft(
++                            quality, makersMark, m_From, m_CraftSystem, m_TypeRes, m_Tool, null, m_ResHue
++                        );
++                    }
++                    else
++                    {
++                        m_CraftItem.CompleteCraft(quality, makersMark, m_From, m_CraftSystem, m_TypeRes, m_Tool, null);
++                    }
++                }
++            }
++        }
++
++        public static void ShowCraftMenu(Mobile from, CraftSystem system, BaseTool tool, TextDefinition message = null)
++        {
++            if (T2ACraftSystem.Enabled)
++            {
++                // T2A: Don't reopen menu. Player double-clicks tool to restart.
++                if (message != null)
++                {
++                    if (message.Number > 0)
++                    {
++                        from.SendLocalizedMessage(message.Number);
++                    }
++                    else if (!string.IsNullOrEmpty(message.String))
++                    {
++                        from.SendMessage(message.String);
++                    }
+                 }
++
++                return;
+             }
++
++            from.SendGump(new CraftGump(from, system, tool, message));
+         }
+     }
+ }
+diff --git a/server/customizations/Items/Artifacts/Equipment/Armor/Sets/BaseSetArmor.cs b/server/customizations/Items/Artifacts/Equipment/Armor/Sets/BaseSetArmor.cs
+index 1e8dd73..0d70c81 100644
+--- a/server/customizations/Items/Artifacts/Equipment/Armor/Sets/BaseSetArmor.cs
++++ b/server/customizations/Items/Artifacts/Equipment/Armor/Sets/BaseSetArmor.cs
+@@ -19,99 +19,97 @@ namespace Server.Items
+     {
+         [SerializedIgnoreDupe]
+         [SerializableField(0, setter: "private")]
++        [SaveFlag(nameof(ShouldSerializeSetAttributes), nameof(SetAttributesDefaultValue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
+         private AosAttributes _setAttributes;
+ 
+-        [SerializableFieldSaveFlag(0)]
+         private bool ShouldSerializeSetAttributes() => !_setAttributes.IsEmpty;
+ 
+-        [SerializableFieldDefault(0)]
+         private AosAttributes SetAttributesDefaultValue() => new(this);
+ 
+         [SerializedIgnoreDupe]
+         [SerializableField(1, setter: "private")]
++        [SaveFlag(nameof(ShouldSerializeSetSkillBonuses), nameof(SetSkillBonusesDefaultValue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
+         private AosSkillBonuses _setSkillBonuses;
+ 
+-        [SerializableFieldSaveFlag(1)]
+         private bool ShouldSerializeSetSkillBonuses() => !_setSkillBonuses.IsEmpty;
+ 
+-        [SerializableFieldDefault(1)]
+         private AosSkillBonuses SetSkillBonusesDefaultValue() => new(this);
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(2)]
++        [SaveFlag(nameof(ShouldSerializeSetPhysicalBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setPhysicalBonus;
+ 
+-        [SerializableFieldSaveFlag(2)]
+         private bool ShouldSerializeSetPhysicalBonus() => _setPhysicalBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(3)]
++        [SaveFlag(nameof(ShouldSerializeSetFireBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setFireBonus;
+ 
+-        [SerializableFieldSaveFlag(3)]
+         private bool ShouldSerializeSetFireBonus() => _setFireBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(4)]
++        [SaveFlag(nameof(ShouldSerializeSetColdBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setColdBonus;
+ 
+-        [SerializableFieldSaveFlag(4)]
+         private bool ShouldSerializeSetColdBonus() => _setColdBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(5)]
++        [SaveFlag(nameof(ShouldSerializeSetPoisonBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setPoisonBonus;
+ 
+-        [SerializableFieldSaveFlag(5)]
+         private bool ShouldSerializeSetPoisonBonus() => _setPoisonBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(6)]
++        [SaveFlag(nameof(ShouldSerializeSetEnergyBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setEnergyBonus;
+ 
+-        [SerializableFieldSaveFlag(6)]
+         private bool ShouldSerializeSetEnergyBonus() => _setEnergyBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(7)]
++        [SaveFlag(nameof(ShouldSerializeSetHue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setHue;
+ 
+-        [SerializableFieldSaveFlag(7)]
+         private bool ShouldSerializeSetHue() => _setHue != 0;
+ 
+         [SerializableField(8)]
++        [SaveFlag(nameof(ShouldSerializeSetEquipped))]
+         private bool _setEquipped;
+ 
+-        [SerializableFieldSaveFlag(8)]
+         private bool ShouldSerializeSetEquipped() => _setEquipped;
+ 
+         [SerializableField(9)]
++        [SaveFlag(nameof(ShouldSerializeLastEquipped))]
+         private bool _lastEquipped;
+ 
+-        [SerializableFieldSaveFlag(9)]
+         private bool ShouldSerializeLastEquipped() => _lastEquipped;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(10)]
++        [SaveFlag(nameof(ShouldSerializeSetSelfRepair))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setSelfRepair;
+ 
+-        [SerializableFieldSaveFlag(10)]
+         private bool ShouldSerializeSetSelfRepair() => _setSelfRepair != 0;
+ 
+         /// <summary>
+@@ -126,13 +124,12 @@ namespace Server.Items
+         /// </summary>
+         [SerializedIgnoreDupe]
+         [SerializableField(11, setter: "private")]
++        [SaveFlag(nameof(ShouldSerializeAbsorptionAttributes), nameof(AbsorptionAttributesDefaultValue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
+         private SAAbsorptionAttributes _absorptionAttributes;
+ 
+-        [SerializableFieldSaveFlag(11)]
+         private bool ShouldSerializeAbsorptionAttributes() => !_absorptionAttributes.IsEmpty;
+ 
+-        [SerializableFieldDefault(11)]
+         private SAAbsorptionAttributes AbsorptionAttributesDefaultValue() => new(this);
+ 
+         public BaseSetArmor(int itemID) : base(itemID)
+diff --git a/server/customizations/Items/Artifacts/Equipment/Armor/Sets/BaseSetClothing.cs b/server/customizations/Items/Artifacts/Equipment/Armor/Sets/BaseSetClothing.cs
+index fe3f347..dbe8176 100644
+--- a/server/customizations/Items/Artifacts/Equipment/Armor/Sets/BaseSetClothing.cs
++++ b/server/customizations/Items/Artifacts/Equipment/Armor/Sets/BaseSetClothing.cs
+@@ -22,90 +22,88 @@ namespace Server.Items
+     {
+         [SerializedIgnoreDupe]
+         [SerializableField(0, setter: "private")]
++        [SaveFlag(nameof(ShouldSerializeSetAttributes), nameof(SetAttributesDefaultValue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
+         private AosAttributes _setAttributes;
+ 
+-        [SerializableFieldSaveFlag(0)]
+         private bool ShouldSerializeSetAttributes() => !_setAttributes.IsEmpty;
+ 
+-        [SerializableFieldDefault(0)]
+         private AosAttributes SetAttributesDefaultValue() => new(this);
+ 
+         [SerializedIgnoreDupe]
+         [SerializableField(1, setter: "private")]
++        [SaveFlag(nameof(ShouldSerializeSetSkillBonuses), nameof(SetSkillBonusesDefaultValue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
+         private AosSkillBonuses _setSkillBonuses;
+ 
+-        [SerializableFieldSaveFlag(1)]
+         private bool ShouldSerializeSetSkillBonuses() => !_setSkillBonuses.IsEmpty;
+ 
+-        [SerializableFieldDefault(1)]
+         private AosSkillBonuses SetSkillBonusesDefaultValue() => new(this);
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(2)]
++        [SaveFlag(nameof(ShouldSerializeSetPhysicalBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setPhysicalBonus;
+ 
+-        [SerializableFieldSaveFlag(2)]
+         private bool ShouldSerializeSetPhysicalBonus() => _setPhysicalBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(3)]
++        [SaveFlag(nameof(ShouldSerializeSetFireBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setFireBonus;
+ 
+-        [SerializableFieldSaveFlag(3)]
+         private bool ShouldSerializeSetFireBonus() => _setFireBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(4)]
++        [SaveFlag(nameof(ShouldSerializeSetColdBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setColdBonus;
+ 
+-        [SerializableFieldSaveFlag(4)]
+         private bool ShouldSerializeSetColdBonus() => _setColdBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(5)]
++        [SaveFlag(nameof(ShouldSerializeSetPoisonBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setPoisonBonus;
+ 
+-        [SerializableFieldSaveFlag(5)]
+         private bool ShouldSerializeSetPoisonBonus() => _setPoisonBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(6)]
++        [SaveFlag(nameof(ShouldSerializeSetEnergyBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setEnergyBonus;
+ 
+-        [SerializableFieldSaveFlag(6)]
+         private bool ShouldSerializeSetEnergyBonus() => _setEnergyBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(7)]
++        [SaveFlag(nameof(ShouldSerializeSetHue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setHue;
+ 
+-        [SerializableFieldSaveFlag(7)]
+         private bool ShouldSerializeSetHue() => _setHue != 0;
+ 
+         [SerializableField(8)]
++        [SaveFlag(nameof(ShouldSerializeSetEquipped))]
+         private bool _setEquipped;
+ 
+-        [SerializableFieldSaveFlag(8)]
+         private bool ShouldSerializeSetEquipped() => _setEquipped;
+ 
+         [SerializableField(9)]
++        [SaveFlag(nameof(ShouldSerializeLastEquipped))]
+         private bool _lastEquipped;
+ 
+-        [SerializableFieldSaveFlag(9)]
+         private bool ShouldSerializeLastEquipped() => _lastEquipped;
+ 
+         /// <summary>
+@@ -120,10 +118,10 @@ namespace Server.Items
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(10)]
++        [SaveFlag(nameof(ShouldSerializeSetSelfRepair))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setSelfRepair;
+ 
+-        [SerializableFieldSaveFlag(10)]
+         private bool ShouldSerializeSetSelfRepair() => _setSelfRepair != 0;
+ 
+         /// <summary>
+@@ -133,13 +131,12 @@ namespace Server.Items
+         /// </summary>
+         [SerializedIgnoreDupe]
+         [SerializableField(11, setter: "private")]
++        [SaveFlag(nameof(ShouldSerializeAbsorptionAttributes), nameof(AbsorptionAttributesDefaultValue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
+         private SAAbsorptionAttributes _absorptionAttributes;
+ 
+-        [SerializableFieldSaveFlag(11)]
+         private bool ShouldSerializeAbsorptionAttributes() => !_absorptionAttributes.IsEmpty;
+ 
+-        [SerializableFieldDefault(11)]
+         private SAAbsorptionAttributes AbsorptionAttributesDefaultValue() => new(this);
+ 
+         public BaseSetClothing(int itemID, Layer layer, int hue = 0) : base(itemID, layer, hue)
+diff --git a/server/customizations/Items/Artifacts/Equipment/Armor/Sets/BaseSetJewel.cs b/server/customizations/Items/Artifacts/Equipment/Armor/Sets/BaseSetJewel.cs
+index 734247c..9f327a0 100644
+--- a/server/customizations/Items/Artifacts/Equipment/Armor/Sets/BaseSetJewel.cs
++++ b/server/customizations/Items/Artifacts/Equipment/Armor/Sets/BaseSetJewel.cs
+@@ -22,90 +22,88 @@ namespace Server.Items
+     {
+         [SerializedIgnoreDupe]
+         [SerializableField(0, setter: "private")]
++        [SaveFlag(nameof(ShouldSerializeSetAttributes), nameof(SetAttributesDefaultValue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
+         private AosAttributes _setAttributes;
+ 
+-        [SerializableFieldSaveFlag(0)]
+         private bool ShouldSerializeSetAttributes() => !_setAttributes.IsEmpty;
+ 
+-        [SerializableFieldDefault(0)]
+         private AosAttributes SetAttributesDefaultValue() => new(this);
+ 
+         [SerializedIgnoreDupe]
+         [SerializableField(1, setter: "private")]
++        [SaveFlag(nameof(ShouldSerializeSetSkillBonuses), nameof(SetSkillBonusesDefaultValue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
+         private AosSkillBonuses _setSkillBonuses;
+ 
+-        [SerializableFieldSaveFlag(1)]
+         private bool ShouldSerializeSetSkillBonuses() => !_setSkillBonuses.IsEmpty;
+ 
+-        [SerializableFieldDefault(1)]
+         private AosSkillBonuses SetSkillBonusesDefaultValue() => new(this);
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(2)]
++        [SaveFlag(nameof(ShouldSerializeSetPhysicalBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setPhysicalBonus;
+ 
+-        [SerializableFieldSaveFlag(2)]
+         private bool ShouldSerializeSetPhysicalBonus() => _setPhysicalBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(3)]
++        [SaveFlag(nameof(ShouldSerializeSetFireBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setFireBonus;
+ 
+-        [SerializableFieldSaveFlag(3)]
+         private bool ShouldSerializeSetFireBonus() => _setFireBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(4)]
++        [SaveFlag(nameof(ShouldSerializeSetColdBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setColdBonus;
+ 
+-        [SerializableFieldSaveFlag(4)]
+         private bool ShouldSerializeSetColdBonus() => _setColdBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(5)]
++        [SaveFlag(nameof(ShouldSerializeSetPoisonBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setPoisonBonus;
+ 
+-        [SerializableFieldSaveFlag(5)]
+         private bool ShouldSerializeSetPoisonBonus() => _setPoisonBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(6)]
++        [SaveFlag(nameof(ShouldSerializeSetEnergyBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setEnergyBonus;
+ 
+-        [SerializableFieldSaveFlag(6)]
+         private bool ShouldSerializeSetEnergyBonus() => _setEnergyBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(7)]
++        [SaveFlag(nameof(ShouldSerializeSetHue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setHue;
+ 
+-        [SerializableFieldSaveFlag(7)]
+         private bool ShouldSerializeSetHue() => _setHue != 0;
+ 
+         [SerializableField(8)]
++        [SaveFlag(nameof(ShouldSerializeSetEquipped))]
+         private bool _setEquipped;
+ 
+-        [SerializableFieldSaveFlag(8)]
+         private bool ShouldSerializeSetEquipped() => _setEquipped;
+ 
+         [SerializableField(9)]
++        [SaveFlag(nameof(ShouldSerializeLastEquipped))]
+         private bool _lastEquipped;
+ 
+-        [SerializableFieldSaveFlag(9)]
+         private bool ShouldSerializeLastEquipped() => _lastEquipped;
+ 
+         /// <summary>
+@@ -115,13 +113,12 @@ namespace Server.Items
+         /// </summary>
+         [SerializedIgnoreDupe]
+         [SerializableField(10, setter: "private")]
++        [SaveFlag(nameof(ShouldSerializeAbsorptionAttributes), nameof(AbsorptionAttributesDefaultValue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
+         private SAAbsorptionAttributes _absorptionAttributes;
+ 
+-        [SerializableFieldSaveFlag(10)]
+         private bool ShouldSerializeAbsorptionAttributes() => !_absorptionAttributes.IsEmpty;
+ 
+-        [SerializableFieldDefault(10)]
+         private SAAbsorptionAttributes AbsorptionAttributesDefaultValue() => new(this);
+ 
+         public BaseSetJewel(int itemID, Layer layer) : base(itemID, layer)
+diff --git a/server/customizations/Items/Artifacts/Equipment/Armor/Sets/BaseSetQuiver.cs b/server/customizations/Items/Artifacts/Equipment/Armor/Sets/BaseSetQuiver.cs
+index 940eaff..eae1908 100644
+--- a/server/customizations/Items/Artifacts/Equipment/Armor/Sets/BaseSetQuiver.cs
++++ b/server/customizations/Items/Artifacts/Equipment/Armor/Sets/BaseSetQuiver.cs
+@@ -22,90 +22,88 @@ namespace Server.Items
+     {
+         [SerializedIgnoreDupe]
+         [SerializableField(0, setter: "private")]
++        [SaveFlag(nameof(ShouldSerializeSetAttributes), nameof(SetAttributesDefaultValue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
+         private AosAttributes _setAttributes;
+ 
+-        [SerializableFieldSaveFlag(0)]
+         private bool ShouldSerializeSetAttributes() => !_setAttributes.IsEmpty;
+ 
+-        [SerializableFieldDefault(0)]
+         private AosAttributes SetAttributesDefaultValue() => new(this);
+ 
+         [SerializedIgnoreDupe]
+         [SerializableField(1, setter: "private")]
++        [SaveFlag(nameof(ShouldSerializeSetSkillBonuses), nameof(SetSkillBonusesDefaultValue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
+         private AosSkillBonuses _setSkillBonuses;
+ 
+-        [SerializableFieldSaveFlag(1)]
+         private bool ShouldSerializeSetSkillBonuses() => !_setSkillBonuses.IsEmpty;
+ 
+-        [SerializableFieldDefault(1)]
+         private AosSkillBonuses SetSkillBonusesDefaultValue() => new(this);
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(2)]
++        [SaveFlag(nameof(ShouldSerializeSetPhysicalBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setPhysicalBonus;
+ 
+-        [SerializableFieldSaveFlag(2)]
+         private bool ShouldSerializeSetPhysicalBonus() => _setPhysicalBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(3)]
++        [SaveFlag(nameof(ShouldSerializeSetFireBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setFireBonus;
+ 
+-        [SerializableFieldSaveFlag(3)]
+         private bool ShouldSerializeSetFireBonus() => _setFireBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(4)]
++        [SaveFlag(nameof(ShouldSerializeSetColdBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setColdBonus;
+ 
+-        [SerializableFieldSaveFlag(4)]
+         private bool ShouldSerializeSetColdBonus() => _setColdBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(5)]
++        [SaveFlag(nameof(ShouldSerializeSetPoisonBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setPoisonBonus;
+ 
+-        [SerializableFieldSaveFlag(5)]
+         private bool ShouldSerializeSetPoisonBonus() => _setPoisonBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(6)]
++        [SaveFlag(nameof(ShouldSerializeSetEnergyBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setEnergyBonus;
+ 
+-        [SerializableFieldSaveFlag(6)]
+         private bool ShouldSerializeSetEnergyBonus() => _setEnergyBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(7)]
++        [SaveFlag(nameof(ShouldSerializeSetHue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setHue;
+ 
+-        [SerializableFieldSaveFlag(7)]
+         private bool ShouldSerializeSetHue() => _setHue != 0;
+ 
+         [SerializableField(8)]
++        [SaveFlag(nameof(ShouldSerializeSetEquipped))]
+         private bool _setEquipped;
+ 
+-        [SerializableFieldSaveFlag(8)]
+         private bool ShouldSerializeSetEquipped() => _setEquipped;
+ 
+         [SerializableField(9)]
++        [SaveFlag(nameof(ShouldSerializeLastEquipped))]
+         private bool _lastEquipped;
+ 
+-        [SerializableFieldSaveFlag(9)]
+         private bool ShouldSerializeLastEquipped() => _lastEquipped;
+ 
+         public BaseSetQuiver(int itemID = 0x2FB7) : base(itemID)
+diff --git a/server/customizations/Items/Artifacts/Equipment/Armor/Sets/BaseSetShield.cs b/server/customizations/Items/Artifacts/Equipment/Armor/Sets/BaseSetShield.cs
+index b359cff..5087d40 100644
+--- a/server/customizations/Items/Artifacts/Equipment/Armor/Sets/BaseSetShield.cs
++++ b/server/customizations/Items/Artifacts/Equipment/Armor/Sets/BaseSetShield.cs
+@@ -26,90 +26,88 @@ namespace Server.Items
+     {
+         [SerializedIgnoreDupe]
+         [SerializableField(0, setter: "private")]
++        [SaveFlag(nameof(ShouldSerializeSetAttributes), nameof(SetAttributesDefaultValue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
+         private AosAttributes _setAttributes;
+ 
+-        [SerializableFieldSaveFlag(0)]
+         private bool ShouldSerializeSetAttributes() => !_setAttributes.IsEmpty;
+ 
+-        [SerializableFieldDefault(0)]
+         private AosAttributes SetAttributesDefaultValue() => new(this);
+ 
+         [SerializedIgnoreDupe]
+         [SerializableField(1, setter: "private")]
++        [SaveFlag(nameof(ShouldSerializeSetSkillBonuses), nameof(SetSkillBonusesDefaultValue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
+         private AosSkillBonuses _setSkillBonuses;
+ 
+-        [SerializableFieldSaveFlag(1)]
+         private bool ShouldSerializeSetSkillBonuses() => !_setSkillBonuses.IsEmpty;
+ 
+-        [SerializableFieldDefault(1)]
+         private AosSkillBonuses SetSkillBonusesDefaultValue() => new(this);
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(2)]
++        [SaveFlag(nameof(ShouldSerializeSetPhysicalBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setPhysicalBonus;
+ 
+-        [SerializableFieldSaveFlag(2)]
+         private bool ShouldSerializeSetPhysicalBonus() => _setPhysicalBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(3)]
++        [SaveFlag(nameof(ShouldSerializeSetFireBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setFireBonus;
+ 
+-        [SerializableFieldSaveFlag(3)]
+         private bool ShouldSerializeSetFireBonus() => _setFireBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(4)]
++        [SaveFlag(nameof(ShouldSerializeSetColdBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setColdBonus;
+ 
+-        [SerializableFieldSaveFlag(4)]
+         private bool ShouldSerializeSetColdBonus() => _setColdBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(5)]
++        [SaveFlag(nameof(ShouldSerializeSetPoisonBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setPoisonBonus;
+ 
+-        [SerializableFieldSaveFlag(5)]
+         private bool ShouldSerializeSetPoisonBonus() => _setPoisonBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(6)]
++        [SaveFlag(nameof(ShouldSerializeSetEnergyBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setEnergyBonus;
+ 
+-        [SerializableFieldSaveFlag(6)]
+         private bool ShouldSerializeSetEnergyBonus() => _setEnergyBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(7)]
++        [SaveFlag(nameof(ShouldSerializeSetHue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setHue;
+ 
+-        [SerializableFieldSaveFlag(7)]
+         private bool ShouldSerializeSetHue() => _setHue != 0;
+ 
+         [SerializableField(8)]
++        [SaveFlag(nameof(ShouldSerializeSetEquipped))]
+         private bool _setEquipped;
+ 
+-        [SerializableFieldSaveFlag(8)]
+         private bool ShouldSerializeSetEquipped() => _setEquipped;
+ 
+         [SerializableField(9)]
++        [SaveFlag(nameof(ShouldSerializeLastEquipped))]
+         private bool _lastEquipped;
+ 
+-        [SerializableFieldSaveFlag(9)]
+         private bool ShouldSerializeLastEquipped() => _lastEquipped;
+ 
+         /// <summary>
+@@ -123,10 +121,10 @@ namespace Server.Items
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(10)]
++        [SaveFlag(nameof(ShouldSerializeSetSelfRepair))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setSelfRepair;
+ 
+-        [SerializableFieldSaveFlag(10)]
+         private bool ShouldSerializeSetSelfRepair() => _setSelfRepair != 0;
+ 
+         /// <summary>
+@@ -135,13 +133,12 @@ namespace Server.Items
+         /// </summary>
+         [SerializedIgnoreDupe]
+         [SerializableField(11, setter: "private")]
++        [SaveFlag(nameof(ShouldSerializeAbsorptionAttributes), nameof(AbsorptionAttributesDefaultValue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
+         private SAAbsorptionAttributes _absorptionAttributes;
+ 
+-        [SerializableFieldSaveFlag(11)]
+         private bool ShouldSerializeAbsorptionAttributes() => !_absorptionAttributes.IsEmpty;
+ 
+-        [SerializableFieldDefault(11)]
+         private SAAbsorptionAttributes AbsorptionAttributesDefaultValue() => new(this);
+ 
+         public BaseSetShield(int itemID) : base(itemID)
+diff --git a/server/customizations/Items/Artifacts/Equipment/Armor/Sets/BaseSetWeapon.cs b/server/customizations/Items/Artifacts/Equipment/Armor/Sets/BaseSetWeapon.cs
+index 81b182d..f9f1430 100644
+--- a/server/customizations/Items/Artifacts/Equipment/Armor/Sets/BaseSetWeapon.cs
++++ b/server/customizations/Items/Artifacts/Equipment/Armor/Sets/BaseSetWeapon.cs
+@@ -33,90 +33,88 @@ namespace Server.Items
+     {
+         [SerializedIgnoreDupe]
+         [SerializableField(0, setter: "private")]
++        [SaveFlag(nameof(ShouldSerializeSetAttributes), nameof(SetAttributesDefaultValue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
+         private AosAttributes _setAttributes;
+ 
+-        [SerializableFieldSaveFlag(0)]
+         private bool ShouldSerializeSetAttributes() => !_setAttributes.IsEmpty;
+ 
+-        [SerializableFieldDefault(0)]
+         private AosAttributes SetAttributesDefaultValue() => new(this);
+ 
+         [SerializedIgnoreDupe]
+         [SerializableField(1, setter: "private")]
++        [SaveFlag(nameof(ShouldSerializeSetSkillBonuses), nameof(SetSkillBonusesDefaultValue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
+         private AosSkillBonuses _setSkillBonuses;
+ 
+-        [SerializableFieldSaveFlag(1)]
+         private bool ShouldSerializeSetSkillBonuses() => !_setSkillBonuses.IsEmpty;
+ 
+-        [SerializableFieldDefault(1)]
+         private AosSkillBonuses SetSkillBonusesDefaultValue() => new(this);
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(2)]
++        [SaveFlag(nameof(ShouldSerializeSetPhysicalBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setPhysicalBonus;
+ 
+-        [SerializableFieldSaveFlag(2)]
+         private bool ShouldSerializeSetPhysicalBonus() => _setPhysicalBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(3)]
++        [SaveFlag(nameof(ShouldSerializeSetFireBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setFireBonus;
+ 
+-        [SerializableFieldSaveFlag(3)]
+         private bool ShouldSerializeSetFireBonus() => _setFireBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(4)]
++        [SaveFlag(nameof(ShouldSerializeSetColdBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setColdBonus;
+ 
+-        [SerializableFieldSaveFlag(4)]
+         private bool ShouldSerializeSetColdBonus() => _setColdBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(5)]
++        [SaveFlag(nameof(ShouldSerializeSetPoisonBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setPoisonBonus;
+ 
+-        [SerializableFieldSaveFlag(5)]
+         private bool ShouldSerializeSetPoisonBonus() => _setPoisonBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(6)]
++        [SaveFlag(nameof(ShouldSerializeSetEnergyBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setEnergyBonus;
+ 
+-        [SerializableFieldSaveFlag(6)]
+         private bool ShouldSerializeSetEnergyBonus() => _setEnergyBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(7)]
++        [SaveFlag(nameof(ShouldSerializeSetHue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setHue;
+ 
+-        [SerializableFieldSaveFlag(7)]
+         private bool ShouldSerializeSetHue() => _setHue != 0;
+ 
+         [SerializableField(8)]
++        [SaveFlag(nameof(ShouldSerializeSetEquipped))]
+         private bool _setEquipped;
+ 
+-        [SerializableFieldSaveFlag(8)]
+         private bool ShouldSerializeSetEquipped() => _setEquipped;
+ 
+         [SerializableField(9)]
++        [SaveFlag(nameof(ShouldSerializeLastEquipped))]
+         private bool _lastEquipped;
+ 
+-        [SerializableFieldSaveFlag(9)]
+         private bool ShouldSerializeLastEquipped() => _lastEquipped;
+ 
+         /// <summary>
+@@ -132,10 +130,10 @@ namespace Server.Items
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(10)]
++        [SaveFlag(nameof(ShouldSerializeSetSelfRepair))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setSelfRepair;
+ 
+-        [SerializableFieldSaveFlag(10)]
+         private bool ShouldSerializeSetSelfRepair() => _setSelfRepair != 0;
+ 
+         /// <summary>
+@@ -145,13 +143,12 @@ namespace Server.Items
+         /// </summary>
+         [SerializedIgnoreDupe]
+         [SerializableField(11, setter: "private")]
++        [SaveFlag(nameof(ShouldSerializeAbsorptionAttributes), nameof(AbsorptionAttributesDefaultValue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
+         private SAAbsorptionAttributes _absorptionAttributes;
+ 
+-        [SerializableFieldSaveFlag(11)]
+         private bool ShouldSerializeAbsorptionAttributes() => !_absorptionAttributes.IsEmpty;
+ 
+-        [SerializableFieldDefault(11)]
+         private SAAbsorptionAttributes AbsorptionAttributesDefaultValue() => new(this);
+ 
+         public BaseSetWeapon(int itemID) : base(itemID)
+diff --git a/server/customizations/Items/Artifacts/Equipment/Armor/Sets/Marksman/Swiftflight.cs b/server/customizations/Items/Artifacts/Equipment/Armor/Sets/Marksman/Swiftflight.cs
+index 2242366..69752ac 100644
+--- a/server/customizations/Items/Artifacts/Equipment/Armor/Sets/Marksman/Swiftflight.cs
++++ b/server/customizations/Items/Artifacts/Equipment/Armor/Sets/Marksman/Swiftflight.cs
+@@ -23,90 +23,88 @@ namespace Server.Items
+     {
+         [SerializedIgnoreDupe]
+         [SerializableField(0, setter: "private")]
++        [SaveFlag(nameof(ShouldSerializeSetAttributes), nameof(SetAttributesDefaultValue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
+         private AosAttributes _setAttributes;
+ 
+-        [SerializableFieldSaveFlag(0)]
+         private bool ShouldSerializeSetAttributes() => !_setAttributes.IsEmpty;
+ 
+-        [SerializableFieldDefault(0)]
+         private AosAttributes SetAttributesDefaultValue() => new(this);
+ 
+         [SerializedIgnoreDupe]
+         [SerializableField(1, setter: "private")]
++        [SaveFlag(nameof(ShouldSerializeSetSkillBonuses), nameof(SetSkillBonusesDefaultValue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
+         private AosSkillBonuses _setSkillBonuses;
+ 
+-        [SerializableFieldSaveFlag(1)]
+         private bool ShouldSerializeSetSkillBonuses() => !_setSkillBonuses.IsEmpty;
+ 
+-        [SerializableFieldDefault(1)]
+         private AosSkillBonuses SetSkillBonusesDefaultValue() => new(this);
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(2)]
++        [SaveFlag(nameof(ShouldSerializeSetPhysicalBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setPhysicalBonus;
+ 
+-        [SerializableFieldSaveFlag(2)]
+         private bool ShouldSerializeSetPhysicalBonus() => _setPhysicalBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(3)]
++        [SaveFlag(nameof(ShouldSerializeSetFireBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setFireBonus;
+ 
+-        [SerializableFieldSaveFlag(3)]
+         private bool ShouldSerializeSetFireBonus() => _setFireBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(4)]
++        [SaveFlag(nameof(ShouldSerializeSetColdBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setColdBonus;
+ 
+-        [SerializableFieldSaveFlag(4)]
+         private bool ShouldSerializeSetColdBonus() => _setColdBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(5)]
++        [SaveFlag(nameof(ShouldSerializeSetPoisonBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setPoisonBonus;
+ 
+-        [SerializableFieldSaveFlag(5)]
+         private bool ShouldSerializeSetPoisonBonus() => _setPoisonBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(6)]
++        [SaveFlag(nameof(ShouldSerializeSetEnergyBonus))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setEnergyBonus;
+ 
+-        [SerializableFieldSaveFlag(6)]
+         private bool ShouldSerializeSetEnergyBonus() => _setEnergyBonus != 0;
+ 
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(7)]
++        [SaveFlag(nameof(ShouldSerializeSetHue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setHue;
+ 
+-        [SerializableFieldSaveFlag(7)]
+         private bool ShouldSerializeSetHue() => _setHue != 0;
+ 
+         [SerializableField(8)]
++        [SaveFlag(nameof(ShouldSerializeSetEquipped))]
+         private bool _setEquipped;
+ 
+-        [SerializableFieldSaveFlag(8)]
+         private bool ShouldSerializeSetEquipped() => _setEquipped;
+ 
+         [SerializableField(9)]
++        [SaveFlag(nameof(ShouldSerializeLastEquipped))]
+         private bool _lastEquipped;
+ 
+-        [SerializableFieldSaveFlag(9)]
+         private bool ShouldSerializeLastEquipped() => _lastEquipped;
+ 
+         // Stored and settable, INERT: ServUO adds it to WeaponAttributes.SelfRepair inside BaseWeapon.OnHit
+@@ -115,10 +113,10 @@ namespace Server.Items
+         [EncodedInt]
+         [InvalidateProperties]
+         [SerializableField(10)]
++        [SaveFlag(nameof(ShouldSerializeSetSelfRepair))]
+         [SerializedCommandProperty(AccessLevel.GameMaster)]
+         private int _setSelfRepair;
+ 
+-        [SerializableFieldSaveFlag(10)]
+         private bool ShouldSerializeSetSelfRepair() => _setSelfRepair != 0;
+ 
+         [Constructible]
+diff --git a/server/customizations/Items/Artifacts/Equipment/Weapons/BansheesCall.cs b/server/customizations/Items/Artifacts/Equipment/Weapons/BansheesCall.cs
+deleted file mode 100644
+index af07920..0000000
+--- a/server/customizations/Items/Artifacts/Equipment/Weapons/BansheesCall.cs
++++ /dev/null
+@@ -1,28 +0,0 @@
+-using ModernUO.Serialization;
+-
+-namespace Server.Items
+-{
+-    // ServUO: Items/Artifacts/Equipment/Weapons/BansheesCall.cs (CC9). Thrown; Velocity lives on
+-    // ModernUO's BaseRanged, which BaseThrown derives from, so it ports unchanged.
+-    [SerializationGenerator(0, false)]
+-    public partial class BansheesCall : Cyclone
+-    {
+-        [Constructible]
+-        public BansheesCall()
+-        {
+-            Hue = 1266;
+-            WeaponAttributes.HitHarm = 40;
+-            Attributes.BonusStr = 5;
+-            WeaponAttributes.HitLeechHits = 45;
+-            Attributes.WeaponSpeed = 30;
+-            Attributes.WeaponDamage = 50;
+-            Velocity = 35;
+-            AosElementDamages.Cold = 100;
+-        }
+-
+-        public override int LabelNumber => 1113529; // Banshee's Call
+-
+-        public override int InitMinHits => 255;
+-        public override int InitMaxHits => 255;
+-    }
+-}
+diff --git a/server/customizations/Items/Artifacts/Equipment/Weapons/RaptorClaw.cs b/server/customizations/Items/Artifacts/Equipment/Weapons/RaptorClaw.cs
+deleted file mode 100644
+index cf3dd49..0000000
+--- a/server/customizations/Items/Artifacts/Equipment/Weapons/RaptorClaw.cs
++++ /dev/null
+@@ -1,26 +0,0 @@
+-using ModernUO.Serialization;
+-
+-namespace Server.Items
+-{
+-    [SerializationGenerator(0, false)]
+-    public partial class RaptorClaw : Boomerang
+-    {
+-        [Constructible]
+-        public RaptorClaw()
+-        {
+-            Hue = 53;
+-            Slayer = SlayerName.Silver;
+-
+-            Attributes.AttackChance = 12;
+-            Attributes.WeaponSpeed = 30;
+-            Attributes.WeaponDamage = 35;
+-
+-            WeaponAttributes.HitLeechStam = 40;
+-        }
+-
+-        public override int LabelNumber => 1112394; // Raptor Claw
+-
+-        public override int InitMinHits => 255;
+-        public override int InitMaxHits => 255;
+-    }
+-}
+diff --git a/server/customizations/Items/Artifacts/Equipment/Weapons/StoneSlithClaw.cs b/server/customizations/Items/Artifacts/Equipment/Weapons/StoneSlithClaw.cs
+deleted file mode 100644
+index 133b717..0000000
+--- a/server/customizations/Items/Artifacts/Equipment/Weapons/StoneSlithClaw.cs
++++ /dev/null
+@@ -1,25 +0,0 @@
+-using ModernUO.Serialization;
+-
+-namespace Server.Items
+-{
+-    // ServUO: Items/Artifacts/Equipment/Weapons/StoneSlithClaw.cs (CC9 batch 5).
+-    // Dropped: IsArtifact (D-1).
+-    [SerializationGenerator(0, false)]
+-    public partial class StoneSlithClaw : Cyclone
+-    {
+-        [Constructible]
+-        public StoneSlithClaw()
+-        {
+-            Hue = 1150;
+-            WeaponAttributes.HitHarm = 40;
+-            Slayer = SlayerName.DaemonDismissal;
+-            WeaponAttributes.HitLowerDefend = 40;
+-            Attributes.WeaponSpeed = 25;
+-            Attributes.WeaponDamage = 45;
+-        }
+-
+-        public override int LabelNumber => 1112393;
+-        public override int InitMinHits => 255;
+-        public override int InitMaxHits => 255;
+-    }
+-}
+diff --git a/server/customizations/Items/Artifacts/Equipment/Weapons/StormCaller.cs b/server/customizations/Items/Artifacts/Equipment/Weapons/StormCaller.cs
+deleted file mode 100644
+index 6975300..0000000
+--- a/server/customizations/Items/Artifacts/Equipment/Weapons/StormCaller.cs
++++ /dev/null
+@@ -1,30 +0,0 @@
+-using ModernUO.Serialization;
+-
+-namespace Server.Items
+-{
+-    // ServUO: Items/Artifacts/Equipment/Weapons/StormCaller.cs (CC9 batch 5).
+-    // Dropped: IsArtifact (D-1); WeaponAttributes.BattleLust = 1 (D-3).
+-    [SerializationGenerator(0, false)]
+-    public partial class StormCaller : Boomerang
+-    {
+-        [Constructible]
+-        public StormCaller()
+-        {
+-            Hue = 456;
+-            Attributes.BonusStr = 5;
+-            WeaponAttributes.HitLightning = 40;
+-            WeaponAttributes.HitLowerDefend = 30;
+-            Attributes.WeaponSpeed = 30;
+-            Attributes.WeaponDamage = 40;
+-            AosElementDamages.Physical = 20;
+-            AosElementDamages.Fire = 20;
+-            AosElementDamages.Cold = 20;
+-            AosElementDamages.Poison = 20;
+-            AosElementDamages.Energy = 20;
+-        }
+-
+-        public override int LabelNumber => 1113530;
+-        public override int InitMinHits => 255;
+-        public override int InitMaxHits => 255;
+-    }
+-}
+diff --git a/server/customizations/Items/Artifacts/Equipment/Weapons/ValkyriesGlaive.cs b/server/customizations/Items/Artifacts/Equipment/Weapons/ValkyriesGlaive.cs
+deleted file mode 100644
+index 1d24c93..0000000
+--- a/server/customizations/Items/Artifacts/Equipment/Weapons/ValkyriesGlaive.cs
++++ /dev/null
+@@ -1,27 +0,0 @@
+-using ModernUO.Serialization;
+-
+-namespace Server.Items
+-{
+-    // ServUO: Items/Artifacts/Equipment/Weapons/ValkyriesGlaive.cs (CC9 batch 5).
+-    // Dropped: IsArtifact (D-1).
+-    [SerializationGenerator(0, false)]
+-    public partial class ValkyriesGlaive : SoulGlaive
+-    {
+-        [Constructible]
+-        public ValkyriesGlaive()
+-        {
+-            Attributes.SpellChanneling = 1;
+-            Slayer = SlayerName.Silver;
+-            WeaponAttributes.HitFireball = 40;
+-            Attributes.BonusStr = 5;
+-            Attributes.WeaponSpeed = 20;
+-            Attributes.WeaponDamage = 20;
+-            Hue = 1651;
+-        }
+-
+-        public override int LabelNumber => 1113531;
+-        public override int ArtifactRarity => 5;
+-        public override int InitMinHits => 255;
+-        public override int InitMaxHits => 255;
+-    }
+-}
+diff --git a/server/customizations/Items/Artifacts/Equipment/Weapons/WindOfCorruption.cs b/server/customizations/Items/Artifacts/Equipment/Weapons/WindOfCorruption.cs
+index c66c204..6fc7998 100644
+--- a/server/customizations/Items/Artifacts/Equipment/Weapons/WindOfCorruption.cs
++++ b/server/customizations/Items/Artifacts/Equipment/Weapons/WindOfCorruption.cs
+@@ -2,28 +2,7 @@ using ModernUO.Serialization;
+ 
+ namespace Server.Items
+ {
+-    // ServUO: Items/Artifacts/Equipment/Weapons/WindOfCorruption.cs (CC9 batch 5).
+-    // Dropped: IsArtifact (D-1).
+-    [SerializationGenerator(0, false)]
+-    public partial class WindOfCorruption : Cyclone
+-    {
+-        [Constructible]
+-        public WindOfCorruption()
+-        {
+-            WeaponAttributes.HitLeechStam = 40;
+-            Attributes.WeaponSpeed = 30;
+-            Attributes.WeaponDamage = 50;
+-            WeaponAttributes.HitLowerDefend = 40;
+-            AosElementDamages.Chaos = 100;
+-            Slayer = SlayerName.Fey;
+-            Hue = 1171;
+-        }
+-
+-        public override int LabelNumber => 1150358;
+-        public override int InitMinHits => 255;
+-        public override int InitMaxHits => 255;
+-    }
+-
++    // cc-P30 trial: WindOfCorruption itself now ships upstream (#2516); only the human-wieldable variant stays ours.
+     // ServUO: Items/Artifacts/Equipment/Weapons/WindOfCorruption.cs (CC9 batch 5).
+     [SerializationGenerator(0, false)]
+     public partial class WindOfCorruptionHuman : Bow
+diff --git a/server/customizations/Items/Equipment/Clothing/FirstAidBelt.cs b/server/customizations/Items/Equipment/Clothing/FirstAidBelt.cs
+index c31fab5..4ce151c 100644
+--- a/server/customizations/Items/Equipment/Clothing/FirstAidBelt.cs
++++ b/server/customizations/Items/Equipment/Clothing/FirstAidBelt.cs
+@@ -21,13 +21,12 @@ namespace Server.Items
+ 
+         [SerializedIgnoreDupe]
+         [SerializableField(0, setter: "private")]
++        [SaveFlag(nameof(ShouldSerializeAttributes), nameof(AttributesDefaultValue))]
+         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
+         private AosAttributes _attributes;
+ 
+-        [SerializableFieldSaveFlag(0)]
+         private bool ShouldSerializeAttributes() => !_attributes.IsEmpty;
+ 
+-        [SerializableFieldDefault(0)]
+         private AosAttributes AttributesDefaultValue() => new(this);
+ 
+         [InvalidateProperties]
+diff --git a/server/customizations/Items/Equipment/Talismans/CollectionsBritLibraryTalismans.cs b/server/customizations/Items/Equipment/Talismans/CollectionsBritLibraryTalismans.cs
+index 44a9f94..8b8d731 100644
+--- a/server/customizations/Items/Equipment/Talismans/CollectionsBritLibraryTalismans.cs
++++ b/server/customizations/Items/Equipment/Talismans/CollectionsBritLibraryTalismans.cs
+@@ -101,8 +101,8 @@ namespace Server.Items
+         public GrammarOfOrchishTalisman() : base(0x2F59)
+         {
+             Blessed = GetRandomBlessed();
+-            Protection = GetRandomProtection();
+-            Summoner = new TalismanAttribute(typeof(SummonedOrcBrute), 1072414);
++            Protection = GetRandomProtection(this);
++            Summoner = new TalismanAttribute(this, typeof(SummonedOrcBrute), 1072414);
+             SkillBonuses.SetValues(0, SkillName.MagicResist, 5.0);
+             SkillBonuses.SetValues(1, SkillName.Anatomy, 7.0);
+             MaxChargeTime = 1800;
+@@ -146,7 +146,7 @@ namespace Server.Items
+         public TheLifeOfTravelingMinstrelTalisman() : base(0x2F5B)
+         {
+             Blessed = GetRandomBlessed();
+-            Protection = GetRandomProtection();
++            Protection = GetRandomProtection(this);
+             SkillBonuses.SetValues(0, SkillName.Provocation, 5.0);
+             SkillBonuses.SetValues(1, SkillName.Musicianship, 5.0);
+             Removal = TalismanRemoval.Curse;
+diff --git a/server/customizations/Mobiles/Normal/BaseRenowned.cs b/server/customizations/Mobiles/Normal/BaseRenowned.cs
+index 732c424..a0859b2 100644
+--- a/server/customizations/Mobiles/Normal/BaseRenowned.cs
++++ b/server/customizations/Mobiles/Normal/BaseRenowned.cs
+@@ -12,6 +12,7 @@
+ // ServUO and every renowned lands on ModernUO's Medium (Q-008).
+ 
+ using System;
++using Server.Collections; // cc-P30: ValueLinkList<DamageEntry> enumerator (#2605)
+ using System.Collections.Generic;
+ using ModernUO.Serialization;
+ using Server.Items;
+diff --git a/server/customizations/Mobiles/Normal/BaseSABosses.cs b/server/customizations/Mobiles/Normal/BaseSABosses.cs
+index 0528f0c..e58553d 100644
+--- a/server/customizations/Mobiles/Normal/BaseSABosses.cs
++++ b/server/customizations/Mobiles/Normal/BaseSABosses.cs
+@@ -14,6 +14,7 @@
+ // dead (Q-008), so this mirrors pinned BaseCreature's signature.
+ 
+ using System;
++using Server.Collections; // cc-P30: ValueLinkList<DamageEntry> enumerator (#2605)
+ using System.Collections.Generic;
+ using ModernUO.Serialization;
+ using Server.Items;
+diff --git a/server/customizations/Mobiles/Normal/MinionOfScelestus.cs b/server/customizations/Mobiles/Normal/MinionOfScelestus.cs
+index f49433f..f21cfd5 100644
+--- a/server/customizations/Mobiles/Normal/MinionOfScelestus.cs
++++ b/server/customizations/Mobiles/Normal/MinionOfScelestus.cs
+@@ -79,7 +79,9 @@ namespace Server.Mobiles
+         public override Poison PoisonImmune => Poison.LethalParasitic;
+         public override Poison HitPoison => Poison.Lethal;
+         public override bool ReacquireOnMovement => true;
+-        public override bool AcquireOnApproach => true;
++        // cc-P30: upstream #2601 removed the AcquireOnApproach switch; every creature now acquires on approach after
++        // AcquireOnApproachDelay (2 s, paragons 0). Zero keeps this minion's pinned behaviour: acquire at once.
++        public override TimeSpan AcquireOnApproachDelay => TimeSpan.Zero;
+         public override int AcquireOnApproachRange => 12;
+ 
+         public override void GenerateLoot()
+diff --git a/server/customizations/Mobiles/Normal/Niporailem.cs b/server/customizations/Mobiles/Normal/Niporailem.cs
+index e83c108..0a93900 100644
+--- a/server/customizations/Mobiles/Normal/Niporailem.cs
++++ b/server/customizations/Mobiles/Normal/Niporailem.cs
+@@ -172,7 +172,7 @@ public partial class Niporailem : BaseSABoss
+         var spawned = new SpectralArmour();
+ 
+         spawned.Team = Team;
+-        spawned.SummonMaster = this;
++        spawned.Master = this; // cc-P30: an unsummoned helper reads SummonMaster back as null since #2670; Master is the field
+ 
+         var validLocation = false;
+         var loc = Location;
+@@ -195,7 +195,7 @@ public partial class Niporailem : BaseSABoss
+ 
+         spawned.MoveToWorld(loc, map);
+         spawned.Combatant = m;
+-        spawned.SummonMaster = this;
++        spawned.Master = this; // cc-P30: an unsummoned helper reads SummonMaster back as null since #2670; Master is the field
+ 
+         _nextSpawn = Core.Now + TimeSpan.FromSeconds(Utility.RandomMinMax(30, 60));
+ 
+diff --git a/server/customizations/Mobiles/Normal/Raptor.cs b/server/customizations/Mobiles/Normal/Raptor.cs
+deleted file mode 100644
+index fc1c885..0000000
+--- a/server/customizations/Mobiles/Normal/Raptor.cs
++++ /dev/null
+@@ -1,191 +0,0 @@
+-using System;
+-using System.Collections.Generic;
+-using ModernUO.Serialization;
+-using Server.Items;
+-
+-namespace Server.Mobiles
+-{
+-    [SerializationGenerator(0, false)]
+-    public partial class Raptor : BaseCreature
+-    {
+-        private const int MaxFriends = 2;
+-
+-        [SerializableField(0, setter: "private")]
+-        private bool _isFriend;
+-
+-        private readonly List<Mobile> _friends = new();
+-        private FriendsTimer _friendsTimer;
+-
+-        [Constructible]
+-        public Raptor(bool isFriend = false) : base(AIType.AI_Melee)
+-        {
+-            _isFriend = isFriend;
+-
+-            Body = 730;
+-
+-            SetStr(404, 471);
+-            SetDex(132, 155);
+-            SetInt(105, 145);
+-
+-            SetHits(343, 400);
+-
+-            SetDamage(11, 17);
+-
+-            SetDamageType(ResistanceType.Physical, 100);
+-
+-            SetResistance(ResistanceType.Physical, 45, 50);
+-            SetResistance(ResistanceType.Fire, 50, 60);
+-            SetResistance(ResistanceType.Cold, 40, 50);
+-            SetResistance(ResistanceType.Poison, 20, 30);
+-            SetResistance(ResistanceType.Energy, 30, 40);
+-
+-            SetSkill(SkillName.MagicResist, 75.1, 90.0);
+-            SetSkill(SkillName.Tactics, 75.1, 100.0);
+-            SetSkill(SkillName.Wrestling, 70.1, 95.1);
+-
+-            Fame = 7500;
+-            Karma = -7500;
+-
+-            Tamable = !isFriend;
+-            MinTameSkill = 107.1;
+-            ControlSlots = 2;
+-        }
+-
+-        public override string CorpseName => "a raptor corpse";
+-        public override string DefaultName => "a raptor";
+-
+-        public override int TreasureMapLevel => 3;
+-        public override int Meat => 7;
+-        public override int Hides => 11;
+-        public override HideType HideType => HideType.Horned;
+-        public override PackInstinct PackInstinct => PackInstinct.Ostard;
+-
+-        // ServUO: SetWeaponAbility(WeaponAbility.BleedAttack).
+-        public override WeaponAbility GetWeaponAbility() => WeaponAbility.BleedAttack;
+-
+-        public override void GenerateLoot()
+-        {
+-            AddLoot(LootPack.Rich, 2);
+-        }
+-
+-        public override int GetIdleSound() => 1573;
+-        public override int GetAngerSound() => 1570;
+-        public override int GetHurtSound() => 1572;
+-        public override int GetDeathSound() => 1571;
+-
+-        public override void OnCombatantChange()
+-        {
+-            if (!_isFriend && !Controlled && Combatant != null && _friendsTimer == null)
+-            {
+-                _friendsTimer = new FriendsTimer(this);
+-                _friendsTimer.Start();
+-            }
+-        }
+-
+-        public void CheckFriends()
+-        {
+-            if (!Alive || Combatant == null || Controlled || Map == null || Map == Map.Internal)
+-            {
+-                foreach (var f in _friends)
+-                {
+-                    f.Delete();
+-                }
+-
+-                _friends.Clear();
+-
+-                _friendsTimer.Stop();
+-                _friendsTimer = null;
+-                return;
+-            }
+-
+-            var count = 0;
+-
+-            for (var i = _friends.Count - 1; i >= 0; i--)
+-            {
+-                var friend = _friends[i];
+-
+-                if (friend?.Deleted != false)
+-                {
+-                    _friends.RemoveAt(i);
+-                }
+-                else
+-                {
+-                    count++;
+-                }
+-            }
+-
+-            for (var i = count; i < MaxFriends; i++)
+-            {
+-                BaseCreature friend = new Raptor(true);
+-
+-                var loc = Location;
+-                var validLocation = false;
+-
+-                for (var j = 0; !validLocation && j < 10; ++j)
+-                {
+-                    var x = X + Utility.Random(3) - 1;
+-                    var y = Y + Utility.Random(3) - 1;
+-                    var z = Map.GetAverageZ(x, y);
+-
+-                    if (validLocation = Map.CanFit(x, y, Z, 16, false, false))
+-                    {
+-                        loc = new Point3D(x, y, Z);
+-                    }
+-                    else if (validLocation = Map.CanFit(x, y, z, 16, false, false))
+-                    {
+-                        loc = new Point3D(x, y, z);
+-                    }
+-                }
+-
+-                friend.MoveToWorld(loc, Map);
+-                friend.Combatant = Combatant;
+-
+-                if (friend.AIObject != null)
+-                {
+-                    friend.AIObject.Action = ActionType.Combat;
+-                }
+-
+-                _friends.Add(friend);
+-            }
+-        }
+-
+-        public override void OnDeath(Container c)
+-        {
+-            base.OnDeath(c);
+-
+-            if (!Controlled && Utility.RandomDouble() < 0.25)
+-            {
+-                c.DropItem(new AncientPotteryFragments());
+-            }
+-
+-            if (!Controlled && Utility.RandomDouble() <= 0.005)
+-            {
+-                c.DropItem(new RaptorClaw());
+-            }
+-        }
+-
+-        // ServUO deletes summoned pack friends on deserialize so they do not persist across a
+-        // restart; only the parent raptor respawns them.
+-        [AfterDeserialization(false)]
+-        private void AfterDeserialization()
+-        {
+-            if (_isFriend)
+-            {
+-                Delete();
+-            }
+-        }
+-
+-        private class FriendsTimer : Timer
+-        {
+-            private readonly Raptor _owner;
+-
+-            public FriendsTimer(Raptor owner) : base(TimeSpan.Zero, TimeSpan.FromSeconds(30.0)) =>
+-                _owner = owner;
+-
+-            protected override void OnTick()
+-            {
+-                _owner.CheckFriends();
+-            }
+-        }
+-    }
+-}
+diff --git a/server/customizations/Mobiles/Normal/Slith.cs b/server/customizations/Mobiles/Normal/Slith.cs
+deleted file mode 100644
+index 2c9c547..0000000
+--- a/server/customizations/Mobiles/Normal/Slith.cs
++++ /dev/null
+@@ -1,85 +0,0 @@
+-// ServUO: Mobiles/Normal/Slith.cs (CC6 batch 2). Values verbatim; serialization by the generator. ServUO sets
+-// no Fame or Karma on the sliths; neither does this.
+-// SetSpecialAbility(DragonBreath) is NOT dropped (CC6 follow-up, Q-054; D-55 retired, it never was a loss): Slith is in
+-// no DragonBreathDefinition.Uses list (Services/Pet Training/SpecialAbility.cs:860-1063), so ServUO gives it the default
+-// definition, 100% fire at 0.16 of current hits every 30-45 s, which pinned ModernUO carries line for line as
+-// MonsterAbilities.FireBreath through BaseCreature.GetMonsterAbilities() (:1131), the way stock Drake declares it.
+-// Dropped: DragonBlood => 8 (D-50: pinned BaseCreature has no DragonBlood virtual and its corpse carve yields no dragon's
+-// blood).
+-
+-using ModernUO.Serialization;
+-using Server.Items;
+-
+-namespace Server.Mobiles;
+-
+-[SerializationGenerator(0, false)]
+-public partial class Slith : BaseCreature
+-{
+-    [Constructible]
+-    public Slith() : base(AIType.AI_Melee)
+-    {
+-        Body = 734;
+-
+-        SetStr(129, 136);
+-        SetDex(72, 75);
+-        SetInt(12, 13);
+-
+-        SetHits(84, 85);
+-
+-        SetDamage(6, 24);
+-
+-        SetDamageType(ResistanceType.Physical, 100);
+-
+-        SetResistance(ResistanceType.Physical, 35, 40);
+-        SetResistance(ResistanceType.Fire, 35, 45);
+-        SetResistance(ResistanceType.Poison, 25, 35);
+-        SetResistance(ResistanceType.Energy, 25, 30);
+-
+-        SetSkill(SkillName.MagicResist, 59.1, 63.5);
+-        SetSkill(SkillName.Tactics, 74.6, 76.4);
+-        SetSkill(SkillName.Wrestling, 62.0, 77.1);
+-
+-        Tamable = true;
+-        ControlSlots = 1;
+-        MinTameSkill = 80.7;
+-    }
+-
+-    public override string CorpseName => "a slith corpse";
+-    public override string DefaultName => "a slith";
+-
+-    // ServUO: SetSpecialAbility(SpecialAbility.DragonBreath), the default (fire) definition.
+-    private static readonly MonsterAbility[] _abilities = { MonsterAbilities.FireBreath };
+-    public override MonsterAbility[] GetMonsterAbilities() => _abilities;
+-
+-    public override int TreasureMapLevel => 2;
+-    public override int Meat => 6;
+-    public override int Hides => 10;
+-
+-    public override void GenerateLoot()
+-    {
+-        AddLoot(LootPack.Average, 2);
+-    }
+-
+-    public override void OnDeath(Container c)
+-    {
+-        base.OnDeath(c);
+-
+-        if (!Controlled && Utility.RandomDouble() < 0.05)
+-        {
+-            c.DropItem(new SlithEye());
+-        }
+-
+-        if (!Controlled && Utility.RandomDouble() < 0.25)
+-        {
+-            switch (Utility.Random(2))
+-            {
+-                case 0:
+-                    c.DropItem(new AncientPotteryFragments());
+-                    break;
+-                case 1:
+-                    c.DropItem(new TatteredAncientScroll());
+-                    break;
+-            }
+-        }
+-    }
+-}
+diff --git a/server/customizations/Mobiles/Normal/Spellbinder.cs b/server/customizations/Mobiles/Normal/Spellbinder.cs
+deleted file mode 100644
+index 52b5de4..0000000
+--- a/server/customizations/Mobiles/Normal/Spellbinder.cs
++++ /dev/null
+@@ -1,57 +0,0 @@
+-// ServUO: Mobiles/Normal/Spellbinder.cs (CC6 batch 1). Values verbatim; serialization by the generator.
+-//
+-// DEVIATION: ServUO runs this on AI_Spellbinder (Mobiles/AI/Magical AI/SpellbinderAI.cs: a Magery caster that
+-// also heals through Necromancy's spirit speak, teleports and dispels). ModernUO's AIType has no Spellbinder AI,
+-// so it runs AI_Mage. FightMode.Aggressor is carried. The body is one of three ghost bodies at random, as in
+-// ServUO (Utility.RandomList exists unchanged).
+-
+-using ModernUO.Serialization;
+-
+-namespace Server.Mobiles;
+-
+-[SerializationGenerator(0, false)]
+-public partial class Spellbinder : BaseCreature
+-{
+-    [Constructible]
+-    public Spellbinder() : base(AIType.AI_Mage, FightMode.Aggressor)
+-    {
+-        Body = Utility.RandomList(26, 50, 56);
+-        BaseSoundID = 0x482;
+-
+-        SetStr(46, 70);
+-        SetDex(47, 65);
+-        SetInt(187, 210);
+-
+-        SetHits(36, 50);
+-
+-        SetDamage(3, 6);
+-
+-        SetDamageType(ResistanceType.Physical, 100);
+-
+-        SetResistance(ResistanceType.Physical, 20, 30);
+-        SetResistance(ResistanceType.Cold, 15, 25);
+-        SetResistance(ResistanceType.Poison, 10, 20);
+-
+-        SetSkill(SkillName.MagicResist, 35.1, 45.0);
+-        SetSkill(SkillName.Tactics, 35.1, 50.0);
+-        SetSkill(SkillName.Wrestling, 35.1, 50.0);
+-
+-        Fame = 2500;
+-        Karma = -2500;
+-
+-        VirtualArmor = 28;
+-    }
+-
+-    public override string CorpseName => "a ghostly corpse";
+-    public override string DefaultName => "a spectral spellbinder";
+-
+-    public override bool BleedImmune => true;
+-    public override Poison PoisonImmune => Poison.Regular;
+-    public override OppositionGroup OppositionGroup => OppositionGroup.FeyAndUndead;
+-
+-    public override void GenerateLoot()
+-    {
+-        AddLoot(LootPack.Meager);
+-        PackItem(Loot.RandomWeapon());
+-    }
+-}
+diff --git a/server/customizations/Mobiles/Normal/StoneSlith.cs b/server/customizations/Mobiles/Normal/StoneSlith.cs
+deleted file mode 100644
+index 865423f..0000000
+--- a/server/customizations/Mobiles/Normal/StoneSlith.cs
++++ /dev/null
+@@ -1,90 +0,0 @@
+-// ServUO: Mobiles/Normal/StoneSlith.cs (CC6 batch 2). Values verbatim; serialization by the generator. ServUO sets
+-// no Fame or Karma on the sliths; neither does this.
+-// Dropped: SetSpecialAbility(GraspingClaw) and SetSpecialAbility(TailSwipe) (D-57: Pet Training, declined B3, the Saurosaurus precedent); DragonBlood => 6
+-// (D-50: pinned BaseCreature has no DragonBlood virtual and its corpse carve yields no dragon's blood).
+-// SetWeaponAbility(BleedAttack) is GetWeaponAbility (the CC3 transformation). ServUO's version-0 upgrade path
+-// in Deserialize re-adds the same two calls and is not ported (new content starts at version 0).
+-
+-using ModernUO.Serialization;
+-using Server.Items;
+-
+-namespace Server.Mobiles;
+-
+-[SerializationGenerator(0, false)]
+-public partial class StoneSlith : BaseCreature
+-{
+-    [Constructible]
+-    public StoneSlith() : base(AIType.AI_Melee)
+-    {
+-        Body = 734;
+-
+-        SetStr(250, 300);
+-        SetDex(76, 90);
+-        SetInt(34, 69);
+-
+-        SetHits(154, 166);
+-        SetStam(76, 90);
+-        SetMana(34, 69);
+-
+-        SetDamage(6, 24);
+-
+-        SetDamageType(ResistanceType.Physical, 100);
+-
+-        SetResistance(ResistanceType.Physical, 50, 55);
+-        SetResistance(ResistanceType.Fire, 20, 30);
+-        SetResistance(ResistanceType.Cold, 10, 20);
+-        SetResistance(ResistanceType.Poison, 30, 40);
+-        SetResistance(ResistanceType.Energy, 30, 40);
+-
+-        SetSkill(SkillName.MagicResist, 86.8, 95.1);
+-        SetSkill(SkillName.Tactics, 82.6, 88.6);
+-        SetSkill(SkillName.Wrestling, 75.8, 87.4);
+-        SetSkill(SkillName.Anatomy, 0.0, 2.9);
+-
+-        Tamable = true;
+-        ControlSlots = 2;
+-        MinTameSkill = 65.1;
+-    }
+-
+-    public override string CorpseName => "a slith corpse";
+-    public override string DefaultName => "a stone slith";
+-
+-    public override WeaponAbility GetWeaponAbility() => WeaponAbility.BleedAttack;
+-
+-    public override int Meat => 1;
+-    public override int Hides => 12;
+-    public override HideType HideType => HideType.Spined;
+-
+-    public override void GenerateLoot()
+-    {
+-        AddLoot(LootPack.Average, 2);
+-    }
+-
+-    public override void OnDeath(Container c)
+-    {
+-        base.OnDeath(c);
+-
+-        if (!Controlled && Utility.RandomDouble() <= 0.005)
+-        {
+-            c.DropItem(new StoneSlithClaw());
+-        }
+-
+-        if (!Controlled && Utility.RandomDouble() < 0.05)
+-        {
+-            c.DropItem(new SlithEye());
+-        }
+-
+-        if (!Controlled && Utility.RandomDouble() < 0.25)
+-        {
+-            switch (Utility.Random(2))
+-            {
+-                case 0:
+-                    c.DropItem(new AncientPotteryFragments());
+-                    break;
+-                case 1:
+-                    c.DropItem(new TatteredAncientScroll());
+-                    break;
+-            }
+-        }
+-    }
+-}
+diff --git a/server/customizations/Mobiles/Normal/ToxicSlith.cs b/server/customizations/Mobiles/Normal/ToxicSlith.cs
+deleted file mode 100644
+index a5efd70..0000000
+--- a/server/customizations/Mobiles/Normal/ToxicSlith.cs
++++ /dev/null
+@@ -1,96 +0,0 @@
+-// ServUO: Mobiles/Normal/ToxicSlith.cs (CC6 batch 2). Values verbatim; serialization by the generator. ServUO sets
+-// no Fame or Karma on the sliths; neither does this.
+-// SetSpecialAbility(DragonBreath) is NOT dropped (CC6 follow-up, Q-054; D-56 retired, it never was a loss): ToxicSlith is
+-// in no DragonBreathDefinition.Uses list (Services/Pet Training/SpecialAbility.cs:860-1063), so ServUO gives it the
+-// default definition, 100% fire at 0.16 of current hits every 30-45 s, which pinned ModernUO carries line for line as
+-// MonsterAbilities.FireBreath through BaseCreature.GetMonsterAbilities() (:1131). A toxic slith breathes fire, not
+-// poison: its poison is in its Poisoning skill and its 100% poison resistance, not its breath.
+-// Dropped: DragonBlood => 6 (D-50: pinned BaseCreature has no DragonBlood virtual and its corpse carve yields no dragon's
+-// blood).
+-// ServUO's 5% drop switch is `Utility.Random(2)` with cases 0 and 2, so the SlithEye branch is unreachable
+-// there and here: a toxic slith drops a venom sac 2.5% of the time and never an eye. Kept as written.
+-
+-using ModernUO.Serialization;
+-using Server.Items;
+-
+-namespace Server.Mobiles;
+-
+-[SerializationGenerator(0, false)]
+-public partial class ToxicSlith : BaseCreature
+-{
+-    [Constructible]
+-    public ToxicSlith() : base(AIType.AI_Melee)
+-    {
+-        Body = 734;
+-        Hue = 476;
+-
+-        SetStr(223, 306);
+-        SetDex(231, 258);
+-        SetInt(30, 35);
+-
+-        SetHits(197, 215);
+-        SetStam(231, 258);
+-
+-        SetDamage(6, 24);
+-
+-        SetDamageType(ResistanceType.Physical, 100);
+-
+-        SetResistance(ResistanceType.Physical, 35, 45);
+-        SetResistance(ResistanceType.Fire, 0, 9);
+-        SetResistance(ResistanceType.Cold, 5, 10);
+-        SetResistance(ResistanceType.Poison, 100, 100);
+-        SetResistance(ResistanceType.Energy, 5, 7);
+-
+-        SetSkill(SkillName.MagicResist, 95.4, 98.3);
+-        SetSkill(SkillName.Tactics, 85.5, 90.9);
+-        SetSkill(SkillName.Wrestling, 90.4, 95.1);
+-        SetSkill(SkillName.Poisoning, 90.0, 110.0);
+-    }
+-
+-    public override string CorpseName => "a slith corpse";
+-    public override string DefaultName => "a toxic slith";
+-
+-    // ServUO: SetSpecialAbility(SpecialAbility.DragonBreath), the default (fire) definition.
+-    private static readonly MonsterAbility[] _abilities = { MonsterAbilities.FireBreath };
+-    public override MonsterAbility[] GetMonsterAbilities() => _abilities;
+-
+-    public override int Meat => 6;
+-    public override int Hides => 11;
+-    public override HideType HideType => HideType.Horned;
+-
+-    public override void GenerateLoot()
+-    {
+-        AddLoot(LootPack.Average, 2);
+-    }
+-
+-    public override void OnDeath(Container c)
+-    {
+-        base.OnDeath(c);
+-
+-        if (Utility.RandomDouble() < 0.05)
+-        {
+-            switch (Utility.Random(2))
+-            {
+-                case 0:
+-                    c.DropItem(new ToxicVenomSac());
+-                    break;
+-                case 2:
+-                    c.DropItem(new SlithEye());
+-                    break;
+-            }
+-        }
+-
+-        if (Utility.RandomDouble() < 0.25)
+-        {
+-            switch (Utility.Random(2))
+-            {
+-                case 0:
+-                    c.DropItem(new AncientPotteryFragments());
+-                    break;
+-                case 1:
+-                    c.DropItem(new TatteredAncientScroll());
+-                    break;
+-            }
+-        }
+-    }
+-}
+diff --git a/server/customizations/Services/Revamped Dungeons/DespiseRevamped/AI.cs b/server/customizations/Services/Revamped Dungeons/DespiseRevamped/AI.cs
+index 6655fb8..16c5d61 100644
+--- a/server/customizations/Services/Revamped Dungeons/DespiseRevamped/AI.cs	
++++ b/server/customizations/Services/Revamped Dungeons/DespiseRevamped/AI.cs	
+@@ -156,11 +156,11 @@ public class DespiseMeleeAI : MeleeAI
+         return false;
+     }
+ 
+-    public override bool WalkMobileRange(Mobile m, int iSteps, bool run, int iWantDistMin, int iWantDistMax)
++    public override bool WalkMobileRange(Mobile m, int iSteps, int iWantDistMin, int iWantDistMax)
+     {
+         if (_creature.Orb == null || _creature.ControlMaster == null)
+         {
+-            return base.WalkMobileRange(m, iSteps, run, iWantDistMin, iWantDistMax);
++            return base.WalkMobileRange(m, iSteps, iWantDistMin, iWantDistMax);
+         }
+ 
+         var range = _creature.GetLeashLength();
+@@ -171,7 +171,7 @@ public class DespiseMeleeAI : MeleeAI
+ 
+             if (p == null)
+             {
+-                return base.WalkMobileRange(m, iSteps, run, iWantDistMin, iWantDistMax);
++                return base.WalkMobileRange(m, iSteps, iWantDistMin, iWantDistMax);
+             }
+ 
+             if (_creature.InRange(p, range))
+@@ -181,13 +181,13 @@ public class DespiseMeleeAI : MeleeAI
+ 
+             if (p is Mobile anchor)
+             {
+-                return base.WalkMobileRange(anchor, iSteps, run, range, range);
++                return base.WalkMobileRange(anchor, iSteps, range, range);
+             }
+ 
+-            return DespiseAIHelper.WalkToPoint(this, p, iSteps, run, range, range);
++            return DespiseAIHelper.WalkToPoint(this, p, iSteps, range, range);
+         }
+ 
+-        return base.WalkMobileRange(m, iSteps, run, iWantDistMin, iWantDistMax);
++        return base.WalkMobileRange(m, iSteps, iWantDistMin, iWantDistMax);
+     }
+ 
+     public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
+@@ -336,11 +336,11 @@ public class DespiseMageAI : MageAI
+         return false;
+     }
+ 
+-    public override bool WalkMobileRange(Mobile m, int iSteps, bool run, int iWantDistMin, int iWantDistMax)
++    public override bool WalkMobileRange(Mobile m, int iSteps, int iWantDistMin, int iWantDistMax)
+     {
+         if (_creature.Orb == null || _creature.ControlMaster == null)
+         {
+-            return base.WalkMobileRange(m, iSteps, run, iWantDistMin, iWantDistMax);
++            return base.WalkMobileRange(m, iSteps, iWantDistMin, iWantDistMax);
+         }
+ 
+         var range = _creature.GetLeashLength();
+@@ -351,7 +351,7 @@ public class DespiseMageAI : MageAI
+ 
+             if (p == null)
+             {
+-                return base.WalkMobileRange(m, iSteps, run, iWantDistMin, iWantDistMax);
++                return base.WalkMobileRange(m, iSteps, iWantDistMin, iWantDistMax);
+             }
+ 
+             if (_creature.InRange(p, range))
+@@ -361,13 +361,13 @@ public class DespiseMageAI : MageAI
+ 
+             if (p is Mobile anchor)
+             {
+-                return base.WalkMobileRange(anchor, iSteps, run, range, range);
++                return base.WalkMobileRange(anchor, iSteps, range, range);
+             }
+ 
+-            return DespiseAIHelper.WalkToPoint(this, p, iSteps, run, range, range);
++            return DespiseAIHelper.WalkToPoint(this, p, iSteps, range, range);
+         }
+ 
+-        return base.WalkMobileRange(m, iSteps, run, iWantDistMin, iWantDistMax);
++        return base.WalkMobileRange(m, iSteps, iWantDistMin, iWantDistMax);
+     }
+ 
+     public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
+@@ -453,7 +453,7 @@ public static class DespiseAIHelper
+     // RunUO's WalkMobileRange(IPoint3D, ...) as ServUO still has it, for an anchor that is an Item. It is
+     // only ever called from outside the wanted band (the callers return before it when already in range),
+     // so the "move away" arm RunUO carried is not needed; stepping closer is the whole job.
+-    public static bool WalkToPoint(BaseAI ai, IPoint3D p, int iSteps, bool run, int iWantDistMin, int iWantDistMax)
++    public static bool WalkToPoint(BaseAI ai, IPoint3D p, int iSteps, int iWantDistMin, int iWantDistMax)
+     {
+         var mobile = ai.Mobile;
+ 
+@@ -478,7 +478,7 @@ public static class DespiseAIHelper
+                 return false;
+             }
+ 
+-            if (!ai.DoMove(mobile.GetDirectionTo(target, run && dist > 5), true))
++            if (!ai.DoMove(mobile.GetDirectionTo(target), true))
+             {
+                 return false;
+             }
+diff --git a/server/customizations/Services/Revamped Dungeons/DespiseRevamped/Region.cs b/server/customizations/Services/Revamped Dungeons/DespiseRevamped/Region.cs
+index 9508cad..2cd4940 100644
+--- a/server/customizations/Services/Revamped Dungeons/DespiseRevamped/Region.cs	
++++ b/server/customizations/Services/Revamped Dungeons/DespiseRevamped/Region.cs	
+@@ -22,6 +22,7 @@
+ //   GetEnumeratedMobiles/Items are GetMobiles/GetItems; TimerStateCallback is a lambda.
+ 
+ using System;
++using Server.Collections; // cc-P30: ValueLinkList<DamageEntry> enumerator (#2605)
+ using System.Collections.Generic;
+ using Server.Items;
+ using Server.Mobiles;
+diff --git a/server/patches/BaseCreature-PlayerMobile-can-auto-stable.patch b/server/patches/BaseCreature-PlayerMobile-can-auto-stable.patch
+index 7de2355..d60698c 100644
+--- a/server/patches/BaseCreature-PlayerMobile-can-auto-stable.patch
++++ b/server/patches/BaseCreature-PlayerMobile-can-auto-stable.patch
+@@ -1,7 +1,9 @@
++diff --git a/Projects/UOContent/Mobiles/BaseCreature.cs b/Projects/UOContent/Mobiles/BaseCreature.cs
++index f0210d4..f8d55c6 100644
+ --- a/Projects/UOContent/Mobiles/BaseCreature.cs
+ +++ b/Projects/UOContent/Mobiles/BaseCreature.cs
+-@@ -924,6 +924,10 @@
+-         public static bool BondingEnabled { get; private set; }
++@@ -1387,6 +1387,10 @@ namespace Server.Mobiles
++         public virtual bool StandsDownOnCommand => PetsStandDownOnCommand;
+  
+          public virtual bool IsBondable => BondingEnabled && !Summoned;
+ +
+@@ -11,9 +13,11 @@
+          public virtual TimeSpan BondingDelay => TimeSpan.FromDays(7.0);
+          public virtual TimeSpan BondingAbandonDelay => TimeSpan.FromDays(1.0);
+  
++diff --git a/Projects/UOContent/Mobiles/PlayerMobile.cs b/Projects/UOContent/Mobiles/PlayerMobile.cs
++index 160c6b1..97c1c4f 100644
+ --- a/Projects/UOContent/Mobiles/PlayerMobile.cs
+ +++ b/Projects/UOContent/Mobiles/PlayerMobile.cs
+-@@ -3649,6 +3649,12 @@
++@@ -3548,6 +3548,12 @@ namespace Server.Mobiles
+                      continue;
+                  }
+  
+diff --git a/server/patches/CraftGumpItem-MakeX.patch b/server/patches/CraftGumpItem-MakeX.patch
+index 0c0ea39..3426ad3 100644
+--- a/server/patches/CraftGumpItem-MakeX.patch
++++ b/server/patches/CraftGumpItem-MakeX.patch
+@@ -1,6 +1,8 @@
+---- a/Projects/UOContent/Engines/Craft/Core/CraftGumpItem.cs	2026-09-06 11:54:37.260199600 -0500
+-+++ b/Projects/UOContent/Engines/Craft/Core/CraftGumpItem.cs	2026-09-06 11:54:37.888270400 -0500
+-@@ -74,11 +74,17 @@
++diff --git a/Projects/UOContent/Engines/Craft/Core/CraftGumpItem.cs b/Projects/UOContent/Engines/Craft/Core/CraftGumpItem.cs
++index c8e9a5f..0845a2a 100644
++--- a/Projects/UOContent/Engines/Craft/Core/CraftGumpItem.cs
+++++ b/Projects/UOContent/Engines/Craft/Core/CraftGumpItem.cs
++@@ -74,11 +74,17 @@ public class CraftGumpItem : DynamicGump
+  
+          if (needsRecipe)
+          {
+@@ -18,9 +20,9 @@
+              builder.AddButton(270, 387, 4005, 4007, 1);
+              builder.AddHtmlLocalized(305, 390, 150, 18, 1044151, LabelColor); // MAKE NOW
+          }
+-@@ -313,7 +319,11 @@
+-             var craftGump = new CraftGump(from, _craftSystem, _tool, null);
+-             from.SendGump(craftGump);
++@@ -312,7 +318,11 @@ public class CraftGumpItem : DynamicGump
++         {
++             CraftItem.ShowCraftMenu(from, _craftSystem, _tool, null);
+          }
+ -        else // Make Button
+ +        else if (info.ButtonID == 2) // ClusterF: Make X
+@@ -31,7 +33,7 @@
+          {
+              var num = _craftSystem.CanCraft(from, _tool, _craftItem.ItemType);
+  
+-@@ -329,6 +339,11 @@
++@@ -328,6 +338,11 @@ public class CraftGumpItem : DynamicGump
+  
+                  if (context != null)
+                  {
+diff --git a/server/patches/ImportSpawners-guid-key.patch b/server/patches/ImportSpawners-guid-key.patch
+index 042f705..d429949 100644
+--- a/server/patches/ImportSpawners-guid-key.patch
++++ b/server/patches/ImportSpawners-guid-key.patch
+@@ -1,35 +1,34 @@
+ --- a/Projects/UOContent/Engines/Spawners/Commands/ImportSpawnersCommand.cs
+ +++ b/Projects/UOContent/Engines/Spawners/Commands/ImportSpawnersCommand.cs
+-@@ -209,7 +209,6 @@
+-                 return;
+-             }
+-             
+--            using var queue = PooledRefQueue<Item>.Create();
+-             for (var i = 0; i < spawners.Count; i++)
+-             {
+-                 var json = spawners[i];
+-@@ -225,21 +224,9 @@
+-                 json.GetProperty("location", options, out Point3D location);
+-                 json.GetProperty("map", options, out Map map);
++@@ -228,7 +228,6 @@
++             return;
++         }
++ 
++-        using var queue = PooledRefQueue<Item>.Create();
++         for (var i = 0; i < dtos.Count; i++)
++         {
++             var dto = dtos[i];
++@@ -256,20 +255,9 @@
++ 
++             var type = spawner.GetType();
+  
+--                // Delete all spawners at this location.
+--                // Probably shouldn't do this outside of migrations? Is there a better way to find/fix spawners?
+--                foreach (var spawner in map.GetItemsAt<BaseSpawner>(location))
++-            // Delete all existing spawners of the same concrete type at this location.
++-            foreach (var existing in map.GetItemsAt<BaseSpawner>(location))
++-            {
++-                if (existing.GetType() == type && existing != spawner)
+ -                {
+--                    if (spawner.GetType() == type)
+--                    {
+--                        queue.Enqueue(spawner);
+--                        allSpawners.Remove(spawner.Guid);
+--                    }
++-                    queue.Enqueue(existing);
++-                    allSpawners.Remove(existing.Guid);
+ -                }
++-            }
+ -
+--                while (queue.Count > 0)
+--                {
+--                    queue.Dequeue().Delete();
+--                }
+-+                // Shattered Legacy (cc-P32, PT-07): no delete by location. GetItemsAt matches x,y only
+-+                // (Map.ItemEnumerator.cs:31) and the data stacks spawners on one tile, so it deleted 338 of
+-+                // them. The same spawner is found by its guid below, so a re-run still replaces, not adds.
++-            while (queue.Count > 0)
++-            {
++-                queue.Dequeue().Delete();
++-            }
+++            // Shattered Legacy (cc-P32, PT-07): no delete by location. GetItemsAt matches x,y only
+++            // (Map.ItemEnumerator.cs:31) and the data stacks spawners on one tile, so it deleted 338 of
+++            // them. The same spawner is found by its guid below, so a re-run still replaces, not adds.
+  
+-                 try
+-                 {
++             try
++             {
+diff --git a/server/patches/StealableArtifacts-servuo-entries.patch b/server/patches/StealableArtifacts-servuo-entries.patch
+index a99e22b..db4b228 100644
+--- a/server/patches/StealableArtifacts-servuo-entries.patch
++++ b/server/patches/StealableArtifacts-servuo-entries.patch
+@@ -1,13 +1,15 @@
+---- a/Projects/UOContent/Engines/Stealables/StealableArtifacts.cs	2026-09-29 14:52:36.050247300 -0500
+-+++ b/Projects/UOContent/Engines/Stealables/StealableArtifacts.cs	2026-09-29 14:52:59.047783400 -0500
+-@@ -170,7 +170,81 @@
+-         new(Map.Malas, new Point3D(157, 608, -1), 18432, 27648, typeof(SwordDisplay5WestArtifact)),
+-         new(Map.Malas, new Point3D(187, 643, 1), 18432, 27648, typeof(Painting6NorthArtifact)),
++diff --git a/Projects/UOContent/Engines/Stealables/StealableArtifacts.cs b/Projects/UOContent/Engines/Stealables/StealableArtifacts.cs
++index 4cd8d8c..640023d 100644
++--- a/Projects/UOContent/Engines/Stealables/StealableArtifacts.cs
+++++ b/Projects/UOContent/Engines/Stealables/StealableArtifacts.cs
++@@ -172,8 +172,80 @@ public class StealableArtifacts : GenericPersistence
+          new(Map.Malas, new Point3D(146, 623, 1), 18432, 27648, typeof(Painting6WestArtifact)),
+--        new(Map.Malas, new Point3D(178, 629, -1), 18432, 27648, typeof(ManStatuetteEastArtifact))
+-+        new(Map.Malas, new Point3D(178, 629, -1), 18432, 27648, typeof(ManStatuetteEastArtifact)),
+-+
+-+        // Shattered Legacy: ServUO pub57's entries for types this shard ports, appended so saved slots keep their index.
++         new(Map.Malas, new Point3D(178, 629, -1), 18432, 27648, typeof(ManStatuetteEastArtifact)),
++ 
++-        // Stygian Abyss (Ter Mur) - Artifact rarity 5
++-        new(Map.TerMur, new Point3D(843, 665, 27), 1152, 1728, typeof(ValkyriesGlaive))
+++        // Shattered Legacy: upstream (#2512) appends only ValkyriesGlaive here, as slot 80. Ours keeps it at slot 85 because
+++        // saved slots map to entries by index and our worlds already hold 80-137. ServUO pub57's entries for types this shard ports, appended so saved slots keep their index.
+ +        // Abyss - Artifact rarity 5
+ +        new(Map.TerMur, new Point3D(717, 416, 50), 1152, 1728, typeof(DyingPlantArtifact)),
+ +        new(Map.TerMur, new Point3D(951, 542, -14), 1152, 1728, typeof(LargePewterBowlArtifact)),
+diff --git a/server/patches/UOContentFixture-npc-speeds.patch b/server/patches/UOContentFixture-npc-speeds.patch
+index 81ef6a8..ea54ab8 100644
+--- a/server/patches/UOContentFixture-npc-speeds.patch
++++ b/server/patches/UOContentFixture-npc-speeds.patch
+@@ -1,58 +1,24 @@
+---- a/Projects/UOContent.Tests/Fixtures/UOContentFixture.cs
+-+++ b/Projects/UOContent.Tests/Fixtures/UOContentFixture.cs
+-@@ -26,6 +26,55 @@
+-         // Load Skills
+-         SkillsInfo.Configure();
+- 
+-+        // Load the NPC speed table. Shattered Legacy addition; see
+-+        // shard-migration/notes/s8-test-route.md.
+-+        //
+-+        // Every public BaseCreature constructor calls NPCSpeeds.GetSpeeds, which falls back to
+-+        // _speedsByLevel[SpeedLevel.Medium] and throws KeyNotFoundException while the table is
+-+        // empty. The real server fills it from Data/npc-speeds.json through
+-+        // AssemblyHandler.Invoke("Configure") (Projects/Server/Main.cs:441); this fixture calls a
+-+        // hand-picked subset of Configure methods and NPCSpeeds is not among them, so no test can
+-+        // construct a creature. The file itself is already present: UOContent.Tests.csproj copies
+-+        // Distribution/Data into the output directory, and Core.BaseDirectory in the test host is
+-+        // that directory.
+-+        Server.Mobiles.NPCSpeeds.Configure();
+-+
+-+        // Wire the skill-check handlers. Shattered Legacy addition (CC6 batch 1); see
+-+        // shard-migration/notes/cc6-creatures-batch1.md.
+-+        //
+-+        // Mobile.CheckSkill returns SkillCheckLocationHandler?.Invoke(...) == true, and the real
+-+        // server assigns the four handlers in SkillCheck.Initialize through
+-+        // AssemblyHandler.Invoke("Initialize") (Main.cs:448). The fixture never does, so every skill
+-+        // roll in the test host fails: Stealth.OnUse reveals the user, and any creature or item
+-+        // behaviour that rolls a skill silently takes its failure branch. The same shape as the
+-+        // speed table above, for a handler instead of a data file.
+-+        Server.Misc.SkillCheck.Initialize();
+-+
+-+        // Load the name lists. Shattered Legacy addition (CC6 batch 2); see
+-+        // shard-migration/notes/cc6-creatures-batch2.md.
+-+        //
+-+        // NameList.RandomName returns "" while its table is empty. The real server fills it from
+-+        // Data/names.json in NameList.Configure through AssemblyHandler.Invoke("Configure"); this
+-+        // fixture does not, so any ported NPC that draws its name at construction (ForgottenServant
+-+        // here, the Ter Mur townspeople to come) is nameless in the test host. Same shape as the
+-+        // speed table above, for a data file the csproj already copies.
+-+        Server.NameList.Configure();
+-+
+-+        // Wire the corpse handler. Shattered Legacy addition (CC6 batch 4); see
+-+        // shard-migration/notes/cc6-creatures-batch4.md.
+-+        //
+-+        // Mobile.Kill() builds the corpse through Mobile.CreateCorpseHandler, which the real server
+-+        // assigns in Corpse.Initialize through AssemblyHandler.Invoke("Initialize"). The fixture never
+-+        // does, so Kill() in the test host hands OnDeath(Container) a null and every ported OnDeath
+-+        // drop (c.DropItem, ServUO's shape, no null guard) throws. With it a test can kill a creature
+-+        // and read its corpse. Same shape as the skill-check handlers above.
+-+        Server.Items.Corpse.Initialize();
+-+
+-+        // And the taming setting: BaseCreature.Configure reads taming.enableBonding (default Core.LBR, true).
+-+        // Without it BondingEnabled stays false and IsBondable is false for every creature in the test host,
+-+        // so no feed can ever bond a pet. Same batch, same shape.
+-+        Server.Mobiles.BaseCreature.Configure();
++diff --git a/Projects/UOContent.Tests/Fixtures/TestServerInitializer.cs b/Projects/UOContent.Tests/Fixtures/TestServerInitializer.cs
++index bca909a..5c58cdb 100644
++--- a/Projects/UOContent.Tests/Fixtures/TestServerInitializer.cs
+++++ b/Projects/UOContent.Tests/Fixtures/TestServerInitializer.cs
++@@ -111,6 +111,19 @@ internal static class TestServerInitializer
++             DecayScheduler.Configure();
++             // Without npc-speeds.json every BaseCreature constructor throws.
++             Server.Mobiles.NPCSpeeds.Configure();
+ +
+-         // Configure networking (initializes RingSocketManager for tests)
+-         Server.Network.NetState.Configure();
+++            // Shattered Legacy additions (S8 route, CC6 batches 1, 2 and 4); see shard-migration/notes/s8-test-route.md
+++            // and notes/cc-P30-modernuo-upgrade-research.md. Pinned 7c9215d97 had no NPCSpeeds call, which this patch
+++            // used to add; upstream now makes it on the line above, so only these four remain ours. Each is a Configure
+++            // or Initialize the real server reaches through AssemblyHandler.Invoke and this curated subset does not:
+++            //   SkillCheck.Initialize   - Mobile.CheckSkill's handlers; without them every skill roll fails.
+++            //   NameList.Configure      - Data/names.json; without it RandomName returns "".
+++            //   Corpse.Initialize       - Mobile.CreateCorpseHandler; without it Kill() hands OnDeath a null corpse.
+++            //   BaseCreature.Configure  - taming.enableBonding; without it no pet can bond.
+++            Server.Misc.SkillCheck.Initialize();
+++            Server.NameList.Configure();
+++            Server.Items.Corpse.Initialize();
+++            Server.Mobiles.BaseCreature.Configure();
++             Server.Engines.Spawners.SpawnerJsonSerializer.Configure();
+  
++             if (TileDataLoaded)
+diff --git a/server/tests/Engines/MLQuests/NewHavenQuestBoardVerification.cs b/server/tests/Engines/MLQuests/NewHavenQuestBoardVerification.cs
+index d2bfbde..7dbdb2c 100644
+--- a/server/tests/Engines/MLQuests/NewHavenQuestBoardVerification.cs
++++ b/server/tests/Engines/MLQuests/NewHavenQuestBoardVerification.cs
+@@ -57,6 +57,11 @@ public class NewHavenQuestBoardVerification
+     // these, and every player's held board quest is saved against a board's serial.
+     private const string SaveShapeAtHead = "090000001010160400AE0D0D0A0EC5C10201010000000000000000";
+ 
++    // cc-P30: the same board on upstream d4531cd9. Item is v11 there (was 9) and writes LastMoved as an anchored
++    // time, 8 bytes that depend on the clock (was one delta byte, 00), so those 16 hex digits are masked. Every
++    // byte the board itself owns is unchanged.
++    private const string SaveShapeAtD4531 = "0B00000010101604################AE0D0D0A0EC5C10201010000000000000000";
++
+     private static readonly Point3D BoardSpot = new(1000, 1000, 0);
+ 
+     private readonly ITestOutputHelper _out;
+@@ -112,6 +117,16 @@ public class NewHavenQuestBoardVerification
+         ns = PacketTestUtilities.CreateTestNetState();
+         pm.NetState = ns;
+         ns.Mobile = pm; // login does this; Mobile.NetState does not, and a gump reply reads it
++        // cc-P30: upstream (#2639/#2641) caps a connection with no account at a 4 KiB send ring and promotes it only
++        // after credentials verify (NetState.cs:562-567 at d4531cd9). A real player is past login; this test never
++        // drains, so without an account its gumps stop reaching the wire partway through a fact.
++        if (Server.Accounting.Security.AccountSecurity.CurrentAlgorithm == Server.Accounting.Security.PasswordProtectionAlgorithm.None)
++        {
++            // As GargoyleStartingClothesVerification: never checked here, and PBKDF2 is fully managed.
++            Server.Accounting.Security.AccountSecurity.CurrentAlgorithm = Server.Accounting.Security.PasswordProtectionAlgorithm.PBKDF2;
++        }
++
++        ns.Account = new Server.Accounting.Account($"p30-board-{pm.Serial.Value:X8}", "p30-test-only");
+         return pm;
+     }
+ 
+@@ -378,13 +393,13 @@ public class NewHavenQuestBoardVerification
+         board.MoveToWorld(NewHavenQuestBoard.HomeLocation, Map.Trammel);
+         board.LastMoved = Core.Now;
+ 
+-        var writer = new BufferWriter(new byte[256], true, new ConcurrentQueue<Type>());
++        var writer = new BufferWriter(new byte[256], true);
+         board.Serialize(writer);
+         var hex = Convert.ToHexString(writer.Buffer, 0, (int)writer.Position);
+         _out.WriteLine($"board save: {hex} ({writer.Position} bytes)");
+         board.Delete();
+ 
+-        Assert.Equal(SaveShapeAtHead, hex);
++        Assert.Equal(SaveShapeAtD4531, hex[..16] + new string('#', 16) + hex[32..]);
+     }
+ 
+     [Fact]
+diff --git a/server/tests/Items/Artifacts/Equipment/Armor/Sets/AbsorptionAttributesVerification.cs b/server/tests/Items/Artifacts/Equipment/Armor/Sets/AbsorptionAttributesVerification.cs
+index f0b8cf6..0eaee89 100644
+--- a/server/tests/Items/Artifacts/Equipment/Armor/Sets/AbsorptionAttributesVerification.cs
++++ b/server/tests/Items/Artifacts/Equipment/Armor/Sets/AbsorptionAttributesVerification.cs
+@@ -208,7 +208,7 @@ public class AbsorptionAttributesVerification
+         original.AbsorptionAttributes.CastingFocus = 3;
+ 
+         var buffer = new byte[16384];
+-        var writer = new BufferWriter(buffer, true, new ConcurrentQueue<Type>());
++        var writer = new BufferWriter(buffer, true);
+         original.Serialize(writer);
+         writer.Flush();
+ 
+diff --git a/server/tests/Items/Artifacts/Equipment/Armor/Sets/ArmourSetBonusVerification.cs b/server/tests/Items/Artifacts/Equipment/Armor/Sets/ArmourSetBonusVerification.cs
+index 2fa2034..89a988f 100644
+--- a/server/tests/Items/Artifacts/Equipment/Armor/Sets/ArmourSetBonusVerification.cs
++++ b/server/tests/Items/Artifacts/Equipment/Armor/Sets/ArmourSetBonusVerification.cs
+@@ -166,7 +166,7 @@ public class ArmourSetBonusVerification
+         original.LastEquipped = true;
+ 
+         var buffer = new byte[16384];
+-        var writer = new BufferWriter(buffer, true, new ConcurrentQueue<Type>());
++        var writer = new BufferWriter(buffer, true);
+         original.Serialize(writer);
+         writer.Flush();
+ 
+diff --git a/server/tests/Items/Artifacts/Equipment/Armor/Sets/ClothingSetCarrierVerification.cs b/server/tests/Items/Artifacts/Equipment/Armor/Sets/ClothingSetCarrierVerification.cs
+index 6747e18..5c6c671 100644
+--- a/server/tests/Items/Artifacts/Equipment/Armor/Sets/ClothingSetCarrierVerification.cs
++++ b/server/tests/Items/Artifacts/Equipment/Armor/Sets/ClothingSetCarrierVerification.cs
+@@ -166,7 +166,7 @@ public class ClothingSetCarrierVerification
+         original.SetHue = 1234;
+ 
+         var buffer = new byte[16384];
+-        var writer = new BufferWriter(buffer, true, new ConcurrentQueue<Type>());
++        var writer = new BufferWriter(buffer, true);
+         original.Serialize(writer);
+         writer.Flush();
+ 
+diff --git a/server/tests/Items/Artifacts/Equipment/Armor/Sets/JewelSetCarrierVerification.cs b/server/tests/Items/Artifacts/Equipment/Armor/Sets/JewelSetCarrierVerification.cs
+index bd69449..2d35aef 100644
+--- a/server/tests/Items/Artifacts/Equipment/Armor/Sets/JewelSetCarrierVerification.cs
++++ b/server/tests/Items/Artifacts/Equipment/Armor/Sets/JewelSetCarrierVerification.cs
+@@ -158,7 +158,7 @@ public class JewelSetCarrierVerification
+         original.SetFireBonus = 6;
+ 
+         var buffer = new byte[16384];
+-        var writer = new BufferWriter(buffer, true, new ConcurrentQueue<Type>());
++        var writer = new BufferWriter(buffer, true);
+         original.Serialize(writer);
+         writer.Flush();
+ 
+diff --git a/server/tests/Items/Artifacts/Equipment/Armor/Sets/MarksmanSetVerification.cs b/server/tests/Items/Artifacts/Equipment/Armor/Sets/MarksmanSetVerification.cs
+index ccc3967..5957d74 100644
+--- a/server/tests/Items/Artifacts/Equipment/Armor/Sets/MarksmanSetVerification.cs
++++ b/server/tests/Items/Artifacts/Equipment/Armor/Sets/MarksmanSetVerification.cs
+@@ -115,7 +115,7 @@ public class MarksmanSetVerification
+         original.SetPhysicalBonus = 4;
+ 
+         var buffer = new byte[16384];
+-        var writer = new BufferWriter(buffer, true, new ConcurrentQueue<Type>());
++        var writer = new BufferWriter(buffer, true);
+         original.Serialize(writer);
+         writer.Flush();
+ 
+diff --git a/server/tests/Items/Artifacts/Equipment/Armor/Sets/QuiverSetCarrierVerification.cs b/server/tests/Items/Artifacts/Equipment/Armor/Sets/QuiverSetCarrierVerification.cs
+index 51ace95..304cef1 100644
+--- a/server/tests/Items/Artifacts/Equipment/Armor/Sets/QuiverSetCarrierVerification.cs
++++ b/server/tests/Items/Artifacts/Equipment/Armor/Sets/QuiverSetCarrierVerification.cs
+@@ -157,7 +157,7 @@ public class QuiverSetCarrierVerification
+         original.SetEnergyBonus = 7;
+ 
+         var buffer = new byte[16384];
+-        var writer = new BufferWriter(buffer, true, new ConcurrentQueue<Type>());
++        var writer = new BufferWriter(buffer, true);
+         original.Serialize(writer);
+         writer.Flush();
+ 
+diff --git a/server/tests/Items/Artifacts/Equipment/Armor/Sets/ShieldSetCarrierVerification.cs b/server/tests/Items/Artifacts/Equipment/Armor/Sets/ShieldSetCarrierVerification.cs
+index c407278..b0fce18 100644
+--- a/server/tests/Items/Artifacts/Equipment/Armor/Sets/ShieldSetCarrierVerification.cs
++++ b/server/tests/Items/Artifacts/Equipment/Armor/Sets/ShieldSetCarrierVerification.cs
+@@ -184,7 +184,7 @@ public class ShieldSetCarrierVerification
+         original.SetColdBonus = 9;
+ 
+         var buffer = new byte[16384];
+-        var writer = new BufferWriter(buffer, true, new ConcurrentQueue<Type>());
++        var writer = new BufferWriter(buffer, true);
+         original.Serialize(writer);
+         writer.Flush();
+ 
+diff --git a/server/tests/Items/Artifacts/Equipment/Armor/Sets/WeaponSetCarrierVerification.cs b/server/tests/Items/Artifacts/Equipment/Armor/Sets/WeaponSetCarrierVerification.cs
+index 11cf44c..9598c0e 100644
+--- a/server/tests/Items/Artifacts/Equipment/Armor/Sets/WeaponSetCarrierVerification.cs
++++ b/server/tests/Items/Artifacts/Equipment/Armor/Sets/WeaponSetCarrierVerification.cs
+@@ -148,7 +148,7 @@ public class WeaponSetCarrierVerification
+         original.SetPhysicalBonus = 4;
+ 
+         var buffer = new byte[16384];
+-        var writer = new BufferWriter(buffer, true, new ConcurrentQueue<Type>());
++        var writer = new BufferWriter(buffer, true);
+         original.Serialize(writer);
+         writer.Flush();
+ 
+diff --git a/server/tests/Items/CC9CloseVerification.cs b/server/tests/Items/CC9CloseVerification.cs
+index 7170e8c..c33d774 100644
+--- a/server/tests/Items/CC9CloseVerification.cs
++++ b/server/tests/Items/CC9CloseVerification.cs
+@@ -50,7 +50,7 @@ public class CC9CloseVerification
+     private static T RoundTrip<T>(T original) where T : ISerializable
+     {
+         var buffer = new byte[65536];
+-        var writer = new BufferWriter(buffer, true, new ConcurrentQueue<Type>());
++        var writer = new BufferWriter(buffer, true);
+         original.Serialize(writer);
+         writer.Flush();
+ 
+@@ -266,7 +266,7 @@ public class CC9CloseVerification
+         boss.SpawnSpectralArmour(pm);
+ 
+         var helper = Assert.IsType<SpectralArmour>(Assert.Single(boss.Helpers));
+-        Assert.Same(boss, helper.SummonMaster);
++        Assert.Same(boss, helper.Master); // cc-P30: #2670 gates SummonMaster on Summoned
+         Assert.Same(pm, helper.Combatant);
+         Assert.Same(Map.TerMur, helper.Map);
+         Assert.Equal(helper.ControlSlots, boss.Followers);
+diff --git a/server/tests/Items/ShatteredRunestoneVerification.cs b/server/tests/Items/ShatteredRunestoneVerification.cs
+index 7512871..4bb901e 100644
+--- a/server/tests/Items/ShatteredRunestoneVerification.cs
++++ b/server/tests/Items/ShatteredRunestoneVerification.cs
+@@ -36,7 +36,7 @@ public class ShatteredRunestoneVerification
+     private static T RoundTrip<T>(T original) where T : ISerializable
+     {
+         var buffer = new byte[65536];
+-        var writer = new BufferWriter(buffer, true, new ConcurrentQueue<Type>());
++        var writer = new BufferWriter(buffer, true);
+         original.Serialize(writer);
+         writer.Flush();
+ 
+diff --git a/server/tests/Misc/AccountDataSerializerVerification.cs b/server/tests/Misc/AccountDataSerializerVerification.cs
+index ec8d9c3..710e199 100644
+--- a/server/tests/Misc/AccountDataSerializerVerification.cs
++++ b/server/tests/Misc/AccountDataSerializerVerification.cs
+@@ -80,7 +80,7 @@ public class AccountDataSerializerVerification
+ 
+     private static (byte[] Buffer, long Length) Write(Action<IGenericWriter> serialize)
+     {
+-        var writer = new BufferWriter(true, new ConcurrentQueue<Type>());
++        var writer = new BufferWriter(true);
+         serialize(writer);
+         return (writer.Buffer, writer.Position);
+     }
+diff --git a/server/tests/Misc/SpawnerImportVerification.cs b/server/tests/Misc/SpawnerImportVerification.cs
+index bf3d014..125d9fe 100644
+--- a/server/tests/Misc/SpawnerImportVerification.cs
++++ b/server/tests/Misc/SpawnerImportVerification.cs
+@@ -69,7 +69,7 @@ public class SpawnerImportVerification
+ 
+         var json = entries.Select(e => new Dictionary<string, object>
+         {
+-            ["type"] = "Spawner",
++            ["$type"] = "Spawner", // cc-P30: upstream #2505 discriminator (was "type" at 7c9215d97)
+             ["guid"] = e.Guid.ToString(),
+             ["name"] = "cc-P32 test",
+             ["location"] = new[] { e.X, e.Y, e.Z },
+diff --git a/server/tests/Mobiles/Bosses/CC6Batch8Verification.cs b/server/tests/Mobiles/Bosses/CC6Batch8Verification.cs
+index 5604121..8ff64f0 100644
+--- a/server/tests/Mobiles/Bosses/CC6Batch8Verification.cs
++++ b/server/tests/Mobiles/Bosses/CC6Batch8Verification.cs
+@@ -56,7 +56,7 @@ public class CC6Batch8Verification
+     private static T RoundTrip<T>(T original) where T : Mobile
+     {
+         var buffer = new byte[65536];
+-        var writer = new BufferWriter(buffer, true, new ConcurrentQueue<Type>());
++        var writer = new BufferWriter(buffer, true);
+         original.Serialize(writer);
+         writer.Flush();
+ 
+@@ -550,7 +550,7 @@ public class CC6Batch8Verification
+             var d = new StygianDragon();
+             d.MoveToWorld(new Point3D(1002, 1000, 0), Map.TerMur);
+             d.Damage(60, pm);
+-            Assert.NotEmpty(d.DamageEntries);
++            Assert.True(d.DamageEntries.Count > 0); // cc-P30: ValueLinkList (#2605)
+             d.Kill();
+ 
+             var corpse = Assert.IsAssignableFrom<Corpse>(d.Corpse);
+@@ -612,7 +612,7 @@ public class CC6Batch8Verification
+         var field = new StygianDragon.FireField(dragon, 30, true);
+         field.MoveToWorld(Here, Map.TerMur);
+         var buffer = new byte[4096];
+-        var writer = new BufferWriter(buffer, true, new ConcurrentQueue<Type>());
++        var writer = new BufferWriter(buffer, true);
+         field.Serialize(writer);
+         writer.Flush();
+         var loaded = new StygianDragon.FireField(field.Serial);
+@@ -961,7 +961,7 @@ public class CC6Batch8Verification
+ 
+         // A copy that reached a save deletes itself on load (ServUO's Deserialize does the same).
+         var buffer = new byte[65536];
+-        var writer = new BufferWriter(buffer, true, new ConcurrentQueue<Type>());
++        var writer = new BufferWriter(buffer, true);
+         clone.Serialize(writer);
+         writer.Flush();
+         var loaded = new MedusaClone(clone.Serial);
+diff --git a/server/tests/Mobiles/Normal/CC6Batch1CreatureVerification.cs b/server/tests/Mobiles/Normal/CC6Batch1CreatureVerification.cs
+index 93cfa52..90cc513 100644
+--- a/server/tests/Mobiles/Normal/CC6Batch1CreatureVerification.cs
++++ b/server/tests/Mobiles/Normal/CC6Batch1CreatureVerification.cs
+@@ -15,6 +15,7 @@ using System.IO;
+ using System.Linq;
+ using System.Text.Json;
+ using Server;
++using Server.Collections; // cc-P30: ValueLinkList enumerator (#2605)
+ using Server.Items;
+ using Server.Mobiles;
+ using Xunit;
+@@ -289,14 +290,17 @@ public class CC6Batch1CreatureVerification
+         // the same advance, and the Hits setter clears DamageEntries once hits are full again (Mobile.cs:2022; the
+         // Q-029 shape, see the Shame mana-taint fact). So walk the clock one wheel tick at a time and read the hit
+         // on the tick it lands.
+-        Assert.Empty(player.DamageEntries);
++        Assert.Equal(0, player.DamageEntries.Count); // cc-P30: ValueLinkList (#2605)
+         var landed = false;
+         var ticks = 0;
+ 
+         for (; ticks < 300 && !landed; ticks++) // up to 2.4 s, two acid ticks
+         {
+             ShardTestClock.Advance(TimeSpan.FromMilliseconds(8));
+-            landed = player.DamageEntries.Any(e => e.Damager == roots);
++            foreach (var e in player.DamageEntries)
++            {
++                landed |= e.Damager == roots;
++            }
+         }
+ 
+         _out.WriteLine($"acid landed after {ticks} wheel ticks: hits={player.Hits}/{player.HitsMax} frozen={player.Frozen}");
+diff --git a/server/tests/Mobiles/Normal/CC6Batch5CreatureVerification.cs b/server/tests/Mobiles/Normal/CC6Batch5CreatureVerification.cs
+index 7e4ec8d..643614f 100644
+--- a/server/tests/Mobiles/Normal/CC6Batch5CreatureVerification.cs
++++ b/server/tests/Mobiles/Normal/CC6Batch5CreatureVerification.cs
+@@ -339,7 +339,7 @@ public class CC6Batch5CreatureVerification
+             var bc = new AcidElementalRenowned();
+             bc.MoveToWorld(new Point3D(1002, 1000, 0), Map.TerMur);
+             bc.Damage(60, heavy);
+-            Assert.NotEmpty(bc.DamageEntries);
++            Assert.True(bc.DamageEntries.Count > 0); // cc-P30: ValueLinkList (#2605)
+             bc.Kill();
+             var corpse = bc.Corpse;
+             Assert.NotNull(corpse);
+diff --git a/server/tests/TypeIdentity/TypeIdentityVerification.cs b/server/tests/TypeIdentity/TypeIdentityVerification.cs
+index 29eecff..46dfcb0 100644
+--- a/server/tests/TypeIdentity/TypeIdentityVerification.cs
++++ b/server/tests/TypeIdentity/TypeIdentityVerification.cs
+@@ -134,7 +134,7 @@ public class TypeIdentityVerification
+     private void AssertSurvivesSaveRoundTrip(Mobile original)
+     {
+         var buffer = new byte[65536];
+-        var writer = new BufferWriter(buffer, true, new ConcurrentQueue<Type>());
++        var writer = new BufferWriter(buffer, true);
+         writer.Write(original.GetType());
+         var entityStart = writer.Position;
+         original.Serialize(writer);

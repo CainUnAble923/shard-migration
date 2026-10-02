@@ -14,7 +14,7 @@ Running list of feature ideas from play testing. Kept by the overseer (Claude); 
 4. Chase commits with `Commit-ShardWork.ps1`.
 
 F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and questions (Q-n).
-**Next free: F-31.**
+**Next free: F-32.**
 
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
@@ -67,8 +67,8 @@ live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers
   - F-12: the three placeholder numbers (reserve cap, echo multipliers, step size above 100); how each
     League metal rank is earned.
   - F-4, F-10: not scheduled.
-  - F-30 (Staff Hub): which kind of event management, and plain or shard-styled gump. Commands,
-    Player and Travel tabs are ready to batch once a builder slot is free.
+  - F-30 (Staff Hub): no open questions. Commands, Player and Travel tabs ready to batch once a
+    builder slot is free; Events (surges) as the second batch.
 
 ## Open
 
@@ -2130,14 +2130,47 @@ Suggested (overseer):
    office, guild halls, League, Fountain of Fortune, Royal City, dungeon entrance when P36 lands), so they
    never go stale; plus **saved spots** (save where you stand with a name, saved per staff account,
    versioned) and a recent-locations list. Facet shown on each row.
-4. **Events tab (second batch):** see questions.
+4. **Events tab (second batch): live GM-run events** (Chase 2026-10-02: "live events like monster
+   surges etc"). A **surge** is: pick a creature group (saved templates, for example orc raid, undead
+   rising, a named boss with adds), target a spot and radius, set waves, count per wave and interval,
+   then Start. Start broadcasts, and can open an event moongate from Britain and New Haven to a staging
+   spot. Every creature it makes is flagged as event spawn, so **End** deletes what is left and closes
+   the gate, and a server restart mid-event cleans up too. Optional per event: a no-loot death zone,
+   and a prize to everyone who took part (damage dealt, or present in the area). Check first: pinned
+   `Engines/CannedEvil` champion spawns (waves of escalating creatures already) and whether a surge can
+   reuse them; ServUO pub57's town invasion scripts as prior art.
 
 Open questions (for Chase):
-1. Event management: which of these did you mean? (a) seasonal events on a calendar (winter decor,
-   holidays) with on/off and status; (b) live GM-run events you start by hand: broadcast, an event
-   moongate players can take to a spot, spawn a wave or a boss at a target, prizes to everyone in an
-   area, a no-loot death zone for the event; (c) both.
-2. Should the hub's gump wear the shard's look (the stone/emblem art) or stay plain stock gump art?
+1. ~~Event management kind~~ Answered 2026-10-02: live events, monster surges.
+2. ~~Gump look~~ Answered 2026-10-02: Chase approved the mockup (Design canvas "Staff Hub Mockup",
+   https://claude.ai/artifact/1qKVyz2gb4wgcXJRHJnwD8): background **9270** dark stone, tabs on 2445
+   stone buttons, 4005 go arrows, 4017 close/delete, 2117/2118 gems as radios, 210/211 checkboxes,
+   alpha region over the content. The mockup's layout is the spec for each tab. Emblem header later.
+3. ~~Surge prizes~~ Answered 2026-10-02: **all three**, as per-surge checkboxes in any mix: by damage
+   dealt (top contributors get the better prize), everyone present in the area gets a share, and the GM
+   can hand out extra prizes. Overseer default for the build: damage share counted per player over the
+   whole surge; "present" means inside the surge radius for at least half its run time.
+
+### F-31: Raptor pack friends, back on upstream's Raptor (added 2026-10-02)
+
+**Ported** (OSI and ServUO raptors call pack friends; the wikis document it). Added by the overseer at Chase's request.
+
+Why it exists: the ModernUO upgrade (cc-P30, `notes\cc-P30-modernuo-upgrade-research.md` 2c) found 11 of our ported
+types now ship upstream under the same names. Chase chose to take upstream's (2026-10-02), which closes D-57 but drops
+our Raptor's **pack friends** behavior: ours is a ServUO port with `_isFriend` serialized and a `FriendsTimer`
+(191 lines); upstream's Raptor is 76 lines with no pack behavior (P30 table at `:291`).
+
+What Chase wants: pack friends back, on top of upstream's Raptor.
+
+Notes (overseer):
+- P30 `:310`: it goes back as a **patch onto upstream's Raptor**, argued against a hook first, rather than our old
+  class (keeping ours alongside would be a new hidden replacement, like `CraftItem.cs`).
+- Ours is the reference for behavior: `server\customizations\Mobiles\Normal\Raptor.cs` at today's HEAD, before the
+  upgrade deletes it. A copy is kept at `notes\reference\Raptor-ours-pre-upgrade-045b313.cs` (saved 2026-10-02).
+- A serialized field (`_isFriend`) on a pinned type means a version bump on upstream's Raptor; with the fresh-world
+  wipe coming (Chase: "ok with 100% server wipe"), nothing needs migrating.
+
+Open questions: none. **After the upgrade (P38) lands.** Small.
 
 ## Batched
 
