@@ -25,8 +25,8 @@ Pinned paths are relative to `D:\UO\ModernUO-pinned\Projects`. "Ours" is `D:\Sha
 | 51 | Bowcraft/Fletching | Crafting | **decided** 2026-10-02 |
 | 53 | Cooking | Crafting | **decided** 2026-10-02 |
 | 49 | Alchemy | Crafting | **decided** 2026-10-02 |
-| 17 | Inscription | Crafting | not started |
-| 23 | Imbuing | Crafting | not started |
+| 17 | Inscription | Crafting | **decided** 2026-10-02 |
+| 23 | Imbuing | Crafting | **decided** 2026-10-02 |
 | 1-6 | Swords, Macing, Fencing, Archery, Throwing, Wrestling | Combat | not started |
 | 7 | Tactics | Combat | not started |
 | 8 | Anatomy | Combat | not started |
@@ -73,8 +73,8 @@ Numbers are cc-P20's row numbers (`notes\cc-P20-skill-scaling-research.md:322-38
 
 ## Ready for the overseer
 
-**Gathering and core crafting, decided 2026-10-02:** Mining, Lumberjacking, Fishing, Blacksmithy, Tailoring,
-Tinkering, Carpentry, Bowcraft/Fletching, Cooking, Alchemy. Each section's "Decided" block is the spec. Cross-cutting
+**Gathering and crafting, decided 2026-10-02:** Mining, Lumberjacking, Fishing, Blacksmithy, Tailoring,
+Tinkering, Carpentry, Bowcraft/Fletching, Cooking, Alchemy, Inscription, Imbuing. Each section's "Decided" block is the spec. Cross-cutting
 pieces worth one prompt each:
 - **The shared ladder** (ore, ingot, wood, leather, cloth, fish, elixir tiers at 100 / 115 / 130 / 140 / 155 / 170 /
   185 / 200) and **"materials lift the gain window"** (shift = gate - 100) across all crafts.
@@ -85,7 +85,7 @@ pieces worth one prompt each:
 - **Ports:** High Seas fishing and fish pies (ServUO pub57).
 - **Defect-sized:** large BOD lock-out, Infused Alchemist's Gem cap.
 
-Still in this group: Inscription and Imbuing.
+Inscription and Imbuing decided 2026-10-02 (15:44): **the crafting and gathering group is complete.**
 
 ## Corrections to earlier notes, found while verifying
 
@@ -796,3 +796,78 @@ which is nothing at 500 Str.
    steady way to heal.
 
 **Approved (Chase, 14:14): 1 to 6**, the `/150` and `/100` anchors included.
+
+---
+
+## 17. Inscription
+
+### Today
+
+- **Crafting gain:** recipe windows; top is the Mystic spellbook at 50-150 (`Engines/Craft/DefInscription.cs`, cc-P20).
+  **Ceiling 150.** Scroll success clamps at 100 percent; no material tiers (blank scrolls only).
+- **Spell damage bonus** for every caster: `(fixed + 1000 x (fixed / 1000)) / 200` percent (pinned
+  `Spells/Base/Spell.cs:222-224`): +10 at 100, +11 at 120, **+20 at 200** (integer step at each 100). Same for weapon
+  hit spells (cc-P20).
+- **Reactive Armor, Magic Reflect, Protection** read it: Reflect's physical malus `-25 + Insc / 20`
+  (`Spells/Fifth/MagicReflect.cs:86`) and Protection's `-15 + Insc / 20`, `-35 + Insc / 20`
+  (`Spells/Second/Protection.cs:138-139`) are still maluses at 200 (-15, -5, -25). They flip at 300 and 500, so
+  **nothing breaks at 200.**
+- Runebook charges `min(5 + quality + Insc / 30, 10)` clamp at 10.
+- **Crafted spellbook properties read Magery, not Inscription:** count by Magery tier up to "legend" at 120
+  (`Items/Skill Items/Magical/Spellbook.cs:168-209`).
+- Guild: the Arcane Society; F-20 ports Inscription BODs there.
+
+### Relevance and synergies
+
+Every caster wants it (spell damage), scribes sell scrolls and spellbooks. Pairs with Magery, Necromancy,
+Mysticism, Spellweaving (books), and now Tailoring's leather ladder (below).
+
+### Proposal
+
+1. **Vellum on the shared ladder.** Hides from the leather ladder (Stonehide to Starhide) are scraped into vellum
+   for spellbooks and scrolls. Materials lift the gain window (gate - 100), so scribes climb to 200 by working the
+   ladder, and **spellbooks on vellum carry the leather's caster line** (normal and exceptional, F-29 gap).
+2. **Spellbook properties past 120:** keep Magery setting the property count (more tiers at 150 and 200), and let
+   **Inscription set the intensity**, so the best books need a mage and a scribe (or one character who is both).
+3. **Master's scrolls:** a scroll scribed at 150+ has a chance not to be used up when cast from, 0 at 150 to
+   25 percent at 200 (the scribe's thrift lives in the product).
+4. **Runebooks:** charge cap rises with Inscription, 10 at 100 to 20 at 200.
+5. Spell damage bonus stays pinned's (uncapped, +20 at 200). Thrift on blank scrolls and reagents, and the mark,
+   as for other crafts.
+
+---
+
+## 23. Imbuing (ours: the Artificers' guild)
+
+### Today
+
+- **Imbue success:** `CheckSkill(Imbuing, diff - 20, diff + 20)` with difficulty 40 to 100-120 by property and
+  guild standing (ours `customizations\ArtificersImbueGump.cs:1405`, difficulty `:84-93`). Disenchant and essence
+  crafting gain only to 80 (`:1483`, `:1545`). **Ceiling 140.**
+- **Power comes from guild standing, not skill:** intensity cap 100 to 200 percent and 5 to 8 property slots by
+  standing (`:1686-1700`). Past 140 the skill does nothing for imbuing.
+- **Mysticism damage reads the higher of Imbuing and Focus** (pinned `Spells/Mysticism/MysticSpell.cs:42-44`), so
+  the points do count there.
+
+### Proposal
+
+1. **Materials lift the imbue window:** imbuing an item made of a ladder material adds (gate - 100) to the
+   difficulty, so working on Celestial, Starwood or Starhide gear trains Imbuing to 200. Standing still sets the
+   ceilings.
+2. **Skill earns on top of standing:** +1 property slot at 150 and +2 at 200, and essence-shard thrift (up to 25
+   percent fewer shards at 200). Standing stays the main gate; skill rewards the master.
+3. Mysticism's read stays as is.
+
+### Open questions for Chase
+
+1. Inscription: vellum from the leather ladder, spellbooks carrying the leather's caster line: yes?
+2. Spellbooks: Magery sets count, Inscription sets intensity: yes?
+3. Master's scrolls (chance not consumed) and runebook charges to 20: yes?
+4. Imbuing: material-lifted difficulty, and +1/+2 slots from skill on top of standing: yes?
+
+### Decided (Chase, 2026-10-02, 15:44)
+
+All four approved: **vellum from the leather ladder** (spellbooks carry the leather's caster line); **spellbooks:
+Magery sets count (new tiers at 150 and 200), Inscription sets intensity**; **master's scrolls** (0 to 25 percent not
+consumed, 150 to 200) and **runebooks to 20 charges** at 200; **Imbuing: material-lifted difficulty, +1 slot at 150
+and +2 at 200, shard thrift to 25 percent.** Thrift and the mark for Inscription as for other crafts.
