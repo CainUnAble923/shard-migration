@@ -192,12 +192,16 @@ class ContentIndexTest(unittest.TestCase):
         self.assertEqual((e[1], e[3]), ('string', 'DespiseSpawns'))
 
     def test_reach_static_access_runs_no_instance_code(self):
-        # The fountain is live (`FountainOfFortune.UnderProtection`) but nothing makes one, so the satchel
-        # its reward code constructs is not reached either (S2 D-3: only `[add` places a fountain).
+        # TanglingRoots reads `FountainOfFortune.UnderProtection`. That makes the fountain's code live but makes no
+        # fountain, so the satchel its reward code constructs is not made either. From TanglingRoots alone, since
+        # gate 14 is built: cc-P27's ClusterFFountainOfFortuneSeeder places a fountain (D14), and the whole tree now
+        # reaches both by `new`.
         r = self.reach()
-        self.assertIn('FountainOfFortune', r.live)
-        self.assertNotIn('FountainOfFortune', r.reached)
-        self.assertNotIn('GemologistsSatchel', r.reached)
+        created, live = r._closure(r.out, {'TanglingRoots'})
+        self.assertEqual(live['FountainOfFortune'][1], 'static')
+        self.assertNotIn('FountainOfFortune', created)
+        self.assertNotIn('GemologistsSatchel', created)
+        self.assertEqual(r.reached['FountainOfFortune'][1:4:2], ('new', 'ClusterFFountainOfFortuneSeeder'))
 
     def test_reach_a_list_that_reads_types_does_not_create_them(self):
         # GemologistsSatchel.IngredTypes says what the satchel accepts, not where reagents come from.
@@ -219,10 +223,33 @@ class ContentIndexTest(unittest.TestCase):
         self.assertIn('data-mention', {x[1] for x in r.by_target['Allosaurus']})
 
     def test_reach_pinned_code_left_commented_out_is_reported(self):
-        # LadyLissith.cs:53, under `// TODO: uncomment once added`.
-        hits = [x for x in self.reach().by_target['GreymistChest'] if x[1] == 'pinned-comment:new']
+        # Ilhenir.cs:163, under `// TODO: uncomment once added`, which no patch of ours uncomments (cc-P7 2.3).
+        # Until cc-P27 this fact used GreymistChest at LadyLissith.cs:53, which cc-P7's patch uncommented.
+        hits = [x for x in self.reach().by_target['GrizzleGauntlets'] if x[1] == 'pinned-comment:new']
         self.assertEqual([(x[4], x[5]) for x in hits],
-                         [('pinned/UOContent/Mobiles/Monsters/ML/Twisted Weald/LadyLissith.cs', 53)])
+                         [('pinned/UOContent/Mobiles/Monsters/ML/Special/Ilhenir.cs', 163)])
+
+    def test_reach_an_uncomment_patch_makes_pinned_code_live(self):
+        # cc-P7's patches only take the comment markers off pinned's own drops, so `new MyrmidonGloves()` is a
+        # context line of the patch, not an added one. Pinned is read as the build compiles it (cc-P27), so the
+        # drop reaches; read as pinned plus added lines it stayed a comment and gate 9 read 0 delivered (cc-P7 2.7).
+        r = self.reach()
+        for name, where in (('MyrmidonGloves', ('pinned/UOContent/Mobiles/Monsters/ML/Labyrinth/Miasma.cs', 54)),
+                            ('GreymistChest', ('pinned/UOContent/Mobiles/Monsters/ML/Twisted Weald/LadyLissith.cs', 53))):
+            e = r.reached.get(name)
+            self.assertIsNotNone(e, name)
+            self.assertEqual((e[1], e[3], e[4], e[5]), ('new', 'root:pinned') + where)
+
+    def test_reach_a_later_typeof_in_addcraft_is_a_resource_not_a_product(self):
+        # AddCraft(typeof(Product), group, name, min, max, typeof(FirstResource), ...): only the first typeof is
+        # made (craft-registrations 4.1.1). ServUO DefTinkering.cs:614 crafts ArcanicRuneStone from CrystalShards,
+        # which --sources used to report as a tinkering source of CrystalShards.
+        code = 'AddCraft(typeof(Product), 1044050, 1113172, 70.0, 120.0, typeof(Resource), 1044036, 1, 1044037);'
+        self.assertEqual(ci.ref_kind(code, code.index('Product'), code.index('Product') + 7), ('typeof', 'AddCraft'))
+        self.assertEqual(ci.ref_kind(code, code.index('Resource'), code.index('Resource') + 8), ('check', 'AddCraft'))
+        src = ci.servuo_sources(self.reach(), ['CrystalShards'])['CrystalShards']
+        self.assertNotIn('Scripts/Services/Craft/DefTinkering.cs', {x[4] for x in src})
+        self.assertTrue(src)                                                     # its real sources remain
 
     def test_reach_servuo_turn_in_table_is_not_a_source(self):
         # CleanUpBritanniaData.Entries is what a player hands in; CleanUpBritanniaRewards hands out.

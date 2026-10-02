@@ -14,7 +14,7 @@ Running list of feature ideas from play testing. Kept by the overseer (Claude); 
 4. Chase commits with `Commit-ShardWork.ps1`.
 
 F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and questions (Q-n).
-**Next free: F-25.**
+**Next free: F-28.**
 
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
@@ -42,6 +42,8 @@ For a new overseer chat: read this section, then the entries it names. The proje
   - F-18 then F-20 (BODs for growth, smithing and tailoring; then other crafts, Carpentry and
     Tinkering first). After P22, which changes the same BOD gumps.
   - F-14 (Appraisal and con colors; the level number waits on F-12).
+  - F-25 (BOD banking, cash-out toggle, large deeds filled directly, rank caps, add-ons in the store).
+    After F-17, with or after F-18.
   - F-24 (League work: jobs, realm-wide boards, guild currency and banked reputation). After F-14,
     with F-12's XP in place; dives after the P24 dungeon work.
   - F-6 (fog of war with the Cartography tie-ins; the TazUO client half to scope first).
@@ -1767,6 +1769,175 @@ dungeon work.
 
 Check first: the League design doc (`design\systems\league_of_extraordinary_citizens.md`, in
 `D:\ShatteredLegacy`), F-3's Clean Up Britannia, pinned's quest and bounty code, and F-14.
+
+### F-25: BOD rewards banked; large BODs filled directly (added 2026-10-02)
+
+What Chase wants (2026-10-02):
+1. **BOD rewards can be banked** toward higher-end rewards, so the top rewards do not take an eternity
+   of filling large BODs.
+2. **Large BODs can be filled like small BODs**, with the items themselves, without needing the small
+   deeds first.
+
+Part 1 is **ported** (OSI banks BOD points). Part 2 is **ours** (OSI never allowed it; register it).
+
+Found 2026-10-02 (overseer, verified in code):
+- **Smithing already banks.** Turn-ins pay Smithing Seals into per-character guild currency
+  (`ClusterFSmithBODSystem.cs`, turn-in about `:225-235`, `guild.AddCurrency("smithing", seals)`), spent
+  any time in the Seal catalog (`SmithSealCatalogGump.cs`). Seals scale with the deed: small iron 1,
+  small Valorite exceptional about 30, large Valorite exceptional about 500 (`:250-270` comment table,
+  `SealDivisor = 400`). Catalog tops: Valorite runic hammer 5,000 seals; Platinum to Celestial runics
+  7,500 to 50,000, "coming soon".
+- **Tailoring does not bank yet.** It is still pinned's vanilla per-deed item reward; F-18 moves it into
+  the same guild-currency system, and F-20 does the same for the other crafts. So part 1 is mostly
+  delivered by F-18 and F-20 once they run.
+- **OSI banks too**, so part 1 is faithful: later OSI lets a turn-in either claim a reward or bank its
+  points per craft (`D:\UO\ServUO-pub57\Scripts\Services\BulkOrders\BulkOrderSystem.cs:105-142`
+  `BankedPoints`, `Rewards\ConfirmBankPointsGump.cs`).
+- **Large deeds take only small deeds** in pinned (`UOContent/Engines/Bulk Orders/LargeBOD.cs:94-100`,
+  "That is not a bulk order" for anything else) and in later ServUO (`LargeBOD.cs:217-222`). Part 2 is
+  therefore a deviation.
+- Large smith deeds: one at a time, Journeyman (5,000 standing) and 70.1 Blacksmithy
+  (`ClusterFSmithBODSystem.cs:21-23, 93-105`).
+- Ties: F-17 (the "combine with contained items" button; for large deeds it currently means small
+  deeds in a bag, and with part 2 it should also take matching items), F-18 (tailoring into seals).
+
+Answered 2026-10-02 (Chase):
+1. **The real pain is getting the right small deeds to fill a large one.** With a tiny player base,
+   trading for them is impossible.
+2. **The large deed bonus shrinks a little** when it is filled directly (overseer default: from about
+   3 to 4 times the small-deed value down to about 2 times; Chase to confirm when specified).
+3. **Turn-in is a choice: bank or cash out.** Bank puts the points (seals) toward the guild store; cash
+   out pays at the counter. A **standing toggle** (always bank, always cash out, or ask each time)
+   saves asking at every turn-in, and is **changed by talking to a smith** (overseer: to the craft's
+   guildmaster, so each craft's guild owns its own setting).
+4. **Large deeds keep taking filled small deeds too**, as well as the items themselves.
+5. **More BODs at once with guild rank, and more again with League rank.** Ranks today: Initiate,
+   Apprentice 1,000, Journeyman 5,000, Master 15,000, Grandmaster 50,000
+   (`ClusterFGuildSystem.cs:633-647`). Overseer default for the guild part: small deeds 3 / 4 / 5 / 6 / 7
+   by rank; large deeds 1 at Journeyman, 2 at Master, 3 at Grandmaster. League part: +2 small and +1
+   large per League rank, stubbed at 0 until League ranks exist (same as F-19's bank bonus).
+
+Answered 2026-10-02 (Chase), second round:
+6. **Cash out pays gold, seals, and the chance at an item** that a normal smith turn-in gives
+   (OSI's vanilla reward roll). **Banking is the better deal**: overseer reads this as banking paying the
+   deed's whole value as seals (points) at a better rate than the cash-out mix; set the rates so the
+   store's prices favor banking.
+7. **Turn-in works at normal smiths and at guildmasters.** Today only the Blacksmith Guildmaster takes
+   deeds; pinned's smith vendors have BOD handling replaced with no-ops
+   (`ClusterFSmithBODSystem.cs:34-41`). Overseer reads this as turn-in only: **issuing** deeds stays
+   with the guildmaster (the guild's rank caps live there). Same rule per craft as F-18 and F-20 bring
+   them in (tailors, carpenters, tinkers).
+8. **House add-ons join the store** as rewards to buy with banked points. Overseer default: craft-themed
+   add-ons per guild (forges and anvils for smiths, looms and spinning wheels for tailors, and so on),
+   plus every add-on OSI's own BOD reward tables give (list them from
+   `D:\UO\ServUO-pub57\Scripts\Services\BulkOrders\Rewards`); prices set so a dedicated crafter
+   reaches the first in days, not months.
+
+Open questions: none. The overseer defaults above (2x large bonus, rank caps, League stub, turn-in only
+at smiths, add-on list) stand unless Chase changes them when the prompt is written.
+Order: after F-17 (same gumps) and with or after F-18 (tailoring into the seal system).
+
+### F-26: Arms Lore matters more, trainable to 200 (added 2026-10-02)
+
+**Ours** (OSI's Arms Lore is a crafter's side skill; every new job here is a deviation, register it).
+
+What Chase wants (2026-10-02): make Arms Lore **matter more**, and let it **train to 200**.
+
+What it does today (pinned 7c9215d97, nothing of ours touches it; verified 2026-10-02):
+- Exceptional crafted weapons: damage increase 35 + Arms Lore / 20, capped 50
+  (`Items/Weapons/BaseWeapon.cs:700-711`).
+- Exceptional crafted armor (not shields): + Arms Lore / 20 random resist points per piece on top of
+  the usual 15, **uncapped** (`Items/Armor/BaseArmor.cs:595-631`; cc-P20 found it maxes all resists by
+  300).
+- Using it on a weapon or armor gives coarse condition, damage or armor rating, and poison; on a swamp
+  dragon, barding condition (`Skills/ArmsLore.cs`).
+- Disarm (80 Arms Lore and 80 Wrestling) is pre-AOS only and dead here (`Items/Weapons/Fists.cs:207`).
+- **It cannot gain past 100 by play**: every check is `CheckSkill(ArmsLore, 0, 100)`
+  (`BaseWeapon.cs:711`, `BaseArmor.cs:631`, `ArmsLore.cs:33, :89, :107`). This is the cc-P20 maxSkill
+  problem, and under F-12 the cap reaches 200, so it needs a gain path.
+
+What 200 means if nothing else changes: weapon damage increase 45 (cap 50 never reached), armor +10
+resist points per piece (no break at 200), inspect text no better than at about 30. So the cap alone
+buys a small crafting bump and nothing for anyone who does not craft.
+
+Suggested (overseer), each scaled so 100 is GM and 200 is the loop-5 ceiling:
+1. **Crafting, rescaled to 200**: weapon damage increase 35 + 15 x (Arms Lore / 200), so 42 at 100 and
+   50 at 200. Armor bonus kept at Arms Lore / 20 (5 at 100, 10 at 200) and **capped at 10 per piece**,
+   which closes the uncapped path for good.
+2. **Gear lasts longer (everyone)**: the wearer's or wielder's Arms Lore lowers durability loss, up to
+   25% less at 100 and 50% less at 200. Gives fighters a reason to train it.
+3. **Field maintenance (everyone)**: using Arms Lore on your own damaged weapon or armor restores some
+   durability without a forge, with a chance to lose 1 max durability that falls with skill (none at
+   200). Smith repair stays better.
+4. **Better smith repairs**: when a smith repairs, Arms Lore lowers the chance of losing max durability.
+5. **Inspect becomes a real read-out**: from 100, exact durability, damage range, speed, and the
+   item's level or loop requirement (F-12); from 150, a stat card for weapons and armor. This is the
+   gear-side twin of F-14's Appraisal, which handles creatures and general items. Arms Lore owns
+   weapons and armor.
+6. **Gain path to 200**: every use above gains up to 200, with difficulty from the item's tier
+   (material, exceptional, runic, level) so practice on better gear is what trains it past 100.
+
+Check first: where durability loss happens (`BaseWeapon` and `BaseArmor` hit handling), pinned's repair
+code (`Engines/Craft/Core/Repair.cs`), and F-14's Appraisal design so the two do not overlap.
+
+Answered 2026-10-02 (Chase):
+- **Approved: 1, 2, 3, 4 and 6.** 2 and 3 stay at the suggested numbers: every character has every
+  skill open, so it is worth training for anyone, and less wear simply means less upkeep for players
+  fixing their own gear.
+- **Dropped: 5** (inspect read-out). Hover properties already show it, so it adds nothing.
+- Chase asked what else the active use could do instead. Overseer options, offered 2026-10-02:
+  a. **Expose weakness** (active, combat): use Arms Lore on a creature or player to read its armor and
+     mark its weakest resist for a short time; you and your party deal a little more damage of that
+     type. Skill sets the bonus and duration; a cooldown stops it being spammed.
+  b. **Gear attunement** (passive, ties to F-12): gear above a character's current level is unusable
+     after a reset; Arms Lore lets them use gear up to a few levels above it (for example +5 at 100,
+     +10 at 200), softening each re-climb without removing it.
+  c. **Salvage expertise**: more ingots or leather back when salvaging weapons and armor, always
+     clamped below what the item cost (the D42 lesson).
+  d. **Better sale prices** for weapons and armor sold to NPC vendors.
+  Overseer leans a and b.
+
+Answered 2026-10-02 (Chase):
+- **a. Expose weakness: yes, and it scales with Anatomy and Appraisal (F-14) as well as Arms Lore.**
+  Overseer default: Arms Lore finds the weak resist, Anatomy sets the damage bonus, Appraisal sets the
+  duration; all three at 200 is the full effect. Shared with the party.
+- **b. Gear attunement: yes** ("I like that a lot"). +5 levels at 100, +10 at 200, as suggested.
+- **c and d: no.**
+- **Self Repair is now F-27**: field maintenance (3) makes it far less needed, so it becomes an
+  extremely rare property.
+
+Open questions: none. Order: b needs F-12's levels; a needs F-14's Appraisal; 1 to 4 and 6 can go
+first.
+
+### F-27: Self Repair becomes an extremely rare property (added 2026-10-02)
+
+**Ours** (OSI rolls it often; register the deviation).
+
+What Chase wants (2026-10-02): "Self repair" should be an **extremely rare** magic property on weapons
+and armor. Follows F-26, which gives every player field maintenance through Arms Lore.
+
+Found 2026-10-02 (pinned 7c9215d97):
+- How it works: each time the item would lose durability, Self Repair N gives an N in 10 chance to
+  gain 2 instead (`Items/Armor/BaseArmor.cs:763-766`, `Items/Weapons/BaseWeapon.cs:2088-2091`). At 5
+  that is half of all wear undone, so the item barely wears.
+- **It is common today.** Random magic armor draws each property from 20 (`BaseRunicTool.cs:705`,
+  `baseCount = isShield ? 7 : 20` at `:635`), so a five-property piece has about a 1 in 4 chance of it;
+  **shields** draw from 7, so far more often; **hats** also roll it (`:896`). This path feeds monster
+  loot (`Misc/LootPack.cs:722-730`), runic crafting, ML quest reward bags and Khaldun puzzle chests.
+- **Weapons never roll it at random**; it appears only on named artifacts (Treasures of Tokuno,
+  minor artifacts such as Bonesmasher and Windsong).
+- Named artifacts and sets carry fixed values (Aegis 5, Tunic of Fire 5, Valor Gauntlets 5, Daemon
+  Bone armor 1, and others).
+
+Suggested (overseer):
+- **Remove Self Repair from the ordinary random property table** for armor, shields and hats.
+- **Add a separate, tiny roll** for magic weapons and armor from high-end sources only (bosses,
+  champions, paragons, the dungeon mini champ): about 1 in 500 items, intensity 1 or 2 almost always,
+  3 to 5 vanishingly rare. Weapons join it, so both kinds can have it.
+- **Runic crafting cannot produce it.**
+- **Named artifacts keep their fixed values** (ported items stay faithful).
+
+Open questions (for Chase): the 1 in 500 figure; whether artifacts keep theirs.
 
 ## Batched
 

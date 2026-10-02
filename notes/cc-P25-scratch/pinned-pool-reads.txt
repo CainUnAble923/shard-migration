@@ -1,0 +1,170 @@
+./Server/Mobiles/Mobile.cs:1840:                Delta(MobileDelta.Stat | MobileDelta.Hits);
+./Server/Mobiles/Mobile.cs:1898:                Delta(MobileDelta.Stat | MobileDelta.Stam);
+./Server/Mobiles/Mobile.cs:1956:                Delta(MobileDelta.Stat | MobileDelta.Mana);
+./Server/Mobiles/Mobile.cs:2041:                Delta(MobileDelta.Hits);
+./Server/Mobiles/Mobile.cs:2083:                Delta(MobileDelta.Stam);
+./Server/Mobiles/Mobile.cs:2138:                Delta(MobileDelta.Mana);
+./Server/Mobiles/Mobile.cs:2657:                sendHits = (attrs & MobileDelta.Hits) != 0;
+./Server/Mobiles/Mobile.cs:2658:                sendStam = (attrs & MobileDelta.Stam) != 0;
+./Server/Mobiles/Mobile.cs:2659:                sendMana = (attrs & MobileDelta.Mana) != 0;
+./Server/Mobiles/Mobile.cs:7824:        Delta(MobileDelta.Stat | MobileDelta.Hits | MobileDelta.Stam | MobileDelta.Mana);
+./Server/Mobiles/Mobile.cs:8409:            delta |= MobileDelta.Hits;
+./Server/Mobiles/Mobile.cs:8414:            delta |= MobileDelta.Stam;
+./Server/Mobiles/Mobile.cs:8419:            delta |= MobileDelta.Mana;
+./Server/Mobiles/Mobile.cs:8903:                m_Owner.Mana++;
+./Server/Mobiles/Mobile.cs:8920:                m_Owner.Hits++;
+./Server/Mobiles/Mobile.cs:8937:                m_Owner.Stam++;
+./Server/Network/Packets/OutgoingMobilePackets.cs:220:        writer.WriteAttribute(m.HitsMax, m.Hits, normalize);
+./Server/Network/Packets/OutgoingMobilePackets.cs:245:        writer.WriteAttribute(m.ManaMax, m.Mana, normalize);
+./Server/Network/Packets/OutgoingMobilePackets.cs:270:        writer.WriteAttribute(m.StamMax, m.Stam, normalize);
+./Server/Network/Packets/OutgoingMobilePackets.cs:296:        writer.WriteAttribute(m.HitsMax, m.Hits, normalize);
+./Server/Network/Packets/OutgoingMobilePackets.cs:297:        writer.WriteAttribute(m.ManaMax, m.Mana, normalize);
+./Server/Network/Packets/OutgoingMobilePackets.cs:298:        writer.WriteAttribute(m.StamMax, m.Stam, normalize);
+./Server/Network/Packets/OutgoingMobilePackets.cs:511:        writer.WriteAttribute(beheld.HitsMax, beheld.Hits, version == 0, true);
+./Server/Network/Packets/OutgoingMobilePackets.cs:527:        writer.Write((short)beheld.Stam);
+./Server/Network/Packets/OutgoingMobilePackets.cs:529:        writer.Write((short)beheld.Mana);
+./UOContent/Engines/ConPVP/Games/KingOfTheHill.cs:93:            if (m.AccessLevel == AccessLevel.Player && m.Stam >= m.StamMax)
+./UOContent/Engines/Craft/Core/CraftItem.cs:287:            if (Hits > 0 && from.Hits < Hits)
+./UOContent/Engines/Craft/Core/CraftItem.cs:293:            if (Mana > 0 && from.Mana < Mana)
+./UOContent/Engines/Craft/Core/CraftItem.cs:299:            if (Stam > 0 && from.Stam < Stam)
+./UOContent/Engines/Craft/Core/Repair.cs:171:                    var damage = g.HitsMax - g.Hits;
+./UOContent/Engines/Factions/Items/Power Faction Items/StormsEye.cs:103:            var damage = mob.Hits * 6 / 10;
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:117:        public bool IsDamaged => m_Guard.Hits < m_Guard.HitsMax;
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:595:                        m_Guard.HitsMax - m_Guard.Hits > Utility.Random(250))
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:607:                else if (IsDamaged && m_Guard.HitsMax - m_Guard.Hits > Utility.Random(200))
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:609:                    if (IsAllowed(GuardAI.Magic) && m_Guard.Hits * 100 / Math.Max(m_Guard.HitsMax, 1) < 10 &&
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:611:                        m_Guard.Mana >= 11)
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:620:                        if (m_Guard.Mana >= 11 && m_Guard.Hits + 30 < m_Guard.HitsMax)
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:624:                        else if (m_Guard.Hits + 10 < m_Guard.HitsMax &&
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:625:                                 (m_Guard.Mana < 11 || m_Guard.NextCombatTime - Core.TickCount > 2000))
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:638:                    if (!dispelTarget.Paralyzed && m_Guard.Mana > ManaReserve + 20 && Utility.Random(100) < 40)
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:669:                            if (m_Guard.Mana >= ManaReserve + m_Combo.Mana)
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:677:                                if (m_Guard.Mana >= ManaReserve + 40)
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:683:                        else if (m_Guard.Mana >= ManaReserve + 40)
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:689:                    if (spell == null && Utility.Random(100) < 2 && m_Guard.Mana >= ManaReserve + 10)
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:737:                    if (spell == null && Utility.Random(100) < 2 && m_Guard.Mana >= ManaReserve + 10 &&
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:779:                if (spell != null && m_Guard.HitsMax - m_Guard.Hits + 10 > Utility.Random(100))
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:801:                        else if (m_Guard.Hits + 30 > m_Guard.HitsMax && m_Guard.Hits + 10 < m_Guard.HitsMax)
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:807:                else if (spell == null && m_Guard.Stam < m_Guard.StamMax / 3 && IsAllowed(GuardAI.Melee))
+./UOContent/Engines/Pathing/PathCacheCommands.cs:62:        from.SendMessage($"  builds={stats.BuildsTotal} hits={stats.Hits}");
+./UOContent/Engines/Plants/PlantItem.cs:95:            var ratio = PlantSystem != null ? (double)PlantSystem.Hits / PlantSystem.MaxHits : 1.0;
+./UOContent/Engines/Spawners/SpawnPropsGump.cs:34:        nameof(BaseCreature.Hits),
+./UOContent/Engines/Virtues/Honor.cs:134:        if (target.Hits < target.HitsMax)
+./UOContent/Engines/Virtues/Sacrifice.cs:108:        else if (targ.Hits * 100 / Math.Max(targ.HitsMax, 1) < 90)
+./UOContent/Gumps/ResurrectGump.cs:231:                _                    => from.Hits
+./UOContent/Items/Food/Food.cs:94:        if (from.Stam < from.StamMax)
+./UOContent/Items/Skill Items/Magical/Potions/Heal Potions/BaseHealPotion.cs:32:        if (from.Hits >= from.HitsMax)
+./UOContent/Items/Skill Items/Magical/Potions/Refresh Potions/BaseRefreshPotion.cs:21:        if (from.Stam >= from.StamMax)
+./UOContent/Items/Skill Items/Misc/Bandage.cs:366:            if (Patient.Hits == Patient.HitsMax)
+./UOContent/Items/Skill Items/Misc/Bandage.cs:466:        else if (!patient.Poisoned && patient.Hits == patient.HitsMax && !BleedAttack.IsBleeding(patient) &&
+./UOContent/Items/Skill Items/Ninjitsu/EggBomb.cs:37:        else if (from.Mana < 10)
+./UOContent/Items/Skill Items/Ninjitsu/SmokeBomb.cs:31:        else if (from.Mana < 10)
+./UOContent/Items/Weapons/Abilities/ConcussionBlow.cs:49:                var hitsPercent = defender.Hits / (double)defender.HitsMax * 100.0;
+./UOContent/Items/Weapons/Abilities/ConcussionBlow.cs:55:                    manaPercent = defender.Mana / (double)defender.ManaMax * 100.0;
+./UOContent/Items/Weapons/Abilities/ForceOfNature.cs:71:        t.Hits++;
+./UOContent/Items/Weapons/Abilities/ForceOfNature.cs:74:        if (t.Hits % 12 == 0)
+./UOContent/Items/Weapons/Abilities/WeaponAbility.cs:307:        if (from.Mana < mana)
+./UOContent/Items/Weapons/BaseWeapon.cs:1428:                var stamTicks = m.Stam / 30;
+./UOContent/Items/Weapons/BaseWeapon.cs:1442:                ticks = Math.Floor(80000.0 / ((m.Stam + 100) * speed) - 2);
+./UOContent/Items/Weapons/BaseWeapon.cs:1455:            var v = (m.Stam + 100) * (int)speed;
+./UOContent/Items/Weapons/BaseWeapon.cs:1490:            var v = (m.Stam + 100) * (int)speed;
+./UOContent/Items/Weapons/BaseWeapon.cs:3792:        if (GetSaveFlag(flags, OldSaveFlag.Hits))
+./UOContent/Items/Weapons/Fists.cs:77:                if (attacker.Stam < 15)
+./UOContent/Items/Weapons/Fists.cs:123:            if (attacker.Stam < 15)
+./UOContent/Misc/AOS.cs:192:            if (keepAlive && totalDamage > m.Hits)
+./UOContent/Misc/AOS.cs:194:                totalDamage = m.Hits;
+./UOContent/Misc/AOS.cs:1518:                        MobileDelta.Stat | MobileDelta.WeaponDamage | MobileDelta.Hits | MobileDelta.Stam |
+./UOContent/Misc/AOS.cs:1519:                        MobileDelta.Mana
+./UOContent/Misc/Poison.cs:120:                damage = 1 + (int)(_mobile.Hits * _poison._scalar);
+./UOContent/Misc/RegenRates.cs:95:            CheckBonusSkill(from, from.Stam, from.StamMax, SkillName.Focus);
+./UOContent/Misc/RegenRates.cs:140:                CheckBonusSkill(from, from.Mana, from.ManaMax, SkillName.Meditation);
+./UOContent/Misc/RegenRates.cs:152:                CheckBonusSkill(from, from.Mana, from.ManaMax, SkillName.Focus);
+./UOContent/Misc/StaminaSystem.cs:287:            DFAlgorithm.Standard  => damage * (100.0 / m.Hits) * ((double)m.Stam / 100) - 5.0,
+./UOContent/Misc/StaminaSystem.cs:288:            DFAlgorithm.PainSpike => damage * (100.0 / m.Hits + (50.0 + m.Stam) / 100 - 1.0) - 5.0,
+./UOContent/Misc/StaminaSystem.cs:329:        if (CannotWalkWhenFatigued && from.Stam <= 0)
+./UOContent/Misc/StaminaSystem.cs:342:            if (from.Stam <= 0)
+./UOContent/Misc/StaminaSystem.cs:356:        if (AdditionalLossWhenBelow > 0 && from.Stam / Math.Max(from.StamMax, 1.0) < AdditionalLossWhenBelow)
+./UOContent/Misc/StaminaSystem.cs:358:            --from.Stam;
+./UOContent/Misc/StaminaSystem.cs:361:        if (CannotRunWhenFatigued && from.Stam <= 0)
+./UOContent/Misc/StaminaSystem.cs:383:                --pm.Stam;
+./UOContent/Mobiles/Abilities/DrainLifeAttack.cs:35:        base.CanEffectTarget(trigger, source, defender) && defender.Mana > 14;
+./UOContent/Mobiles/Abilities/Fire Breath/FireBreath.cs:209:        var damage = (int)(source.Hits * BreathDamageScalar);
+./UOContent/Mobiles/Abilities/MagicalBarrier.cs:22:    private static bool CanUseField(BaseCreature source) => source.Hits >= source.HitsMax * 9 / 10;
+./UOContent/Mobiles/AI/BaseAI/AIMovement.cs:27:        var statMin = Core.HS ? bc.Stam : bc.Hits;
+./UOContent/Mobiles/AI/BaseAI/AIMovement.cs:78:            else if (Mobile.Hits < Mobile.HitsMax * 0.3)
+./UOContent/Mobiles/AI/BaseAI/BaseAI.cs:623:        var hitPercent = (double)Mobile.Hits / Mobile.HitsMax;
+./UOContent/Mobiles/AI/HealerAI.cs:165:    private static bool NeedGHeal(Mobile m) => m.Hits < m.HitsMax - 40;
+./UOContent/Mobiles/AI/HealerAI.cs:167:    private static bool NeedLHeal(Mobile m) => m.Hits < m.HitsMax - 10;
+./UOContent/Mobiles/AI/MageAI.cs:94:        else if (SmartAI && Mobile.Mana < Mobile.ManaMax && !Mobile.Meditating)
+./UOContent/Mobiles/AI/MageAI.cs:140:        else if (Utility.Random(0, 4 + (Mobile.Hits == 0 ? Mobile.HitsMax : Mobile.HitsMax / Mobile.Hits)) < 3)
+./UOContent/Mobiles/AI/MageAI.cs:147:        if (Mobile.Hits < Mobile.HitsMax - 50)
+./UOContent/Mobiles/AI/MageAI.cs:158:        else if (Mobile.Hits < Mobile.HitsMax - 10)
+./UOContent/Mobiles/AI/MageAI.cs:389:                if (psDamage > c.Hits)
+./UOContent/Mobiles/AI/MageAI.cs:490:                            if (Mobile.Mana is > 15 and < 40)
+./UOContent/Mobiles/AI/MageAI.cs:503:                            else if (Mobile.Mana > 60)
+./UOContent/Mobiles/AI/MeleeAI.cs:144:        if (Mobile.Hits > Mobile.HitsMax * FleeHealthThreshold)
+./UOContent/Mobiles/AI/ThiefAI.cs:93:        if (Mobile.Hits < Mobile.HitsMax * 20 / 100 && Mobile.CanFlee)
+./UOContent/Mobiles/AI/ThiefAI.cs:95:            var fleeChance = 10 + Math.Max(0, combatant.Hits - Mobile.Hits);
+./UOContent/Mobiles/AI/ThiefAI.cs:146:        if (Mobile.Hits > Mobile.HitsMax / 2)
+./UOContent/Mobiles/Animals/Mounts/Kirin.cs:80:            if (Rider.Hits - damage < 30 && Rider.Map == attacker.Map && Rider.InRange(attacker, 18))
+./UOContent/Mobiles/Animals/Mounts/Unicorn.cs:78:            if (Rider.Poisoned && Rider.Hits - damage < 40)
+./UOContent/Mobiles/BaseCreature.cs:2421:                FightMode.Weakest   => -m.Hits,                        // returns weakest mobile
+./UOContent/Mobiles/BaseCreature.cs:3617:                    owner.Hits < HealOwnerTrigger * owner.HitsMax)
+./UOContent/Mobiles/BaseCreature.cs:5418:                !onSelf && HealOwnerFully && patient.Hits >= HealOwnerTrigger * patient.HitsMax &&
+./UOContent/Mobiles/BaseCreature.cs:5419:                patient.Hits < patient.HitsMax)
+./UOContent/Mobiles/Familiars/DarkWolf.cs:59:            ++caster.Stam;
+./UOContent/Mobiles/Healers/BaseHealer.cs:144:            else if (HealsYoungPlayers && m.Hits < m.HitsMax && m is PlayerMobile mobile && mobile.Young)
+./UOContent/Mobiles/Monsters/LBR/Meers/MeerCaptain.cs:123:                    if (m is not MeerWarrior || !IsFriend(m) || !CanBeBeneficial(m) || m.Hits >= m.HitsMax || m.Poisoned ||
+./UOContent/Mobiles/Monsters/LBR/Meers/MeerEternal.cs:110:                var damage = (int)(m.Hits * scalar) + Utility.RandomMinMax(-5, 5);
+./UOContent/Mobiles/Monsters/Misc/Melee/Golem.cs:153:                    if (master.Mana >= amount)
+./UOContent/Mobiles/Monsters/Misc/Melee/Golem.cs:159:                        amount -= master.Mana;
+./UOContent/Mobiles/Monsters/ML/Special/Meraktus.cs:241:            var damage = Math.Clamp((int)(m.Hits * 0.6), 10, 75);
+./UOContent/Mobiles/Monsters/Plant/Melee/BogThing.cs:98:                Hits += bogling.Hits / 2;
+./UOContent/Mobiles/Special/Paragon.cs:240:                m_Owner.Stam++;
+./UOContent/Mobiles/Special/Paragon.cs:242:                Delay = Interval = m_Owner.Stam < m_Owner.StamMax * .75 ? FastRegenRate : CPUSaverRate;
+./UOContent/Mobiles/Special/Rikktor.cs:122:            var damage = Math.Clamp((int)(m.Hits * 0.6), 10, 75);
+./UOContent/Network/MapUO.cs:91:                    writer.Write((byte)(m.Hits * 100 / Math.Max(m.HitsMax, 1)));
+./UOContent/Skills/Anatomy.cs:63:                    var stm = targ.Stam * 100 / Math.Max(targ.StamMax, 1) +
+./UOContent/Skills/AnimalLore.cs:119:            builder.AddHtml(280, 168, 75, 18, FormatAttributes(c.Hits, c.HitsMax));
+./UOContent/Skills/AnimalLore.cs:122:            builder.AddHtml(280, 186, 75, 18, FormatAttributes(c.Stam, c.StamMax));
+./UOContent/Skills/AnimalLore.cs:125:            builder.AddHtml(280, 204, 75, 18, FormatAttributes(c.Mana, c.ManaMax));
+./UOContent/Skills/AnimalTaming.cs:45:            bc.Owners.Count <= 0 && bc.SubdueBeforeTame && bc.Hits > bc.HitsMax / 10;
+./UOContent/Skills/EvalInt.cs:58:                    var mana = targ.Mana * 100 / Math.Max(targ.ManaMax, 1) +
+./UOContent/Skills/Meditation.cs:32:            if (!Core.AOS && m.Hits < m.HitsMax / 10) // Less than 10% health
+./UOContent/Skills/Meditation.cs:39:            if (m.Mana >= m.ManaMax)
+./UOContent/Skills/Meditation.cs:76:            var chance = (50.0 + (skillVal - (m.ManaMax - m.Mana)) * 2) / 100;
+./UOContent/Skills/SpiritSpeak.cs:153:                if (Caster.Mana < mana)
+./UOContent/Spells/Base/SpecialMove.cs:103:            if (from.Mana < mana)
+./UOContent/Spells/Base/Spell.cs:522:                if (Caster.Mana >= requiredMana)
+./UOContent/Spells/Base/Spell.cs:754:            else if (Caster.Mana < mana)
+./UOContent/Spells/Bushido/SamuraiSpell.cs:53:            if (Caster.Mana < mana)
+./UOContent/Spells/Bushido/SamuraiSpell.cs:74:            if (Caster.Mana < mana)
+./UOContent/Spells/Chivalry/CloseWounds.cs:48:            else if (m.Hits >= m.HitsMax)
+./UOContent/Spells/Chivalry/CloseWounds.cs:67:                if (m.Hits + toHeal > m.HitsMax)
+./UOContent/Spells/Chivalry/CloseWounds.cs:69:                    toHeal = m.HitsMax - m.Hits;
+./UOContent/Spells/Chivalry/NobleSacrifice.cs:100:                        if (m.Hits < m.HitsMax)
+./UOContent/Spells/Chivalry/PaladinSpell.cs:41:            if (Caster.Mana < mana)
+./UOContent/Spells/Chivalry/PaladinSpell.cs:69:            if (Caster.Mana < mana)
+./UOContent/Spells/Eighth/Earthquake.cs:58:                        damage = m.Hits / 2;
+./UOContent/Spells/Eighth/Earthquake.cs:69:                        damage = m.Hits * 6 / 10;
+./UOContent/Spells/Fourth/ManaDrain.cs:41:                    var toDrain = Math.Clamp(40 + (int)(GetDamageSkill(Caster) - GetResistSkill(m)), 0, m.Mana);
+./UOContent/Spells/Fourth/ManaDrain.cs:65:                    else if (m.Mana > 0)
+./UOContent/Spells/Mysticism/MysticSpell.cs:67:        if (Caster.Mana < mana)
+./UOContent/Spells/Necromancy/AnimateDeadSpell.cs:289:        if (mob.Hits > 0)
+./UOContent/Spells/Necromancy/AnimateDeadSpell.cs:291:            --mob.Hits;
+./UOContent/Spells/Necromancy/LichForm.cs:42:        --m.Hits;
+./UOContent/Spells/Necromancy/Strangle.cs:188:            damage *= 3 - (double)_target.Stam / _target.StamMax * 2;
+./UOContent/Spells/Necromancy/WraithForm.cs:38:        var manaLeech = Math.Min(defender.Mana, AOS.Scale(damageGiven, wraithLeech));
+./UOContent/Spells/Ninjitsu/AnimalForm.cs:133:            if (mana > Caster.Mana)
+./UOContent/Spells/Ninjitsu/AnimalForm.cs:453:            if (mana > _caster.Mana)
+./UOContent/Spells/Ninjitsu/AnimalForm.cs:535:            if (_mobile.Hits < _mobile.HitsMax)
+./UOContent/Spells/Ninjitsu/NinjaSpell.cs:52:        if (Caster.Mana < mana)
+./UOContent/Spells/Ninjitsu/NinjaSpell.cs:73:        if (Caster.Mana < mana)
+./UOContent/Spells/Seventh/ManaVampire.cs:54:                    toDrain = m.Mana;
+./UOContent/Spells/Seventh/ManaVampire.cs:58:                toDrain = Math.Min(m.Mana, toDrain);
+./UOContent/Spells/Spellweaving/ArcanistSpell.cs:68:            if (caster.Mana < mana)
+./UOContent/Spells/Spellweaving/GiftOfRenewal.cs:134:                if (_mobile.Hits >= _mobile.HitsMax)
+./UOContent/Spells/Spellweaving/WordOfDeath.cs:50:                if (!m.Player && m.Hits / (double)m.HitsMax < percentage)
+./UOContent.Tests/Tests/Engines/Pathing/StepCacheLifecycleTests.cs:24:        Assert.Equal(0L, stats.Hits);
+./UOContent.Tests/Tests/Engines/Pathing/StepCacheLifecycleTests.cs:60:        Assert.Equal(1L, stats2.Hits);
+./UOContent.Tests/Tests/Engines/Pathing/StepCacheLifecycleTests.cs:110:        Assert.Equal(2L, stats.MissesNotBuilt + stats.MissesDirtyRebuild + stats.Hits);

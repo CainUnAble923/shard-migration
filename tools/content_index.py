@@ -39,12 +39,14 @@ Usage:
   python tools/content_index.py reach [--ours PATH] [--sources] [--twins] [--json OUT]
       # D33: what, other than itself, puts each of our types in the world. --sources adds what does it
       # in ServUO, ranked by files it would reach; --twins sweeps for pinned types under another name.
+      # Reads pinned with our patches applied, as docker/uo/apply-patches.sh applies them (cc-P27), so an
+      # export for --ours must carry that script: `git archive HEAD server docker/uo/apply-patches.sh`.
   python -m unittest tools/test_content_index.py
 
 Regression checks live in test_content_index.py. The one S9 set: legacy step 1 returns
 3,134 of 6,144 against the S9-era tree.
 """
-import argparse, json, os, re, sys
+import argparse, json, os, re, shutil, subprocess, sys, tempfile
 from collections import defaultdict
 
 SERVUO = r'D:\UO\ServUO-pub57'
@@ -445,11 +447,13 @@ class Index:
 #   string  "X" in code, or ".X" at the end of one      FindTypeByName, TypeAlias
 #   spawn   an entry name in Distribution/Data/Spawns   BaseSpawner resolves it case-insensitively
 #   data    a word in any other Data file                MLQuests.cfg, Decoration, containers ...
-# Roots, reached by definition: pinned code (for names pinned does not declare itself), our patches,
-# the spawn and data files, and any of our types with a static Configure or Initialize (invoked by
-# name for every type, pinned Server/Main.cs:441,448) or in one of the five replacement files.
+# Roots, reached by definition: pinned code with server/patches applied as the build applies them (cc-P27; for
+# names pinned does not declare itself), the spawn and data files, and any of our types with a static Configure
+# or Initialize (invoked by name for every type, pinned Server/Main.cs:441,448) or in one of the five replacement files.
 # A reached type also reaches its own base classes in our tree, whose code it runs.
 PINNED_DATA = r'D:\UO\ModernUO-pinned\Distribution\Data'
+# The build's own list of what it does to pinned, relative to the shard repo root (cc-P27).
+APPLY_PATCHES = os.path.join('docker', 'uo', 'apply-patches.sh')
 SERVUO_SPAWN_DIRS = ('Spawns', 'RevampedSpawns')
 # `typeof` sites that read a type rather than create one, read at a use 2026-09-29 (FindItemByType on its
 # name alone): imbuing
@@ -507,7 +511,13 @@ def ref_kind(code, s, e):
     if re.search(r'\bnew\s*$', before):
         return ('other', 'array') if re.match(r'\s*\[', after) else ('new', None)
     if re.search(r'\btypeof\s*\(\s*$', before):
-        return 'typeof', typeof_site(code, s)
+        site = typeof_site(code, s)
+        if site == 'AddCraft' and not first_typeof_in_call(code, s):
+            # AddCraft(typeof(Product), group, name, min, max, typeof(FirstResource), ...): only the first typeof is
+            # what the entry makes. Every later one is a resource it consumes, a read like AddRes
+            # (craft-registrations 4.1.1, cc-P27). Before, ServUO's tinkering read as a source of CrystalShards.
+            return 'check', 'AddCraft'
+        return 'typeof', site
     if re.search(r'\b(?:class|struct|record|interface)\s+\w+(?:\s*<[^>{;]*>)?\s*:[^{;}()]*$', before):
         return 'inherit', None
     if re.search(r'\b(?:is|as)\s*(?:not\s*)?$', before) or (re.search(r'\(\s*$', before) and re.match(r'\s*\)\s*[\w(]', after)):
@@ -521,9 +531,8 @@ def ref_kind(code, s, e):
     return 'other', None
 
 
-def typeof_site(code, s):
-    """For a typeof: the identifier that owns the nearest unclosed ( or { before it (`AddCraft`,
-    `GenericBuyInfo`, a field name for an array initializer)."""
+def enclosing_open(code, s):
+    """Index of the nearest unclosed ( { or [ before the typeof whose type name starts at s, or None."""
     depth, i = 0, code.rfind('(', 0, s)  # typeof's own paren
     i -= 1
     while i >= 0 and s - i < 4000:
@@ -532,8 +541,7 @@ def typeof_site(code, s):
             depth += 1
         elif c in '({[':
             if depth == 0:
-                m = re.search(r'([A-Za-z_]\w*)\s*(?:\[\s*\])?\s*(?:=\s*(?:new\s*[\w.]*\s*\[\s*\]\s*)?)?$', code[max(0, i - 120):i])
-                return m.group(1) if m else c
+                return i
             depth -= 1
         elif c == ';' and depth == 0:
             return None
@@ -541,12 +549,122 @@ def typeof_site(code, s):
     return None
 
 
+def typeof_site(code, s):
+    """For a typeof: the identifier that owns the nearest unclosed ( or { before it (`AddCraft`,
+    `GenericBuyInfo`, a field name for an array initializer)."""
+    i = enclosing_open(code, s)
+    if i is None:
+        return None
+    m = re.search(r'([A-Za-z_]\w*)\s*(?:\[\s*\])?\s*(?:=\s*(?:new\s*[\w.]*\s*\[\s*\]\s*)?)?$', code[max(0, i - 120):i])
+    return m.group(1) if m else code[i]
+
+
+def first_typeof_in_call(code, s):
+    """Whether the typeof at s is the first typeof among its call's own arguments (none earlier at depth 0)."""
+    i = enclosing_open(code, s)
+    own = code.rfind('typeof', 0, s)
+    depth = 0
+    for m in re.finditer(r'[(){}\[\]]|\btypeof\b', code[i + 1:own]):
+        t = m.group()
+        if t in '({[':
+            depth += 1
+        elif t in ')}]':
+            depth -= 1
+        elif depth == 0:
+            return False
+    return True
+
+
+def apply_steps(script_text):
+    """apply-patches.sh's steps on pinned, in its order: ('patch', name) for `apply_patch "$PATCHES/name"`, and
+    ('replace', 'PATCHES' or 'CUSTOMIZATIONS', name, dest) for `replace_file "$ROOT/name" "dest"`. Its additive copies
+    are not steps on pinned: those files are ours, read as ours."""
+    text = re.sub(r'\\\n\s*', ' ', script_text.replace('\r\n', '\n'))
+    steps = []
+    for line in text.split('\n'):
+        if line.lstrip().startswith('#'):
+            continue
+        m = re.match(r'\s*apply_patch\s+"\$PATCHES/([^"]+)"', line)
+        if m:
+            steps.append(('patch', m.group(1)))
+            continue
+        m = re.match(r'\s*replace_file\s+"\$(PATCHES|CUSTOMIZATIONS)/([^"]+)"\s+"([^"]+)"', line)
+        if m:
+            steps.append(('replace',) + m.groups())
+    return steps
+
+
+def pinned_as_built(pinned, patches, script):
+    """Every pinned file apply-patches.sh changes from server/patches, changed the way it changes it: a scratch copy,
+    the server/patches replacements copied over and the .patch files applied, in its order, with its own flags (GNU
+    patch, -p1, --fuzz=0). Replacements from server/customizations are left to the ours side (see below). Returns
+    ({normcase pinned path: patched copy}, scratch dir). A patch that does not apply stops the tool, as it stops the
+    build. The export must hold docker/uo/apply-patches.sh beside server/ (`git archive HEAD server
+    docker/uo/apply-patches.sh`): without it the tool cannot know what the build applies, and says so."""
+    if not os.path.isfile(script):
+        raise SystemExit(f'reach: {script} not found. It lists what the build applies to pinned; export it with '
+                         f'the tree (git archive HEAD server {APPLY_PATCHES.replace(os.sep, "/")}).')
+    tool = shutil.which('patch')
+    if not tool:
+        raise SystemExit('reach: GNU patch is not on PATH (Git for Windows ships it in usr/bin).')
+    repo = os.path.dirname(os.path.normpath(pinned))
+    scratch = tempfile.mkdtemp(prefix='content_index_pinned_')
+    staged = {}
+
+    def stage(rel):
+        if rel not in staged:
+            src = os.path.join(repo, rel)
+            if not os.path.isfile(src):
+                shutil.rmtree(scratch, ignore_errors=True)
+                raise SystemExit(f'reach: {rel} is not in pinned; apply-patches.sh would fail here too')
+            dst = os.path.join(scratch, rel)
+            os.makedirs(os.path.dirname(dst), exist_ok=True)
+            # LF, as the build's Linux checkout has it.
+            with open(src, encoding='utf-8', errors='ignore', newline='') as a, open(dst, 'w', encoding='utf-8', newline='\n') as b:
+                b.write(a.read().replace('\r\n', '\n'))
+            staged[rel] = dst
+        return staged[rel]
+
+    with open(script, encoding='utf-8', errors='ignore') as fh:
+        steps = apply_steps(fh.read())
+    for step in steps:
+        if step[0] == 'replace':
+            _, root, name, dest = step
+            if root == 'CUSTOMIZATIONS':
+                # Ours (CraftItem, HammerOfHephaestus ...): read as ours, a root through REPLACEMENTS or as a shadow
+                # of pinned's name. Copied over pinned here, its extra types (ReinforcedHammerOfHephaestus) would read
+                # as pinned's and drop out of our content. The stock file it replaces stays read, as before cc-P27.
+                continue
+            shutil.copyfile(os.path.join(patches, name), stage(dest))
+            continue
+        with open(os.path.join(patches, step[1]), encoding='utf-8', errors='ignore', newline='') as fh:
+            diff = fh.read().replace('\r\n', '\n')
+        for m in re.finditer(r'^\+\+\+ (?:"b/([^"]+)"|b/(\S+))', diff, re.M):
+            stage(m.group(1) or m.group(2))
+        run = subprocess.run([tool, '-p1', '--forward', '--ignore-whitespace', '--fuzz=0', '--batch', '-d', scratch],
+                             input=diff.encode('utf-8'), capture_output=True)
+        if run.returncode:
+            shutil.rmtree(scratch, ignore_errors=True)
+            raise SystemExit(f'reach: {step[1]} does not apply to pinned:\n{run.stdout.decode(errors="ignore")}')
+    return {os.path.normcase(os.path.normpath(os.path.join(repo, rel))): p for rel, p in staged.items()}, scratch
+
+
 class Reach:
     """Every reference to one of our types, and the closure from the roots."""
 
-    def __init__(self, ours=C, patches=None, pinned=M, data=PINNED_DATA):
+    def __init__(self, ours=C, patches=None, pinned=M, data=PINNED_DATA, script=None):
         self.ours_root = ours
         patches = patches or os.path.join(os.path.dirname(os.path.normpath(ours)), 'patches')
+        script = script or os.path.join(os.path.dirname(os.path.dirname(os.path.normpath(ours))), APPLY_PATCHES)
+        # Pinned as the build compiles it (cc-P27): every file server/patches touches is read from a scratch copy
+        # with apply-patches.sh's own steps applied, so an uncomment patch's context lines are code.
+        built, scratch = pinned_as_built(pinned, patches, script)
+        try:
+            self._index(ours, pinned, data, built)
+        finally:
+            shutil.rmtree(scratch, ignore_errors=True)
+
+    def _index(self, ours, pinned, data, built):
         self.types = {}          # name -> {file, line, kind, base, abstract, nested}
         self.dupes = defaultdict(list)
         self.refs = []           # (target, kind, site, context, file, line)
@@ -558,7 +676,7 @@ class Reach:
                 ours_files[rel] = fh.read()
         self.parents = {}
         for p in walk(pinned):
-            with open(p, encoding='utf-8', errors='ignore') as fh:
+            with open(built.get(os.path.normcase(os.path.normpath(p)), p), encoding='utf-8', errors='ignore') as fh:
                 code, _ = blank(fh.read())
             for x in type_spans(code):
                 self.pinned_names.add(x['name'])
@@ -610,22 +728,15 @@ class Reach:
                 for s, v in strings:
                     if m.start() < s < code.find(')', m.end()) + 1 and owner:
                         self.alias[v.split('.')[-1].lower()] = owner
-        # References from our tree, then patches, then pinned.
+        # References from our tree, then pinned with server/patches applied. Before cc-P27 a patch's
+        # added lines were read as a root of their own and pinned was read unpatched, so the lines an uncomment patch
+        # makes live (context lines, the comment markers being all that changes) still read as a comment (cc-P7 2.7).
         for rel, (code, strings, ts) in spans.items():
             self.scan(code, strings, ts, rel, lambda pos, ts=ts: self.outer(ts, pos) or self.next_type(ts, pos) or 'file:' + rel)
-        for p in walk_any(patches, ('.cs', '.patch')):
-            rel = 'patches/' + os.path.relpath(p, patches).replace('\\', '/')
-            with open(p, encoding='utf-8', errors='ignore') as fh:
-                raw = fh.read()
-            if p.endswith('.patch'):
-                # Only added lines are code the build gains. Others are blanked, line numbers kept.
-                raw = '\n'.join(l[1:] if l.startswith('+') and not l.startswith('+++') else '' for l in raw.split('\n'))
-            code, strings = blank(raw)
-            self.scan(code, strings, None, rel, lambda pos, rel=rel: 'root:' + rel)
         for p in walk(pinned):
             rel = 'pinned/' + os.path.relpath(p, pinned).replace('\\', '/')
             comments = []
-            with open(p, encoding='utf-8', errors='ignore') as fh:
+            with open(built.get(os.path.normcase(os.path.normpath(p)), p), encoding='utf-8', errors='ignore') as fh:
                 code, strings = blank(fh.read(), comments)
             self.scan(code, strings, None, rel, lambda pos: 'root:pinned', pinned_side=True)
             # Pinned code left commented out, `// TODO: uncomment once added` over `new GreymistChest()`:
@@ -938,7 +1049,7 @@ def walk_any(root, exts):
 def spawn_entry_names(text):
     """(entry name, line) for every spawner entry in one Spawns JSON file, one per occurrence."""
     try:
-        objs = json.loads(text.lstrip('﻿'))
+        objs = json.loads(text.lstrip('\ufeff'))
     except ValueError:
         return []
     names = {(e.get('name') or '').strip() for o in (objs if isinstance(objs, list) else [])
@@ -1108,7 +1219,10 @@ def print_reach(r, sources=False, show_twins=False):
         print('  ours-unreached = our copy is itself unreached (a chain); data = ServUO spawn XML only.')
         for nf, nt, (path, standing) in sorted(ranked, reverse=True):
             print(f'  {nf:4} files {nt:4} types  {standing:15} {path}')
-        nos = [n for n in un if not src.get(n) and not any(x[1].startswith('pinned-comment:') for x in r.by_target.get(n, ()))]
+        # Only commented-out construction counts as a source, as in the grouping above. Since cc-P27 pinned is read
+        # patched, so the prose comments our patches add (BaseWeapon's naming PetMimic) are pinned comments too.
+        nos = [n for n in un if not src.get(n) and not any(
+            x[1] in ('pinned-comment:new', 'pinned-comment:typeof') for x in r.by_target.get(n, ()))]
         print(f'\n## no source in ServUO code, ServUO spawns, or pinned\'s commented-out code ({len(nos)})')
         for n in nos:
             print(f'  {n}  {rows[n]["file"]}')

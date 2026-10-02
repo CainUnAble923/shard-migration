@@ -1,0 +1,382 @@
+./Server/Items/Item.cs:2097:    ///     if (from.Int &gt;= 100)
+./Server/Mobiles/Mobile.cs:1853:                OnRawStatChange(StatType.Str, oldValue);
+./Server/Mobiles/Mobile.cs:1868:        get => Math.Clamp(m_Str + GetStatOffset(StatType.Str), 1, 65000);
+./Server/Mobiles/Mobile.cs:1911:                OnRawStatChange(StatType.Dex, oldValue);
+./Server/Mobiles/Mobile.cs:1926:        get => Math.Clamp(m_Dex + GetStatOffset(StatType.Dex), 0, 65000);
+./Server/Mobiles/Mobile.cs:1969:                OnRawStatChange(StatType.Int, oldValue);
+./Server/Mobiles/Mobile.cs:1984:        get => Math.Clamp(m_Int + GetStatOffset(StatType.Int), 0, 65000);
+./Server/Mobiles/Mobile.cs:7614:    ///     if (item is Pickaxe &amp;&amp; this.Str &lt; 60)
+./Server/Mobiles/Mobile.cs:8407:        if ((type & StatType.Str) != 0)
+./Server/Mobiles/Mobile.cs:8412:        if ((type & StatType.Dex) != 0)
+./Server/Mobiles/Mobile.cs:8417:        if ((type & StatType.Int) != 0)
+./Server/Network/Packets/OutgoingMobilePackets.cs:220:        writer.WriteAttribute(m.HitsMax, m.Hits, normalize);
+./Server/Network/Packets/OutgoingMobilePackets.cs:245:        writer.WriteAttribute(m.ManaMax, m.Mana, normalize);
+./Server/Network/Packets/OutgoingMobilePackets.cs:270:        writer.WriteAttribute(m.StamMax, m.Stam, normalize);
+./Server/Network/Packets/OutgoingMobilePackets.cs:296:        writer.WriteAttribute(m.HitsMax, m.Hits, normalize);
+./Server/Network/Packets/OutgoingMobilePackets.cs:297:        writer.WriteAttribute(m.ManaMax, m.Mana, normalize);
+./Server/Network/Packets/OutgoingMobilePackets.cs:298:        writer.WriteAttribute(m.StamMax, m.Stam, normalize);
+./Server/Network/Packets/OutgoingMobilePackets.cs:511:        writer.WriteAttribute(beheld.HitsMax, beheld.Hits, version == 0, true);
+./Server/Network/Packets/OutgoingMobilePackets.cs:523:        writer.Write((short)beheld.Str);
+./Server/Network/Packets/OutgoingMobilePackets.cs:524:        writer.Write((short)beheld.Dex);
+./Server/Network/Packets/OutgoingMobilePackets.cs:525:        writer.Write((short)beheld.Int);
+./Server/Network/Packets/OutgoingMobilePackets.cs:528:        writer.Write((short)beheld.StamMax);
+./Server/Network/Packets/OutgoingMobilePackets.cs:530:        writer.Write((short)beheld.ManaMax);
+./Server/Skills.cs:255:            var statsOffset = Owner.Owner.RawStr * Info.StrScale +
+./Server/Skills.cs:256:                              Owner.Owner.RawDex * Info.DexScale +
+./Server/Skills.cs:257:                              Owner.Owner.RawInt * Info.IntScale;
+./UOContent/Engines/Character Creation/CharacterCreation.cs:274:            newChar.Str = 100;
+./UOContent/Engines/Character Creation/CharacterCreation.cs:275:            newChar.Int = 100;
+./UOContent/Engines/Character Creation/CharacterCreation.cs:276:            newChar.Dex = 100;
+./UOContent/Engines/ConPVP/DuelContext.cs:742:        mob.Hits = mob.HitsMax;
+./UOContent/Engines/ConPVP/DuelContext.cs:743:        mob.Stam = mob.StamMax;
+./UOContent/Engines/ConPVP/DuelContext.cs:744:        mob.Mana = mob.ManaMax;
+./UOContent/Engines/ConPVP/DuelContext.cs:1879:        mob.Hits = mob.HitsMax;
+./UOContent/Engines/ConPVP/DuelContext.cs:1880:        mob.Stam = mob.StamMax;
+./UOContent/Engines/ConPVP/DuelContext.cs:1881:        mob.Mana = mob.ManaMax;
+./UOContent/Engines/ConPVP/Games/KingOfTheHill.cs:93:            if (m.AccessLevel == AccessLevel.Player && m.Stam >= m.StamMax)
+./UOContent/Engines/Craft/Core/Repair.cs:171:                    var damage = g.HitsMax - g.Hits;
+./UOContent/Engines/Factions/Items/Power Faction Items/ClarityPotion.cs:42:        from.AddStatMod(new StatMod(StatType.Int, "clarity-potion", amount, TimeSpan.FromMinutes(time)));
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:117:        public bool IsDamaged => m_Guard.Hits < m_Guard.HitsMax;
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:237:            if (Mobile.Deleted || Mobile.Int < 95 || CanDispel(Mobile) || Mobile.AutoDispel)
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:595:                        m_Guard.HitsMax - m_Guard.Hits > Utility.Random(250))
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:607:                else if (IsDamaged && m_Guard.HitsMax - m_Guard.Hits > Utility.Random(200))
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:609:                    if (IsAllowed(GuardAI.Magic) && m_Guard.Hits * 100 / Math.Max(m_Guard.HitsMax, 1) < 10 &&
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:620:                        if (m_Guard.Mana >= 11 && m_Guard.Hits + 30 < m_Guard.HitsMax)
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:624:                        else if (m_Guard.Hits + 10 < m_Guard.HitsMax &&
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:691:                        var strMod = GetStatMod(m_Guard, StatType.Str);
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:692:                        var dexMod = GetStatMod(m_Guard, StatType.Dex);
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:693:                        var intMod = GetStatMod(m_Guard, StatType.Int);
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:746:                            var strMod = GetStatMod(combatant, StatType.Str);
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:747:                            var dexMod = GetStatMod(combatant, StatType.Dex);
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:748:                            var intMod = GetStatMod(combatant, StatType.Int);
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:779:                if (spell != null && m_Guard.HitsMax - m_Guard.Hits + 10 > Utility.Random(100))
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:801:                        else if (m_Guard.Hits + 30 > m_Guard.HitsMax && m_Guard.Hits + 10 < m_Guard.HitsMax)
+./UOContent/Engines/Factions/Mobiles/Guards/GuardAI.cs:807:                else if (spell == null && m_Guard.Stam < m_Guard.StamMax / 3 && IsAllowed(GuardAI.Melee))
+./UOContent/Engines/Quests/The Summoning/Objectives.cs:123:                        BaseCreature.GetLootingRights(m_Daemon.DamageEntries, m_Daemon.HitsMax);
+./UOContent/Engines/Spawners/SpawnPropsGump.cs:30:        nameof(Mobile.Str),
+./UOContent/Engines/Spawners/SpawnPropsGump.cs:31:        nameof(Mobile.Dex),
+./UOContent/Engines/Spawners/SpawnPropsGump.cs:32:        nameof(Mobile.Int),
+./UOContent/Engines/Virtues/Honor.cs:134:        if (target.Hits < target.HitsMax)
+./UOContent/Engines/Virtues/Sacrifice.cs:108:        else if (targ.Hits * 100 / Math.Max(targ.HitsMax, 1) < 90)
+./UOContent/Gumps/PetResurrectGump.cs:85:            _pet.Hits = (int)(_pet.HitsMax * _hitsScalar);
+./UOContent/Gumps/ResurrectGump.cs:41:        var lossStr = (int)(player.RawStr * loss);
+./UOContent/Gumps/ResurrectGump.cs:42:        var lossInt = (int)(player.RawInt * loss);
+./UOContent/Gumps/ResurrectGump.cs:43:        var lossDex = (int)(player.RawDex * loss);
+./UOContent/Gumps/ResurrectGump.cs:47:            player.RawStr = lossStr;
+./UOContent/Gumps/ResurrectGump.cs:52:            player.RawInt = lossInt;
+./UOContent/Gumps/ResurrectGump.cs:57:            player.RawDex = lossDex;
+./UOContent/Gumps/ResurrectGump.cs:228:                VirtueLevel.Seeker   => AOS.Scale(from.HitsMax, 20),
+./UOContent/Gumps/ResurrectGump.cs:229:                VirtueLevel.Follower => AOS.Scale(from.HitsMax, 40),
+./UOContent/Gumps/ResurrectGump.cs:230:                VirtueLevel.Knight   => AOS.Scale(from.HitsMax, 80),
+./UOContent/Gumps/ResurrectGump.cs:270:            from.Hits = (int)(from.HitsMax * _hitsScalar);
+./UOContent/Items/Addons/RejuvinationAnkhs.cs:23:                    from.Hits = from.HitsMax;
+./UOContent/Items/Addons/RejuvinationAnkhs.cs:28:                    from.Mana = from.ManaMax;
+./UOContent/Items/Addons/RejuvinationAnkhs.cs:33:                    from.Stam = from.StamMax;
+./UOContent/Items/Addons/RejuvinationAnkhs.cs:47:                from.Hits = from.HitsMax;
+./UOContent/Items/Addons/RejuvinationAnkhs.cs:48:                from.Mana = from.ManaMax;
+./UOContent/Items/Addons/RejuvinationAnkhs.cs:49:                from.Stam = from.StamMax;
+./UOContent/Items/Armor/BaseArmor.cs:830:                StatType.Str => StrRequirement,
+./UOContent/Items/Armor/BaseArmor.cs:831:                StatType.Dex => DexRequirement,
+./UOContent/Items/Armor/BaseArmor.cs:842:                StatType.Str => StrBonus + Attributes.BonusStr,
+./UOContent/Items/Armor/BaseArmor.cs:843:                StatType.Dex => DexBonus + Attributes.BonusDex,
+./UOContent/Items/Armor/BaseArmor.cs:1046:            var strBonus = ComputeStatBonus(StatType.Str);
+./UOContent/Items/Armor/BaseArmor.cs:1047:            var dexBonus = ComputeStatBonus(StatType.Dex);
+./UOContent/Items/Armor/BaseArmor.cs:1048:            var intBonus = ComputeStatBonus(StatType.Int);
+./UOContent/Items/Armor/BaseArmor.cs:1056:                    m.AddStatMod(new StatMod(StatType.Str, $"{serial}Str", strBonus, TimeSpan.Zero));
+./UOContent/Items/Armor/BaseArmor.cs:1061:                    m.AddStatMod(new StatMod(StatType.Dex, $"{serial}Dex", dexBonus, TimeSpan.Zero));
+./UOContent/Items/Armor/BaseArmor.cs:1066:                    m.AddStatMod(new StatMod(StatType.Int, $"{serial}Int", intBonus, TimeSpan.Zero));
+./UOContent/Items/Armor/BaseArmor.cs:1128:            int strBonus = ComputeStatBonus(StatType.Str), strReq = ComputeStatReq(StatType.Str);
+./UOContent/Items/Armor/BaseArmor.cs:1129:            int dexBonus = ComputeStatBonus(StatType.Dex), dexReq = ComputeStatReq(StatType.Dex);
+./UOContent/Items/Armor/BaseArmor.cs:1130:            int intBonus = ComputeStatBonus(StatType.Int), intReq = ComputeStatReq(StatType.Int);
+./UOContent/Items/Armor/BaseArmor.cs:1132:            if (from.Dex < dexReq || from.Dex + dexBonus < 1)
+./UOContent/Items/Armor/BaseArmor.cs:1138:            if (from.Str < strReq || from.Str + strBonus < 1)
+./UOContent/Items/Armor/BaseArmor.cs:1144:            if (from.Int < intReq || from.Int + intBonus < 1)
+./UOContent/Items/Armor/BaseArmor.cs:1172:            var strBonus = ComputeStatBonus(StatType.Str);
+./UOContent/Items/Armor/BaseArmor.cs:1173:            var dexBonus = ComputeStatBonus(StatType.Dex);
+./UOContent/Items/Armor/BaseArmor.cs:1174:            var intBonus = ComputeStatBonus(StatType.Int);
+./UOContent/Items/Armor/BaseArmor.cs:1182:                    from.AddStatMod(new StatMod(StatType.Str, $"{serial}Str", strBonus, TimeSpan.Zero));
+./UOContent/Items/Armor/BaseArmor.cs:1187:                    from.AddStatMod(new StatMod(StatType.Dex, $"{serial}Dex", dexBonus, TimeSpan.Zero));
+./UOContent/Items/Armor/BaseArmor.cs:1192:                    from.AddStatMod(new StatMod(StatType.Int, $"{serial}Int", intBonus, TimeSpan.Zero));
+./UOContent/Items/Armor/BaseArmor.cs:1468:            if ((prop = ComputeStatReq(StatType.Str)) > 0)
+./UOContent/Items/Clothing/BaseClothing.cs:484:            var strBonus = ComputeStatBonus(StatType.Str);
+./UOContent/Items/Clothing/BaseClothing.cs:485:            var strReq = ComputeStatReq(StatType.Str);
+./UOContent/Items/Clothing/BaseClothing.cs:487:            if (from.Str < strReq || from.Str + strBonus < 1)
+./UOContent/Items/Clothing/BaseClothing.cs:501:                StatType.Str => BaseStrBonus + Attributes.BonusStr,
+./UOContent/Items/Clothing/BaseClothing.cs:502:                StatType.Dex => BaseDexBonus + Attributes.BonusDex,
+./UOContent/Items/Clothing/BaseClothing.cs:513:            var strBonus = ComputeStatBonus(StatType.Str);
+./UOContent/Items/Clothing/BaseClothing.cs:514:            var dexBonus = ComputeStatBonus(StatType.Dex);
+./UOContent/Items/Clothing/BaseClothing.cs:515:            var intBonus = ComputeStatBonus(StatType.Int);
+./UOContent/Items/Clothing/BaseClothing.cs:526:                parent.AddStatMod(new StatMod(StatType.Str, $"{serial}Str", strBonus, TimeSpan.Zero));
+./UOContent/Items/Clothing/BaseClothing.cs:531:                parent.AddStatMod(new StatMod(StatType.Dex, $"{serial}Dex", dexBonus, TimeSpan.Zero));
+./UOContent/Items/Clothing/BaseClothing.cs:536:                parent.AddStatMod(new StatMod(StatType.Int, $"{serial}Int", intBonus, TimeSpan.Zero));
+./UOContent/Items/Clothing/BaseClothing.cs:899:            if ((prop = ComputeStatReq(StatType.Str)) > 0)
+./UOContent/Items/Food/Food.cs:94:        if (from.Stam < from.StamMax)
+./UOContent/Items/Jewels/BaseJewel.cs:220:                    from.AddStatMod(new StatMod(StatType.Str, $"{serial}Str", strBonus, TimeSpan.Zero));
+./UOContent/Items/Jewels/BaseJewel.cs:225:                    from.AddStatMod(new StatMod(StatType.Dex, $"{serial}Dex", dexBonus, TimeSpan.Zero));
+./UOContent/Items/Jewels/BaseJewel.cs:230:                    from.AddStatMod(new StatMod(StatType.Int, $"{serial}Int", intBonus, TimeSpan.Zero));
+./UOContent/Items/Jewels/BaseJewel.cs:429:                m.AddStatMod(new StatMod(StatType.Str, $"{serial}Str", strBonus, TimeSpan.Zero));
+./UOContent/Items/Jewels/BaseJewel.cs:434:                m.AddStatMod(new StatMod(StatType.Dex, $"{serial}Dex", dexBonus, TimeSpan.Zero));
+./UOContent/Items/Jewels/BaseJewel.cs:439:                m.AddStatMod(new StatMod(StatType.Int, $"{serial}Int", intBonus, TimeSpan.Zero));
+./UOContent/Items/Misc/Corpses/Corpse.cs:265:            var rights = BaseCreature.GetLootingRights(ownerBaseCreature.DamageEntries, ownerBaseCreature.HitsMax);
+./UOContent/Items/Resources/Fishing/MagicFish.cs:13:    public virtual StatType Type => StatType.Str;
+./UOContent/Items/Resources/Fishing/MagicFish.cs:54:    public override StatType Type => StatType.Int;
+./UOContent/Items/Resources/Fishing/MagicFish.cs:68:    public override StatType Type => StatType.Dex;
+./UOContent/Items/Resources/Fishing/MagicFish.cs:82:    public override StatType Type => StatType.Str;
+./UOContent/Items/Skill Items/Magical/Potions/Agility Potions/BaseAgilityPotion.cs:25:        if (!SpellHelper.AddStatOffset(from, StatType.Dex, Scale(from, DexOffset), Duration))
+./UOContent/Items/Skill Items/Magical/Potions/Heal Potions/BaseHealPotion.cs:32:        if (from.Hits >= from.HitsMax)
+./UOContent/Items/Skill Items/Magical/Potions/Refresh Potions/BaseRefreshPotion.cs:21:        if (from.Stam >= from.StamMax)
+./UOContent/Items/Skill Items/Magical/Potions/Refresh Potions/BaseRefreshPotion.cs:32:        from.Stam += Scale(from, (int)(Refresh * from.StamMax));
+./UOContent/Items/Skill Items/Magical/Potions/Strength Potions/BaseStrengthPotion.cs:25:        if (!SpellHelper.AddStatOffset(from, StatType.Str, Scale(from, StrOffset), Duration))
+./UOContent/Items/Skill Items/Magical/Spellbook.cs:573:                    from.AddStatMod(new StatMod(StatType.Str, $"{serial}Str", strBonus, TimeSpan.Zero));
+./UOContent/Items/Skill Items/Magical/Spellbook.cs:578:                    from.AddStatMod(new StatMod(StatType.Dex, $"{serial}Dex", dexBonus, TimeSpan.Zero));
+./UOContent/Items/Skill Items/Magical/Spellbook.cs:583:                    from.AddStatMod(new StatMod(StatType.Int, $"{serial}Int", intBonus, TimeSpan.Zero));
+./UOContent/Items/Skill Items/Magical/Spellbook.cs:866:                    m.AddStatMod(new StatMod(StatType.Str, $"{serial}Str", strBonus, TimeSpan.Zero));
+./UOContent/Items/Skill Items/Magical/Spellbook.cs:871:                    m.AddStatMod(new StatMod(StatType.Dex, $"{serial}Dex", dexBonus, TimeSpan.Zero));
+./UOContent/Items/Skill Items/Magical/Spellbook.cs:876:                    m.AddStatMod(new StatMod(StatType.Int, $"{serial}Int", intBonus, TimeSpan.Zero));
+./UOContent/Items/Skill Items/Misc/Bandage.cs:366:            if (Patient.Hits == Patient.HitsMax)
+./UOContent/Items/Skill Items/Misc/Bandage.cs:400:                    toHeal += Patient.HitsMax / 100.0;
+./UOContent/Items/Skill Items/Misc/Bandage.cs:466:        else if (!patient.Poisoned && patient.Hits == patient.HitsMax && !BleedAttack.IsBleeding(patient) &&
+./UOContent/Items/Skill Items/Misc/Bandage.cs:484:            var dex = healer.Dex;
+./UOContent/Items/Skill Items/Musical Instruments/BaseInstrument.cs:260:        var val = targ.HitsMax * (Core.LBR ? 1.6 : 0.625) + targ.StamMax + targ.ManaMax;
+./UOContent/Items/Special/Gifts/RoseOfTrinsic.cs:180:            from.AddStatMod(new StatMod(StatType.Str, "RoseOfTrinsicPetal", 5, TimeSpan.FromMinutes(5.0)));
+./UOContent/Items/Weapons/Abilities/ConcussionBlow.cs:47:            if (defender.HitsMax > 0)
+./UOContent/Items/Weapons/Abilities/ConcussionBlow.cs:49:                var hitsPercent = defender.Hits / (double)defender.HitsMax * 100.0;
+./UOContent/Items/Weapons/Abilities/ConcussionBlow.cs:53:                if (defender.ManaMax > 0)
+./UOContent/Items/Weapons/Abilities/ConcussionBlow.cs:55:                    manaPercent = defender.Mana / (double)defender.ManaMax * 100.0;
+./UOContent/Items/Weapons/Abilities/ForceOfNature.cs:106:            var bonus = Math.Min(100, Math.Max(50, from.Str - 50));
+./UOContent/Items/Weapons/Axes/BaseAxe.cs:127:                            StatType.Int,
+./UOContent/Items/Weapons/Axes/BaseAxe.cs:129:                            -(defender.RawInt / 2),
+./UOContent/Items/Weapons/BaseWeapon.cs:1049:        if (from.Dex < DexRequirement)
+./UOContent/Items/Weapons/BaseWeapon.cs:1055:        if (from.Str < AOS.Scale(StrRequirement, 100 - GetLowerStatReq()))
+./UOContent/Items/Weapons/BaseWeapon.cs:1061:        if (from.Int < IntRequirement)
+./UOContent/Items/Weapons/BaseWeapon.cs:1082:                m.AddStatMod(new StatMod(StatType.Str, $"{Serial}Str", strBonus, TimeSpan.Zero));
+./UOContent/Items/Weapons/BaseWeapon.cs:1087:                m.AddStatMod(new StatMod(StatType.Dex, $"{Serial}Dex", dexBonus, TimeSpan.Zero));
+./UOContent/Items/Weapons/BaseWeapon.cs:1092:                m.AddStatMod(new StatMod(StatType.Int, $"{Serial}Int", intBonus, TimeSpan.Zero));
+./UOContent/Items/Weapons/BaseWeapon.cs:1535:            if (defender.Dex < 80)
+./UOContent/Items/Weapons/BaseWeapon.cs:1537:                chance = chance * (20 + defender.Dex) / 100;
+./UOContent/Items/Weapons/BaseWeapon.cs:1574:        if (defender.Dex < 80)
+./UOContent/Items/Weapons/BaseWeapon.cs:1576:            chance = chance * (20 + defender.Dex) / 100;
+./UOContent/Items/Weapons/BaseWeapon.cs:2265:            damageBonus += attacker.Int / 10;
+./UOContent/Items/Weapons/BaseWeapon.cs:2457:                min = c.Str / 28;
+./UOContent/Items/Weapons/BaseWeapon.cs:2458:                max = c.Str / 28;
+./UOContent/Items/Weapons/BaseWeapon.cs:2556:        var strengthBonus = GetBonus(attacker.Str, 0.300, 100.0, 5.00);
+./UOContent/Items/Weapons/BaseWeapon.cs:2635:        var modifiers = attacker.Str / 5.0 / 100.0;
+./UOContent/Items/Weapons/BaseWeapon.cs:4023:                parentMobile.AddStatMod(new StatMod(StatType.Str, $"{Serial}Str", strBonus, TimeSpan.Zero));
+./UOContent/Items/Weapons/BaseWeapon.cs:4028:                parentMobile.AddStatMod(new StatMod(StatType.Dex, $"{Serial}Dex", dexBonus, TimeSpan.Zero));
+./UOContent/Items/Weapons/BaseWeapon.cs:4033:                parentMobile.AddStatMod(new StatMod(StatType.Int, $"{Serial}Int", intBonus, TimeSpan.Zero));
+./UOContent/Items/Weapons/Knives/ThrowingDagger.cs:57:                if (Utility.RandomDouble() >= Math.Sqrt(m.Dex / 100.0) * 0.8)
+./UOContent/Items/Weapons/Knives/ThrowingDagger.cs:61:                    AOS.Damage(m, from, Utility.Random(5, from.Str / 10), 100, 0, 0, 0, 0);
+./UOContent/Items/Weapons/PoleArms/BasePoleArm.cs:77:                            StatType.Int,
+./UOContent/Items/Weapons/PoleArms/BasePoleArm.cs:79:                            -(defender.RawInt / 2),
+./UOContent/Items/Weapons/Throwing/BaseThrown.cs:24:                ? baseRange - 3 + (attacker.Str - AosStrengthReq) / ((140 - AosStrengthReq) / 3)
+./UOContent/Misc/AOS.cs:601:                    to.AddStatMod(new StatMod(StatType.Str, $"{hashCode}Str", strBonus, TimeSpan.Zero));
+./UOContent/Misc/AOS.cs:606:                    to.AddStatMod(new StatMod(StatType.Dex, $"{hashCode}Dex", dexBonus, TimeSpan.Zero));
+./UOContent/Misc/AOS.cs:611:                    to.AddStatMod(new StatMod(StatType.Int, $"{hashCode}Int", intBonus, TimeSpan.Zero));
+./UOContent/Misc/LootPack.cs:94:            var list = BaseCreature.GetLootingRights(dead.DamageEntries, dead.HitsMax);
+./UOContent/Misc/RegenRates.cs:95:            CheckBonusSkill(from, from.Stam, from.StamMax, SkillName.Focus);
+./UOContent/Misc/RegenRates.cs:140:                CheckBonusSkill(from, from.Mana, from.ManaMax, SkillName.Meditation);
+./UOContent/Misc/RegenRates.cs:148:                var medPoints = from.Int + from.Skills.Meditation.Value * 3;
+./UOContent/Misc/RegenRates.cs:152:                CheckBonusSkill(from, from.Mana, from.ManaMax, SkillName.Focus);
+./UOContent/Misc/RegenRates.cs:200:                var medPoints = (from.Int + from.Skills.Meditation.Value) * 0.5;
+./UOContent/Misc/StaminaSystem.cs:356:        if (AdditionalLossWhenBelow > 0 && from.Stam / Math.Max(from.StamMax, 1.0) < AdditionalLossWhenBelow)
+./UOContent/Mobiles/Abilities/DeathExplosion.cs:43:        AOS.Damage(defender, source, defender.HitsMax / 5, true, 50, 50, 0, 0, 0);
+./UOContent/Mobiles/Abilities/MagicalBarrier.cs:22:    private static bool CanUseField(BaseCreature source) => source.Hits >= source.HitsMax * 9 / 10;
+./UOContent/Mobiles/AI/BaseAI/AIMovement.cs:28:        var statMax = Core.HS ? bc.StamMax : bc.HitsMax;
+./UOContent/Mobiles/AI/BaseAI/AIMovement.cs:78:            else if (Mobile.Hits < Mobile.HitsMax * 0.3)
+./UOContent/Mobiles/AI/BaseAI/AITimer.cs:97:        var delay = Math.Min(30000 / _owner.Mobile.Int, 120);
+./UOContent/Mobiles/AI/BaseAI/BaseAI.cs:623:        var hitPercent = (double)Mobile.Hits / Mobile.HitsMax;
+./UOContent/Mobiles/AI/HealerAI.cs:165:    private static bool NeedGHeal(Mobile m) => m.Hits < m.HitsMax - 40;
+./UOContent/Mobiles/AI/HealerAI.cs:167:    private static bool NeedLHeal(Mobile m) => m.Hits < m.HitsMax - 10;
+./UOContent/Mobiles/AI/MageAI.cs:94:        else if (SmartAI && Mobile.Mana < Mobile.ManaMax && !Mobile.Meditating)
+./UOContent/Mobiles/AI/MageAI.cs:140:        else if (Utility.Random(0, 4 + (Mobile.Hits == 0 ? Mobile.HitsMax : Mobile.HitsMax / Mobile.Hits)) < 3)
+./UOContent/Mobiles/AI/MageAI.cs:147:        if (Mobile.Hits < Mobile.HitsMax - 50)
+./UOContent/Mobiles/AI/MageAI.cs:158:        else if (Mobile.Hits < Mobile.HitsMax - 10)
+./UOContent/Mobiles/AI/MageAI.cs:163:        var delay = Mobile.Int >= 500 ? Utility.RandomMinMax(7, 10) : Math.Sqrt(600 - Mobile.Int);
+./UOContent/Mobiles/AI/MageAI.cs:569:                        if (c.Int < c.Dex)
+./UOContent/Mobiles/AI/MageAI.cs:836:        if (Mobile.Deleted || Mobile.Int < 95 || CanDispel(Mobile) || Mobile.AutoDispel)
+./UOContent/Mobiles/AI/MeleeAI.cs:144:        if (Mobile.Hits > Mobile.HitsMax * FleeHealthThreshold)
+./UOContent/Mobiles/AI/ThiefAI.cs:93:        if (Mobile.Hits < Mobile.HitsMax * 20 / 100 && Mobile.CanFlee)
+./UOContent/Mobiles/AI/ThiefAI.cs:146:        if (Mobile.Hits > Mobile.HitsMax / 2)
+./UOContent/Mobiles/BaseCreature.cs:580:            HitsMaxSeed <= 0 ? Str : Math.Clamp(HitsMaxSeed + GetStatOffset(StatType.Str), 1, 65000);
+./UOContent/Mobiles/BaseCreature.cs:587:            StamMaxSeed <= 0 ? Dex : Math.Clamp(StamMaxSeed + GetStatOffset(StatType.Dex), 1, 65000);
+./UOContent/Mobiles/BaseCreature.cs:594:            ManaMaxSeed <= 0 ? Int : Math.Clamp(ManaMaxSeed + GetStatOffset(StatType.Int), 1, 65000);
+./UOContent/Mobiles/BaseCreature.cs:2420:                FightMode.Strongest => m.Skills.Tactics.Value + m.Str, // returns strongest mobile
+./UOContent/Mobiles/BaseCreature.cs:3617:                    owner.Hits < HealOwnerTrigger * owner.HitsMax)
+./UOContent/Mobiles/BaseCreature.cs:5418:                !onSelf && HealOwnerFully && patient.Hits >= HealOwnerTrigger * patient.HitsMax &&
+./UOContent/Mobiles/BaseCreature.cs:5419:                patient.Hits < patient.HitsMax)
+./UOContent/Mobiles/Guards/BaseGuard.cs:290:        _owner.Stam = _owner.StamMax;
+./UOContent/Mobiles/Guards/BaseGuard.cs:320:            target.Damage(target.HitsMax, _owner);
+./UOContent/Mobiles/Healers/BaseHealer.cs:119:            m.Hits = m.HitsMax;
+./UOContent/Mobiles/Healers/BaseHealer.cs:144:            else if (HealsYoungPlayers && m.Hits < m.HitsMax && m is PlayerMobile mobile && mobile.Young)
+./UOContent/Mobiles/Monsters/AOS/DemonKnight.cs:135:            var rights = GetLootingRights(creature.DamageEntries, creature.HitsMax);
+./UOContent/Mobiles/Monsters/LBR/Jukas/JukaMage.cs:137:                        toScale = toBuff.RawStr;
+./UOContent/Mobiles/Monsters/LBR/Jukas/JukaMage.cs:141:                            toBuff.RawStr += AOS.Scale(toScale, 50);
+./UOContent/Mobiles/Monsters/LBR/Jukas/JukaMage.cs:144:                        toScale = toBuff.RawDex;
+./UOContent/Mobiles/Monsters/LBR/Jukas/JukaMage.cs:148:                            toBuff.RawDex += AOS.Scale(toScale, 50);
+./UOContent/Mobiles/Monsters/LBR/Jukas/JukaMage.cs:158:                        var rawStr = toBuff.RawStr;
+./UOContent/Mobiles/Monsters/LBR/Jukas/JukaMage.cs:159:                        var rawDex = toBuff.RawDex;
+./UOContent/Mobiles/Monsters/LBR/Jukas/JukaMage.cs:186:            toDebuff.RawStr = rawStr;
+./UOContent/Mobiles/Monsters/LBR/Jukas/JukaMage.cs:187:            toDebuff.RawDex = rawDex;
+./UOContent/Mobiles/Monsters/LBR/Meers/MeerCaptain.cs:123:                    if (m is not MeerWarrior || !IsFriend(m) || !CanBeBeneficial(m) || m.Hits >= m.HitsMax || m.Poisoned ||
+./UOContent/Mobiles/Monsters/Misc/Melee/AnimatedWeapon.cs:89:            m.Str / Math.Max(this.GetDistanceToSqrt(m), 1.0);
+./UOContent/Mobiles/Monsters/Misc/Melee/BladeSpirits.cs:61:            (m.Str + m.Skills.Tactics.Value) / Math.Max(this.GetDistanceToSqrt(m), 1.0);
+./UOContent/Mobiles/Monsters/Misc/Melee/EnergyVortex.cs:69:            (m.Int + m.Skills.Magery.Value) / Math.Max(this.GetDistanceToSqrt(m), 1.0);
+./UOContent/Mobiles/Monsters/Misc/Melee/PlagueBeast.cs:89:            IncreaseHits((int)Math.Ceiling(corpse.Owner.HitsMax * 0.75));
+./UOContent/Mobiles/PlayerMobile.cs:553:                var strOffs = GetStatOffset(StatType.Str);
+./UOContent/Mobiles/PlayerMobile.cs:557:                    strBase = Str; // this.Str already includes GetStatOffset/str
+./UOContent/Mobiles/PlayerMobile.cs:581:        public override int StamMax => base.StamMax + AosAttributes.GetValue(this, AosAttribute.BonusStam);
+./UOContent/Mobiles/PlayerMobile.cs:584:        public override int ManaMax => base.ManaMax + AosAttributes.GetValue(this, AosAttribute.BonusMana) +
+./UOContent/Mobiles/PlayerMobile.cs:594:                    return Math.Min(base.Str, 150);
+./UOContent/Mobiles/PlayerMobile.cs:597:                return base.Str;
+./UOContent/Mobiles/PlayerMobile.cs:599:            set => base.Str = value;
+./UOContent/Mobiles/PlayerMobile.cs:609:                    return Math.Min(base.Int, 150);
+./UOContent/Mobiles/PlayerMobile.cs:612:                return base.Int;
+./UOContent/Mobiles/PlayerMobile.cs:614:            set => base.Int = value;
+./UOContent/Mobiles/PlayerMobile.cs:624:                    return Math.Min(base.Dex, 150);
+./UOContent/Mobiles/PlayerMobile.cs:627:                return base.Dex;
+./UOContent/Mobiles/PlayerMobile.cs:629:            set => base.Dex = value;
+./UOContent/Mobiles/PlayerMobile.cs:1405:                            int strBonus = armor.ComputeStatBonus(StatType.Str), strReq = armor.ComputeStatReq(StatType.Str);
+./UOContent/Mobiles/PlayerMobile.cs:1406:                            int dexBonus = armor.ComputeStatBonus(StatType.Dex), dexReq = armor.ComputeStatReq(StatType.Dex);
+./UOContent/Mobiles/PlayerMobile.cs:1407:                            int intBonus = armor.ComputeStatBonus(StatType.Int), intReq = armor.ComputeStatReq(StatType.Int);
+./UOContent/Mobiles/PlayerMobile.cs:1458:                            var strBonus = clothing.ComputeStatBonus(StatType.Str);
+./UOContent/Mobiles/PlayerMobile.cs:1459:                            var strReq = clothing.ComputeStatReq(StatType.Str);
+./UOContent/Mobiles/Special/Paragon.cs:62:        bc.RawStr = (int)(bc.RawStr * StrBuff);
+./UOContent/Mobiles/Special/Paragon.cs:63:        bc.RawInt = (int)(bc.RawInt * IntBuff);
+./UOContent/Mobiles/Special/Paragon.cs:64:        bc.RawDex = (int)(bc.RawDex * DexBuff);
+./UOContent/Mobiles/Special/Paragon.cs:66:        bc.Hits = bc.HitsMax;
+./UOContent/Mobiles/Special/Paragon.cs:67:        bc.Mana = bc.ManaMax;
+./UOContent/Mobiles/Special/Paragon.cs:68:        bc.Stam = bc.StamMax;
+./UOContent/Mobiles/Special/Paragon.cs:126:        bc.RawStr = (int)(bc.RawStr / StrBuff);
+./UOContent/Mobiles/Special/Paragon.cs:127:        bc.RawInt = (int)(bc.RawInt / IntBuff);
+./UOContent/Mobiles/Special/Paragon.cs:128:        bc.RawDex = (int)(bc.RawDex / DexBuff);
+./UOContent/Mobiles/Special/Paragon.cs:130:        bc.Hits = bc.HitsMax;
+./UOContent/Mobiles/Special/Paragon.cs:131:        bc.Mana = bc.ManaMax;
+./UOContent/Mobiles/Special/Paragon.cs:132:        bc.Stam = bc.StamMax;
+./UOContent/Mobiles/Special/Paragon.cs:242:                Delay = Interval = m_Owner.Stam < m_Owner.StamMax * .75 ? FastRegenRate : CPUSaverRate;
+./UOContent/Network/MapUO.cs:91:                    writer.Write((byte)(m.Hits * 100 / Math.Max(m.HitsMax, 1)));
+./UOContent/Skills/Anatomy.cs:61:                    var str = targ.Str + Utility.RandomMinMax(-marginOfError, +marginOfError);
+./UOContent/Skills/Anatomy.cs:62:                    var dex = targ.Dex + Utility.RandomMinMax(-marginOfError, +marginOfError);
+./UOContent/Skills/Anatomy.cs:63:                    var stm = targ.Stam * 100 / Math.Max(targ.StamMax, 1) +
+./UOContent/Skills/AnimalLore.cs:119:            builder.AddHtml(280, 168, 75, 18, FormatAttributes(c.Hits, c.HitsMax));
+./UOContent/Skills/AnimalLore.cs:122:            builder.AddHtml(280, 186, 75, 18, FormatAttributes(c.Stam, c.StamMax));
+./UOContent/Skills/AnimalLore.cs:125:            builder.AddHtml(280, 204, 75, 18, FormatAttributes(c.Mana, c.ManaMax));
+./UOContent/Skills/AnimalLore.cs:128:            builder.AddHtml(320, 222, 35, 18, FormatStat(c.Str));
+./UOContent/Skills/AnimalLore.cs:131:            builder.AddHtml(320, 240, 35, 18, FormatStat(c.Dex));
+./UOContent/Skills/AnimalLore.cs:134:            builder.AddHtml(320, 258, 35, 18, FormatStat(c.Int));
+./UOContent/Skills/AnimalTaming.cs:45:            bc.Owners.Count <= 0 && bc.SubdueBeforeTame && bc.Hits > bc.HitsMax / 10;
+./UOContent/Skills/AnimalTaming.cs:49:            if (bc.RawStr > 0)
+./UOContent/Skills/AnimalTaming.cs:51:                bc.RawStr = (int)Math.Max(1, bc.RawStr * scalar);
+./UOContent/Skills/AnimalTaming.cs:54:            if (bc.RawDex > 0)
+./UOContent/Skills/AnimalTaming.cs:56:                bc.RawDex = (int)Math.Max(1, bc.RawDex * scalar);
+./UOContent/Skills/AnimalTaming.cs:59:            if (bc.RawInt > 0)
+./UOContent/Skills/AnimalTaming.cs:61:                bc.RawInt = (int)Math.Max(1, bc.RawInt * scalar);
+./UOContent/Skills/Discordance.cs:210:                                        StatType.Str,
+./UOContent/Skills/Discordance.cs:212:                                        (int)(targ.RawStr * scalar),
+./UOContent/Skills/Discordance.cs:218:                                        StatType.Int,
+./UOContent/Skills/Discordance.cs:220:                                        (int)(targ.RawInt * scalar),
+./UOContent/Skills/Discordance.cs:226:                                        StatType.Dex,
+./UOContent/Skills/Discordance.cs:228:                                        (int)(targ.RawDex * scalar),
+./UOContent/Skills/EvalInt.cs:57:                    var intel = targ.Int + Utility.RandomMinMax(-marginOfError, +marginOfError);
+./UOContent/Skills/EvalInt.cs:58:                    var mana = targ.Mana * 100 / Math.Max(targ.ManaMax, 1) +
+./UOContent/Skills/Meditation.cs:32:            if (!Core.AOS && m.Hits < m.HitsMax / 10) // Less than 10% health
+./UOContent/Skills/Meditation.cs:39:            if (m.Mana >= m.ManaMax)
+./UOContent/Skills/Meditation.cs:76:            var chance = (50.0 + (skillVal - (m.ManaMax - m.Mana)) * 2) / 100;
+./UOContent/Skills/SkillCheck.cs:288:            GainStat(from, Stat.Str);
+./UOContent/Skills/SkillCheck.cs:293:            GainStat(from, Stat.Dex);
+./UOContent/Skills/SkillCheck.cs:298:            GainStat(from, Stat.Int);
+./UOContent/Skills/SkillCheck.cs:306:            Stat.Str => from.StrLock,
+./UOContent/Skills/SkillCheck.cs:307:            Stat.Dex => from.DexLock,
+./UOContent/Skills/SkillCheck.cs:308:            Stat.Int => from.IntLock,
+./UOContent/Skills/SkillCheck.cs:317:            Stat.Str => from.StrLock == StatLockType.Down && from.RawStr > 10,
+./UOContent/Skills/SkillCheck.cs:318:            Stat.Dex => from.DexLock == StatLockType.Down && from.RawDex > 10,
+./UOContent/Skills/SkillCheck.cs:319:            Stat.Int => from.IntLock == StatLockType.Down && from.RawInt > 10,
+./UOContent/Skills/SkillCheck.cs:329:            if (from.RawStatTotal >= from.StatCap)
+./UOContent/Skills/SkillCheck.cs:337:            Stat.Str => from.StrLock == StatLockType.Up && from.RawStr < _statMax,
+./UOContent/Skills/SkillCheck.cs:338:            Stat.Dex => from.DexLock == StatLockType.Up && from.RawDex < _statMax,
+./UOContent/Skills/SkillCheck.cs:339:            Stat.Int => from.IntLock == StatLockType.Up && from.RawInt < _statMax,
+./UOContent/Skills/SkillCheck.cs:346:        atrophy = atrophy || from.RawStatTotal >= from.StatCap;
+./UOContent/Skills/SkillCheck.cs:350:            case Stat.Str:
+./UOContent/Skills/SkillCheck.cs:354:                        if (CanLower(from, Stat.Dex) && (from.RawDex < from.RawInt || !CanLower(from, Stat.Int)))
+./UOContent/Skills/SkillCheck.cs:356:                            from.RawDex -= 1;
+./UOContent/Skills/SkillCheck.cs:358:                        else if (CanLower(from, Stat.Int))
+./UOContent/Skills/SkillCheck.cs:360:                            from.RawInt -= 1;
+./UOContent/Skills/SkillCheck.cs:364:                    if (CanRaise(from, Stat.Str))
+./UOContent/Skills/SkillCheck.cs:366:                        from.RawStr = Math.Min(from.RawStr + 1, _statMax);
+./UOContent/Skills/SkillCheck.cs:371:            case Stat.Dex:
+./UOContent/Skills/SkillCheck.cs:375:                        if (CanLower(from, Stat.Str) && (from.RawStr < from.RawInt || !CanLower(from, Stat.Int)))
+./UOContent/Skills/SkillCheck.cs:377:                            from.RawStr -= 1;
+./UOContent/Skills/SkillCheck.cs:379:                        else if (CanLower(from, Stat.Int))
+./UOContent/Skills/SkillCheck.cs:381:                            from.RawInt -= 1;
+./UOContent/Skills/SkillCheck.cs:385:                    if (CanRaise(from, Stat.Dex))
+./UOContent/Skills/SkillCheck.cs:387:                        from.RawDex = Math.Min(from.RawDex + 1, _statMax);
+./UOContent/Skills/SkillCheck.cs:392:            case Stat.Int:
+./UOContent/Skills/SkillCheck.cs:396:                        if (CanLower(from, Stat.Str) && (from.RawStr < from.RawDex || !CanLower(from, Stat.Dex)))
+./UOContent/Skills/SkillCheck.cs:398:                            from.RawStr -= 1;
+./UOContent/Skills/SkillCheck.cs:400:                        else if (CanLower(from, Stat.Dex))
+./UOContent/Skills/SkillCheck.cs:402:                            from.RawDex -= 1;
+./UOContent/Skills/SkillCheck.cs:406:                    if (CanRaise(from, Stat.Int))
+./UOContent/Skills/SkillCheck.cs:408:                        from.RawInt = Math.Min(from.RawInt + 1, _statMax);
+./UOContent/Skills/SkillCheck.cs:420:            case Stat.Str:
+./UOContent/Skills/SkillCheck.cs:437:            case Stat.Dex:
+./UOContent/Skills/SkillCheck.cs:454:            case Stat.Int:
+./UOContent/Skills/SkillCheck.cs:473:        var atrophy = from.RawStatTotal / (double)from.StatCap >= Utility.RandomDouble();
+./UOContent/Special Systems/Engines/TestCenter.cs:96:                if (value + from.RawDex + from.RawInt > from.StatCap)
+./UOContent/Special Systems/Engines/TestCenter.cs:104:                    from.RawStr = value;
+./UOContent/Special Systems/Engines/TestCenter.cs:118:                if (from.RawStr + value + from.RawInt > from.StatCap)
+./UOContent/Special Systems/Engines/TestCenter.cs:126:                    from.RawDex = value;
+./UOContent/Special Systems/Engines/TestCenter.cs:140:                if (from.RawStr + from.RawDex + value > from.StatCap)
+./UOContent/Special Systems/Engines/TestCenter.cs:148:                    from.RawInt = value;
+./UOContent/Spells/Base/Spell.cs:226:            var intBonus = Caster.Int / 10;
+./UOContent/Spells/Base/SpellHelper.cs:404:                StatType.Str => (int)(target.RawStr * percent),
+./UOContent/Spells/Base/SpellHelper.cs:405:                StatType.Dex => (int)(target.RawDex * percent),
+./UOContent/Spells/Base/SpellHelper.cs:406:                StatType.Int => (int)(target.RawInt * percent)
+./UOContent/Spells/Base/SpellHelper.cs:529:                creature.RawStr = (int)(creature.RawStr * scale);
+./UOContent/Spells/Base/SpellHelper.cs:530:                creature.Hits = creature.HitsMax;
+./UOContent/Spells/Base/SpellHelper.cs:532:                creature.RawDex = (int)(creature.RawDex * scale);
+./UOContent/Spells/Base/SpellHelper.cs:533:                creature.Stam = creature.StamMax;
+./UOContent/Spells/Base/SpellHelper.cs:535:                creature.RawInt = (int)(creature.RawInt * scale);
+./UOContent/Spells/Base/SpellHelper.cs:536:                creature.Mana = creature.ManaMax;
+./UOContent/Spells/Chivalry/CloseWounds.cs:48:            else if (m.Hits >= m.HitsMax)
+./UOContent/Spells/Chivalry/CloseWounds.cs:67:                if (m.Hits + toHeal > m.HitsMax)
+./UOContent/Spells/Chivalry/CloseWounds.cs:69:                    toHeal = m.HitsMax - m.Hits;
+./UOContent/Spells/Chivalry/DivineFury.cs:40:            Caster.Stam = Caster.StamMax;
+./UOContent/Spells/Chivalry/NobleSacrifice.cs:100:                        if (m.Hits < m.HitsMax)
+./UOContent/Spells/Fifth/MindBlast.cs:43:                    var damage = Math.Min((int)((Caster.Skills.Magery.Value + Caster.Int) / 5), 60);
+./UOContent/Spells/Fifth/MindBlast.cs:62:                int highestStat = target.Str, lowestStat = target.Str;
+./UOContent/Spells/Fifth/MindBlast.cs:64:                if (target.Dex > highestStat)
+./UOContent/Spells/Fifth/MindBlast.cs:66:                    highestStat = target.Dex;
+./UOContent/Spells/Fifth/MindBlast.cs:69:                if (target.Dex < lowestStat)
+./UOContent/Spells/Fifth/MindBlast.cs:71:                    lowestStat = target.Dex;
+./UOContent/Spells/Fifth/MindBlast.cs:74:                if (target.Int > highestStat)
+./UOContent/Spells/Fifth/MindBlast.cs:76:                    highestStat = target.Int;
+./UOContent/Spells/Fifth/MindBlast.cs:79:                if (target.Int < lowestStat)
+./UOContent/Spells/Fifth/MindBlast.cs:81:                    lowestStat = target.Int;
+./UOContent/Spells/First/Clumsy.cs:33:                SpellHelper.AddStatCurse(Caster, m, StatType.Dex, length, false);
+./UOContent/Spells/First/Feeblemind.cs:35:                SpellHelper.AddStatCurse(Caster, m, StatType.Int, length, false);
+./UOContent/Spells/First/Weaken.cs:33:                SpellHelper.AddStatCurse(Caster, m, StatType.Str, length, false);
+./UOContent/Spells/Fourth/Curse.cs:44:            var newStrOffset = SpellHelper.GetOffset(caster, m, StatType.Str, true);
+./UOContent/Spells/Fourth/Curse.cs:45:            var newDexOffset = SpellHelper.GetOffset(caster, m, StatType.Dex, true);
+./UOContent/Spells/Fourth/Curse.cs:46:            var newIntOffset = SpellHelper.GetOffset(caster, m, StatType.Int, true);
+./UOContent/Spells/Fourth/Curse.cs:53:            var oldStrOffset = SpellHelper.GetCurse(caster, m, StatType.Str);
+./UOContent/Spells/Fourth/Curse.cs:54:            var oldDexOffset = SpellHelper.GetCurse(caster, m, StatType.Dex);
+./UOContent/Spells/Fourth/Curse.cs:55:            var oldIntOffset = SpellHelper.GetCurse(caster, m, StatType.Int);
+./UOContent/Spells/Fourth/Curse.cs:62:            var strCurse = SpellHelper.AddStatCurse(caster, m, StatType.Str, newStrOffset, duration);
+./UOContent/Spells/Fourth/Curse.cs:63:            var dexCurse = SpellHelper.AddStatCurse(caster, m, StatType.Dex, newDexOffset, duration);
+./UOContent/Spells/Fourth/Curse.cs:64:            var intCurse = SpellHelper.AddStatCurse(caster, m, StatType.Int, newIntOffset, duration, true);
+./UOContent/Spells/Mysticism/NetherCycloneSpell.cs:83:                    m.Stam -= (int)(m.StamMax * resistedReduction);
+./UOContent/Spells/Mysticism/NetherCycloneSpell.cs:84:                    m.Mana -= (int)(m.ManaMax * resistedReduction);
+./UOContent/Spells/Necromancy/AnimateDeadSpell.cs:386:        var toScale = bc.RawStr;
+./UOContent/Spells/Necromancy/AnimateDeadSpell.cs:387:        bc.RawStr = AOS.Scale(toScale, scalar);
+./UOContent/Spells/Necromancy/Strangle.cs:188:            damage *= 3 - (double)_target.Stam / _target.StamMax * 2;
+./UOContent/Spells/Ninjitsu/AnimalForm.cs:535:            if (_mobile.Hits < _mobile.HitsMax)
+./UOContent/Spells/Second/Agility.cs:32:                SpellHelper.AddStatBonus(Caster, m, StatType.Dex, length, false);
+./UOContent/Spells/Second/Cunning.cs:32:                SpellHelper.AddStatBonus(Caster, m, StatType.Int, length, false);
+./UOContent/Spells/Second/Strength.cs:32:                SpellHelper.AddStatBonus(Caster, m, StatType.Str, length, false);
+./UOContent/Spells/Sixth/MassCurse.cs:46:                        SpellHelper.AddStatCurse(Caster, m, StatType.Str, length, false);
+./UOContent/Spells/Sixth/MassCurse.cs:47:                        SpellHelper.AddStatCurse(Caster, m, StatType.Dex, length);
+./UOContent/Spells/Sixth/MassCurse.cs:48:                        SpellHelper.AddStatCurse(Caster, m, StatType.Int, length);
+./UOContent/Spells/Spellweaving/GiftOfRenewal.cs:134:                if (_mobile.Hits >= _mobile.HitsMax)
+./UOContent/Spells/Spellweaving/WordOfDeath.cs:50:                if (!m.Player && m.Hits / (double)m.HitsMax < percentage)
+./UOContent/Spells/Third/Bless.cs:32:                SpellHelper.AddStatBonus(Caster, m, StatType.Str, length, false);
+./UOContent/Spells/Third/Bless.cs:33:                SpellHelper.AddStatBonus(Caster, m, StatType.Dex, length);
+./UOContent/Spells/Third/Bless.cs:34:                SpellHelper.AddStatBonus(Caster, m, StatType.Int, length);
