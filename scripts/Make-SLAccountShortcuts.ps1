@@ -2,10 +2,20 @@
 # once its account has been typed in one time with Save Account ticked (cc-P28's -Account switch).
 # Also removes the three ClassicUO shortcuts. Written by the overseer, 2026-10-02. PowerShell 5.1. Run:
 #   powershell -NoProfile -ExecutionPolicy Bypass -File D:\UO\shard-migration\scripts\Make-SLAccountShortcuts.ps1
+# Uses the newest D:\UO\ShatteredLegacy\ShatteredLegacy-* folder unless -Package is given.
 # Run it AFTER cc-P28 is built into the package and your install has it. Every shortcut it touches is copied to
 # Desktop\SL-shortcuts-backup\ first.
 
-param([string]$Package = 'D:\UO\ShatteredLegacy-2026.10.02.0609')
+param([string]$Package)
+
+# The newest ShatteredLegacy-* folder under D:\UO\ShatteredLegacy, unless -Package names one.
+if (-not $Package) {
+    $newest = Get-ChildItem -LiteralPath 'D:\UO\ShatteredLegacy' -Directory -Filter 'ShatteredLegacy-*' -ErrorAction SilentlyContinue |
+        Sort-Object Name -Descending | Select-Object -First 1
+    if (-not $newest) { Write-Host 'No ShatteredLegacy-* folder in D:\UO\ShatteredLegacy. Nothing changed.' -ForegroundColor Red; exit 1 }
+    $Package = $newest.FullName
+}
+Write-Host "Package: $Package" -ForegroundColor Cyan
 
 $desktop = [Environment]::GetFolderPath('Desktop')
 $play    = Join-Path $Package 'app\Play.ps1'

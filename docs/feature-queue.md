@@ -1591,6 +1591,23 @@ from F-8's map, so packs never collide; total size the updater must ship.
 
 **Downloads pending** (Chase hit servuo.dev's daily download limit, 2026-09-30): all but the farm
 carts.
+**2026-10-02:** servuo.dev allows **5 downloads a day** (Chase). The **orc encampment** is in
+`D:\UO\third-party\orc-encampment\` (32 PNG masters; Vrark: "you are welcome to do with as you
+wish"; see its SOURCE.txt). **DRC1K's packs (dungeon wall set, new gray rocks, spooky graveyard) have
+no download on servuo.dev at all**: DRC1K shares them through his UO Assets Discord, so they need
+Chase to join it.
+**Downloaded the same day** (Chase joined UOASSETS; overseer pulled every pack in its Assets
+category): 13 packs in `D:\UO\third-party\drc1k-uoassets\`, including the dungeon wall set, gray
+rocks, graveyard, sewer assets, blue stone tiles, barrels, hanging skeletons, energy and fire effects,
+animated cannon and wheels, a Scots pine and Halloween 2024. **Terms (see SOURCE.txt there):
+non-commercial only, and soliciting donations counts as commercial; shipping inside the game client is
+allowed; no other redistribution; no modifications without his permission; credit appreciated.**
+**Confirmed 2026-10-02 (Chase): the shard takes no donations**, so DRC1K's non-commercial terms are
+met. Still owed when his art ships: credit on the website, and his OK for any modification. Marble railings (72 PNGs, named for art IDs 70290 and up), oil lantern (4 frames) and
+satchel (item plus male and female gump) also fetched 2026-10-02, each in its own folder under
+`third-party\` with a SOURCE.txt; none has a license file. **Still to fetch from servuo.dev
+(next day's limit):** paintings (.2351, plus a second set by the other author if it exists) and the
+bridge support beam (.2396).
 
 **Farm carts, downloaded 2026-09-30** (`D:\UO\third-party\farm-carts\`): 4 TIFFs named for the art
 slots they are made for, **6784, 6785** (fruit cart, two facings) and **6807, 6808** (vegetable cart,
@@ -1706,6 +1723,10 @@ Notes (overseer):
 
 Answered 2026-09-30 (Chase): **the Siege of Sosaria Builder's Kit look.** Not downloaded yet
 (servuo.dev daily limit); save to Downloads when it resets.
+**Downloaded 2026-10-02** to `D:\UO\third-party\paperdoll-siege-of-sosaria\` (215 MB zip, 3,077
+files; see its SOURCE.txt). It carries modified EA files under `MUL Files\` that must never ship,
+and **Topless and Nude player-body variants** beside the defaults, which bears on the still-open
+question of who plays from the public package: only the default versions are candidates for it.
 
 Check first, once downloaded: file names against gump IDs (so it ships through `ExternalImages\gumps`);
 overlap with Fiddle-Me-This; which pieces come from EA's Enhanced Client; whether its login splash

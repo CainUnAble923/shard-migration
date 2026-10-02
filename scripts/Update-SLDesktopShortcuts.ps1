@@ -1,16 +1,26 @@
-# Retargets the two TazUO desktop shortcuts at the player package in D:\UO\ShatteredLegacy-2026.10.02.0609.
+# Retargets the two TazUO desktop shortcuts at the newest player package in D:\UO\ShatteredLegacy\ShatteredLegacy-*.
 # Written by the overseer, 2026-10-02. PowerShell 5.1. Run once:
 #   powershell -NoProfile -ExecutionPolicy Bypass -File D:\UO\shard-migration\scripts\Update-SLDesktopShortcuts.ps1
 # The old shortcuts are copied to Desktop\SL-shortcuts-backup\ first. The ClassicUO ones (SL - Admin, SL - Player,
 # SL - TEST shard) and "SL - Start TEST shard" are not touched.
 
-$pkg     = 'D:\UO\ShatteredLegacy-2026.10.02.0609'
+param([string]$Package)
+
+# The newest ShatteredLegacy-* folder under D:\UO\ShatteredLegacy, unless -Package names one.
+if (-not $Package) {
+    $newest = Get-ChildItem -LiteralPath 'D:\UO\ShatteredLegacy' -Directory -Filter 'ShatteredLegacy-*' -ErrorAction SilentlyContinue |
+        Sort-Object Name -Descending | Select-Object -First 1
+    if (-not $newest) { Write-Host 'No ShatteredLegacy-* folder in D:\UO\ShatteredLegacy. Nothing changed.' -ForegroundColor Red; exit 1 }
+    $Package = $newest.FullName
+}
+Write-Host "Package: $Package" -ForegroundColor Cyan
+$pkg     = $Package
 $desktop = [Environment]::GetFolderPath('Desktop')
 $icon    = Join-Path $pkg 'app\tazuo\TazUO.exe'
 
 $targets = @(
-    @{ Name = 'SL - TazUO LIVE.lnk'; Bat = 'Play Shattered Legacy.bat'; Desc = 'LIVE shard, player package 2026.10.02.0609 (updates itself).' },
-    @{ Name = 'SL - TazUO TEST.lnk'; Bat = 'Play TEST Shard.bat';        Desc = 'TEST shard, player package 2026.10.02.0609. Throwaway world.' }
+    @{ Name = 'SL - TazUO LIVE.lnk'; Bat = 'Play Shattered Legacy.bat'; Desc = 'LIVE shard, player package (updates itself).' },
+    @{ Name = 'SL - TazUO TEST.lnk'; Bat = 'Play TEST Shard.bat';        Desc = 'TEST shard, player package. Throwaway world.' }
 )
 
 foreach ($t in $targets) {

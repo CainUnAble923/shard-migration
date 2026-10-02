@@ -5,7 +5,7 @@ holds. Read `claude/shattered-legacy-state.md` in the project for machines and t
 
 ## Numbers (re-derive before trusting: `grep -rhoE "\b(D|Q|F|T)-?[0-9]+\b" notes docs | sort -u`)
 
-- Bugs: **next free D47** (D44 talisman leak, D45 meditation, D46 tool suite added 2026-10-02).
+- Bugs: **next free D49** (D44 talisman leak, D45 meditation, D46 tool suite, D47 ddns follows a VPN, D48 extract durability, all 2026-10-02).
 - Deviations: **next free D-103** (D-92 to D-102 registered 2026-10-02).
 - Features: the **features chat** owns `docs\feature-queue.md` and is writing to it (it took F-25 and F-26 on
   2026-10-02). Do not write there concurrently; hand feature requests to that chat.

@@ -259,10 +259,24 @@ class ContentIndexTest(unittest.TestCase):
         self.assertNotIn('Scripts/Services/PointsSystems/CleanUpBritanniaData.cs', {x[4] for x in src['AntiqueWeddingDress']})
         self.assertTrue(src['AntiqueWeddingDress'])
 
-    def test_twin_sweep_finds_a_pinned_type_under_a_misspelling(self):
-        # Pinned ships the champion artifact as `GuantletsOfAnger`, same cliloc 1094902.
+    def test_twin_sweep_finds_a_pinned_type_under_another_name(self):
+        # Ours `GlassesOfTheArts` (the Library collection reward) and pinned's `ArtsGlasses` share a cliloc. The audit
+        # judged them not twins and kept both (reachability-audit.md:335), so the pair stays in the tree. Until cc-P29
+        # this fact named `GauntletsOfAnger` (pinned `GuantletsOfAnger`, cliloc 1094902), which cc-P8 deleted (D35);
+        # the sweep rightly no longer reports it.
         hits = {(n, test, m) for n, f, test, m, where in ci.twins(self.reach(), ci.C)}
-        self.assertIn(('GauntletsOfAnger', 'cliloc', 'GuantletsOfAnger'), hits)
+        self.assertIn(('GlassesOfTheArts', 'cliloc', 'ArtsGlasses'), hits)
+        self.assertNotIn('GauntletsOfAnger', {n for n, test, m in hits})
+
+    def test_reach_the_guild_satchel_list_reads_types_and_makes_none(self):
+        # GuildResources.SatchelTypes (cc-P22) is used only by IsSatchel, through IsInstanceOfType: a read. Before
+        # cc-P29 it reached GemologistsSatchel "by typeof in GuildResources" (cc-P27 3.5). The satchel is reached
+        # anyway, by `new` in the fountain's reward (FountainOfFortune.cs:90), so the fact is on the reference.
+        r = self.reach()
+        hits = [x for x in r.by_target['GemologistsSatchel'] if x[3] == 'GuildResources']
+        self.assertEqual({(x[1], x[2]) for x in hits}, {('check', 'SatchelTypes')})
+        created, _ = r._closure(r.out, {'GuildResources'})
+        self.assertNotIn('GemologistsSatchel', created)
 
 
 if __name__ == '__main__':

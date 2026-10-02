@@ -465,7 +465,10 @@ READER_SITES = {'ItemPropertyInfo', '_SpecialImbuable', 'm_IngredTypes', 'Ingred
                 'ConsumeTotal', 'FindItemByType', 'Find', '_acceptedTypes',
                 # ServUO CleanUpBritanniaData.Entries[typeof(X)] = points: what a player turns IN (:47-49).
                 # The rewards Clean Up hands OUT are CleanUpBritanniaRewards, a different table.
-                'Entries'}
+                'Entries',
+                # Ours, GuildResources.SatchelTypes (cc-P22): read only by IsSatchel through IsInstanceOfType; it
+                # makes no satchel (cc-P27 3.5, fixed cc-P29).
+                'SatchelTypes'}
 SERVUO_READER_SITES = READER_SITES
 REPLACEMENTS = {'CharacterCreation', 'CraftItem', 'HammerOfHephaestus', 'Meditation', 'RegenRates'}  # AGENTS.md
 # Data that puts a named type in the world: spawner entries, decoration, ML quest registration
