@@ -19,7 +19,7 @@ F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and qu
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
 
-## Where things stand (handoff, updated 2026-10-01, 10:50)
+## Where things stand (handoff, updated 2026-10-02, 08:30)
 
 For a new overseer chat: read this section, then the entries it names. The project-wide picture
 (prompt states, bug numbers, the concurrency rule) is in `notes\passdown-overseer-2026-10-01.md`.
@@ -46,6 +46,8 @@ For a new overseer chat: read this section, then the entries it names. The proje
     After F-17, with or after F-18.
   - F-24 (League work: jobs, realm-wide boards, guild currency and banked reputation). After F-14,
     with F-12's XP in place; dives after the P24 dungeon work.
+  - F-26 (Arms Lore to 200: crafting rescale, less wear, field maintenance, smith repairs, gain path;
+    expose weakness after F-14, gear attunement after F-12). With F-27 (rare Self Repair).
   - F-6 (fog of war with the Cartography tie-ins; the TazUO client half to scope first).
   - F-22 (winter decor Dec 1 to Jan 6, both layers; art in `D:\UO\third-party\winter-holiday\`;
     skip Vrark's two animated trees). After F-8.
@@ -1937,7 +1939,11 @@ Suggested (overseer):
 - **Runic crafting cannot produce it.**
 - **Named artifacts keep their fixed values** (ported items stay faithful).
 
-Open questions (for Chase): the 1 in 500 figure; whether artifacts keep theirs.
+Answered 2026-10-02 (Chase): **suggestions approved as written**: about 1 in 500 from high-end
+sources only, intensity 1 or 2 almost always, weapons included, never from runic crafting, named
+artifacts keep their fixed values.
+
+Open questions: none. Ready to batch. Small; fits with any loot or F-26 batch.
 
 ## Batched
 
