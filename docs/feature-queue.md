@@ -14,59 +14,59 @@ Running list of feature ideas from play testing. Kept by the overseer (Claude); 
 4. Chase commits with `Commit-ShardWork.ps1`.
 
 F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and questions (Q-n).
-**Next free: F-28.**
+**Next free: F-30.**
 
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
 
-## Where things stand (handoff, updated 2026-10-02, 08:30)
+## Where things stand (handoff, updated 2026-10-02, 11:00)
 
-For a new overseer chat: read this section, then the entries it names. The project-wide picture
-(prompt states, bug numbers, the concurrency rule) is in `notes\passdown-overseer-2026-10-01.md`.
+For a new features chat: read this section, then the entries it names. Prompt states and bug numbers
+live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers from disk, not from here.
 
-- **Prompt numbers moved overnight.** P23 is the live defect sweep (D42, D43, D41, D13, running) and P24
-  the New Haven dungeon research (running, read only). P25 is reserved for the stats-above-125 research
-  pass (F-12). F-8's prompt is cc-P26.
-- **One builder at a time in `D:\ShatteredLegacy`.** Build order: P23, then **P22** (it shares
-  `ClusterFGuildSystem.cs` and the starter-path quest arrow with P23), then P26 (F-8, written). Notes-only
-  prompts (P24, P25) run alongside anything.
-- **Batched:** F-9 (cc-P15, ran), F-7 + F-5 + F-1 (cc-P18), F-12 research only (cc-P20, done).
-  **cc-P22-small-features-1**: F-16, F-19, the thief at the pit (F-9 follow-up), F-11, F-17, F-15.
-- **cc-P26-animated-runestone (F-8) is written** (`D:\UO\cc-prompts\`, 2026-10-01). Runs after P23 and
-  P22 commit. It builds the art pipeline: our PNGs ship, the player's own tiledata and animdata are
-  patched locally, TazUO starts with `-uofilesoverride`. F-21, F-22 and F-23 wait on it. **F-22 has a
-  date: on the test shard before December 1.**
-- **Next prompt to write:** none queued. Candidates in order: F-14, then F-24; F-3; F-18.
-- **Ready to batch, no open questions, each its own batch:**
-  - F-3 (Clean Up Britannia with the Custodian layer; about 20 units).
-  - F-18 then F-20 (BODs for growth, smithing and tailoring; then other crafts, Carpentry and
-    Tinkering first). After P22, which changes the same BOD gumps.
+- **Prompts:** P22 to P29 are done. **P30** ModernUO upgrade research (notes only, active). **P31**
+  League Registrar office cleanup (builder, queued). **P32** spawner importer, smith BOD paths (PT-11)
+  and F-27 rare Self Repair (builder, after P31). **P33** Clean Up Britannia, F-3 (builder, after P32).
+  **P34** winter decor, F-22 (builder, after P33; written 2026-10-02). **Next free: P35.** One builder at a time in
+  `D:\ShatteredLegacy`; notes-only prompts run alongside.
+- **F-8 shipped in cc-P26:** the art pipeline works. Our PNGs ship as TazUO overrides; Play.ps1 patches
+  copies of the player's own tiledata and animdata. Free-slot finder `scripts\find-free-art.py`; the
+  **art registry** is `player-package\vendor\shattered-legacy-art\registry.csv` (every pack must
+  register its IDs there). Runestone art cleared by Chase 2026-10-02 (D-100). In-game animation is a
+  T-row for Chase.
+- **Ready to batch, no open questions:**
+  - **F-18 + F-25 together** (BODs for growth; banking, cash-out toggle, large deeds filled directly,
+    rank caps, add-ons in the store). **After P32**, whose Part B settles the vendor and guildmaster BOD
+    paths (PT-11); start from its findings.
+  - F-26 (Arms Lore to 200). Expose weakness waits on F-14, gear attunement on F-12; the rest can go
+    first. (F-27 went into P32.)
+  - F-20 after F-18 (other crafts' BODs, Carpentry and Tinkering first).
   - F-14 (Appraisal and con colors; the level number waits on F-12).
-  - F-25 (BOD banking, cash-out toggle, large deeds filled directly, rank caps, add-ons in the store).
-    After F-17, with or after F-18.
-  - F-24 (League work: jobs, realm-wide boards, guild currency and banked reputation). After F-14,
-    with F-12's XP in place; dives after the P24 dungeon work.
-  - F-26 (Arms Lore to 200: crafting rescale, less wear, field maintenance, smith repairs, gain path;
-    expose weakness after F-14, gear attunement after F-12). With F-27 (rare Self Repair).
-  - F-6 (fog of war with the Cartography tie-ins; the TazUO client half to scope first).
-  - F-22 (winter decor Dec 1 to Jan 6, both layers; art in `D:\UO\third-party\winter-holiday\`;
-    skip Vrark's two animated trees). After F-8.
-- **F-12 and F-13 are redesigned** in `notes\f12-levels-loops-caps.md` (max level 200; vet reward is now
-  +50 total stat cap). The queue entries carry pointers; that doc governs. F-13 is no longer "ready":
-  re-read it against the new doc before batching.
-- **Waiting on downloads** (servuo.dev daily limit hit 2026-09-30): the rest of F-21's packs (farm carts
-  are in `D:\UO\third-party\farm-carts\`) and F-23's Siege of Sosaria paperdoll kit. Downloads land in
-  Chase's Downloads folder; the overseer copies them to `D:\UO\third-party\`.
+  - F-24 (League work) after F-14, with F-12's XP in place; dives after the dungeon work.
+  - F-6 (fog of war; the TazUO half to scope first).
+  - **F-21** (New Haven community art, permanent decor): unblocked now that F-8 shipped; next prompt
+    after P34. (F-22 is in P34, F-3 in P33.)
+- **F-12 and F-13** follow `notes\f12-levels-loops-caps.md` (max level 200). F-13 needs re-reading
+  against it before batching.
+- **Third-party art on disk** (`D:\UO\third-party\`, each folder has a SOURCE.txt with link and terms):
+  animated-runestone, farm-carts, winter-holiday, orc-encampment, marble-railings, oil-lantern,
+  satchel, paperdoll-siege-of-sosaria (F-23; never ship its `MUL Files\`; it carries Topless and Nude
+  body variants), and **drc1k-uoassets** (13 packs from DRC1K's UOASSETS Discord, including the dungeon
+  wall set, gray rocks and graveyard). **DRC1K's terms:** non-commercial (the shard takes no donations,
+  Chase 2026-10-02, so this is met), ship only inside the client, credit him, no modifications without
+  his OK. Inventory: `D:\UO\third-party\README.md`.
+- **Downloads:** servuo.dev allows **5 a day**. Still to fetch: paintings (.2351, and a second set by
+  the other author if it exists) and the bridge support beam (.2396); Chase may want more picks. The
+  overseer drives Chase's Chrome for servuo.dev and the Discord app (computer use) for UOASSETS.
 - **Waiting on Chase:**
-  - F-9 follow-up: confirm the pit stool at 3440,2558,55 in game (`[go 3440 2558 55`).
-  - F-12: the three placeholder numbers (reserve cap, echo multipliers, step size above 100); how
-    each League metal rank is earned.
-  - F-23: paperdoll kit for everyone, or opt-in? NSFW paperdoll question still unanswered.
+  - F-29 (exceptional gap everywhere): two questions. F-28 answered 2026-10-02 (shield rows are an
+    overseer default).
+  - F-23: paperdoll kit for everyone or opt-in, and which body variants (only defaults belong in the
+    public package).
+  - F-9 follow-up: confirm the pit stool at 3440,2558,55 in game.
+  - F-12: the three placeholder numbers (reserve cap, echo multipliers, step size above 100); how each
+    League metal rank is earned.
   - F-4, F-10: not scheduled.
-- **Free art slots:** OSI's "UNUSED" placeholder art marks free slots in `artLegacyMUL.uop` (found
-  checking the farm carts, F-21).
-- **Fixed 2026-10-01:** the F-9 "Open gap" note had been inserted mid-sentence into the 15-minute
-  acceleration decision; the two are separated again.
 
 ## Open
 
@@ -1693,7 +1693,7 @@ Placement draft (overseer, for CC to propose tile by tile and Chase to walk in g
 - All of it from one event seeder keyed to the dates, every item flagged as event decor so take-down
   removes exactly what was placed and nothing else.
 
-Open questions: none. Ready to batch after F-8.
+Open questions: none. **Batched in cc-P34-winter-decor** (2026-10-02).
 
 ### F-23: Paperdoll art replacements (added 2026-09-30)
 
@@ -1860,6 +1860,13 @@ Open questions: none. The overseer defaults above (2x large bonus, rank caps, Le
 at smiths, add-on list) stand unless Chase changes them when the prompt is written.
 Order: after F-17 (same gumps) and with or after F-18 (tailoring into the seal system).
 
+**Superseded in part by PT-11 (Chase, 2026-10-02 10:26, `notes\pt07-pt11-decisions-2026-10-02.md`):**
+regular smiths keep **issuing and taking** smith BODs and pay OSI's rewards; the guildmaster pays Smith
+Seals. So item 7's "issuing stays with the guildmaster" no longer holds. cc-P32 Part B checks the two
+paths cannot double-pay or dodge the guildmaster's limits, and notes how F-25 meets them. The F-25
+prompt must start from P32's findings: the vendor path is effectively OSI's cash-out, and the
+bank-or-cash-out choice, rank caps and direct large fills are the guildmaster path's.
+
 ### F-26: Arms Lore matters more, trainable to 200 (added 2026-10-02)
 
 **Ours** (OSI's Arms Lore is a crafter's side skill; every new job here is a deviation, register it).
@@ -1964,7 +1971,125 @@ Answered 2026-10-02 (Chase): **suggestions approved as written**: about 1 in 500
 sources only, intensity 1 or 2 almost always, weapons included, never from runic crafting, named
 artifacts keep their fixed values.
 
-Open questions: none. Ready to batch. Small; fits with any loot or F-26 batch.
+Open questions: none. **Batched in cc-P32 Part C** (written 2026-10-02 by the overseer).
+
+### F-28: Bow (and maybe other wood) bonuses for the 8 extended woods (added 2026-10-02)
+
+**Ours** (OSI has six woods; our eight are ours, so every number is ours; register it).
+
+What Chase wants (2026-10-02): wood bonuses for Ironwood, Ghostwood, Emberbark, Frostbark,
+Shadowbark, Runewood, Voidwood and Starwood, scaled above Frostwood. Found by cc-P24 (section 3.5,
+`cc-P24-scratch\s3b-leather-wood-cloth.md`). The New Haven dungeon build patches `BaseRanged` to fall
+through to a table we own, with Rootwood's row only; this fills the other 8 rows. And, eventually,
+**wood weapons and armor need their stats labeled** (Chase, 2026-10-02).
+
+Rules carried over from the Rootwood decision (Chase, 2026-10-02):
+- **Exceptional widens the gap** between normal and exceptional bonuses. **Across the board, not just
+  wood** (Chase, 2026-10-02): see F-29.
+- **No Self Repair from wood**; repairs go through skills (F-26, F-27).
+- "Lower requirement" can also mean a **lower level requirement** (F-12 gear levels, F-26 attunement).
+
+Found 2026-10-02 (overseer, verified):
+- Pinned's bonuses, `UOContent/Items/Weapons/Ranged/BaseRanged.cs:239-281`, applied from `OnCraft` at
+  `:230-234` when `Core.ML`, **regardless of quality** (so the exceptional gap is new). Oak luck +40,
+  damage +5; Ash speed +10, lower stat req +20; Yew hit chance +5, damage +10; Bloodwood regen hits +2,
+  hit life leech 16; Heartwood one of six at random (`:284-320`: luck 40, durability 50, LSR 20, speed
+  10, hit chance 5, leech 10); Frostwood 60 physical / 40 cold, damage +12. Any other wood: nothing.
+- Our 8 woods are enum 308-315 in that order, and **their vein weights match the ore ladder position
+  for position** (8 down to 1: `ClusterFLumberjackingExtension.cs:198` and
+  `ClusterFMiningExtension.cs:107`), with matching names where they overlap (Emberbark and Blaze,
+  Frostbark and Frost). So by rarity the tier order **already matches** Platinum to Celestial.
+- **But the craft gate does not.** All 8 woods are gated at a flat **100** in Carpentry and Fletching
+  (`ClusterFLumberjackingExtension.cs:274-281` and `:302-309`), while the ores step 100 to 300
+  (`ClusterFMiningExtension.cs:148-181`). Under F-12's 200 cap both ladders need rescaling anyway.
+
+Suggested (overseer), one theme per wood, paired with its ore; damage keeps climbing past Frostwood's 12.
+Normal = the theme line only; **exceptional = theme line plus the damage and secondary line**, so the gap
+is the whole second half:
+
+| Wood (ore pair) | Theme | Normal | Exceptional adds |
+|---|---|---|---|
+| Ironwood (Platinum) | sturdy | durability +50, lower level req 2 | damage +14, LSR +20 |
+| Ghostwood (Toxic) | unseen | hit chance +6 | damage +15, defense chance +5 |
+| Emberbark (Blaze) | fire | 50 phys / 50 fire | damage +16, hit fire area 10 |
+| Frostbark (Frost) | cold | 40 phys / 60 cold | damage +17, hit lower attack 10 |
+| Shadowbark (Obsidian) | assassin | swing speed +10 | damage +18, hit chance +6 |
+| Runewood (Mythril) | arcane | 50 phys / 50 energy, mana regen +2 | damage +20, hit mana leech 15 |
+| Voidwood (Adamantium) | hunger | hit life leech 15 | damage +22, hit stamina leech 15 |
+| Starwood (Celestial) | pinnacle | luck +100, lower level req 5 | damage +25, hit chance +8, one random Heartwood-style extra |
+
+Labeling (overseer): first check what a bow's tooltip shows today for an extended wood (pinned shows the
+OSI woods' names through `CraftResources` clilocs; ours may show nothing), then make every wood item show
+its wood and its bonuses (properties list, and the wiki page per wood).
+
+Answered 2026-10-02 (Chase):
+1. **Themes and numbers approved** as in the table.
+2. **Yes: staves, clubs and wooden shields get wood bonuses too**, not only bows (more pinned patches;
+   the same fall-through table as `BaseRanged`).
+3. **Yes: re-gate the 8 woods into a craft-skill ladder like the ores**, fitted to F-12's 200 cap.
+   Overseer default: Ironwood 100, Ghostwood 115, Emberbark 130, Frostbark 140, Shadowbark 155, Runewood
+   170, Voidwood 185, Starwood 200, in both Carpentry and Fletching; the ore ladder gets the same rescale
+   under F-12.
+4. **"Labeled" meant these stats**: defining what each wood gives on weapons and armor, which the table
+   does. (Tooltips show the properties in the normal way once they are set.)
+5. The exceptional gap is now a rule for every material: **F-29**.
+
+Overseer default for **staves and clubs**: the same table as bows. For **wooden shields**, a
+defensive row per wood (normal / exceptional adds), to confirm when the prompt is written:
+
+| Wood | Normal | Exceptional adds |
+|---|---|---|
+| Ironwood | durability +50, lower level req 2 | physical resist +3, LSR +20 |
+| Ghostwood | defense chance +4 | energy resist +3, defense chance +3 |
+| Emberbark | fire resist +4 | fire resist +3, reflect physical 5 |
+| Frostbark | cold resist +4 | cold resist +3, reflect physical 5 |
+| Shadowbark | defense chance +5 | poison resist +3, defense chance +3 |
+| Runewood | energy resist +4, mana regen +1 | spell channeling, faster casting 0 |
+| Voidwood | all resists +1 | all resists +1, hit point regen +2 |
+| Starwood | luck +100, lower level req 5 | all resists +2, defense chance +5 |
+
+Open questions: none blocking. Shield rows above stand unless Chase changes them. Order: with or after
+the New Haven dungeon build that adds the `BaseRanged` fall-through (Rootwood's row), and with F-29.
+
+### F-29: The exceptional gap applies to every crafting material (added 2026-10-02)
+
+**Ours** (a deviation from OSI for the ported materials; register it).
+
+What Chase wants (2026-10-02): "I want the exceptional gap to be across the board. It makes crafted
+items bigger than found artifacts in some cases and I like that." So the rule set for wood in F-28
+(exceptional widens the gap between normal and exceptional bonuses) applies to **every** material:
+ores, leathers, woods, cloth, ours and OSI's.
+
+Found 2026-10-02 (pinned 7c9215d97):
+- Material bonuses live in `CraftAttributeInfo` (`UOContent/Misc/ResourceInfo.cs:336-380`: weapon
+  element damage, durability, luck, gold increase, lower requirements; armor resists, durability, luck,
+  gold increase, lower requirements; runic ranges).
+- They are **read live with no quality check**: armor resists add `GetResourceAttrs()` at
+  `Items/Armor/BaseArmor.cs:510-522` (accessor `:885`), lower requirements at `:988`; weapons at
+  `Items/Weapons/BaseWeapon.cs:986` and element damage at `:2388-2393`. Wood bonuses on bows are the
+  one place applied at craft time (F-28).
+- Exceptional already adds its own things: weapons 35% damage increase plus Arms Lore (F-26), armor 15
+  random resist points plus Arms Lore. F-29 is about the **material's** share on top of that.
+- Because the read is live, one central rule (scale what `GetResourceAttrs()` returns by the item's
+  quality) reaches every existing item at once. The fresh world wipe makes that harmless.
+
+Suggested (overseer):
+- **Normal items keep the material's values as they are** (OSI's values for OSI's materials, so a normal
+  Valorite plate piece reads as players expect). **Exceptional items get the material's bonuses x1.5**
+  (rounded), plus, for our own materials, the exceptional-only line their tables define (F-28's wood
+  table is the model). Simple to explain, and the gap grows with the material's tier.
+- Applies to armor, weapons, shields, and leather and cloth items wherever a material gives a bonus.
+  Runic properties are separate (they already scale by runic tier) and are not multiplied.
+- The ore armor resists still cap at the normal resist caps, so the gap shows most below the caps and
+  in luck, durability, element damage and lower requirements.
+- Tests: a normal and an exceptional piece of each material differ by the multiplier; a normal OSI
+  piece matches pinned exactly; a runic's own properties are unchanged.
+
+Open questions (for Chase):
+1. Normal stays at today's values and exceptional gets x1.5, or a different split (for example normal
+   x0.75, exceptional x1.25)?
+2. Does "across the board" include the **OSI** materials (Dull Copper to Valorite, the six woods, the
+   three leathers), or only ours?
 
 ## Batched
 
@@ -1981,7 +2106,10 @@ Open questions: none. Ready to batch. Small; fits with any loot or F-26 batch.
 | F-11 | cc-P22-small-features-1 | Written 2026-09-30. Part 4 of 6; may stop at findings if large. |
 | F-17 | cc-P22-small-features-1 | Written 2026-09-30. Part 5 of 6. Port from ServUO-pub57. |
 | F-15 | cc-P22-small-features-1 | Written 2026-09-30. Part 6 of 6. No deploy; Chase publishes the wiki page. |
-| F-8 | cc-P26-animated-runestone | Written 2026-10-01. Runs after P23 and P22 are committed. Builds the art pipeline F-21 to F-23 reuse. |
+| F-22 | cc-P34-winter-decor | Written 2026-10-02 (features). Runs after P33. Both layers, dated event seeder, art through P26's pipeline. |
+| F-3 | cc-P33-clean-up-britannia | Written 2026-10-02 (overseer). Runs after P32. |
+| F-27 | cc-P32-spawner-importer-bods-self-repair | Written 2026-10-02 (overseer). Part C of 3. Runs after P31. |
+| F-8 | cc-P26-animated-runestone | Written 2026-10-01; **ran 2026-10-01**, all green. Art IDs 0x3C10-0x3C3B; registry and `find-free-art.py` for F-21 to F-23. |
 
 ## Dropped
 

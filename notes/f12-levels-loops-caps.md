@@ -40,6 +40,25 @@ above 50**, which is exactly the loop-0 cap, so no character can ever be created
 - **Scroll drops:** champion spawns, paragons and bosses, with the New Haven dungeon's mini champ as
   the first source. This ties the dungeon into progression rather than leaving it a side trip.
 
+## Loop memory: skill and level gain speed (Chase, 2026-10-02, 11:03)
+
+Live only; the test shard keeps its fast test rates during playtesting.
+
+- **Base rate on live: "fast but not crazy fast".** Not test-center speed (today's test shard runs the Test Center
+  x5 multiplier plus ClusterF's 3 attempts and x5 amount). The number is set by **playtesting what feels good**.
+- **Loop memory: below a skill's previous peak, gain is faster, and the speed-up grows each loop.** "You remember what
+  you learned." Above the previous peak, gain is the plain live base rate ("just fast").
+- **The growth is capped.** Chase liked a ceiling over pure exponential: by the last loop the memory multiplier stops
+  at a set top, so late re-climbs are quick but never instant. Overseer example to playtest against: +50 percent per
+  loop compounding (about 7.6x by loop 5), or a hand table.
+- **Levels use the same rule.** This answers the shape of echo XP above: levels already reached in an earlier loop
+  re-climb at the loop-memory rate, new levels at the base rate. The echo multipliers stay placeholders until the
+  playtest sets them, together with the skill multipliers.
+- **Shown somewhere, not on every gain** (Chase, 11:03): the player can look it up on the paperdoll or another stat
+  display (Chase, 11:04; overseer adds a line at reset), but skill-gain messages stay as they are.
+- Does not fix the cc-P20 limit: 39 of 58 skills cannot gain past about 160 by use (fixed `maxSkill`,
+  `SkillCheck.cs:58-61`). F-12 still needs a gain path for those (as F-26 plans for Arms Lore).
+
 ## Stats (rewritten 2026-10-02: no ceilings)
 
 **Superseded:** the 2026-10-01 table (per-stat 125 to 200 by max level, total 325 to 550, veteran +50) and the
@@ -180,3 +199,8 @@ reward for pushing max level to 100.
    on it including every boss) stays as the scale for ported creatures, and our own creatures carry
    their own level field above it. F-14 does not need a new scale for stock content, only a field on
    ours.
+5. **A gain path for every skill, one skill at a time (Chase, 2026-10-02).** cc-P20 found 39 of 58 skills cannot gain
+   past about 160 by use, because each use carries a fixed `maxSkill` (`SkillCheck.cs:58-61`). Each needs a use whose
+   ceiling follows the cap, as our `Meditation.cs:92` already does (P20 recommendation 3, `cc-P20-skill-scaling-research.md:87`). Start from P20's per-skill
+   tables (every gain call and its ceiling, with file:line). Shape: a notes-only pass that proposes a gain path per
+   skill, then builder batches by skill group. Only needed once the F-12 cap goes above 160.
