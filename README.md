@@ -66,7 +66,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 ## Overall: 27% of candidate content ported
 
 ```
-Content   ██████░░░░░░░░░░░░░░░░  558/2045   27.3%
+Content   ██████░░░░░░░░░░░░░░░░  551/2045   26.9%
 Setup     ██████████████████████  7/7     blocking defects resolved
 ```
 
@@ -98,28 +98,28 @@ Setup     ██████████████████████  7/
 
 **Patches:** 16 total, **0 currently failing to apply**, 8 triaged, 3 found obsolete. `apply-patches.sh` fails the build on a failed patch, so a green build means every patch applied.
 
-### Content moved over: 558 of 2,045 candidate files (27.3%)
+### Content moved over: 551 of 2,045 candidate files (26.9%)
 
 ```
-TOTAL                          █████░░░░░░░░░░░░░  558/2045   27.3%
+TOTAL                          █████░░░░░░░░░░░░░  551/2045   26.9%
 
-Items/Artifacts                ████████████████░░  288/325    88.6%
+Items/Artifacts                ████████████████░░  283/325    87.1%
 Items/Equipment                ███████████████░░░  124/148    83.8%
-Mobiles/Normal                 ████████░░░░░░░░░░   63/138    45.7%
+Mobiles/Normal                 ████████░░░░░░░░░░   58/138    42.0%
 Items/Resource                 ███████████░░░░░░░   36/61     59.0%
 Services/Revamped Dungeons     ██░░░░░░░░░░░░░░░░   15/150    10.0%
 Services/Expansions            █░░░░░░░░░░░░░░░░░   12/175     6.9%
 Items/Quest                    ██░░░░░░░░░░░░░░░░    7/78      9.0%
+Items/Containers               ██░░░░░░░░░░░░░░░░    4/31     12.9%
 Items/Functional               █░░░░░░░░░░░░░░░░░    3/49      6.1%
-Items/Containers               ██░░░░░░░░░░░░░░░░    3/31      9.7%
 Items/Decorative               █░░░░░░░░░░░░░░░░░    2/88      2.3%
 Quests                         █░░░░░░░░░░░░░░░░░    2/84      2.4%
+Services/CleanUpBritannia      █░░░░░░░░░░░░░░░░░    2/52      3.8%
 Services/New Magincia          █░░░░░░░░░░░░░░░░░    2/40      5.0%
 Items/Addons                   █░░░░░░░░░░░░░░░░░    1/169     0.6%
 Mobiles/NPCs                   ░░░░░░░░░░░░░░░░░░    0/222     0.0%
 Services/XmlSpawner            ░░░░░░░░░░░░░░░░░░    0/97      0.0%
 Items/Consumables              ░░░░░░░░░░░░░░░░░░    0/59      0.0%
-Services/CleanUpBritannia      ░░░░░░░░░░░░░░░░░░    0/52      0.0%
 Items/StoreBought              ░░░░░░░░░░░░░░░░░░    0/51      0.0%
 Services/BulkOrders            ░░░░░░░░░░░░░░░░░░    0/28      0.0%
 ```
@@ -214,7 +214,9 @@ Tasks          ████████████████░░░░░�
 
 _Detail and acceptance criteria in `docs/tasks.md`. Status lives in `tools/progress-state.json`._
 
-### Needs reconciling on a `MODERNUO_COMMIT` bump: 17 patches, 5 replacements
+### Needs reconciling on a `MODERNUO_COMMIT` bump: 36 patches, 10 replacements
+
+_Counted from `server/patches/` and `apply-patches.sh`. The table below is hand-kept in `progress-state.json` and lists 17 rows; it is a partial risk register, not the count._
 
 What a MODERNUO_COMMIT bump must reconcile. Patches fail LOUDLY - apply-patches.sh stops the build. Full-file replacements fail SILENTLY: they always apply, and quietly discard whatever upstream changed in that file.
 
@@ -238,7 +240,7 @@ What a MODERNUO_COMMIT bump must reconcile. Patches fail LOUDLY - apply-patches.
 | `Projects/UOContent/Mobiles/BaseCreature.cs` | BaseCreature-PlayerMobile-can-auto-stable | +4/-0 | **low** | nothing likely; an added virtual next to IsBondable |
 | `Projects/UOContent/Mobiles/PlayerMobile.cs` | BaseCreature-PlayerMobile-can-auto-stable | +6/-0 | **low** | a rewrite of AutoStablePets; three patches now share PlayerMobile.cs |
 
-**5 full-file replacements fail silently on a bump** and must be diffed by hand: `BaseGuildmaster.cs`, `BulkMaterialType.cs`, `JacobsPickaxe.cs`, `LargeSmithBOD.cs`, `Mining.cs`.
+**10 full-file replacements fail silently on a bump** and must be diffed by hand: `BaseGuildmaster.cs`, `BulkMaterialType.cs`, `CharacterCreation.cs`, `HammerOfHephaestus.cs`, `JacobsPickaxe.cs`, `LargeSmithBOD.cs`, `Meditation.cs`, `Mining.cs`, `RegenRates.cs`, `ResourceInfo.cs`.
 
 **Deliberately declined:**
 
@@ -247,7 +249,7 @@ What a MODERNUO_COMMIT bump must reconcile. Patches fail LOUDLY - apply-patches.
 - **S3 costed menu - declines upheld with their ratios recorded** — Measured 2026-09-07, notes/s3-decline-costs.md. Skill Masteries (45 files/8,542 lines, unblocks 14, patches 35 upstream files - fails the layering test). Vice vs Virtue (57/9,613, unblocks 5, patches 21). Exploring the Deep (70/10,292, unblocks 2 - structurally the safest build here and the worst ratio). Shadowguard (14/11,222, unblocks 8). City Loyalty (28/8,177, unblocks 15 - decline on ratio, not structure; revisit with Town Cryer). Instanced Peerless (13/1,543, unblocks 2, and BasePeerless and PeerlessAltar are both absent from ModernUO, so there is no base to instance - cost Services/Peerless first). ServUO's ML quest framework (22 files/6,269 lines, not the 21/5,625 the brief stated) - declined because ModernUO already ships the same OSI system. NOT declined and recommended instead: SAAbsorptionAttributes, the TribeType transformation, and a one-quest spike onto ModernUO's ML quest engine. Vendor Searching (4/2,545) is a player feature, not content; the unblock ratio is the wrong test and it is Chase's call.
 - **ServUO ML quest framework - decline REAFFIRMED by S5** — S5 translated one quest end to end and the objective mapping holds for 4 of 5 types, two of them pinned by tests. Porting ServUO's 22-file, 6,269-line framework would put a second engine in the tree to do a job the engine we already have does correctly. The decline was always on two-engines-for-one-job; it now rests on measurement rather than on principle alone. What is NOT declined: the 164 of 203 missing quests that use a single standard objective type. The 39 that hand-write a BaseObjective subclass (25 InternalObjective, 3 CollectionsObtain, 2 QuestionAndAnswer, ~9 one-offs) are per-quest work, not a framework port, and are the thing to cost before the next quest batch.
 
-Counted from the trees: 771 customization files, 27 patch files, 188 tests in 36 files.
+Counted from the trees: 797 customization files, 41 patch files, 382 tests in 76 files.
 Shard status: running on ModernUO; CC9's 381 files and CC4 Despise both verified in a client 2026-09-19/20.
 <!-- PROGRESS:END -->
 
@@ -256,18 +258,18 @@ Shard status: running on ModernUO; CC9's 381 files and CC4 Despise both verified
 <!-- EXPANSION:START -->
 ### Content by expansion
 
-**3,652 of 6,144 ServUO files present** (59%), of which **613 ported by us**.
+**3,647 of 6,144 ServUO files present** (59%), of which **608 ported by us**.
 
 ```
-Pre-AoS (T2A/UOR/LBR)     ████████████░░░░░░░░  2679/4294    62%   +456
+Pre-AoS (T2A/UOR/LBR)     ████████████░░░░░░░░  2671/4294    62%   +448
 Age of Shadows            ███████████████░░░░░   232/309     75%   +31
 Samurai Empire            ████████████████░░░░    93/115     81%   +6
-Mondain's Legacy          ███████████░░░░░░░░░   249/471     53%   +8
+Mondain's Legacy          ███████████░░░░░░░░░   250/471     53%   +9
 Stygian Abyss (Ter Mur)   █████████░░░░░░░░░░░   205/444     46%   +80
-High Seas                 ██████░░░░░░░░░░░░░░   108/334     32%   +12
+High Seas                 ███████░░░░░░░░░░░░░   110/334     33%   +14
 Time of Legends (Eodon)   █████████░░░░░░░░░░░    70/157     45%   +17
 Endless Journey           ████████████████░░░░    16/20      80%   +3
-TOTAL                     ████████████░░░░░░░░  3652/6144    59%   +613
+TOTAL                     ████████████░░░░░░░░  3647/6144    59%   +608
 ```
 
 _Filename-stem matching: a proxy for presence, not behaviour. Unclassified files fall into Pre-AoS, inflating it. Directional, not a completion percentage._

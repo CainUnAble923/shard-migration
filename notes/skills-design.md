@@ -27,32 +27,32 @@ Pinned paths are relative to `D:\UO\ModernUO-pinned\Projects`. "Ours" is `D:\Sha
 | 49 | Alchemy | Crafting | **decided** 2026-10-02 |
 | 17 | Inscription | Crafting | **decided** 2026-10-02 |
 | 23 | Imbuing | Crafting | **decided** 2026-10-02 |
-| 1-6 | Swords, Macing, Fencing, Archery, Throwing, Wrestling | Combat | not started |
-| 7 | Tactics | Combat | not started |
-| 8 | Anatomy | Combat | not started |
-| 9 | Parry | Combat | not started |
-| 10 | Bushido | Combat | not started |
-| 11 | Focus | Combat | not started |
+| 1-6 | Swords, Macing, Fencing, Archery, Throwing, Wrestling | Combat | **decided** 2026-10-02 |
+| 7 | Tactics | Combat | **decided** 2026-10-02 |
+| 8 | Anatomy | Combat | **decided** 2026-10-02 |
+| 9 | Parry | Combat | **decided** 2026-10-02 |
+| 10 | Bushido | Combat | **decided** 2026-10-02 |
+| 11 | Focus | Combat | **decided** 2026-10-02 |
 | 12 | Arms Lore | Combat | **decided** (F-26, 2026-10-02) |
-| 33 | Healing | Combat support | not started |
-| 13 | Magery | Magic | not started |
-| 14 | Evaluating Intelligence | Magic | not started |
-| 15 | Resisting Spells | Magic | not started |
-| 16 | Meditation | Magic | not started |
-| 18 | Necromancy | Magic | not started |
-| 19 | Spirit Speak | Magic | not started |
-| 20 | Chivalry | Magic | not started |
-| 21 | Spellweaving | Magic | not started |
-| 22 | Mysticism | Magic | not started |
-| 24 | Ninjitsu | Magic | not started |
-| 37 | Animal Taming | Animal | not started |
-| 38 | Animal Lore | Animal | not started |
-| 34 | Veterinary | Animal | not started |
-| 39 | Herding | Animal | not started |
-| 40 | Musicianship | Bard | not started |
-| 41 | Peacemaking | Bard | not started |
-| 42 | Provocation | Bard | not started |
-| 43 | Discordance | Bard | not started |
+| 33 | Healing | Combat support | **decided** 2026-10-02 |
+| 13 | Magery | Magic | **decided** 2026-10-02 |
+| 14 | Evaluating Intelligence | Magic | **decided** 2026-10-02 |
+| 15 | Resisting Spells | Magic | **decided** 2026-10-02 |
+| 16 | Meditation | Magic | **decided** 2026-10-02 |
+| 18 | Necromancy | Magic | **decided** 2026-10-02 |
+| 19 | Spirit Speak | Magic | **decided** 2026-10-02 |
+| 20 | Chivalry | Magic | **decided** 2026-10-02 |
+| 21 | Spellweaving | Magic | **decided** 2026-10-02 |
+| 22 | Mysticism | Magic | **decided** 2026-10-02 |
+| 24 | Ninjitsu | Magic | **decided** 2026-10-02 |
+| 37 | Animal Taming | Animal | **decided** 2026-10-02 |
+| 38 | Animal Lore | Animal | **decided** 2026-10-02 |
+| 34 | Veterinary | Animal | **decided** 2026-10-02 |
+| 39 | Herding | Animal | **decided** 2026-10-02 |
+| 40 | Musicianship | Bard | in discussion |
+| 41 | Peacemaking | Bard | in discussion |
+| 42 | Provocation | Bard | in discussion |
+| 43 | Discordance | Bard | in discussion |
 | 25 | Hiding | Thief | not started |
 | 26 | Stealth | Thief | not started |
 | 27 | Detect Hidden | Thief | not started |
@@ -87,10 +87,32 @@ pieces worth one prompt each:
 
 Inscription and Imbuing decided 2026-10-02 (15:44): **the crafting and gathering group is complete.**
 
+**Combat, decided 2026-10-02 (16:03):** weapon skills, Tactics, Anatomy, Parry, Bushido, Focus, Healing. Prompt-sized
+pieces: the gain fixes (skill-only weapon gain roll, Bushido/Focus/bandage windows to the cap); block rework (shields
+read Parry only, shield curve doubled past 120, cap 75 / 90 with Evasion); bandage HP scaling at half; Throwing and
+Wrestling in the special-move mana discount.
+
+**Magic, decided 2026-10-02 (16:11):** Magery, Eval Int, Resisting Spells, Meditation, Necromancy, Spirit Speak, Chivalry,
+Spellweaving, Mysticism, Ninjitsu. Pieces: gain to the cap for the seven stuck schools; school mastery (mana -20 percent
+at 200, after and outside LMC); heal spells at full HP scaling with their clamps scaled; **port** the missing Mysticism
+and Spellweaving spells (ServUO pub57); Mysticism casts gain Imbuing/Focus.
+
+**Animal, decided 2026-10-02 (16:30):** Taming, Animal Lore, Veterinary, Herding. Pieces: **port** the 25 missing
+tamable creatures and **OSI Pet Training** (ServUO pub57); tamable variants on the ladder (with the variant feature
+item); Lore pet-growth bonus and breeding handoff; Vet removes resurrection skill loss; the **Drover's Handbook**
+(Corral, Calm, Herd, Lure); **Beastcraft** (Taming craft system); stable slots from max level (F-12).
+
+**In discussion:** the bard group. Not started: thief group (Hiding, Stealth, Detect Hidden, Snooping, Stealing,
+Lockpicking, Remove Trap, Poisoning) and utility (Tracking, Item ID, Taste ID, Camping, Cartography, Begging,
+Forensics).
+
 ## Corrections to earlier notes, found while verifying
 
 - **D42 is fixed, not live.** `f12-levels-loops-caps.md` still lists it under "still required"; ours
   `customizations\SmithGuildSalvageBag.cs:113-133` clamps the return at `cost - 1` (cc-P23).
+- **cc-P20's Raptor is not in our tree.** P20 cites `customizations\Mobiles\Normal\Raptor.cs:50` (MTS 107.1); no
+  `class Raptor` exists anywhere under `D:\ShatteredLegacy\server` today (grep 2026-10-02). It is a ServUO creature still
+  to port (below, Animal section).
 - **The Meditation pattern line moved:** the cap-following gain call is ours `customizations\Meditation.cs:111`
   (`CheckSkill(Meditation, 0.0, Skills[Meditation].Cap)`), not `:92`.
 
@@ -871,3 +893,343 @@ All four approved: **vellum from the leather ladder** (spellbooks carry the leat
 Magery sets count (new tiers at 150 and 200), Inscription sets intensity**; **master's scrolls** (0 to 25 percent not
 consumed, 150 to 200) and **runebooks to 20 charges** at 200; **Imbuing: material-lifted difficulty, +1 slot at 150
 and +2 at 200, shard thrift to 25 percent.** Thrift and the mark for Inscription as for other crafts.
+
+---
+
+## Combat: weapon skills, Tactics, Anatomy, Parry, Bushido, Focus, Healing
+
+Numbers at the 200 cap, with Str 500 where it matters (stats are uncapped, D-101/D-102). Pinned formulas verified
+2026-10-02; the per-use tables are cc-P20 section 2.1 and the Healing table at 2.3.
+
+### Today: gain ceilings
+
+| Skill | Gain call | Reaches 200 by play? |
+|---|---|---|
+| Swords, Macing, Fencing, Archery, Throwing, Wrestling | `CheckSkill(skill, hitChance)` (`Items/Weapons/BaseWeapon.cs:1365`); hit chance `(atk+20)(100+HCI) / 2(def+20)(100+DCI)` | Yes vs targets of skill 90+ (ceiling `2 x def + 20`), **but HCI lowers it**: with 45 HCI the ceiling vs a 100-skill monster is about 145 |
+| Tactics, Anatomy | `CheckSkill(x, 0, Cap)` on every hit (`:2540, :2543`) | Yes, follows the cap |
+| Parry | direct chance on block (`:1540, :1581`) | Yes with a shield (ceiling 380) |
+| Bushido | moves: `req - 12.5 .. req + 37.5` (`Spells/Base/SamuraiMove.cs:9`), Momentum Strike `70..120` (`Spells/Bushido/MomentumStrike.cs:67`) | **No, stops at 120** |
+| Focus | bonus-skill chance with `v = sqrt(Focus x 0.005)` (ours `customizations\RegenRates.cs:36`) | **Barely:** v reaches 1.0 at 200, so the gain chance falls to zero just as it gets there |
+| Healing (and Anatomy on bandages) | `CheckSkill(x, 0, 120)` per bandage (`Items/Skill Items/Misc/Bandage.cs:444-445`) | **No, stops at 120** |
+
+### What 200 does (all uncapped, in line with "no caps")
+
+- **Damage:** Tactics +131 percent, Anatomy +105, Str +155, plus 100 item DI: about **x5.9** a hit (cc-P20 2.1;
+  "no caps apply", `BaseWeapon.cs:2552-2602`). F-14's creature levels are where monsters keep up.
+- **Being hit:** a 100-skill monster hits a 200 fighter 27 percent of the time (no DCI). Fine.
+- **Bushido at 200:** Confidence about 21 HP/s, Honorable Execution heals about 103 per kill, Lightning Strike ignores
+  armor 56 percent, Momentum Strike +100 percent, Evasion 10 s on a 20 s cooldown. All fine at our HP.
+- **Focus at 200:** about 2.2 stamina/s and 10 mana regen points. Fine.
+- **Healing 200 / Anatomy 200:** 69-117 per bandage (avg about 93), about 29 percent of a 325 HP bar; self-bandage is
+  instant from Dex 220 (P25 decision 4).
+
+### The one break inside 200: Parry + Bushido + Evasion
+
+- With no shield, block chance is `Parry x Bushido / 48000 + 0.05` (one-handed, `BaseWeapon.cs:1550-1552`): **88 percent
+  at 200 / 200** (OSI 120/120: 35 percent).
+- Evasion multiplies it by `1.16 + (Bushido - 60) x 0.004` (cc-P20, `Spells/Bushido/Evasion.cs:175-204`): x1.72 at 200,
+  so **100 percent block for 10 s of every 20**. While Evasion is up, a block also stops single-target spells and fire
+  breath. Every enemy swing also triggers Confidence's heal on block.
+- With a shield, Parry 200 alone is 55 percent: fine.
+
+### Proposal
+
+1. **Gain fixes, so every combat skill trains to the cap by fighting:**
+   a. Weapon skills: the gain roll uses the **skill-only** hit chance (no HCI or DCI), so gear never stalls training.
+      The actual hit still uses the full chance.
+   b. Bushido: move gain windows run to the player's cap (the Meditation pattern), Momentum Strike included.
+   c. Focus: clamp v at 0.95 so the gain chance never hits zero.
+   d. Healing and the bandage Anatomy check: windows run to the cap.
+2. **Damage, Bushido effects, Focus and Healing amounts stay pinned's, uncapped.**
+3. **Block chance gets a ceiling:** final block chance capped at **85 percent**, Evasion included. The one place a
+   chance passes 100 percent and becomes immunity; everything else stays open.
+4. **Throwing and Wrestling join the special-move mana discount** (`Items/Weapons/Abilities/WeaponAbility.cs:182-191`
+   lists the other weapon skills but not these two). A gap fix.
+5. **Healing:** keep pinned's amount (about 93 at 200, instant self-bandage from Dex 220). Scaling it by HitsMax like
+   potions would make it about 200 a bandage, and with instant self-bandages that is close to unkillable.
+
+### Open questions for Chase
+
+1. Gain fixes a to d: yes?
+2. Block chance capped at 85 percent (Evasion included), or a different number, or no cap?
+3. Healing: keep pinned's numbers (proposal 5), or scale them like potions despite instant self-bandages?
+4. Throwing and Wrestling in the special-move mana discount: yes?
+
+### Answers (Chase, 2026-10-02, 15:59)
+
+1. **Gain fixes a to d: yes.**
+2. **Block cap: Chase asked for a proposal.** Overseer proposal, to confirm:
+   - **Block chance capped at 75 percent normally, and 90 percent while Evasion is up.** At 200/200 with no shield
+     that is 75 percent all the time and 90 percent in the Evasion window (instead of 88 and 100); a shield at Parry
+     200 (55 percent) is untouched. Evasion keeps a real job (the burst window), nothing is ever immune, and since
+     Evasion's spell dodge uses the same roll, single-target spells get through at least 10 percent of the time.
+   - For scale, OSI's best (Parry and Bushido 120, no shield) is 35 percent, about 49 percent with Evasion.
+3. **Healing: scale like potions, but less.** Overseer proposal, to confirm: **half the potion scaling**, multiplier
+   `1 + (target HitsMax / 150 - 1) / 2` (never below 1). At 325 HP that is x1.58: Healing 200 / Anatomy 200 heals about
+   109-185 a bandage (avg about 147, about 45 percent of the bar), against a Greater Heal potion's 91-114 every 10 s.
+   Same rule for Veterinary on pets (their HitsMax). Note: with self-bandages instant from Dex 220 (P25), the **rate**
+   is the lever if playtests show unkillable self-healers, not the amount.
+4. **Throwing and Wrestling in the special-move mana discount: yes.**
+
+**Parry and Bushido together (Chase asked, 16:01).** Pinned `CheckParry` (`BaseWeapon.cs:1503-1585`), Dex 80+:
+
+| Setup | 120/120 (OSI) | 200 Parry / 100 Bushido | 200 / 200 | 200 / 200 with Evasion |
+|---|---|---|---|---|
+| Shield | 5 percent (Bushido subtracts) | 30 | **5** | 9 |
+| No shield, one-handed | 35 | 47 | 88 | 100+ |
+| No shield, two-handed | 40 | 54 | **100+ even without Evasion** | 100+ |
+| Shield, Parry 200, Bushido 0 | (55 at 200) | | | (no Evasion without Bushido) |
+
+- **With a shield, Bushido subtracts:** `(Parry - Bushido) / 400 + 0.05` (`:1520`). OSI's rule, faithful, but on a shard where
+  every character ends with every skill at 200, **a maxed character's shield blocks 5 percent**, so shields die as a
+  choice for everyone in the late loops.
+- **Two-handed at 200/200 passes 100 percent without Evasion** (divisor 41140, `:1550`).
+
+**Revised overseer proposal, to confirm:**
+- **Shields read Parry only on our shard** (drop the Bushido subtraction; a deviation, because every character
+  maxes everything). Shield at Parry 200: 55 percent, with Evasion about 95.
+- **One cap for every path: 75 percent normally, 90 percent while Evasion is up.** So at 200/200: shield 55 (90 with
+  Evasion), no shield 75 (90 with Evasion), two-handed 75 (90). Shield, one-hand and two-hand all stay real choices.
+
+### Decided (Chase, 2026-10-02, 16:03)
+
+- **Block:** shields read Parry only (no Bushido subtraction); **cap 75 percent normally, 90 percent during Evasion**,
+  every path.
+- **Shield block boosted past 120** (Chase: "might boost base parry with shield as the skill is 200 vs 100").
+  Overseer default: **OSI's curve to 120, then twice as steep:** `Parry/400 + 0.05` up to 120 (35 percent, faithful),
+  then `+ (Parry - 120) / 200`, so 55 percent at 160 and **75 percent (the cap) at 200**. A maxed shield user sits at
+  the cap without needing Bushido; Evasion lifts it to 90.
+- **Bandage healing: half the potion scaling** (`1 + (HitsMax / 150 - 1) / 2`), Veterinary on pets the same.
+- Gain fixes a to d, uncapped damage and Bushido effects, Throwing and Wrestling in the mana discount, as answered.
+
+---
+
+## Magic: Magery, Eval Int, Resisting Spells, Meditation, Necromancy, Spirit Speak, Chivalry, Spellweaving, Mysticism, Ninjitsu
+
+Per-spell tables are cc-P20 section 2.2 (cited there); numbers below recomputed at the 200 cap with Int up to 500.
+
+### Gain ceilings
+
+| Skill | Ceiling | Why |
+|---|---|---|
+| Eval Int, Spirit Speak | cap | the damage skill gains on every cast up to its cap (`Spells/Base/Spell.cs:623-626`) |
+| Meditation | cap (active, ours `Meditation.cs:111`) | passive regen check stalls at 200 like Focus (`RegenRates.cs:36`) |
+| **Magery** | **120** | 8th circle window 80-120 (`Spells/Base/MagerySpell.cs:15-17`) |
+| **Resisting Spells** | **130** | gains only while below a per-circle limit (`MagerySpell.cs:77-83`) |
+| **Necromancy** | **120** | req + 40 (`NecromancerSpell.cs:37-41`) |
+| **Chivalry** | **115** | req + 50; the High Seas Divine Fury tier needs 120 and **cannot be earned** (`DivineFury.cs:46`) |
+| **Spellweaving** | **117.5** | req + 37.5 |
+| **Mysticism** | **120.5** | req + 37.5; casting gains Eval Int, not Imbuing/Focus (cc-P20 quirk) |
+| **Ninjitsu** | **137.5** | Animal Form Ki-rin and Unicorn |
+
+### What 200 does (nothing breaks inside 200)
+
+- **Spell damage** (Eval 200, Inscription 200, Int 500): about **x3.6** OSI's base, Energy Bolt about 153 before
+  resists (46 through 70). In line with uncapped damage; F-14 scales monsters.
+- **Resisting Spells 200 vs a 200 caster:** about 62 percent on an 8th-circle check, 74 on Poison. Not immune (that needed
+  300). Resist floor 60 on all five resists.
+- **Meditation 200, Int 500:** about 3 mana/s passive. Fine against 500+ mana pools.
+- **Spirit Speak 200:** Strangle about 370 over 65 s, Wraith leech 35 percent, Revenant resists in the 70s. Fine.
+- **Ninjitsu 200:** Feint cuts the target's damage 84 percent for 6 s (100 percent needs 237); Dog/Cat form regen about
+  6.7 HP/s outside the item cap. Strong, not broken.
+- **The heals are the weak spot again,** like potions: Greater Heal 81-90, Heal 17-20, Close Wounds **clamped at 39**,
+  Noble Sacrifice and Holy Light **clamped at 24** (OSI constants), Spirit Speak 51-55, Cleansing Winds 100 single target,
+  Gift of Renewal about 7 per 2 s. Against a 325 HP bar, all small.
+
+### Missing spells (port source found)
+
+Pinned has **only 9 of Mysticism's 16 spells** (`Spells/Mysticism/`): missing Nether Bolt, Healing Stone, Purge Magic,
+Enchant, Sleep, Mass Sleep, Spell Trigger, Rising Colossus (plus Mystic Transformation). Spellweaving lacks **Wildfire,
+Arcane Empowerment and Dryad Allure**. ServUO pub57 has all of them (`Scripts\Spells\Mysticism\SpellDefinitions\`,
+`Scripts\Spells\Spellweaving\`). OSI content, so a faithful port.
+
+### Proposal
+
+1. **Gain to the cap for all seven stuck skills (the Meditation pattern):** each school's highest-circle window runs to
+   the caster's cap (Magery, Necromancy, Chivalry, Spellweaving, Mysticism, Ninjitsu); Resisting Spells gains on every
+   resist check up to the cap; Focus and Meditation passive checks get the 0.95 clamp (combat fix c). Chivalry's Divine
+   Fury tier becomes earnable.
+2. **School mastery past 120 (one rule for every school):** each point past 120 in a casting skill lowers that school's
+   mana cost 0.25 percent (**-20 percent at 200**, stacking with LMC) and lifts that school's OSI clamps in proportion
+   (Close Wounds, Holy Light, Consecrate Weapon and the like scale on past 120 instead of stopping). Gives every school a
+   reason to reach 200 beyond success rate.
+3. **Heal spells scale with the target's HitsMax, half the potion rule** (same as bandages, `1 + (HitsMax / 150 - 1) / 2`):
+   Heal, Greater Heal, Close Wounds, Noble Sacrifice, Spirit Speak, Cleansing Winds, Gift of Renewal, Healing Stone. Greater
+   Heal at Magery 200 on a 325 HP target: about 128-142.
+4. **Port the missing Mysticism and Spellweaving spells** from ServUO pub57.
+5. **Fix the Mysticism quirk:** casting gains Imbuing or Focus (whichever the damage reads), not Eval Int.
+6. Damage, curses, durations, Feint and the rest stay pinned's (uncapped; nothing crosses into immunity below 200).
+
+### Open questions for Chase
+
+1. Gain to the cap for the seven stuck skills: yes?
+2. School mastery (mana cost -20 percent at 200, OSI clamps lifted past 120): yes, or a different reward?
+3. Heal spells at half the potion scaling, like bandages: yes?
+4. Port the missing Mysticism and Spellweaving spells: yes?
+
+### Decided (Chase, 2026-10-02, 16:11)
+
+1. **All seven stuck skills train to the cap** (Meditation pattern; Divine Fury's tier earnable). Yes.
+2. **School mastery = just mana, 20 percent cheaper at 200** (0.25 percent per point past 120). Chase asked whether gear
+   makes it moot: it would if it were added to LMC, which is capped at 40 for players (`Spells/Base/Spell.cs:642-647`).
+   So it is **its own multiplier applied after LMC, outside that cap**: cost x (1 - LMC) x (1 - mastery). With 40 LMC at
+   200: 0.6 x 0.8 = **52 percent cheaper**, never moot. The "lift OSI clamps" half is dropped.
+3. **Heal spells: "make heal spells great again"** (Chase): **full potion scaling**, not half. Multiplier
+   `max(1, target HitsMax / 150)`, and the OSI clamps on heals (Close Wounds 39, Noble Sacrifice 24) scale by the same
+   multiplier. Greater Heal at Magery 200 on 325 HP: about 176-195 (over half the bar). Applies to Heal, Greater Heal,
+   Close Wounds, Noble Sacrifice, Spirit Speak, Cleansing Winds, Gift of Renewal, Healing Stone. (Bandages stay at half,
+   decided 16:03; spells cost mana and cast time, bandages are instant from Dex 220.)
+4. **Port the missing Mysticism and Spellweaving spells** from ServUO pub57. Yes.
+5. Mysticism casting gains Imbuing or Focus (proposal 5) and damage stays uncapped (proposal 6), not objected.
+
+---
+
+## Animal: Taming, Animal Lore, Veterinary, Herding
+
+Context: pets gain to the same cap as players; **pet and stable slots are tied to max level** (F-12, Chase
+2026-10-01); companions share `FollowersMax` (`claude/companions-squire-evo-research.md`).
+
+### Today
+
+- **Taming:** gate `Value >= MinTameSkill` (`Skills/AnimalTaming.cs:185`); roll and gain
+  `CheckTargetSkill(Taming, MTS + 6 x owners - 25 .. + 25)` (`:397-407`). Hardest tame is our Raptor at 107.1
+  (cc-P20), so **gain stops at about 157** (181 on a four-owner Raptor). Control clamps at 99 percent.
+- **Animal Lore:** `CheckTargetSkill(Lore, 0, 120)` on use and while taming (`Skills/AnimalLore.cs:59`,
+  `AnimalTaming.cs:373, :394`), and as the Vet bandage secondary. **Ceiling 120.**
+- **Veterinary:** bandages on pets, `CheckSkill(0, 120)` (`Bandage.cs:444-445`). **Ceiling 120**; combat fix d
+  (decided) already moves bandage checks to the cap, and pets heal at half potion scaling (decided 16:03).
+- **Herding:** the shepherd's crook, `CheckTargetSkill(Herding, MTS - 30, MTS + 30 + 0..9)`
+  (`Items/Weapons/Staves/ShepherdsCrook.cs:146`). **Ceiling about 146.** Its only use is moving an animal.
+- **Stable slots:** a base plus `(skill - 90) / 10` for each of Taming, Lore, Vet past 100
+  (`Mobiles/Vendors/NPC/AnimalTrainer.cs:58-100`): 38 at 200 (OSI 14). F-12 already says this moves to max level.
+
+### What 200 does
+
+Nothing breaks: taming and control clamp, Lore and Herding have no scaling reads, Vet is covered by the bandage
+decision. The problem is reach (Taming 157, Lore 120, Herding 146) and that past about 120 none of them do anything.
+
+### Proposal
+
+1. **Tamable creature variants on the shared ladder.** Some of the new variants (the beast families: hell hounds,
+   drakes, nightmares, wyrms, ki-rin and so on) are tamable, with MinTameSkill on the ladder (100 / 115 / ... / 200)
+   and their variant look and slightly better stats. Taming trains to about 225 on them (window MTS +/- 25), and
+   tamers get pets nobody else has. Our above-160 creatures (F-14) can join the ladder the same way.
+2. **Animal Lore follows the creature:** the Lore use and the taming-time Lore check use the creature's MTS window
+   (as Taming does), so studying ladder creatures trains Lore to 200. **Past 120, Lore raises your pets:** pet skill
+   and stat gain up to x1.5 at 200 (on top of loop memory), so a lore-master's pets grow faster.
+3. **Veterinary:** covered (bandage gain to the cap, half potion scaling on pets). Add: Vet past 120 cuts the skill
+   loss a pet takes on resurrection, to none at 200.
+4. **Herding gets a job: Corral.** Herding a wild creature with the crook makes it easier for you to tame for a short
+   time: its tame difficulty drops by Herding / 20 (10 at 200) for your next attempt. Crook windows on ladder
+   creatures train Herding to 200. Optional later: herding a group (radius) of animals at once.
+5. **Stable slots come from max level** (F-12's pending item), not skill, so they stop growing with these skills.
+
+### Open questions for Chase
+
+1. Tamable variants on the ladder (some variant families tamable, with better stats): yes?
+2. Lore past 120 speeds your pets' growth (to x1.5): yes, or a different reward?
+3. Vet past 120 removes pet resurrection skill loss: yes?
+4. Herding's Corral (lowers tame difficulty for your next attempt): yes?
+
+### Decided (Chase, 2026-10-02, 16:17)
+
+1. **Tamable variants on the ladder: yes.** Chase asked for candidates among creatures still to port. Found
+   2026-10-02: **tamable creatures in ServUO pub57 with no class in pinned or ours** (grep of `class <Name>`), by
+   MinTameSkill: Paralithode 47.1, Stone Slith 65.1, Gargoyle Pet 65.1, Iron Beetle 71.1, Blood Fox 72, Ossein Ram 72,
+   Slith 80.7, Crimson / Platinum / Stygian Drake 85, Ice Hound 85.5, Wild Tiger 95.1, Lion 96, Cold Drake 96, Dragon
+   Wolf 102, Frost Mite 102, Gallusaurus 102, Sabertoothed Tiger 102, Triceratops 102, Dragon Turtle Hatchling 104.7,
+   Frost Dragon 105, Bane Dragon 107.1, Raptor 107.1, Dread Warhorse 108 (plus mounts and statuettes). OSI content, so
+   porting them is faithful; they fill 47 to 108 and push the plain taming ceiling to about 158. **Our variants then
+   carry the ladder from 100 to 200.** Port list to the features chat (with the variant item).
+2. **Lore past 120: pet growth up to x1.5 at 200, and a breeding bonus** (Chase). Breeding is its own chat; handoff:
+   the breeder's Animal Lore improves inheritance (for example a better chance the heir takes the stronger parent's
+   stat or skill line, and better odds on rare traits), scaled 120 to 200.
+3. **Vet past 120 removes pet resurrection skill loss** (none at 200). Yes.
+4. **Corral: yes, bigger bonus, and usable without a crook** (Chase: a backpack item, or "a skill in a book like a
+   spell"). Overseer proposal, to confirm:
+   - **A Drover's Handbook** (a skill book like Bushido's and Chivalry's) holding Herding abilities, cast from the book
+     or a macro with a small stamina cost, no crook needed. The crook keeps working as OSI's command item.
+   - **Corral:** tame difficulty of the target drops by **Herding / 8** (25 at 200) for your next tame attempt within
+     60 s. Gain window on the target's MTS, so Herding trains to 200 on ladder creatures.
+   - Room for more pages later: **Calm** (a wild animal stops attacking you for a few seconds), **Herd** (move a group
+     in a radius), **Lure** (pull a creature out of its spawn toward you).
+
+### Decided (Chase, 2026-10-02, 16:24)
+
+- **Port the candidate creatures and build the variants** (feature-queue item, with the leather/silk/meat variants).
+- **Drover's Handbook with four Herding spells:** Corral (tame difficulty - Herding / 8 for 60 s, 25 at 200), Calm,
+  Herd, Lure. Corral numbers stand. Art: existing book and ability gump art stands in; custom icons are optional and
+  go through the F-8 art pipeline when the build prompt is written.
+- **Taming gets a crafting element: pet potions, which should allow shrinking and similar.** Searched ServUO pub57
+  2026-10-02:
+  - **OSI Pet Training is in ServUO and not in pinned:** `Scripts\Services\Pet Training\` (11 files, about 8,700 lines:
+    `PetTrainingHelper`, `TrainingProfile`, `AbilityProfile`, `SpecialAbility`, `AreaEffects`, training points per skill
+    to 200 at `PetTrainingHelper.cs:854-862`, the Ethologist title deed). It is OSI's 2017 animal training: tamers spend
+    training points to give pets skills, special moves, magical abilities and area effects. **The biggest single
+    reason to train Taming and Lore past 120, and faithful.** Strong port candidate.
+  - **Pet Bonding Potion** (`Scripts\Items\Tools\PetBondingPotion.cs`, OSI item, instant bond) and **ShrinkTable**
+    (`Scripts\Misc\ShrinkTable.cs`, body to figurine art) exist. No shrink potion item in ServUO.
+  - **We already have shrinking:** ours `customizations\ShrunkPet.cs`, a figurine made by the Outrider's Crook's
+    "Shrink Pet" option (Rangers system).
+  - **Overseer proposal, to confirm: Beastcraft,** a small craft system with **Animal Taming as the main skill** (a
+  tamer's kit as the tool), so tamers craft and train Taming by it:
+    - Pet Bonding Potion (OSI item), **Shrink Potion** (makes the same `ShrunkPet` figurine, no crook needed), pet
+      tonics (heal over time, cure), **growth elixirs** (stack with Lore's growth bonus), and **training draughts**
+      (extra Pet Training points, if Pet Training is ported).
+    - Ingredients from the gathering ladders and the variant creatures; **materials lift the gain window**, so Taming
+      also climbs to 200 at the kit, not only by taming.
+    - Animal Lore as a secondary skill on the stronger recipes.
+
+**Approved (Chase, 16:30): port OSI Pet Training from ServUO pub57, and Beastcraft as proposed** (Animal Taming main
+skill, tamer's kit; bonding potion, shrink potion, pet tonics, growth elixirs, training draughts; ladder materials lift
+the gain window; Lore secondary on the stronger recipes). **The animal group is complete.**
+
+---
+
+## Bard: Musicianship, Peacemaking, Provocation, Discordance
+
+The bard skills are where the real breaks sit **inside** 200. Per-use tables: cc-P20 2.4; recomputed here at 200.
+
+### Today
+
+- **Gains:** Musicianship `CheckSkill(0, 120)` on every bard use (`Items/Skill Items/Musical Instruments/BaseInstrument.cs:528`);
+  Peacemaking area `CheckSkill(0, 120)` (`Skills/Peacemaking.cs:83`); targeted peace, provoke and discord
+  `CheckTargetSkill(diff - 25, diff + 25)` (`Peacemaking.cs:171`, `Provocation.cs:154`, `Discordance.cs:168`) where
+  diff comes from the creature's bard difficulty, **capped at 160 for every ported creature**, minus
+  `(Musicianship - 100) x 0.5` (`Discordance.cs:159` and the same in the other two). **Musicianship and area peace stop
+  at 120; the targeted skills stop around 150** because Musicianship keeps shrinking the difficulty.
+- **Range:** `8 + skill / 15` (`BaseInstrument.cs:212`): 21 tiles at 200, past the 18-tile client view.
+- **Discordance effect:** `-20 + (skill - 100) / -2.5` above 100 (`Discordance.cs:183`): **-60 at 200** (bosses with
+  difficulty 160+ get half). Applied to resists, every skill, and the creature's melee damage (twice the effect).
+
+### What breaks at 200
+
+1. **Every bard skill always succeeds against every creature.** Musicianship 200 takes 50 off the difficulty, so a
+   difficulty-160 boss becomes 100, and a 200 skill passes 100 percent at 150. Bosses included (unless flagged immune).
+2. **Discordance zeroes a creature's melee damage:** -60 effect is -120 percent damage, so any non-boss discorded
+   creature hits for nothing. Its resists also drop 60 and its skills to 40 percent.
+3. **Area peace reaches 21 tiles**, so it resets fights the bard cannot see.
+4. Fire Horn at four skills 200: about 190-230 fire per blast to monsters (radius 2, every 6 s, 4 sulfurous ash), about
+   126-155 to players before resists. Strong, a magnitude, not a break.
+
+### Proposal
+
+1. **Gain to the cap:** Musicianship and area peace windows run to the cap (Meditation pattern). Targeted skills keep
+   training on difficulty, and **our own creatures above 160 (F-14) carry a bard difficulty above 160** (from their level),
+   so bards climb to 200 on them.
+2. **Success never certain: final bard success capped at 90 percent** (every skill, every target), and **85 percent
+   against bosses and champions**. The same idea as the block cap: power, but never immunity.
+3. **Discordance grows to 40, not 60:** OSI's 28 at 120 rising to 40 at 200 (half against bosses). A discorded creature
+   still hits for 20 percent of its damage, resists -40, skills -40 percent.
+4. **Bard range capped at the 18-tile view** (reached at skill 150).
+5. **Fire Horn stays pinned's** (uncapped magnitude).
+6. **Mastery past 120 (the reward):** longer effects instead of certainty: peace and provoke durations and discord's
+   maintain time grow to double at 200.
+
+### Open questions for Chase
+
+1. Gain to the cap, with our above-160 creatures as the bard ladder: yes?
+2. Success capped at 90 percent (85 against bosses): yes, or other numbers?
+3. Discordance effect capped at 40 at 200 (so creatures still do some damage): yes?
+4. Range capped at 18 tiles: yes?
+5. Durations doubling by 200 as the reward: yes?

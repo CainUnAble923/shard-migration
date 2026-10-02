@@ -105,10 +105,12 @@ D:\ShatteredLegacy               the shard. Infrastructure-as-code, NOT a Modern
   server/customizations/         canonical custom scripts. 274 .cs, 47778 lines. EDIT TARGET.
                                  (2026-09-06 snapshot; grows with every port. tools/progress.py
                                  recomputes it - that output is the live number.)
-  server/patches/                overrides against stock ModernUO. 15 .patch + 5 replacements.
+  server/patches/                overrides against stock ModernUO. 36 .patch, and 10 full-file
+                                 replacements in all (cc-P38 count; tools/progress.py recounts).
   server/migrations/             serialization migration JSONs.
   server/uo/modernuo/            build tree. NOT an edit target, NOT committed. See below.
-  docker/                        compose stack; builds ModernUO from pinned commit 7c9215d97.
+  docker/                        compose stack; builds ModernUO from pinned commit d4531cd94
+                                 (7c9215d97 until cc-P38, 2026-10-02).
 
 D:\UO\ServUO-pub57               ServUO, pristine. NOW A READ-ONLY CONTENT SOURCE.
 D:\UO\shard-migration            this repo.
@@ -119,8 +121,10 @@ D:\UO\shard-migration            this repo.
 canonical. Its `Configuration/` is the one exception worth knowing, because it is bind-mounted
 into the live container.
 
-**`D:\UO\ModernUO-pinned` is pinned ModernUO source, read-only.** Created 2026-09-06 and
-verified detached at `7c9215d97cb25c56b0b5cb35034944ccdaa0a485`, 3,991 `.cs` files. Grep it to
+**`D:\UO\ModernUO-pinned` is pinned ModernUO source, read-only.** Created 2026-09-06 at
+`7c9215d97` (3,991 `.cs` files). Re-checked out by cc-P38 (2026-10-02) and verified detached at
+`d4531cd94b739613155225c234900de9f47d2c88`, 4,214 `.cs` files. A file:line citation into it dated
+before 2026-10-02 is as of `7c9215d97` unless it says otherwise. Grep it to
 answer every dependency question in seconds, offline, with no build cycle and no Docker:
 
 ```
@@ -152,11 +156,14 @@ nothing while `apply-patches.sh` converted patch failures to warnings and exited
 patches broken, six never valid diffs, three features that had never worked. Detail in
 `notes/f2-patch-runner.md`, `notes/f3-patch-triage.md`, `notes/f4-f5-foundation-cleanup.md`.
 
-## Five files are upstream replacements, not additions
+## Five customizations are upstream replacements, not additions
 
-`CharacterCreation`, `CraftItem`, `HammerOfHephaestus`, `Meditation`, `RegenRates` share a
+`CharacterCreation`, `HammerOfHephaestus`, `Meditation`, `RegenRates`, `ResourceInfo` share a
 basename with pinned ModernUO sources and replace them. This is why `apply-patches.sh`
-excludes them by name. Any change to how customizations reach the build tree must preserve
+excludes them by name. `CraftItem` and `CraftContext` were replacements until cc-P38 and are now
+`server/patches/Craft*-shard-hooks.patch`: a replacement hides upstream drift, and the bump to
+d4531cd9 changed both files. Five more replacements are `.cs` files in `server/patches/`; the
+`replace_file` lines in `apply-patches.sh` are the full list, ten in all. Any change to how customizations reach the build tree must preserve
 that routing. The rest are additive, and ported content goes in subdirectories that
 `apply-patches.sh` mirrors by path.
 
@@ -164,7 +171,7 @@ that routing. The rest are additive, and ported content goes in subdirectories t
 
 **3,134 of ServUO's 6,144 script files have a primary type ModernUO already declares.** They are
 duplicate-type build failures, not porting candidates. Measured in S3 by indexing all 7,097 type
-declarations across the 3,991 pinned files.
+declarations across the 3,991 pinned files (at `7c9215d97`).
 
 **So any count phrased as "ServUO files that reference X" is roughly double what we would gain**,
 and this project quoted such figures as backlog size for weeks. Concretely: `Mobiles/Normal` is

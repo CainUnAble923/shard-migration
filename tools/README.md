@@ -54,7 +54,7 @@ ignores those extension elements. `servuo/Account-modernuo-email.patch` loads th
 extension and makes subsequent ServUO saves retain it. Exact high-balance currency
 preservation remains unresolved because ServUO's in-memory account model uses `double`.
 
-Compilation is verified against ModernUO `7c9215d97`; executing it against live accounts
+Compilation was verified against ModernUO `7c9215d97` (the pin until cc-P38) and is not re-verified against `d4531cd94`; executing it against live accounts
 and loading the result in ServUO remain unverified.
 
 ## `content_index.py` (D20, 2026-09-27)

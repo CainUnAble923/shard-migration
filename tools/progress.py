@@ -94,6 +94,14 @@ def counted(shard):
     out["customization_files"] = len(list(c.rglob("*.cs"))) if c.is_dir() else None
     out["patch_files"] = (len(list(p.glob("*.patch"))) + len(list(p.glob("*.cs")))) if p.is_dir() else None
     out["stale_migrations_present"] = (c / "migrations").is_dir() if c.is_dir() else None
+    # cc-P38: what a bump must reconcile, counted from the build route rather than the hand-kept table in
+    # progress-state.json (which said 17 and 5 while the tree held 36 and 10). A .patch fails loudly on a bump; a
+    # replace_file line in apply-patches.sh routes a full-file replacement, which fails silently.
+    ap = shard / "docker" / "uo" / "apply-patches.sh"
+    out["upstream_patch_files"] = len(list(p.glob("*.patch"))) if p.is_dir() else None
+    out["upstream_replacements"] = (sorted(re.findall(r'^replace_file\s+"\$\w+/([^"]+)"',
+                                                      ap.read_text(encoding="utf-8"), re.M))
+                                    if ap.is_file() else None)
     t = shard / "server" / "tests"
     if t.is_dir():
         files = list(t.rglob("*.cs"))
@@ -247,7 +255,12 @@ def build():
     if up:
         ps = up.get("patches", []); rp = up.get("replacements", [])
         hi = sum(1 for x in ps if x.get("risk") == "high")
-        L.append(f"### Needs reconciling on a `MODERNUO_COMMIT` bump: {len(ps)} patches, {len(rp)} replacements")
+        n_ps = cnt.get("upstream_patch_files"); rp_counted = cnt.get("upstream_replacements")
+        n_rp = len(rp_counted) if rp_counted is not None else None
+        L.append(f"### Needs reconciling on a `MODERNUO_COMMIT` bump: {n_ps} patches, {n_rp} replacements")
+        L.append("")
+        L.append(f"_Counted from `server/patches/` and `apply-patches.sh`. The table below is hand-kept in "
+                 f"`progress-state.json` and lists {len(ps)} rows; it is a partial risk register, not the count._")
         L.append("")
         L.append(up.get("note", ""))
         L.append("")
@@ -257,8 +270,9 @@ def build():
         for x in sorted(ps, key=lambda v: order.get(v.get("risk"), 3)):
             L.append(f"| `{x['file']}` | {x['patch']} | {x['d']} | **{x['risk']}** | {x['breaks']} |")
         L.append("")
-        L.append(f"**{len(rp)} full-file replacements fail silently on a bump** and must be diffed by hand: "
-                 + ", ".join(f"`{x['file']}`" for x in rp) + ".")
+        rp_names = rp_counted if rp_counted is not None else [x['file'] for x in rp]
+        L.append(f"**{len(rp_names)} full-file replacements fail silently on a bump** and must be diffed by hand: "
+                 + ", ".join(f"`{x}`" for x in rp_names) + ".")
         L.append("")
 
     dc = st.get("declined_content", [])

@@ -19,16 +19,17 @@ F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and qu
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
 
-## Where things stand (handoff, updated 2026-10-02, 11:00)
+## Where things stand (handoff, updated 2026-10-02, 16:20)
 
 For a new features chat: read this section, then the entries it names. Prompt states and bug numbers
 live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers from disk, not from here.
 
-- **Prompts:** P22 to P29 are done. **P30** ModernUO upgrade research (notes only, active). **P31**
-  League Registrar office cleanup (builder, queued). **P32** spawner importer, smith BOD paths (PT-11)
-  and F-27 rare Self Repair (builder, after P31). **P33** Clean Up Britannia, F-3 (builder, after P32).
-  **P34** winter decor, F-22 (builder, after P33; written 2026-10-02). **Next free: P35.** One builder at a time in
-  `D:\ShatteredLegacy`; notes-only prompts run alongside.
+- **Prompts (2026-10-02, 16:20):** done P22 to P33 and P37. **Active or queued:** P34 winter decor (F-22),
+  P35 clean-machine package test, P36 New Haven dungeon build 1, P38 the ModernUO engine bump to upstream
+  `d4531cd9`; **P39 is reserved** for the test-shard cutover. **Next free: P40.** Chase moved P34 and P36
+  behind the upgrade (P37 to P39). One builder at a time in `D:\ShatteredLegacy`.
+- **The engine is moving off `7c9215d97`.** Every pinned file:line cited in this queue is from that commit;
+  any prompt written after P38 must have CC re-verify them against the new pin.
 - **F-8 shipped in cc-P26:** the art pipeline works. Our PNGs ship as TazUO overrides; Play.ps1 patches
   copies of the player's own tiledata and animdata. Free-slot finder `scripts\find-free-art.py`; the
   **art registry** is `player-package\vendor\shattered-legacy-art\registry.csv` (every pack must
@@ -36,7 +37,7 @@ live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers
   T-row for Chase.
 - **Ready to batch, no open questions:**
   - **F-18 + F-25 together** (BODs for growth; banking, cash-out toggle, large deeds filled directly,
-    rank caps, add-ons in the store). **After P32**, whose Part B settles the vendor and guildmaster BOD
+    rank caps, add-ons in the store). **P32 is done**: read its notes first; its Part B settled the vendor and guildmaster BOD
     paths (PT-11); start from its findings.
   - F-26 (Arms Lore to 200). Expose weakness waits on F-14, gear attunement on F-12; the rest can go
     first. (F-27 went into P32.)
@@ -45,7 +46,9 @@ live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers
   - F-24 (League work) after F-14, with F-12's XP in place; dives after the dungeon work.
   - F-6 (fog of war; the TazUO half to scope first).
   - **F-21** (New Haven community art, permanent decor): unblocked now that F-8 shipped; next prompt
-    after P34. (F-22 is in P34, F-3 in P33.)
+    after P34. (F-22 is in P34, F-3 ran in P33.)
+  - **F-28** (wood bonuses, all approved) with or after the dungeon build (P36), which adds the
+    `BaseRanged` fall-through; **F-29** once its two questions are answered.
 - **F-12 and F-13** follow `notes\f12-levels-loops-caps.md` (max level 200). F-13 needs re-reading
   against it before batching.
 - **Third-party art on disk** (`D:\UO\third-party\`, each folder has a SOURCE.txt with link and terms):
@@ -59,8 +62,9 @@ live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers
   the other author if it exists) and the bridge support beam (.2396); Chase may want more picks. The
   overseer drives Chase's Chrome for servuo.dev and the Discord app (computer use) for UOASSETS.
 - **Waiting on Chase:**
-  - F-29 (exceptional gap everywhere): two questions. F-28 answered 2026-10-02 (shield rows are an
-    overseer default).
+  - F-29 (exceptional gap everywhere): two questions (the split; whether OSI's own materials count).
+    F-28 answered 2026-10-02 (shield rows are an overseer default).
+  - F-31 (Raptor pack friends) was added by another chat: no open questions, after P38.
   - F-23: paperdoll kit for everyone or opt-in, and which body variants (only defaults belong in the
     public package).
   - F-9 follow-up: confirm the pit stool at 3440,2558,55 in game.
