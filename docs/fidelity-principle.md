@@ -208,7 +208,7 @@ reasoning lives.
     under "port unchanged": upstream dead code stays dead code, and quietly repairing it would be
     an undocumented divergence from every wiki that describes the fountain.
 
-## The numbered register, D-1 to D-102
+## The numbered register, D-1 to D-104
 
 Every numbered deviation, in one place, current to 2026-09-26. **Each row is a pointer, not the
 entry**: the note named in the last column carries the full statement, the reasoning and what would
@@ -331,6 +331,8 @@ and `visible`.
 | D-100 | **Ours (F-8, a custom static).** A "shattered runestone" with four staff-chosen facings, art by Vrark (servuo.dev "Animated Runestone"; the download's "MMH7" names are a misnaming, art cleared by Chase 2026-10-02), shipped as TazUO PNG overrides in art slots 0x3C10-0x3C3B and animated through tiledata and animdata records the launcher writes into copies of the player's own files. The server's in-memory tiledata for those four IDs is ours, so the stone blocks. The Reset Stone wears design 1 (F-7b amended) | an item OSI does not have | `visible` | `cc-P26` 11, `p26-decisions-2026-10-02` |
 | D-101 | **Ours (stats, Chase 2026-10-02).** Raw stats gain to `stats.statMax = 500` in both configs (OSI 125, set May 2026, `docker/uo/SERVER.md:642`), with **no** per-stat table, total cap or veteran +50. Today `patches/PlayerMobile-individual-stat-cap.patch` clamps effective stats at 500 (OSI 150); F-12 removes that clamp. Stats carry through a reset. Consequences kept on purpose: self-bandage reaches 1.0 s at Dex 200 and instant from effective Dex 220 (pinned `Bandage.cs:493`); pets gain to the same cap; stock bosses were balanced for OSI numbers | stats far above OSI's | `visible` | `cc-P25`, `p25-decisions-2026-10-02` |
 | D-102 | **Ours.** Carry weight is `100 + 3.5 x Str` for humans with no cap (`customizations/ClusterFBackpack.cs:33-42`; 800 stones at Str 200, 1850 at effective 500, against OSI's 550 cap) | carry far more than OSI | `visible` | `p25-decisions-2026-10-02` 2 |
+| D-103 | **Ours (D45).** Meditation's start chance: OSI uses the absolute mana deficit; above a 150-mana pool ours scales the deficit to a 150 pool, so a large pool is not penalized. At or below 150 it is OSI's formula exactly | high-Int characters can start meditating with a large pool partly empty | `visible` | `cc-P29` 2 and 7 |
+| D-104 | **Ours (D14).** Twelve walkable pavers of existing art ("PaverStones Natural") over the decorative stepping rocks to the Fountain of Fortune, ending one tile from it, placed by `[ClusterFSeedFountainSteps`. In OSI's data the rocks are impassable and no walkable tile is within the coin range of 3. The fountain stays at OSI's point | a player can walk out to the fountain | `visible` | `cc-P29` 4 and 7 |
 
 ### What the register says about wiki scope
 

@@ -14,7 +14,7 @@ Running list of feature ideas from play testing. Kept by the overseer (Claude); 
 4. Chase commits with `Commit-ShardWork.ps1`.
 
 F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and questions (Q-n).
-**Next free: F-30.**
+**Next free: F-31.**
 
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
@@ -67,6 +67,8 @@ live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers
   - F-12: the three placeholder numbers (reserve cap, echo multipliers, step size above 100); how each
     League metal rank is earned.
   - F-4, F-10: not scheduled.
+  - F-30 (Staff Hub): which kind of event management, and plain or shard-styled gump. Commands,
+    Player and Travel tabs are ready to batch once a builder slot is free.
 
 ## Open
 
@@ -2090,6 +2092,52 @@ Open questions (for Chase):
    x0.75, exceptional x1.25)?
 2. Does "across the board" include the **OSI** materials (Dull Copper to Valorite, the six woods, the
    three leathers), or only ours?
+
+### F-30: Staff Hub, an in-game GM tool gump (added 2026-10-02)
+
+**Ours** (staff only; players never see it).
+
+What Chase wants (2026-10-02): our own GM tools in place of Pandora's Box, built in game as server
+gumps (no external app). Pandora was just the tool he knew of; what he actually used was **travel**,
+and he would like **event management**.
+
+Decided with Chase (2026-10-02):
+- One `[SL` command opens a tabbed **Staff Hub** gump. Chase is the only staff, so access is simply
+  GameMaster and up (WorldRemoval commands Administrator), with no finer tiers to design.
+- It works on **live** as well as test. Test-only commands show greyed out on live.
+- First build: **Commands** and **Player** tabs, plus **Travel** (his main use). Build (Pandora-lite deco
+  palette) is dropped for now; stock `[Add`, `[Tile`, `[Props` cover it. **Events** is the second batch.
+
+Found 2026-10-02:
+- Every shard command already carries `[ShardCommand]` (P21, `server\customizations\ShardCommandAttribute.cs`):
+  category, shard, re-run, dry run, summary, enforced by `tests\Misc\CommandDeclarationVerification.cs`.
+  Today only `scripts\Shard-Console.ps1` reads it (from source text). The hub reads the same attribute at
+  runtime by reflection, so it lists every command with no upkeep.
+- Pinned has stock staff gumps to wrap rather than rebuild: `[Admin` (`Gumps/AdminGump.cs`), `[Go`,
+  `[Props`, `[Add`, `[Tile`.
+- Pinned has a scheduled events engine (`Engines/Events/EventScheduler.cs`, yearly and recurring events);
+  F-22's dated winter decor seeder is the first seasonal event and should register there.
+- Levels and loops (F-12) are not built; their Player panels plug in when they are.
+
+Suggested (overseer):
+1. **Commands tab:** grouped by category, each row with its summary, shard flag and re-run note; a Run
+   button and a Dry Run button where `DryRun` is declared; commands that take a target or argument open
+   a small text entry. WorldRemoval and Duplicates rows ask for a confirm.
+2. **Player tab:** target, or pick from online players / search by name. Shows our data (guild standing,
+   League and Renown, Compact rank, Restoration unlocks, ore and wood discoveries, skill and stat caps,
+   bank limit) and has buttons for the existing Grant commands. Go to player, bring player, `[Props`.
+3. **Travel tab:** shard locations read from the seeders' own coordinates (New Haven, mine camp, Registrar
+   office, guild halls, League, Fountain of Fortune, Royal City, dungeon entrance when P36 lands), so they
+   never go stale; plus **saved spots** (save where you stand with a name, saved per staff account,
+   versioned) and a recent-locations list. Facet shown on each row.
+4. **Events tab (second batch):** see questions.
+
+Open questions (for Chase):
+1. Event management: which of these did you mean? (a) seasonal events on a calendar (winter decor,
+   holidays) with on/off and status; (b) live GM-run events you start by hand: broadcast, an event
+   moongate players can take to a spot, spawn a wave or a boss at a target, prizes to everyone in an
+   area, a no-loot death zone for the event; (c) both.
+2. Should the hub's gump wear the shard's look (the stone/emblem art) or stay plain stock gump art?
 
 ## Batched
 
