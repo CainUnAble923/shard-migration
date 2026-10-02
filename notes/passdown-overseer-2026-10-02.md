@@ -5,11 +5,11 @@ holds. Read `claude/shattered-legacy-state.md` in the project for machines and t
 
 ## Numbers (re-derive before trusting: `grep -rhoE "\b(D|Q|F|T)-?[0-9]+\b" notes docs | sort -u`)
 
-- Bugs: **next free D50** (D49 harvest last-vein, D44 talisman leak, D45 meditation, D46 tool suite, D47 ddns follows a VPN, D48 extract durability, all 2026-10-02).
+- Bugs: **next free D51** (D50 1 s stop timeout, D49 harvest last-vein, D44 talisman leak, D45 meditation, D46 tool suite, D47 ddns follows a VPN, D48 extract durability, all 2026-10-02).
 - Deviations: **next free D-107** (D-92 to D-106 registered 2026-10-02).
 - Features: the **features chat** owns `docs\feature-queue.md` and is writing to it (it took F-25 and F-26 on
   2026-10-02). Do not write there concurrently; hand feature requests to that chat.
-- Prompts: P1 to P32 exist (P29 defect batch 2 done `56cae9d`; P30 ModernUO upgrade research; P31 registrar office cleanup; P32 spawner importer, BODs, Self Repair; P33 F-3 Clean Up Britannia; P34 winter decor, P35 clean-machine test and P36 dungeon build 1 written by other chats). P37 upgrade prep written; P38 (bump) and P39 (test cutover) reserved for the upgrade. **Next free P40.** Another chat also writes prompts: re-check `cc-prompts\` and `completed\` right before saving a new one.
+- Prompts: P1 to P32 exist (P29 defect batch 2 done `56cae9d`; P30 ModernUO upgrade research; P31 registrar office cleanup; P32 spawner importer, BODs, Self Repair; P33 F-3 Clean Up Britannia; P34 winter decor, P35 clean-machine test and P36 dungeon build 1 written by other chats). P37 upgrade prep written; P38 (bump) and P39 (test cutover) reserved for the upgrade. P40 custom client research written. P41 companions research placed; P42 defect batch 3 written (now gated after P43). P39 stopped at step 4 on the 1 s stop timeout (D50); P43 = 60 s grace in both compose files, then P39 steps 5 and 6. **Next free P44.** Another chat also writes prompts: re-check `cc-prompts\` and `completed\` right before saving a new one.
 
 ## Queue
 
@@ -58,3 +58,4 @@ Nothing is building. **One builder at a time in `D:\ShatteredLegacy`.** Notes-on
 - **The stat cap was 500, not 125,** in every note until cc-P25 read the config. Read configs, not prior notes.
 - An unpublished package is tested by unzipping it to its own folder; the launcher's update check only asks
   get.shatteredlegacyuo.com.
+- Lesson (P43, 2026-10-02): never boot the OLD engine on a purged world after the purge's 30-min spawner hold ends; the spawners refill the collision types (P37 section 3). I wrote that step into P43 and CC caught it after the fact. Cutover = restore the after-purge copy, then tag cc-p38 and boot, nothing old in between.

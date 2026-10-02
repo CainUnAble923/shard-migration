@@ -49,25 +49,25 @@ Pinned paths are relative to `D:\UO\ModernUO-pinned\Projects`. "Ours" is `D:\Sha
 | 38 | Animal Lore | Animal | **decided** 2026-10-02 |
 | 34 | Veterinary | Animal | **decided** 2026-10-02 |
 | 39 | Herding | Animal | **decided** 2026-10-02 |
-| 40 | Musicianship | Bard | in discussion |
-| 41 | Peacemaking | Bard | in discussion |
-| 42 | Provocation | Bard | in discussion |
-| 43 | Discordance | Bard | in discussion |
-| 25 | Hiding | Thief | not started |
-| 26 | Stealth | Thief | not started |
-| 27 | Detect Hidden | Thief | not started |
-| 28 | Snooping | Thief | not started |
-| 29 | Stealing | Thief | not started |
-| 30 | Lockpicking | Thief | not started |
-| 31 | Remove Trap | Thief | not started |
-| 32 | Poisoning | Thief | not started |
-| 44 | Tracking | Utility | not started |
-| 45 | Item Identification | Utility | not started (F-14 Appraisal) |
-| 46 | Taste Identification | Utility | not started |
-| 47 | Camping | Utility | not started |
-| 48 | Cartography | Utility | not started |
-| 35 | Begging | Utility | not started |
-| 36 | Forensic Evaluation | Utility | not started |
+| 40 | Musicianship | Bard | **decided** 2026-10-02 |
+| 41 | Peacemaking | Bard | **decided** 2026-10-02 |
+| 42 | Provocation | Bard | **decided** 2026-10-02 |
+| 43 | Discordance | Bard | **decided** 2026-10-02 |
+| 25 | Hiding | Thief | **decided** 2026-10-02 |
+| 26 | Stealth | Thief | **decided** 2026-10-02 |
+| 27 | Detect Hidden | Thief | **decided** 2026-10-02 |
+| 28 | Snooping | Thief | **decided** 2026-10-02 |
+| 29 | Stealing | Thief | **decided** 2026-10-02 |
+| 30 | Lockpicking | Thief | **decided** 2026-10-02 |
+| 31 | Remove Trap | Thief | **decided** 2026-10-02 |
+| 32 | Poisoning | Thief | **decided** 2026-10-02 |
+| 44 | Tracking | Utility | **decided** 2026-10-02 |
+| 45 | Item Identification | Utility | **decided** 2026-10-02 |
+| 46 | Taste Identification | Utility | **decided** 2026-10-02 |
+| 47 | Camping | Utility | **decided** 2026-10-02 |
+| 48 | Cartography | Utility | **decided** 2026-10-02 |
+| 35 | Begging | Utility | **decided** 2026-10-02 |
+| 36 | Forensic Evaluation | Utility | **decided** 2026-10-02 |
 
 Numbers are cc-P20's row numbers (`notes\cc-P20-skill-scaling-research.md:322-381`).
 
@@ -102,9 +102,22 @@ tamable creatures and **OSI Pet Training** (ServUO pub57); tamable variants on t
 item); Lore pet-growth bonus and breeding handoff; Vet removes resurrection skill loss; the **Drover's Handbook**
 (Corral, Calm, Herd, Lure); **Beastcraft** (Taming craft system); stable slots from max level (F-12).
 
-**In discussion:** the bard group. Not started: thief group (Hiding, Stealth, Detect Hidden, Snooping, Stealing,
-Lockpicking, Remove Trap, Poisoning) and utility (Tracking, Item ID, Taste ID, Camping, Cartography, Begging,
-Forensics).
+**Bard, decided 2026-10-02 (16:47):** Musicianship, Peacemaking, Provocation, Discordance. Pieces: gain to the cap (our
+above-160 creatures carry bard difficulty from their level); success capped 90 percent (85 vs bosses and champions);
+Discordance effect 28 at 120 to 40 at 200; bard range capped at 18; durations double by 200; Fire Horn unchanged.
+
+**Thief, decided 2026-10-02 (16:53):** Hiding, Stealth, Detect Hidden, Snooping, Stealing, Lockpicking, Remove Trap,
+Poisoning. Pieces: gain to the cap (Meditation pattern for five; Stealing on creature level; Lockpicking on ladder
+locks); fixes (Hiding combat range floor 8, Stealing 5 percent caught floor, DH range 18 plus guard floor, the pinned
+`Poison.IncreaseLevel` bug); mastery rewards; **higher poisons** Virulent / Baneful / Plague with Alchemy antidotes.
+
+**Utility, decided 2026-10-02 (17:00):** Tracking (con color and health on the arrow, stealth footsteps at 150,
+variants at 200), Appraisal (loot hints 150, weakest resist 200), Taste ID (connoisseur), Camping (regen aura,
+dungeon camps at 150, private party camp plots at 175), Cartography (treasure maps 7 and 8, Cartography widens the dig
+and gives warmer/colder, extents clamped), **Begging renamed Persuasion** (temporary vendor discounts while training,
+permanent 30 percent at 200, guild stores included), Forensics (bigger carves, rare parts).
+
+**All 58 skills are decided.**
 
 ## Corrections to earlier notes, found while verifying
 
@@ -1233,3 +1246,191 @@ The bard skills are where the real breaks sit **inside** 200. Per-use tables: cc
 3. Discordance effect capped at 40 at 200 (so creatures still do some damage): yes?
 4. Range capped at 18 tiles: yes?
 5. Durations doubling by 200 as the reward: yes?
+
+### Decided (Chase, 2026-10-02, 16:47)
+
+All five approved as proposed: gain to the cap with our above-160 creatures as the ladder; success capped at 90 percent
+(85 against bosses and champions); Discordance effect 40 at 200 (half against bosses); range capped at 18 tiles;
+peace, provoke and discord durations double by 200. Fire Horn unchanged.
+
+---
+
+## Thief: Hiding, Stealth, Detect Hidden, Snooping, Stealing, Lockpicking, Remove Trap, Poisoning
+
+Per-use tables: cc-P20 2.3. Nothing of ours changes these handlers (P20 grep); key lines re-checked 2026-10-02.
+
+### Gain ceilings today
+
+| Skill | Ceiling | Where |
+|---|---|---|
+| Hiding | 100 | `Skills/Hiding.cs:73` |
+| Stealth | 60 unarmored, 142 max (armor term) | `Skills/Stealth.cs:96-100` |
+| Detect Hidden | 100 | `Skills/DetectHidden.cs:151, :175` |
+| Snooping | 100 | `Skills/Snooping.cs:84` |
+| Stealing | 127.5 (a 10-stone item) | `Skills/Stealing.cs:316` |
+| Lockpicking | 140 (treasure map level 5, paragon chests) | `Items/Containers/TreasureMapChest.cs:190` |
+| Remove Trap | trap power + 30: about 180 on world chests, about 210 on a Tinkering-200 trap (decided power keeps scaling) | `Skills/RemoveTrap.cs:61` |
+| Poisoning | 100 | `Skills/Poisoning.cs:124` |
+
+### What breaks inside 200
+
+1. **Hiding works in melee from 118:** the "someone is fighting you" range is `(100 - Hiding) / 2 + 8` (`Hiding.cs:53`),
+   which hits 0 at 116 and goes negative, so nobody can stop the hide.
+2. **Stealing is never caught from 150** (`caught = Stealing < Random(150)`, `Stealing.cs:337`). Piles up to 20 stones or
+   3,000 gold a try at 200.
+3. **Detect Hidden scans 20 tiles at 200** (`range = DH / 10`, `DetectHidden.cs:145`), past the screen. And **guards (DH 100)
+   can never reveal a hider at 121+** (cc-P20).
+4. **Poisoning's Infectious Strike bug (pinned):** `Poison.IncreaseLevel` takes the next list entry, not the next level of the
+   same family (`Server/Poison.cs:51`, used at `Items/Weapons/Abilities/InfectiousStrike.cs:67`), so at Poisoning 100+ every
+   Infectious Strike turns Lethal into Lesser Darkglow and Darkglow into Parasitic. A defect at any cap.
+
+Stealth (40 steps at 200), Snooping, Lockpicking and Remove Trap scale harmlessly.
+
+### Proposal
+
+1. **Gain to the cap.** Meditation pattern (window to the cap) for Hiding, Stealth (armor term kept below it), Detect
+   Hidden, Snooping and Poisoning. Content-driven for the rest: **Stealing** trains against the target's level (F-14),
+   so stealing from tougher creatures trains it; **Lockpicking** gets lock levels on the shared ladder (dungeon and
+   higher-tier chests, treasure maps above level 5); **Remove Trap** already climbs on tinker traps and ladder chests.
+2. **The breaks become caps, the same "never immune" rule as block and bard:**
+   - Hiding's combat range never drops below 8 tiles (OSI's GM value).
+   - Stealing keeps a 5 percent caught floor.
+   - Detect Hidden range capped at 18; guards and our NPC detectors get BaseAI's floor (at least DH / 10 percent to reveal).
+   - Fix the IncreaseLevel bug (a pinned patch: next level in the same family).
+3. **Rewards past 100 (the thief's mastery):**
+   - Hiding: taking damage has a chance not to reveal you, up to 50 percent at 200.
+   - Stealth: more steps (pinned already gives 40 at 200) and running costs 1 step instead of 2 at 200.
+   - Detect Hidden: reveals stealth footsteps for a few seconds after a scan.
+   - Snooping: see into nested containers.
+   - Stealing: piles grow as pinned (20 stones at 200).
+   - Lockpicking: lockpicks stop breaking at 200, picks get faster.
+   - Remove Trap: a disarmed trap can be salvaged into a trap kit (for tinkers).
+   - Poisoning: extra charges per dose, up to +4 at 200.
+
+### Open questions for Chase
+
+1. Gain to the cap (Meditation pattern for five, content-driven for Stealing and Lockpicking): yes?
+2. The four fixes (Hiding range floor 8, Stealing 5 percent caught floor, DH range 18 plus guard floor, poison bug): yes?
+3. The mastery rewards: keep, cut or change any?
+
+### Decided (Chase, 2026-10-02, 16:51)
+
+Gain to the cap as proposed, the four fixes, and every mastery reward: **yes.** Chase added: **Poisoning and Alchemy
+synergy, higher poisons.** Draft below; Poisoning stays "in discussion" until it is answered.
+
+### Higher poisons (draft, Poisoning x Alchemy)
+
+**Why poison falls behind too.** AOS poisons tick a share of current HP, but each level has a hard per-tick ceiling
+(pinned `Misc/PoisonKinds.cs:80-84`, `PoisonImpl(name, id, level, min, max, percent, ...)`): Lethal is 35 percent of current
+HP, **min 20, max 50 per tick**. Against a 325 HP player or our above-160 creatures, the 50 ceiling makes Lethal small.
+Levels stop at 4 in every family.
+
+**Proposal: three poisons above Lethal on the shared ladder** (regular family; numbers are placeholders for playtest):
+
+| Gate (Alchemy to brew / Poisoning to apply) | Poison | Level | Per tick (share of current HP, min-max) | Ticks |
+|---|---|---|---|---|
+| 140 | **Virulent** | 5 | 40 percent, 30-90 | 20 |
+| 170 | **Baneful** | 6 | 45 percent, 40-140 | 20 |
+| 200 | **Plague** | 7 | 50 percent, 50-200 | 20 |
+
+- **Brewed by Alchemy** on the shared ladder (window gate to gate + 45, so alchemists also train on them), ingredients
+  from the gathering ladders and **variant creature venom** (Etherhide-tier serpents and spiders and up).
+- **Applied with Poisoning** (window gate to gate + 45, so Poisoning trains to 200 on them), to weapons and arrows as
+  today. Infectious Strike can raise up to Plague once the IncreaseLevel bug is fixed.
+- **Cures keep up:** Alchemy gets matching **antidotes** at each tier (a Virulent antidote, and so on), and the existing
+  cure formulas (spell, bandage, potion) treat levels 5-7 with their usual `- (level + 1)` penalty, so high poisons
+  are hard to cure without the matching antidote or high skill.
+- **Immunity:** 58 pinned creatures are immune to Lethal (`PoisonImmune => Poison.Lethal`). Overseer default: **a creature
+  immune to Lethal is immune to every higher poison too** (no change to ported bosses); our own creatures (F-14) set
+  their own immunity per level.
+
+Open questions for Chase:
+1. Three higher poisons (Virulent, Baneful, Plague) at 140 / 170 / 200: yes? Names?
+2. Matching antidotes from Alchemy: yes?
+3. Lethal-immune creatures stay immune to all higher poisons: yes, or let the new tiers pierce it?
+
+### Decided (Chase, 2026-10-02, 16:53)
+
+**Higher poisons approved:** Virulent 140, Baneful 170, Plague 200 (names and placeholder numbers as drafted), brewed by
+Alchemy and applied with Poisoning on the ladder; **matching antidotes** from Alchemy; **Lethal-immune creatures stay
+immune to all higher poisons.**
+
+---
+
+## Utility: Tracking, Item ID (Appraisal), Taste ID, Camping, Cartography, Begging, Forensics
+
+These need the most invention: every one of them stops gaining at or near 100 and does nothing past it. Per-use
+tables: cc-P20 2.3 and 2.4.
+
+### Today
+
+| Skill | Gain ceiling | What it does past 100 |
+|---|---|---|
+| Tracking | 100 (`Skills/Tracking/Tracking.cs:129, :163`) | search range `10 + (skill / 10) x 10`: 210 tiles at 200 (`:166-168`), a stalking bonus for Ninjitsu |
+| Item ID | 100 (`Skills/ItemIdentification.cs:44`) | nothing; **F-14 repurposes it as Appraisal** (decided: con colors free, skill steps to a stat card at 90) |
+| Taste ID | 100 (`Skills/TasteID.cs:37`) | nothing |
+| Camping | 100 (`Items/Skill Items/Camping/Kindling.cs:38`) | nothing |
+| Cartography | 130 (treasure map level 5-6 decode, `Items/Maps/TreasureMap.cs:371-417`) | map extents grow past the facet edge (cosmetic break) |
+| Begging | 100 (`Skills/Begging.cs:111`) | nothing (gold has no skill term) |
+| Forensics | 100 (`Skills/ForensicEval.cs:36, :54`) | nothing |
+
+### Proposal, skill by skill (each a new job; every one is a deviation to register)
+
+1. **Tracking: the hunter's sense.** Gains on tracking creatures by their level (F-14), to the cap. Past 100: the
+   tracking arrow also shows the target's **con color and health**; from 150 it **shows the footsteps of stealthed
+   players and creatures** for a few seconds; at 200, **track variant creatures** (the rare spawns) from double range.
+   Search range kept as pinned.
+2. **Appraisal (Item ID):** F-14's steps stand (to the stat card at 90). Gains on appraising creatures and items by
+   their level, to the cap. Past 120: **150 shows what a creature carries** (loot hints, including variant materials);
+   **200 shows its weakest resist** (feeds F-26's Expose Weakness, where Appraisal already sets the duration).
+3. **Taste ID: the connoisseur.** Gains on tasting dishes, potions and elixirs by their ladder tier, to the cap. Past 100:
+   **food and elixir buffs you consume last longer**, up to +50 percent at 200; identifies poison level on food, drink and
+   weapons, higher poisons included; names unknown potions and elixirs.
+4. **Camping: the camp is a rest point.** Gains on lighting fires with ladder kindling (woods by tier), to the cap. Past
+   100: a lit campfire gives the party a **regen aura** (hits, stamina, mana up to +10 points at 200); from 150 you can
+   **make a secure camp inside dungeons** (safe logout during dives, F-24); campfires burn longer with skill.
+5. **Cartography: higher treasure.** Gains on decoding maps by level, to the cap. **Treasure map levels 7 and 8 on the
+   ladder** (decode at about 150 and 190), with chests whose locks and traps sit on the Lockpicking and Remove Trap ladders
+   (decided there). Fishing's maps (up to level 3, decided) and the dungeon feed it. **Map extents clamped at the 100 value**
+   (fixes the cosmetic break).
+6. **Begging becomes Persuasion** (renamed for everyone through the updater, like Appraisal). Gains on haggling with NPC
+   vendors, to the cap. Past 100: **vendor buy prices down** to 20 percent at 200, and **better League quest rewards** (a
+   share more gold or renown). (Chase turned down better sale prices for Arms Lore; this is buying, and it is Persuasion's
+   whole job.)
+7. **Forensics: the field dresser.** Gains on examining corpses by the creature's level, to the cap. Past 100: **more from
+   every carve** (hides, meat, venom, parts), up to +50 percent at 200, and a **chance at a rare part** from variant
+   creatures; keeps its OSI job (who killed it, who looted it, thieves).
+
+### Open questions for Chase
+
+1. Tracking: con color and health on the arrow, stealth footsteps at 150, variants at 200: yes?
+2. Appraisal: loot hints at 150, weakest resist at 200: yes?
+3. Taste ID as the connoisseur (longer food and elixir buffs, poison and potion ID): yes?
+4. Camping: party regen aura, dungeon camps at 150: yes?
+5. Cartography: treasure map levels 7 and 8, extents clamped: yes?
+6. Begging renamed **Persuasion**, vendor discounts and better quest rewards: yes? Name?
+7. Forensics as the field dresser (bigger carves, rare parts): yes?
+
+### Decided (Chase, 2026-10-02, 16:57)
+
+1. **Tracking: approved as proposed** ("great start, no notes").
+2. **Appraisal: approved as proposed** ("great start, no notes").
+
+### Decided (Chase, 2026-10-02, 17:00)
+
+3. **Taste ID: approved as proposed.**
+4. **Camping: approved, plus a temporary "instanced" camp site** (Chase). Overseer default: at Camping 175, pitching a
+   tent opens a **private camp for the party**, 30 minutes, entered through the tent: the regen aura, a cooking fire,
+   safe logout, and you step back out where you pitched it. ModernUO has no true instancing, so "instanced" means a set
+   of **reserved camp plots** in an unused map area, one handed to each party while in use (the cc-P16 tent addons are a
+   starting point for the plot art). Check first: a free area for the plots and how many are needed at once.
+5. **Cartography: approved, plus an easier way to find the X** (Chase). Today the dig tolerance comes from **Mining**, 1 to
+   4 tiles (pinned `Items/Maps/TreasureMap.cs:585-593`). Overseer default: **Cartography adds to it**, +1 tile at 150 and
+   +2 at 200, and from 100 each missed dig says **warmer or colder** (and roughly which way at 150).
+6. **Persuasion: approved, scaled up** (Chase): **a successful haggle gives a temporary discount with that vendor while
+   training, and at 200 the discount is permanent.** Overseer numbers: temporary discount of skill / 10 percent (10 at 100,
+   up to 20 at 199) for 10 minutes with that vendor; **at 200, a permanent 30 percent** with every vendor. **Includes guild
+   stores when used on guildmasters** (Chase): seal, voucher and other guild-currency prices drop by the same share.
+7. **Forensics: approved as proposed.**
+
+**The utility group is complete, and with it all 58 skills.**
