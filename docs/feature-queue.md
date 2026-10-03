@@ -19,22 +19,29 @@ F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and qu
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
 
-## Where things stand (handoff, updated 2026-10-03, 11:10)
+## Where things stand (handoff, updated 2026-10-03, 13:20)
 
 For a new features chat: read this section, then the entries it names. Prompt states and bug numbers
 live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers from disk, not from here.
 
 - **Done in the 10-03 morning features chat:** the League build-out designed (F-24 "League build-out" and "cc-P47
-  research done" blocks), F-33 added (multi-guild jobs, multi-reputation upgrades, the mule's 17 crafted guild modules,
-  follower-slot target), F-32 answered in part (every dungeon, loot, the PetMimic as a rare tameable mimic, OSI Mimic
-  found in ServUO only), the League storyline drafted (`docs\league-storyline.md`, draft 2: six chapters, epilogue at
-  loop 21), and **F-12's ladder decided** (50, 100, then +5 per loop to 200 at loop 21; XP reserve 25 percent of the
-  next step; Keeper and Breaker; level resets every loop). **cc-P47** (League research) ran; **League batch 1** prompt
-  written unnumbered (`cc-prompts\cc-P-league-batch-1-ladder.md`), the overseer numbers it.
-- **Next for this chat, in order:** F-12's echo shape decided 10-03 (playtest tunes the numbers); F-32, F-29
-  and F-23 answered in full 10-03; League batch 2 prompt (contract
-  engine, job board, multi-guild jobs, banking) from P47's build order once batch 1 runs; batch 3 (mule and upgrades)
-  waits on the companions chat's slot costs per rank and the evo mount's cost.
+  research done" blocks), F-33 added, the League storyline drafted (`docs\league-storyline.md`, draft 2), F-12's
+  ladder decided. P47 ran; P48 League batch 1 written.
+- **Done in the 10-03 late-morning features chat:** every question waiting on Chase answered and recorded: F-32 in
+  full (traps by level and depth with new levels 5+, looted-timer respawn, Taming 100 and a 2 minute window, mimic odds
+  by level), F-29 (exceptional x1.5, every material), F-23 (everyone, default bodies only), F-12's echo shape (base
+  x1.5 +0.5 per loop to x10; Keeper skills only to x50 at loop 21), F-9 (stool confirmed, last three skills
+  confirmed), F-20 homes (Cooking with Maritime), F-4 (with the fresh world, staff and test exempt), F-10 (gargoyles
+  choose; Ter Mur gets Warriors, Arcane, Artificers), F-24 defaults, F-33 module list. Prompts: **P49** (F-32 chest
+  research, notes only) and **P50** (the chest mimic as item-art "animations", changes in place, never moves; Part B
+  after P44). Mimic art filed in `D:\UO\third-party\animated-mimic\`; Chase's PetMimic icon (color, gray, partial)
+  in `notes\art\f32-mimic-icon\`.
+- **Nothing is waiting on Chase.** Optional: look at OSI Mimic body 729 in UOFiddler.
+- **Next for this chat, in order:** a prompt for F-31 (Raptor pack friends) + F-30 (Staff Hub); an F-12 research
+  prompt (re-run the XP curve against the 22-step ladder with the echo; a gain path past ~160 for the 39 skills that
+  stop there); F-28 + F-29 together (with or after P36); League batch 2 (contract engine, job board, multi-guild jobs,
+  banking) once P48 runs; batch 3 (mule and upgrades) waits on the companions chat's slot costs per rank and the evo
+  mount's cost; the F-32 build after P49 and P50 report.
 - **Told the companions chat** (Chase pasted it 10-03): new ladder, the follower-slot target (full party at top rank +
   mule + an evolution mount by loop 11 with Trailwise Tack III, loop 21 without), the mule overlap.
 - **Engine upgrade landed.** The test shard runs upstream `d4531cd94` since 2026-10-02 18:18 (P38 bump, P39
@@ -44,7 +51,7 @@ live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers
 - **Prompts (2026-10-03):** done through P39, P43. **Running:** P42 defect batch 3 (started 07:28). **Queued, in
   order:** P44 one-step install, P45 companion probes, P35 clean-machine test, P36 New Haven dungeon build 1,
   P34 winter decor (F-22). **Written 2026-10-03:** P46 Smith orders 2 (another chat), **P47 League research** (notes
-  only, this chat), **P48 League batch 1**, **P49 F-32 chest research** (notes only, this chat). **Next free: P50.** Another chat also writes prompts: re-check `cc-prompts\` and
+  only, this chat), **P48 League batch 1**, **P49 F-32 chest research** (notes only, this chat), **P50 chest mimic monster** (Part B after P44). **Next free: P51.** Another chat also writes prompts: re-check `cc-prompts\` and
   `completed\` right before saving one. One builder at a time in `D:\ShatteredLegacy`.
 - **cc-P42 took part of F-18 and F-25** (Chase, 2026-10-03, `notes\bod-choice-decision-2026-10-03.md`):
   Part F large Smith BODs gated by skill only (70.1, Journeyman dropped), player picks Small or Large, works away
@@ -2385,9 +2392,14 @@ Grayscale cuts added 2026-10-03 at Chase's request: `mimic_gray_*` (all gray, hu
 Research prompt **cc-P49-dungeon-chests-research** written 2026-10-03 (notes only).
 
 **The mimic monster (Chase, 2026-10-03): "use the chest mimic art we found and turn it into a monster."** Archaaz's
-Animated Mimic becomes a real creature body (route open: a client anim record patch, a new anim slot, or a TazUO fork
-patch; P40 found no loose override for bodies). Class `ChestMimic` (not OSI's `Mimic` name), stats by chest level
-from OSI's Mimic as the level 4 reference. Prompt **cc-P-chest-mimic-monster** written unnumbered 2026-10-03: Part A
+Animated Mimic is shown as **item "animations"** (Chase, 2026-10-03: "use the art to make animations"): animated item
+tiles through the P26 pipeline, the server swapping tiles for each state (resting chest, waking, idle loop, bite, hurt,
+lid shut, dead). No creature body; a real body (anim files, P40 found no loose override) is the fallback only. Open
+for research: how something drawn as item art is attacked, targeted and tamed (a near-invisible mobile on the same
+tile, or the item forwarding to a hidden one). Class `ChestMimic` (not OSI's `Mimic` name), stats by chest level
+from OSI's Mimic as the level 4 reference. **The chest changes into the monster in the same location, and the
+monster never moves from that spot** (Chase, 2026-10-03): no walk animation needed; the prompt asks for an answer to
+being attacked from out of its reach. Prompt **cc-P50-chest-mimic-monster** written 2026-10-03 (Part B after P44): Part A
 research, Part B build if the route holds. **Needs the art downloaded first** to `D:\UO\third-party\animated-mimic\`
 with a SOURCE.txt (not on disk 2026-10-03).
 
@@ -2493,7 +2505,7 @@ Notes (overseer):
 | F-27 | cc-P32-spawner-importer-bods-self-repair | Written 2026-10-02 (overseer). Part C of 3. Runs after P31. |
 | F-24, F-33 (research only) | cc-P47-league-research | Written 2026-10-03 (features). Notes only: League today, 17-rank ladder, one contract framework, multi-guild favor, mule modules, follower slots, Citizen Commissions, trial maps. Entries stay under Open. |
 | F-24 (League batch 1) | cc-P48-league-batch-1 | Written 2026-10-03 (features). Signposts, 17-rank ladder, promotion with waivers, milestone bank bonus. After P46. |
-| F-32 (mimic monster) | cc-P-chest-mimic-monster (unnumbered; overseer to number) | Written 2026-10-03 (features). Archaaz's art as a creature body, `ChestMimic` by chest level. Needs the art downloaded first. |
+| F-32 (mimic monster) | cc-P50-chest-mimic-monster | Written 2026-10-03 (features). Archaaz's art as item animations (no creature body), `ChestMimic` by chest level, changes in place, never moves. Needs the art downloaded first; Part B after P44. |
 | F-32 (research only) | cc-P49-dungeon-chests-research | Written 2026-10-03 (features). Notes only: stock chests on the new engine, depth tiers per dungeon, levels 5+, looted-timer respawn, mimic fight and tame, the mimic icon. Entry stays under Open. |
 | F-8 | cc-P26-animated-runestone | Written 2026-10-01; **ran 2026-10-01**, all green. Art IDs 0x3C10-0x3C3B; registry and `find-free-art.py` for F-21 to F-23. |
 
