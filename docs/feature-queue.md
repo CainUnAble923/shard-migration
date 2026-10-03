@@ -14,7 +14,7 @@ Running list of feature ideas from play testing. Kept by the overseer (Claude); 
 4. Chase commits with `Commit-ShardWork.ps1`.
 
 F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and questions (Q-n).
-**Next free: F-32.**
+**Next free: F-33.**
 
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
@@ -2175,6 +2175,20 @@ Notes (overseer):
   wipe coming (Chase: "ok with 100% server wipe"), nothing needs migrating.
 
 Open questions: none. **After the upgrade (P38) lands.** Small.
+
+### F-32: Dungeon treasure chests worth searching (added 2026-10-03)
+
+**Ours** (chest contents beyond stock). Added by the overseer at Chase's request.
+
+Why it exists: Trammel Despise carries stock treasure-chest spawners (`Distribution/Data/Spawns/shared/trammel/Despise.json`,
+20 TreasureChestLevel1-4 entries). Chase kept them when the old creature spawners there go (bug-list D53, cc-P42 Part J)
+and said: "we will want to populate and make them worth searching" (2026-10-03).
+
+What Chase wants: dungeon treasure chests that are populated and worth the trip.
+
+Open questions (Chase): Despise only, or every dungeon's chests; what "worth it" means (gold, reagents, gems, magic
+items, shard currencies, rare drops); trap and lockpick difficulty; respawn rate. Research first: what stock
+`TreasureChestLevel1-4` hold on the new engine, and how often they spawn.
 
 ## Batched
 

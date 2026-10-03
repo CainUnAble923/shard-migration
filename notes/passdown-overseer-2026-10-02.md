@@ -5,7 +5,7 @@ holds. Read `claude/shattered-legacy-state.md` in the project for machines and t
 
 ## Numbers (re-derive before trusting: `grep -rhoE "\b(D|Q|F|T)-?[0-9]+\b" notes docs | sort -u`)
 
-- Bugs: **next free D51** (D50 1 s stop timeout, D49 harvest last-vein, D44 talisman leak, D45 meditation, D46 tool suite, D47 ddns follows a VPN, D48 extract durability, all 2026-10-02).
+- Bugs: **next free D55** (D54 Wisp Orb lost on logout, D53 old Despise spawns, D52 Wisp Orb combat, D51 Smith remote BOD button, D50 1 s stop timeout, D49 harvest last-vein, D44 talisman leak, D45 meditation, D46 tool suite, D47 ddns follows a VPN, D48 extract durability, all 2026-10-02).
 - Deviations: **next free D-107** (D-92 to D-106 registered 2026-10-02).
 - Features: the **features chat** owns `docs\feature-queue.md` and is writing to it (it took F-25 and F-26 on
   2026-10-02). Do not write there concurrently; hand feature requests to that chat.
