@@ -19,18 +19,32 @@ F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and qu
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
 
-## Where things stand (handoff, updated 2026-10-03, 08:15)
+## Where things stand (handoff, updated 2026-10-03, 11:10)
 
 For a new features chat: read this section, then the entries it names. Prompt states and bug numbers
 live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers from disk, not from here.
 
+- **Done in the 10-03 morning features chat:** the League build-out designed (F-24 "League build-out" and "cc-P47
+  research done" blocks), F-33 added (multi-guild jobs, multi-reputation upgrades, the mule's 17 crafted guild modules,
+  follower-slot target), F-32 answered in part (every dungeon, loot, the PetMimic as a rare tameable mimic, OSI Mimic
+  found in ServUO only), the League storyline drafted (`docs\league-storyline.md`, draft 2: six chapters, epilogue at
+  loop 21), and **F-12's ladder decided** (50, 100, then +5 per loop to 200 at loop 21; XP reserve 25 percent of the
+  next step; Keeper and Breaker; level resets every loop). **cc-P47** (League research) ran; **League batch 1** prompt
+  written unnumbered (`cc-prompts\cc-P-league-batch-1-ladder.md`), the overseer numbers it.
+- **Next for this chat, in order:** F-12's echo shape decided 10-03 (playtest tunes the numbers); F-32, F-29
+  and F-23 answered in full 10-03; League batch 2 prompt (contract
+  engine, job board, multi-guild jobs, banking) from P47's build order once batch 1 runs; batch 3 (mule and upgrades)
+  waits on the companions chat's slot costs per rank and the evo mount's cost.
+- **Told the companions chat** (Chase pasted it 10-03): new ladder, the follower-slot target (full party at top rank +
+  mule + an evolution mount by loop 11 with Trailwise Tack III, loop 21 without), the mule overlap.
 - **Engine upgrade landed.** The test shard runs upstream `d4531cd94` since 2026-10-02 18:18 (P38 bump, P39
   cutover via P43). Chase's step 7 checks: `notes\p39-step7-checks-2026-10-03.md` (all pass but the Wisp Orb,
   D52/D54). Every pinned file:line in entries written before 2026-10-03 is from `7c9215d97`: any new prompt has
   CC re-verify them.
 - **Prompts (2026-10-03):** done through P39, P43. **Running:** P42 defect batch 3 (started 07:28). **Queued, in
   order:** P44 one-step install, P45 companion probes, P35 clean-machine test, P36 New Haven dungeon build 1,
-  P34 winter decor (F-22). **Next free: P46.** Another chat also writes prompts: re-check `cc-prompts\` and
+  P34 winter decor (F-22). **Written 2026-10-03:** P46 Smith orders 2 (another chat), **P47 League research** (notes
+  only, this chat), **P48 League batch 1**, **P49 F-32 chest research** (notes only, this chat). **Next free: P50.** Another chat also writes prompts: re-check `cc-prompts\` and
   `completed\` right before saving one. One builder at a time in `D:\ShatteredLegacy`.
 - **cc-P42 took part of F-18 and F-25** (Chase, 2026-10-03, `notes\bod-choice-decision-2026-10-03.md`):
   Part F large Smith BODs gated by skill only (70.1, Journeyman dropped), player picks Small or Large, works away
@@ -42,7 +56,7 @@ live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers
   its IDs in `player-package\vendor\shattered-legacy-art\registry.csv`.
 - **Next big piece: the League build-out** (Chase, 2026-10-03), recorded under F-24 with F-33 (multi-guild jobs,
   multi-reputation upgrades starting with the Compact Mule). First build: signposts and the 17-rank ladder, the job
-  board on one contract framework, multi-rep upgrades, Citizen Commissions. Starts with a research prompt. Trials at
+  board on one contract framework, multi-rep upgrades, Citizen Commissions. Research prompt **cc-P47** written. Trials at
   milestone ranks only (confirmed); Renown numbers wait on F-12.
 - **Ready to batch, no open questions:**
   - **F-31** (Raptor pack friends): unblocked now that P38 landed. Small.
@@ -51,24 +65,22 @@ live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers
   - **F-18 remainder** (tailoring into the guild seal system, turn-in checks 1 per 5 items, low-skill track) and
     **F-25 remainder** (bank or cash out with the standing toggle, add-ons in the store, direct-fill bonus), after
     P42 is done and its notes are read. Store prices must be set against P42's new seal rates.
+  - **F-32** (dungeon chests and the mimic): all of Chase's answers in; research **cc-P49** written, build after.
   - F-20 after F-18. F-14 (Appraisal and con colors). F-24 after F-14 with F-12's XP. F-6 (TazUO half first).
   - **F-21** (New Haven community art): unblocked; P34 is now last in the queue, so F-21 need not wait on it.
-  - **F-28** with or after P36 (adds the `BaseRanged` fall-through).
+  - **F-28** with or after P36 (adds the `BaseRanged` fall-through); **F-29** (exceptional x1.5, every material)
+    alongside it.
+  - **F-23** (paperdoll kit, everyone, default bodies only) once its check-first list is done.
 - **F-12 and F-13** follow `notes\f12-levels-loops-caps.md` (max level 200). F-13 needs re-reading against it.
 - **Third-party art on disk** (`D:\UO\third-party\`, SOURCE.txt per folder, inventory in its README.md):
   animated-runestone, farm-carts, winter-holiday, orc-encampment, marble-railings, oil-lantern, satchel,
   paperdoll-siege-of-sosaria (F-23; never ship its `MUL Files\`; it has Topless and Nude body variants), and
   drc1k-uoassets (13 packs; non-commercial, ship only inside the client, credit him, no edits without his OK).
-- **Downloads:** servuo.dev allows 5 a day. Still to fetch: paintings (.2351, plus a second set if it exists)
+- **Downloads:** servuo.dev allows 5 a day. Still to fetch: **Animated Mimic** (Archaaz, threads/animated-mimic.12406,
+  to `third-party\animated-mimic\`; the mimic monster prompt waits on it), paintings (.2351, plus a second set if it exists)
   and the bridge support beam (.2396).
 - **Waiting on Chase:**
-  - **F-32** (dungeon treasure chests, new 2026-10-03): every dungeon, loot and pet mimic (our PetMimic,
-    fight then tame, very rare) answered; open: trap and lockpick difficulty, respawn rate, taming skill and window. Research first on the new engine.
-  - F-29: the split; whether OSI's own materials count.
-  - F-23: paperdoll kit for everyone or opt-in, and which body variants.
-  - F-9 follow-up: confirm the pit stool at 3440,2558,55 in game.
-  - F-12: reserve cap, echo multipliers, step size above 100; how each League metal rank is earned.
-  - F-4, F-10: not scheduled.
+  - Nothing open. F-4 and F-10 are answered but not scheduled.
 
 ## Open
 
@@ -276,9 +288,8 @@ What it touches (overseer, to check when it is scheduled):
   per character.
 - F-3: with one character, the Cleanup Point Exchange stone is left out (a registered deviation).
 
-Open questions:
-- When: with the fresh world, or later?
-- Staff and test accounts exempt?
+Answered 2026-10-03 (Chase): **starts with the fresh world**; **staff (Counselor and up) and flagged test accounts are
+exempt**. Open questions: none. Not yet scheduled.
 
 ### F-5: Young status by time only, 2 weeks (added 2026-09-30)
 
@@ -668,7 +679,7 @@ the two are separate.
 #### Skills per guild (proposed; decides each guild's creation kit)
 
 Every one of pinned's 58 skills (`Server/Skills.cs`, `enum SkillName`) belongs to exactly one guild.
-The last three placed were Forensics, Taste ID and Spellweaving (overseer, 2026-09-30; Chase to confirm).
+The last three placed were Forensics, Taste ID and Spellweaving (overseer, 2026-09-30; **confirmed 2026-10-03 (Chase)**).
 Chase adjusts; the table is data, one line per guild.
 
 | Guild | Skills |
@@ -763,6 +774,7 @@ Open questions:
   **The thief sits on a stool by the pit** (Chase, 2026-09-30). Pick: the stool at **3440,2558,55**
   (static 0xA2A, upper floor, west of the bench ring, facing east over the pit); CC sets the Z from
   the stool's tiledata height. Goes in a later batch as a small seeder addition.
+  **Confirmed in game 2026-10-03 (Chase): the thief sits on the stool.** Closed.
 - Answered 2026-09-30: tools are the creation items (above); starter items are free once per loop.
 - Answered 2026-09-30: the new guilds are named **the Twin Paths Dojo** and **the Keepers of the
   Last Door**.
@@ -795,10 +807,10 @@ Check first (when scheduled):
 3. Whether Ter Mur's decoration and spawns are present in our worlds (PT-01 found New Haven's missing).
 4. Young status and the Ter Mur region: whether Young protection applies there as in New Haven.
 
-Open questions:
-- Gargoyles always start in Ter Mur, or they choose?
-- Which guilds get a Ter Mur guildmaster, and does Ter Mur get its own starter quests (like New Haven's
-  26) or only the guild route?
+Answered 2026-10-03 (Chase):
+- **Gargoyles choose**: Ter Mur is their default start, New Haven is offered too.
+- **Guild route only, a few guildmasters**: Warriors' Brotherhood, Arcane Society (Mysticism) and Artificers' Order
+  (Imbuing). No separate quest line. Open questions: none. Not yet scheduled.
 
 ### F-11: Guild upgrades draw resources from the bank as well as the backpack (added 2026-09-30)
 
@@ -1140,6 +1152,33 @@ Open questions:
 - Pet levels in the first version, or later?
 - Does the "time loop" / prestige idea reset levels (prestige resets for a permanent bonus)?
 
+**Ladder and reserve, decided 2026-10-03 (Chase). Supersedes the post-cap loop numbers below and the +25 step and
+5-level reserve in `notes\f12-levels-loops-caps.md`.**
+- **Max level ladder: 50 at creation, 100 at loop 1, then +5 per loop: 200 at loop 21.** Every step above 100 needs a
+  scroll (20 scrolls, 105 to 200; 105 to 120 match OSI's own power scroll sizes, 125 to 200 are ours). These 20 scroll
+  loops are the "happy 20"; **reaching 200 at loop 21 is the capstone** (the epilogue "The Unbroken", below), and
+  the separate 20 post-cap loops are dropped. Loops after 200 are allowed and pay cosmetics and the loop board only.
+- **Keeper and Breaker grow per loop up to loop 21**, keyed to loop count (a player who chooses later gets the level
+  for their current loop): Breaker keeps 3 skills per loop past the first (all 58 at loop 21, floor rising to full
+  peak); Keeper's below-peak gain climbs on the same schedule. Level still resets every loop for both.
+- **The Setting:** 20 floors, floor N opens at loop N+1 (loops 2 to 21); floor 20 holds the epilogue.
+- **Legacy points** (base stats such as pet slots and luck, each capped) are earned per loop on this same ladder.
+- **XP reserve at max level = 25 percent of the XP from the current cap to the next one**, so it scales with loop and
+  step on its own.
+- Re-run cc-P20's XP curve (`notes\cc-P20-scratch\xp_curve.py`) against this 22-step ladder before numbers are built.
+
+**Echo (loop memory) starting shape, decided 2026-10-03 (Chase).** Supersedes the x2 to x6 placeholder in
+`notes\f12-levels-loops-caps.md`. Build it as a config table; **playtest tunes every number**.
+- **Everyone (base echo):** applies to skills below their previous peak and to levels already reached.
+  **x1.5 at loop 1, +0.5 per loop, top x10 at loop 18** (loop 4 x3, loop 10 x6). Above the old peak, the plain
+  live base rate.
+- **Keeper (Mend):** a higher echo on **skills only**, keyed to loop count (a late Mend gets its current loop's
+  value): **x1.5 at loop 1 rising evenly to x50 at loop 21** (about +2.4 per loop; loop 11 about x26). Never
+  below the base echo.
+- **Level XP uses the base echo for everyone**, Keepers and Breakers alike, so the level re-climb paces every loop
+  and the two choices stay even.
+- Breakers' kept skills need no echo; their not-yet-kept skills use the base echo.
+
 **Reasons to keep resetting after max level 200 (Chase, 2026-10-03): "we need reasons to keep resetting after hitting
 max skills cap".** Today the ladder ends after five resets (`notes\f12-levels-loops-caps.md`: 50, 100, 125, 150, 175,
 200), and nothing past that. Overseer proposal, **post-cap loops** (a reset at 200 keeps the cap at 200 but still
@@ -1161,9 +1200,20 @@ Answered 2026-10-03 (Chase):
   starts with 3 kept at half peak, +3 skills and a higher floor each post-cap loop, all 58 kept at full peak at
   post-cap loop 19. Keeper's below-peak gain multiplier climbs on the same 19-loop schedule until a re-climb takes
   minutes.
+- **Chase 2026-10-03: "a happy 20 loops, with the 20th being something".** Post-cap loops run to **20**; loop 19 finishes
+  Breaker and Keeper, and **loop 20 is the capstone**. Overseer draft:
+  - **The Setting's floors match the loops:** floor N opens at post-cap loop N, 20 floors, so the dungeon cap and the
+    loop cap are the same number.
+  - **Loop 20 unlocks the last chapter, "The Unbroken"** (league-storyline, epilogue): floor 20 of the Setting, where
+    the character re-forges the crest (ring and blade whole, in the Keeper or Breaker version).
+  - **Rewards:** the title "the Unbroken", the whole crest as a wearable (cloak or shield) and house decor, the last
+    Legacy-tree node at its cap, companions' final rank, and a name on a permanent Hall of Legacies in the League office.
+  - **After 20:** play goes on; further resets are allowed but pay only cosmetics and the loop board.
+
 - **Overseer flag: what a late loop still costs.** Once skills cost nothing, a reset must still cost something or it
   can be spammed for Legacy points. Proposal: **level always resets for both**, and the level re-climb (XP, with
-  echo) paces every post-cap loop. Chase to confirm.
+  echo) paces every post-cap loop. **Confirmed by Chase 2026-10-03: level resets with every loop**, for Keepers and
+  Breakers alike.
 
 ### F-13: Achievement reward shop and AP-gated titles (added 2026-09-30)
 
@@ -1572,7 +1622,9 @@ Suggested (overseer):
 - Run them through our guild system and F-18's rules, not OSI's NPC rewards: each guild issues its
   craft's orders and pays in its own currency. Likely homes: Carpentry and Bowcraft with the Foresters'
   Union, Tinkering with the Tinkers' Union, Inscription and Alchemy with the Arcane Society, Cooking
-  with the Merchants' Exchange. Chase to confirm.
+  with the Merchants' Exchange. **Confirmed 2026-10-03 (Chase), with Cooking moved to the Maritime Brotherhood**
+  (matches F-9; the overseer's question named Maritime, so Chase to say if Merchants was meant). Alchemy stays with
+  the Arcane Society.
 - F-17's "contained items" button covers these too.
 - Large job; one or two crafts per batch, Carpentry and Tinkering first (most players craft them).
 
@@ -1764,8 +1816,9 @@ Check first, once downloaded: file names against gump IDs (so it ships through `
 overlap with Fiddle-Me-This; which pieces come from EA's Enhanced Client; whether its login splash
 and "Dragon Desktop" are wanted or left out; total size for the updater.
 
-Open questions:
-- Everyone, or an opt-in download?
+Answered 2026-10-03 (Chase): **everyone**, shipped in the standard client package. **Default body variants
+only**; the Topless and Nude variants never ship. Still to check before batching (the "Check first" list above):
+gump ID mapping, Fiddle-Me-This overlap, EA Enhanced Client pieces, splash and Dragon Desktop, size.
 
 ### F-24: League work: guild quests, monster hunts, culling and dungeon dives (added 2026-10-01)
 
@@ -1817,8 +1870,7 @@ Overseer suggestions (Chase to confirm or change when the prompt is written):
   can then lift the player past Apprentice at once. Chase's picture: a veteran mercenary joining the
   adventurers' guild after years in the field starts at first rank, then jumps up after onboarding.
 
-Open questions: none. Overseer suggestions above (party sharing, mini boss, board placement) stand
-as defaults unless Chase changes them when the prompt is written.
+Open questions: none. Overseer suggestions above (party sharing, mini boss, board placement) **confirmed 2026-10-03 (Chase)**.
 Order: after F-14 (job sizing by creature level) and with F-12's XP in place; dives after the P24
 dungeon work.
 
@@ -1848,6 +1900,24 @@ Check first: the League design doc (`design\systems\league_of_extraordinary_citi
   Draft 2 written 2026-10-03: `docs\league-storyline.md` (6 chapters; UO lore link, the Unbound, lasting
   choice, solo or party, private trial maps all decided). Chase edits before any
   trial is built.
+- **cc-P47 research done 2026-10-03** (`notes\cc-P47-league-research.md`, build order in 4 batches). Chase's answers to
+  its four decisions (2026-10-03):
+  1. **Trials are waived until built** (config flag `league.trialsWaivedUntilBuilt`, cleared chapter by chapter). When a
+     chapter ships, anyone at or past its rank can play it for its rewards; it is never required after the fact.
+  2. **Per-rank bonuses step only at the six milestone ranks** (Dull Copper, Bronze, Verite, Blaze, Mythril,
+     Celestial). Overseer sizes: bank +100 each (+600 at Celestial; `ItemsPerLeagueRank` reused per milestone), +1
+     small BOD each, +1 large BOD at Verite and Mythril, +1 active League job each (3 to 9). Replaces F-24's "+1 per
+     League rank" job cap and F-25's "+2 small, +1 large per League rank".
+  3. **Separate caps:** the League board has its own active-job cap; each guildmaster ledger keeps its own per-guild 3.
+     A multi-guild job counts once, on the League cap.
+  4. **Existing payouts to non-members stay as they are** (Imbuing's Artificers standing and the three member-tool
+     sites). Banking applies to League jobs only.
+  Overseer defaults taken from P47 without a new question: League rank per character, registration per account;
+  rank threshold on lifetime Renown (shop spending never costs rank); Commission Renown never counts toward rank;
+  **Dawnstone (P36) is excluded from the ladder** (`LadderExcluded`), so a new metal adds a rank only when listed;
+  Legacy-point pet slots sit **inside** the `FollowersMax` curve (the curve is the cap). Facts P47 corrected: the mule
+  costs **2** slots today (`PackMule.cs:88`; batch 3 makes it 1) and is sold by the **Cross-Guild Exchange**, opened from
+  five guildmasters, not by the Outriders; rank-gated crafting uses guild-sold schematics consumed as a craft resource.
 - Design doc's commission permissions name "Steel" and "Silver" citizens, which are not on the ladder: map them to
   ladder ranks when specified.
 
@@ -2158,6 +2228,9 @@ Open questions (for Chase):
 2. Does "across the board" include the **OSI** materials (Dull Copper to Valorite, the six woods, the
    three leathers), or only ours?
 
+Answered 2026-10-03 (Chase): 1. **Normal stays as it is, exceptional gets x1.5** (rounded). 2. **Every material,
+OSI's included** (register the deviation). No questions left; ready to batch, ideally with or after F-28.
+
 ### F-30: Staff Hub, an in-game GM tool gump (added 2026-10-02)
 
 **Ours** (staff only; players never see it).
@@ -2286,8 +2359,37 @@ Notes (overseer):
 - The stat feed is already capped through the shared item caps (cc-P25 sweep D, section F), so a new source adds
   no new power ceiling, only availability.
 
-Still open: trap and lockpick difficulty; respawn rate; the Animal Taming needed and the tame window; the mimic's odds
-(confirm 1 in 500, flat or by chest level).
+Answered 2026-10-03 (Chase), the rest:
+6. **Traps and locks: stock by chest level, and scaled by dungeon depth.** Chests deeper in (lower floors, harder
+   dungeons) roll harder. Chase: "if you go over level 4 lets make higher levels", so depth can push a chest past
+   stock level 4 into **new levels 5 and up** (ours), each with harder trap and lock and better loot. Research
+   reports the stock level 1-4 numbers on the new engine first; levels 5+ extend that curve.
+7. **Respawn: a timer after the chest is looted** (overseer default 30 to 60 minutes; playtest tunes it), so
+   camping one chest pays less than moving through the dungeon.
+8. **Mimic tame: Animal Taming 100, a 2 minute window** after the mimic is beaten down.
+9. **Mimic odds by chest level:** about 1 in 1000 at level 1 falling to about 1 in 250 at level 4 (roughly 1 in
+   500 overall). Levels 5+ continue the curve (overseer default: 1 in 200 at 5, floor 1 in 100).
+
+Open (overseer, for research): how depth is measured per dungeon (floor index, a per-region tier table, or
+both); how many levels above 4 (overseer default: 5 and 6 to start); whether levels 5+ need new chest art or
+reuse stock chests with a hue. No questions left for Chase; ready to batch after research.
+
+Mimic item icon (Chase, 2026-10-03): a grinning rock with amber eyes, saved in `notes\art\f32-mimic-icon\`
+(1024 source; 64, 44 and 32 px cuts on transparency, read well down to 32). A rock suits OSI's Mimic body 729,
+which it shares with the rock-like Paralithode. Checks (in P49): whether PetMimic is hued or changes form (the art
+is colored, and UO hues assume grayscale), and whether the Talisman layer needs a paperdoll gump as well.
+Grayscale cuts added 2026-10-03 at Chase's request: `mimic_gray_*` (all gray, hues fully) and `mimic_partial_*`
+(gray body, amber eyes, teeth and flecks kept, for a partial hue so only the rock takes the color);
+`hue-preview.png` shows both, plain and with test hues.
+
+Research prompt **cc-P49-dungeon-chests-research** written 2026-10-03 (notes only).
+
+**The mimic monster (Chase, 2026-10-03): "use the chest mimic art we found and turn it into a monster."** Archaaz's
+Animated Mimic becomes a real creature body (route open: a client anim record patch, a new anim slot, or a TazUO fork
+patch; P40 found no loose override for bodies). Class `ChestMimic` (not OSI's `Mimic` name), stats by chest level
+from OSI's Mimic as the level 4 reference. Prompt **cc-P-chest-mimic-monster** written unnumbered 2026-10-03: Part A
+research, Part B build if the route holds. **Needs the art downloaded first** to `D:\UO\third-party\animated-mimic\`
+with a SOURCE.txt (not on disk 2026-10-03).
 
 ### F-33: Multi-guild favor and upgrades that need several reputations (added 2026-10-03)
 
@@ -2324,9 +2426,9 @@ Notes (overseer):
   module slots, modules from other guilds: Field Smelter Rig (Miners + Smiths), Arcane Ward Harness (Mage guild),
   Clockwork Load Harness (Tinkers), Survey Saddle Roll (Cartographers), Trailwise Tack (Rangers). Higher tiers need
   Compact rank, vouchers, rare materials and cross-guild parts. Built today: `PackMule.cs` with breeding
-  (`PackMuleBreedingSystem.cs`), sold by the Outriders, and the Cross-Guild Exchange's four-currency `PackMuleDeed`.
+  (`PackMuleBreedingSystem.cs`), sold by the Cross-Guild Exchange (P47: not the Outriders; 2 control slots today), and the Cross-Guild Exchange's four-currency `PackMuleDeed`.
 - **Chase 2026-10-03: every guild builds a module for the mule, possibly with tiers each.** Overseer draft, one per
-  guild (the design doc's five kept where they fit; Chase to react). Tiers: I / II / III at the building guild's
+  guild (the design doc's five kept where they fit; **approved as drafted 2026-10-03 (Chase)**, tweaks at build time). Tiers: I / II / III at the building guild's
   Apprentice / Journeyman / Master, cost in that guild's currency plus Mining Vouchers (the mule is the Compact's):
 
   | Guild | Module | What it does (tier III at the end) |
@@ -2354,7 +2456,15 @@ Notes (overseer):
   - **Three tiers for now**, possibly five later (build the tier count as data).
   - **The mule takes only one follower slot**, so it can travel with a full party of companions; a **Rangers' tier
     upgrade lowers or removes that slot**. (Overseer: put that on Trailwise Tack III.)
-  - Still open: module slots on the mule (overseer default: 1 to 5 by mule tier, a loadout to choose, not all 17).
+  - **Module slots: 1 at mule tier 1, rising to 5 at tier 5** (Chase 2026-10-03): a loadout, not all 17.
+  - **Requirement (Chase 2026-10-03): a player must eventually be able to run the mule with a full party of
+    companions, "after X loops".** Follower slots are what decide this. cc-P41 (`notes\cc-P41-companions-research.md`
+    section 7.4, `party.json`) proposes `FollowersMax` 5 at max level 50 up to 8 at 200, companion count 1 to 4, and a
+    Squire costing 3 slots, rising with rank. Overseer target, to agree with the companions chat: **a full party at
+    top rank plus the mule plus room for other pets (Chase: "and room for other pets", then "maybe an evolution
+    mount beast": so the reserved room is one evolution mount, slot cost per the companions/Evo design) fits by loop 11 (max level 150) with Trailwise Tack III (mule at 0 slots), and by loop 21
+    (max level 200) without it.** (Loop numbers moved to the 2026-10-03 ladder.) Loops raise follower slots (Chase: pet slots grow with loops), so the slot curve is set from that
+    target once the companions' per-rank slot costs are fixed.
 - **Overlap with the companions workstream** (cc-P41 research, cc-P45 probes, another chat): P41 cites `PackMule.cs`
   as the precedent for companion records. Check with that chat before the mule's tiers are built, so the mule is not
   designed twice.
@@ -2374,13 +2484,17 @@ Notes (overseer):
 | F-1 | cc-P18-reset-stone-young-craftx | Written 2026-09-30. Part 3 of 3; may stop at findings if larger than expected. Custodian trash bag route held back until F-3. |
 | F-16 | cc-P22-small-features-1 | Written 2026-09-30. Part 1 of 6. |
 | F-19 | cc-P22-small-features-1 | Written 2026-09-30. Part 2 of 6. League rank bonus stubbed at 0 until F-12. |
-| F-9 (thief at the pit) | cc-P22-small-features-1 | Written 2026-09-30. Part 3 of 6. Stool 3440,2558,55 from map data; Chase to confirm in game. |
+| F-9 (thief at the pit) | cc-P22-small-features-1 | Written 2026-09-30. Part 3 of 6. Stool 3440,2558,55 from map data; confirmed in game 2026-10-03. |
 | F-11 | cc-P22-small-features-1 | Written 2026-09-30. Part 4 of 6; may stop at findings if large. |
 | F-17 | cc-P22-small-features-1 | Written 2026-09-30. Part 5 of 6. Port from ServUO-pub57. |
 | F-15 | cc-P22-small-features-1 | Written 2026-09-30. Part 6 of 6. No deploy; Chase publishes the wiki page. |
 | F-22 | cc-P34-winter-decor | Written 2026-10-02 (features). Runs after P33. Both layers, dated event seeder, art through P26's pipeline. |
 | F-3 | cc-P33-clean-up-britannia | Written 2026-10-02 (overseer). Runs after P32. |
 | F-27 | cc-P32-spawner-importer-bods-self-repair | Written 2026-10-02 (overseer). Part C of 3. Runs after P31. |
+| F-24, F-33 (research only) | cc-P47-league-research | Written 2026-10-03 (features). Notes only: League today, 17-rank ladder, one contract framework, multi-guild favor, mule modules, follower slots, Citizen Commissions, trial maps. Entries stay under Open. |
+| F-24 (League batch 1) | cc-P48-league-batch-1 | Written 2026-10-03 (features). Signposts, 17-rank ladder, promotion with waivers, milestone bank bonus. After P46. |
+| F-32 (mimic monster) | cc-P-chest-mimic-monster (unnumbered; overseer to number) | Written 2026-10-03 (features). Archaaz's art as a creature body, `ChestMimic` by chest level. Needs the art downloaded first. |
+| F-32 (research only) | cc-P49-dungeon-chests-research | Written 2026-10-03 (features). Notes only: stock chests on the new engine, depth tiers per dungeon, levels 5+, looted-timer respawn, mimic fight and tame, the mimic icon. Entry stays under Open. |
 | F-8 | cc-P26-animated-runestone | Written 2026-10-01; **ran 2026-10-01**, all green. Art IDs 0x3C10-0x3C3B; registry and `find-free-art.py` for F-21 to F-23. |
 
 ## Dropped

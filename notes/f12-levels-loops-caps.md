@@ -1,5 +1,8 @@
 # F-12 revised: levels, loops and caps (decided 2026-10-01; stats rewritten 2026-10-02)
 
+**2026-10-03: ladder and reserve superseded** (Chase, features chat): 50, 100, then +5 per loop to 200 at loop 21
+(20 scrolls); XP reserve = 25 percent of the XP to the next cap. See `docs\feature-queue.md` F-12, "Ladder and reserve".
+
 Written 2026-10-01 by the overseer from Chase's decisions in one sitting, against cc-P20's research
 (`notes\cc-P20-skill-scaling-research.md`, 236 KB). **This supersedes the max level 1000 design and the
 example loop ladder in the F-12 and F-13 entries of `docs\feature-queue.md`.** Where this doc and the
@@ -132,7 +135,8 @@ Every number here is a first proposal, not a decision.
 
 - **Reserve cap: the XP for 5 levels.** Enough that a player hunting a scroll is never wasting play,
   small enough that a 25-level step still has to be played.
-- **Echo multiplier: x2 on loop 1, rising by x1 per loop to x6 on loop 5.**
+- ~~Echo multiplier: x2 on loop 1, rising by x1 per loop to x6 on loop 5.~~ Superseded 2026-10-03: see
+  `docs\feature-queue.md` F-12, "Echo (loop memory) starting shape".
 - **Step size +25** above 100. Four scrolls to go 100 to 200. OSI's +5 would need twenty.
 
 cc-P20's XP curve (`XP(L) = 40 x L^1.5`) was modeled against the old 13-loop ladder to 1000 and needs

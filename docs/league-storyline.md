@@ -109,7 +109,7 @@ re-forge the blade to become the Gem's new keeper. With all five pieces the play
     regains faster after each reset). Title "Keeper", a Keeper's hue or cloak. The Registrar's people trust you.
   - **Sunder (Breaker):** the loop stays but no one holds it. Lasting effect (Chase 2026-10-03: "a few skills"):
     **three chosen skills keep a floor through every reset** (overseer default: half their peak), plus three more
-    skills per post-cap loop, until all 58 are kept at full peak (post-cap loop 19). Title "Breaker", a cracked-steel hue. The Unbound treat you as one of theirs.
+    skills per loop, until all 58 are kept at full peak at loop 21 (max level 200). Title "Breaker", a cracked-steel hue. The Unbound treat you as one of theirs.
   - Chase 2026-10-03: in the end **Breakers keep every skill through a reset**, and **Keepers regain skills almost
     instantly**, so the two end even. Curves in feature-queue F-12 (post-cap loops).
   - Both are sidegrades, never a strict win. The shard also keeps a **tally** of Keepers and Breakers; the larger
@@ -124,6 +124,14 @@ Setting): no vanilla place fits where the Gem was.
   choice in chapter 5 changes what chapter 6 is.
 - The end is not an end: the story closes on the next loop starting, now with the character knowing why. Room for
   future chapters (an expansion) beyond Celestial if the ladder ever grows.
+
+### Epilogue: The Unbroken (loop 21, max level 200)
+
+Chase 2026-10-03: a "happy 20": twenty +5 scroll loops take the cap from 100 to 200 at loop 21. The Setting has 20
+floors, one opened per loop from loop 2. On loop 21 the character reaches the last floor and **re-forges the crest**: the ring and the
+blade made whole, in the Keeper or the Breaker version. The loop does not end for the world, but this character is no
+longer bound by it. Title "the Unbroken", the crest as a wearable and as decor, and a name in the League's Hall of
+Legacies. Details in feature-queue F-12 (post-cap loops).
 
 ## Decided (Chase, 2026-10-03)
 

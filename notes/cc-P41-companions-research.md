@@ -32,6 +32,8 @@ could not read, I say so**. The overseer should diff section 9 against the doc.
 | 7 | Data tables | JSON through pinned `JsonConfig`, shipped in the image under `Data/ShatteredLegacy/companions/`, with a live override in the bind-mounted `Configuration/companions/` and a GM reload command. A shard test validates every row, so a bad row fails `build.sh`. | Pinned's precedent (`NameList.cs:49-52`) **throws at startup** on a bad file. A typo in a live override must log and keep the last good table, never take the server down. |
 | 8 | Breeding readiness | Yes. Sex is already `Mobile.Female`. Parents and generation fit as `[SerializableField]` from build one. Pinned has **zero** creature breeding hooks. | A `Mobile` reference turns null and a raw `Serial` can be **reissued** once a parent is deleted. Lineage needs its own never-reused id. |
 
+**Addendum 2026-10-03 (section 11, placed before section 9):** slot costs per companion rank and for the evo mount, set against F-33's target (16 slots at loop 11 with Trailwise Tack III, 17 at loop 21 without, for a party of 4); `party.json` now keys on loop count; where P41 touches the Compact Mule.
+
 Counts in this note were made against the files; each list sits beside its count. Things I could not confirm are
 marked **unverified**.
 
@@ -544,18 +546,12 @@ never changes an existing companion.
 six have no pinned AI (section 3). `Branch` must name an existing `Id`; cycles are a row error. Class-aware command words
 ("healers", "archers") come from a `CommandGroup` field per class, so they stay data too.
 
-**`party.json`** (party size and `FollowersMax` by max level, one row per F-12 ladder step):
-```json
-{ "ByMaxLevel": [
-  { "MaxLevel": 50,  "FollowersMax": 5, "CompanionSlots": 1, "Rooms": 1 },
-  { "MaxLevel": 100, "FollowersMax": 5, "CompanionSlots": 2, "Rooms": 2 },
-  { "MaxLevel": 200, "FollowersMax": 8, "CompanionSlots": 4, "Rooms": 4 } ] }
-```
-Lookup takes the highest row at or below the character's max level. Applied wherever `ClusterFSkillCaps.Apply` runs
-(login, world load, max-level change), writing `FollowersMax` (serialized per mobile, property `Mobile.cs:851`). F-12 says pet and
-stable slots follow max level; whether companions share `FollowersMax` with pets or have their own `CompanionSlots`
-count is a **design-doc question** (`skills-design.md:1103` says "companions share FollowersMax"; I kept both columns so
-either reading fits). All numbers above are placeholders.
+**`party.json`** (party size, slot costs and `FollowersMax`). **Superseded 2026-10-03:** the first draft (`FollowersMax`
+5 rising to 8, keyed by max level) does not fit F-33's target. The slot costs and the shape now live in **section 11**;
+the curve itself is P47's (question 6). The table keys on **loop count** (0 to 21), not max level, because the
+2026-10-03 ladder makes max level a function of the loop (50, 100, then +5 per loop). Lookup takes the highest row at or
+below the character's loop. It is applied wherever `ClusterFSkillCaps.Apply` runs (login, world load, loop change),
+writing `FollowersMax` (serialized per mobile, property `Mobile.cs:851`).
 
 ---
 
@@ -577,12 +573,91 @@ either reading fits). All numbers above are placeholders.
 
 ---
 
+## 11. Addendum 2026-10-03: slot costs for the F-33 target, the new ladder, and the mule
+
+Written after the features chat's update (`docs\feature-queue.md`, F-12 "Ladder and reserve" `:1144`, F-33 `:2319`).
+**This is the companions side of P47 question 6:** P47 sets the `FollowersMax` curve and should read these costs from
+here. (They belong in the design doc too, but that is a claude.ai project doc I cannot edit; the overseer should copy
+11.2 into it.)
+
+### 11.1 Correction to how F-33 quotes P41
+
+F-33 (`feature-queue.md`, mule bullet "Requirement") says P41 proposes "a Squire costing 3 slots, rising with rank".
+P41 did not propose that. The **source** Squire costs a flat 3 (`Squire.cs:520`), and its contract refuses unless 5
+slots are free (`SquireContract.cs:48`). P41's `CompanionSlots` column was the **number** of companions (1 to 4), not a
+cost. Both source numbers are dropped below.
+
+### 11.2 Proposed slot costs (first proposal, for Chase)
+
+| Follower | Slot cost | Basis |
+|---|---|---|
+| Companion, rank tier 1 (first third of the rank ladder) | **1** | A new player at `FollowersMax` 5 can run a companion beside a mule and an ordinary pet. |
+| Companion, rank tier 2 (middle third) | **2** | Same as pinned `BaseHire` (`Hireables/BaseHire.cs:38`). |
+| Companion, top rank tier | **3** | The source Squire's cost, kept only for the top tier. |
+| Compact Mule | **1**, **0** with Trailwise Tack III | Decided (F-33). |
+| Evolution mount beast, by stage (3 stages) | **2 / 3 / 4** | Final stage 4 is what every Evo mount spec uses at every stage (10 specs: Dragon, Cu Sidhe, Hellsteed, Kirin, Nightmare, Frenzied Ostard, Ridable Llama, Ridable Polar Bear, Unicorn, Hiryu; each sets 4 on all 3 stages) and matches stock top mounts (Hiryu 4, Cu Sidhe 4 in pinned; Nightmare, Kirin, Unicorn 2). Cheaper early stages are ours. |
+
+Full party size: **4 companions**, my placeholder. The design doc may fix a different number; the formula below is what
+P47 should recompute against.
+
+**Budget at the target:** `party x top cost + mule + evo mount` = 4 x 3 + 1 + 4 = **17 without Tack III, 16 with it**.
+So `FollowersMax` must be at least **16 at loop 11** (max level 150) and **17 at loop 21** (max level 200). Pinned's
+default is 5 (`Mobile.cs:7827`).
+
+One curve that meets it, as a check for P47, not a proposal over theirs: 5 at loop 0, +1 per loop to **16 at loop 11**,
+then +1 at loops 16 and 21 (**18 at loop 21**, one spare slot). Sensitivity: each extra companion in the party adds 3
+to both thresholds (party of 5 needs 19 and 20).
+
+**Two things for the design doc to settle:** (1) where the three rank tiers fall. A companion cannot rank past its
+owner's loops, so if the top tier opens after loop 11, the loop-11 test is about capacity only, since no top-rank party
+can exist yet. (2) Whether the evo mount is a companion-system creature or Evo's own (its cost is listed either way).
+
+### 11.3 Engine facts behind the budget (pinned d4531cd94)
+
+- **A slot cost of 0 is safe:** pinned has no special case for 0 (the only checks are arithmetic,
+  `BaseCreature.cs:2630`, `:2644`, `:3770`). `ControlSlots` defaults to 1 (`:509-513`).
+- **Changing a cost on a controlled pet must re-count followers.** `ControlSlots` is a plain generated field
+  (`BaseCreature.cs:505-509`) with no follower adjustment, and `RemoveFollowers` subtracts the **current** value
+  (`:2625-2634`). A companion rank-up, an evo stage change, or installing Tack III must call `RemoveFollowers()`, set
+  the value, then `AddFollowers()` (both public, `:2625`, `:2639`). Otherwise `Followers` drifts until the next restart
+  rebuilds it (`:2514`). This is the same class of bug as ShrunkPet's (section 5 item 3).
+- **How a mounted pet counts (P47 asks this):** a ridden `BaseMount` keeps its master **and its slots**; the `Rider`
+  setter does not touch control (`BaseMount.cs:77-135`). So the mule and an evo mount cost their slots whether ridden or
+  not, and whoever rides them. An ethereal is the opposite: its `FollowerSlots` move to whoever rides it
+  (`Ethereals.cs:154-168`, checked against the rider at `:201`).
+- **The new ladder changes nothing else in sections 2.5 or 7.** Per-skill cap = max level still holds. The companion
+  record keeps its own `LoopCount`, capped at the owner's (Chase 2026-10-02), and `MaxLevel` follows from it on the same
+  ladder. Owners now have 21 loops for companions to follow.
+
+### 11.4 Where my plans touch the mule
+
+- **Code fact first:** `PackMule.cs:88` sets `ControlSlots = 2` ("like a Nightmare"). The file's last commit was
+  2026-05-31 (`9f5dc21`) and the shard repo shows no uncommitted change to it, so the 1-slot rule in F-33 is **not yet in
+  the code**. The mule build must make it 1, and make Tack III take it to 0 with the re-count from 11.3.
+- **Records: no double design.** P41 cited `PackMule` (`PackMule.cs:41-47`, `_isMale`, `_nextBreedTime`) only as
+  precedent for keeping state on the creature as `[SerializableField]`. Nothing in P41 changes the mule. One
+  recommendation for the breeding chat: **one lineage registry for every bred creature** (mule and companions alike),
+  using never-reused ids as in section 8. Note that `PackMule` keeps its own `_isMale` where `Mobile.Female` already
+  exists (`Mobile.cs:1178`).
+- **Shared mechanisms, not shared designs.** Four of the 17 modules need the same engine work as companions, so build
+  them once in a follower-behaviour layer:
+  - Trailwise Tack "follows through gates and teleporters" is the companion follow rule (`TeleportPets`,
+    `BaseCreature.cs:4092-4124`).
+  - Arcane Ward III's emergency recall to the stable is the pigeon's travel-checked recall (section 6). Note the mule
+    is **stabled**; companions are **roomed**.
+  - Thieves' Shadow Cloak needs a creature that hides and stays hidden while moving, which pinned does not have
+    (section 3, stealth rogue; **unverified**).
+  - Field Medic Pack's self-heal is the `CanHeal` path or `BeginHeal` (section 2.4).
+- ShrunkPet's two defects (section 5) also hit the mule if it is ever shrunk.
+
+---
+
 ## 9. For the overseer: possible conflicts with the design doc I could not read
 
 1. Section 6: reusing `PlayerMobile.Stabled` contradicts "no stabling for companions"; I recommend our own registry.
    What happens to companions at **logout** is open.
 2. Section 2.5: the record on the creature means a companion's levels survive the owner's reset (assumption).
-3. Section 7.4: shared `FollowersMax` versus a separate companion slot count.
+3. Section 11.2: party size (4 is my placeholder), where the three rank tiers fall, and the slot costs themselves.
 4. Section 1.5: looting rights, steal, peacemaking on players and the pigeon-as-token are dropped or gated here; if the
    design kept any of them, it needs an explicit rule.
 5. The exact parity list needs about 4 pinned patches (section 2). If the design accepts "near parity", each one becomes
@@ -597,7 +672,7 @@ brackets.
 
 1. **B1 Companion base and record [M].** `BaseCompanion : BaseCreature` (partial, generated serialization): record
    fields (levels, loop, peaks, personality, class id, `LineageId`, parents, generation); player `HitsMax/StamMax/ManaMax`;
-   never `SetDamage`; weapon element split on equip; `CanAutoStable => false`; `ClusterFSkillCaps.Apply` overload and
+   never `SetDamage`; weapon element split on equip; `CanAutoStable => false`; slot-cost changes always re-count followers (11.3); `ClusterFSkillCaps.Apply` overload and
    `ShouldBoost` including companions. Tests: caps and `Skills.Cap` applied; an armed companion uses weapon dice; gain
    boost reaches a companion. One GM-spawnable test companion, no hiring yet.
 2. **B2 Data tables [M].** Loader, validator, `[CompanionData reload`, the four tables with seed rows, the shard test
