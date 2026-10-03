@@ -5,11 +5,11 @@ holds. Read `claude/shattered-legacy-state.md` in the project for machines and t
 
 ## Numbers (re-derive before trusting: `grep -rhoE "\b(D|Q|F|T)-?[0-9]+\b" notes docs | sort -u`)
 
-- Bugs: **next free D55** (D54 Wisp Orb lost on logout, D53 old Despise spawns, D52 Wisp Orb combat, D51 Smith remote BOD button, D50 1 s stop timeout, D49 harvest last-vein, D44 talisman leak, D45 meditation, D46 tool suite, D47 ddns follows a VPN, D48 extract durability, all 2026-10-02).
-- Deviations: **next free D-107** (D-92 to D-106 registered 2026-10-02).
+- Bugs: **next free D56** (D55 post-Valorite BOD material gap, D54 Wisp Orb lost on logout, D53 old Despise spawns, D52 Wisp Orb combat, D51 Smith remote BOD button, D50 1 s stop timeout, D49 harvest last-vein, D44 talisman leak, D45 meditation, D46 tool suite, D47 ddns follows a VPN, D48 extract durability, all 2026-10-02).
+- Deviations: **next free D-113** (D-107 to D-112 from cc-P42) (D-92 to D-106 registered 2026-10-02).
 - Features: the **features chat** owns `docs\feature-queue.md` and is writing to it (it took F-25 and F-26 on
   2026-10-02). Do not write there concurrently; hand feature requests to that chat.
-- Prompts: P1 to P32 exist (P29 defect batch 2 done `56cae9d`; P30 ModernUO upgrade research; P31 registrar office cleanup; P32 spawner importer, BODs, Self Repair; P33 F-3 Clean Up Britannia; P34 winter decor, P35 clean-machine test and P36 dungeon build 1 written by other chats). P37 upgrade prep written; P38 (bump) and P39 (test cutover) reserved for the upgrade. P40 custom client research written. P41 companions research placed; P42 defect batch 3 written (now gated after P43). P39 stopped at step 4 on the 1 s stop timeout (D50); P43 = 60 s grace in both compose files, then P39 steps 5 and 6. **Next free P44.** Another chat also writes prompts: re-check `cc-prompts\` and `completed\` right before saving a new one.
+- Prompts: P1 to P32 exist (P29 defect batch 2 done `56cae9d`; P30 ModernUO upgrade research; P31 registrar office cleanup; P32 spawner importer, BODs, Self Repair; P33 F-3 Clean Up Britannia; P34 winter decor, P35 clean-machine test and P36 dungeon build 1 written by other chats). P37 upgrade prep written; P38 (bump) and P39 (test cutover) reserved for the upgrade. P40 custom client research written. P41 companions research placed; P42 defect batch 3 written (now gated after P43). P39 stopped at step 4 on the 1 s stop timeout (D50); P43 = 60 s grace in both compose files, then P39 steps 5 and 6. P43 done (cutover holds, step 7 checks in `p39-step7-checks-2026-10-03.md`). P44 one-step install (other overseer session), P45 companion probes (companions chat, numbered 2026-10-03; unnumbered draft moved to `cc-prompts\_renders\`). Queue: P42 (running 07:28 10/03), then P44, P45, P35, P36, P34. **Next free P46.** Another chat also writes prompts: re-check `cc-prompts\` and `completed\` right before saving a new one.
 
 ## Queue
 
