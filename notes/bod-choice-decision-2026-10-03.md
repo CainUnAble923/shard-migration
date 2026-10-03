@@ -19,3 +19,5 @@ From the P39 step 7 BOD check (bug-list D51).
   Prompted by 20 exceptional ringmail tunics paying 60 standing and 1 Seal.
 - Large-deed turn-in rank gate (cc-P32 PT-11) follows the skill-only rule too (Part F).
 - Large Smith BODs accept crafted items directly (small deeds still combine too), because matching small deeds is near impossible (Chase, 2026-10-03; cc-P42 Part H).
+- Teaching orders get a per-character toggle, player-facing, default on; off = stock picks (Chase, 2026-10-03; cc-P46 Part B).
+- 2026-10-03 09:40 Chase: yes to a Self Repair imbue floor price, x3 Seals / x2 standing for commissions, and x3 runic hammer prices from Gold up (cc-P46 C, D, E).
