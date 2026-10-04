@@ -77,3 +77,12 @@ notes path and build tag, and move the draft to `cc-prompts\_renders\`.
 - Overseer edits: P35 B4 step 2 asks UAC count, window close, installer auto-start, copy EA's log; "2.5 GB" fixed.
   P36 step 5 points at P44 probe 6. P44 prompt moved to `completed\`.
 - Scratch `D:\UO\cc-p44-work\` (about 1.5 GB) safe to delete.
+
+## Update 19:15 (P35 done, commit blocked)
+
+- P35 finished (`notes\cc-P35-clean-machine-test.md`). Commit refused `player-package/vendor/vc-runtime/vcruntime140.dll`
+  (`Commit-ShardWork.ps1` blocks `.dll`; both repos public). Overseer fix: `.gitignore` ignores
+  `player-package/vendor/vc-runtime/*.dll` (kept on the build PC; SOURCE.txt tracked; build checks hash and signature),
+  and `Commit-ShardWork.ps1` now uses `status --porcelain --untracked-files=all`, because it expanded new folders with
+  Get-ChildItem and swept in ignored files. Backup: `D:\UO\Commit-ShardWork.ps1.bak-2026-10-03`.
+- Lesson: a CC prompt that vendors a binary must say "gitignored, build-PC only" up front.
