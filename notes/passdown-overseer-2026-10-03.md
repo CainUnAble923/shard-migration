@@ -17,7 +17,7 @@ notes path and build tag, and move the draft to `cc-prompts\_renders\`.
 
 ## Numbers (re-derive before trusting)
 
-- Bugs: **next free D61** (D59 HoH +5 from pack, D60 familiarity panel reach, 13:49). D50-D58 logged 2026-10-02/03; D51-D54 fixed in P42 and passed in game; D55-D58 fixed in
+- Bugs: **next free D66** (D65 catalog back button; D64 metals to 200 cap; D59 HoH +5, D60 familiarity reach, D61 force_driver, D62 material name case, D63 category overflow). D50-D58 logged 2026-10-02/03; D51-D54 fixed in P42 and passed in game; D55-D58 fixed in
   P46 (in-game check pending).
 - Deviations: **next free D-113** (D-107 to D-112 from P42). P46 adds text to update (D-109 teaching toggle, Seal
   numbers, Self Repair floor): read P46's notes and register.
@@ -86,3 +86,42 @@ notes path and build tag, and move the draft to `cc-prompts\_renders\`.
   and `Commit-ShardWork.ps1` now uses `status --porcelain --untracked-files=all`, because it expanded new folders with
   Get-ChildItem and swept in ignored files. Backup: `D:\UO\Commit-ShardWork.ps1.bak-2026-10-03`.
 - Lesson: a CC prompt that vendors a binary must say "gitignored, build-PC only" up front.
+
+## Update 2026-10-04 07:15 (P35 sandbox run)
+
+- Sandbox (vGPU off): extract, permission prompt, EA installer (plus DirectX), EA's patcher started on its own,
+  our progress bar, patch finished: **install path passed.** TazUO then crashed: OpenGL 2.1 required (GDI Generic 1.1),
+  logged D61. `FNA3D_FORCE_DRIVER` is ignored (TazUO sets it from its own `force_driver` setting: 1 OpenGL,
+  2 Vulkan, 3 auto). `-force_driver 3` test offered to Chase.
+- Chase decision: graphics in the sandbox is not a player blocker; **publish 1919 and test on a fresh real PC.**
+
+## Update 2026-10-04 07:20: P35 / T-049 passed
+
+- `D:\UO\clean-test-results\20261003-192012\results\evidence-5.txt` (07:20:07): TazUO running from the package,
+  window "Test - [TazUO ...]", `zlib.DLL` and `VCRUNTIME140.dll` both from `app\tazuo\`, D3D11 through WARP
+  (`d3d10warp.dll`), 0 Zone.Identifier left, no new app errors after 07:15. EA patch 19:24:38 to 19:33:50 (1.77 GB),
+  headless patcher started by EA's installer. Chase logged in to TEST with a test account.
+- Only with `-force_driver 3` (D61). The sandbox reached TEST via a hosts entry `192.168.1.58` because public DNS was on
+  a VPN exit `159.26.100.68` (D47 again, Chase's VPN). Test shard 2594 is LAN only by design.
+- Next: P51 = D59, D60, D61, sandbox LogonCommand error (`inside-start-error.txt`); D47 if Chase says yes. Publish 1919
+  only after VPN off and DNS back on the home IP.
+- 07:22: VPN off, public DNS back on 216.247.206.76 (dns.google). **1919 published** (`publish-output.txt`: OK,
+  sha256 ab152c66...). Fresh-PC test must be on the home LAN with `Play TEST Shard.bat` (2594 is LAN only; live is down).
+- D47: Chase wants a Shard-Console VPN warning, not a ddns redesign. Goes in P51.
+- 07:45 Chase decisions: (a) metals rescale to the 200 cap for now (D64, even 12.5 steps proposed); (b) post-Valorite
+  Seal multipliers (x1.5..x5) stay as they are; (c) **items and temporary effects may raise skills and stats above
+  the cap.** Stats already do (StatCap limits raw stats only). Skills do not: pinned `Skills.cs:317-325` clamps
+  ObeyCap mods at Cap, and item skill bonuses set `ObeyCap = true` (`Misc/AOS.cs:1357-1358`), as OSI does. So (c) is a
+  deviation to register (next D-113) and a P51/P52 item: item bonuses and our mods (hammers, spells, potions,
+  talismans) ObeyCap=false; audit every SkillMod source.
+
+## Update 2026-10-04 17:08
+
+- **P48 done** (notes 13:36): 41/41 patches, 606/606 facts, image `sl-modernuo:cc-p48` (`beb5677d7a5d`, build 3).
+  Build 4 hung when Docker stopped answering; Chase re-runs `build.sh -t sl-modernuo:cc-p48` before committing.
+  ClusterFAccountData v15 -> v16. Open for Chase: chapters 4/5 at Blaze/Mythril (built, by name) or Toxic/Obsidian.
+  Untracked `design\tutorial-farm\` appeared mid-P48 (another chat), not P48's.
+- **P51 is taken** by the features chat: `cc-P51-staff-hub-and-raptor-pack.md` (F-30 Staff Hub, F-31 Raptor pack).
+  The overseer's bug batch (D59-D65, D47 console VPN warning, sandbox LogonCommand, skill mods over cap) is **P52**.
+- Queue: P49 (notes) may run now. Builder after P48 is committed: P51, then P52 (or P52 first if Chase wants fixes
+  first). P50 Part B, P36, P34, P45 after.

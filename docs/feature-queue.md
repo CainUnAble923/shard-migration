@@ -14,12 +14,12 @@ Running list of feature ideas from play testing. Kept by the overseer (Claude); 
 4. Chase commits with `Commit-ShardWork.ps1`.
 
 F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and questions (Q-n).
-**Next free: F-35.**
+**Next free: F-36.**
 
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
 
-## Where things stand (handoff, updated 2026-10-03, 13:50)
+## Where things stand (handoff, updated 2026-10-04, 07:40)
 
 For a new features chat: read this section, then the entries it names. Prompt states and bug numbers
 live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers from disk, not from here.
@@ -90,7 +90,9 @@ live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers
   to `third-party\animated-mimic\`; the mimic monster prompt waits on it), paintings (.2351, plus a second set if it exists)
   and the bridge support beam (.2396).
 - **Waiting on Chase:**
-  - Nothing open. F-4, F-10 and F-34 are answered but not scheduled.
+  - **F-35** (tutorial, "The First Echo"): the Echo as the system voice, lesson order. Farm site and farmhouse
+    approved (west, v3 mockup). F-4, F-10 and F-34 are
+    answered but not scheduled.
 
 ## Open
 
@@ -2547,6 +2549,145 @@ Answered 2026-10-03 (Chase):
 
 Open questions: none. Placement: with the League batches (needs P48's ranks); costs per tier set against each guild's
 currency rates at build time.
+
+### F-35: A real tutorial story and questline for new characters (added 2026-10-04)
+
+**Ours** (OSI's New Haven quests stay ported on the board's second tab, unchanged, per F-9 Decision 5).
+
+What Chase wants (2026-10-04): "a better custom tutorial story/questline".
+
+What a new character gets today (read 2026-10-04):
+- Arrives at 3503,2574,14 in New Haven (`CharacterCreation.cs:114`); one welcome page (`GuildWelcomeGump`,
+  `ClusterFGuildStarterPath.cs:777-806`) says every skill has a guild and points at the Guild Board. P48 adds one
+  line naming the League.
+- The Guild Board: Guild Directory first, the 26 ported training quests second (F-9). At our gain rates those
+  quests finish before they register, so they are item handouts.
+- The story exists only from League rank 2 up (`docs\league-storyline.md`: chapter 1, the Pommel, under New Haven).
+  Nothing tells a new player the world loops, what the League is for, or what levels, loops and the echo are.
+- So: no story, no guided first hour, and the shard's own systems (League, guilds, levels, loops, achievements,
+  the big bank) are found by accident.
+
+Answered 2026-10-04 (Chase):
+1. **Story-led, and it teaches the systems**: each step is a story beat and a lesson.
+2. **About an hour, touching every important bit: fighting, healing, taming, crafting and so on.**
+3. **Tone: a mix.** NPCs tell the story in-world; a system voice pops for achievements, level-ups and step changes
+   (LitRPG / Dungeon Crawler Carl feel).
+4. **Opening: a vision, then wake in New Haven.**
+
+Overseer draft v2, **"The First Echo"** (from the answers). The lessons are given by **the guildmasters in their New
+Haven halls**, so the player meets each guild by doing its trade; joining stays optional until the end.
+
+| # | Beat | Lesson, given by | Minutes |
+|---|---|---|---|
+| 0 | Vision: the blade strikes the Gem, the shards fly, a voice the player half knows (their own). Private room. | the hook | 3 |
+| 1 | Wake on the New Haven road. A League clerk: "You're new. Or you're not; it's hard to tell anymore." Registers them. | League, Citizen status, first achievement pop | 3 |
+| 2 | "Every Citizen pulls their weight." Gather ore or logs at the edge of town. | gathering (Miners' Compact or Foresters) | 5 |
+| 3 | Turn it into something: smelt and smith a dagger, or make a board item. Bank the rest. | crafting (Smiths or Foresters), the bank | 7 |
+| 4 | Pests in the farmland: fight with the crafted weapon. | combat, Tactics, war mode (Warriors' Brotherhood) | 7 |
+| 5 | Patch up after: bandages, a heal potion. | Healing, potions (Healers' Covenant) | 5 |
+| 6 | Tame a farm animal from a pen and command it. | Taming, follower slots, commands (Rangers' League) | 7 |
+| 7 | A first spell from a starter book. | Magery, reagents (Arcane Society) | 5 |
+| 8 | The cave-in: down the first floor of the New Haven dungeon with pet and gear; likely die. | death, resurrection, Young status, loot (P36) | 10 |
+| 9 | Home by rune or gate. | travel | 3 |
+| 10 | The echo: first level-ups; the Registrar explains levels, the cap, loops, the echo; the Pommel foreshadowed. Then the Guild Board: "now pick your trades". | levels and loops (F-12), League ranks (P48), guilds (F-9), points at chapter 1 | 5 |
+
+- **The system voice** is proposed as **the Echo**: the player's own looped self, dry and a little tired of watching
+  them make the same mistakes ("Achievement: Stabbed a Rat. Again."). It narrates achievements, level-ups and step
+  changes as overhead or system messages; NPCs never speak in it.
+- **Every step skippable** for UO veterans, the step's reward still given; doing the thing outside the tutorial ticks
+  the step.
+- **One quest log entry** always naming the next step, with a "show me the way" arrow (the guild rows' pattern).
+- **On a loop reset**, a short re-wake scene (the vision's voice again, now familiar) instead of the full tutorial.
+- Rewards: AP and Renown through achievements, a title ("Newly Woken" or similar), a keepsake.
+
+Dependencies: step 8 needs P36's dungeon; step 10 needs F-12 levels (stub until built) and P48's ranks; step 0 can be
+a small custom room or a trial map (instancing note in `docs\league-storyline.md`). Check first: which guildmasters
+stand in New Haven today (F-9 Decision 1), a pen of tamable farm animals near town, and that each lesson's skill can
+gain from 0 fast enough at our rates to show progress inside a few minutes.
+
+Map and spawns around New Haven (Chase 2026-10-04: "account for undead on the way to the farm; we could place another
+farm"; read 2026-10-04 from pinned data and our seeders, **not yet checked against what the test world has loaded**):
+- New Haven's town region is x 3416-3545, y 2480-2648 (`Distribution/Data/regions.json`); arrival 3503,2574,14.
+- **The Haven Farmlands are at 3722,2647** (`Locations/trammel.json`), east, and the road there crosses Old Haven:
+  - stock undead: a 90-creature Zombie/Skeleton/spellbinder spawner at 3650,2509 (home range 60, so roughly x
+    3590-3710, y 2450-2570), and a graveyard group at 3618-3651, 2591-2627 (`Spawns/post-uoml/trammel/Outdoors.json`);
+  - ours: `ClusterFOldHavenSeeder.cs` puts **Drelgor the Impaler** at 3622,2488 and Old Haven Mage groups at
+    3588,2457; **3556,2487** (11 tiles past the town's east edge); 3600,2510; 3618,2540; 3645,2495.
+- Wildlife spawners ring the town on every other side (west 3396,2645 and 3403,2572; north 3549,2409 and 3482-3524,
+  2459; south 3450,2734 with Ettins) and include bears, panthers, cougars and wolves, mixed with the tamable goats,
+  llamas, hinds and bulls.
+- **Young status protects** a new character: monsters will not attack a Young player in a Young-protected region
+  (pinned `PlayerMobile.CheckYoungProtection`, `Mobiles/PlayerMobile.cs:4021-4052`), unless the creature sets
+  `IgnoreYoungProtection` or the player's quest does. So the walk is safe but confusing (mages and Drelgor "look at you
+  menacingly"), and the tutorial's own fights and the step 8 death need that opt-out on tutorial creatures only.
+
+Overseer suggestion: **a tutorial farm of our own, placed by a seeder, not the Haven Farmlands.** A small fenced farm
+with a pen of tamables (goat, sheep, cow, chicken) and a pest spawner (rats, giant rats, a snake) of tutorial-only
+creatures, at the edge of the guarded town, within about 40 tiles of the arrival point, and with no hostile spawner's
+home range within ~20 tiles. Candidates for CC to check on the map: New Haven North (3502,2475, just above the town's
+north edge) or the west side near the Bardic Guild (around 3410,2600). Not east: Old Haven is there.
+- Option worth keeping: the Old Haven undead as a **later** beat ("the dead here do not stay dead; sound familiar?"),
+  since it fits the loop story. Zombies and skeletons only, never the mages or Drelgor.
+
+Check first (add): which of the stock New Haven spawns and our Old Haven spawners are actually loaded in the test
+world; the tile and Z of each candidate farm site; that the town's guards cover it.
+
+Mockups (2026-10-04, overseer): `D:\ShatteredLegacy\design\tutorial-farm\` (`farm.py`, `north_mockup.png`,
+`west_mockup.png`, `layouts.json`; rendered from the classic client's map and art, z from land, so verify on the
+server). Same farm in both: picket fence, a pen in one corner (troughs, hay), crop rows (cabbage, wheat, corn,
+carrots, pumpkins) where the pests live, a scarecrow, a sign and the Farmhand at the gate.
+- **North** (fence x 3507-3525, y 2451-2467): the meadow east of the north road, between the Magery school and the
+  Dojo; gate faces the road. A stock wildlife spawner (r25) is centered right on it (3524,2459).
+- **West** (fence x 3381-3399, y 2603-2619): the open meadow west of the Bardic Guild; gate faces the guild and the
+  road into town. Nearest stock wildlife spawner is 3403,2572 (r30), whose range reaches the farm's north edge.
+- **Both are outside the guarded New Haven region** (x 3416-3545, y 2480-2648) and roughly 110 tiles from the
+  arrival point, not the ~40 first suggested. Either the region grows to cover the farm, or the farm runs on Young
+  protection and tutorial-only creatures; and the nearby wildlife spawner is moved or trimmed.
+
+Update 2026-10-04 (Chase): **both sites could work; the farm needs a tiny cottage.** Mockups re-rendered with the
+stock **thatched roof cottage** (multi 0x6E, the `ThatchedRoofCottageDeed` footprint, 8 x 8 with its steps), placed
+as server-side items (an addon or a seeded multi, not a player house; CC to pick and argue). Sites checked tile by
+tile this time: fence lines and cottage footprints avoid every impassable static (tree trunks, rocks) and the road,
+since map statics cannot be removed without a map patch. Trees inside the fence stay (two in the west field).
+- **North:** farm fence moved one tile east to x 3509-3527, y 2452-2468 (clear perimeter); cottage at x 3506-3513,
+  y 2440-2447 (land z 46-50), between the road and the Dojo, door facing the farm.
+- **West:** farm unchanged (x 3381-3399, y 2603-2619); cottage at x 3400-3407, y 2625-2632 (land z 47-48), south of
+  the farm's gate, beside the Bardic Guild.
+- The farm sites themselves slope (land z about 18-45 north, 9-44 west): fine for a fence and crops, but check in a
+  client that the pen and rows do not look stepped.
+
+Decided 2026-10-04 (Chase): **the west site** (north dropped: too close to the samurai Dojo), with a **custom little
+farmhouse facing town** instead of the stock cottage. Mockup: `D:\ShatteredLegacy\design\tutorial-farm\`
+(`farmhouse.py` builds it, `farmhouse_closeup.png`, `west_mockup.png`, `farmhouse_layout.json` with every piece).
+- Center 3406,2631 (house walls x 3403-3409, y 2628-2634; land z within 1 under the house), south-east of the farm,
+  clear of trunks, the road and the farm fence. Every piece is a stock tile, placed by the server as one addon.
+- The thatched cottage's shell (stone footing, wooden walls, thatch roof), with the **door moved to the east wall**
+  (wooden door 0x6AD), a window where the old south door was, a **covered porch under the east eave** (bench, water
+  barrel), steps down, a stone chimney on the west wall, an open hay shed with pitchfork and scarecrow on the north
+  side, a well, a chicken coop, and a small fenced herb garden south of the porch.
+- Placeholder to fix at build: the porch steps (wooden stairs 0x725 reads as a flat plank in the render; pick the
+  east-descending piece in a client). The door frame pieces either side of the east door are guesses too.
+
+Revised 2026-10-04 (Chase): **the farmhouse goes west of the field, attached to the fence**, and a map edit to
+clear trees is acceptable. **Approved by Chase 2026-10-04 ("looks good").** Mockup v3: `D:\ShatteredLegacy\design\tutorial-farm\west2.py` (`west_v3_mockup.png`,
+`west_v3_closeup.png`, `west_v3_layout.json`). Supersedes the 3406,2631 placement above.
+- House center **3377,2611** (walls x 3374-3380, y 2608-2614), on open, near-level ground west of the field; nothing
+  needs clearing under it. Its east porch takes the place of five fence tiles (x 3381, y 2609-2613), so the door
+  opens straight into the field, and the porch, door and steps still face east toward town. The field's own gate
+  (east side, by the Bardic Guild) stays the way in from town.
+- Herb garden dropped (the field is right there); well moved to the house's west side; shed, scarecrow and coop
+  stay north of the house.
+- **Map edit:** only two trees stand inside the fence, at 3388,2607 and 3396,2616 (4 statics: trunk and foliage).
+  Removing them is a client map patch under the client policy; the list is in `west_v3_layout.json`. Optional: the
+  field works with them left in.
+
+Added 2026-10-04 (Chase): **each lesson can include joining the guild that teaches it** ("might include joining the
+required guild for the next lesson/skill"). So the guildmaster's lesson ends with an offer to join, and joining hands
+the guild's kit (F-9), which is also the gear for the next lesson. Overseer: offer, do not force; a player who declines
+still gets the lesson's items so the tutorial cannot stall.
+
+Open questions (for Chase): the Echo as the system voice (keep, rename, or a different narrator); the lesson order;
+the minutes are guesses for playtest.
 
 ## Batched
 
