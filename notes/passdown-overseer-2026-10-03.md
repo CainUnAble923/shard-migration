@@ -17,7 +17,7 @@ notes path and build tag, and move the draft to `cc-prompts\_renders\`.
 
 ## Numbers (re-derive before trusting)
 
-- Bugs: **next free D59.** D50-D58 logged 2026-10-02/03; D51-D54 fixed in P42 and passed in game; D55-D58 fixed in
+- Bugs: **next free D61** (D59 HoH +5 from pack, D60 familiarity panel reach, 13:49). D50-D58 logged 2026-10-02/03; D51-D54 fixed in P42 and passed in game; D55-D58 fixed in
   P46 (in-game check pending).
 - Deviations: **next free D-113** (D-107 to D-112 from P42). P46 adds text to update (D-109 teaching toggle, Seal
   numbers, Self Repair floor): read P46's notes and register.

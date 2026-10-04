@@ -14,12 +14,12 @@ Running list of feature ideas from play testing. Kept by the overseer (Claude); 
 4. Chase commits with `Commit-ShardWork.ps1`.
 
 F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and questions (Q-n).
-**Next free: F-34.**
+**Next free: F-35.**
 
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
 
-## Where things stand (handoff, updated 2026-10-03, 13:20)
+## Where things stand (handoff, updated 2026-10-03, 13:50)
 
 For a new features chat: read this section, then the entries it names. Prompt states and bug numbers
 live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers from disk, not from here.
@@ -36,8 +36,11 @@ live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers
   research, notes only) and **P50** (the chest mimic as item-art "animations", changes in place, never moves; Part B
   after P44). Mimic art filed in `D:\UO\third-party\animated-mimic\`; Chase's PetMimic icon (color, gray, partial)
   in `notes\art\f32-mimic-icon\`.
-- **Nothing is waiting on Chase.** Optional: look at OSI Mimic body 729 in UOFiddler.
-- **Next for this chat, in order:** a prompt for F-31 (Raptor pack friends) + F-30 (Staff Hub); an F-12 research
+- **Done in the 10-03 afternoon features chat:** **P51** written (F-30 Staff Hub first build: shell, Commands, Player,
+  Travel; Events tab shown disabled; plus F-31 Raptor pack friends and the pottery drop). The mockup layout is
+  transcribed into the prompt, since CC cannot open the canvas.
+- **F-34 added and answered** (bank access item: League base, per-guild upgrades, crafting only, tiers by range); goes with the League batches. Optional: look at OSI Mimic body 729 in UOFiddler.
+- **Next for this chat, in order:** an F-12 research
   prompt (re-run the XP curve against the 22-step ladder with the echo; a gain path past ~160 for the 39 skills that
   stop there); F-28 + F-29 together (with or after P36); League batch 2 (contract engine, job board, multi-guild jobs,
   banking) once P48 runs; batch 3 (mule and upgrades) waits on the companions chat's slot costs per rank and the evo
@@ -51,7 +54,8 @@ live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers
 - **Prompts (2026-10-03):** done through P39, P43. **Running:** P42 defect batch 3 (started 07:28). **Queued, in
   order:** P44 one-step install, P45 companion probes, P35 clean-machine test, P36 New Haven dungeon build 1,
   P34 winter decor (F-22). **Written 2026-10-03:** P46 Smith orders 2 (another chat), **P47 League research** (notes
-  only, this chat), **P48 League batch 1**, **P49 F-32 chest research** (notes only, this chat), **P50 chest mimic monster** (Part B after P44). **Next free: P51.** Another chat also writes prompts: re-check `cc-prompts\` and
+  only, this chat), **P48 League batch 1**, **P49 F-32 chest research** (notes only, this chat), **P50 chest mimic monster** (Part B after P44), **P51 Staff Hub + Raptor pack** (features; builder, no clash with
+  P48 or P34). **Next free: P52.** Another chat also writes prompts: re-check `cc-prompts\` and
   `completed\` right before saving one. One builder at a time in `D:\ShatteredLegacy`.
 - **cc-P42 took part of F-18 and F-25** (Chase, 2026-10-03, `notes\bod-choice-decision-2026-10-03.md`):
   Part F large Smith BODs gated by skill only (70.1, Journeyman dropped), player picks Small or Large, works away
@@ -66,8 +70,7 @@ live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers
   board on one contract framework, multi-rep upgrades, Citizen Commissions. Research prompt **cc-P47** written. Trials at
   milestone ranks only (confirmed); Renown numbers wait on F-12.
 - **Ready to batch, no open questions:**
-  - **F-31** (Raptor pack friends): unblocked now that P38 landed. Small.
-  - **F-30** (Staff Hub): Commands, Player and Travel tabs; Events (surges) second.
+  - **F-30 Events tab** (surges): the second batch, after P51 runs.
   - **F-26** (Arms Lore to 200), minus expose weakness (F-14) and gear attunement (F-12).
   - **F-18 remainder** (tailoring into the guild seal system, turn-in checks 1 per 5 items, low-skill track) and
     **F-25 remainder** (bank or cash out with the standing toggle, add-ons in the store, direct-fill bonus), after
@@ -87,7 +90,7 @@ live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers
   to `third-party\animated-mimic\`; the mimic monster prompt waits on it), paintings (.2351, plus a second set if it exists)
   and the bridge support beam (.2396).
 - **Waiting on Chase:**
-  - Nothing open. F-4 and F-10 are answered but not scheduled.
+  - Nothing open. F-4, F-10 and F-34 are answered but not scheduled.
 
 ## Open
 
@@ -2485,6 +2488,66 @@ Notes (overseer):
   Foresters' hatchet line: Foresters + Smiths or Tinkers), rangers (Hunter's Satchel or Outrider's Crook: Rangers +
   Foresters or Tailors).
 
+### F-34: Bank access item, a multi-guild base with per-guild upgrades (added 2026-10-03)
+
+**Ours** (OSI crafting is pack-only; no OSI item pulls from the bank. Without the item nothing changes, so a wiki
+reader is not misled; the item and its rules go on our wiki and in `docs\fidelity-principle.md`).
+
+What Chase wants (2026-10-03): an item that lets you use the resources in your bank. A multi-guild item: maybe a base
+with an upgrade for each resource type or guild.
+
+What exists (read 2026-10-03, shard HEAD `8825eb8`):
+- **The engine is built.** F-11 (cc-P22) made `server\customizations\GuildResources.cs`: counts and takes across
+  pack and bank, order pack loose, pack satchels, bank loose, bank satchels; all or nothing; never takes equipped,
+  blessed, locked or secure items. Guild upgrades, restorations, work order turn-ins and Imbuing essences use it.
+  Gold already works from the bank through `CompactGoldHelper`.
+- **What it does not reach:** ordinary crafting. The craft system counts and takes from the pack only (the resource
+  check sits inside our `CraftItem-shard-hooks.patch` region, `ourPack.GetBestGroupAmount`). So this item is a hook
+  in the craft path that asks "does this crafter hold a link for this resource?" and, if so, routes the count and the
+  take through `GuildResources`.
+- **Overlaps:** F-19 big banks make this item much stronger (the bank holds 1,000+ items). **Not an overlap with the
+  F-33 mule** (Chase 2026-10-03): the mule is for gathering and depositing; this item is **withdraw only**, for
+  crafting. It never puts anything into the bank.
+
+Suggested (overseer):
+- **Base: a League item** (the League is the umbrella over the guilds), for example a **Citizen's Requisition
+  Ledger**, bought or earned at an early League rank. Alone it does nothing but show what is in the bank.
+- **One upgrade per guild, each unlocking that guild's resources for crafting**, bought from that guild at a rank,
+  in its currency. Draft:
+
+  | Guild | Unlocks from the bank |
+  |---|---|
+  | Miners' Compact | ingots (and ore, for smelting) |
+  | Foresters' Union | logs and boards |
+  | Tailors' Circle | cloth, leather, hides |
+  | Healers' Covenant | bandage cloth; alchemy reagents |
+  | Arcane Society | reagents for scribing and inscription |
+  | Tinkers' Union | gems and the tinkering odd parts |
+  | Artificers' Order | imbuing resources (already bank-drawn for guild Imbuing; this covers player Imbuing) |
+  | Maritime Brotherhood | cooking ingredients (Cooking sits with Maritime, F-20), fish and maritime parts |
+
+- **Tiers per upgrade** (Apprentice / Journeyman / Master), so the bank grows in reach with rank. Two ways to use the
+  tiers, pick one: **range** (I: near a bank or your guild hall; II: in any town; III: anywhere) or **materials**
+  (I: base materials, iron and plain boards; II: colored ores and woods; III: the extended and post-Valorite ones).
+  Overseer lean: range, because "anywhere" is the prize and it keeps the mine camp and field work meaningful early.
+- The craft gump says where materials come from, as F-11 does ("60 valorite: 20 in pack, 40 in bank").
+- Blessed, one per character, not tradeable once bound (so it is earned, not bought from a richer player).
+
+Check first:
+1. The craft resource count and consume path on `d4531cd94` (`CraftItem.cs` around the shard hooks): one hook point
+   for both, or two; whether `GetBestGroupAmount` hue grouping (colored ingots) survives a pack plus bank count.
+2. Craft X (F-1) and Make X runs: a run that draws from the bank must stop cleanly when the bank runs out too.
+3. Spell reagents are a different path (`Spell.ConsumeReagents`); in or out of scope is Chase's call.
+
+Answered 2026-10-03 (Chase):
+1. **Crafting only.** Spell reagents, bandages and arrows used in combat stay pack-only (so check-first item 3 is out).
+2. **Tiers by range:** I near a bank or the player's guild hall, II in any town, III anywhere.
+3. **The base is a League item**, earned at an early League rank (which rank: set when League batch 2 is specified).
+4. **Guild list approved as drafted**; tweaks at build time.
+
+Open questions: none. Placement: with the League batches (needs P48's ranks); costs per tier set against each guild's
+currency rates at build time.
+
 ## Batched
 
 | ID | Batch prompt | Notes |
@@ -2507,6 +2570,7 @@ Notes (overseer):
 | F-24 (League batch 1) | cc-P48-league-batch-1 | Written 2026-10-03 (features). Signposts, 17-rank ladder, promotion with waivers, milestone bank bonus. After P46. |
 | F-32 (mimic monster) | cc-P50-chest-mimic-monster | Written 2026-10-03 (features). Archaaz's art as item animations (no creature body), `ChestMimic` by chest level, changes in place, never moves. Needs the art downloaded first; Part B after P44. |
 | F-32 (research only) | cc-P49-dungeon-chests-research | Written 2026-10-03 (features). Notes only: stock chests on the new engine, depth tiers per dungeon, levels 5+, looted-timer respawn, mimic fight and tame, the mimic icon. Entry stays under Open. |
+| F-30 (first build), F-31 | cc-P51-staff-hub-and-raptor-pack | Written 2026-10-03 (features). Staff Hub shell, Commands, Player, Travel (saved spots in their own persistence, not account data); Events tab disabled until batch 2. Raptor friends restored on upstream's Raptor as a patch, route argued first. F-30 entry stays under Open for Events. |
 | F-8 | cc-P26-animated-runestone | Written 2026-10-01; **ran 2026-10-01**, all green. Art IDs 0x3C10-0x3C3B; registry and `find-free-art.py` for F-21 to F-23. |
 
 ## Dropped
