@@ -169,7 +169,15 @@ notes path and build tag, and move the draft to `cc-prompts\_renders\`.
   **passed**; D47 console VPN tile **passed**. Chase: familiarity rises too fast. Code: +1 per successful craft
   (`HammerOfHephaestus.cs:280-282`, `:661-663`), FamCap 100 (T1, `:116`) / 250 per metal (T2, `:495`). Asked Chase
   for the target.
-- 05:42 Chase: familiarity = all three (caps x10, chance to gain, exceptional counts more): logged D69, for P54. P53 with CC.
-- 05:55 PT-12/PT-13 (bugs chat) registered as D70 satchel smelt ratio, D71 T3-T5 lose Smelt Metal; both for P54 with D69. Decision pending: guaranteed smelt vs forge skill check.
+- 05:42 Chase: familiarity = all three (caps x10, chance to gain, exceptional counts more): logged D69, for P55. P53 with CC.
+- 05:55 PT-12/PT-13 (bugs chat) registered as D70 satchel smelt ratio, D71 T3-T5 lose Smelt Metal; both for P55 with D69. Decision pending: guaranteed smelt vs forge skill check.
 - 05:59 Chase D70: satchel smelts exactly like the forge (ratio + skill check), forge still required.
-- 06:01 D72 satchel hues along ore ladder (proposal pending OK; T2 0x8A5C flag-bit suspect), D73 achievements get a plain (Earned: ...) parenthetical. Both P54.
+- 06:01 D72 satchel hues along ore ladder (proposal pending OK; T2 0x8A5C flag-bit suspect), D73 achievements get a plain (Earned: ...) parenthetical. Both P55 (P54 is the F-12 research).
+- 06:05 **P53 still running** (no notes yet; build 4 started 06:04). Chase's 06:03 commit `a8cf0e5` caught P53 mid-work
+  (build 3 had 2 failing facts); harmless, the next commit carries the fixes. Lesson: commit only after the CC notes exist.
+- **P54 = features chat's F-12 research** (was `cc-P-f12-...`, numbered, draft in `_renders\`); notes only, may run now.
+- **P55 = overseer bug batch 5** (to write): D69 familiarity, D70/D71/D74 satchels (PT-12/13/14), D72 satchel hues
+  (proposal awaiting OK), D73 achievements "(Earned: ...)". PT-11 (regular smiths take BODs) still needs Chase's call.
+- 06:10 **New rule for every prompt (Chase):** CC ends its notes with a last line `Pnn DONE` (or `Pnn STOPPED: reason`)
+  and says the same at the end of its chat. Chase commits only after seeing it. Added to P54 (not yet handed);
+  every new prompt carries a "Finishing" section. P53 was handed before the rule: its "done" sign is its notes file.

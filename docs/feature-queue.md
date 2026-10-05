@@ -14,7 +14,7 @@ Running list of feature ideas from play testing. Kept by the overseer (Claude); 
 4. Chase commits with `Commit-ShardWork.ps1`.
 
 F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and questions (Q-n).
-**Next free: F-36.**
+**Next free: F-37.**
 
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
@@ -101,7 +101,7 @@ live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers
   to `third-party\animated-mimic\`; the mimic monster prompt waits on it), paintings (.2351, plus a second set if it exists)
   and the bridge support beam (.2396).
 - **Waiting on Chase:**
-  - **F-35** (tutorial, "The First Echo"): the Echo as the system voice, lesson order. Farm site and farmhouse
+  - **F-35** (tutorial, "The First Echo"): stage art picks for the evo dog and cat. **F-36** (climbing boots): hop range per tier, price. Farm site and farmhouse
     approved (west, v3 mockup). F-4, F-10 and F-34 are
     answered but not scheduled.
 
@@ -2697,8 +2697,82 @@ required guild for the next lesson/skill"). So the guildmaster's lesson ends wit
 the guild's kit (F-9), which is also the gear for the next lesson. Overseer: offer, do not force; a player who declines
 still gets the lesson's items so the tutorial cannot stall.
 
-Open questions (for Chase): the Echo as the system voice (keep, rename, or a different narrator); the lesson order;
-the minutes are guesses for playtest.
+Answered 2026-10-05 (Chase):
+- **The system voice is the Echo** (kept as drafted).
+- **Taming comes before the fight**, and **the pet is given or bonded**: a special tutorial pet that is an
+  appropriate combat helper at this point. Revised order: vision, wake and register, gather, craft, **tame (the
+  tutorial pet), fight the pests with it**, heal (self and pet), first spell, the dungeon, travel, the Echo explains
+  levels and loops.
+- Overseer proposal for the pet (to react to): a farm dog of our own (a tutorial-only creature at the Farmhand's
+  pen), which the player still tames in the lesson with a guaranteed success, and which arrives **already bonded**, so
+  the step 8 death also teaches resurrecting a pet. Strong enough to carry the pest fight and the first dungeon floor,
+  weak enough to be outgrown in the first loop.
+- Answered 2026-10-05 (Chase): **the pet stays after the tutorial**; it is a **plain pet, not a companion**; it is an
+  **evo pet** (grows as it fights, Xanthos Evo style), and **the player chooses a dog or a cat**. Overseer: the
+  evolution code may be shared with the companions chat's Evo Mercenaries work; tell that chat.
+- Answered 2026-10-05 (Chase): **1 follower slot**; **a few appropriate stages**, the look changing through canine
+  (or feline) art; **keeps its stage through a loop reset**; and **this pet may be the foundation for evolution
+  pets**, so build the evolution as a general framework (stages, XP, body and hue per stage, data driven), with the
+  tutorial dog and cat as its first two lines.
+- Art options found 2026-10-05 (stock bodies, from pinned):
+  - Dog line: Dog 0xD9 (Animals/Town Critters/Dog.cs), Timber Wolf 225, Grey Wolf 25/27, White Wolf 34/37,
+    Dire Wolf 23; later or special stages Hell Hound 98, Cu Sidhe 277 (ML, a 4-slot pet in OSI).
+    Example: Dog, Timber Wolf, Grey Wolf, Dire Wolf.
+  - Cat line: Cat 0xC9 (Animals/Town Critters/Cat.cs), Cougar 63, Panther 0xD6, Snow Leopard 64/65, Predator
+    Hellcat 127 (Hellcat reuses the cat's 0xC9 with fire hues). Example: Cat, Cougar, Panther, Snow Leopard or
+    Predator Hellcat.
+  - Hue per stage (or the player's pick at the first stage) keeps it reading as "their" pet as the body changes.
+  - Third-party animations on servuo.dev (not downloaded; licenses unread; 5 downloads a day): KR Wolf (Prapilk,
+    archive 1717), Cerberus (Odin, 2437, a late-stage idea), lion-o (Dr Death, 2463), and Thagoras's Mobile Megapack
+    (1982) and African Mobiles (1957), which may hold big cats. New bodies ship through the client patch (F-8 path).
+  - Check first: which other canine and feline bodies the client's animation files hold that pinned does not use
+    (later expansions' tigers, for example), from the client data, not memory.
+
+The minutes per step are guesses for playtest.
+
+### F-36: Climbing boots, mining the unreachable mountain blocks (added 2026-10-05)
+
+**Ours.** OSI has no climbing.
+
+What Chase wants (2026-10-05): a Miners' guild or League reward or purchase, **climbing boots**, that let a miner walk
+or teleport onto parts of the mountains to gather ore there.
+
+Chase's observation, checked 2026-10-05: **correct.** Ore lives in 8 x 8 tile banks (pinned Engines/Harvest/
+Mining.cs:86-87, BankWidth/BankHeight 8; our CompactOreSatchelRoutingHook.cs:160 and ClusterFExplorationSync.cs:26
+use the same chunks), and a miner can only target a tile within 2 (Mining.cs:96, MaxRange 2) of where they stand.
+Mountain land is impassable, so any bank deep inside a range, more than 2 tiles from walkable ground, can never be
+mined today. Many more banks are only reachable along one edge.
+
+Overseer notes:
+- **Teleport, not walk.** Walking onto impassable mountain needs the client to allow the step: the client checks
+  tile flags itself and will not send the move, so walking means a change in our TazUO build as well as the server.
+  A **targeted hop** needs the server only: use the boots, target a mountain tile within range, land there; use them
+  again to hop on or back down. Recommend hop first; walking can come with the custom client later if it feels bad.
+- **Tiers by range**, like F-34's bank item: for example tier 1 hops 4 tiles, tier 2 8, tier 3 12, so higher tiers
+  reach the hearts of the big ranges. Sold or awarded by the Miners' Compact, upgraded like the ore satchels, with
+  the League as the alternative.
+- **Exploit guard (needs Chase):** a spot no monster can path to is a safe perch for archers and mages. Suggest:
+  while standing on a climbed tile the player can mine, prospect and hop, but **cannot attack, cast harmful spells or
+  tame**, and hostile spells still reach them. Also no Mark, no house placement, no hops into towns, dungeons,
+  house regions or no-teleport regions, and nothing that lands the player inside a static (z checked).
+- Fits the vein design: blocks keep their fixed ore (no seed change, 2026-10-03), so climbing opens new blocks, not
+  new ore. Chase's mining script that colors mined or logged blocks shows the new ground. F-6 fog of war could
+  reveal climbed ground too.
+- Optional later: mountain-interior banks pay a small yield bonus to reward the climb (not a different ore).
+
+Check first: how pinned's movement and Teleport-style placement treat a mobile on impassable land (can it stand,
+does logging out and back in keep it there, do pets follow); the land z on mountain tiles vs the player's z;
+whether TazUO renders a player standing on mountain land correctly; how many banks are unreachable today (count from
+the map, Felucca and Trammel).
+
+Answered 2026-10-05 (Chase):
+- **Sold by the Miners' Compact** (a purchase).
+- **No combat on climbed tiles**, as proposed (mine, prospect and hop only; no attacks, harmful spells or taming).
+- **Pets stay at the bottom**, and the hop **auto-commands them to stay**. Overseer: on the hop down, followers in
+  range are told to follow again; a pet left behind is never released or lost.
+
+Still open: hop range per tier (4, 8, 12 proposed) and the price and currency (gold, Compact vouchers, ingots, like
+the satchel upgrades).
 
 ## Batched
 
