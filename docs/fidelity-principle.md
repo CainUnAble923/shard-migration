@@ -208,7 +208,7 @@ reasoning lives.
     under "port unchanged": upstream dead code stays dead code, and quietly repairing it would be
     an undocumented divergence from every wiki that describes the fountain.
 
-## The numbered register, D-1 to D-118
+## The numbered register, D-1 to D-120
 
 Every numbered deviation, in one place, current to 2026-09-26. **Each row is a pointer, not the
 entry**: the note named in the last column carries the full statement, the reasoning and what would
@@ -344,9 +344,11 @@ and `visible`.
 | D-113 | **Ours (cc-P53 C, Chase 2026-10-04).** Item skill bonuses ("Skill +X" on equipment, talismans, set bonuses) and temporary skill effects count above the skill's cap: a +15 item on a capped skill reads cap + 15. Skill gain still stops at the cap, and material requirements still read the unmodified skill. OSI clamps item and Animal Form bonuses at the cap | gear matters at the cap | `visible` | `cc-P53` C |
 | D-114 | **Ours (cc-P53 D, Chase 2026-10-04).** Craft menu material names read in Title Case ("Iron", "Dull Copper", "Red Scales", "Leather/Hides") instead of the client's upper-case labels ("IRON", "DULL COPPER"), so they match the shard's own metals and woods. Cosmetic; what each material does is unchanged | consistent craft menus | `visible` | `cc-P53` D |
 | D-115 | **Ours (cc-P55 H, Chase 2026-10-05).** Any blacksmith or weaponsmith asked for a bulk order lets the player choose small or large (large at 70.1 Blacksmithy, stock's gate); OSI picks large by a (skill - 40) / 300 roll. The stock timer and the 20% offer on purchase are unchanged | players pick the deed size | `visible` | `cc-P55` H |
-| D-116 | **Ours (cc-P55 H, Chase 2026-10-05).** Society of Smiths members' completed smith deeds, at any smith, the guildmaster or the guild book, are banked as Smithing Seals or cashed out for half OSI's gold, its fame and a 1 in 40 chance at OSI's item, by a per-character setting (always bank, default; always cash out; ask). Non-members get OSI's rewards. OSI banks points per craft at a turn-in choice (ServUO `BulkOrderSystem.cs:105-142`); the rates are ours | banking pays more than cash out | `visible` | `cc-P55` H |
+| D-116 | **Ours (cc-P55 H, Chase 2026-10-05).** Society of Smiths members' completed smith deeds, at any smith, the guildmaster or the guild book, are banked as Smithing Seals or cashed out for half OSI's gold, its fame and a 1 in 40 chance at OSI's item, by a per-character setting (always bank, default; always cash out; ask). Non-members get OSI's rewards. OSI banks points per craft at a turn-in choice (ServUO `BulkOrderSystem.cs:105-142`); the rates are ours | banking pays more than cash out | `visible` | `cc-P55` H **Amended cc-P56 A (2026-10-05): banking pays the deed's gold value x1.25 at the guild's rate plus the Seal catalog price of the best item OSI's ladder gives for the deed, so banking is worth at least OSI's non-member pay for every deed (918 shapes checked); cash out unchanged.** |
 | D-117 | **Ours (cc-P55 B, Chase 2026-10-05).** Ore satchels tiers 2 to 5 smelt every pile near a forge exactly as the forge does, through the forge's own code (ratio, skill check, loss). OSI has no such satchel | convenience only | `visible` | `cc-P55` B |
 | D-118 | **Ours (cc-P55 A, Chase 2026-10-05).** Hammer of Hephaestus Metal Familiarity: caps 1,000 (T1) and 2,500 (T2) per metal, each craft a rolled gain (max(0.05, 1 - current/cap)), +3 for exceptional, +1 otherwise | slower, steadier familiarity | `visible` | `cc-P55` A |
+| D-119 | **Ours (cc-P56 B, Chase 2026-10-05).** Post-Valorite ores smelt at their metal's tier (Platinum 112.5 .. Celestial 200, `ClusterFMetalTiers`), with the forge's usual 25-point window; stock gives every ore it does not know 50. Harvest stays at 100, so a miner can dig an ore they cannot yet smelt | harder top metals | `visible` | `cc-P56` B |
+| D-120 | **Ours (cc-P56 C).** Context-menu labels on stock clilocs that are not the words we would choose: pack mule breed "Use", trash bag "Clean Up Britannia". Reverses when a client cliloc pipeline ships | readable menus | `visible` | `cc-P56` C |
 
 ### What the register says about wiki scope
 

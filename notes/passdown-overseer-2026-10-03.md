@@ -195,3 +195,19 @@ notes path and build tag, and move the draft to `cc-prompts\_renders\`.
   (2) post-Valorite ore smelts at 50 Mining (forge's own rule) vs satchel's old 100; (3) labels "Smelt" (no stock "Smelt
   Ore"), lumber "* Magically Chops Logs into Boards *"; mule Breed shows "Close", trash bag/mimic show "Talk".
   Features chat to mark F-25 items 3 and 6 delivered.
+- 07:37 Chase: D77 raise bank value, D78 post-Valorite smelt harder (proposal: metal tier table), D79 fix menu labels. Next overseer batch (P56). Chase testing P55 now.
+- 07:40 **P56 written** (cc-prompts\cc-P56-smith-economy-and-labels.md): A D77 bank value >= OSI, B D78 post-Valorite smelt difficulty from metal tiers, C D79 labels. Builder now (P55 committed 5f6a194). P54 notes-only alongside.
+- 07:43 P55 in-game: hammer familiarity (1) passed; satchel smelt 10 large ore -> 20 ingots, refuses away from forge (2) passed.
+- 07:52 P55: lumber satchel label passed; its entry is greyed unless Foresters member + axe equipped (no reason shown); Chase joined the guild to use it.
+- 08:04 P55: regular smith Small/Large menu, 6 h timer, non-member gold all passed. D81 logged: guildmaster single-click Bulk Order Info skips the choice gump.
+- 08:07 P55: completed-orders setting cycles bank/cash out/ask (passed); its help line overflows the gump edge (added to D81).
+- 08:10 P55: member at regular smith banks Seals, no gold (passed); guild book shows the same setting (passed); cash out paid 258 gold + 120 standing + fame, no Seals (passed). Left: Ask each time.
+- 08:11 P55: Ask each time shows the choice gump (Standing either way +120; Bank about 3 Seals; Cash out; closing keeps the deed). **P55 in-game: all checks passed** (achievement Earned popup on a fresh earn not yet seen). The 3 Seals for 20 exceptional iron plate tunics vs 258 gold is D77 (P56 A).
+- 08:12 **P56 DONE** (45/45, 785/785, `sl-modernuo:cc-p56` `9d6829869880`), uncommitted. Bank = gold value x1.25 + catalog
+  price of OSI's best item; small iron 10 regular 3 -> 52 Seals, large Valorite exc plate 1,500 -> ~16,900. D-116 amended,
+  D-119, D-120 registered; D77-D79 built. Decisions to Chase: Seal income much higher (ok?), post-Valorite item part
+  unmultiplied, colored large weapon deeds, cliloc pipeline (mule "Use"), harvest 100 vs smelt tier.
+- **P54 DONE** (F-12 research, notes only): 41/58 skills cannot reach 200 by play; one hook "G" covers 16; recommended curve
+  S2 (config table); Keeper echo x50 instant at current gain rates; XP hooks thin and per account. Decisions list at
+  `notes\cc-P54-f12-xp-and-gain-paths.md` "Decisions for Chase" -> features chat (F-12). Stealing exploit logged D82.
+- 08:14 P55 F: earn popup shows '(Earned: slew your first creature)' under the flavor line. Passed. All P55 checks done.
