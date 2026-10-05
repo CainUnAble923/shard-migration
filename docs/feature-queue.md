@@ -2813,6 +2813,12 @@ Answered 2026-10-05 (Chase):
     - **Stage 1 concept picked (Chase, 2026-10-05 09:22): C, "Moonrunner"**: tall pointed ears with dark tips and
       tufted inner fur; one long, low tail sweeping out behind with a cream tip (reads best in motion). Next: stage 2
       (paperdoll gump 260x237 and item icon, natural color and grayscale).
+    - **Progress (2026-10-05 13:25):** icon and paperdoll done (`design\kitsune-ears-tail\stage2-final\`, overseer
+      converted and moved the ears onto the hair). Walk dir1 test frames done after several rounds (in dir1 she faces
+      the viewer, so the tail hangs behind her viewer-right hip); converted to true size in `stage3-final\walk_dir1\`.
+      The tail tip still reads a little claw-like at 4x. **Next: an in-client test** before the other 95 frames:
+      unnumbered builder prompt `cc-prompts\cc-P-kitsune-walk-test.md` (route for equipment animations, free
+      Animation number and gumps, `KitsuneEarsTail` staff test item, walk dir1 only).
   - **Stage picks, decided (Chase, 2026-10-05, from cc-P59's sheets; recolors never count as a stage):**
     - **Dog:** 217 Dog, 739 Leather Wolf, **stage 3 breed is the player's pick** (1547 Malamute, 1548 Great Dane, 1549
       Saint Bernard, 1546 Newfoundland, 1552 Rottweiler, 1551 Black Russian Terrier), 277 Cu Sidhe, 1410 Windrunner.

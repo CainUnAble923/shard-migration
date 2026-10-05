@@ -30,7 +30,7 @@ fix title/notes path/build tag, move the draft to `cc-prompts\_renders\`.
 
 ## Numbers (re-derive before trusting)
 
-- Bugs: next free **D83**. Deviations: next free **D-121**. Prompts: next free **P60**. Features: see feature-queue.md
+- Bugs: next free **D87**. Deviations: next free **D-121**. Prompts: next free **P61**. Features: see feature-queue.md
   (features chat owns it; next free F-36 at last read).
 
 ## Queue (2026-10-05 08:20)
@@ -63,3 +63,4 @@ clean-machine (sandbox; graphics fallback proven), 1919 package published, T-021
 - 08:41: P56 rest passed (non-member town smith, Ask mode, labels). P56 fully tested. D83 smelt-gain question still open.
 - 08:46: P58 DONE. Four sections 10.02-10.05, 77 player + 7 Staff lines, VERSION 2026.10.05. Staff lists not shown in game or wiki (ShardVersion.cs:111-121). Do not commit until P57 DONE. After P57: check its lines merged into the same 2026.10.05 section. P46 commission line stays unless the commissions rework lands first.
 - 08:52: Smelt skill-gain jump is not a bug (test char, super fast gain enabled). No D83. Next free bug stays D83.
+- 10:09: P57 tested (all passed; Platinum vein shelved, menu words wait for package). P60 DONE (console Commit tab, blocks on not-DONE). P59 DONE (not yet read). Commit-ShardWork.ps1 fixed per P60 s7 items 1-2 (archive only on DONE/STOPPED; exit 1 on add/commit/push failure), backup .bak-20261005-0956. Logged D83 (Blacksmithy no gain above 140, awaiting pick), D84 (earned achievement shows 9/1), D85 (post-Val deeds unnamed; Chase: own clilocs). D86 hammer +5 stuck in pack once, not reproduced (not yet in bug-list). P60 did not do P57 changelog lines or the 2 stale lines (40, 59): goes in P61.
