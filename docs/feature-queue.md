@@ -14,16 +14,23 @@ Running list of feature ideas from play testing. Kept by the overseer (Claude); 
 4. Chase commits with `Commit-ShardWork.ps1`.
 
 F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and questions (Q-n).
-**Next free: F-37.**
+**Next free: F-39.**
 
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
 
-## Where things stand (handoff, updated 2026-10-05, 08:55)
+## Where things stand (handoff, updated 2026-10-05, 16:15)
 
 For a new features chat: read this section, then the entries it names. Prompt states and bug numbers
 live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers from disk, not from here.
 
+- **Done in the 10-05 afternoon features chat (commissions):** F-37 added (Smith commissions move to the League as
+  "Client Commissions"; Renown counts toward rank; Society rank gates Obsidian and up; expiry costs Renown and adds
+  Infamy, a new Karma/Fame-like axis to design). F-20 widened to a decided skill list (crafts, Cartography explore and
+  map, Fishing deeds; Mining, Lumberjacking and Taming through guild contracts with turn-in skill checks). F-38 added
+  (Mining and Lumberjacking contracts rolled, typed and rebalanced; Haul needs the mule; escort missions a later idea).
+  Next for F-38: a numbers pass. **The mule moves to its own chat** (Chase, 2026-10-05): F-33's mule, its modules
+  and Haul contracts are designed there.
 - **Done in the 10-03 morning features chat:** the League build-out designed (F-24 "League build-out" and "cc-P47
   research done" blocks), F-33 added, the League storyline drafted (`docs\league-storyline.md`, draft 2), F-12's
   ladder decided. P47 ran; P48 League batch 1 written.
@@ -1686,6 +1693,30 @@ homes approved as suggested.**
 
 Open questions: none. Ready to batch after F-18.
 
+**Widened 2026-10-05 (Chase):** BODs for **all crafting skills, and non-craft skills such as Taming**, to help
+training. Overseer suggestion: Taming (deliver a tamed creature of a type, released to a League ranch, or tame N of a
+type), gathering (Lumberjacking, Fishing: deliver quantities of a wood or fish type, pairs with the grove ledger);
+combat and magic skills go to League hunts and culls (F-14) instead of BODs. Note the 13 existing tame-and-deliver work
+orders (`ClusterFWorkOrderSystem`, P47 3.1) as a starting point.
+
+**Skill list, decided 2026-10-05 (Chase), test: the skill makes or gathers something to hand in:**
+
+| Skill | Guild | Order | Kind |
+|---|---|---|---|
+| Blacksmithy, Tailoring | Society of Smiths, Tailors' Circle | existing | BOD deed |
+| Carpentry, Fletching | Foresters' Union | OSI port | BOD deed |
+| Tinkering | Tinkers' Union | OSI port | BOD deed |
+| Alchemy, Inscription | Arcane Society | OSI port | BOD deed |
+| Cooking | Maritime Brotherhood | OSI port | BOD deed |
+| **Cartography** | Maritime Brotherhood (overseer pick) | **explore a named region and create its map** (Chase); ties to F-6's Cartography fog of war | ours, deed |
+| Fishing | Maritime Brotherhood | fish by type, deep-sea catches | ours, deed (confirmed 2026-10-05) |
+| **Mining, Lumberjacking** | Miners' Compact, Foresters' Union | **the existing guild contracts** (Chase), gaining skill checks on turn-in like BODs | work orders, no deeds |
+| Animal Taming | Rangers' League | existing tame-and-deliver contracts (13), with skill checks on turn-in | work orders (confirmed 2026-10-05) |
+
+No BODs: combat skills (League hunts and culls, F-14), magic and casting schools (Training Ward and quest lines),
+thief and bard skills (guild jobs on the League board), Imbuing (F-37 commissions), Healing and lore skills (train by
+use).
+
 ### F-21: Community art in and around New Haven (added 2026-09-30)
 
 **Ours** (new art; nothing OSI has is replaced unless noted). Follows F-8, which proves the updater
@@ -2534,6 +2565,37 @@ Notes (overseer):
     mount beast": so the reserved room is one evolution mount, slot cost per the companions/Evo design) fits by loop 11 (max level 150) with Trailwise Tack III (mule at 0 slots), and by loop 21
     (max level 200) without it.** (Loop numbers moved to the 2026-10-03 ladder.) Loops raise follower slots (Chase: pet slots grow with loops), so the slot curve is set from that
     target once the companions' per-rank slot costs are fixed.
+
+  **Mule chat, answered 2026-10-05 (Chase):**
+  - **Acquisition: the base mule is earned through a League quest** (not bought at the Civic Mule Exchange). Haul
+    contracts require the mule (F-38), so the quest sits early. Overseer to propose the quest and whether today's
+    four-currency Exchange price becomes the tier 2 upgrade cost.
+  - **Tiers are a plain upgrade path** (not tied to the owner's loops).
+  - **Breeding: strong parents pass on traits and more.** Overseer to expand (stats, bloodline traits from
+    `compact_mule.md`, lineage; ties to the skills-design handoff that the breeder's Animal Lore past 120 improves
+    inheritance).
+  - **The mule is bonded on acquisition** (Chase: "I just meant bonded"; today's deeds already pre-bond). **Foals can be
+    traded** (the foal deed).
+  - **Death: the pack drops to the corpse, until a gear upgrade** protects it (overseer: Soul Tether or a barding
+    upgrade).
+  - **Breeding (overseer draft, Chase agreed 2026-10-05):** stat quality 0-100% per stat (place in the tier's range,
+    kept through upgrades); up to 3 bloodline traits graded I-III (`compact_mule.md` list); lineage (parents,
+    generation, family name). Foal stat = parents' average + small roll, chance to take the better parent's value
+    (raised by breeder Animal Lore 120-200). Trait passes ~35% from one parent, ~70% from both with a grade-up chance;
+    small new-trait mutation. Parent tiers cap trait grade (III needs both parents tier 4+; Celestial Tempered only
+    from two tier 5s, rare). Foals start at tier 1. Legendary line after three generations of tier 5. Save the
+    gestation; the foal deed shows stats and traits.
+  - **Traits boost matching modules** (Chase: yes; e.g. Emberblood speeds the Field Smelter Rig).
+  - **League quest (Chase: yes):** a short Miners' Compact errand that grants the mule and leads into the first Haul
+    contract; today's Exchange price (25 of four currencies + 25,000 gold) becomes the tier 2 upgrade cost.
+  - **Hues: each tier takes its metal's ore hue**, or at least the mule's barding gear is hued that way.
+  - **Levelable barding: yes**, the mule's barding takes XP from Haul trips **and combat** (F levelable gear).
+  - **Decided (Chase): build the companion-independent mule work first (slot cost 2 to 1, tier field, module
+    attach and serialization, the no-patch modules), ahead of the rest of batch 3.
+  - Code facts (2026-10-05 read): sold today at the Civic Mule Exchange (`CrossGuildExchangeGump.cs:33-37`, 25 each of
+    four currencies + 25,000 gold, no rank gate); `ControlSlots = 2` and both deeds check 2 while the gump says 1; a
+    bred mule is identical to a bought one; the 24-hour gestation timer is not saved, so a restart loses the foal
+    (bug, `PackMuleBreedingSystem.cs`); today's stats are Nightmare-tier with a 4,000-stone / 400-item pack.
 - **Overlap with the companions workstream** (cc-P41 research, cc-P45 probes, another chat): P41 cites `PackMule.cs`
   as the precedent for companion records. Check with that chat before the mule's tiers are built, so the mule is not
   designed twice.
@@ -2819,6 +2881,16 @@ Answered 2026-10-05 (Chase):
       The tail tip still reads a little claw-like at 4x. **Next: an in-client test** before the other 95 frames:
       unnumbered builder prompt `cc-prompts\cc-P-kitsune-walk-test.md` (route for equipment animations, free
       Animation number and gumps, `KitsuneEarsTail` staff test item, walk dir1 only).
+    - **P62 in game (Chase, 14:59):** item, icon and paperdoll show. Paperdoll ears floated above her head and the tail
+      had a gap at the hip: the art had been aligned to the Siege of Sosaria kit's gumps, which are a redrawn, larger
+      body sitting about 25 px higher than EA's. **Fixed by the overseer 15:05:** decoded EA's own gump 13 and 60701 from
+      `gumpartLegacyMUL.uop` (zlib + BWT) into `design\kitsune-ears-tail\reference\`, moved the ears onto her skull
+      and the tail against her hip, and replaced gump 64783 in `player-package\vendor\shattered-legacy-art\gumps\` and
+      both installed test clients. **Rule from now on: paperdoll art aligns to EA's gumps, never the Siege kit's.**
+    - **15:35:** walk dir1 confirmed in game in both directions (it and its mirror); readability polish from the art chat
+      (ears 4x7 with dark tips, lighter tail with fur bands and a solid cream tip) converted, copied into
+      `vendor\...\anim-src\4783\`, re-encoded with `scripts\build-equip-anims.py` (`--check` passes) and swapped into
+      both installed test clients. Waiting on Chase's in-game look.
   - **Stage picks, decided (Chase, 2026-10-05, from cc-P59's sheets; recolors never count as a stage):**
     - **Dog:** 217 Dog, 739 Leather Wolf, **stage 3 breed is the player's pick** (1547 Malamute, 1548 Great Dane, 1549
       Saint Bernard, 1546 Newfoundland, 1552 Rottweiler, 1551 Black Russian Terrier), 277 Cu Sidhe, 1410 Windrunner.
@@ -2907,6 +2979,87 @@ Liaison in the satchels' pattern (each upgrade consumes the previous boots). Gat
   the same range, within about 30 tiles, one hop returns there.
 - **Blessed and account-bound**, restorable at the Liaison like the satchels; worn in the footwear slot (the trade
   off); hue per tier matching the satchel and pickaxe tiers.
+
+### F-37: Commissions move to the League (added 2026-10-05)
+
+**Ours.** OSI has no commissions; Smith commissions (`ClusterFSmithCommissions.cs`) are already ours.
+
+What Chase wants (2026-10-05): commissions belong at the League, and eventually cover the other guilds, not only
+smithing.
+
+Decided (Chase, 2026-10-05):
+1. **The whole Smith commission system moves to the League board**, on the shared contract engine. BODs stay at
+   the guilds (volume work, close to OSI; F-18, F-25, P55's bank or cash out).
+2. **Commissions pay Renown** (on top of the guild's currency and standing, banked until the player joins, per F-24).
+3. **Recurring clients: approved in principle.** A client remembers your fills and, after a few, offers better pay or
+   a rarer request. Start small; story tie-ins later.
+4. **Missed or abandoned:** the commission just expires, with a small Renown loss and an Infamy gain. Abandon counts
+   the same as expiry (no grab-and-drop rerolls).
+5. **Next guild after smiths: Tailoring.**
+
+Overseer notes:
+- **Shape (proposal):** BODs are volume; commissions are a named client wanting one specific piece (metal,
+  exceptional, properties, later a level on levelable gear) with a deadline. Fewer items, higher pay. Also the natural
+  home for the Imbuing path past 140 (2026-10-05 gain-paths decision).
+- **P47 already answers the base** (`notes\cc-P47-league-research.md` 3.1): the League contract engine sits beside
+  `ClusterFWorkOrderSystem`; Smith commissions fold in later as a generator, copying their instance shape (Guid,
+  inline data). P47 said wait for P46; **P46 is done**, so the fold-in batch is unblocked once P48's engine exists.
+- **Name clash:** P47's "Citizen Commissions" are player-posted listings with escrow; these are NPC client
+  commissions. Suggest calling these **Client Commissions** in code and docs so the two never mix.
+- **Renown into rank:** P47 7.4 keeps Citizen Commission Renown out of `LifetimeRenown` because players pay it. Client
+  Commission Renown is created by play, so it should count toward rank like other League jobs. Confirm.
+- **Infamy does not exist yet** (no code, not in this queue). It needs a job, not just a number.
+- Today commissions have no expiry (`IssuedAt` never read, P47 3.1) and pay Seals and standing (x3 / x2 after P46).
+
+Answered 2026-10-05 (Chase):
+- **Rank gating: yes.** Low commission tiers are open to any League member; Obsidian and up need Society rank.
+- **Infamy: build it out**, similar to Karma/Fame (a standing axis with titles and effects), or something else if a
+  better shape turns up. Design it as its own item when commissions are batched; the overseer proposal (decay, lower
+  offered tiers, preferred by Thieves and shady clients) is the starting point.
+- **Renown counts toward rank:** Chase asked for the overseer's view; overseer says yes (play-earned, unlike Citizen
+  Commissions). Treat as decided unless Chase says otherwise.
+- **Deadline and penalty placeholders approved:** 3 days; expiry or abandon loses 10 percent of the reward's Renown and
+  adds Infamy. Tune in playtesting.
+- Name **Client Commissions**: proposed, not yet confirmed.
+
+Open questions: none blocking. Ready to batch after P48's contract engine; Tailoring follows smiths.
+
+Check first: `ClusterFSmithCommissions.cs` after P46, P47 sections 3 and 7, P48's engine, F-24 (banked pay), F-25.
+
+### F-38: Mining and Lumberjacking contracts need variety and balancing (added 2026-10-05)
+
+**Ours** (the guild contracts are ours). F-20 makes these contracts the Mining and Lumberjacking training path.
+
+What Chase wants (2026-10-05): the Mining and Lumberjacking contracts need variety and balancing.
+
+Today (`server\customizations\ClusterFWorkOrderSystem.cs`, 41 Miners' and 23 Foresters' defs, read 2026-10-05):
+- **No variety.** Every def is "deliver a fixed amount of X"; all static and repeatable. Mining has one ore contract
+  (iron); the rest are ingots, granite or gems. Foresters are boards only: no logs, no ML extras (bark fragment,
+  luminescent fungi, parasitic plant, switch, brilliant amber).
+- **Gates off the ladder.** Platinum, Toxic, Blaze and Frost contracts unlock at Mining 65 though the ingots need 100+
+  (same mismatch as the smith side, skills-design 2026-10-02). All 8 custom woods sit at a flat Lumberjacking 100.
+- **Rewards inverted.** Platinum and Toxic (past Valorite) pay 500 gold; Verite pays 2,500. Valorite Cache (6,000
+  standing) out-pays Celestial (5,000). Diamonds pay 25,000 gold, above every metal.
+
+Proposal (overseer):
+1. **Roll contracts like BODs:** material from the player's tier, amount rolled at accept; no fixed list to farm.
+2. **Contract types:** Rush (short deadline, bonus), Survey (mine or log at a named region or grove not yet recorded;
+   feeds discovery and the grove ledger), Raw sample (ore or logs, not ingots or boards), Haul (deliver to a depot in
+   another town; where the mule pays off), Rare finds (gems; ML lumber extras).
+3. **One reward formula:** amount x material tier value x type multiplier, so pay always rises with tier.
+4. **Gates on the shared ore and wood ladders**; skill checks on turn-in in a window per material, like BODs (F-20).
+
+Answered 2026-10-05 (Chase):
+- **Proposal agreed:** rolled contracts, plus a few handcrafted named contracts (Grand Tribute and similar) kept as
+  special rotations.
+- **Gems stay with the Miners.**
+- **Haul contracts require the mule.** Chase may also look at **escort missions** (a related later idea; not
+  specified yet).
+
+Open questions: none blocking. Needs a numbers pass (tier values, type multipliers, roll ranges) before batching.
+
+Check first: F-28 (wood bonuses and the ore pairing), the grove ledger (P13), F-6 discovery, F-37 and P48's engine
+(rolled contracts may belong on it), the Mining ladder decision (gates 120/150/180 noted in F-36).
 
 ## Batched
 
