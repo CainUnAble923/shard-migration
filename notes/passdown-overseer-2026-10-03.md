@@ -181,3 +181,17 @@ notes path and build tag, and move the draft to `cc-prompts\_renders\`.
 - 06:10 **New rule for every prompt (Chase):** CC ends its notes with a last line `Pnn DONE` (or `Pnn STOPPED: reason`)
   and says the same at the end of its chat. Chase commits only after seeing it. Added to P54 (not yet handed);
   every new prompt carries a "Finishing" section. P53 was handed before the rule: its "done" sign is its notes file.
+- 06:19 **P53 done and committed** (`411a922`): 44/44 patches, 686/686 facts, image `sl-modernuo:cc-p53` (`a1158037d0d0`),
+  Shard-Console 95/95. Cap migrates 300 -> 200 once (marker `rescaledTo200`), no skill lost; total cap 11,600.
+  `ClusterFMetalTiers.cs` is the one metal table. ObeyCap cleared in PlayerMobile.AddSkillMod. Category paging (smith 12,
+  inscription 11). Registered D-113, D-114. Marked D62-D64 built; D47/D59/D60/D61/D65/D67/D68 built and passed (P52).
+  Open for Chase: skill achievements keyed to 250/300 (P53 recommends leave until F-12), armored meditation 150.
+- 06:22 Chase: retire the >200 achievements (D75, P55); armored meditation 150 approved. 200 cap stands for the foreseeable future; only items go above.
+- 06:25 PT-11 -> D76: keep regular smiths, add Small/Large choice menu there. Hue sheet notes\art\satchel-hues.png: T5 0x0B2A renders black, T2 0x8A5C flag bit, Celestial ore 0x8AF is slate blue though its comment says radiant gold.
+- 06:30 **P55 written** (cc-prompts\cc-P55-bug-batch-5.md): A D69, B D70, C D74, D D71, E D72 hues (Iron/Gold/Verite/Valorite/Platinum, pickaxes match), F D73, G D75, H D76 + F-25 bank/cash-out toggle. Has the Finishing/DONE section.
+- 07:33 **P55 DONE**: 45/45 patches, 749/749 facts, image `sl-modernuo:cc-p55` (`b574b7e9fb95`). Uncommitted. Registered
+  D-115..D-118, amended D-105; D69-D76 marked built. Open for Chase: (1) Part H gap: OSI pays non-members far more item
+  value on big deeds than the guild banks for members (large Valorite exc: OSI 200k gold + runic; member bank 1,500 Seals);
+  (2) post-Valorite ore smelts at 50 Mining (forge's own rule) vs satchel's old 100; (3) labels "Smelt" (no stock "Smelt
+  Ore"), lumber "* Magically Chops Logs into Boards *"; mule Breed shows "Close", trash bag/mimic show "Talk".
+  Features chat to mark F-25 items 3 and 6 delivered.

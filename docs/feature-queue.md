@@ -50,12 +50,12 @@ live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers
 - **Done 2026-10-05 06:15:** the F-12 research prompt is written, unnumbered, for the overseer to number:
   `cc-prompts\cc-P-f12-xp-curve-and-gain-paths.md` (notes only: Part A XP curve on the 22-step ladder with echo and
   reserve, pacing targets left to Chase; Part B a gain path to 200 per stalled skill, batched; Part C re-climb time
-  under base and Keeper echo). Also 06:00: Chase reported the T2 Reinforced Ore Satchel menu reading "Salvage
+  under base and Keeper echo). **On hold 07:00:** Chase is changing how loops and caps work (confirming with the overseer); the ladder itself is confirmed unchanged (07:00); revise the prompt for whatever else changes before it runs. Also 06:00: Chase reported the T2 Reinforced Ore Satchel menu reading "Salvage
   Ingots" (should be "Smelt Ore"); it is a bug (cliloc 6277 sent as 3006277, as cc-P29 Part F), same in the Seasoned
   Lumber Satchel; routed to the bug chat, not an F-entry.
 - **Next for this chat, in order:** F-28 + F-29 together (with or after P36); League batch 2 (contract engine, job board, multi-guild jobs,
   banking) once P48 runs; batch 3 (mule and upgrades) waits on the companions chat's slot costs per rank and the evo
-  mount's cost; the F-32 build after P49 and P50 report.
+  mount's cost; the F-32 build prompt (all P49 decisions made 10-05; P50 Part B is the mimic monster).
 - **Told the companions chat** (Chase pasted it 10-03): new ladder, the follower-slot target (full party at top rank +
   mule + an evolution mount by loop 11 with Trailwise Tack III, loop 21 without), the mule overlap.
 - **Engine upgrade landed.** The test shard runs upstream `d4531cd94` since 2026-10-02 18:18 (P38 bump, P39
@@ -97,11 +97,11 @@ live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers
   animated-runestone, farm-carts, winter-holiday, orc-encampment, marble-railings, oil-lantern, satchel,
   paperdoll-siege-of-sosaria (F-23; never ship its `MUL Files\`; it has Topless and Nude body variants), and
   drc1k-uoassets (13 packs; non-commercial, ship only inside the client, credit him, no edits without his OK).
-- **Downloads:** servuo.dev allows 5 a day. Still to fetch: **Animated Mimic** (Archaaz, threads/animated-mimic.12406,
-  to `third-party\animated-mimic\`; the mimic monster prompt waits on it), paintings (.2351, plus a second set if it exists)
-  and the bridge support beam (.2396).
+- **Downloads:** servuo.dev allows 5 a day. Fetched 2026-10-05 (in `D:\UO\third-party\`, SOURCE.txt each): paintings
+  (.2351), bridge support beam (.2396), KR Wolf and Cerberus (F-35 evo dog stages), Mobile Megapack (its fox; Mobile Pack
+  cleared by Chase, Diablo packs not needed for now). Still to fetch: Odin's second paintings set, "Nightmare & The Magic Circle".
 - **Waiting on Chase:**
-  - **F-35** (tutorial, "The First Echo"): stage art picks for the evo dog and cat. **F-36** (climbing boots): hop range per tier, price. Farm site and farmhouse
+  - **F-35** (tutorial, "The First Echo"): stage art picks for the evo dog and cat. **F-36** (climbing boots): designed 10-05, costs are placeholders. Farm site and farmhouse
     approved (west, v3 mockup). F-4, F-10 and F-34 are
     answered but not scheduled.
 
@@ -2419,6 +2419,25 @@ being attacked from out of its reach. Prompt **cc-P50-chest-mimic-monster** writ
 research, Part B build if the route holds. **Needs the art downloaded first** to `D:\UO\third-party\animated-mimic\`
 with a SOURCE.txt (not on disk 2026-10-03).
 
+**P49 decisions (Chase, 2026-10-05), from 
+otes\cc-P49-dungeon-chests-research.md section 9:**
+- (4) **Levels 5 and 6 now, 7 later** (L7 waits for tier-6 content and players near Lockpicking 150).
+- (6) **Gold, the smoothed scale:** L5 1,000-2,000, L6 2,500-5,000 (L7 5,000-9,000 when built).
+- (7) **Small extras on stock L1-4** (currency 1-6, rare roll 0.5-3%) on top of unchanged stock loot; register the
+  deviation.
+- (8) **Renown out** of the chest currency roll: Guild Writ bearer item, Thieves' Den scrip plus one roll on
+  Warriors, Rangers, Arcane, Keepers or Dojo.
+- **The other 13, decided 2026-10-05 (Chase): P49's defaults accepted**, with one change: **Destard grades 2 / 3 / 3**
+  (first floor stays stock L4). So: (1) refill 30-60 min random per chest, armed on first access; (2) depth bonus +0
+  tier 1-2, +1 tier 3-4, +2 tier 5, +3 tier 6; (3) P49 section 2.3 tier table, Destard 2/3/3; (5) L5/L6 Lockpicking
+  110/130, P49 section 3.3 lock and trap rows, traps fire on the lockpick, Unlock spell blocked from L5, no
+  MagicTrap; (9) P49 section 3.6 rare table (no power or stat cap scrolls); (10) mimic L2 1 in 600, L3 1 in 400, L6
+  1 in 150; (11) tame 25% at Taming 100, +1.5% per point above, cap 75%; (12) window opens at 10% hits, once per
+  mimic; (13) the springer's party only; (14) fold Shame Revamped's 116 ServUO-pack chest rows into DungeonChest;
+  (15) stock chest art with a hue per level (hues picked at build); (16) the partial icon set with a PartialHue
+  record, near-gray pixels fixed; (17) purge potion player source later.
+- **F-32 has no open questions.** Ready for its build prompt (P49 section 8 build order; P50 is the mimic monster).
+
 ### F-33: Multi-guild favor and upgrades that need several reputations (added 2026-10-03)
 
 **Ours.** Added by the overseer at Chase's request; part of the League build-out (F-24).
@@ -2728,6 +2747,21 @@ Answered 2026-10-05 (Chase):
   - Check first: which other canine and feline bodies the client's animation files hold that pinned does not use
     (later expansions' tigers, for example), from the client data, not memory.
 
+- **Evo lines, overseer draft 2026-10-05 (Chase: add fox and bird lines; every stage must be a visibly different
+  mobile, never just a new hue).** Four starter lines, each with a role:
+  Dog = protector (guards, pulls threat), Cat = striker (bleed, damage), Fox = trickster (small spells, a tail per
+  stage, ending as the Bake Kitsune fox spirit: the cultivation line), Bird = scout (ranged dive, scouts ahead).
+  - **Stages: 5 where the art allows**; the fox gets as many as distinct bodies exist, more added by client patch.
+  - **Step ups:** 1-2 and 2-3 on the pet's XP (only fights it deals damage in); 3-4 XP plus owner has looped once;
+    4-5 XP plus owner at loop 5+ plus a short Bond Trial from the Farmhand. Effect, new body and an Echo line on each.
+    1 follower slot at every stage.
+  - **Candidate bodies** (to be verified distinct by render): Dog: Dog 0xD9, Timber Wolf 225, Grey Wolf 25/27,
+    White Wolf 34/37, Dire Wolf 23, Hell Hound 98, Cu Sidhe 277, KR Wolf (new), Cerberus (new). Cat: Cat 0xC9,
+    Cougar 63, Panther 0xD6, Snow Leopard 64/65, Predator Hellcat 127. Bird: Bird 6, Eagle 5, Crane 254, Lesser
+    Hiryu 243, Megapack L_Bird 01/02 and L_Griffin (new). Fox: Megapack L_Fox (new), Bake Kitsune 246; gap of 3.
+  - Avoid stage bodies that players see on common wild spawns where possible; otherwise add a lasting effect.
+  - **Render prompt written:** `cc-prompts\cc-P-evo-pet-body-sheet.md` (notes only, unnumbered).
+
 The minutes per step are guesses for playtest.
 
 ### F-36: Climbing boots, mining the unreachable mountain blocks (added 2026-10-05)
@@ -2771,8 +2805,32 @@ Answered 2026-10-05 (Chase):
 - **Pets stay at the bottom**, and the hop **auto-commands them to stay**. Overseer: on the hop down, followers in
   range are told to follow again; a pet left behind is never released or lost.
 
-Still open: hop range per tier (4, 8, 12 proposed) and the price and currency (gold, Compact vouchers, ingots, like
-the satchel upgrades).
+**Design, decided 2026-10-05 (Chase): three upgradable tiers, middle to high level**, sold by the Miners' Compact
+Liaison in the satchels' pattern (each upgrade consumes the previous boots). Gates are Compact rank, Mining skill
+**and distinct ore blocks mined** (Chase added the block count):
+
+| Tier | Name | Compact rank | Mining | Blocks mined | Hop range | Cost (placeholders, set against satchel T3-T5) |
+|---|---|---|---|---|---|---|
+| 1 | Surveyor's Climbing Boots | Surveyor (15k) | 120 (loop 5+) | 100 | 4 | 75 vouchers, 20,000 gold, ingots |
+| 2 | Delver's Climbing Boots | Master Delver (40k) | 150 (loop 11+) | 300 | 8 | 150 vouchers, 50,000 gold, ingots |
+| 3 | Deepwarden's Climbing Boots | Deepwarden (80k) | 180 (loop 17+) | 600 | 12 | 250 vouchers, 100,000 gold, ingots |
+
+- **Blocks mined is tracked in the Miners' guild ledger (Chase, 2026-10-05):** the **Prospector's Logbook**
+  (ProspectorsLogbook.cs, issued on joining the Compact; its data is account-backed in
+  ClusterFAccountData.OreDiscoveries, written by CompactOreSatchelRoutingHook.cs, which already knows the mined
+  8 x 8 bank at :160-162). Today it records ore discoveries by ore type only; it gains a record per mined block
+  (facet, block, first mined date, ore found), a "blocks mined" count shown in the logbook and on the Liaison's
+  upgrade page, and the same where-and-when shape as the planned grove ledger (P13). Account-backed like the rest of
+  the logbook, so it survives loop resets. Counts are placeholders.
+- Mining gates moved 2026-10-05 07:00 (Chase) from 100/125/150 to **120/150/180** (loops 5/11/17 on the
+  50, 100, +5 to 200 ladder), so the boots are middle to high level.
+- Ingots per tier from a metal that tier's Mining can work. Rank names and standing from
+  MinersCompactLiaisonGump.cs:74-97.
+- **Each hop costs stamina** (more for a larger z climb) with a 2-3 s cooldown. No charges, no durability.
+- **Tier 2 Surefoot:** half stamina cost. **Tier 3 Ledge memory:** remembers the last climbed tile; from the foot of
+  the same range, within about 30 tiles, one hop returns there.
+- **Blessed and account-bound**, restorable at the Liaison like the satchels; worn in the footwear slot (the trade
+  off); hue per tier matching the satchel and pickaxe tiers.
 
 ## Batched
 
