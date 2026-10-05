@@ -17,7 +17,7 @@ notes path and build tag, and move the draft to `cc-prompts\_renders\`.
 
 ## Numbers (re-derive before trusting)
 
-- Bugs: **next free D66** (D65 catalog back button; D64 metals to 200 cap; D59 HoH +5, D60 familiarity reach, D61 force_driver, D62 material name case, D63 category overflow). D50-D58 logged 2026-10-02/03; D51-D54 fixed in P42 and passed in game; D55-D58 fixed in
+- Bugs: **next free D67** (D66 commit script false clean; D65 catalog back button; D64 metals to 200 cap; D59 HoH +5, D60 familiarity reach, D61 force_driver, D62 material name case, D63 category overflow). D50-D58 logged 2026-10-02/03; D51-D54 fixed in P42 and passed in game; D55-D58 fixed in
   P46 (in-game check pending).
 - Deviations: **next free D-113** (D-107 to D-112 from P42). P46 adds text to update (D-109 teaching toggle, Seal
   numbers, Self Repair floor): read P46's notes and register.
@@ -125,3 +125,13 @@ notes path and build tag, and move the draft to `cc-prompts\_renders\`.
   The overseer's bug batch (D59-D65, D47 console VPN warning, sandbox LogonCommand, skill mods over cap) is **P52**.
 - Queue: P49 (notes) may run now. Builder after P48 is committed: P51, then P52 (or P52 first if Chase wants fixes
   first). P50 Part B, P36, P34, P45 after.
+
+## Update 2026-10-04 20:05
+
+- P48 committed (`aa61227`, 18:54) after a clean rebuild (Docker's build cache held a truncated NuGet file from the
+  hung build 4; fixed by removing all `sl-uo-builder:*` images and `docker builder prune -af`). Lesson: a Docker hang
+  mid-build can poison cached layers; prune alone will not drop layers an image still references.
+- **P51 done** (00:51 UTC): 42/42 patches, 637/637 facts, image `sl-modernuo:cc-p51` (`aead9f7f5e2e`). Uncommitted.
+  Checklist in its notes "For Chase" (Staff Hub `[SL`, Raptor pack).
+- **P49 done** (notes only). Section 9 has 17 decisions for Chase (F-32); belongs with the features chat.
+- Next builder: **P52** (overseer bug batch), to be written.
