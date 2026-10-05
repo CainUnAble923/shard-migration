@@ -211,3 +211,4 @@ notes path and build tag, and move the draft to `cc-prompts\_renders\`.
   S2 (config table); Keeper echo x50 instant at current gain rates; XP hooks thin and per account. Decisions list at
   `notes\cc-P54-f12-xp-and-gain-paths.md` "Decisions for Chase" -> features chat (F-12). Stealing exploit logged D82.
 - 08:14 P55 F: earn popup shows '(Earned: slew your first creature)' under the flavor line. Passed. All P55 checks done.
+- 08:18 Chase on P56: raise catalog prices; post-Valorite item part scales moderately; harvest follows tier like OSI metals; build our own cliloc pipeline. **P57 written** (A prices x3 decoupled, B item part half-step, C harvest tiers, D cliloc pipeline + Breed/Smelt Ore/Metal Familiarity, E D81, F D80, G D82 Stealing).

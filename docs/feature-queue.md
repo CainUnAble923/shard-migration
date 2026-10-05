@@ -19,7 +19,7 @@ F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and qu
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
 
-## Where things stand (handoff, updated 2026-10-05, 06:15)
+## Where things stand (handoff, updated 2026-10-05, 08:55)
 
 For a new features chat: read this section, then the entries it names. Prompt states and bug numbers
 live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers from disk, not from here.
@@ -53,7 +53,29 @@ live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers
   under base and Keeper echo). **On hold 07:00:** Chase is changing how loops and caps work (confirming with the overseer); the ladder itself is confirmed unchanged (07:00); revise the prompt for whatever else changes before it runs. Also 06:00: Chase reported the T2 Reinforced Ore Satchel menu reading "Salvage
   Ingots" (should be "Smelt Ore"); it is a bug (cliloc 6277 sent as 3006277, as cc-P29 Part F), same in the Seasoned
   Lumber Satchel; routed to the bug chat, not an F-entry.
-- **Next for this chat, in order:** F-28 + F-29 together (with or after P36); League batch 2 (contract engine, job board, multi-guild jobs,
+- **Done in the 10-05 features chat (05:45-08:55):** F-12 research prompt written and **on hold** (Chase is changing
+  how loops and caps work beyond the ladder, which is confirmed unchanged: 50, 100, +5 to 200 at loop 21; confirm with
+  Chase what else changes, update F-12, then release `cc-prompts\cc-P-f12-xp-curve-and-gain-paths.md`). **F-32 fully
+  decided** (all 17 P49 decisions, Destard 2/3/3): ready for its build prompt. **F-35:** Echo is the voice, taming
+  before the fight, evo starter pets (dog, cat, fox, bird; 5 stages where art allows; every stage a different body).
+  **F-36 climbing boots** designed (Compact purchase, Mining 120/150/180, blocks mined tracked in the Prospector's
+  Logbook). Downloads: KR Wolf, Cerberus, Mobile Megapack, paintings, bridge beam (`third-party\`).
+- **Evo pet body sheet ran as cc-P59** (the features chat's unnumbered prompt): sheets in
+  `notes\cc-P59-scratch\sheet-dog/cat/fox/bird.png` and its notes. **Next: Chase picks the stages per line.**
+- **Satchel icons:** Chase had Codex make new ore, lumber and hunter satchel icons from his own source art
+  (`D:\ShatteredLegacy\design\satchel-icons\`: `ore_satchel.png`, `lumber_satchel.png`, `hunters_satchel.png`,
+  1x, 44x40, exact grays for PartialHue; `codex_vs_mine.png` previews tier hues). **Codex's set is the pick.**
+  **All ten done by Codex (09:00):** plus `artificers_satchel`, `gemologists_satchel`, `smith_guild_salvage_bag`,
+  `arcane_society_reagent_pouch`, `tailors_cloth_satchel`, `maritime_fishers_creel`, `healers_covenant_satchel`
+  (.png 1x, all 44x40, same frame, transparent, exact grays). Preview `all_bags_preview.png`. Notes: the creel reads
+  weakest (a leather bag, not wicker); Artificer's 0x497 renders nearly black on the gray leather.
+  **Decided 2026-10-05 (Chase):** fisher's creel is fine as is; **Artificer's Satchel hue 0xDC** (purple), **Arcane Society
+  reagent pouch hue 0x12B** (arcane blue), from `arcane_hues.png`. All ten icons approved for the build. Shipping: free IDs via `find-free-art.py`, `registry.csv`, a tiledata PartialHue flag, point the
+  satchel classes at the new IDs (a builder batch, or with the bug chat's custom clilocs for "Smelt Ore" and "Cut
+  Boards", which Chase wants instead of P55's stock "Smelt" and "Magically Chops Logs into Boards"). The lumber tier
+  hues in code (0x84C, 0x60, 0x26C) render dark blue, light blue, purple, not green as commented.
+- **Next for this chat, in order:** evo pet stages from P59's sheets; the F-35 research prompt (loaded spawns near the farm,
+  site check, porch and door pieces); the F-32 build prompt; League batch 2 (P48 is done and committed); F-28 + F-29 together (with or after P36); League batch 2 (contract engine, job board, multi-guild jobs,
   banking) once P48 runs; batch 3 (mule and upgrades) waits on the companions chat's slot costs per rank and the evo
   mount's cost; the F-32 build prompt (all P49 decisions made 10-05; P50 Part B is the mimic monster).
 - **Told the companions chat** (Chase pasted it 10-03): new ladder, the follower-slot target (full party at top rank +
@@ -2761,6 +2783,44 @@ Answered 2026-10-05 (Chase):
     Hiryu 243, Megapack L_Bird 01/02 and L_Griffin (new). Fox: Megapack L_Fox (new), Bake Kitsune 246; gap of 3.
   - Avoid stage bodies that players see on common wild spawns where possible; otherwise add a lasting effect.
   - **Render prompt written:** `cc-prompts\cc-P-evo-pet-body-sheet.md` (notes only, unnumbered).
+  - **Fox capstone, human form (Chase, 2026-10-05):** the fox line's last stage is a kitsune who is a woman with fox
+    ears and tail(s), the tails growing with her power. Overseer framing: she **shapeshifts** (fox form stays the Bake
+    Kitsune art; the woman form unlocks at the top stage), and tail count stays the stage marker in both forms.
+    - **Art: none exists.** Searched the 7.0.117.0 tiledata and all of `D:\UO\third-party\`: no fox ears or tails for
+      the human body anywhere. The Kitsune Hat (Siege kit gumps 51524/61524) is a coonskin cap; Chase rejected it as a
+      stand-in. **Chase: we need real fox ears and tails, so new art and animations.**
+    - **Open, decides the art job:** does she wear gear in human form? Yes = female human body plus ears and tails as
+      worn layers (paperdoll gump, item art, and an animation layer over every human action and direction; one tail
+      layer per tail count; overlaps companions). No = her own custom creature body with ears and tails drawn in (one
+      animation set per tail stage, no paperdoll, stays a pet).
+    - **Answered (Chase, 2026-10-05):** **always female**; **switches forms freely**; Chase's idea: a **combat form and a
+      follow form**. Overseer proposal: fox form fights (Bake Kitsune art, full combat set already exists), woman form
+      follows and idles; auto-shift into fox when combat starts and back a few seconds after it ends, with a smoke puff,
+      plus a manual command. Then the woman form needs only stand, walk, run and idles (a fraction of a full set), and the
+      gear question goes away (custom creature body, stays a pet).
+    - **Decided (Chase, 2026-10-05):** the fox fights; the woman form needs **movement animations only** (stand, walk,
+      run; 5 drawn directions, the client mirrors the rest). Build rules: never send her an
+      attack or cast animation in woman form; if she dies in woman form, shift to fox first so its death animation plays.
+    - **Decided (Chase, 2026-10-05): one tail for now, keep it simple.** One movement set (woman with fox ears and one
+      tail); no tail growth; fox form stays the stock Bake Kitsune art. More tails can come later as a separate entry.
+    - **Art route (Chase, 2026-10-05): a worn item** (fox ears and one tail) on the female human body 401, with a
+      paperdoll image, not a custom creature body. Design prompt for the art chat, with a reference pack, in
+      `D:\ShatteredLegacy\design\kitsune-ears-tail\` (`prompt-design-chat.md`, `reference\`). **Image count:** 1
+      paperdoll gump (260x237, female) + 1 item icon (44x44 max) + **105 animation frames** (130x128 canvas, feet at
+      67,98): stand 5 (1 x 5 directions), walk 50 (10 x 5), run 50 (10 x 5); grayscale for hueing plus natural-color
+      previews. Staged: 3 concepts, then gump and icon, then a 10-frame walk test, then the rest. The 2 fidgets (5 x 5
+      each, 50 more) are left out; she does not fidget in woman form unless added later.
+  - **Stage picks, decided (Chase, 2026-10-05, from cc-P59's sheets; recolors never count as a stage):**
+    - **Dog:** 217 Dog, 739 Leather Wolf, **stage 3 breed is the player's pick** (1547 Malamute, 1548 Great Dane, 1549
+      Saint Bernard, 1546 Newfoundland, 1552 Rottweiler, 1551 Black Russian Terrier), 277 Cu Sidhe, 1410 Windrunner.
+    - **Cat:** 201 Cat, 1309 Baby Tiger, **stage 3 is the player's pick of 1254 Tiger or 1426 Lion**, 1416 Sabertooth,
+      1573 Manticore_L.
+    - **Fox:** 1423 Fox_Small, L_Fox.vd (shipped art), 246 Bake Kitsune with the woman form above.
+    - **Bird:** 254 Crane, 832 Phoenix Bird, L_Bird 01.vd, L_Griffin.vd, 243 Lesser Hiryu (P59's Peacock dropped).
+    - **Hue:** the player picks a hue at stage 1 and it carries through every stage, all four lines.
+    - Every unused body chosen needs a `bodyTable.cfg` entry (Animal) in the build, or the pet opens doors and loses idle
+      and feed animations (P59 section 6); the build prompt also checks attack and hit animations on the UOP-era bodies in
+      a client.
 
 The minutes per step are guesses for playtest.
 
