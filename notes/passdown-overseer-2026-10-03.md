@@ -164,3 +164,12 @@ notes path and build tag, and move the draft to `cc-prompts\_renders\`.
   5445,1153. P35 kit cause: Sandbox has no notepad.exe. Uncommitted. Checklist in its "For Chase".
 - **P53 written** (`cc-prompts\cc-P53-two-hundred-cap.md`): A skill cap 200, B metal tiers + all 300-era numbers,
   C bonuses above cap (deviation), D Title Case materials, E category overflow, F Shard-Console red-list fact.
+- 05:40 P52 in-game: D59 hammer +/-5 **passed**; D60 "Knowledge" entry **passed**; D65 catalog footer + Back
+  **passed** (screenshot); D67 hub solid and "Skips. Shard: Any." **passed** (screenshot); D68 Society of Smiths
+  **passed**; D47 console VPN tile **passed**. Chase: familiarity rises too fast. Code: +1 per successful craft
+  (`HammerOfHephaestus.cs:280-282`, `:661-663`), FamCap 100 (T1, `:116`) / 250 per metal (T2, `:495`). Asked Chase
+  for the target.
+- 05:42 Chase: familiarity = all three (caps x10, chance to gain, exceptional counts more): logged D69, for P54. P53 with CC.
+- 05:55 PT-12/PT-13 (bugs chat) registered as D70 satchel smelt ratio, D71 T3-T5 lose Smelt Metal; both for P54 with D69. Decision pending: guaranteed smelt vs forge skill check.
+- 05:59 Chase D70: satchel smelts exactly like the forge (ratio + skill check), forge still required.
+- 06:01 D72 satchel hues along ore ladder (proposal pending OK; T2 0x8A5C flag-bit suspect), D73 achievements get a plain (Earned: ...) parenthetical. Both P54.

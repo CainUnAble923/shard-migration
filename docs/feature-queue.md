@@ -19,7 +19,7 @@ F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and qu
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
 
-## Where things stand (handoff, updated 2026-10-04, 07:40)
+## Where things stand (handoff, updated 2026-10-05, 06:15)
 
 For a new features chat: read this section, then the entries it names. Prompt states and bug numbers
 live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers from disk, not from here.
@@ -39,10 +39,21 @@ live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers
 - **Done in the 10-03 afternoon features chat:** **P51** written (F-30 Staff Hub first build: shell, Commands, Player,
   Travel; Events tab shown disabled; plus F-31 Raptor pack friends and the pottery drop). The mockup layout is
   transcribed into the prompt, since CC cannot open the canvas.
+- **Done in the 10-04 features chat:** **F-35** (tutorial "The First Echo") designed with Chase: story-led, about an
+  hour, every core system (gather, craft, fight, heal, tame, magic, death, travel), NPC story plus a system voice,
+  vision opening, guildmasters teach and offer to join. **Farm site and custom farmhouse approved**: west of New
+  Haven by the Bardic Guild, farmhouse west of the field and attached to its fence, porch facing town, two trees in
+  the field removed by map patch (mockups and scripts in `D:\ShatteredLegacy\design\tutorial-farm\`, v3 is
+  current). Open on F-35: the Echo as the voice, lesson order; then a research prompt (loaded spawns, site check in
+  a client, porch steps and door trim pieces).
 - **F-34 added and answered** (bank access item: League base, per-guild upgrades, crafting only, tiers by range); goes with the League batches. Optional: look at OSI Mimic body 729 in UOFiddler.
-- **Next for this chat, in order:** an F-12 research
-  prompt (re-run the XP curve against the 22-step ladder with the echo; a gain path past ~160 for the 39 skills that
-  stop there); F-28 + F-29 together (with or after P36); League batch 2 (contract engine, job board, multi-guild jobs,
+- **Done 2026-10-05 06:15:** the F-12 research prompt is written, unnumbered, for the overseer to number:
+  `cc-prompts\cc-P-f12-xp-curve-and-gain-paths.md` (notes only: Part A XP curve on the 22-step ladder with echo and
+  reserve, pacing targets left to Chase; Part B a gain path to 200 per stalled skill, batched; Part C re-climb time
+  under base and Keeper echo). Also 06:00: Chase reported the T2 Reinforced Ore Satchel menu reading "Salvage
+  Ingots" (should be "Smelt Ore"); it is a bug (cliloc 6277 sent as 3006277, as cc-P29 Part F), same in the Seasoned
+  Lumber Satchel; routed to the bug chat, not an F-entry.
+- **Next for this chat, in order:** F-28 + F-29 together (with or after P36); League batch 2 (contract engine, job board, multi-guild jobs,
   banking) once P48 runs; batch 3 (mule and upgrades) waits on the companions chat's slot costs per rank and the evo
   mount's cost; the F-32 build after P49 and P50 report.
 - **Told the companions chat** (Chase pasted it 10-03): new ladder, the follower-slot target (full party at top rank +
