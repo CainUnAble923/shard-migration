@@ -54,8 +54,8 @@ and answers one question.
 | 1 | Dull Copper (2) | The Pommel | under New Haven (the P36 dungeon) | Is the loop real? |
 | 2 | Bronze (5) | The Grip | Despise | Who has noticed it before? |
 | 3 | Verite (8) | The Crossguard | Doom (Malas) | What does the loop want? |
-| 4 | Blaze (11) | The Blade | Ice Dungeon | What happens if it breaks for good? |
-| 5 | Mythril (14) | The Point | Exodus (Ilshenar) | Mend it, or sunder it? |
+| 4 | Blaze (12) | The Blade | Ice Dungeon | What happens if it breaks for good? |
+| 5 | Mythril (15) | The Point | Exodus (Ilshenar) | Mend it, or sunder it? |
 | 6 | Celestial (17) | The Ring | custom: the Setting | What comes after the choice? |
 
 Chapter 1 now comes early (rank 2), so a new player meets the story in their first days. Ranks in between are

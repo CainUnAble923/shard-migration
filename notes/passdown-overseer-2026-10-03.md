@@ -17,7 +17,7 @@ notes path and build tag, and move the draft to `cc-prompts\_renders\`.
 
 ## Numbers (re-derive before trusting)
 
-- Bugs: **next free D67** (D66 commit script false clean; D65 catalog back button; D64 metals to 200 cap; D59 HoH +5, D60 familiarity reach, D61 force_driver, D62 material name case, D63 category overflow). D50-D58 logged 2026-10-02/03; D51-D54 fixed in P42 and passed in game; D55-D58 fixed in
+- Bugs: **next free D69** (D68 Society of Smiths; D67 Staff Hub readability; D66 commit script false clean; D65 catalog back button; D64 metals to 200 cap; D59 HoH +5, D60 familiarity reach, D61 force_driver, D62 material name case, D63 category overflow). D50-D58 logged 2026-10-02/03; D51-D54 fixed in P42 and passed in game; D55-D58 fixed in
   P46 (in-game check pending).
 - Deviations: **next free D-113** (D-107 to D-112 from P42). P46 adds text to update (D-109 teaching toggle, Seal
   numbers, Self Repair floor): read P46's notes and register.
@@ -135,3 +135,32 @@ notes path and build tag, and move the draft to `cc-prompts\_renders\`.
   Checklist in its notes "For Chase" (Staff Hub `[SL`, Raptor pack).
 - **P49 done** (notes only). Section 9 has 17 decisions for Chase (F-32); belongs with the features chat.
 - Next builder: **P52** (overseer bug batch), to be written.
+- 20:15 Chase, Staff Hub (P51) results: Travel worked; Player tab works offline; Grant-to-other-player check deferred.
+  **Requests for P52 (Staff Hub Travel tab):** (1) a "change facet" control: same x/y/z on another facet
+  (Felucca/Trammel/Ilshenar/Malas/Tokuno/TerMur), refusing cleanly where the spot is invalid; (2) **Green Acres** as a
+  shard place (staff area; CC to verify coordinates and facet in pinned data, do not guess).
+- 20:21 P51 Raptor pack **passed in game** (Chase): attack calls 2 friends, friends not tamable (no Tame entry),
+  friends vanish after the leader dies. Staff Hub: tabs, Dry run, Player offline, Travel passed; Grant-to-other-player
+  deferred; readability = D67.
+- 20:27 P48 League **passed in game** (Chase): office already placed (status 0 of 3), League row first in [guild,
+  [LeagueLadder table matches, Elara speaks and names the player, promotion to Dull Copper Citizen, bank 1,100.
+  Ranks match the metals (Chase misread a question). **Chase 20:28: keep chapters 4/5 at Blaze and Mythril.**
+  D68 Society of Smiths decided.
+- 20:31 P46: hammer familiarity on default iron likely passed (admin account; recheck on a player). Valorite small exc
+  BOD x20 paid 96 Seals / 360 standing (in range). **Commission check dropped: Chase may rework the commissions table
+  in another chat.** Left: D58 Despise fight, P51 grant to another player.
+- 20:35 **P52 written** (`cc-prompts\cc-P52-bug-batch-4.md`): Parts A D59 hammer bonus held-only, B D60 familiarity
+  context entry, C D61 force_driver, D sandbox start script, E D65 catalog Back/footer, F D67 hub readability +
+  change facet + Green Acres, G D68 Society of Smiths, H D47 console VPN warning. Handed for overnight.
+  **P53 still to write**: D62 material names Title Case, D63 craft category overflow, D64 metals to the 200 cap
+  (and the 300 skill cap setting), skill bonuses above the cap (deviation D-113).
+- 20:37 Chase wants to look at a remote-control setup for Claude Code tomorrow (so the overseer can hand prompts to CC directly).
+
+## Update 2026-10-05 05:30
+
+- **P52 done**: 42/42 patches, 671/671 facts, image `sl-modernuo:cc-p52` (`88b7983f2d29`), package gates 1-6 green,
+  Launch-Settings 20/20, Shard-Console 94/95 (pre-existing red-list fact, now P53 Part F). D61 chose: keep OpenGL,
+  fall back to force_driver 3 only after the OpenGL 2.1 crash. D60 cliloc 1112530 "Knowledge". Green Acres Felucca
+  5445,1153. P35 kit cause: Sandbox has no notepad.exe. Uncommitted. Checklist in its "For Chase".
+- **P53 written** (`cc-prompts\cc-P53-two-hundred-cap.md`): A skill cap 200, B metal tiers + all 300-era numbers,
+  C bonuses above cap (deviation), D Title Case materials, E category overflow, F Shard-Console red-list fact.
