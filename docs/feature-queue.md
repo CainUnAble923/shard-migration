@@ -2810,6 +2810,9 @@ Answered 2026-10-05 (Chase):
       67,98): stand 5 (1 x 5 directions), walk 50 (10 x 5), run 50 (10 x 5); grayscale for hueing plus natural-color
       previews. Staged: 3 concepts, then gump and icon, then a 10-frame walk test, then the rest. The 2 fidgets (5 x 5
       each, 50 more) are left out; she does not fidget in woman form unless added later.
+    - **Stage 1 concept picked (Chase, 2026-10-05 09:22): C, "Moonrunner"**: tall pointed ears with dark tips and
+      tufted inner fur; one long, low tail sweeping out behind with a cream tip (reads best in motion). Next: stage 2
+      (paperdoll gump 260x237 and item icon, natural color and grayscale).
   - **Stage picks, decided (Chase, 2026-10-05, from cc-P59's sheets; recolors never count as a stage):**
     - **Dog:** 217 Dog, 739 Leather Wolf, **stage 3 breed is the player's pick** (1547 Malamute, 1548 Great Dane, 1549
       Saint Bernard, 1546 Newfoundland, 1552 Rottweiler, 1551 Black Russian Terrier), 277 Cu Sidhe, 1410 Windrunner.
