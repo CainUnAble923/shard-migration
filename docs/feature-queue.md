@@ -2830,6 +2830,13 @@ Answered 2026-10-05 (Chase):
     - Every unused body chosen needs a `bodyTable.cfg` entry (Animal) in the build, or the pet opens doors and loses idle
       and feed animations (P59 section 6); the build prompt also checks attack and hit animations on the UOP-era bodies in
       a client.
+  - **Build plan, decided (Chase, 2026-10-05 13:40, F-35 evo pets chat):** framework now with EA art; the third-party
+    stages (L_Fox, L_Bird 01, L_Griffin) and the kitsune are data rows marked art-pending, switched on when a later prompt
+    ships creature art (after the kitsune walk test proves an animation route). **The kitsune is the fox line's own stage
+    4** (1423, L_Fox, 246, kitsune). **No mid fox for now.** **First build is stats per stage only**; role abilities come in
+    a later batch. Live today: Dog 5, Cat 5, Fox 2 (1423, 246), Bird 3 (254, 832, 243). Builder prompt written,
+    unnumbered: `cc-prompts\cc-P-evo-pets-framework.md`. Still open: the stage-1 hue list, the Bond Trial's content,
+    XP numbers (wait on F-12).
 
 The minutes per step are guesses for playtest.
 

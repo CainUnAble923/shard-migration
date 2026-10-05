@@ -20,6 +20,12 @@ decision: the gain gates (`UOContent/Skills/SkillCheck.cs:56-67, :108-147, :236-
 (`Engines/Craft/DefTinkering.cs:678-681`), the ClusterF multiplier clamp (`C\ClusterFSkillGain.cs:11`), every XP hook in
 A.1, and both config files. **Nothing was probed in a running server**: every behaviour here is read from source.
 
+**Re-check, 2026-10-05 afternoon (second pass, beside cc-P62).** Three shard changes landed after this file was written
+and change some of what is below: cc-P57 Part G closed Stealing's stack path, cc-P57 Part C re-tiered the extended ores,
+and cc-P61 Part A made post-Valorite metals raise the Blacksmithy gain ceiling. Headlines 1 and 2, rows 29, 50 and 56,
+batch X, batch K and decisions 9 and 10 are corrected in **"Re-check after cc-P57 and cc-P61"**, just before the
+decisions. The rest still holds. Part A and Part C were re-run, and both outputs match this file exactly.
+
 ---
 
 ## Headlines
@@ -479,6 +485,69 @@ multiplier. Seconds per use, mine: combat 3, magic 5, craft/gather 5, thief/heal
 
 ---
 
+## Re-check after cc-P57 and cc-P61 (2026-10-05, second pass)
+
+The first pass was written by 08:07 and committed in `aa8a735`. This pass re-read every shard file that changed since then
+(`D:\ShatteredLegacy` `b8e525d..8a7e754`, server tree), and F-12 and F-26 in `docs\feature-queue.md`: neither changed;
+the handoff only restates the ladder. Pinned is still `d4531cd94b739613155225c234900de9f47d2c88`. `xp_ladder.py` and
+`reclimb.py` were re-run, with zero differing lines against the outputs above. The gain settings they read did not change.
+**Parts A and C stand as written.**
+
+**What changed, and what it corrects:**
+
+1. **Stealing now stalls at 127.5 (cc-P57 Part G, D82, `P\Stealing-stack-weight.patch`).**
+   - The stack amount is now `min(Stealing / 10, MaxWeightToSteal) / Weight`, patching pinned `Skills/Stealing.cs:272-276`.
+   - So a whole pile is taken only at 10 stones or less, and no window passes 127.5. That is the single-item path's own
+     top (`:261-263`, `:313-316`: a 10-stone item gives 77.5 to 127.5).
+   - P57 probed it (`T\Skills\StealingStackWeightVerification.cs`, red then green) and found no other gain path: the
+     sigil check is (80, 80) and the pickpocket dip stops at its MaxSkill (cc-P57 notes, Part G).
+   - **Corrected counts:** 16 of 58 reach 200, and 42 stall. 38 stall at or below 160, which is P20's 39 less Ninjitsu
+     only. P20's 127.5 for Stealing is true again, for a different reason.
+   - **Row 29 now reads:** ceiling 127.5 (10-stone item or pile); reaches 200: **no**; path: **G row** (Stealing, target
+     check, stock max 127.5), with floor 127.5 / 127.5, **after** the caught-chance clamp in batch X.
+2. **Headline 2, corrected.** "Never caught from 150" (`Stealing.cs:337`, reads Value) can no longer be trained into.
+   **It is still live through gear.** Worn and temporary bonuses count above the cap since cc-P53 C (D-113). Shadow Dancer
+   Leggings +20, Burglar's Bandana +10, Mark of Travesty +10 and Animal Form +10 take a 127.5 thief to 150 (cc-P57 notes,
+   Part G and its decision 4, not built).
+   - So decision 9's "fix Stealing now" still stands, narrowed to the caught test. Clamp it to Base, or cap the chance.
+   - The pile-weight half of batch X is **done** (P57); drop it from X.
+   - A G row for Stealing must not ship before the caught clamp: it would reopen 150 by training.
+3. **Blacksmithy also reaches 200 by crafting now (cc-P61 Part A, D83, D-122).** `C\ClusterFCraftGain.cs:35-72` slides
+   the item's own window up to the metal's gain ceiling, which is the next metal's requirement
+   (`C\ClusterFMetalTiers.cs:56-67`; Adamantium and Celestial teach to 200). It is called from one hunk in
+   `P\CraftItem-shard-hooks.patch` (:59).
+   - Row 50 now reads: commissions, BODs **and** crafting in Adamantium (needs Base 187.5) all reach the cap.
+   - **Decision 10 is answered** by Chase's D83. It is withdrawn below.
+4. **Batch K should reuse P61's rule, not add its own hook.** P54's K proposed shifting a window by (material
+   requirement - 100). P61 shipped a different rule for smiths: ceiling = the next material's requirement, item width slid
+   up, the gain roll only, success untouched. Carpentry, Fletching and Tinkering should get **the same rule** so the crafts
+   behave alike, by extending `ClusterFCraftGain.CeilingFor` (today `DefBlacksmithy` only, `:46-55`) with per-material
+   ceilings for F-28's woods and the Tinkering metals.
+   - It still needs P54's consume check. `CeilingFor` reads `typeRes`, and Blacksmithy always consumes its ingots, but
+     a logs-to-boards cut must not teach Carpentry to 200.
+   - K's file list becomes `C\ClusterFCraftGain.cs` and `C\ClusterFMetalTiers.cs` (plus a wood table) instead of a new
+     hunk in `P\CraftItem-shard-hooks.patch`. K now overlaps **P61's files**, not P53's.
+5. **Mining reaches 200 by ore, not only sand (cc-P57 Part C).** Each extended ore is now harvested at its metal's
+   tier, with window tier -/+ 40 (`C\ClusterFMiningExtension.cs`, `Ore()` and `HarvestWindow`; tiers at
+   `C\ClusterFMetalTiers.cs:20-27`). Pinned gates on `skillBase >= ReqSkill` and rolls `(MinSkill, MaxSkill)`
+   (`Engines/Harvest/Core/HarvestSystem.cs:147`). So Adamantium ore (Base 187.5, window 147.5 to 227.5) and Mythril (175,
+   135 to 215) gain to the cap, and the old "ore 155" in row 56 is gone. K's Tinkering metals should read
+   `ClusterFMetalTiers` too, which is now the one table for every post-Valorite number.
+6. **A.1 line moves.** The hook definitions in `C\ClusterFAchievements.cs` are unchanged (:1163 to :1400). The craft
+   callers in `P\CraftItem-shard-hooks.patch` moved from :228/:230/:232 to :238/:240/:242, because P61's hunk sits
+   above them.
+7. **A new consumer of the curve.** F-35's evo pets build plan (Chase, 2026-10-05 13:40, `docs\feature-queue.md`) leaves
+   "XP numbers (wait on F-12)" open. Nothing here models pet XP. Whatever curve Chase picks (decision 1) should say whether
+   pets share it or get their own table.
+
+**Clash check, second pass:**
+- cc-P62 (kitsune walk test, the builder now running in `D:\ShatteredLegacy`) touches art IDs, `registry.csv` and a test
+  item, per its prompt. None of those are files cited here, and the server tree had no uncommitted changes when read.
+- cc-P57 and cc-P61 are done and committed, and their effects are above. No proposal here conflicts with a decided item.
+  Decision 10 is withdrawn because Chase decided it (D83).
+
+---
+
 ## Decisions for Chase
 
 1. **Curve shape.** Recommended: **S2, a config table**: P20's power curve to 100, flat XP per level above 100, never
@@ -503,9 +572,11 @@ multiplier. Seconds per use, mine: combat 3, magic 5, craft/gather 5, thief/heal
    - Recommended: **yes to G**, Detect Hidden only when something was found, and Animal Lore keyed on MinTameSkill.
    - For the casting schools: **G now**, with the Arcane Training Ward as later content if you want difficulty past
      120 to mean something.
-9. **Clamps first (batch X).** Recommended: yes, and **fix Stealing now**: it is live, not a future path.
-10. **Smiths gaining by crafting.** Should batch K's material-shifted window also apply to Blacksmithy (today 200 is
-    reached only by commissions and rare BODs)? Recommended: yes, so smithing works like carpentry and tinkering.
+9. **Clamps first (batch X).** Recommended: yes, and **fix Stealing's caught test now**: it is live through gear
+   (127.5 trained + 22.5 worn reads 150). The pile weight is done (cc-P57 G). Updated in the second pass.
+10. **Withdrawn (second pass).** Smiths gaining by crafting was decided by Chase as D83 and built in cc-P61 Part A.
+    The remaining choice: should batch K give Carpentry, Fletching and Tinkering **P61's rule** (ceiling = next
+    material's requirement, item window slid up)? Recommended: yes, so every craft climbs the same way.
 11. **Content skills** (Alchemy, Cooking, Tailoring, Fishing, Inscription). Recommended: design their top recipes and
     fish veins with F-18/F-20 (BODs for the other crafts), and ship the potion and fishing-rare caps first.
 12. **Imbuing load term** lowers success for slots 6-8 at every skill (an OSI-visible change). Recommended: accept,
