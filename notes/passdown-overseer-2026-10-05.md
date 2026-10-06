@@ -65,3 +65,12 @@ clean-machine (sandbox; graphics fallback proven), 1919 package published, T-021
 - 08:52: Smelt skill-gain jump is not a bug (test char, super fast gain enabled). No D83. Next free bug stays D83.
 - 10:09: P57 tested (all passed; Platinum vein shelved, menu words wait for package). P60 DONE (console Commit tab, blocks on not-DONE). P59 DONE (not yet read). Commit-ShardWork.ps1 fixed per P60 s7 items 1-2 (archive only on DONE/STOPPED; exit 1 on add/commit/push failure), backup .bak-20261005-0956. Logged D83 (Blacksmithy no gain above 140, awaiting pick), D84 (earned achievement shows 9/1), D85 (post-Val deeds unnamed; Chase: own clilocs). D86 hammer +5 stuck in pack once, not reproduced (not yet in bug-list). P60 did not do P57 changelog lines or the 2 stale lines (40, 59): goes in P61.
 - 16:15: Features chat (commissions): F-37 Client Commissions to the League, F-20 skill list decided, F-38 Mining/Lumber contract rework added (needs numbers pass). Infamy is new (not in code). Mule goes to its own chat. Next free F-39. Not committed.
+
+## State at 16:25
+
+- Done and committed: P56-P64 (P62 kitsune walk test, P63 console package/deploy, P64 patch history). P54 research done; Chase's 17 answers in notes\f12-decisions-2026-10-05.md.
+- Running: P68 (console Check package, cancelled publish = exit 3, commit wait 60 s + countdown). Chase added a Force checkbox in the kickoff: Force skips only the recent-change wait, never the not-DONE check, SYSTEM refusal or typed phrase.
+- Builder queue after P68: P65 evo pets framework, P66 clamps + hook G, P67 craft ceilings + P61 follow-ups (orders roll teaching metals; harder items teach better; band speed stock), then P34, P36, P45, P50. Next free P69.
+- Overseer edits today: Commit-ShardWork.ps1 (archive only on DONE/STOPPED; exit 1 on git failure), Publish-PlayerPackage.ps1 (decline exits 3). Bug list D77-D82 closed (2b); D83-D85 built in P61 awaiting test; D86 hammer not reproduced; D87 bulletin wrap (P64). Fidelity D-121, D-122 + amendments. Next free bug D88, deviation D-123 (re-check after P62-P68).
+- Kitsune: updated walk frames re-encoded into vendor sl-anim7 (committed 16:2x); package publish waits until the rest of the art is drawn (Chase).
+- To features chat: commissions to the League (Renown, Infamy, orders for all skills, training bonus), Imbuing rework. Offered: XmlLevelItems port research (notes only), not yet accepted.

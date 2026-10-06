@@ -31,6 +31,9 @@ live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers
   (Mining and Lumberjacking contracts rolled, typed and rebalanced; Haul needs the mule; escort missions a later idea).
   Next for F-38: a numbers pass. **The mule moves to its own chat** (Chase, 2026-10-05): F-33's mule, its modules
   and Haul contracts are designed there.
+- **Done in the 10-05 evening mule chat:** F-33's mule settled (League quest, tier table, bloodlines and breeding,
+  all 17 modules); prompts `cc-prompts\cc-P-mule-core.md` (ready, unnumbered) and `cc-P-mule-modules.md` (ready,
+  unnumbered, after core). F-39 added (more dismount sources). Next free: F-40.
 - **Done in the 10-03 morning features chat:** the League build-out designed (F-24 "League build-out" and "cc-P47
   research done" blocks), F-33 added, the League storyline drafted (`docs\league-storyline.md`, draft 2), F-12's
   ladder decided. P47 ran; P48 League batch 1 written.
@@ -2589,7 +2592,70 @@ Notes (overseer):
   - **League quest (Chase: yes):** a short Miners' Compact errand that grants the mule and leads into the first Haul
     contract; today's Exchange price (25 of four currencies + 25,000 gold) becomes the tier 2 upgrade cost.
   - **Hues: each tier takes its metal's ore hue**, or at least the mule's barding gear is hued that way.
-  - **Levelable barding: yes**, the mule's barding takes XP from Haul trips **and combat** (F levelable gear).
+  - ~~Levelable barding: yes, XP from Haul trips and combat~~ **Reversed 2026-10-05 (Chase): "maybe not levelable,
+    stick with what you have"**: Expedition Barding is a plain module (I 10% / II 20% + HP / III 30% + HP damage
+    reduction), not levelable gear.
+  - **Tier table approved (Chase 2026-10-05):** T1 Compact 150-190 HP, 1,600/150, resists 25-45, 1 slot, Dull Copper;
+    T2 Bronzeback 200-250, 2,400/225, 35-55, 2, Bronze; T3 Shadowhide 250-310, 3,200/300, 45-65, 3, Shadow Iron;
+    T4 Valorite-Barded 320-400, 4,000/400, 55-70, 4, Valorite; T5 Celestial 420-500, 5,000/500, 60-75, 5, Celestial.
+  - **Prompt drafted, unnumbered (overseer numbers):** `cc-prompts\cc-P-mule-core.md` (slot cost, tiers, bloodlines,
+    breeding, League quest, module hooks). Modules: `cc-prompts\cc-P-mule-modules.md` (rewritten 2026-10-05 after all 17 modules were
+    settled; ready, unnumbered, runs after the core prompt): module item and attach/detach, guild-sold schematics consumed in crafting, trait-to-module boosts, all
+    no-patch modules, Trailwise Tack III slot 0, Soul Tether keeps the pack; Steady Hoof Wraps and Trader's Ledger
+    argued in notes only (they need pinned changes).
+  - **Modules, answered 2026-10-05 (Chase), mule chat:**
+    - **Removable**, so they can be upgraded.
+    - **Schematics are learned, like elven (ML) recipes:** buy the schematic from the guild (rank-gated) to learn the
+      recipe once, then craft with the appropriate resources and items, **maybe special monster parts** as well.
+      (Replaces the earlier "schematic consumed per craft" proposal.)
+    - **The mule's tier limits module tiers** (overseer proposal to confirm: module tier N needs mule tier N or higher).
+    - **Clockwork Load Harness III: a Clockwork Scavenger**, a little mob that auto loots and carries the loot back to
+      the mule. **The Clockwork Scavenger is the League auto-loot reward** (Chase 2026-10-05), not a separate
+      system: one auto-looter. **Option A (Chase 2026-10-05):** the League grants the Scavenger, which loots into the
+      owner's backpack; Clockwork Load Harness III makes it carry loot to the mule instead.
+    - Hauling percentages (Ore Hopper and Timber Rack 25/50/50%, Saddlebags +50/+100/+150 items, Load Harness
+      +10/+20/+30% weight) **are fine for now**.
+    - **Pack kept on death comes from Soul Tether** (Chase 2026-10-05). Survival draft: Trailwise Tack I stamina,
+      II/III see below; Field Medic Pack I slow self-heal, II self-cure and holds bandages usable on it from range,
+      III emergency heal below 25% HP on a cooldown; Expedition Barding as above; Arcane Ward Harness I magic resist,
+      II a recharging one-spell ward, III recall of mule and pack to the stable below 15% HP; Soul Tether I cheaper
+      faster resurrection, II pack kept on death, III no stat loss on death.
+      **Field Medic and Arcane Ward OK as drafted (Chase 2026-10-05)**; Field Medic III maybe also a healing aura.
+    - Trailwise Tack II "follows through gates" dropped (Chase: a normal pet already does that). Overseer proposal:
+      I stamina + regen + hostile warning (~12 tiles), II Homing (finds the owner anywhere on the same map, "all
+      come" from any distance), III 0 follower slots. **Homing for II approved (Chase 2026-10-05).**
+    - **Survey Saddle Roll (Maritime), Chase 2026-10-05:** I **bigger exploration radius for F-6 fog of war**
+      (today `ClusterFExplorationManager.ExploreRadius` = 2 chunks, 16 tiles; overseer: +1 chunk at I); II **an arrow
+      to treasure map and SOS locations** (overseer: the stock quest arrow, for a decoded map or SOS in the owner's
+      pack); III **helps dig or digs up treasure maps** (overseer: the mule digs, no shovel, faster, wider dig
+      tolerance; guardians spawn as usual). Replaces the earlier route log / last-mining-spot recall draft.
+      Follow-up (Chase 2026-10-05): **I's wider reveal counts toward percent-explored achievements.** **III: the mule
+      does the digging** (overseer reading: no player digging skill check). II's target: Chase floated a context
+      entry for the active treasure map or keeping maps on the mule; overseer proposal: the Saddle Roll holds maps in
+      a map case on the mule, and a mule context entry "Track map" picks the active one (default nearest).
+    - **Salvage Bin (Custodians), Chase 2026-10-05:** I **a trash bag on the mule's context menu** (Clean Up
+      Britannia credit as usual); II **picks up reagents and items on the ground, by a filter, plus junk**
+      (overseer: filtered keepers to the pack, junk to the bin; the Scavenger loots corpses, the bin picks up loose
+      ground items); **III (Chase 2026-10-05): salvages items (OSI salvage bag: ingots, cloth, leather) and gives
+      Clean Up Britannia points.**
+    - **Approved as drafted (Chase 2026-10-05):** Field Smelter Rig (I smelts the pack's ore, II the mule counts as a
+      forge, III also an anvil: smith and repair anywhere); Shadow Cloak (I hides with the owner, II stays hidden
+      while the owner stealths beside it, walking only, III hides when attacked); Minstrel's Bells (I slower to be
+      targeted, II chance to calm attackers, III owner's bard abilities stronger near the mule; may need a pinned
+      AI change). Survey Saddle Roll map case + "Track map" (nearest by default) approved.
+    - **Last three, Chase 2026-10-05:** Steady Hoof Wraps OK (I 25% resist dismount, II 50%, III immune plus a
+      shorter remount delay; needs a pinned patch), **but the shard needs more dismount opportunities** (otherwise the
+      module has little to do; a feature item, see the next free F-number). Trader's Ledger I-II OK (I sell from the
+      mule's pack at any NPC vendor, II higher sell cap and slightly better prices); **III is a portable bank**.
+      Imbued Barding Socket OK (Imbuing adds 1 / 2 / 3 mule properties: resist, HP, HP regen, stamina regen, carry;
+      normal intensity limits), **plus portable enchant / disenchant** (overseer reading: the mule counts as a soul
+      forge for imbuing and unraveling).
+    - **Follow-ups (Chase 2026-10-05):** more dismount sources are **F-39** (all four ideas planned). Trader's Ledger
+      III portable bank: **no cooldown; not in dungeons, not in combat, not while criminal.** Imbued Barding Socket
+      tiers approved: I one property socket; II two, plus unravel (disenchant) anywhere near the mule; III three, plus
+      imbue (enchant) anywhere near the mule (the mule counts as a soul forge). **All 17 modules now settled**; the
+      modules prompt was rewritten from this block (2026-10-05).
+    - **Higher-tier satchels on the player send to the mule**, by a single-click menu entry first, automatic later.
   - **Decided (Chase): build the companion-independent mule work first (slot cost 2 to 1, tier field, module
     attach and serialization, the no-patch modules), ahead of the rest of batch 3.
   - Code facts (2026-10-05 read): sold today at the Civic Mule Exchange (`CrossGuildExchangeGump.cs:33-37`, 25 each of
@@ -2891,6 +2957,10 @@ Answered 2026-10-05 (Chase):
       (ears 4x7 with dark tips, lighter tail with fur bands and a solid cream tip) converted, copied into
       `vendor\...\anim-src\4783\`, re-encoded with `scripts\build-equip-anims.py` (`--check` passes) and swapped into
       both installed test clients. Waiting on Chase's in-game look.
+    - **2026-10-06 06:40:** walk done in all five drawn directions (dir0, dir2 redo, dir3, dir4 from the art chat; Stage 4
+      brief and facing table in `design\kitsune-ears-tail\prompt-design-chat.md`, sheet `reference\directions_sheet.png`).
+      Converted to `stage4-final\`, encoded (50 walk frames, `--check` passes), swapped into both test clients. Next: Chase
+      walks all eight directions in game; then run (50 frames) and stand (5).
   - **Stage picks, decided (Chase, 2026-10-05, from cc-P59's sheets; recolors never count as a stage):**
     - **Dog:** 217 Dog, 739 Leather Wolf, **stage 3 breed is the player's pick** (1547 Malamute, 1548 Great Dane, 1549
       Saint Bernard, 1546 Newfoundland, 1552 Rottweiler, 1551 Black Russian Terrier), 277 Cu Sidhe, 1410 Windrunner.
@@ -3060,6 +3130,24 @@ Open questions: none blocking. Needs a numbers pass (tier values, type multiplie
 
 Check first: F-28 (wood bonuses and the ore pairing), the grove ledger (P13), F-6 discovery, F-37 and P48's engine
 (rolled contracts may belong on it), the Mining ladder decision (gates 120/150/180 noted in F-36).
+
+### F-39: More ways to be dismounted (added 2026-10-05)
+
+**Ours.** Raised in the mule chat: the mule's Steady Hoof Wraps (Twin Paths Dojo, F-33) resists dismount, but riders
+are rarely dismounted today (the Dismount weapon ability, bolas, Riding Swipe, a few monster specials), so the module
+has little to do.
+
+Chase (2026-10-05): **plan on all four overseer ideas:**
+- **Big monsters knock riders off** on a hard hit (ogre lords, titans, dragons and similar), as a chance.
+- **No-ride or dismounting areas** in dungeons: low ceilings, cave mouths.
+- **Traps that spook mounts.**
+- **Wildlife charges** in the wild that dismount riders.
+
+Open: which creatures and how big a chance; which dungeon areas; trap types; which wildlife. Every dismount path must
+go through the same check Steady Hoof Wraps hooks (P47 5.4 lists today's paths), so the module covers the new ones.
+
+Check first: P47 5.4 (dismount paths: `Dismount.DoDismount`, `SetMountBlock`, Bola, InfusedThrow, RidingSwipe), F-32
+(dungeon traps), F-14 (monster work).
 
 ## Batched
 
