@@ -1,0 +1,131 @@
+  Passed ShatteredLegacy.Tests.P45RogueProbe.A3_PoisonsItsOwnDagger [75 ms]
+ poisoning: dagger poison=Greater charges=14 karma=-20
+  Passed ShatteredLegacy.Tests.P45RogueProbe.A3_HidesAndStealthsWithThePlayerStepCount [9 ms]
+ after Hiding: hidden=True
+ after Stealth: steps=20 (player formula 100/5 = 20)
+  Passed ShatteredLegacy.Tests.P45RogueProbe.A3_StockCreatureMovementCountsStepsButNeverRestealths [< 1 ms]
+ stock OnMove: 20 steps allowed, revealed on step 21
+ stock OnMove running: hidden after one running step=False
+  Passed ShatteredLegacy.Tests.P45RogueProbe.A3_RealMoveRunsOnMove [15 ms]
+ Mobile.Move: moved=True (1161, 1000, 0)->(1162, 1000, 0) steps 20->19 hidden=True
+  Passed ShatteredLegacy.Tests.P45RogueProbe.A3_PlayerStepRulesThroughOurOnMoveOverride [< 1 ms]
+ player rules: still hidden after 200 steps=True (re-stealth each 20 at 100 skill)
+ player rules running: steps 20->18 hidden=True
+  Passed ShatteredLegacy.Tests.P45RogueProbe.A3_RemovesATrap [7 ms]
+ remove trap: trap=None power=0 rogue hits 150->150
+  Passed ShatteredLegacy.Tests.P45RogueProbe.A3_MonsterAiDetectHiddenIgnoresAHiddenCreatureButNotAPlayer [23 ms]
+ monster AI detect hidden x60: creature revealed 0, player revealed 27
+  Passed ShatteredLegacy.Tests.P45RogueProbe.A3_PlayerDetectHiddenRevealsAHiddenCompanion [1 ms]
+ player detect hidden x40 against Hiding 100: revealed 19
+  Passed ShatteredLegacy.Tests.P45RogueProbe.A3_AttackingFromHidingReveals [26 ms]
+ monster can see hidden companion: False
+ after setting Combatant: hidden=True
+ after the first swing: hidden=False monster hits 4->4
+ control, visible attacker: m2 lowest 6/6 deleted=False combatant=a mongbat
+  Passed ShatteredLegacy.Tests.P45RogueProbe.A3_PicksALockWithALockpick [1 ms]
+ lockpick: locked=False picker=probe companion
+  Passed ShatteredLegacy.Tests.P45PersistenceProbe.B5_AfterDeserializationRunsInsideTheLoadAndTheRegistryStillWins [10 ms]
+ roomed: controlled=False lastOwner=owner stabled=True timer=
+ right after Deserialize: timer=set AfterDeserialization ran=True lastOwner=owner
+ after the first slices: AfterDeserialization ran=True
+ after the first slices: timer=null
+  Passed ShatteredLegacy.Tests.P45PersistenceProbe.B6_LogoutRestartAndLoginBesideTheOwner [4 ms]
+ before logout: followers=1 (roomed one released its slots)
+ after logout: map=Internal stabled=False controlled=True autostabled=False roomed map=Internal roomed stabled=True
+ after restart: followers=1 inAllFollowers=True deleteTimer=null controlled=True
+ after login: map=Trammel at=(1480, 1000, 0) owner at=(1480, 1000, 0) order=Follow target=owner roomed map=Internal followers=1
+  Passed ShatteredLegacy.Tests.P45PersistenceProbe.B5_WithoutTheRegistryTheThreeDayDeleteStarts [1 ms]
+ hired by SetControlMaster: LastOwner=null (Owners is filled by taming)
+ no registry: timer=running=True delay=3.00:00:00
+  Passed ShatteredLegacy.Tests.P45PersistenceProbe.B6_AGhostCompanionLoggedOutIsCaughtByTheDeadPetAbandonSweep [10 ms]
+ first sweep: abandonTime=10/06/2026 12:10:49 deleted=False
+ after 1.00:00:00: deleted=True
+ marker case first sweep: abandonTime=01/01/0001 00:00:00
+ with IsStabled set while logged out: deleted=False
+  Passed ShatteredLegacy.Tests.P45OrdersProbe.B4_StockGuardDoesNotDefendASibling [1 ms]
+ stock guard, sibling attacked: combatant=null
+  Passed ShatteredLegacy.Tests.P45OrdersProbe.B4_ForcedAiFollowDefendsOwnerSiblingAndSelf [2 ms]
+ owner attacked: combatant=Ratman order=Follow
+ sibling attacked: combatant=Ratman order=Follow
+ self attacked: combatant=Ratman order=Follow
+ guard, sibling attacked: combatant=Ratman order=Guard
+  Passed ShatteredLegacy.Tests.P45OrdersProbe.B7_MasterCursorRelayRunsRangeFromTheCompanion [9 ms]
+ cast=True companion target=Server.Spells.SpellTarget`1[[Server.Mobile, Server, Version=0.15.0.0, Culture=neutral, PublicKeyToken=null]]
+ at the pick: companion->target 5.0, owner->target 14.0
+ near the companion, far from the owner: damage=25 (hits 63/63)
+ cast=True companion target=Server.Spells.SpellTarget`1[[Server.Mobile, Server, Version=0.15.0.0, Culture=neutral, PublicKeyToken=null]]
+ at the pick: companion->target 14.0, owner->target 5.0
+ far from the companion, near the owner: damage=0
+  Passed ShatteredLegacy.Tests.P45OrdersProbe.B4_StockFollowingCompanionIgnoresAnAttackOnItsOwner [< 1 ms]
+ stock follow, owner attacked: companion combatant=null order=Follow
+ stock follow, companion attacked: combatant=null order=Follow StandsDown=True
+  Passed ShatteredLegacy.Tests.P45OrdersProbe.B4_StandsDownOffMakesAFollowingCompanionAnswerADirectAttack [< 1 ms]
+ StandsDownOnCommand=false, attacked: order=Attack target=Ratman combatant=Ratman
+  Passed ShatteredLegacy.Tests.P45LootMountProbe.B9_EtherealRiddenByCodeAndDismountedFollowingTheOwner [2 ms]
+ owner mounted: companion mounted=True mount=EtherealHorse companion followers=1 owner followers=2
+ owner dismounted: companion mounted=False ethereal in pack=True
+ EtherealMount.Validate(companion)=True
+  Passed ShatteredLegacy.Tests.P45LootMountProbe.B8_ACompanionLiftingFromItsOwnersKillIsJudgedAsItself(facet: "Trammel") [9 ms]
+ Trammel: IsCriminalAction(owner)=False IsCriminalAction(companion)=True CanLoot(companion)=False
+ Trammel: companion lift=False reason=Inspecific companion criminal=False owner criminal=False
+  Passed ShatteredLegacy.Tests.P45LootMountProbe.B8_ACompanionLiftingFromItsOwnersKillIsJudgedAsItself(facet: "Felucca") [3 ms]
+ Felucca: IsCriminalAction(owner)=False IsCriminalAction(companion)=True CanLoot(companion)=True
+ Felucca: companion lift=True reason=Inspecific companion criminal=True owner criminal=True
+  Passed ShatteredLegacy.Tests.P45LootMountProbe.B9_RealMountKeepsItsMasterAndSlotsWhileACompanionRides [1 ms]
+ ridden: companion mounted=True horse map=Internal horse master=owner owner followers 2->2
+ dismounted: horse map=Trammel at=(1921, 1000, 0) order=Come target=
+  Passed ShatteredLegacy.Tests.P45LootMountProbe.B8_CodeThatMovesItemsDirectlyBypassesEveryLootingCheck [3 ms]
+ direct move from a stranger's kill: in pack=True companion criminal=False IsCriminalAction(owner)=True
+  Passed ShatteredLegacy.Tests.P45HealerProbe.A1_DrinksHealAndCurePotionsThroughTheRealDoubleClick [4 ms]
+ heal potion: 20 -> 44, potion deleted=True, bottle=True
+ cure potion: poisoned after=False
+  Passed ShatteredLegacy.Tests.P45HealerProbe.A1_CanHealOwnerIsTheSeparateNonBandagePath [< 1 ms]
+ default CanHeal=False CanHealOwner=False
+  Passed ShatteredLegacy.Tests.P45HealerProbe.A1_ResurrectsTheOwnerAndASiblingWithBandages [49 ms]
+ sibling dead pet: True
+ sibling res: delay=1.46s gump to owner=True stillDead=True
+ living companion sees the ghost: False (ghost warmode=False)
+ dead owner: hits=0/100 poisoned=False canFit=True canBeBeneficial=True
+ owner res: delay=6.46s ResurrectGump=True
+  Passed ShatteredLegacy.Tests.P45HealerProbe.A1_HealingAndAnatomyGainForACompanionHealer [4 ms]
+ after 60 bandages: Healing 55.2 Anatomy 55.5
+  Passed ShatteredLegacy.Tests.P45HealerProbe.A1_HealsOwnerAndSiblingWithRealBandagesAtPlayerSpeedAndMath [3 ms]
+ owner: dex=100 delay=1.46s expected=1.46s hits 20->73 bandages 50->49
+ sibling: delay=1.46s hits 20->81 primary=Healing
+ self: delay=6.00s expected=6.00s
+  Passed ShatteredLegacy.Tests.P45HealerProbe.A1_CuresPoisonOnTheOwner [< 1 ms]
+ owner poisoned after bandage: False
+  Passed ShatteredLegacy.Tests.P45BranchProbe.C12b_PartyBuffByCompanionCountReachesPlayersAndCreatures [1 ms]
+ friendship x2: owner str 100->104 phys 0->2; companion str 100->104
+  Passed ShatteredLegacy.Tests.P45BranchProbe.C11b_SharedBurdenMovesSiblingDamageButCannotTouchAPlayer [1 ms]
+ sibling hit 40: sibling 150->116, penitent 150->144; owner hit 40: owner 100->60, penitent 144->144
+  Passed ShatteredLegacy.Tests.P45BranchProbe.C11c_C12a_C13_CheatDeathOnceAndOneCooldownPerParty [1 ms]
+ penitent killing blow: alive=True hits=1 deadPet=False party healed: owner 100/100 other 150/150
+ hero killing blow inside the shared cooldown: deadPet=True
+ hero2 plot armor: alive=True hits=1 blessed=True
+  Passed ShatteredLegacy.Tests.P45BranchProbe.C11a_WrathOfTheWoundedScalesMeleeAndSpellDamageDealt [< 1 ms]
+ wrath: 100 at full health -> 100, at 25% -> 130
+  Passed ShatteredLegacy.Tests.P45BranchProbe.B10_CreatureCastsNecromancyTransformations [2 ms]
+ Wraith Form: cast=True BodyMod 0x0->0x2EC HueMod=16385 context=WraithFormSpell
+ Lich Form: cast=True BodyMod 0x2EC->0x2ED HueMod=0 context=LichFormSpell
+ Lich Form again (toggles off): cast=True BodyMod 0x2ED->0x0 HueMod=-1 context=none
+  Passed ShatteredLegacy.Tests.P45BardProbe.A2_AreaPeacemakingAlsoCalmsTheOwnerAndSiblings [1 ms]
+ area peace: owner combatant=null warmode=False; sibling combatant=null pacified=True; monster pacified=True
+  Passed ShatteredLegacy.Tests.P45BardProbe.A2_MusicianshipAndBardSkillsGainForACompanion [3 ms]
+ ettin discord range 7.9..57.9
+ gains: Musicianship 50->63.9 Peacemaking 50->54.2 Discordance 50->54.2
+  Passed ShatteredLegacy.Tests.P45BardProbe.A2_ProvokesOneMonsterOntoAnother [< 1 ms]
+ second target: InternalSecondTarget
+ provoke: a.provoked=True a.combatant=Ratman a.BardMaster=probe companion b.combatant=Mongbat
+  Passed ShatteredLegacy.Tests.P45BardProbe.A2_DiscordsAMonsterAndRefusesAPlayer [< 1 ms]
+ discord: effect=28 phys 28->0
+  Passed ShatteredLegacy.Tests.P45BardProbe.A2_TargetedPeacemakingOnAMonster [< 1 ms]
+ target after UseSkill: Server.SkillHandlers.Peacemaking+InternalTarget
+ mongbat: pacified=True combatant=null until=00:01:47.9333333
+  Passed ShatteredLegacy.Tests.P45BardProbe.A2_ProvocationRefusesPlayersAndPets [< 1 ms]
+ provoke the owner: next target=none
+ provoke onto sibling pet: a.provoked=True a.combatant=probe companion
+Test Run Successful.
+Total tests: 41
+     Passed: 41
+ Total time: 1.3384 Seconds
