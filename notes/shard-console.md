@@ -626,3 +626,32 @@ thing about itself.
   Measured on live, 192,047 items: the listener line came 11 s after the entrypoint started. A world that took longer to load would read NOT LISTENING while it loaded, and
   keep reading it after. `LogWindowMinutes` in `Get-ConsoleConfig` if that ever happens.
 - **The live paths** (section 6 item 9).
+
+## 11. Autopilot (cc-P74, 2026-10-12)
+
+Chase's CC autopilot (`D:\UO\cc-autopilot`, its own `README.md`) hands CC the next queued prompt each time the last one
+ends `P<nn> DONE`. In between, it commits and pushes both repos through `Commit-ShardWork.ps1`. It also emails Chase
+when CC needs him. The console gives it a fifth glance tile and a tab, and reimplements none of it.
+
+- **AUTOPILOT tile.** It reads ENABLED, state.json, the last 400 lines of `autopilot.log` and the queue listing on every
+  refresh. `Get-AutopilotGlance` judges them, and it is pure. The tile says one of these:
+  - OFF (grey)
+  - IDLE (grey; says how many are queued and `send CC "go" to start`)
+  - RUNNING (green; `P74 for 42m 0s, 3 queued`)
+  - NEEDS YOU (amber): the hook emailed NEEDS YOU, STOPPED or COMMIT FAILED since it last handed CC a prompt
+  - UNKNOWN (grey): something could not be read. It is never red.
+
+  A failed email adds `; email failing` and turns the tile amber. `-Status` prints the tile too.
+- **Autopilot tab.** Turn on, Turn off, Email setup and Send test email each open the autopilot's own script
+  (`Start-Autopilot.ps1`, `Stop-Autopilot.ps1`, `Setup-Email.ps1`, `Send-TestEmail.ps1`) in a PowerShell window that
+  stays open. Turn on is refused until `email.json` exists. Open the queue folder and Open autopilot.log only open.
+  The read-only panel lists:
+  - on or off
+  - the running prompt and for how long
+  - the last prompt handled
+  - the queue in run order, with any unnumbered file named as IGNORED
+  - the last 20 log actions, without commit output
+- **Safety.** `Test-PlanSafety` lets nothing in the autopilot's folder run except those four scripts, each in a window
+  of its own. Notepad opens only the log. The hook `cc-autopilot.ps1`, which commits and pushes, never runs from
+  the console. The console never reorders or renumbers the queue: numbers belong to the overseer.
+- Details, tests and three hook bugs found on the way: `notes\cc-P74-autopilot-console.md`.
