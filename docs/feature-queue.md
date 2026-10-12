@@ -14,15 +14,25 @@ Running list of feature ideas from play testing. Kept by the overseer (Claude); 
 4. Chase commits with `Commit-ShardWork.ps1`.
 
 F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and questions (Q-n).
-**Next free: F-39.**
+**Next free: F-44.**
 
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
 
-## Where things stand (handoff, updated 2026-10-05, 16:15)
+## Where things stand (handoff, updated 2026-10-12, 09:30)
 
 For a new features chat: read this section, then the entries it names. Prompt states and bug numbers
 live in the overseer's notes (`notes\passdown-overseer-*.md`); re-derive numbers from disk, not from here.
+
+- **Done in the 10-11 features chats (loot boxes, then recipe gating; written to disk 2026-10-12):** F-40 (achievement
+  loot boxes), F-41 (fanfare), F-42 (epic crafting, planned) and F-43 (recipe-gated crafting) added. **Order of the
+  Alembic** added as guild 18 (Alchemy, Glassblowing, Taste ID; see F-43 and the F-9 table note). Three prompts,
+  unnumbered, in `cc-prompts\`: `cc-P-loot-boxes-fanfare.md` (F-40/F-41 phase 1), `cc-P-alembic-guild.md` (run
+  before or with the next) and `cc-P-recipe-gating.md` (F-43). **For the overseer:** number them; log the F-43
+  fidelity deviation (stock OSI crafting gated; recipes stored per account where OSI stores them per character);
+  **P70's Part B is superseded** (mule schematics are learned once, not consumed per craft; F-43 Part G converts or
+  hands the change on, P70 itself is not edited). Next for the features side: a new chat on the Artificers' Order and
+  the Imbuing rework (imbue-property gating).
 
 - **Done in the 10-05 afternoon features chat (commissions):** F-37 added (Smith commissions move to the League as
   "Client Commissions"; Renown counts toward rank; Society rank gates Obsidian and up; expiry costs Renown and adds
@@ -741,7 +751,7 @@ Chase adjusts; the table is data, one line per guild.
 |---|---|
 | Warriors' Brotherhood | Swords, Macing, Fencing, Wrestling, Tactics, Parry, Chivalry, Focus, Throwing |
 | Arcane Society | Magery, Eval Int, Meditation, Resist, Inscription, Mysticism, Spellweaving (the guildmaster also points to pinned's unlock chain in `Engines/ML Quests/Definitions/Spellweaving.cs`, starting with `Patience`, with a quest arrow if the giver is on the same map) |
-| Healers' Covenant | Healing, Anatomy, Alchemy, Taste ID |
+| Healers' Covenant | Healing, Anatomy (Alchemy and Taste ID moved to the Order of the Alembic, 2026-10-11, F-43) |
 | Rangers' League | Archery, Tracking, Animal Taming, Animal Lore, Herding, Veterinary, Camping |
 | Miners' Compact | Mining |
 | Smiths' Fellowship | Blacksmithy, Arms Lore |
@@ -755,6 +765,7 @@ Chase adjusts; the table is data, one line per guild.
 | Merchants' Exchange | Item ID, Begging |
 | Bards' Consortium | Musicianship, Peacemaking, Provocation, Discordance |
 | Artificers' Order | Imbuing |
+| Order of the Alembic (guild 18, added 2026-10-11, F-43) | Alchemy, Taste ID (Glassblowing follows Alchemy) |
 | Custodians | none (keeps its trash bag) |
 
 #### Gargoyles (Chase, 2026-09-30: gargoyle options must be included)
@@ -1709,7 +1720,8 @@ orders (`ClusterFWorkOrderSystem`, P47 3.1) as a starting point.
 | Blacksmithy, Tailoring | Society of Smiths, Tailors' Circle | existing | BOD deed |
 | Carpentry, Fletching | Foresters' Union | OSI port | BOD deed |
 | Tinkering | Tinkers' Union | OSI port | BOD deed |
-| Alchemy, Inscription | Arcane Society | OSI port | BOD deed |
+| Inscription | Arcane Society | OSI port | BOD deed |
+| Alchemy | **Order of the Alembic** (moved from the Arcane Society 2026-10-11, F-43: one owning guild per craft) | OSI port | BOD deed |
 | Cooking | Maritime Brotherhood | OSI port | BOD deed |
 | **Cartography** | Maritime Brotherhood (overseer pick) | **explore a named region and create its map** (Chase); ties to F-6's Cartography fog of war | ours, deed |
 | Fishing | Maritime Brotherhood | fish by type, deep-sea catches | ours, deed (confirmed 2026-10-05) |
@@ -2670,6 +2682,10 @@ Notes (overseer):
   Foresters' hatchet line: Foresters + Smiths or Tinkers), rangers (Hunter's Satchel or Outrider's Crook: Rangers +
   Foresters or Tailors).
 
+**Recipe chat, 2026-10-11 (F-43):** module schematics are **learned once, like ML recipes**, as Chase decided in the
+mule chat. P70's Part B (schematic consumed per craft through `AddRes`) does not match; F-43's prompt (Part G) moves
+schematics into the account recipe store, bought at guild rank indexes 1 (tier I), 2 (tier II) and 4 (tier III).
+
 ### F-34: Bank access item, a multi-guild base with per-guild upgrades (added 2026-10-03)
 
 **Ours** (OSI crafting is pack-only; no OSI item pulls from the bank. Without the item nothing changes, so a wiki
@@ -3148,6 +3164,90 @@ go through the same check Steady Hoof Wraps hooks (P47 5.4 lists today's paths),
 
 Check first: P47 5.4 (dismount paths: `Dismount.DoDismount`, `SetMountBlock`, Bola, InfusedThrow, RidingSwipe), F-32
 (dungeon traps), F-14 (monster work).
+
+### F-40: Achievement loot boxes, Dungeon Crawler Carl style (added 2026-10-11)
+
+**Ours.** Designed in the 10-11 loot boxes chat on Chase's phone (draft also in the project doc
+`claude/f40-f41-loot-boxes-fanfare.md`). Prompt: `cc-prompts\cc-P-loot-boxes-fanfare.md` (phase 1, unnumbered).
+
+Decided 2026-10-11:
+- Boxes for achievements, and for first boss kills (each boss), League rank-ups (each rank), first dungeon clears
+  (each dungeon or floor) and loop completion (each loop number is a new first).
+- Resource-themed boxes hued and named by their ladder up to Celestial (a Valorite box, a Barbed box, a Heartwood box).
+  Non-resource boxes (Explorer, Scholar, Boss, Loop, League) use rarity names and colors: Common gray, Uncommon green,
+  Rare blue, Epic purple, Legendary orange, Celestial (the Celestial metal hue). Tier follows difficulty.
+- First time only. Later loops give a snarky System line plus a count; the achievement page shows the count.
+- Contents roll at earn, scaled to level and related skill then. Hoarding gains nothing.
+- Open only in guard zones and player homes (owner, co-owners, friends). Boxes account bound; contents tradeable
+  except cosmetics (bound). Box vanishes when empty; a timer is only a safety cleanup.
+- Opening uses F-41's fanfare and a reveal gump. Five scroll fragments make one loop scroll. Keep the box-in-a-box
+  joke in the rare pool. Box gear is always weaker than exceptional crafted gear of the same tier and never levelable.
+- Epic components ship now with a System tooltip hinting at undiscovered recipes (F-42).
+- Recipe scrolls come out of the Schematics/recipes pool and the Artisan's theme slot (F-43).
+
+Placeholder tables (Chase answered around them, numbers unchanged): tiers 1-6 with 2/3/3/4/5/6 slots; one theme slot
+and one currency slot (gold, plus Renown from tier 2) per box; pool weights T1-T6: consumables 50/40/30/20/15/10,
+resources 30/30/25/20/15/10, magic gear 15/20/25/25/25/20, schematics/recipes 5/8/12/15/15/15, cosmetics
+0/2/6/12/15/20, rare 0/0/2/8/15/25. Suggested, not confirmed: boxes stay surprise rewards; the League shop stays the
+place players choose. Open: contents numbers after playtesting.
+
+### F-41: Fanfare system (added 2026-10-11)
+
+**Ours.** Same chat and prompt as F-40.
+- Its own service for achievements, box openings, level-ups, loops and League trial chapters.
+- Minor seen by the player only; major by nearby players; capstone (a loop, reaching 200, trial chapters) shard-wide
+  with a System-voice announcement naming the player.
+- Signature "New Achievement!" voice over, one dry and smug announcer; effects grow with the tier. Rotating line pools
+  (approved "for now", full text in the prompt). Several at once merge into one fanfare. Players can mute their own;
+  capstones always show.
+- Phase 1 server side only (UO effects and sounds hued per tier, overhead text for the voice). Phase 2 with the custom
+  client: voice over and new effects. Suggested, not confirmed: check TazUO external sound overrides; AI voice tool.
+
+### F-42: Epic crafting (planned, added 2026-10-11)
+
+**Ours.** Placeholder entry so F-40 and F-43 can point at it. Box epic components and boss drops feed recipes found
+only from bosses and loot boxes (never BODs or commissions, F-43). Found gear (for example a sword) can be a recipe
+ingredient to enhance crafted gear. Not designed yet.
+
+### F-43: Recipe-gated crafting (added 2026-10-11)
+
+**Ours, logged as a fidelity deviation** (overseer to add to the register): stock OSI crafting is gated, and learned
+recipes are stored per account where OSI stores them per character. It extends OSI's own ML recipe scrolls and the SA
+Masonry and Glassblowing books to all craft items above 30 skill. Chase (2026-10-11): fine to leave stock here; our
+own wiki documents it. Prompts: `cc-prompts\cc-P-alembic-guild.md` and `cc-prompts\cc-P-recipe-gating.md`
+(unnumbered).
+
+Decided with Chase, 2026-10-11:
+- **What is gated:** items with a minimum craft skill of 30 or less are free. Higher items are **hidden** from the craft
+  menu until learned. Repair, smelting, enhancing and resource conversion are never gated.
+- **Bands by the item's min skill:** I 30-50, II 50-70, III 70-90, IV 90-100 as **pattern books** (one per band per
+  craft); V 100-120 and VI and up in 20s to 200 as **single scrolls** (rare and custom). A band with under 5 items
+  folds into the next book (placeholder in data). A first-loop player only needs the Band I book.
+- **Learned recipes:** account-wide, kept through loops, the book or scroll consumed on learning; unread ones are
+  tradeable.
+- **Guild ranks:** keyed to `GuildRankIndex` 0-5; guilds keep their own rank names. Grants: 0 starter kit (F-9), 1 Band I,
+  2 Band II, 3 Band III, 4 Band IV, 5 a Band V starter set. Each band is **sold one rank ahead**. Promotion needs the
+  rank's skill (30/50/70/90/100) plus standing; rank 5 also needs a **per-guild trial** (waived until built, separate
+  from the League story trials). Past rank 5, recipes come only from boxes, bosses and quests.
+- **Price:** guild currency only, roughly double per band; Band V rotation scrolls also take a next-tier material.
+- **Menu hints:** per category, shown once skill reaches the band floor. Band items: count plus guild and rank ("4 more
+  patterns: Society of Smiths, rank 3"). Wild-only items: "Some designs are found only in the wild", no count. Clicking
+  opens a help gump (guild, hall, rank, or the League for wild finds; wiki link later).
+- **Other sources:** large BODs have a small chance at a Band V scroll; recurring commission clients (F-37) sometimes
+  reward a custom recipe; F-42 epic recipes are boss and box only; F-40 boxes carry recipe scrolls.
+- **Mule schematics (F-33):** learned once like ML recipes, at rank indexes 1, 2 and 4 (see the F-33 note).
+- **One owning guild per craft skill** (no shared skills): Blacksmithy Society of Smiths; Tailoring Tailors' Circle;
+  Carpentry, Masonry and Bowcraft Foresters' Union; Tinkering Tinkers' Union; Inscription Arcane Society; Cooking and
+  Cartography Maritime Brotherhood; Alchemy and Glassblowing the new **Order of the Alembic** (guild 18, which also
+  takes Taste ID from the Healers; F-9 table updated); Imbuing Artificers' Order.
+- **Per-skill rules:** stock spell scrolls exempt (already gated by owning the spell), but custom spells, if added,
+  need recipe scrolls; Cartography has no bands, maps are learned by exploring a region (F-20, F-6); existing OSI gates
+  (ML recipes, Masonry and Glassblowing books) keep working, stored in the account store.
+- **Imbuing** is left out of this batch: Chase wants the Artificers gated too, by **imbue property** (basic properties
+  free, advanced ones learned as formula books by rank). Designed with the Imbuing rework in a new Artificers chat.
+
+Open: book and scroll prices, drop chances (playtesting); the Order's rank names (CC proposes); the custom Band V+
+recipe list (grows with F-42 and new materials).
 
 ## Batched
 
