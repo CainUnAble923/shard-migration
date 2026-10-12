@@ -5,24 +5,25 @@ Builder task, 2026-10-07. Brief: `D:\UO\cc-prompts\cc-P67-craft-ceilings.md`. En
 never end (#2685)"); every pinned file:line below is against it, paths relative to `Projects\UOContent\`. `C\` =
 `D:\ShatteredLegacy\server\customizations`, `P\` = `server\patches`, `T\` = `server\tests`. Scratch: `D:\UO\cc-p67-work\`
 (`a\` the patched build files copied out of `sl-uo-builder:cc-p66`, which is HEAD's tree; `make-patches.py` writes the four new
-patches; `a0\` and `b\` the small-order patch's base and result; `make-red.py` and `red1\` the red tree; `build1.log` to
-`build4.log`).
+patches; `a0\` and `b\` the small-order patch's base and result; `make-red.py` and `red2\` the red tree (`red1\` its first copy,
+from 95f4633, never built); `build1.log` to `build4.log`, `build-final.log`, `red2.log`, `detail.log` the printed numbers).
 
 Shard HEAD `95f4633` (P66 committed), tree clean when I started: no clash. Nothing committed, nothing deployed, `docs\` not
 touched, `sl-modernuo:latest` not moved, the wiki page not published.
 
-## Status: stopped before the final build (Docker Desktop crashed)
+## Status: finished on 2026-10-12
 
-All code, patches, facts, patch notes and these notes are written. **Build 3 ran the whole suite: 1000 tests, 997 passed, 3
-failed**, and the 3 were one ordering mistake in my own fact K5 (it asked "Orders that still teach me" after the craft had
-already gained), fixed since. Build 4, with that fix, compiled everything and was starting the tests when **Docker Desktop
-crashed** (`rpc error: ... EOF`). It does not come back: its backend dies at start with "initializing Secrets Engine: ...
-remove `%LOCALAPPDATA%\docker-secrets-engine\engine.sock`: The file cannot be accessed by the system." That file is a 0-byte
-socket reparse point dated 2026-09-20 that Windows refuses to delete. I quit the crashed Docker Desktop (it was sitting on its
-error dialog) and tried to delete, then rename, that folder; the delete failed and the rename was refused by my permissions,
-so I stopped there. **Do not click "Reset to factory defaults"** in Docker's dialog: it wipes images and volumes. Steps for you
-are in "For Chase" step 1. Still to run once Docker is back: the final build, the red tree build, and a detailed run for the
-printed numbers (K1 tables, K2 recipe lists). The red tree is already written (`D:\UO\cc-p67-work\red1`).
+The work was written 2026-10-07. Build 3 ran 997/1000 (the 3 were one ordering mistake in my fact K5, fixed). Build 4 was lost
+when **Docker Desktop crashed** and would not restart (its backend could not remove a stale
+`%LOCALAPPDATA%\docker-secrets-engine\engine.sock`); I stopped there. Chase brought Docker back and committed the work as
+`a6e17fd` (2026-10-10); cc-P71 then committed `b5fe596` on top (its notes record that P67's facts passed in its build). On
+resuming I ran, against HEAD `b5fe596`:
+- **final build** `build.sh -t sl-modernuo:cc-p67`: **63/63 patches, 1006/1006 shard facts**, image `sl-modernuo:cc-p67` =
+  `80c8a1fc217b` (it contains cc-P71 too, since HEAD does);
+- **red tree** (`red2`, `make-red.py` on HEAD): **36 failed / 970 passed**, every failure a P67 fact (list below);
+- **detailed run** of `CraftCeilingsVerification` in `sl-uo-builder:cc-p67`: 41/41, numbers in `detail.log` and below.
+
+VERSION: P67 started 2026.10.07; cc-P71 has since added 2026.10.10 above it, so `VERSION` reads 2026.10.10. Nothing to change.
 
 ## Headlines
 
@@ -121,7 +122,15 @@ A recipe gets a ceiling only when one of its resources is the craft's material l
 | Carpentry | `Log` (`DefCarpentry.cs:597-607`; ours add the eight boards) | furniture, containers, weapons and the rest of the log recipes (`:99-204`, the tetsubo `:322`, 80-140.3) | recipes of other materials; **logs to boards is no recipe here** (`:94-97`, AOS and SE only; the axe cut at `Log.cs:84` rolls no skill) |
 | Fletching | `Log` (`DefBowFletching.cs:262-270`) | bows and crossbows (`:116-128`), shafts (`:96`, 0-40), fukiya darts (`:110`, 50-90) | **kindling** (`:94`, 0-0, a cut: never teaches); arrows and bolts consume shafts, not logs (`:100`, `:104`) |
 
-The detailed run prints the full list per craft (`K2_OnlyRecipesThatConsumeTheMaterialGetACeiling`); it is pending (status).
+Printed by the detailed run (Frost ingots, Voidwood boards or logs):
+- **Blacksmithy:** 172 recipes consume `IronIngot`. Not: the five dragon pieces (scales) and CrushedGlass (110-135, blue diamond
+  and glass sword).
+- **Tinkering:** 137 consume `IronIngot`. Not (15): the wood tools and parts (jointing, moulding and smoothing planes, clock frame,
+  axle, rolling pin: `Log`), the assembled parts and things made of parts (axle gears, clock parts, sextant parts, clock halves,
+  sextant: all 0-0), bola (60-80), potion keg (75-100), void orb (90-104.3).
+- **Carpentry:** 152 consume `Log`. Not: acid-proof rope (80-130) and keg (57.8-82.8). No cut recipe exists (no Board recipe).
+- **Fletching:** 19 consume `Log`. Cut: kindling (0-0). Not: arrows and bolts (shafts).
+
 Shafts and fukiya darts are stack recipes (decision 2).
 
 ### Tinkering's caps, Lockpicking, Remove Trap
@@ -210,19 +219,27 @@ and none at 187.5; +10 gains at 180; the window's top is 187.5 + worn; Base neve
 
 ## Facts (`T\Engines\Craft\CraftCeilingsVerification.cs`, 41 cases)
 
-| Fact | What | Green (build 3, with K5's fix in build 4) | Red tree |
+| Fact | What | Green (final build) | Red tree (`red2`, run) |
 |---|---|---|---|
-| K1 x4 | chains and no gap | green | Tinkering, Carpentry, Fletching red (no metals, flat woods, no ceilings); Blacksmithy never red by design |
-| K2 x4 + kindling | consume check | green | red for the three new crafts (no ceilings) |
-| K3 x16 | windows and real gains | green | red where a band is expected; stock rows never red by design |
+| K1 x4 | chains and no gap | green | 3 red (Tinkering, Carpentry, Fletching); Blacksmithy never red by design |
+| K2 x4 + kindling | consume check | green | all 5 red (Blacksmithy too: without the consume check CrushedGlass got a ceiling) |
+| K3 x16 | windows and real gains | green | 11 red (every band row); the 5 stock rows never red by design |
 | K4 | harder items teach better | green | red (slid window: all equal) |
-| K5 x8 | worn bonuses | green after the ordering fix | red for the +10 and +12.5 rows (no bonus; P66's double count) |
-| K6 x2 | teaching metal, orders | green | red (TeachingMetal None) |
-| K7 x5 | the caps | green | red (patches removed) |
+| K5 x8 | worn bonuses | green | the 5 worn rows red; the 3 no-bonus rows never red by design |
+| K6 x2 | teaching metal, orders | green | both red |
+| K7 x5 | the caps | green | 3 red (trap at 130 and 200; axe, potion and fishing); trap at 100 and 120 never red by design |
+| P61 A2 | the band in Blacksmithy | green | 6 red (the band rows) |
 
-The red column is the expectation for `red1` (`make-red.py`: the four patches removed; `ClusterFCraftGain` back to HEAD's
-Blacksmithy-only slid window with no bonus; woods back to 100; no Tinkering metals; `TeachingMetal` None). **Not yet run**
-(status).
+`make-red.py`: the four new patches removed; `ClusterFCraftGain` back to HEAD's Blacksmithy-only slid window with no bonus and
+no consume check; woods back to a flat 100; no Tinkering metals; `TeachingMetal` always None. 3 + 5 + 11 + 1 + 5 + 2 + 3 + 6 =
+36, the red run's count exactly.
+
+Printed numbers (green): K1 tables as above. K5: Base 180 + 10 worn reads 190, window 75-197.5, gains to 180.1; Base 187.4 + 12.5
+reads 199.9, window 75-200, gains to 187.5; Base 187.5 + 12.5 reads 200, window 75-200, no gain. K6 at 150: 400 small orders
+with the setting on, post-Valorite Frost x135 and nothing else; off, Platinum x11, Toxic x8, Blaze x5, Frost x2; 400 large orders
+on, Frost x25 (every one the plate set, the fallback at 150). K7: Lumberjacking 148 axe bonus 30.0% (pinned 39.6%), 200 30.0%
+(pinned 50.0%); Alchemy 150 and 200 EnhancePotions 30 (pinned 45, 60); Fishing 200 1.00% per find (pinned 3.00%); traps 100:
+level 10 power 90, 120: 12/108, 130: 12/117, 200: 12/180.
 
 ## Builds
 
@@ -232,11 +249,13 @@ Blacksmithy-only slid window with no bonus; woods back to 100; no Tinkering meta
 | 2 | same | 1000 tests, 993 passed, 7 failed, all mine: `GetInfo` is null for shard woods (decision 6), no Board recipe in this expansion, Skill.Base truncating 187.4 to 187.3 |
 | 3 | same | **1000 tests, 997 passed, 3 failed** (K5 checked `Teaches` after the gain) |
 | 4 | same | compiled; Docker Desktop crashed before the tests (status) |
-| final, red, detail | pending | |
+| final | `build.sh -t sl-modernuo:cc-p67` on HEAD `b5fe596` | **63/63 patches, 1006/1006**, image `80c8a1fc217b` |
+| red | `red2\docker\uo\build.sh -t sl-modernuo:cc-p67-red --tests-only` | 59/59 patches; 1006, **36 failed** (all P67's) |
+| detail | `dotnet test` in `sl-uo-builder:cc-p67`, `CraftCeilingsVerification`, verbosity detailed | 41/41 |
 
-58 patches (54 + the four new). No save shape changed; no migration.
+P67 itself adds four patches (54 + 4 = 58 at its commit; cc-P71 added five more). No save shape changed; no migration.
 
-## Register lines (the register ends at D-122 in `docs\fidelity-principle.md`; P66's D-123 to D-125 are proposed; next free D-126)
+## Register lines (the register ends at D-122 in `docs\fidelity-principle.md`; P66's D-123 to D-125 are proposed; next free D-126; cc-P71 has since taken D-130)
 
 - **D-122 amended (cc-P67 A, C, E; Chase 2026-10-05 and 2026-10-06).** Crafting in a shard material (post-Valorite metals for
   Blacksmithy and Tinkering; Ironwood to Starwood for Carpentry and Bowcraft/Fletching, which now need 100, 115, 130, 140,
@@ -287,34 +306,31 @@ trap, axe, potion and fishing caps. Not published.
 7. **OSI tops chosen:** Tinkering and Fishing 120 (OSI's power scrolls that pinned does not carry), Lumberjacking and Alchemy
    100 (no scroll). P66's rule read pinned's list only; by that rule Tinkering and Fishing would be 100. Chase's later wish for
    "appropriate levels at 200" (P71) was for five other effects; these four follow the brief's caps. Say if any should scale.
-8. **Docker:** I quit the crashed Docker Desktop and left `%LOCALAPPDATA%\docker-secrets-engine\engine.sock` as it was. Any
-   test shard that was running in Docker is down with it.
+8. **Docker** (2026-10-07): it crashed during build 4; I quit it and left the stale socket for Chase, who brought it back.
+9. **Large orders at 150 are always the plate set** (K6: 400 of 400): with nothing teaching, `PickSets` falls back to the set
+   with the highest lowest maximum, and about 6% of them become Frost (the 15% upgrade applies only when stock's colored roll
+   is not iron). Reordering the set pick to see the metal first (P61 decision 4) is still open; this rule does not need it.
 
 ## For Chase
 
-1. **Bring Docker back** (Windows PowerShell). Do not use "Reset to factory defaults".
-   - Quit Docker Desktop if its error dialog is open (Quit).
-   - `wsl --shutdown`
-   - Move the stale socket's folder aside: `Rename-Item "$env:LOCALAPPDATA\docker-secrets-engine" docker-secrets-engine.stale`
-     (if Windows refuses, a reboot frees it; then rename).
-   - Start Docker Desktop and check `docker info`.
-   - Tell me to resume: I run the final build, the red tree and the detailed run, fill in the pending rows, and finish.
-2. After a green final build: commit, then `docker tag sl-modernuo:cc-p67 sl-modernuo:latest`, then
-   `D:\ShatteredLegacy\docker\uo\Start-TestShard.ps1 -Down` and `D:\ShatteredLegacy\docker\uo\Start-TestShard.ps1 -SkipBuild`.
-   The log should say `[ClusterFMiningExtension] Tinkering sub-resources registered: Platinum through Celestial.` and
-   `[ShardVersion] Shattered Legacy 2026.10.07`.
+Already done: Docker is back and the work is committed (`a6e17fd`). Windows PowerShell:
+
+1. Deploy (cc-P71's image is newer and contains P67; if you deploy P71's, skip this): `docker tag sl-modernuo:cc-p67
+   sl-modernuo:latest`, then `D:\ShatteredLegacy\docker\uo\Start-TestShard.ps1 -Down` and
+   `D:\ShatteredLegacy\docker\uo\Start-TestShard.ps1 -SkipBuild`. The log should say `[ClusterFMiningExtension] Tinkering
+   sub-resources registered: Platinum through Celestial.`
 
 In game on the test shard:
 
-3. Carpentry: `[SetSkill Carpentry 150`, Frostbark boards: make stools; Carpentry rises. At 155 no more; Shadowbark gains
+2. Carpentry: `[SetSkill Carpentry 150`, Frostbark boards: make stools; Carpentry rises. At 155 no more; Shadowbark gains
    again. At 99.9 the Ironwood entry says "You cannot work this strange and unusual wood."
-4. Fletching 150 with Frostbark logs: bows gain. Kindling never does.
-5. Tinkering: the material list shows Platinum to Celestial. At 150 with Frost ingots, scissors gain; at 162.5 they stop.
-6. Worn bonus: Blacksmithy 180 with a +10 Blacksmithy item, Mythril plate: gains until your base skill reads 187.5.
-7. Orders: Blacksmithy 150, "Orders that still teach me" on: ask the Society guildmaster for orders; every post-Valorite one is
+3. Fletching 150 with Frostbark logs: bows gain. Kindling never does.
+4. Tinkering: the material list shows Platinum to Celestial. At 150 with Frost ingots, scissors gain; at 162.5 they stop.
+5. Worn bonus: Blacksmithy 180 with a +10 Blacksmithy item, Mythril plate: gains until your base skill reads 187.5.
+6. Orders: Blacksmithy 150, "Orders that still teach me" on: ask the Society guildmaster for orders; every post-Valorite one is
    Frost. Turn it off: Platinum, Toxic and Blaze appear again.
-8. Traps: Tinkering 200, an explosion trap on a box: the blast is no bigger than a 120 tinker's. Remove Trap still finds it hard.
-9. An axe at Lumberjacking 148 hits like one at 100. `[version` shows 2026.10.07 and the bulletin its lines.
-10. Promote to `docs\`: the D-122 amendment, the cc-P42 G amendment, D-126 to D-129; decision 6 as a bug.
+7. Traps: Tinkering 200, an explosion trap on a box: the blast is no bigger than a 120 tinker's. Remove Trap still finds it hard.
+8. An axe at Lumberjacking 148 hits like one at 100.
+9. Promote to `docs\`: the D-122 amendment, the cc-P42 G amendment, D-126 to D-129; decision 6 as a bug.
 
-P67 STOPPED: Docker Desktop crashed during build 4 and will not restart (stale secrets-engine socket I am not permitted to move); final build, red build and detailed run still to run. Build 3 was 997/1000 with the 3 failures fixed since.
+P67 DONE

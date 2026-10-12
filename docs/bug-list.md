@@ -15,7 +15,7 @@ is everything left alone.
 
 **The `Dn` numbers in this file are local to this file** and are not the `D-n` deviations in
 `fidelity-principle.md`. Only the hyphen tells them apart, which is thin, so: **the next free number
-here is D88** (2026-10-05; re-derive with `grep -rhoE "\bD[0-9]+\b" notes docs | sort -u` before trusting it). I collided four of them on 2026-09-26 by numbering new rows from the highest in
+here is D89** (2026-10-12; re-derive with `grep -rhoE "\bD[0-9]+\b" notes docs | sort -u` before trusting it). I collided four of them on 2026-09-26 by numbering new rows from the highest in
 section 1 without reading section 2, and `notes/gate-integrity.md` was written against the wrong
 two as a result. Read the whole file before taking a number.
 
@@ -84,6 +84,7 @@ two as a result. Read the whole file before taking a number.
 | **D85** | **Post-Valorite deeds never name their metal.** Chase 2026-10-05: a Celestial deed's gump has no "All items must be made with ... ingots" line. `SmallBODGump.GetMaterialNumberFor` (`SmallBODGump.cs:85-89`) only maps Dull Copper..Valorite to EA clilocs (1045142+); Platinum..Celestial get none. Same for the large gump and the tooltip (`SmallBOD.cs:62-64`). The deed still requires the metal | Players cannot tell what a deed needs | **Chase 2026-10-05: option 2, our own clilocs** (cc-P57 D pipeline, 1900000+) for Platinum..Celestial, small and large gumps and tooltip. Package before server. **Built in cc-P61 (`8a7e754`), awaiting client test.** |
 | **D86** | **Hammer of Hephaestus +5 Blacksmithy counted once while in the backpack.** Chase 2026-10-05 10:05: Show Real 120, shown 125, hammer not equipped; dropping it cleared it; afterwards the bonus came off on unequip as designed. The code (`HammerOfHephaestus.cs`, applies only when `Parent is Mobile`) looks right; P57 did not touch it. **Not reproduced.** | Possible stuck +5 | Watch. If seen again, note the action just before (relog, craft, guildmaster restore). |
 | **D87** | **The patch notes bulletin cuts long lines off at the gump edge.** Chase screenshot 2026-10-05 13:33 (2026.10.05.2): "Changed: Crafting in Platinum to Celestial now raises Blacksmithy past" and the other three lines stop mid-sentence (`ClusterFBulletin.cs`, fixed-width labels, no wrap). Also its "Full notes" button opens the wiki, which stays unpublished until the fresh-world launch (page stuck at 2026.10.01) | Patch lines unreadable; button leads to stale notes | **Chase 2026-10-05: hide the Full notes button; add a whole in-game page listing every patch.** Written as cc-P64. |
+| **D88** | **Shard woods have no resource info.** Found by cc-P67 (decision 6, 2026-10-07): `CraftResources.GetType` (pinned `ResourceInfo.cs:1092-1097`) ends the Wood range at Frostwood, so `GetInfo`, `GetIndex` and everything keyed on them return nothing for Ironwood to Starwood (names, hues, attributes looked up that way). `GetFromType` uses its own table and works, so P67 is not affected | Shard-wood items may show no name, hue or attributes wherever the lookup is used; nothing seen in game yet | Not fixed. Belongs with F-28 (wood bonuses). |
 
 ## 1b. Our own documentation defects, because a wrong note costs as much as a wrong line
 
