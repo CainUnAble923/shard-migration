@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.13.10. Autopilot on, 2 queued, latest done P88. Play tests: 155 open, 1 failed, 18 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.13.10. Autopilot on, 1 queued, latest done P89. Play tests: 159 open, 1 failed, 18 passed.
 
 ## Overall: 27% of candidate content ported
 
@@ -209,12 +209,12 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (autopilot on; 39 prompts finished, 0 of them stopped early)
+### Queue (autopilot on; 40 prompts finished, 0 of them stopped early)
 
 | Prompt | State | When |
 |---|---|---|
-| P89 haven-pages-plan | queued |  |
 | P90 feature-ideas | queued |  |
+| P89 haven-pages-plan | done | 2026-10-13 |
 | P88 shared-menu | done | 2026-10-13 |
 | P87 console-readability | done | 2026-10-13 |
 | P86 console-vpn-disconnect | done | 2026-10-13 |
@@ -224,7 +224,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P82 artificers-imbuing | done | 2026-10-13 |
 | P81 paperdoll-sos | done | 2026-10-13 |
 | P80 new-player-tutorial | done | 2026-10-13 |
-| P79 loot-boxes-fanfare | done | 2026-10-13 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 67 patches, 10 replacements
 
