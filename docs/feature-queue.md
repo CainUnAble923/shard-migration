@@ -3,6 +3,10 @@
 Running list of feature ideas from play testing. Kept by the overseer (Claude); agents never edit
 `docs\`. Bugs and game-breaking problems do not go here: they go in `bug-list.md`.
 
+**Order (Chase, 2026-10-13): a faithful port comes first, these customizations after it.** Work already started or
+requested still gets finished (the P80 tutorial framework, for one). Anything not yet built waits for the port list
+(`notes\port-list-2026-10-13.md`, status page). Ideas still get logged here as they come.
+
 ## How this list works
 
 1. Chase brings an idea to the overseer chat. The overseer adds it here with the next F-number,

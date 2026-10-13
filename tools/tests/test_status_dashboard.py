@@ -115,7 +115,9 @@ class Freshness(unittest.TestCase):
         page = (HERE.parent.parent / "dashboard.html").read_text(encoding="utf-8")
         self.assertNotIn("localhost", page)
         self.assertIn('data-port="8093"', page)
-        self.assertIn('data-port="3000"', page)
+        # cc-P88 replaced the header's two links with the shared menu (nav.js, inlined in DATA:NAV): Homepage is its
+        # Dashboard entry, on port 3000 of the host the browser used.
+        self.assertIn("key: 'dashboard', label: 'Dashboard',    host: null, port: 3000", page)
 
 
 class Judge(unittest.TestCase):

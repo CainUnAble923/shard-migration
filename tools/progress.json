@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-13T09:54:12-05:00",
+  "generated": "2026-10-13T13:27:17-05:00",
   "direction": {
     "eyebrow": "Direction",
     "title": "Our own shard on ModernUO, OSI where OSI has an answer",
@@ -709,13 +709,6 @@
       "confirmed": "2026-10-13"
     },
     {
-      "id": "F-12",
-      "title": "Levels and loops",
-      "status": "todo",
-      "note": "Research done (P54, P72) and decisions in notes/f12-decisions-2026-10-05.md; nothing built beyond the CompleteLoop hook.",
-      "confirmed": "2026-10-13"
-    },
-    {
       "id": "TUTORIAL",
       "title": "New Haven tutorial trials",
       "status": "todo",
@@ -739,15 +732,8 @@
     {
       "id": "P83-DEPLOY",
       "title": "Deploy sl-play-tests (P83) on port 8093",
-      "status": "todo",
-      "note": "Port 8093 still runs the old read-only sl-test-queue. The new service also serves this page at /status (cc-P85).",
-      "confirmed": "2026-10-13"
-    },
-    {
-      "id": "F-37",
-      "title": "Commissions move to the League",
-      "status": "todo",
-      "note": "Planned (docs/feature-queue.md F-37). With F-13 (League reward shop) it gives Renown somewhere to go; nothing spends Renown yet (cc-P75 A.1).",
+      "status": "done",
+      "note": "Deployed by Chase 2026-10-13; 8093 answers sl-play-tests, page and /status load.",
       "confirmed": "2026-10-13"
     },
     {
@@ -790,6 +776,20 @@
       "title": "Services/PointsSystems",
       "status": "todo",
       "note": "Partly superseded: P33 built our own PointsSystem.cs for Clean Up Britannia. ServUO's still blocks Vice vs Virtue and City Loyalty.",
+      "confirmed": "2026-10-13"
+    },
+    {
+      "id": "F-12",
+      "title": "Levels and loops",
+      "status": "todo",
+      "note": "After the port (Chase 2026-10-13: faithful port first, customizations after). Research done (P54, P72), decisions in notes/f12-decisions-2026-10-05.md; nothing built beyond the CompleteLoop hook.",
+      "confirmed": "2026-10-13"
+    },
+    {
+      "id": "F-37",
+      "title": "Commissions move to the League",
+      "status": "todo",
+      "note": "After the port (Chase 2026-10-13: faithful port first, customizations after). Planned (docs/feature-queue.md F-37), with F-13 (League reward shop); nothing spends Renown yet (cc-P75 A.1).",
       "confirmed": "2026-10-13"
     }
   ],
@@ -939,28 +939,41 @@
     "corrections": "2026-09-19"
   },
   "derived": {
-    "version": "2026.10.13.10",
+    "version": "2026.10.13.11",
     "playtests": {
-      "open": 159,
+      "open": 160,
       "failed": 1,
       "passed": 18,
       "later": 0,
       "blocked": 1,
-      "total": 178,
+      "total": 179,
       "unloggedFails": 0,
-      "generatedAt": "2026-10-13T14:46:31Z"
+      "generatedAt": "2026-10-13T14:54:32Z"
     },
     "queue": {
       "autopilot": "on",
       "running": null,
       "queued": [
         {
-          "n": 90,
-          "slug": "feature-ideas",
+          "n": 91,
+          "slug": "overnight-playtest-bot",
+          "state": "queued"
+        },
+        {
+          "n": 92,
+          "slug": "port-list-target",
           "state": "queued"
         }
       ],
       "finished": [
+        {
+          "n": 90,
+          "slug": "feature-ideas",
+          "state": "done",
+          "why": "",
+          "date": "2026-10-13",
+          "notes": "notes/cc-P90-feature-ideas.md"
+        },
         {
           "n": 89,
           "slug": "haven-pages-plan",
@@ -1032,25 +1045,17 @@
           "why": "",
           "date": "2026-10-13",
           "notes": "notes/cc-P81-paperdoll-sos.md"
-        },
-        {
-          "n": 80,
-          "slug": "new-player-tutorial",
-          "state": "done",
-          "why": "",
-          "date": "2026-10-13",
-          "notes": "notes/cc-P80-new-player-tutorial.md"
         }
       ],
-      "finished_total": 40,
+      "finished_total": 41,
       "stopped_total": 0,
       "latest_done": {
-        "n": 89,
-        "slug": "haven-pages-plan",
+        "n": 90,
+        "slug": "feature-ideas",
         "state": "done",
         "why": "",
         "date": "2026-10-13",
-        "notes": "notes/cc-P89-haven-pages-plan.md"
+        "notes": "notes/cc-P90-feature-ideas.md"
       }
     },
     "reviewed": "2026-10-13",

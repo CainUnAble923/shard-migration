@@ -1,0 +1,374 @@
+{
+ "generated": "2026-10-13",
+ "method": "ServUO pub57 Scripts/Services, Items, Mobiles; a file is a candidate when its stem is not in tools/modernuo-stems.txt; done when the stem exists anywhere under server/customizations. Each candidate goes to the FIRST system whose prefix matches (order matters). Quests/, Skills/, Spells/ not scanned yet.",
+ "tiers": {
+  "port": "worth porting now; counts toward the target",
+  "decide": "waits on Chase; counts once decided",
+  "ride": "ported only with the system that uses it; not counted",
+  "reward": "stock for loot boxes, League shop, recipe rewards; ported on demand; not counted",
+  "source": "design source; our own system replaces it; never counted",
+  "later": "fits the shard, deliberately not now; not counted",
+  "drop": "no longer fits the shard's direction; not counted"
+ },
+ "systems": [
+  {
+   "id": "bods",
+   "tier": "port",
+   "title": "Bulk orders, all crafts",
+   "why": "F-18, F-20, F-25, F-37: BODs for every craft skill; ServUO's 2016 revamp is the named port source",
+   "feeds": "F-18, F-20, F-25, F-37",
+   "prefixes": [
+    "Services/BulkOrders/"
+   ],
+   "exclude": null,
+   "candidates_2026_10_13": 28,
+   "done_2026_10_13": 0
+  },
+  {
+   "id": "tmaps",
+   "tier": "port",
+   "title": "Treasure maps revamp",
+   "why": "F-20 Cartography (explore and map) and the gain path to 200; OSI has the answer",
+   "feeds": "F-20; gate: train without a wall",
+   "prefixes": [
+    "Services/TreasureMaps/"
+   ],
+   "exclude": null,
+   "candidates_2026_10_13": 2,
+   "done_2026_10_13": 0
+  },
+  {
+   "id": "mstealing",
+   "tier": "port",
+   "title": "Monster stealing",
+   "why": "Stealing's gain path past the stock ceiling (D82 area); OSI has the answer",
+   "feeds": "gate: train without a wall",
+   "prefixes": [
+    "Services/Monster Stealing/"
+   ],
+   "exclude": null,
+   "candidates_2026_10_13": 14,
+   "done_2026_10_13": 0
+  },
+  {
+   "id": "despiseshame",
+   "tier": "port",
+   "title": "Despise and Shame (revamped)",
+   "why": "ported and client-checked (CC4); kept on the list so the target counts what is done",
+   "feeds": "gate: somewhere to go",
+   "prefixes": [
+    "Services/Revamped Dungeons/DespiseRevamped/",
+    "Services/Revamped Dungeons/Shame Revamped/"
+   ],
+   "exclude": null,
+   "candidates_2026_10_13": 15,
+   "done_2026_10_13": 15
+  },
+  {
+   "id": "blackthorn",
+   "tier": "port",
+   "title": "Blackthorn Dungeon (revamped)",
+   "why": "'Somewhere to go' gate, League dungeon dives (F-24), dungeon chests (F-32)",
+   "feeds": "gate: somewhere to go; F-24, F-32",
+   "prefixes": [
+    "Services/Revamped Dungeons/BlackthornDungeon/"
+   ],
+   "exclude": null,
+   "candidates_2026_10_13": 147,
+   "done_2026_10_13": 3
+  },
+  {
+   "id": "covetous",
+   "tier": "port",
+   "title": "Covetous Void Spawn",
+   "why": "same as above; Void creatures feed monster parts",
+   "feeds": "gate: somewhere to go; F-24, F-32",
+   "prefixes": [
+    "Services/Revamped Dungeons/Covetous Void Spawn/"
+   ],
+   "exclude": null,
+   "candidates_2026_10_13": 29,
+   "done_2026_10_13": 2
+  },
+  {
+   "id": "wrong",
+   "tier": "port",
+   "title": "Wrong (revamped)",
+   "why": "same as above",
+   "feeds": "gate: somewhere to go; F-24, F-32",
+   "prefixes": [
+    "Services/Revamped Dungeons/WrongDungeon/"
+   ],
+   "exclude": null,
+   "candidates_2026_10_13": 26,
+   "done_2026_10_13": 2
+  },
+  {
+   "id": "exodus",
+   "tier": "port",
+   "title": "The Exodus Encounter",
+   "why": "same; boss content for loot boxes (boss kills roll boxes, F-40)",
+   "feeds": "gate: somewhere to go; F-40 boss boxes",
+   "prefixes": [
+    "Services/Revamped Dungeons/TheExodusEncounter/"
+   ],
+   "exclude": null,
+   "candidates_2026_10_13": 38,
+   "done_2026_10_13": 1
+  },
+  {
+   "id": "underworld",
+   "tier": "port",
+   "title": "Underworld (Stygian Abyss) + mini champions",
+   "why": "a dungeon open to every race; puzzles fit the snark; mini champs feed League culling",
+   "feeds": "gate: somewhere to go; F-24 culling",
+   "prefixes": [
+    "Services/Underworld/",
+    "Services/MiniChampionSystem/"
+   ],
+   "exclude": null,
+   "candidates_2026_10_13": 27,
+   "done_2026_10_13": 3
+  },
+  {
+   "id": "creatures",
+   "tier": "port",
+   "title": "Creatures: Mobiles/Normal remainder, bosses, Void creatures, AI",
+   "why": "'Things to fight' gate (19 spawn orphans), League hunts and culling, monster parts for imbuing and epic crafting; WoW/Diablo art lands on these, renamed",
+   "feeds": "gate: things to fight; F-24, F-40, F-42",
+   "prefixes": [
+    "Mobiles/Normal/",
+    "Mobiles/Named/",
+    "Mobiles/Bosses/",
+    "Mobiles/Void Creatures/",
+    "Mobiles/AI/"
+   ],
+   "exclude": null,
+   "candidates_2026_10_13": 193,
+   "done_2026_10_13": 80
+  },
+  {
+   "id": "pettraining",
+   "tier": "decide",
+   "title": "Pet Training (OSI animal training)",
+   "why": "132 ServUO creature files call it; Animal Lore past its ceiling needs high-level tameables. Overlaps evo pets and companions: needs Chase's call",
+   "feeds": "F-35 evo pets, companions, Animal Lore to 200",
+   "prefixes": [
+    "Services/Pet Training/"
+   ],
+   "exclude": null,
+   "candidates_2026_10_13": 11,
+   "done_2026_10_13": 0
+  },
+  {
+   "id": "eodon",
+   "tier": "port",
+   "title": "Eodon (Time of Legends) remainder, no Myrmidex or Shadowguard",
+   "why": "a whole facet of places and dinosaurs, half already ported (CC3)",
+   "feeds": "gate: somewhere to go, things to fight",
+   "prefixes": [
+    "Services/Expansions/Time Of Legends/Mobiles/",
+    "Services/Expansions/Time Of Legends/Items/"
+   ],
+   "exclude": "Myrmidex",
+   "candidates_2026_10_13": 19,
+   "done_2026_10_13": 6
+  },
+  {
+   "id": "hsfishing",
+   "tier": "port",
+   "title": "High Seas, fishing half",
+   "why": "F-20 Fishing deeds, Maritime Brotherhood (Fishing, Cooking), fish and lobster traps, profession fish quests, sea champions",
+   "feeds": "F-20 Fishing; Maritime Brotherhood",
+   "prefixes": [
+    "Services/Expansions/High Seas/Items/Fish/",
+    "Services/Expansions/High Seas/Items/Resources/",
+    "Services/Expansions/High Seas/Items/LobsterTrap",
+    "Services/Expansions/High Seas/Items/LavaLobsterTrap",
+    "Services/Expansions/High Seas/Items/LavaFishItems",
+    "Services/Expansions/High Seas/Quests/ProfessionFishQuest/",
+    "Services/Expansions/High Seas/Mobiles/BaseSeaChampion",
+    "Services/Expansions/High Seas/Mobiles/Charybdis",
+    "Services/Expansions/High Seas/Mobiles/Corgul/",
+    "Services/Expansions/High Seas/Mobiles/OsiredonTheScalisEnforcer",
+    "Services/Expansions/High Seas/Items/CorgulAltar",
+    "Services/Expansions/High Seas/Regions/CorgulRegion",
+    "Services/Expansions/High Seas/Spawners/CharybdisSpawner",
+    "Services/Expansions/High Seas/Items/Artifacts/",
+    "Services/Expansions/High Seas/Items/SOS Artifacts/",
+    "Services/Expansions/High Seas/Items/Sets/"
+   ],
+   "exclude": null,
+   "candidates_2026_10_13": 59,
+   "done_2026_10_13": 4
+  },
+  {
+   "id": "crafting",
+   "tier": "port",
+   "title": "Crafting gaps: basket weaving, armor refinement, craft helpers, raised gardens",
+   "why": "recipe gating (F-43) needs the stock OSI recipes present to gate; raised gardens and potted plants feed Herbalism",
+   "feeds": "F-43 recipe gating; Herbalism",
+   "prefixes": [
+    "Services/BasketWeaving/",
+    "Services/Armor Refinement/",
+    "Services/Craft/",
+    "Services/Plants/"
+   ],
+   "exclude": null,
+   "candidates_2026_10_13": 33,
+   "done_2026_10_13": 0
+  },
+  {
+   "id": "consumables",
+   "tier": "port",
+   "title": "Food, drink and potions",
+   "why": "Cooking (Maritime) and the Order of the Alembic need OSI's consumables to have anything to make and gate",
+   "feeds": "F-43; Alembic, Cooking designs",
+   "prefixes": [
+    "Items/Consumables/"
+   ],
+   "exclude": "Token|Promotional|PersonalAttendant|CommissionPlayerVendor|AlterContract|ItemBlessDeed|PersonalBlessDeed|ForgedPardon|RewardTitle|StatScroll|ScrollBinder|SoulstonePromo|Anniversary",
+   "candidates_2026_10_13": 44,
+   "done_2026_10_13": 0
+  },
+  {
+   "id": "basics",
+   "tier": "port",
+   "title": "Base items: resources, equipment, containers, tools, functional",
+   "why": "the plain remainder a ported system reaches for; trap training kits are Lockpicking and Remove Trap gain paths",
+   "feeds": "everything above",
+   "prefixes": [
+    "Items/Resource/",
+    "Items/Equipment/",
+    "Items/Containers/",
+    "Items/Tools/",
+    "Items/Functional/"
+   ],
+   "exclude": "GMEthereal|GMHidingStone|StaffOrb|StealableArtifactsSpawner|BulletinBoards",
+   "candidates_2026_10_13": 220,
+   "done_2026_10_13": 106
+  },
+  {
+   "id": "rewardpool",
+   "tier": "reward",
+   "title": "Reward pool: addons, decorative, store items, artifact remainder, Clean Up rewards",
+   "why": "stock for loot boxes (F-40), the League shop (F-13), recipe and commission rewards; ported on demand, not counted",
+   "feeds": "",
+   "prefixes": [
+    "Items/Addons/",
+    "Items/Decorative/",
+    "Items/StoreBought/",
+    "Items/Artifacts/",
+    "Services/CleanUpBritannia/",
+    "Services/VeteranRewards/",
+    "Services/18th Anniversary/",
+    "Services/22nd Anniversary/",
+    "Services/CommunityCollections/"
+   ],
+   "exclude": null,
+   "candidates_2026_10_13": 708,
+   "done_2026_10_13": 288
+  },
+  {
+   "id": "src",
+   "tier": "source",
+   "title": "Design source only, ours replaces",
+   "why": "Imbuing (P82 Artificers), Runic Reforging (F-42 epic crafting), Huntmaster (F-24 hunts), PointsSystems (P33), XmlSpawner (P32 importer; P72 'the design, not the code'), Town Cryer (F-15, P64), ML quest framework (declined twice)",
+   "feeds": "",
+   "prefixes": [
+    "Services/LootGeneration/",
+    "Services/HuntmasterChallenge/",
+    "Services/PointsSystems/",
+    "Services/XmlSpawner/",
+    "Services/Town Cryer/",
+    "Services/MondainsLegacyQuests/"
+   ],
+   "exclude": null,
+   "candidates_2026_10_13": 178,
+   "done_2026_10_13": 3
+  },
+  {
+   "id": "later",
+   "tier": "later",
+   "title": "Later, deliberately",
+   "why": "seasonal events (with the F-30 Events tab: Forsaken Foes, Krampus, the Treasures of ... events, Rising Tide), Shadowguard, Tomb of Kings and Ter Mur (races last), Instanced Peerless and Peerless, Astronomy, Fortune's Fire, High Seas naval (C7, proposal only), champion and Doom extras",
+   "feeds": "",
+   "prefixes": [
+    "Services/Seasonal Events/",
+    "Services/Expansions/Time Of Legends/Shadowguard/",
+    "Services/Tomb of Kings/",
+    "Services/InstancedPeerless/",
+    "Services/Peerless/",
+    "Services/Astronomy/",
+    "Services/FireCasino/",
+    "Services/Expansions/High Seas/",
+    "Services/ChampionSystem/",
+    "Services/Doom/",
+    "Services/Virtues/",
+    "Services/Malas/"
+   ],
+   "exclude": null,
+   "candidates_2026_10_13": 307,
+   "done_2026_10_13": 12
+  },
+  {
+   "id": "drop",
+   "tier": "drop",
+   "title": "Dropped: no longer fits",
+   "why": "account and staff tokens (name, race, gender change; GM tools; bless and pardon deeds) and PvP and faction systems (Vice vs Virtue, Factions, PvP Arena, Myrmidex Invasion), player-economy systems for a two-player shard (New Magincia bazaar and lotto, Vendor Searching, City Loyalty, AuctionSafe), the paid store shell (no donations), Exploring the Deep (worst ratio on the menu), staff/engine plumbing ModernUO already has (Reports, RemoteAdmin, Pathing, Chat, Party, Help, Ethics, Spawner, GiftGiving, Loyalty)",
+   "feeds": "",
+   "prefixes": [
+    "Services/ViceVsVirtue/",
+    "Services/Factions/",
+    "Services/PVP Arena System/",
+    "Services/Expansions/Time Of Legends/Myrmidex Invasion/",
+    "Services/Expansions/Time Of Legends/AuctionSafe/",
+    "Services/New Magincia/",
+    "Services/Vendor Searching/",
+    "Services/City Loyalty System/",
+    "Services/UltimaStore/",
+    "Services/ExploringTheDeep/",
+    "Services/Reports/",
+    "Services/RemoteAdmin/",
+    "Services/Pathing/",
+    "Services/Chat/",
+    "Services/Party/",
+    "Services/Help/",
+    "Services/Ethics/",
+    "Services/Spawner/",
+    "Services/GiftGiving/",
+    "Services/LoyaltySystem/",
+    "Services/DailyRares",
+    "Services/Assistants",
+    "Items/Consumables/",
+    "Items/Tools/",
+    "Items/Functional/"
+   ],
+   "exclude": null,
+   "candidates_2026_10_13": 304,
+   "done_2026_10_13": 5
+  },
+  {
+   "id": "ridealong",
+   "tier": "ride",
+   "title": "Ride-along: NPCs, quest items, books, internals",
+   "why": "ported with the system that uses them, never on their own; not counted",
+   "feeds": "",
+   "prefixes": [
+    "Mobiles/NPCs/",
+    "Items/Quest/",
+    "Items/Internal/",
+    "Items/Books/",
+    "Mobiles/Summons/",
+    "Items/Damageable/",
+    "Mobiles/Event/",
+    "Items/Corpses/",
+    "Mobiles/MobileInterfaces",
+    "Services/Expansions/"
+   ],
+   "exclude": null,
+   "candidates_2026_10_13": 351,
+   "done_2026_10_13": 11
+  }
+ ]
+}
