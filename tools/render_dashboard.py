@@ -259,6 +259,22 @@ def playtests_html(pg):
             '<p class="foot">From <code>testing/play-tests.json</code> (the play-test page writes it). '
             '<a class="lan" data-port="8093" data-path="/" href="http://' + LAN_HOST + ':8093/">Open the play-test page</a>.</p>')
 
+# cc-P88: the shared menu's one source, in the shard repo beside the play-test page that serves it.
+NAV_JS = Path(os.environ.get("SL_SHARD", r"D:\ShatteredLegacy")) / "docker" / "test-queue" / "html" / "nav.js"
+
+def nav_html():
+    """nav.js, inline, so the page has the same menu served at :8093/status and opened from disk. None when the file
+    cannot be read: the block is then left as it is, never emptied."""
+    try:
+        js = NAV_JS.read_text(encoding="utf-8")
+    except OSError as e:
+        print(f"  nav.js not read ({e}); the menu block is left as it was", file=sys.stderr)
+        return None
+    if "</script" in js.lower():
+        print("  nav.js contains </script; not inlined, the menu block is left as it was", file=sys.stderr)
+        return None
+    return '<script data-sl-page="status">\n' + js.rstrip("\n") + '\n</script>'
+
 def replace(txt, tag, body):
     s, e = f"<!-- DATA:{tag} -->", f"<!-- /DATA:{tag} -->"
     if s not in txt or e not in txt: return txt, False
@@ -297,6 +313,10 @@ def main():
     for tag, body in (("REVIEWED", reviewed_html(pg)), ("VERSION", version_html(pg))):
         txt, ok = replace_inline(txt, tag, body)
         if ok: hit.append(tag)
+    nav = nav_html()
+    if nav is not None:
+        txt, ok = replace(txt, "NAV", nav)
+        if ok: hit.append("NAV")
     for tag, body in (("DIRECTION", direction_html(pg)),
                       ("QUEUE", queue_html(pg)),
                       ("PLAYTESTS", playtests_html(pg)),
