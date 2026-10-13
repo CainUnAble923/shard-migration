@@ -91,7 +91,7 @@ def main():
     for r in rows: tally[r["band"]] = tally.get(r["band"], 0) + 1
     total_lines = sum(r["lines"] for r in rows)
 
-    (OUT / "tools" / "port-triage.json").write_text(
+    (OUT / "tools" / "obsolete" / "port-triage.json").write_text(
         json.dumps({"files": rows, "tally": tally, "total_lines": total_lines}, indent=2) + "\n",
         encoding="utf-8")
 

@@ -95,7 +95,7 @@ What a person keeps and what the script derives:
 
 | Kept by hand in `progress-state.json`, each with a `confirmed` date | Derived by `progress.py` on every run |
 |---|---|
-| shard status line, direction note, playable gates (with sources), tasks, setup defects, the static sections' as-of dates | file and test counts, content and expansion coverage, the CC prompt queue (queued, running, done, stopped), play-test counts, VERSION, the latest DONE prompt, "Judgment reviewed" (the newest `confirmed` date) |
+| shard status line, direction note, playable gates (with sources), tasks, setup defects, the static sections' as-of dates; and the port list itself, `port-list.json` (cc-P92) | file and test counts, the port list's per-system counts and next to land, content and expansion coverage, the CC prompt queue (queued, running, done, stopped), play-test counts, VERSION, the latest DONE prompt, "Judgment reviewed" (the newest `confirmed` date) |
 
 The page header shows "Last updated" (when the counts ran) and "Judgment reviewed". The review date turns amber
 when it is more than 7 days old (`STALE_DAYS` in progress.py). A section whose own date differs from the header's
@@ -119,3 +119,32 @@ python tools/progress.py                                          # redraw the p
 
 A gate is named exactly or by a unique start. Every write stamps today's date, so "Judgment reviewed" moves only when
 someone actually confirmed something. Tests: `python -m unittest tools/tests/test_status_dashboard.py`.
+
+### The port list: `port-list.json` (cc-P92)
+
+The page's headline is the **ServUO port list**: ServUO content still worth porting given the shard's direction, in
+tiers. **Direction (Chase, 2026-10-13): a faithful port comes first, our feature customizations after it; work already
+started or already requested is still finished.**
+
+- **`tools/port-list.json` is hand-kept judgment**, like `progress-state.json`: the overseer edits it, and `progress.py`
+  only reads it. Each system has an `id`, a `tier`, a `title`, what it `feeds`, the `prefixes` it claims under
+  ServUO's `Scripts/`, and an optional `exclude` regex. The decision and its reasons are
+  `notes/port-list-2026-10-13.md`.
+- **Tiers:** `port` counts toward the headline. `decide` is shown as waiting on Chase and counts once moved to
+  `port`. `ride`, `reward`, `source`, `later` and `drop` are shown, never counted.
+- **How `progress.py` counts it** (`port_list()`):
+  - Every `.cs` under `Scripts/Services`, `Items` and `Mobiles` whose lowercased stem is not in
+    `modernuo-stems.txt` is a candidate.
+  - It is done when the stem exists under `server/customizations`: filename stems, not behavior.
+  - Each candidate belongs to the **first** system, in file order, whose prefix matches and whose `exclude` does not.
+  - Candidates no system claims are listed on the page (count and the first 20), so a new ServUO file shows up
+    instead of vanishing.
+- **To change it:**
+  - Move a system between tiers by editing its `tier`.
+  - Reorder the `port` rows to change **"Next to land"**, which is the first `port` row, in file order, that is not
+    complete.
+  - Then `python tools/progress.py` redraws the page and README (a commit does it too).
+  - Order also decides which system claims a file, so put a narrow prefix before a wide one.
+- Tests: `python -m unittest tools/tests/test_port_list.py`.
+- `tools/obsolete/port-triage.json` (moved there by cc-P92) is the 2026-09-06 triage of our own customizations for
+  the migrate-to-ServUO plan that was not taken. Nothing reads it.

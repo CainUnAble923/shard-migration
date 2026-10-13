@@ -63,16 +63,37 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.13.12. Autopilot on, 2 queued, latest done P91. Play tests: 164 open, 1 failed, 18 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.13.13. Autopilot on, 1 queued, latest done P92. Play tests: 166 open, 1 failed, 18 passed.
 
-## Overall: 27% of candidate content ported
+## Port list: 1 of 16 systems in. 283 of 983 files (29%).
+
+**Next to land: Bulk orders, all crafts.** A faithful port comes first, our feature customizations after it; work already started or already requested is still finished (Chase, 2026-10-13).
 
 ```
-Content   ██████░░░░░░░░░░░░░░░░  551/2045   26.9%
+Port list ██████░░░░░░░░░░░░░░░░  283/983   28.8%
 Setup     ██████████████████████  7/7     blocking defects resolved
 ```
 
-**Read that denominator with suspicion.** 'Candidate files' is ServUO's tree filtered against the names ModernUO already declares, and **every count on this project has moved when someone actually read the files**: CC9's row went 455 -> 437, its buckets moved twice more, CC4 Despise was '4 files' and was 14, and the brief's 120/29 were 107/30. The percentage is a useful direction of travel and a poor promise. Setup health is the only figure here with a denominator that cannot move.
+| System | Done / files | | Feeds |
+|---|---|---|---|
+| Bulk orders, all crafts | 0 / 28 | `░░░░░░░░░░░░` | F-18, F-20, F-25, F-37 |
+| Treasure maps revamp | 0 / 2 | `░░░░░░░░░░░░` | F-20; gate: train without a wall |
+| Monster stealing | 0 / 14 | `░░░░░░░░░░░░` | gate: train without a wall |
+| Despise and Shame (revamped) (in) | 15 / 15 | `████████████` | gate: somewhere to go |
+| Blackthorn Dungeon (revamped) | 3 / 147 | `█░░░░░░░░░░░` | gate: somewhere to go; F-24, F-32 |
+| Covetous Void Spawn | 2 / 29 | `█░░░░░░░░░░░` | gate: somewhere to go; F-24, F-32 |
+| Wrong (revamped) | 2 / 26 | `█░░░░░░░░░░░` | gate: somewhere to go; F-24, F-32 |
+| The Exodus Encounter | 1 / 38 | `█░░░░░░░░░░░` | gate: somewhere to go; F-40 boss boxes |
+| Underworld (Stygian Abyss) + mini champions | 3 / 27 | `█░░░░░░░░░░░` | gate: somewhere to go; F-24 culling |
+| Creatures: Mobiles/Normal remainder, bosses, Void creatures, AI | 80 / 193 | `█████░░░░░░░` | gate: things to fight; F-24, F-40, F-42 |
+| Pet Training (OSI animal training) | 0 / 11 | `░░░░░░░░░░░░` | F-35 evo pets, companions, Animal Lore to 200 |
+| Eodon (Time of Legends) remainder, no Myrmidex or Shadowguard | 6 / 19 | `████░░░░░░░░` | gate: somewhere to go, things to fight |
+| High Seas, fishing half | 4 / 59 | `█░░░░░░░░░░░` | F-20 Fishing; Maritime Brotherhood |
+| Crafting gaps: basket weaving, armor refinement, craft helpers, raised gardens | 0 / 33 | `░░░░░░░░░░░░` | F-43 recipe gating; Herbalism |
+| Food, drink and potions | 0 / 44 | `░░░░░░░░░░░░` | F-43; Alembic, Cooking designs |
+| Base items: resources, equipment, containers, tools, functional | 167 / 298 | `███████░░░░░` | everything above |
+
+Not counted: ride 361 files (11 in); reward 717 files (288 in); source 178 files (3 in); later 307 files (12 in); drop 304 files (5 in). Every candidate belongs to a system. _Counted by filename stem (not behavior) against `server/customizations`; the list itself is `tools/port-list.json`, kept by hand._
 
 ### Playable? **Not yet: 2 of 11 gates met.** The next one to fall is *A new character can train without hitting a wall*.
 
@@ -104,7 +125,7 @@ Setup     ██████████████████████  7/
 
 **Patches:** 16 total, **0 currently failing to apply**, 8 triaged, 3 found obsolete. `apply-patches.sh` fails the build on a failed patch, so a green build means every patch applied.
 
-### Content moved over: 551 of 2,045 candidate files (26.9%)
+### Every ServUO file ModernUO lacks, by area (not a target): 551 of 2,045 (26.9%)
 
 ```
 TOTAL                          █████░░░░░░░░░░░░░  551/2045   26.9%
@@ -209,12 +230,12 @@ Tasks          ██░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (autopilot on; 42 prompts finished, 0 of them stopped early)
+### Queue (autopilot on; 43 prompts finished, 0 of them stopped early)
 
 | Prompt | State | When |
 |---|---|---|
-| P92 port-list-target | queued |  |
 | P93 servuo-code-port-assessment | queued |  |
+| P92 port-list-target | done | 2026-10-13 |
 | P91 overnight-playtest-bot | done | 2026-10-13 |
 | P90 feature-ideas | done | 2026-10-13 |
 | P89 haven-pages-plan | done | 2026-10-13 |
@@ -224,7 +245,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P85 status-dashboard | done | 2026-10-13 |
 | P84 console-uo-skin | done | 2026-10-13 |
 | P83 play-test-queue | done | 2026-10-12 |
-| P82 artificers-imbuing | done | 2026-10-13 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 67 patches, 10 replacements
 

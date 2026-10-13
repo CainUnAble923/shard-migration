@@ -90,6 +90,86 @@ def content_progress():
     out.sort(key=lambda r: (-r["done"], -r["total"]))
     return out
 
+# --- cc-P92: the ServUO port list ----------------------------------------------------------------------------------
+# tools/port-list.json is hand-kept judgment, like progress-state.json: the overseer edits it (moves a system between
+# tiers, reorders the Port rows for "next to land"), and this only reads it.
+PORT_LIST = MIGRATE / "tools" / "port-list.json"
+PORT_ROOTS = ("Services", "Items", "Mobiles")
+COUNTED_TIERS = ("port",)          # every other tier is shown, never counted
+TIER_ORDER = ("port", "decide", "ride", "reward", "source", "later", "drop")
+
+
+def port_list(path=None, servuo=None, shard=None, stems=None):
+    """Every ServUO file under Scripts/Services, Items and Mobiles that stock ModernUO lacks (its lowercased stem is not
+    in modernuo-stems.txt) is a candidate; it is done when the stem exists anywhere under server/customizations, the
+    same proxy as content_progress() (filename stems, not behavior). Each candidate goes to the FIRST system in file
+    order whose prefix matches its path under Scripts/ (forward slashes) and whose exclude regex, if any, does not.
+    Candidates no system claims are reported, count and the first 20 paths, so a new ServUO file shows up rather than
+    vanishing. Returns None when the list, the ServUO tree or the stems file is missing."""
+    pl = _read_json(path or PORT_LIST)
+    root = Path(servuo or SERVUO) / "Scripts"
+    stems_file = Path(stems or MIGRATE / "tools" / "modernuo-stems.txt")
+    if not pl or not root.is_dir() or not stems_file.exists():
+        return None
+    stock = {l.strip().lower() for l in stems_file.read_text(encoding="utf-8").splitlines() if l.strip()}
+    cdir = Path(shard or SHARD) / "server" / "customizations"
+    cust = {p.stem.lower() for p in cdir.rglob("*.cs")} if cdir.is_dir() else set()
+    systems = pl.get("systems", [])
+    rx = [re.compile(s["exclude"]) if s.get("exclude") else None for s in systems]
+    rows = [{"id": s.get("id"), "tier": s.get("tier"), "title": s.get("title"), "feeds": s.get("feeds", ""),
+             "why": s.get("why", ""), "candidates": 0, "done": 0} for s in systems]
+    unassigned = []
+    total = 0
+    for top in PORT_ROOTS:
+        base = root / top
+        if not base.is_dir():
+            continue
+        for p in sorted(base.rglob("*.cs")):
+            stem = p.stem.lower()
+            if stem in stock:
+                continue
+            total += 1
+            rel = p.relative_to(root).as_posix()
+            for i, s in enumerate(systems):
+                if any(rel.startswith(x) for x in s.get("prefixes", [])) and not (rx[i] and rx[i].search(rel)):
+                    rows[i]["candidates"] += 1
+                    rows[i]["done"] += stem in cust
+                    break
+            else:
+                unassigned.append(rel)
+    for r in rows:
+        r["complete"] = r["candidates"] > 0 and r["done"] == r["candidates"]
+        r["pct"] = round(100.0 * r["done"] / r["candidates"], 1) if r["candidates"] else 0.0
+    counted_rows = [r for r in rows if r["tier"] in COUNTED_TIERS]
+    c_done = sum(r["done"] for r in counted_rows)
+    c_total = sum(r["candidates"] for r in counted_rows)
+    nxt = next((r for r in counted_rows if not r["complete"]), None)
+    tiers = {}
+    for t in TIER_ORDER + tuple(sorted({r["tier"] for r in rows} - set(TIER_ORDER))):
+        rs = [r for r in rows if r["tier"] == t]
+        if rs:
+            tiers[t] = {"systems": len(rs), "files": sum(r["candidates"] for r in rs), "done": sum(r["done"] for r in rs),
+                        "titles": [r["title"] for r in rs], "counted": t in COUNTED_TIERS,
+                        "meaning": (pl.get("tiers") or {}).get(t, "")}
+    return {"systems": rows, "tiers": tiers, "candidates": total, "unassigned": len(unassigned),
+            "unassigned_first": unassigned[:20],
+            "counted": {"systems": len(counted_rows), "in": sum(1 for r in counted_rows if r["complete"]),
+                        "done": c_done, "total": c_total,
+                        "pct": round(100.0 * c_done / c_total, 1) if c_total else 0.0},
+            "next": nxt["title"] if nxt else None, "decided": pl.get("decided", [])}
+
+
+def port_list_headline(pl):
+    """"Port list: n of N systems in. done of total files (pct%)." The one sentence the page and README lead with."""
+    c = pl["counted"]
+    return (f"Port list: {c['in']} of {c['systems']} systems in. {c['done']:,} of {c['total']:,} files "
+            f"({c['pct']:.0f}%).")
+
+
+DIRECTION_LINE = ("A faithful port comes first, our feature customizations after it; work already started or already "
+                  "requested is still finished (Chase, 2026-10-13).")
+
+
 def counted(shard):
     """Facts counted from the trees, never hand-edited."""
     out = {}
@@ -233,32 +313,44 @@ def build():
                 if pt else "Play tests: no data."))
     L.append("")
 
-    # Overall headline. This used to say a single percentage was impossible by design,
-    # which was true when written: ported content had no denominator. S3 and S9 built one
-    # by filtering ServUO against what ModernUO already ships, so the number exists now.
-    # It is still SOFT and the caveat travels with it - see below.
-    cp = content_progress()
-    if cp:
-        ctot = sum(r["done"] for r in cp)
-        call = sum(r["total"] for r in cp)
-        pct = (100.0 * ctot / call) if call else 0.0
-        L.append(f"## Overall: {pct:.0f}% of candidate content ported")
+    # cc-P92: the headline is the ServUO port list (tools/port-list.json), not every ServUO file ModernUO lacks.
+    # That pool still has its own section lower down; it was never a target and the page always said so.
+    pl = port_list()
+    if pl:
+        c = pl["counted"]
+        L.append("## " + port_list_headline(pl))
+        L.append("")
+        if pl["next"]:
+            L.append(f"**Next to land: {pl['next']}.** {DIRECTION_LINE}")
+        else:
+            L.append(f"**Every Port system is in.** {DIRECTION_LINE}")
         L.append("")
         L.append("```")
-        L.append(f"Content   {bar(ctot, call)}  {ctot}/{call}   {pct:.1f}%")
+        L.append(f"Port list {bar(c['done'], c['total'])}  {c['done']}/{c['total']}   {c['pct']:.1f}%")
         L.append(f"Setup     {bar(done, total)}  {done}/{total}     blocking defects resolved")
         L.append("```")
         L.append("")
-        L.append("**Read that denominator with suspicion.** 'Candidate files' is ServUO's tree "
-                 "filtered against the names ModernUO already declares, and **every count on this "
-                 "project has moved when someone actually read the files**: CC9's row went 455 -> "
-                 "437, its buckets moved twice more, CC4 Despise was '4 files' and was 14, and the "
-                 "brief's 120/29 were 107/30. The percentage is a useful direction of travel and a "
-                 "poor promise. Setup health is the only figure here with a denominator that cannot "
-                 "move.")
+        L.append("| System | Done / files | | Feeds |")
+        L.append("|---|---|---|---|")
+        for r in pl["systems"]:
+            if r["tier"] not in COUNTED_TIERS:
+                continue
+            L.append(f"| {r['title']}{' (in)' if r['complete'] else ''} | {r['done']} / {r['candidates']} | "
+                     f"`{bar(r['done'], r['candidates'], 12)}` | {r['feeds']} |")
+        for r in pl["systems"]:
+            if r["tier"] == "decide":
+                L.append(f"| {r['title']} (**waiting on Chase**) | {r['done']} / {r['candidates']} | | {r['feeds']} |")
+        L.append("")
+        others = [f"{t} {v['files']:,} files ({v['done']:,} in)" for t, v in pl["tiers"].items()
+                  if t not in COUNTED_TIERS and t != "decide"]
+        L.append("Not counted: " + "; ".join(others) + ". "
+                 + (f"**{pl['unassigned']} candidate files belong to no system**: "
+                    + ", ".join(f"`{x}`" for x in pl["unassigned_first"]) + ". "
+                    if pl["unassigned"] else "Every candidate belongs to a system. ")
+                 + "_Counted by filename stem (not behavior) against `server/customizations`; the list itself is "
+                   "`tools/port-list.json`, kept by hand._")
         L.append("")
     else:
-        # No content denominator available; fall back to the setup bar alone.
         L.append("```")
         L.append(f"Setup health   {bar(done,total)}  {done}/{total}   blocking defects resolved")
         L.append("```")
@@ -305,7 +397,7 @@ def build():
     cp = content_progress()
     if cp:
         tot_d = sum(r["done"] for r in cp); tot_t = sum(r["total"] for r in cp)
-        L.append(f"### Content moved over: {tot_d:,} of {tot_t:,} candidate files "
+        L.append(f"### Every ServUO file ModernUO lacks, by area (not a target): {tot_d:,} of {tot_t:,} "
                  f"({100*tot_d/tot_t if tot_t else 0:.1f}%)")
         L.append("")
         L.append("```")
@@ -424,6 +516,8 @@ def build():
             "setup_defects": d, "setup_done": done, "setup_total": total,
             "patches": p, "ported_content": pc, "declined_content": dc,
             "upstream_patches": st.get("upstream_patches"), "counted": cnt, "content_progress": content_progress(), "tasks": st.get("tasks", []),
+            # cc-P92: the port list, counted from the trees against tools/port-list.json.
+            "port_list": pl,
             "playable_gates": st.get("playable_gates"),
             "shard_status": st.get("shard_status"),
             # cc-P85: the direction note, the as-of dates of the page's hand-written sections, and the derived facts.

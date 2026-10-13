@@ -33,18 +33,23 @@ def minibar(done, total):
             f'<i style="width:{w:.1f}%"></i></span>')
 
 def headline_html(pg):
-    """Overall percentage plus the playable verdict. The caveat rides with the number."""
-    cp = pg.get("content_progress") or []
-    done = sum(r["done"] for r in cp); total = sum(r["total"] for r in cp)
-    pct = 100*done/total if total else 0
-    return (f'<div class="card"><div class="hero"><span class="big">{pct:.0f}%</span>'
-            f'<span class="cap"><strong>of candidate content ported.</strong> {done} of {total} '
-            f'ServUO files that ModernUO does not already ship.</span></div>'
+    """cc-P92: the ServUO port list (tools/port-list.json), counted by progress.py. Was "27% of candidate content",
+    which divided by every ServUO file ModernUO lacks: a pool the page itself called "not a target"."""
+    pl = pg.get("port_list")
+    if not pl:
+        return "<p class='foot'>No port list data (tools/port-list.json, progress.py).</p>"
+    c = pl["counted"]
+    pct = c["pct"]
+    nxt = (f'<strong>Next to land: {esc(pl["next"])}.</strong>' if pl.get("next")
+           else '<strong>Every Port system is in.</strong>')
+    return (f'<div class="card"><div class="hero"><span class="big">{c["in"]} / {c["systems"]}</span>'
+            f'<span class="cap"><strong>Port list: {c["in"]} of {c["systems"]} systems in. {c["done"]:,} of '
+            f'{c["total"]:,} files ({pct:.0f}%).</strong> {nxt}</span></div>'
             f'<span class="track"><span class="fill" style="width:{pct:.0f}%"></span></span></div>'
-            f'<p class="foot"><strong>Read that denominator with suspicion.</strong> "Candidate" is '
-            f'ServUO filtered against the names ModernUO already declares, and every count on this '
-            f'project has moved once someone read the files: CC9 went 455 &rarr; 437, Despise was '
-            f'"4 files" and was 14. A direction of travel, not a promise.</p>')
+            f'<p>{esc(PORT_DIRECTION)}</p>'
+            f'<p class="foot">"In" means every file of a system is ported. Counted by filename stem against '
+            f'<code>server/customizations</code>, not by behavior: a direction of travel, not a promise. The list '
+            f'itself is <code>tools/port-list.json</code>, kept by hand.</p>')
 
 def playable_html(pg):
     g = pg.get("playable_gates")
@@ -104,6 +109,53 @@ def expansion_html(ex):
             f'<td class="bar">{minibar(h, t)}</td>'
             f'<td class="n"><strong>{100*h/t:.0f}%</strong></td>'
             f'<td class="n"><strong>+{o}</strong></td></tr></tbody></table></div>')
+
+PORT_DIRECTION = ("A faithful port comes first, our feature customizations after it; work already started or already "
+                  "requested is still finished (Chase, 2026-10-13).")
+TIER_NAMES = {"ride": "Ride-along", "reward": "Reward pool", "source": "Design source", "later": "Later",
+              "drop": "Dropped"}
+
+
+def portlist_html(pg):
+    """cc-P92: the port list section. Port rows with bars and their feeds; any Decide rows, marked as waiting on Chase;
+    then one collapsed line per not-counted tier; then the old every-file area table, collapsed, as scale only."""
+    pl = pg.get("port_list")
+    if not pl:
+        return "<p class='foot'>No port list data.</p>"
+    counted = [r for r in pl["systems"] if r["tier"] == "port"]
+    decide = [r for r in pl["systems"] if r["tier"] == "decide"]
+
+    def row(r, extra=""):
+        state = ('<span class="pill p-ok">in</span>' if r["complete"] else "")
+        return (f'<tr><td>{esc(r["title"])} {state}{extra}</td><td class="n">{r["done"]}</td>'
+                f'<td class="n">{r["candidates"]}</td><td class="bar">{minibar(r["done"], r["candidates"])}</td>'
+                f'<td class="foot">{esc(r["feeds"])}</td></tr>')
+
+    rows = "".join(row(r) for r in counted)
+    rows += "".join(row(r, ' <span class="pill p-todo">waiting on Chase</span>') for r in decide)
+    c = pl["counted"]
+    rows += (f'<tr><td><strong>Port tier</strong></td><td class="n"><strong>{c["done"]:,}</strong></td>'
+             f'<td class="n"><strong>{c["total"]:,}</strong></td><td class="bar">{minibar(c["done"], c["total"])}</td>'
+             f'<td class="foot">{c["in"]} of {c["systems"]} systems in</td></tr>')
+    tiers = ""
+    for t, v in pl["tiers"].items():
+        if t in ("port", "decide"):
+            continue
+        items = "".join(f"<li>{esc(x)}</li>" for x in v["titles"])
+        tiers += (f'<details><summary><strong>{esc(TIER_NAMES.get(t, t))}</strong>: {v["files"]:,} files '
+                  f'({v["done"]:,} in). {esc(v.get("meaning", "") or "Not counted.")}</summary><ul>{items}</ul></details>')
+    un = ""
+    if pl.get("unassigned"):
+        un = (f'<p class="flag"><strong>{pl["unassigned"]} ServUO files belong to no system</strong>, the first: '
+              + ", ".join(f"<code>{esc(x)}</code>" for x in pl.get("unassigned_first", [])[:20]) + ".</p>")
+    return ('<div class="scroller"><table><thead><tr><th>System</th><th class="n">Done</th><th class="n">Files</th>'
+            f'<th></th><th>Feeds</th></tr></thead><tbody>{rows}</tbody></table></div>{un}{tiers}'
+            f'<p class="foot">{pl["candidates"]:,} ServUO files under Services, Items and Mobiles that stock ModernUO '
+            'lacks; each belongs to the first system in the list whose path prefix matches. "Next to land" is the first '
+            'Port row, in the list&#x27;s order, that is not in.</p>'
+            '<details><summary>Every ServUO file ModernUO lacks, by area (scale, not a target)</summary>'
+            + content_html(pg) + '</details>')
+
 
 def content_html(pg):
     cp = pg.get("content_progress") or []
@@ -305,8 +357,7 @@ def main():
         "FOUNDATION": secs.get("foundation", ""),
         "PATCHES": (pg.get("upstream_patches") or {}).get("confirmed", ""),
         "PLAYTESTS": str(pt.get("generatedAt") or "")[:10],
-        "BACKLOG": secs.get("backlog", ""), "DEFERRED": secs.get("deferred", ""),
-        "CORRECTIONS": secs.get("corrections", ""), "PORTED": secs.get("ported", ""),
+        "CORRECTIONS": secs.get("corrections", ""), "PORTLIST": secs.get("portlist", ""),
     }
     for tag, d in asof.items():
         txt, _ = replace_inline(txt, "ASOF-" + tag, asof_html(d, hdate))
@@ -324,7 +375,7 @@ def main():
                       ("PLAYABLE", playable_html(pg)),
                       ("FOUNDATION", foundation_html(pg)),
                       ("EXPANSION", expansion_html(ex)),
-                      ("CONTENT", content_html(pg)),
+                      ("CONTENT", portlist_html(pg)),
                       ("TASKS", tasks_html(pg)),
                       ("PATCHES", patches_html(pg))):
         txt, ok = replace(txt, tag, body)
