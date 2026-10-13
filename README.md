@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.13.13. Autopilot on, 1 queued, latest done P92. Play tests: 166 open, 1 failed, 18 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.13.13. Autopilot on, 0 queued, latest done P93. Play tests: 166 open, 1 failed, 18 passed.
 
 ## Port list: 1 of 16 systems in. 283 of 983 files (29%).
 
@@ -230,11 +230,11 @@ Tasks          ██░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (autopilot on; 43 prompts finished, 0 of them stopped early)
+### Queue (autopilot on; 44 prompts finished, 0 of them stopped early)
 
 | Prompt | State | When |
 |---|---|---|
-| P93 servuo-code-port-assessment | queued |  |
+| P93 servuo-code-port-assessment | done | 2026-10-13 |
 | P92 port-list-target | done | 2026-10-13 |
 | P91 overnight-playtest-bot | done | 2026-10-13 |
 | P90 feature-ideas | done | 2026-10-13 |
@@ -244,7 +244,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P86 console-vpn-disconnect | done | 2026-10-13 |
 | P85 status-dashboard | done | 2026-10-13 |
 | P84 console-uo-skin | done | 2026-10-13 |
-| P83 play-test-queue | done | 2026-10-12 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 67 patches, 10 replacements
 
