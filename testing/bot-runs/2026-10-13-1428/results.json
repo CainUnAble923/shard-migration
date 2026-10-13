@@ -1,0 +1,1817 @@
+{
+ "checks": [
+  {
+   "id": "P64-1",
+   "title": "Fresh account login: bulletin with the current version, All patch notes, no wiki button",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "title 'Shattered Legacy 2026.10.13.4'; All patch notes button yes; wiki text none",
+     "seconds": 7.4,
+     "transcript": "transcripts/P64-1-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "title 'Shattered Legacy 2026.10.13.4'; All patch notes button yes; wiki text none",
+     "seconds": 7.2,
+     "transcript": "transcripts/P64-1-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "title 'Shattered Legacy 2026.10.13.4'; All patch notes button yes; wiki text none",
+     "seconds": 7.2,
+     "transcript": "transcripts/P64-1-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P64-2",
+   "title": "All patch notes opens the history; a relog shows no bulletin",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "history gump after All patch notes: yes; bulletin on relog: none (observed during the matching P64-1 run)",
+     "seconds": 0.0,
+     "transcript": "transcripts/P64-2-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "history gump after All patch notes: yes; bulletin on relog: none (observed during the matching P64-1 run)",
+     "seconds": 0.0,
+     "transcript": "transcripts/P64-2-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "history gump after All patch notes: yes; bulletin on relog: none (observed during the matching P64-1 run)",
+     "seconds": 0.0,
+     "transcript": "transcripts/P64-2-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P64-3",
+   "title": "[version: the current version first, with (you are here)",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "P64-3: the entry shows gold",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "first heading 'Shattered Legacy 2026.10.13.4'; (you are here) on page 1: True",
+     "seconds": 1.7,
+     "transcript": "transcripts/P64-3-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "first heading 'Shattered Legacy 2026.10.13.4'; (you are here) on page 1: True",
+     "seconds": 0.4,
+     "transcript": "transcripts/P64-3-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "first heading 'Shattered Legacy 2026.10.13.4'; (you are here) on page 1: True",
+     "seconds": 0.4,
+     "transcript": "transcripts/P64-3-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P64-4",
+   "title": "[version pages: Next to Page N of N, last version 2026.10.01, Previous goes back",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "last page ['Page 25 of 25']; last version 2026.10.01; after Previous ['Page 24 of 25']",
+     "seconds": 0.4,
+     "transcript": "transcripts/P64-4-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "last page ['Page 25 of 25']; last version 2026.10.01; after Previous ['Page 24 of 25']",
+     "seconds": 0.3,
+     "transcript": "transcripts/P64-4-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "last page ['Page 25 of 25']; last version 2026.10.01; after Previous ['Page 24 of 25']",
+     "seconds": 0.4,
+     "transcript": "transcripts/P64-4-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P58-0",
+   "title": "[version as a player: 2026.10.02 to 2026.10.05 sections, no Staff lines",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "P58-0: the patch-note wording reads right",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "versions 10.02-10.05 shown: ['2026.10.05.3', '2026.10.05.2', '2026.10.05', '2026.10.04', '2026.10.03', '2026.10.02']; missing none; Staff list visible to a player: False",
+     "seconds": 0.4,
+     "transcript": "transcripts/P58-0-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "versions 10.02-10.05 shown: ['2026.10.05.3', '2026.10.05.2', '2026.10.05', '2026.10.04', '2026.10.03', '2026.10.02']; missing none; Staff list visible to a player: False",
+     "seconds": 0.4,
+     "transcript": "transcripts/P58-0-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "versions 10.02-10.05 shown: ['2026.10.05.3', '2026.10.05.2', '2026.10.05', '2026.10.04', '2026.10.03', '2026.10.02']; missing none; Staff list visible to a player: False",
+     "seconds": 0.3,
+     "transcript": "transcripts/P58-0-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P61-5",
+   "title": "[version history holds 2026.10.05.2 with its four lines",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "2026.10.05.2 present: True, 4 player lines (CHANGELOG at the code under test: 4)",
+     "seconds": 0.4,
+     "transcript": "transcripts/P61-5-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "2026.10.05.2 present: True, 4 player lines (CHANGELOG at the code under test: 4)",
+     "seconds": 0.4,
+     "transcript": "transcripts/P61-5-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "2026.10.05.2 present: True, 4 player lines (CHANGELOG at the code under test: 4)",
+     "seconds": 0.4,
+     "transcript": "transcripts/P61-5-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P64-5",
+   "title": "The 2026.10.05.2 line ends 'The chance to make the item is unchanged.'",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "P64-5: it wraps onto four rows",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "matching line: 'thril to 187.5, Adamantium and Celestial to 200. The chance to make the item is unchanged.'",
+     "seconds": 0.4,
+     "transcript": "transcripts/P64-5-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "matching line: 'thril to 187.5, Adamantium and Celestial to 200. The chance to make the item is unchanged.'",
+     "seconds": 0.4,
+     "transcript": "transcripts/P64-5-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "matching line: 'thril to 187.5, Adamantium and Celestial to 200. The chance to make the item is unchanged.'",
+     "seconds": 0.4,
+     "transcript": "transcripts/P64-5-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P71-7",
+   "title": "[version history holds 2026.10.10 with five lines",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "2026.10.10 present: True, 5 player lines (CHANGELOG at the code under test: 5)",
+     "seconds": 0.4,
+     "transcript": "transcripts/P71-7-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "2026.10.10 present: True, 5 player lines (CHANGELOG at the code under test: 5)",
+     "seconds": 0.4,
+     "transcript": "transcripts/P71-7-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "2026.10.10 present: True, 5 player lines (CHANGELOG at the code under test: 5)",
+     "seconds": 0.4,
+     "transcript": "transcripts/P71-7-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P64-6",
+   "title": "Staff list: shown to staff, hidden from players",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "P64-6: the staff list shows lavender",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "admin sees 'Staff (players do not see this list)': True; player sees it: False",
+     "seconds": 1.8,
+     "transcript": "transcripts/P64-6-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "admin sees 'Staff (players do not see this list)': True; player sees it: False",
+     "seconds": 0.7,
+     "transcript": "transcripts/P64-6-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "admin sees 'Staff (players do not see this list)': True; player sees it: False",
+     "seconds": 0.7,
+     "transcript": "transcripts/P64-6-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P66-7",
+   "title": "[ClusterFSkillGain reports the rate and 'past stock ceilings on'",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "reply: 'ClusterF skill gain: rate enabled, 3 chance attempt(s), 5x gain amount; past stock ceilings on.'",
+     "seconds": 1.0,
+     "transcript": "transcripts/P66-7-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "reply: 'ClusterF skill gain: rate enabled, 3 chance attempt(s), 5x gain amount; past stock ceilings on.'",
+     "seconds": 1.0,
+     "transcript": "transcripts/P66-7-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "reply: 'ClusterF skill gain: rate enabled, 3 chance attempt(s), 5x gain amount; past stock ceilings on.'",
+     "seconds": 1.0,
+     "transcript": "transcripts/P66-7-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P62-1",
+   "title": "A female character can wear the Kitsune Ears and Tail",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "worn: True (layer 18); messages []",
+     "seconds": 4.8,
+     "transcript": "transcripts/P62-1-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "worn: True (layer 18); messages ['Double Click On Me For Help!']",
+     "seconds": 4.8,
+     "transcript": "transcripts/P62-1-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "worn: True (layer 18); messages [\"To see the commands to do this just say 'help'.\"]",
+     "seconds": 4.9,
+     "transcript": "transcripts/P62-1-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P62-7",
+   "title": "A male character cannot: 'Only females can wear this.', the item stays in the pack",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "refusal True; worn False; back in pack True; messages ['Only females can wear this.', 'Welcome to Shattered Legacy BOT.']",
+     "seconds": 292.1,
+     "transcript": "transcripts/P62-7-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "refusal True; worn False; back in pack True; messages ['Only females can wear this.', 'Welcome to Shattered Legacy BOT.']",
+     "seconds": 7.2,
+     "transcript": "transcripts/P62-7-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "refusal True; worn False; back in pack True; messages ['Only females can wear this.', 'Welcome to Shattered Legacy BOT.']",
+     "seconds": 7.2,
+     "transcript": "transcripts/P62-7-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "T-039",
+   "title": "A new character is pointed at the board",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "T-039: a new player can find the board by eye",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "human female at (3503, 2574, 14): message None; welcome gump says 'The Guild Board in the town square lists every guild, what it teaches, and where its guildmaster stands.'; the board is 1 tiles away",
+     "seconds": 328.6,
+     "transcript": "transcripts/T-039-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "elf male at (3503, 2574, 14): message None; welcome gump says 'The Guild Board in the town square lists every guild, what it teaches, and where its guildmaster stands.'; the board is 1 tiles away",
+     "seconds": 13.1,
+     "transcript": "transcripts/T-039-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "gargoyle female at (3503, 2574, 14): message None; welcome gump says 'The Guild Board in the town square lists every guild, what it teaches, and where its guildmaster stands.'; the board is 1 tiles away",
+     "seconds": 13.1,
+     "transcript": "transcripts/T-039-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "CREATE",
+   "title": "Character creation for every race and sex, through the real 0xF8 packet",
+   "kind": "HARNESS",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "human male: body 400 (want 400), status name 'Bot Human M Ak' (asked for 'Bot Human M Ak'), at (3503, 2574, 14)",
+     "seconds": 304.9,
+     "transcript": "transcripts/CREATE-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "elf female: body 606 (want 606), status name 'Bot Elf F Al' (asked for 'Bot Elf F Al'), at (3503, 2574, 14)",
+     "seconds": 13.1,
+     "transcript": "transcripts/CREATE-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "gargoyle male: body 666 (want 666), status name 'Bot Gargoyle M A' (asked for 'Bot Gargoyle M A'), at (3503, 2574, 14)",
+     "seconds": 13.1,
+     "transcript": "transcripts/CREATE-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "T-047",
+   "title": "Young by time played: the countdown, and 'I want to grow up!' brings the confirm gump",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "countdown 'You will enjoy the benefits and relatively safe status of a young player for another 13 days and 23 hours of play time. Say \"I want to grow up!\" to give it up sooner.' (days and hours: True); confirm gump: ['', \"Renouncing 'Young Player' Status\"]",
+     "seconds": 304.9,
+     "transcript": "transcripts/T-047-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "countdown 'You will enjoy the benefits and relatively safe status of a young player for another 13 days and 23 hours of play time. Say \"I want to grow up!\" to give it up sooner.' (days and hours: True); confirm gump: ['', \"Renouncing 'Young Player' Status\"]",
+     "seconds": 13.1,
+     "transcript": "transcripts/T-047-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "countdown 'You will enjoy the benefits and relatively safe status of a young player for another 13 days and 23 hours of play time. Say \"I want to grow up!\" to give it up sooner.' (days and hours: True); confirm gump: ['', \"Renouncing 'Young Player' Status\"]",
+     "seconds": 13.1,
+     "transcript": "transcripts/T-047-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "D41",
+   "title": "Regression: the Guild Directory lists each guild once",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "18 rows, header says 18 guilds, 18 way buttons; duplicates none; Artificers' Order 1 time(s)",
+     "seconds": 0.3,
+     "transcript": "transcripts/D41-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "18 rows, header says 18 guilds, 18 way buttons; duplicates none; Artificers' Order 1 time(s)",
+     "seconds": 0.3,
+     "transcript": "transcripts/D41-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "18 rows, header says 18 guilds, 18 way buttons; duplicates none; Artificers' Order 1 time(s)",
+     "seconds": 0.3,
+     "transcript": "transcripts/D41-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P56-6",
+   "title": "Valorite refused at Mining 98.9, smelts at 99",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "at 98.9: refused True ['You have no idea how to smelt this strange ore!'], ore left 10; at 99.0 over 6 tries: refused 0, smelted 4, burned 2",
+     "seconds": 20.3,
+     "transcript": "transcripts/P56-6-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "at 98.9: refused True ['You have no idea how to smelt this strange ore!'], ore left 10; at 99.0 over 6 tries: refused 0, smelted 4, burned 2",
+     "seconds": 21.5,
+     "transcript": "transcripts/P56-6-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "at 98.9: refused True ['You have no idea how to smelt this strange ore!'], ore left 10; at 99.0 over 6 tries: refused 0, smelted 3, burned 3",
+     "seconds": 19.0,
+     "transcript": "transcripts/P56-6-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P56-4",
+   "title": "Platinum refused at Mining 112.4; at 112.5 it smelts (about half the time)",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "at 112.4: refused True ['You have no idea how to smelt this strange ore!'], ore left 10; at 112.5 over 8 tries: refused 0, smelted 4, burned 4",
+     "seconds": 24.5,
+     "transcript": "transcripts/P56-4-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "at 112.4: refused True ['You have no idea how to smelt this strange ore!'], ore left 10; at 112.5 over 8 tries: refused 0, smelted 6, burned 2",
+     "seconds": 25.7,
+     "transcript": "transcripts/P56-4-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "at 112.4: refused True ['You have no idea how to smelt this strange ore!'], ore left 10; at 112.5 over 8 tries: refused 0, smelted 1, burned 1",
+     "seconds": 19.6,
+     "transcript": "transcripts/P56-4-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P61-3",
+   "title": "Achievements: 'Oh Look, It's Dead' shows its Earned line and no 'Progress: 9/1'; unearned ones show progress",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "rat killed by the player: True; row 'Oh Look, It\\'s Dead [5 AP / 5 R]\"You are, by definition, a killer now. Congratulations.\"(Earned: slew your first creature)'; other rows with progress: 2",
+     "seconds": 26.2,
+     "transcript": "transcripts/P61-3-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "rat killed by the player: True; row 'Oh Look, It\\'s Dead [5 AP / 5 R]\"You are, by definition, a killer now. Congratulations.\"(Earned: slew your first creature)'; other rows with progress: 2",
+     "seconds": 3.6,
+     "transcript": "transcripts/P61-3-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "rat killed by the player: True; row 'Oh Look, It\\'s Dead [5 AP / 5 R]\"You are, by definition, a killer now. Congratulations.\"(Earned: slew your first creature)'; other rows with progress: 2",
+     "seconds": 3.6,
+     "transcript": "transcripts/P61-3-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "T-046",
+   "title": "Reset stone and [ResetMyAccount open the same gump",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "T-046: each scope (this character / all / account) clearing what it says, joined guilds included, is not pressed by the bot; it would wipe its own characters",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "same gump type True; same text True (29 lines); same buttons True [0, 1, 2, 10]",
+     "seconds": 1.5,
+     "transcript": "transcripts/T-046-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "same gump type True; same text True (29 lines); same buttons True [0, 1, 2, 10]",
+     "seconds": 1.5,
+     "transcript": "transcripts/T-046-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "same gump type True; same text True (29 lines); same buttons True [0, 1, 2, 10]",
+     "seconds": 1.5,
+     "transcript": "transcripts/T-046-run3.txt"
+    }
+   ]
+  }
+ ],
+ "soak": {
+  "minutes": 120,
+  "samples": [
+   {
+    "minute": 1,
+    "mem": "488.4MiB / 15.46GiB|0.66%",
+    "state": "running",
+    "walker_steps": 0,
+    "miner_digs": 0,
+    "miner_smelts": 0,
+    "fighter_kills": 0,
+    "fighter_swings": 0
+   },
+   {
+    "minute": 2,
+    "mem": "490.5MiB / 15.46GiB|0.77%",
+    "state": "running",
+    "walker_steps": 0,
+    "miner_digs": 0,
+    "miner_smelts": 0,
+    "fighter_kills": 0,
+    "fighter_swings": 0
+   },
+   {
+    "minute": 3,
+    "mem": "492.2MiB / 15.46GiB|2.16%",
+    "state": "running",
+    "walker_steps": 76,
+    "miner_digs": 23,
+    "miner_smelts": 0,
+    "fighter_kills": 3,
+    "fighter_swings": 4
+   },
+   {
+    "minute": 4,
+    "mem": "495.2MiB / 15.46GiB|0.82%",
+    "state": "running",
+    "walker_steps": 273,
+    "miner_digs": 54,
+    "miner_smelts": 0,
+    "fighter_kills": 12,
+    "fighter_swings": 12
+   },
+   {
+    "minute": 5,
+    "mem": "505.6MiB / 15.46GiB|0.81%",
+    "state": "running",
+    "walker_steps": 472,
+    "miner_digs": 84,
+    "miner_smelts": 0,
+    "fighter_kills": 28,
+    "fighter_swings": 28
+   },
+   {
+    "minute": 6,
+    "mem": "503.9MiB / 15.46GiB|0.93%",
+    "state": "running",
+    "walker_steps": 669,
+    "miner_digs": 115,
+    "miner_smelts": 0,
+    "fighter_kills": 41,
+    "fighter_swings": 42
+   },
+   {
+    "minute": 7,
+    "mem": "503.8MiB / 15.46GiB|0.94%",
+    "state": "running",
+    "walker_steps": 869,
+    "miner_digs": 146,
+    "miner_smelts": 0,
+    "fighter_kills": 57,
+    "fighter_swings": 58
+   },
+   {
+    "minute": 8,
+    "mem": "504.6MiB / 15.46GiB|0.95%",
+    "state": "running",
+    "walker_steps": 1069,
+    "miner_digs": 177,
+    "miner_smelts": 0,
+    "fighter_kills": 63,
+    "fighter_swings": 65
+   },
+   {
+    "minute": 9,
+    "mem": "505.2MiB / 15.46GiB|0.85%",
+    "state": "running",
+    "walker_steps": 1267,
+    "miner_digs": 207,
+    "miner_smelts": 0,
+    "fighter_kills": 78,
+    "fighter_swings": 79
+   },
+   {
+    "minute": 10,
+    "mem": "507.4MiB / 15.46GiB|0.80%",
+    "state": "running",
+    "walker_steps": 1467,
+    "miner_digs": 238,
+    "miner_smelts": 0,
+    "fighter_kills": 88,
+    "fighter_swings": 89
+   },
+   {
+    "minute": 11,
+    "mem": "506MiB / 15.46GiB|0.73%",
+    "state": "running",
+    "walker_steps": 1665,
+    "miner_digs": 269,
+    "miner_smelts": 0,
+    "fighter_kills": 103,
+    "fighter_swings": 105
+   },
+   {
+    "minute": 12,
+    "mem": "507.6MiB / 15.46GiB|0.97%",
+    "state": "running",
+    "walker_steps": 1862,
+    "miner_digs": 299,
+    "miner_smelts": 0,
+    "fighter_kills": 120,
+    "fighter_swings": 121
+   },
+   {
+    "minute": 13,
+    "mem": "506.3MiB / 15.46GiB|0.79%",
+    "state": "running",
+    "walker_steps": 2062,
+    "miner_digs": 330,
+    "miner_smelts": 0,
+    "fighter_kills": 136,
+    "fighter_swings": 137
+   },
+   {
+    "minute": 14,
+    "mem": "507.5MiB / 15.46GiB|0.81%",
+    "state": "running",
+    "walker_steps": 2262,
+    "miner_digs": 361,
+    "miner_smelts": 0,
+    "fighter_kills": 154,
+    "fighter_swings": 155
+   },
+   {
+    "minute": 15,
+    "mem": "512.7MiB / 15.46GiB|0.78%",
+    "state": "running",
+    "walker_steps": 2460,
+    "miner_digs": 391,
+    "miner_smelts": 0,
+    "fighter_kills": 172,
+    "fighter_swings": 173
+   },
+   {
+    "minute": 16,
+    "mem": "514.3MiB / 15.46GiB|0.79%",
+    "state": "running",
+    "walker_steps": 2660,
+    "miner_digs": 423,
+    "miner_smelts": 0,
+    "fighter_kills": 185,
+    "fighter_swings": 187
+   },
+   {
+    "minute": 17,
+    "mem": "515.3MiB / 15.46GiB|0.84%",
+    "state": "running",
+    "walker_steps": 2858,
+    "miner_digs": 453,
+    "miner_smelts": 0,
+    "fighter_kills": 202,
+    "fighter_swings": 204
+   },
+   {
+    "minute": 18,
+    "mem": "514.1MiB / 15.46GiB|0.93%",
+    "state": "running",
+    "walker_steps": 3056,
+    "miner_digs": 484,
+    "miner_smelts": 0,
+    "fighter_kills": 221,
+    "fighter_swings": 222
+   },
+   {
+    "minute": 20,
+    "mem": "515.1MiB / 15.46GiB|0.85%",
+    "state": "running",
+    "walker_steps": 3259,
+    "miner_digs": 515,
+    "miner_smelts": 0,
+    "fighter_kills": 235,
+    "fighter_swings": 236
+   },
+   {
+    "minute": 21,
+    "mem": "516.8MiB / 15.46GiB|1.03%",
+    "state": "running",
+    "walker_steps": 3460,
+    "miner_digs": 546,
+    "miner_smelts": 0,
+    "fighter_kills": 249,
+    "fighter_swings": 250
+   },
+   {
+    "minute": 22,
+    "mem": "517.5MiB / 15.46GiB|0.88%",
+    "state": "running",
+    "walker_steps": 3660,
+    "miner_digs": 577,
+    "miner_smelts": 0,
+    "fighter_kills": 264,
+    "fighter_swings": 265
+   },
+   {
+    "minute": 23,
+    "mem": "517.2MiB / 15.46GiB|0.81%",
+    "state": "running",
+    "walker_steps": 3858,
+    "miner_digs": 607,
+    "miner_smelts": 0,
+    "fighter_kills": 278,
+    "fighter_swings": 280
+   },
+   {
+    "minute": 24,
+    "mem": "517.4MiB / 15.46GiB|0.85%",
+    "state": "running",
+    "walker_steps": 4055,
+    "miner_digs": 638,
+    "miner_smelts": 0,
+    "fighter_kills": 295,
+    "fighter_swings": 296
+   },
+   {
+    "minute": 25,
+    "mem": "515.8MiB / 15.46GiB|0.98%",
+    "state": "running",
+    "walker_steps": 4256,
+    "miner_digs": 669,
+    "miner_smelts": 0,
+    "fighter_kills": 312,
+    "fighter_swings": 314
+   },
+   {
+    "minute": 26,
+    "mem": "516.7MiB / 15.46GiB|0.85%",
+    "state": "running",
+    "walker_steps": 4456,
+    "miner_digs": 700,
+    "miner_smelts": 0,
+    "fighter_kills": 325,
+    "fighter_swings": 326
+   },
+   {
+    "minute": 27,
+    "mem": "517.6MiB / 15.46GiB|0.89%",
+    "state": "running",
+    "walker_steps": 4654,
+    "miner_digs": 730,
+    "miner_smelts": 0,
+    "fighter_kills": 339,
+    "fighter_swings": 340
+   },
+   {
+    "minute": 28,
+    "mem": "518.2MiB / 15.46GiB|0.87%",
+    "state": "running",
+    "walker_steps": 4852,
+    "miner_digs": 761,
+    "miner_smelts": 0,
+    "fighter_kills": 353,
+    "fighter_swings": 354
+   },
+   {
+    "minute": 29,
+    "mem": "519.7MiB / 15.46GiB|0.81%",
+    "state": "running",
+    "walker_steps": 5050,
+    "miner_digs": 791,
+    "miner_smelts": 0,
+    "fighter_kills": 369,
+    "fighter_swings": 370
+   },
+   {
+    "minute": 30,
+    "mem": "525.8MiB / 15.46GiB|0.85%",
+    "state": "running",
+    "walker_steps": 5247,
+    "miner_digs": 822,
+    "miner_smelts": 0,
+    "fighter_kills": 384,
+    "fighter_swings": 385
+   },
+   {
+    "minute": 31,
+    "mem": "523.4MiB / 15.46GiB|1.06%",
+    "state": "running",
+    "walker_steps": 5445,
+    "miner_digs": 852,
+    "miner_smelts": 0,
+    "fighter_kills": 399,
+    "fighter_swings": 400
+   },
+   {
+    "minute": 32,
+    "mem": "523.9MiB / 15.46GiB|0.85%",
+    "state": "running",
+    "walker_steps": 5645,
+    "miner_digs": 883,
+    "miner_smelts": 0,
+    "fighter_kills": 413,
+    "fighter_swings": 415
+   },
+   {
+    "minute": 33,
+    "mem": "524.5MiB / 15.46GiB|0.80%",
+    "state": "running",
+    "walker_steps": 5846,
+    "miner_digs": 914,
+    "miner_smelts": 0,
+    "fighter_kills": 427,
+    "fighter_swings": 429
+   },
+   {
+    "minute": 34,
+    "mem": "524.5MiB / 15.46GiB|0.87%",
+    "state": "running",
+    "walker_steps": 6043,
+    "miner_digs": 944,
+    "miner_smelts": 0,
+    "fighter_kills": 442,
+    "fighter_swings": 443
+   },
+   {
+    "minute": 35,
+    "mem": "527.5MiB / 15.46GiB|1.05%",
+    "state": "running",
+    "walker_steps": 6242,
+    "miner_digs": 975,
+    "miner_smelts": 0,
+    "fighter_kills": 455,
+    "fighter_swings": 456
+   },
+   {
+    "minute": 36,
+    "mem": "527MiB / 15.46GiB|0.85%",
+    "state": "running",
+    "walker_steps": 6444,
+    "miner_digs": 1006,
+    "miner_smelts": 0,
+    "fighter_kills": 469,
+    "fighter_swings": 470
+   },
+   {
+    "minute": 37,
+    "mem": "526.8MiB / 15.46GiB|0.85%",
+    "state": "running",
+    "walker_steps": 6641,
+    "miner_digs": 1037,
+    "miner_smelts": 0,
+    "fighter_kills": 486,
+    "fighter_swings": 487
+   },
+   {
+    "minute": 38,
+    "mem": "527.5MiB / 15.46GiB|0.83%",
+    "state": "running",
+    "walker_steps": 6840,
+    "miner_digs": 1067,
+    "miner_smelts": 0,
+    "fighter_kills": 502,
+    "fighter_swings": 504
+   },
+   {
+    "minute": 39,
+    "mem": "528.6MiB / 15.46GiB|1.95%",
+    "state": "running",
+    "walker_steps": 7040,
+    "miner_digs": 1098,
+    "miner_smelts": 0,
+    "fighter_kills": 519,
+    "fighter_swings": 521
+   },
+   {
+    "minute": 40,
+    "mem": "530.7MiB / 15.46GiB|0.83%",
+    "state": "running",
+    "walker_steps": 7237,
+    "miner_digs": 1129,
+    "miner_smelts": 0,
+    "fighter_kills": 538,
+    "fighter_swings": 539
+   },
+   {
+    "minute": 41,
+    "mem": "530.2MiB / 15.46GiB|0.86%",
+    "state": "running",
+    "walker_steps": 7435,
+    "miner_digs": 1159,
+    "miner_smelts": 0,
+    "fighter_kills": 554,
+    "fighter_swings": 556
+   },
+   {
+    "minute": 42,
+    "mem": "530.8MiB / 15.46GiB|0.82%",
+    "state": "running",
+    "walker_steps": 7634,
+    "miner_digs": 1190,
+    "miner_smelts": 0,
+    "fighter_kills": 569,
+    "fighter_swings": 570
+   },
+   {
+    "minute": 43,
+    "mem": "530.2MiB / 15.46GiB|0.80%",
+    "state": "running",
+    "walker_steps": 7834,
+    "miner_digs": 1221,
+    "miner_smelts": 0,
+    "fighter_kills": 584,
+    "fighter_swings": 586
+   },
+   {
+    "minute": 44,
+    "mem": "530.5MiB / 15.46GiB|0.78%",
+    "state": "running",
+    "walker_steps": 8033,
+    "miner_digs": 1252,
+    "miner_smelts": 0,
+    "fighter_kills": 601,
+    "fighter_swings": 603
+   },
+   {
+    "minute": 45,
+    "mem": "534.4MiB / 15.46GiB|0.87%",
+    "state": "running",
+    "walker_steps": 8233,
+    "miner_digs": 1282,
+    "miner_smelts": 0,
+    "fighter_kills": 617,
+    "fighter_swings": 618
+   },
+   {
+    "minute": 46,
+    "mem": "534.1MiB / 15.46GiB|0.73%",
+    "state": "running",
+    "walker_steps": 8434,
+    "miner_digs": 1313,
+    "miner_smelts": 0,
+    "fighter_kills": 633,
+    "fighter_swings": 634
+   },
+   {
+    "minute": 47,
+    "mem": "534.1MiB / 15.46GiB|0.93%",
+    "state": "running",
+    "walker_steps": 8634,
+    "miner_digs": 1344,
+    "miner_smelts": 0,
+    "fighter_kills": 651,
+    "fighter_swings": 653
+   },
+   {
+    "minute": 48,
+    "mem": "532.9MiB / 15.46GiB|0.97%",
+    "state": "running",
+    "walker_steps": 8835,
+    "miner_digs": 1375,
+    "miner_smelts": 0,
+    "fighter_kills": 667,
+    "fighter_swings": 669
+   },
+   {
+    "minute": 49,
+    "mem": "534.8MiB / 15.46GiB|0.77%",
+    "state": "running",
+    "walker_steps": 9034,
+    "miner_digs": 1406,
+    "miner_smelts": 0,
+    "fighter_kills": 683,
+    "fighter_swings": 685
+   },
+   {
+    "minute": 50,
+    "mem": "537.1MiB / 15.46GiB|0.78%",
+    "state": "running",
+    "walker_steps": 9234,
+    "miner_digs": 1437,
+    "miner_smelts": 0,
+    "fighter_kills": 699,
+    "fighter_swings": 701
+   },
+   {
+    "minute": 51,
+    "mem": "538.3MiB / 15.46GiB|0.87%",
+    "state": "running",
+    "walker_steps": 9432,
+    "miner_digs": 1467,
+    "miner_smelts": 0,
+    "fighter_kills": 714,
+    "fighter_swings": 716
+   },
+   {
+    "minute": 52,
+    "mem": "536.9MiB / 15.46GiB|0.81%",
+    "state": "running",
+    "walker_steps": 9629,
+    "miner_digs": 1498,
+    "miner_smelts": 0,
+    "fighter_kills": 733,
+    "fighter_swings": 734
+   },
+   {
+    "minute": 53,
+    "mem": "537MiB / 15.46GiB|0.75%",
+    "state": "running",
+    "walker_steps": 9829,
+    "miner_digs": 1529,
+    "miner_smelts": 0,
+    "fighter_kills": 747,
+    "fighter_swings": 748
+   },
+   {
+    "minute": 55,
+    "mem": "536.2MiB / 15.46GiB|0.87%",
+    "state": "running",
+    "walker_steps": 10030,
+    "miner_digs": 1559,
+    "miner_smelts": 0,
+    "fighter_kills": 762,
+    "fighter_swings": 763
+   },
+   {
+    "minute": 56,
+    "mem": "539.2MiB / 15.46GiB|0.99%",
+    "state": "running",
+    "walker_steps": 10229,
+    "miner_digs": 1590,
+    "miner_smelts": 0,
+    "fighter_kills": 778,
+    "fighter_swings": 779
+   },
+   {
+    "minute": 57,
+    "mem": "541MiB / 15.46GiB|0.80%",
+    "state": "running",
+    "walker_steps": 10429,
+    "miner_digs": 1621,
+    "miner_smelts": 0,
+    "fighter_kills": 796,
+    "fighter_swings": 797
+   },
+   {
+    "minute": 58,
+    "mem": "541MiB / 15.46GiB|0.74%",
+    "state": "running",
+    "walker_steps": 10626,
+    "miner_digs": 1651,
+    "miner_smelts": 0,
+    "fighter_kills": 810,
+    "fighter_swings": 811
+   },
+   {
+    "minute": 59,
+    "mem": "539.8MiB / 15.46GiB|0.74%",
+    "state": "running",
+    "walker_steps": 10826,
+    "miner_digs": 1682,
+    "miner_smelts": 0,
+    "fighter_kills": 825,
+    "fighter_swings": 827
+   },
+   {
+    "minute": 60,
+    "mem": "546.5MiB / 15.46GiB|0.85%",
+    "state": "running",
+    "walker_steps": 11027,
+    "miner_digs": 1713,
+    "miner_smelts": 0,
+    "fighter_kills": 841,
+    "fighter_swings": 842
+   },
+   {
+    "minute": 61,
+    "mem": "545.8MiB / 15.46GiB|0.80%",
+    "state": "running",
+    "walker_steps": 11224,
+    "miner_digs": 1744,
+    "miner_smelts": 0,
+    "fighter_kills": 853,
+    "fighter_swings": 855
+   },
+   {
+    "minute": 62,
+    "mem": "545.3MiB / 15.46GiB|0.77%",
+    "state": "running",
+    "walker_steps": 11423,
+    "miner_digs": 1774,
+    "miner_smelts": 0,
+    "fighter_kills": 869,
+    "fighter_swings": 870
+   },
+   {
+    "minute": 63,
+    "mem": "546.8MiB / 15.46GiB|0.93%",
+    "state": "running",
+    "walker_steps": 11623,
+    "miner_digs": 1805,
+    "miner_smelts": 0,
+    "fighter_kills": 885,
+    "fighter_swings": 887
+   },
+   {
+    "minute": 64,
+    "mem": "546.6MiB / 15.46GiB|0.80%",
+    "state": "running",
+    "walker_steps": 11821,
+    "miner_digs": 1836,
+    "miner_smelts": 0,
+    "fighter_kills": 899,
+    "fighter_swings": 900
+   },
+   {
+    "minute": 65,
+    "mem": "548.8MiB / 15.46GiB|0.91%",
+    "state": "running",
+    "walker_steps": 12018,
+    "miner_digs": 1866,
+    "miner_smelts": 0,
+    "fighter_kills": 916,
+    "fighter_swings": 918
+   },
+   {
+    "minute": 66,
+    "mem": "548.5MiB / 15.46GiB|0.79%",
+    "state": "running",
+    "walker_steps": 12218,
+    "miner_digs": 1897,
+    "miner_smelts": 0,
+    "fighter_kills": 932,
+    "fighter_swings": 934
+   },
+   {
+    "minute": 67,
+    "mem": "548.5MiB / 15.46GiB|0.79%",
+    "state": "running",
+    "walker_steps": 12418,
+    "miner_digs": 1928,
+    "miner_smelts": 0,
+    "fighter_kills": 949,
+    "fighter_swings": 950
+   },
+   {
+    "minute": 68,
+    "mem": "548.7MiB / 15.46GiB|0.89%",
+    "state": "running",
+    "walker_steps": 12618,
+    "miner_digs": 1959,
+    "miner_smelts": 0,
+    "fighter_kills": 955,
+    "fighter_swings": 957
+   },
+   {
+    "minute": 69,
+    "mem": "549.7MiB / 15.46GiB|0.82%",
+    "state": "running",
+    "walker_steps": 12818,
+    "miner_digs": 1990,
+    "miner_smelts": 0,
+    "fighter_kills": 968,
+    "fighter_swings": 971
+   },
+   {
+    "minute": 70,
+    "mem": "553.1MiB / 15.46GiB|0.76%",
+    "state": "running",
+    "walker_steps": 13016,
+    "miner_digs": 2020,
+    "miner_smelts": 0,
+    "fighter_kills": 982,
+    "fighter_swings": 985
+   },
+   {
+    "minute": 71,
+    "mem": "552.6MiB / 15.46GiB|0.92%",
+    "state": "running",
+    "walker_steps": 13213,
+    "miner_digs": 2051,
+    "miner_smelts": 0,
+    "fighter_kills": 997,
+    "fighter_swings": 999
+   },
+   {
+    "minute": 72,
+    "mem": "551.8MiB / 15.46GiB|0.78%",
+    "state": "running",
+    "walker_steps": 13413,
+    "miner_digs": 2081,
+    "miner_smelts": 0,
+    "fighter_kills": 1013,
+    "fighter_swings": 1015
+   },
+   {
+    "minute": 73,
+    "mem": "553.3MiB / 15.46GiB|0.94%",
+    "state": "running",
+    "walker_steps": 13612,
+    "miner_digs": 2112,
+    "miner_smelts": 0,
+    "fighter_kills": 1028,
+    "fighter_swings": 1030
+   },
+   {
+    "minute": 74,
+    "mem": "554.4MiB / 15.46GiB|0.78%",
+    "state": "running",
+    "walker_steps": 13815,
+    "miner_digs": 2143,
+    "miner_smelts": 0,
+    "fighter_kills": 1042,
+    "fighter_swings": 1044
+   },
+   {
+    "minute": 75,
+    "mem": "558.8MiB / 15.46GiB|0.88%",
+    "state": "running",
+    "walker_steps": 14013,
+    "miner_digs": 2174,
+    "miner_smelts": 0,
+    "fighter_kills": 1056,
+    "fighter_swings": 1058
+   },
+   {
+    "minute": 76,
+    "mem": "559.1MiB / 15.46GiB|1.08%",
+    "state": "running",
+    "walker_steps": 14210,
+    "miner_digs": 2205,
+    "miner_smelts": 0,
+    "fighter_kills": 1071,
+    "fighter_swings": 1073
+   },
+   {
+    "minute": 77,
+    "mem": "559.1MiB / 15.46GiB|0.80%",
+    "state": "running",
+    "walker_steps": 14413,
+    "miner_digs": 2236,
+    "miner_smelts": 0,
+    "fighter_kills": 1086,
+    "fighter_swings": 1088
+   },
+   {
+    "minute": 78,
+    "mem": "559.1MiB / 15.46GiB|0.96%",
+    "state": "running",
+    "walker_steps": 14613,
+    "miner_digs": 2267,
+    "miner_smelts": 0,
+    "fighter_kills": 1102,
+    "fighter_swings": 1105
+   },
+   {
+    "minute": 79,
+    "mem": "559.8MiB / 15.46GiB|0.82%",
+    "state": "running",
+    "walker_steps": 14812,
+    "miner_digs": 2297,
+    "miner_smelts": 0,
+    "fighter_kills": 1116,
+    "fighter_swings": 1119
+   },
+   {
+    "minute": 80,
+    "mem": "564.1MiB / 15.46GiB|0.80%",
+    "state": "running",
+    "walker_steps": 15012,
+    "miner_digs": 2328,
+    "miner_smelts": 0,
+    "fighter_kills": 1132,
+    "fighter_swings": 1134
+   },
+   {
+    "minute": 81,
+    "mem": "561.4MiB / 15.46GiB|0.80%",
+    "state": "running",
+    "walker_steps": 15210,
+    "miner_digs": 2359,
+    "miner_smelts": 0,
+    "fighter_kills": 1149,
+    "fighter_swings": 1152
+   },
+   {
+    "minute": 82,
+    "mem": "561.7MiB / 15.46GiB|0.87%",
+    "state": "running",
+    "walker_steps": 15407,
+    "miner_digs": 2389,
+    "miner_smelts": 0,
+    "fighter_kills": 1164,
+    "fighter_swings": 1166
+   },
+   {
+    "minute": 83,
+    "mem": "562.9MiB / 15.46GiB|0.90%",
+    "state": "running",
+    "walker_steps": 15607,
+    "miner_digs": 2420,
+    "miner_smelts": 0,
+    "fighter_kills": 1177,
+    "fighter_swings": 1180
+   },
+   {
+    "minute": 84,
+    "mem": "561.2MiB / 15.46GiB|0.93%",
+    "state": "running",
+    "walker_steps": 15807,
+    "miner_digs": 2451,
+    "miner_smelts": 0,
+    "fighter_kills": 1194,
+    "fighter_swings": 1196
+   },
+   {
+    "minute": 85,
+    "mem": "565.6MiB / 15.46GiB|0.90%",
+    "state": "running",
+    "walker_steps": 16006,
+    "miner_digs": 2482,
+    "miner_smelts": 0,
+    "fighter_kills": 1207,
+    "fighter_swings": 1210
+   },
+   {
+    "minute": 86,
+    "mem": "566.1MiB / 15.46GiB|0.98%",
+    "state": "running",
+    "walker_steps": 16206,
+    "miner_digs": 2513,
+    "miner_smelts": 0,
+    "fighter_kills": 1223,
+    "fighter_swings": 1225
+   },
+   {
+    "minute": 87,
+    "mem": "568.7MiB / 15.46GiB|0.81%",
+    "state": "running",
+    "walker_steps": 16404,
+    "miner_digs": 2543,
+    "miner_smelts": 0,
+    "fighter_kills": 1237,
+    "fighter_swings": 1239
+   },
+   {
+    "minute": 88,
+    "mem": "567.5MiB / 15.46GiB|0.82%",
+    "state": "running",
+    "walker_steps": 16601,
+    "miner_digs": 2574,
+    "miner_smelts": 0,
+    "fighter_kills": 1253,
+    "fighter_swings": 1255
+   },
+   {
+    "minute": 90,
+    "mem": "568.4MiB / 15.46GiB|0.86%",
+    "state": "running",
+    "walker_steps": 16804,
+    "miner_digs": 2605,
+    "miner_smelts": 0,
+    "fighter_kills": 1269,
+    "fighter_swings": 1271
+   },
+   {
+    "minute": 91,
+    "mem": "570.3MiB / 15.46GiB|0.96%",
+    "state": "running",
+    "walker_steps": 17001,
+    "miner_digs": 2635,
+    "miner_smelts": 0,
+    "fighter_kills": 1282,
+    "fighter_swings": 1284
+   },
+   {
+    "minute": 92,
+    "mem": "571.3MiB / 15.46GiB|0.85%",
+    "state": "running",
+    "walker_steps": 17200,
+    "miner_digs": 2666,
+    "miner_smelts": 0,
+    "fighter_kills": 1294,
+    "fighter_swings": 1297
+   },
+   {
+    "minute": 93,
+    "mem": "572.7MiB / 15.46GiB|0.83%",
+    "state": "running",
+    "walker_steps": 17400,
+    "miner_digs": 2697,
+    "miner_smelts": 0,
+    "fighter_kills": 1307,
+    "fighter_swings": 1309
+   },
+   {
+    "minute": 94,
+    "mem": "570.2MiB / 15.46GiB|0.87%",
+    "state": "running",
+    "walker_steps": 17601,
+    "miner_digs": 2728,
+    "miner_smelts": 0,
+    "fighter_kills": 1320,
+    "fighter_swings": 1322
+   },
+   {
+    "minute": 95,
+    "mem": "574.6MiB / 15.46GiB|0.84%",
+    "state": "running",
+    "walker_steps": 17801,
+    "miner_digs": 2759,
+    "miner_smelts": 0,
+    "fighter_kills": 1335,
+    "fighter_swings": 1338
+   },
+   {
+    "minute": 96,
+    "mem": "573.1MiB / 15.46GiB|0.93%",
+    "state": "running",
+    "walker_steps": 18001,
+    "miner_digs": 2790,
+    "miner_smelts": 0,
+    "fighter_kills": 1348,
+    "fighter_swings": 1351
+   },
+   {
+    "minute": 97,
+    "mem": "574MiB / 15.46GiB|0.83%",
+    "state": "running",
+    "walker_steps": 18201,
+    "miner_digs": 2820,
+    "miner_smelts": 0,
+    "fighter_kills": 1362,
+    "fighter_swings": 1364
+   },
+   {
+    "minute": 98,
+    "mem": "576.4MiB / 15.46GiB|1.11%",
+    "state": "running",
+    "walker_steps": 18401,
+    "miner_digs": 2851,
+    "miner_smelts": 0,
+    "fighter_kills": 1375,
+    "fighter_swings": 1377
+   },
+   {
+    "minute": 99,
+    "mem": "577.6MiB / 15.46GiB|1.66%",
+    "state": "running",
+    "walker_steps": 18601,
+    "miner_digs": 2882,
+    "miner_smelts": 0,
+    "fighter_kills": 1392,
+    "fighter_swings": 1394
+   },
+   {
+    "minute": 100,
+    "mem": "582.4MiB / 15.46GiB|1.05%",
+    "state": "running",
+    "walker_steps": 18802,
+    "miner_digs": 2913,
+    "miner_smelts": 0,
+    "fighter_kills": 1408,
+    "fighter_swings": 1410
+   },
+   {
+    "minute": 101,
+    "mem": "580.2MiB / 15.46GiB|0.95%",
+    "state": "running",
+    "walker_steps": 19002,
+    "miner_digs": 2944,
+    "miner_smelts": 0,
+    "fighter_kills": 1424,
+    "fighter_swings": 1426
+   },
+   {
+    "minute": 102,
+    "mem": "582MiB / 15.46GiB|0.96%",
+    "state": "running",
+    "walker_steps": 19202,
+    "miner_digs": 2975,
+    "miner_smelts": 0,
+    "fighter_kills": 1441,
+    "fighter_swings": 1443
+   },
+   {
+    "minute": 103,
+    "mem": "581.7MiB / 15.46GiB|1.07%",
+    "state": "running",
+    "walker_steps": 19402,
+    "miner_digs": 3006,
+    "miner_smelts": 0,
+    "fighter_kills": 1457,
+    "fighter_swings": 1459
+   },
+   {
+    "minute": 104,
+    "mem": "581.9MiB / 15.46GiB|0.85%",
+    "state": "running",
+    "walker_steps": 19601,
+    "miner_digs": 3036,
+    "miner_smelts": 0,
+    "fighter_kills": 1472,
+    "fighter_swings": 1474
+   },
+   {
+    "minute": 105,
+    "mem": "584.2MiB / 15.46GiB|0.87%",
+    "state": "running",
+    "walker_steps": 19799,
+    "miner_digs": 3067,
+    "miner_smelts": 0,
+    "fighter_kills": 1487,
+    "fighter_swings": 1490
+   },
+   {
+    "minute": 106,
+    "mem": "584.5MiB / 15.46GiB|0.90%",
+    "state": "running",
+    "walker_steps": 19997,
+    "miner_digs": 3097,
+    "miner_smelts": 0,
+    "fighter_kills": 1503,
+    "fighter_swings": 1505
+   },
+   {
+    "minute": 107,
+    "mem": "584.2MiB / 15.46GiB|1.11%",
+    "state": "running",
+    "walker_steps": 20198,
+    "miner_digs": 3128,
+    "miner_smelts": 0,
+    "fighter_kills": 1515,
+    "fighter_swings": 1517
+   },
+   {
+    "minute": 108,
+    "mem": "584.8MiB / 15.46GiB|0.81%",
+    "state": "running",
+    "walker_steps": 20400,
+    "miner_digs": 3160,
+    "miner_smelts": 0,
+    "fighter_kills": 1528,
+    "fighter_swings": 1530
+   },
+   {
+    "minute": 109,
+    "mem": "585.7MiB / 15.46GiB|0.78%",
+    "state": "running",
+    "walker_steps": 20598,
+    "miner_digs": 3190,
+    "miner_smelts": 0,
+    "fighter_kills": 1542,
+    "fighter_swings": 1545
+   },
+   {
+    "minute": 110,
+    "mem": "588.2MiB / 15.46GiB|0.88%",
+    "state": "running",
+    "walker_steps": 20795,
+    "miner_digs": 3221,
+    "miner_smelts": 0,
+    "fighter_kills": 1556,
+    "fighter_swings": 1558
+   },
+   {
+    "minute": 111,
+    "mem": "587.8MiB / 15.46GiB|0.88%",
+    "state": "running",
+    "walker_steps": 20993,
+    "miner_digs": 3251,
+    "miner_smelts": 0,
+    "fighter_kills": 1570,
+    "fighter_swings": 1573
+   },
+   {
+    "minute": 112,
+    "mem": "587.8MiB / 15.46GiB|0.95%",
+    "state": "running",
+    "walker_steps": 21191,
+    "miner_digs": 3282,
+    "miner_smelts": 0,
+    "fighter_kills": 1587,
+    "fighter_swings": 1589
+   },
+   {
+    "minute": 113,
+    "mem": "587.3MiB / 15.46GiB|0.94%",
+    "state": "running",
+    "walker_steps": 21391,
+    "miner_digs": 3313,
+    "miner_smelts": 0,
+    "fighter_kills": 1601,
+    "fighter_swings": 1603
+   },
+   {
+    "minute": 114,
+    "mem": "587.1MiB / 15.46GiB|0.84%",
+    "state": "running",
+    "walker_steps": 21591,
+    "miner_digs": 3343,
+    "miner_smelts": 0,
+    "fighter_kills": 1613,
+    "fighter_swings": 1616
+   },
+   {
+    "minute": 115,
+    "mem": "590.8MiB / 15.46GiB|0.91%",
+    "state": "running",
+    "walker_steps": 21791,
+    "miner_digs": 3374,
+    "miner_smelts": 0,
+    "fighter_kills": 1627,
+    "fighter_swings": 1630
+   },
+   {
+    "minute": 116,
+    "mem": "591.8MiB / 15.46GiB|0.97%",
+    "state": "running",
+    "walker_steps": 21988,
+    "miner_digs": 3405,
+    "miner_smelts": 0,
+    "fighter_kills": 1641,
+    "fighter_swings": 1643
+   },
+   {
+    "minute": 117,
+    "mem": "591.1MiB / 15.46GiB|0.83%",
+    "state": "running",
+    "walker_steps": 22185,
+    "miner_digs": 3435,
+    "miner_smelts": 0,
+    "fighter_kills": 1656,
+    "fighter_swings": 1658
+   },
+   {
+    "minute": 118,
+    "mem": "592MiB / 15.46GiB|0.83%",
+    "state": "running",
+    "walker_steps": 22385,
+    "miner_digs": 3466,
+    "miner_smelts": 0,
+    "fighter_kills": 1670,
+    "fighter_swings": 1673
+   },
+   {
+    "minute": 119,
+    "mem": "591.8MiB / 15.46GiB|1.00%",
+    "state": "running",
+    "walker_steps": 22599,
+    "miner_digs": 3499,
+    "miner_smelts": 0,
+    "fighter_kills": 1686,
+    "fighter_swings": 1688
+   },
+   {
+    "minute": 121,
+    "mem": "594.9MiB / 15.46GiB|0.73%",
+    "state": "running",
+    "walker_steps": 22699,
+    "miner_digs": 3514,
+    "miner_smelts": 0,
+    "fighter_kills": 1695,
+    "fighter_swings": 1697
+   }
+  ],
+  "events": {
+   "walker_steps": 22699,
+   "miner_digs": 3514,
+   "miner_smelts": 0,
+   "fighter_kills": 1695,
+   "fighter_swings": 1697
+  },
+  "errors": [],
+  "loud": [],
+  "loudCount": 0,
+  "memStartMB": 488.4,
+  "memEndMB": 594.9,
+  "memMaxMB": 594.9
+ },
+ "firstLogins": [
+  "slbot-player2",
+  "slbot-player3",
+  "slbot-player4"
+ ]
+}
