@@ -84,3 +84,38 @@ an instance of the named types? Reads every `SerializedTypes.db` under the live 
 ```console
 python tools/save_instance_check.py SpiritualityHelm ValorGauntlets
 ```
+
+## The status dashboard: `progress.py`, `render_dashboard.py`, `judge.py` (cc-P85)
+
+`dashboard.html` ("Shard status") and the progress block in `README.md` are rebuilt by `python tools/progress.py`.
+`D:\UO\Commit-ShardWork.ps1` runs it before every commit, so the counts are never older than the last commit.
+On the home network the page is at `http://192.168.1.58:8093/status` (served by `sl-play-tests`, docker/test-queue).
+
+What a person keeps and what the script derives:
+
+| Kept by hand in `progress-state.json`, each with a `confirmed` date | Derived by `progress.py` on every run |
+|---|---|
+| shard status line, direction note, playable gates (with sources), tasks, setup defects, the static sections' as-of dates | file and test counts, content and expansion coverage, the CC prompt queue (queued, running, done, stopped), play-test counts, VERSION, the latest DONE prompt, "Judgment reviewed" (the newest `confirmed` date) |
+
+The page header shows "Last updated" (when the counts ran) and "Judgment reviewed". The review date turns amber
+when it is more than 7 days old (`STALE_DAYS` in progress.py). A section whose own date differs from the header's
+says "As of <date>".
+
+### Updating one item (the overseer)
+
+Re-read the item's sources, then one line:
+
+```console
+python tools/judge.py list                                        # everything, with its date
+python tools/judge.py gate "Things to fight" --done no --detail "..." --source "notes/cc-P90-....md"
+python tools/judge.py confirm gate "Things to fight"              # still true: only the date moves
+python tools/judge.py task DEPLOY --status done --note "deployed 2026-10-14"
+python tools/judge.py add-task F-44 --title "..." --note "..."
+python tools/judge.py retire-task C3
+python tools/judge.py status "the test shard ..."
+python tools/judge.py confirm all                                 # after a full review
+python tools/progress.py                                          # redraw the page (or just commit)
+```
+
+A gate is named exactly or by a unique start. Every write stamps today's date, so "Judgment reviewed" moves only when
+someone actually confirmed something. Tests: `python -m unittest tools/tests/test_status_dashboard.py`.

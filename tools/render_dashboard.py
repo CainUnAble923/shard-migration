@@ -59,13 +59,15 @@ def playable_html(pg):
     rows = "".join(
         f'<tr><td><span class="pill {"p-ok" if x.get("done") else "p-todo"}">'
         f'{"yes" if x.get("done") else "no"}</span></td><td>{esc(x["name"])}</td>'
-        f'<td class="foot">{esc(x.get("detail",""))}</td></tr>' for x in gates)
+        f'<td class="foot">{esc(x.get("detail",""))}'
+        f'{(" <span class=src>Sources: " + esc("; ".join(x.get("sources", []))) + ".</span>") if x.get("sources") else ""}'
+        f'</td><td class="n foot">{esc(x.get("confirmed",""))}</td></tr>' for x in gates)
     return (f'<div class="card"><div class="hero"><span class="big">{met} / {len(gates)}</span>'
             f'<span class="cap"><strong>Playable? {verdict}</strong> "Playable" is a judgement, so '
             f'it is written down as gates rather than felt. Each is something a player would hit.'
             f'</span></div><span class="track"><span class="fill" style="width:{pct:.0f}%"></span>'
             f'</span></div><div class="scroller"><table><thead><tr><th class="n">Met</th>'
-            f'<th>Gate</th><th>Where it stands</th></tr></thead><tbody>{rows}</tbody></table></div>')
+            f'<th>Gate</th><th>Where it stands</th><th class="n">Confirmed</th></tr></thead><tbody>{rows}</tbody></table></div>')
 
 def foundation_html(pg):
     d = pg["setup_defects"]; done = pg["setup_done"]; tot = pg["setup_total"]
@@ -160,17 +162,102 @@ def tasks_html(pg):
     rows = "".join(
         f'<tr><td class="n">{esc(t["id"])}</td><td>{esc(t["title"])}</td>'
         f'<td><span class="pill {cls[t["status"]]}">{lab[t["status"]]}</span></td>'
-        f'<td class="foot">{esc(t.get("note",""))}</td></tr>' for t in tk)
+        f'<td class="foot">{esc(t.get("note",""))}</td><td class="n foot">{esc(t.get("confirmed",""))}</td></tr>' for t in tk)
     pct = 100*nd/len(tk)
     return (f'<div class="card"><div class="hero"><span class="big">{nd} / {len(tk)}</span>'
-            '<span class="cap"><strong>Tasks done.</strong> Foundation and the port pipeline. '
-            'The content backlog below it is open-ended.</span></div>'
+            '<span class="cap"><strong>Tasks done.</strong> The open work the overseer tracks by hand; '
+            'the prompt queue below is read from disk.</span></div>'
             f'<span class="track"><span class="fill" style="width:{pct:.0f}%"></span></span></div>'
-            f'<p><strong>{nd} of {len(tk)} tasks done.</strong> Detail and acceptance criteria '
-            f'in <code>docs/tasks.md</code>; status in <code>tools/progress-state.json</code>.</p>'
+            f'<p><strong>{nd} of {len(tk)} tasks done.</strong> Status in <code>tools/progress-state.json</code>; '
+            f'<code>python tools/judge.py</code> updates one row and stamps its date.</p>'
             '<div class="scroller"><table><thead><tr><th class="n">ID</th><th>Task</th>'
-            '<th>Status</th><th>Notes</th></tr></thead><tbody>'
+            '<th>Status</th><th>Notes</th><th class="n">Confirmed</th></tr></thead><tbody>'
             f'{rows}</tbody></table></div>')
+
+# --- cc-P85: freshness, the direction note, the queue and the play tests ------------------------------------------
+
+LAN_HOST = "192.168.1.58"   # the Windows box (docker/test-queue/docker-compose.yml); used only when opened as a file
+
+def today_str():
+    return datetime.now().astimezone().strftime("%Y-%m-%d")
+
+def days_old(date_str, now=None):
+    """Whole days from a YYYY-MM-DD date to now (local); None for a missing or bad date."""
+    try:
+        d = datetime.strptime(date_str, "%Y-%m-%d").date()
+    except (TypeError, ValueError):
+        return None
+    return ((now or datetime.now()).date() - d).days
+
+def asof_html(date_str, header_date):
+    """A section's own as-of line, only when it differs from the header's date."""
+    if not date_str or date_str == header_date:
+        return ""
+    old = days_old(date_str)
+    age = f" ({old} days ago)" if old and old > 0 else ""
+    return f'<span class="eyebrow asof">As of {esc(date_str)}{age}</span>'
+
+def reviewed_html(pg):
+    dv = pg.get("derived") or {}
+    rev = dv.get("reviewed") or ""
+    stale_days = dv.get("stale_days") or 7
+    old = days_old(rev)
+    stale = old is None or old > stale_days
+    cls = "reviewed stale" if stale else "reviewed"
+    tip = (f"The hand-written judgment (gates, tasks, status) was last confirmed {rev}. It turns amber after "
+           f"{stale_days} days; tools/README.md says how to update it.")
+    return (f'<span class="{cls}" data-reviewed="{esc(rev)}" data-stale-days="{stale_days}" title="{esc(tip)}">'
+            f'Judgment reviewed {esc(rev or "never")}</span>')
+
+def version_html(pg):
+    v = (pg.get("derived") or {}).get("version")
+    return f'<span>Version {esc(v)}</span>' if v else ""
+
+def direction_html(pg):
+    d = pg.get("direction")
+    if not d:
+        return ""
+    body = "".join(f"<p>{x}</p>" for x in d.get("body", []))   # the state file holds trusted, hand-written HTML here
+    return (f'<div class="note"><span class="eyebrow">{esc(d.get("eyebrow", "Direction"))}'
+            f' &middot; confirmed {esc(d.get("confirmed", "?"))}</span>'
+            f'<h3>{esc(d.get("title", ""))}</h3>{body}</div>')
+
+def queue_html(pg):
+    q = (pg.get("derived") or {}).get("queue")
+    if not q:
+        return "<p class='foot'>No queue data.</p>"
+    cls = {"running": "p-next", "queued": "p-todo", "done": "p-ok", "stopped": "p-no"}
+    rows = ([q["running"]] if q.get("running") else []) + q.get("queued", []) + q.get("finished", [])
+    trs = "".join(
+        f'<tr><td class="n">P{r["n"]}</td><td>{esc(r["slug"].replace("-", " "))}</td>'
+        f'<td><span class="pill {cls.get(r["state"], "p-todo")}">{esc(r["state"])}</span></td>'
+        f'<td class="foot">{esc(r.get("since") or r.get("date") or "")}'
+        f'{(" &middot; " + esc(r["why"])) if r.get("why") else ""}</td></tr>' for r in rows)
+    run = q.get("running")
+    lead = (f'P{run["n"]} running' if run else "nothing running") + f', {len(q.get("queued", []))} queued'
+    ld = q.get("latest_done")
+    return (f'<div class="card"><div class="hero"><span class="big">{esc(lead)}</span>'
+            f'<span class="cap"><strong>Autopilot {esc(q.get("autopilot"))}.</strong> {q.get("finished_total", 0)} '
+            f'prompts finished, {q.get("stopped_total", 0)} stopped early'
+            + (f'; latest done P{ld["n"]}.' if ld else '.') +
+            ' Read from <code>D:\\UO\\cc-prompts\\queue</code>, the autopilot\'s <code>state.json</code> and each '
+            'prompt\'s notes, every run.</span></div></div>'
+            '<div class="scroller"><table><thead><tr><th class="n">Prompt</th><th>Task</th><th>State</th>'
+            f'<th>When</th></tr></thead><tbody>{trs}</tbody></table></div>'
+            '<p class="foot">The ten most recently numbered finished prompts are shown.</p>')
+
+def playtests_html(pg):
+    pt = (pg.get("derived") or {}).get("playtests")
+    if not pt:
+        return "<p class='foot'>No play-test data (testing/play-tests.json).</p>"
+    unlogged = pt.get("unloggedFails") or 0
+    return (f'<div class="card"><div class="hero"><span class="big">{pt.get("open", 0)} open</span>'
+            f'<span class="cap"><strong>{pt.get("failed", 0)} failed, {pt.get("passed", 0)} passed</strong>, '
+            f'{pt.get("later", 0)} later, {pt.get("blocked", 0)} blocked, {pt.get("total", 0)} in all.'
+            + (f' <strong>{unlogged} failure(s) not yet in the bug list.</strong>' if unlogged else '') +
+            '</span></div></div>'
+            '<p class="foot">From <code>testing/play-tests.json</code> (the play-test page writes it). '
+            '<a class="lan" data-port="8093" data-path="/" href="http://' + LAN_HOST + ':8093/">Open the play-test page</a>.</p>')
 
 def replace(txt, tag, body):
     s, e = f"<!-- DATA:{tag} -->", f"<!-- /DATA:{tag} -->"
@@ -178,13 +265,42 @@ def replace(txt, tag, body):
     return re.sub(re.escape(s) + r".*?" + re.escape(e),
                   lambda _: s + "\n" + body + "\n" + e, txt, flags=re.S), True
 
+def replace_inline(txt, tag, body):
+    """As replace(), with no line breaks around the body (for markers inside a line)."""
+    s, e = f"<!-- DATA:{tag} -->", f"<!-- /DATA:{tag} -->"
+    if s not in txt or e not in txt: return txt, False
+    return re.sub(re.escape(s) + r".*?" + re.escape(e), lambda _: s + body + e, txt, flags=re.S), True
+
 def main():
     if not DASH.exists():
         print(f"  dashboard.html not found at {DASH}", file=sys.stderr); return 1
     pg, ex = load("progress.json"), load("expansion-coverage.json")
     if not pg: print("  progress.json missing; run progress.py first", file=sys.stderr); return 1
     txt = DASH.read_text(encoding="utf-8"); hit = []
-    for tag, body in (("HEADLINE", headline_html(pg)),
+    gen = datetime.now().astimezone()
+    hdate = gen.strftime("%Y-%m-%d")
+    secs = pg.get("sections") or {}
+    gates = (pg.get("playable_gates") or {}).get("gates", [])
+    tdates = [t.get("confirmed", "") for t in (pg.get("tasks") or [])]
+    pt = (pg.get("derived") or {}).get("playtests") or {}
+    asof = {
+        "PLAYABLE": max([g.get("confirmed", "") for g in gates] or [""]),
+        "TASKS": max(tdates or [""]),
+        "FOUNDATION": secs.get("foundation", ""),
+        "PATCHES": (pg.get("upstream_patches") or {}).get("confirmed", ""),
+        "PLAYTESTS": str(pt.get("generatedAt") or "")[:10],
+        "BACKLOG": secs.get("backlog", ""), "DEFERRED": secs.get("deferred", ""),
+        "CORRECTIONS": secs.get("corrections", ""), "PORTED": secs.get("ported", ""),
+    }
+    for tag, d in asof.items():
+        txt, _ = replace_inline(txt, "ASOF-" + tag, asof_html(d, hdate))
+    for tag, body in (("REVIEWED", reviewed_html(pg)), ("VERSION", version_html(pg))):
+        txt, ok = replace_inline(txt, tag, body)
+        if ok: hit.append(tag)
+    for tag, body in (("DIRECTION", direction_html(pg)),
+                      ("QUEUE", queue_html(pg)),
+                      ("PLAYTESTS", playtests_html(pg)),
+                      ("HEADLINE", headline_html(pg)),
                       ("PLAYABLE", playable_html(pg)),
                       ("FOUNDATION", foundation_html(pg)),
                       ("EXPANSION", expansion_html(ex)),
@@ -194,7 +310,7 @@ def main():
         txt, ok = replace(txt, tag, body)
         if ok: hit.append(tag)
     txt = re.sub(r"<!-- DATA:GENERATED -->.*?<!-- /DATA:GENERATED -->",
-                 lambda _: f"<!-- DATA:GENERATED -->{datetime.now().astimezone():%Y-%m-%d %H:%M}"
+                 lambda _: f"<!-- DATA:GENERATED -->{gen:%Y-%m-%d %H:%M}"
                            "<!-- /DATA:GENERATED -->", txt, flags=re.S)
     DASH.write_text(txt, encoding="utf-8", newline="\n")
     print(f"  dashboard.html updated ({', '.join(hit) if hit else 'no markers found'}).")

@@ -1,6 +1,15 @@
 {
-  "generated": "2026-10-13T03:27:29-05:00",
-  "direction": "stay on ModernUO; pull ServUO content selectively",
+  "generated": "2026-10-13T07:16:29-05:00",
+  "direction": {
+    "eyebrow": "Direction",
+    "title": "Our own shard on ModernUO, OSI where OSI has an answer",
+    "body": [
+      "The shard stays on ModernUO (upstream <code>d4531cd94</code> since 2026-10-02). The work moved from porting ServUO content to building Shattered Legacy's own systems: levels and loops, the 200 skill cap (only items go above it), the League, 18 guilds with a starter path, recipe-gated crafting, the imbuing rework, the Compact Mule, evo pets, loot boxes and the New Haven tutorial.",
+      "<strong>Fidelity principle:</strong> where OSI has an answer, match it, so the existing wikis document the shard. Every deliberate difference is recorded (<code>docs/fidelity-principle.md</code>, D-1 to D-122) and becomes the custom wiki's table of contents.",
+      "<strong>A fresh world is planned:</strong> the old live save does not load on today's code; the test shard carries play until the wipe."
+    ],
+    "confirmed": "2026-10-13"
+  },
   "setup_defects": {
     "CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered": true,
     "ResourceInfo extended wood enum members (8) recovered": true,
@@ -552,7 +561,8 @@
         "file": "Mining.cs",
         "risk": "silent"
       }
-    ]
+    ],
+    "confirmed": "2026-09-19"
   },
   "counted": {
     "customization_files": 864,
@@ -692,189 +702,358 @@
   ],
   "tasks": [
     {
-      "id": "F1",
-      "title": "Recover the three missing pieces so customizations compiles standalone",
-      "status": "done",
-      "note": "Verified by a clean Docker build during F3, now meaningful because a patch failure can no longer pass silently."
-    },
-    {
-      "id": "F2",
-      "title": "Make apply-patches.sh fail on a failed patch",
-      "status": "done",
-      "note": "Runner fails on a failed patch and mirrors customization subdirectories. Resolves Q-002."
-    },
-    {
-      "id": "F3",
-      "title": "Triage the seven failing patches",
-      "status": "done",
-      "note": "Eight broken, not seven. Five repaired, three removed as absorbed by our own full-file replacements. None obsolete due to ModernUO changing."
-    },
-    {
-      "id": "F4",
-      "title": "Delete stale server/customizations/migrations/",
-      "status": "done",
-      "note": "3 PetMimic JSONs diverging from the canonical v0-v8 set."
-    },
-    {
-      "id": "F5",
-      "title": "Make RegenRates routing explicit",
-      "status": "done",
-      "note": "Works by accident today: both land in Misc/ so ours overwrites."
-    },
-    {
-      "id": "P1",
-      "title": "Validate the port recipe with one real port",
-      "status": "done",
-      "note": "PlagueRat ported, built, spawned, saved and reloaded intact. Both draft fidelity traps were wrong (range perception was backwards; ServUO ignores its own speed args) and are corrected in notes/port-recipe.md. Three of the five F3 patches exercised at runtime: bandage-on-PetMimic and talisman durability both work; MAKE X works with no button overlap but its label uses an HTML colour where AddLabel wants a hue, so it renders invisible. See notes/cc1-p1-runtime-validation.md. Open: Q-008 (speed model), and new evidence on Q-007 (forcing SHA2 breaks new-account login on the live shard)."
-    },
-    {
-      "id": "P2",
-      "title": "Second port, timed, using only the recipe",
-      "status": "done",
-      "note": "GreaterPoisonElemental, ~20 min headless. Per-file work ~1:10, warm build cycle 0:44, so build cycles are NOT the dominant cost. A batch of 20 is about an hour. Bigger finding: of 462 Mobiles/Normal files only 275 (60%) are clean - 132 call Pet Training methods ModernUO lacks, 89 reference a missing type. CC6 batches draw from the clean 60%. See notes/cc2-timed-port.md."
-    },
-    {
-      "id": "C1",
-      "title": "Eodon core content",
-      "status": "done",
-      "note": "17 files ported, 12 declined - not the 'about 22' the docs claimed, wrong for the third time. Six dinosaurs, Raptor, RaptorClaw, RaptorTeeth, six TOL decorations. Declined with evidence: the eight Aloron pieces (armour set-bonus subsystem), the Valley of One quest line (8 files on ServUO's ML quest framework, a subsystem port), MoonstonePowerGenerator (Myrmidex content, matched on 'moonstone'). Time of Legends 53/157 to 59/157. Eleven deviations logged. See notes/cc3-eodon.md."
-    },
-    {
-      "id": "S1",
-      "title": "Armour set-bonus subsystem",
-      "status": "done",
-      "note": "Spike passed. SetItem.cs plus three targeted patches (44 added lines, 6 changed), no upstream logic copied, no upstream serialization version bumped. Aloron set and TigerPelt ported. My 187 unblock figure was wrong: the real number is 114. Bump checklist in notes/s1-armour-sets.md section 3."
-    },
-    {
-      "id": "S4",
-      "title": "Test route for ported subsystems",
-      "status": "done",
-      "note": "server/tests/<path> mirrors into Projects/UOContent.Tests/Tests/<path> through mirror_cs_tree(), the same F2 mechanism structured customizations use, with the same destination-must-not-already-exist guard. S1's tests are committed and green - four [Fact] methods, not the six docs/tasks.md claims (Q-019). No patch to an upstream project file was needed: UOContent.Tests.csproj has no <Compile Include> items and is already in ModernUO.slnx. Four negative proofs, all failing the build: a failing assertion, a test that does not compile, a wrong namespace, an upstream path collision. Three of the four fail docker build itself; a failing assertion fails docker/uo/build.sh, because every ModernUO fixture needs io_uring and docker build cannot relax seccomp (Q-018). build.sh is now the build command. See notes/s4-test-route.md."
-    },
-    {
-      "id": "S2",
-      "title": "Fountain of Fortune cluster",
-      "status": "done",
-      "note": "38 files, 2,292 lines, 1 patch, 5 tests. Closes Q-010: LuckyCoin.OnDoubleClick restored across all 12 coin droppers. My ~900-line estimate was wrong in both directions: the core is 465 lines, but GemologistsSatchel reads a 42-entry Imbuing table and 35 entries were missing. All 35 were dependency-free leaf items, so they were ported. First content task to use S4's test route."
-    },
-    {
-      "id": "S3",
-      "title": "Cost every remaining decline",
-      "status": "done",
-      "note": "Measurement only. Found the error under every count on this project: 3,134 of ServUO's 6,144 files are types ModernUO already declares. CC6's backlog is 137, not 360. Best ratio is SAAbsorptionAttributes; biggest surprise is that ModernUO already ships an ML quest engine with 205 of ServUO's 408 quests; strongest decline is Skill Masteries. See notes/s3-decline-costs.md."
-    },
-    {
-      "id": "S5",
-      "title": "Translate one ML quest onto ModernUO's engine",
-      "status": "done",
-      "note": "JourneyToTheAthenaeumIsleQuest translated onto ModernUO's ML quest engine end to end. 6 files, 1,063 ServUO lines in, 745 out, plus a 284-line test with 5 facts. Gated build green at 14 tests. THE MAPPING HOLDS for 4 of 5 objective types: Slay->Kill and Obtain->Collect are identical and are proven by test; Apprentice->GainSkill holds (upstream already made this exact translation in NewHavenSkillTraining.cs) but loses region-scoped acceleration and needs cap x10; Deliver->Deliver holds but the destination name moves to a [QuesterName] attribute and Quest.StartingItem has no counterpart (Q-025); Escort->Escort holds and its dropped fame/compassion parameters are unused across all 30 ServUO call sites. THE REAL FINDING is not the mapping: of the 203 missing quests, 164 use one standard objective type and translate mechanically, but 39 hand-write a BaseObjective subclass with no counterpart - 25 of them InternalObjective. QuestionAndAnswerObjective is 2 of those 39, not the tail. Also: it is the ONLY quest in all 408 that uses two standard objective types, and Valley of One is a poor first batch (3 of its 7 need a hand-written objective). Registration uses MLQuestSystem.Register rather than Data/MLQuests.cfg, which apply-patches.sh cannot carry; that API has zero upstream callers, so a test guards it. Found a gap in the S4 route: no BaseCreature can be constructed in a test without the npc-speeds.json table (Q-026). Answers Q-023. See notes/s5-quest-spike.md."
-    },
-    {
-      "id": "S6",
-      "title": "SAAbsorptionAttributes",
-      "status": "done",
-      "note": "SAAbsorptionAttributes built, gated build green at 20 tests, A5 CLOSED: EaterCold = 2 restored on all eight Aloron pieces and a completed set demonstrably eats cold damage. 1,031 lines against the ~1,120 budget: SAAbsorptionAttributes.cs 342, the damage-eater slice of SAPropEffects.cs 402 (of ServUO's 768 - the other eight PropertyEffect kinds are weapon properties for systems this shard lacks), 223 test, 25 patch, 31 BaseSetArmor delta, 8 Aloron lines. ONE UOContent patch and NO core patch, so cheaper on a bump than S1. S3's three dependency claims all verified in ServUO and two are stronger than stated: Enhancement's only absorption writer (EnhancementTimer) is never constructed anywhere in ServUO, and SkillMasterySpell's absorption switch has one arm, CastingFocus, which is not an eater - both terms are zero in ServUO too, not merely here. THE EATER DOES NOT REDUCE DAMAGE: it schedules a heal three seconds later for a share of the hit, and gap-register A5 plus s3-decline-costs section 6 both describe it wrong (Q-027). '57 unblocked' is a reference count: 8 finished, 5 carrier-ready, 31 need one of four small carrier classes, 13 were blocked by other subsystems all along (Q-028). The four carriers are deliberately NOT built - that is more than the shape the brief allowed, and it is S1 section 8's boundary exactly; build each with the content batch that needs it. Patch proved to fail when skipped. Needed no BaseCreature, so D1/Q-026 did not bite. See notes/s6-absorption.md."
-    },
-    {
-      "id": "S8",
-      "title": "Finish the test route",
-      "status": "done",
-      "note": "Both S4-route defects fixed in the route, not in consumers. (1) UOContentFixture-npc-speeds.patch adds the NPCSpeeds.Configure call the upstream test fixture omits, so any test constructs a stock or ported BaseCreature with no scaffolding - Q-026, whose STATED CAUSE was wrong: the data file was always in the test output directory, nothing ever called Configure (Q-031). (2) server/tests/Route/ShardTestClock.cs is the one correct way to advance time; Timer.Slice turns the wheel without moving Core.Now, which made S6's first eater test measure regeneration - Q-029. apply-patches.sh now fails the build for a test that drives the wheel or registers speeds by hand, and S5's and S6's workarounds are deleted rather than relocated. Five negative proofs run and reverted. 27 tests green through build.sh; Server.dll, ModernUO.dll and UOContent.dll are byte-identical to the S6 image, so the shipped server is provably unchanged."
-    },
-    {
-      "id": "S9",
-      "title": "Re-measure the remaining content backlog",
-      "status": "done",
-      "note": "Measurement only; nothing ported. Three of the four rows were NOT raw counts - they were already weak-filtered by docs/content-menu.md against ModernUO's 3,565 UOContent names, not S3's 7,093 tree-wide types. Re-filtered: Revamped Dungeons 255 raw -> 255 candidates (0 duplicates, the only such row); artifacts+equipment 1,022 raw -> 455 (567 duplicates, NOT 466); decoration/housing 745 raw -> 303 (442 duplicates, NOT 297); High Seas cheap half 78 -> 77, the one figure that was right. Resolved: artifacts is 88% free (320 drop straight in), and FlipableAttribute is ModernUO's FlippableAttribute with one extra letter - 86 files of false blocking, a third SetWeaponAbility. IsArtifact looked like 280+153 blocked and is worth zero: pinned ModernUO has no consumer of it. CC4's 138 ReforgedSuffix hits are 136 one-line cosmetic assignments; the naming carrier is ~100 lines + 4 serialization patches and frees 110, or 141 with the gargoyle wearables cluster. CC7's DirectionType + AddonOptionGump is ~71 lines, no patch, frees 34. S1/S5/S6 made only 10 files newly free here - their value was already banked. A transitive-closure method was built, produced clean numbers, and was discarded as artefact: one artifact breastplate reaches 758 files and every subsystem. See notes/s9-backlog-remeasure.md."
-    },
-    {
-      "id": "S7",
-      "title": "Services/PointsSystems",
+      "id": "DEPLOY",
+      "title": "Deploy P65-P84 to the test shard and check them in a client",
       "status": "todo",
-      "note": "12 files, 2,857 lines, unblocks 55. Hard dependency of both Vice vs Virtue and City Loyalty. Costed and available, not scheduled."
+      "note": "The deployed image is 2026.10.10 (8863156884f8); VERSION is 2026.10.13.6. Console: Test shard > Deploy built image, then the play-test page.",
+      "confirmed": "2026-10-13"
     },
     {
-      "id": "S10",
-      "title": "The carrier family",
-      "status": "done",
-      "note": "Five carriers built and gated: BaseSetWeapon, BaseSetJewel, BaseSetClothing, BaseSetQuiver, BaseSetShield, each BaseSetArmor transcribed against its own ModernUO base, 1,426 lines against the ~1,000 estimate (the shield is a full BaseSetArmor copy because a ModernUO shield is a BaseArmor but not a BaseSetArmor, and ServUO's clothing carries the whole armour resist arithmetic). ZERO PATCHES, ZERO MIGRATIONS: server/patches is 15 files before and after, server/migrations 9, no upstream serialization version moves. SetHelper, the AOS aggregation patch and the resistance hook were already kind-agnostic and none changed. 15 new tests (3 per carrier, test-local set pieces because the real ones are CC9 batch 4's), 42 green through build.sh; all five gates watched fail in one run (5 failed/37 passed, each at its own carrier's LastEquipped assertion with the S1 partner piece still passing beside it). Gargish decision: YES, the four ported armour-class bases (GargishEarrings, GargishNecklace+2, GargishPlateChest/Legs) now derive from BaseSetArmor, applied in this commit because inserting an ancestor changes the save chain and is not expressible as a migration; no instance exists in any save (latest image predates batch 1, live container stopped since June). Deviations: SetSelfRepair is INERT on weapon/clothing/shield (no SelfRepair hook in ModernUO's BaseWeapon/BaseClothing/BaseShield.OnHit; three S1-shaped patches would close it, raised as Q-038, tooltip line suppressed per S1 D-2); Bestial berserk line omitted as on BaseSetArmor; tooltip ordering cosmetic. NegativeAttributes: absent from pinned ModernUO, carriers provide nothing, nothing added. Q-039 asks whether the gargish rule extends to LargeStoneShield and the three ported gargish weapons. See notes/s10-carriers.md."
+      "id": "F-12",
+      "title": "Levels and loops",
+      "status": "todo",
+      "note": "Research done (P54, P72) and decisions in notes/f12-decisions-2026-10-05.md; nothing built beyond the CompleteLoop hook.",
+      "confirmed": "2026-10-13"
+    },
+    {
+      "id": "TUTORIAL",
+      "title": "New Haven tutorial trials",
+      "status": "todo",
+      "note": "P80 framework built; every trial but the loop vision is a TODO; 8 decisions for Chase (cc-P80 notes).",
+      "confirmed": "2026-10-13"
+    },
+    {
+      "id": "WIPE",
+      "title": "Fresh-world wipe plan",
+      "status": "todo",
+      "note": "No single plan document; gather D34, D50, T-006, T-010, F-4 and the tutorial's greeting into one.",
+      "confirmed": "2026-10-13"
+    },
+    {
+      "id": "BUGS",
+      "title": "Bug list pass",
+      "status": "todo",
+      "note": "60 rows in section 1, 34 of them say fixed or built; at least D49, D56-D58 and D66 were fixed later. Close or move them.",
+      "confirmed": "2026-10-13"
+    },
+    {
+      "id": "P83-DEPLOY",
+      "title": "Deploy sl-play-tests (P83) on port 8093",
+      "status": "todo",
+      "note": "Port 8093 still runs the old read-only sl-test-queue. The new service also serves this page at /status (cc-P85).",
+      "confirmed": "2026-10-13"
+    },
+    {
+      "id": "F-37",
+      "title": "Commissions move to the League",
+      "status": "todo",
+      "note": "Planned (docs/feature-queue.md F-37). With F-13 (League reward shop) it gives Renown somewhere to go; nothing spends Renown yet (cc-P75 A.1).",
+      "confirmed": "2026-10-13"
     },
     {
       "id": "C2",
       "title": "Revamped Dungeons",
-      "status": "in-progress",
-      "note": "CC4: Despise done 2026-09-19 and client-verified 09-20 (gates, spawns, region assignment, ankh, possession; 7 checks, 0 failures). Shame done 2026-09-19: 20 files from '11', no upstream patch, 54 tests, 194 spawners and 384 spawns across BOTH facets, 58 locked chests per facet, reload identical. Shame needed no region work - it reads the static Shame DungeonRegion from regions.json by name, so Despise's priority-51 trap does not arise; and no XmlSpawner argument mismatch (Q-044's shape is absent here). ReforgedSuffix is ZERO in both clusters, so the row-wide 138 is concentrated elsewhere and the naming carrier is cheaper to defer than S9 implied. ShameCrystals ported as a SEAM (Enabled => false) pending S7 PointsSystems, so altars refuse and level guardians are GM-only for now. Q-046 answered: ShameWall's constructor never sets Visible = true, which ServUO's own Reset() does, so every fresh wall's teleporters are inert until that wall's troll is killed once - an initialization bug, fixed in the constructor rather than in CanTeleport. Q-047 answered: keep Nerun's chest pack; neither it nor ModernUO's BaseTreasureChest is OSI-exact and the pack is the closer match to what a player reads. Nothing in Shame seen in a client yet. Wrong (26) next."
+      "status": "todo",
+      "note": "Despise and Shame landed 09-19; no Revamped Dungeons work since. Dungeon work moved to P36 (the Burrows) and F-32 (dungeon chests, P49/P50).",
+      "confirmed": "2026-10-13"
+    },
+    {
+      "id": "C4",
+      "title": "Creatures and NPCs",
+      "status": "todo",
+      "note": "Last batch CC6 batch 8 (09-21); 19 spawn names still place nothing (tools/spawn-orphans.txt).",
+      "confirmed": "2026-10-13"
     },
     {
       "id": "C3",
       "title": "High Seas, cheap half",
       "status": "todo",
-      "note": "78 raw, 77 candidates, 16,940 lines - the one published figure S9 confirmed. 31 drop straight in, 17 need another file in the row, 17 need an upstream member. The 'skip BaseGalleon/cannons' instruction costs exactly 12 of the 77, now enumerated in notes/s9-backlog-remeasure.md."
-    },
-    {
-      "id": "C4",
-      "title": "Creatures and NPCs",
-      "status": "in-progress",
-      "note": "CC6 batch 1 done 2026-09-19: twenty creatures, 60 tests, all twenty spawned by ModernUO's OWN stock spawners on the real map (168 spawners imported, 0 failures, 127 live), reload identical. THE SELECTION RULE IS THE FINDING: pinned ModernUO ships spawn data naming 109 types no assembly declares, so BaseSpawner marks them EntryFlags.InvalidType (BaseSpawner.cs:1130) and a player walking up finds nothing. These twenty are the clean low-to-mid part of that list; 46 stock entries name them. Q-048 answered from the live save: all four spawn files were generated, so they start spawning on the next deploy with no action, and the other 89 orphans are worth their batches. P2's '275 of 462 clean' reproduces but measured the wrong pool: 325 of the 462 are ModernUO's own types, so the real candidate set is 130, of which 62 are clean. 0 of 20 needed a body, hue or sound ModernUO lacks; 9 needed a method (three AI types, CanStealth, TribeType via a fourth OppositionGroup, additive, no patch). ~50 min, five build cycles, two of them the TEST HOST not the creatures: the fixture never called SkillCheck.Initialize so every Mobile.CheckSkill was false in tests (one line added to the npc-speeds patch, proved red first). Also carried the Q-046 ShameWall fix. Nothing seen in a client."
+      "note": "Unchanged: costed, no prompt has taken it.",
+      "confirmed": "2026-10-13"
     },
     {
       "id": "C5",
       "title": "Decoration, housing, crafting",
       "status": "todo",
-      "note": "S9: the 297 was Addons+Decorative+New Magincia already weak-filtered. Raw 745, 442 duplicates, 303 candidates; 159 drop straight in. DirectionType (7 lines) + AddonOptionGump (64 lines, models a gump ModernUO already ships) is ~71 additive lines with no patch and frees 34 - the best ratio measured in S9. Items/Resource + BulkOrders add 57 more candidates from 191 raw."
-    },
-    {
-      "id": "C6",
-      "title": "Artifacts and equipment",
-      "status": "done",
-      "note": "CC9 COMPLETE, five batches, 381 files, and VERIFIED IN A CLIENT 2026-09-19/20 (thirteen checks, zero content regressions - docs/client-check-backlog.md). Batch 5 closed the 320 and 81 buckets: Swiftflight as Bow+ISetItem with no sixth carrier (Q-041), proven by the first content-level set test and then watched completing the Marksman set in-world; the 30 in-row remainder; the whole plain bucket. The brief's 120/29 were 107/30 counted from the trees, and three of the 107 are already in ModernUO under other names. Remaining in the row: 10 co-port, 43 upstream/carrier. What the client settled that nothing else could: the two flip IDs we overrode ServUO on (D-10 GargishWarHammer, D-16 DarkwoodCrown, both correct), Q-040's narrow re-parent rule via the Darden set, batch 4's parent-member repair via GargishBattleAxe chopping wood, and A5 - the Aloron cold eater fired, cliloc 1113617, built in S1 and never seen working until now."
+      "note": "Unchanged: costed, no prompt has taken it.",
+      "confirmed": "2026-10-13"
     },
     {
       "id": "C7",
       "title": "High Seas naval - written proposal only",
       "status": "todo",
-      "note": "~54 files. Means extending BaseBoat. Do not start; Chase decides from the proposal."
+      "note": "Do not start; Chase decides from the proposal.",
+      "confirmed": "2026-10-13"
+    },
+    {
+      "id": "S7",
+      "title": "Services/PointsSystems",
+      "status": "todo",
+      "note": "Partly superseded: P33 built our own PointsSystem.cs for Clean Up Britannia. ServUO's still blocks Vice vs Virtue and City Loyalty.",
+      "confirmed": "2026-10-13"
     }
   ],
   "playable_gates": {
-    "note": "'Playable' is a judgement, so it is written down as gates rather than felt. Each one is a thing a player would actually hit. Edit this list when the judgement changes, not the rendered line.",
+    "note": "'Playable' is a judgement, so it is written down as gates rather than felt. Each one is a thing a player would actually hit, and cites what it rests on. Update one with python tools/judge.py gate.",
     "gates": [
       {
         "name": "The shard runs and holds a world",
         "done": true,
-        "detail": "Running on ModernUO since June. Saves, reloads, 49 tests."
+        "detail": "The test shard runs sl-modernuo:latest (built 2026-10-10, version 2026.10.10) and saves and reloads; 1,133 of 1,133 tests pass at P82. There is no live shard: the old live container stops at a deserialize error until the fresh-world wipe.",
+        "sources": [
+          "notes/cc-P82-artificers-imbuing.md section 7",
+          "notes/passdown-overseer-2026-10-05.md",
+          "docker ps and images, 2026-10-13"
+        ],
+        "confirmed": "2026-10-13"
       },
       {
-        "name": "Ported content is verified in-world, not just compiled",
+        "name": "The player package installs on a clean PC",
         "done": true,
-        "detail": "381 CC9 files and CC4 Despise, 2026-09-19/20, 20 checks, zero content regressions."
-      },
-      {
-        "name": "Somewhere to go",
-        "done": false,
-        "detail": "Despise done and client-verified. Shame in progress. 4 of 150 Revamped Dungeons files. Needs 2-3 dungeons to feel like a world."
-      },
-      {
-        "name": "Things to fight",
-        "done": false,
-        "detail": "27 of 137 Mobiles/Normal (CC6 batch 1: 20, 2026-09-19), 0 of 222 Mobiles/NPCs. THE BIGGEST PLAYABILITY GAP. CC6 now draws from the 109 names the shard's own spawn data places and cannot spawn (89 left, 33 of them Mobiles/Normal), not from the clean 60%: that figure is over all 462 files and the real clean pool was 68 of 130 candidates, now 48."
+        "detail": "Passed on a clean Windows Sandbox (T-049), off the home network (T-020) and through the updater (T-021). The newer 2026.10.13.0118 zip passed gates 1 to 6 but is not uploaded; D61's sandbox graphics fallback was not rerun.",
+        "sources": [
+          "testing/play-tests.json T-049, T-020, T-021",
+          "notes/passdown-overseer-2026-10-05.md",
+          "notes/cc-P81-paperdoll-sos.md",
+          "docs/bug-list.md D61"
+        ],
+        "confirmed": "2026-10-13"
       },
       {
         "name": "A new character can train without hitting a wall",
         "done": false,
-        "detail": "BLOCKED BY OUR OWN CHANGE. ClusterFSkillGain runs 5x, and New Haven's 26 training quests lock out permanently at skill 50 (GainSkillObjective.CanOffer, cliloc 1077772). The quest board is costed in docs/community-scripts-wishlist.md and fixes it."
+        "detail": "Largely built, not seen in a client. The old 5x wall moved: the guilds are now the starter path, and P66 (hook G, 17 skills), P67 (craft ceilings) and P71 (effects scaled to 200) gave the 41 stalled skills a path to 200. Still open: casting schools above about 120, and the content skills (Alchemy, Cooking, Tailoring, Fishing, Inscription) need designs. ClusterFSkillGain still runs 3 attempts and a 5x gain amount.",
+        "sources": [
+          "notes/cc-P54-f12-xp-and-gain-paths.md",
+          "notes/cc-P66-clamps-and-hook-g.md",
+          "notes/cc-P67-craft-ceilings.md",
+          "notes/cc-P71-high-skill-effect-scaling.md",
+          "notes/f12-decisions-2026-10-05.md items 8b and 11",
+          "ClusterFSkillGain.cs:36-37"
+        ],
+        "confirmed": "2026-10-13"
+      },
+      {
+        "name": "A new character's first hour",
+        "done": false,
+        "detail": "P80 built the New Haven tutorial framework (37 stations), but every trial but the loop vision is a TODO and 8 decisions wait on Chase. P79 loot boxes and fanfare are built. Neither is deployed. T-040 failed: nothing points a player to the League.",
+        "sources": [
+          "notes/cc-P80-new-player-tutorial.md",
+          "notes/cc-P79-loot-boxes-fanfare.md",
+          "testing/play-tests.json T-040 (D41)"
+        ],
+        "confirmed": "2026-10-13"
+      },
+      {
+        "name": "Levels and loops work end to end",
+        "done": false,
+        "detail": "F-12 is not built: ClusterFLoops.CompleteLoop is only a hook. The research is done (P54 XP curve and gain paths, P72 level items) and Chase answered its questions; no F-12 play tests exist.",
+        "sources": [
+          "ShatteredLegacy server/customizations/Tutorial/ClusterFLoops.cs:1",
+          "notes/cc-P54-f12-xp-and-gain-paths.md",
+          "notes/cc-P72-level-items-research.md",
+          "notes/f12-decisions-2026-10-05.md"
+        ],
+        "confirmed": "2026-10-13"
+      },
+      {
+        "name": "What is built is seen in a client, not only compiled",
+        "done": false,
+        "detail": "Chase passed in-game checks for P46 to P57 on 10-04/05. P65 to P84 are committed but not on the deployed image, so none of them has been in a client; their play tests are open.",
+        "sources": [
+          "notes/passdown-overseer-2026-10-05.md",
+          "testing/play-tests.json",
+          "notes/cc-P78 to cc-P80: latest unchanged 8863156884f8"
+        ],
+        "confirmed": "2026-10-13"
+      },
+      {
+        "name": "Somewhere to go",
+        "done": false,
+        "detail": "Despise is client-verified (09-20, fixes D52 to D54 passed 10-03). Shame is ported but never seen in a client (T-007 open). The Burrows (P36) checks T-055 and T-056 are open. Extra facets (P76) are research only.",
+        "sources": [
+          "docs/client-check-backlog.md",
+          "notes/cc4-shame.md",
+          "notes/cc-P36-dungeon-build-1.md",
+          "notes/cc-P76-extra-facets.md",
+          "docs/bug-list.md D52-D54"
+        ],
+        "confirmed": "2026-10-13"
+      },
+      {
+        "name": "Things to fight",
+        "done": false,
+        "detail": "No creature batch since CC6 batch 8 (2026-09-21); 19 names the spawn data places still spawn nothing. Only P50 (chest mimic) and P65 (evo pets) added creatures since. The old 27 of 137 figure was not recounted.",
+        "sources": [
+          "tools/spawn-orphans.txt (2026-09-21)",
+          "notes/cc-P50-chest-mimic-monster.md",
+          "notes/cc-P65-evo-pets-framework.md"
+        ],
+        "confirmed": "2026-10-13"
       },
       {
         "name": "Set mechanics actually fire",
         "done": false,
-        "detail": "Armour sets and absorption work and are client-verified. Bestial rage, Epiphany burst, the sculpture's luck and weapon/clothing/shield self-repair are ported-but-inert pending the eight-patch hooks row. Costed, awaiting Chase."
+        "detail": "Unchanged since 09-19: armor sets and absorption work; Bestial rage, Epiphany burst, the sculpture's luck and set self-repair are ported but inert until the set-mechanic hooks row is built.",
+        "sources": [
+          "docs/gap-register.md section A",
+          "docs/patch-backlog.md P3",
+          "a grep of server/customizations, 2026-10-13"
+        ],
+        "confirmed": "2026-10-13"
       },
       {
         "name": "No live gap a player would call a bug",
         "done": false,
-        "detail": "15 open rows in docs/gap-register.md section A. Cheapest is A9: nothing places a Fountain of Fortune, three lines, coordinates in Q-021."
+        "detail": "docs/bug-list.md section 1 has 60 rows, but 34 say fixed or built and at least 5 more were fixed later: the list itself needs a pass. Open ones a player would hit: D83-D85 (built in P61, awaiting a client), D88 (shard woods have no resource info), D32/D33 (recipes and items no player can reach), D14 (Fountain of Fortune, until Chase walks it).",
+        "sources": [
+          "docs/bug-list.md",
+          "docs/gap-register.md section A"
+        ],
+        "confirmed": "2026-10-13"
+      },
+      {
+        "name": "The fresh-world wipe is ready",
+        "done": false,
+        "detail": "There is no single fresh-world plan; the items are scattered: D34 must be fixed first, D50 (live stop timeout) takes on recreate, T-006 and T-010 run on the new world, the tutorial would greet old characters until then, F-4 (one character per account) starts with it. P73's test-account wipe is built and proven on a copy, not deployed, and refuses live.",
+        "sources": [
+          "docs/bug-list.md D34, D50",
+          "docs/client-test-queue.md T-006, T-010",
+          "notes/cc-P80-new-player-tutorial.md",
+          "docs/feature-queue.md F-4",
+          "notes/cc-P73-test-account-wipe.md"
+        ],
+        "confirmed": "2026-10-13"
       }
     ]
   },
-  "shard_status": "running on ModernUO; CC9's 381 files and CC4 Despise both verified in a client 2026-09-19/20"
+  "shard_status": {
+    "text": "the test shard is the only one running (sl-modernuo:latest, 2026.10.10); there is no live shard until the fresh-world wipe; players get the 2026-10-05 package and TazUO; P65-P84 are committed, not deployed",
+    "confirmed": "2026-10-13"
+  },
+  "sections": {
+    "foundation": "2026-10-13",
+    "ported": "2026-09-21",
+    "backlog": "2026-09-19",
+    "deferred": "2026-09-19",
+    "corrections": "2026-09-19"
+  },
+  "derived": {
+    "version": "2026.10.13.7",
+    "playtests": {
+      "open": 111,
+      "failed": 1,
+      "passed": 18,
+      "later": 0,
+      "blocked": 1,
+      "total": 130,
+      "unloggedFails": 0,
+      "generatedAt": "2026-10-12T21:21:17Z"
+    },
+    "queue": {
+      "autopilot": "on",
+      "running": null,
+      "queued": [
+        {
+          "n": 86,
+          "slug": "console-vpn-disconnect",
+          "state": "queued"
+        }
+      ],
+      "finished": [
+        {
+          "n": 85,
+          "slug": "status-dashboard",
+          "state": "done",
+          "why": "",
+          "date": "2026-10-13",
+          "notes": "notes/cc-P85-status-dashboard.md"
+        },
+        {
+          "n": 84,
+          "slug": "console-uo-skin",
+          "state": "done",
+          "why": "",
+          "date": "2026-10-13",
+          "notes": "notes/cc-P84-console-uo-skin.md"
+        },
+        {
+          "n": 83,
+          "slug": "play-test-queue",
+          "state": "done",
+          "why": "",
+          "date": "2026-10-12",
+          "notes": "notes/cc-P83-play-test-queue.md"
+        },
+        {
+          "n": 82,
+          "slug": "artificers-imbuing",
+          "state": "done",
+          "why": "",
+          "date": "2026-10-13",
+          "notes": "notes/cc-P82-artificers-imbuing.md"
+        },
+        {
+          "n": 81,
+          "slug": "paperdoll-sos",
+          "state": "done",
+          "why": "",
+          "date": "2026-10-13",
+          "notes": "notes/cc-P81-paperdoll-sos.md"
+        },
+        {
+          "n": 80,
+          "slug": "new-player-tutorial",
+          "state": "done",
+          "why": "",
+          "date": "2026-10-13",
+          "notes": "notes/cc-P80-new-player-tutorial.md"
+        },
+        {
+          "n": 79,
+          "slug": "loot-boxes-fanfare",
+          "state": "done",
+          "why": "",
+          "date": "2026-10-13",
+          "notes": "notes/cc-P79-loot-boxes-fanfare.md"
+        },
+        {
+          "n": 78,
+          "slug": "recipe-gating",
+          "state": "done",
+          "why": "",
+          "date": "2026-10-13",
+          "notes": "notes/cc-P78-recipe-gating.md"
+        },
+        {
+          "n": 77,
+          "slug": "alembic-guild",
+          "state": "done",
+          "why": "",
+          "date": "2026-10-12",
+          "notes": "notes/cc-P77-alembic-guild.md"
+        },
+        {
+          "n": 76,
+          "slug": "extra-facets",
+          "state": "done",
+          "why": "",
+          "date": "2026-10-12",
+          "notes": "notes/cc-P76-extra-facets.md"
+        }
+      ],
+      "finished_total": 36,
+      "stopped_total": 0,
+      "latest_done": {
+        "n": 85,
+        "slug": "status-dashboard",
+        "state": "done",
+        "why": "",
+        "date": "2026-10-13",
+        "notes": "notes/cc-P85-status-dashboard.md"
+      }
+    },
+    "reviewed": "2026-10-13",
+    "stale_days": 7
+  }
 }

@@ -18,6 +18,10 @@ SHARD   = Path(os.environ.get("SL_SHARD", r"D:\ShatteredLegacy"))
 SERVUO  = Path(os.environ.get("SL_SERVUO", r"D:\UO\ServUO-pub57"))
 MIGRATE = Path(os.environ.get("SL_MIGRATE", Path(__file__).resolve().parent.parent))
 STATE   = MIGRATE / "tools" / "progress-state.json"
+# cc-P85: what progress.py now derives instead of a person writing it down. Read only.
+AUTOPILOT = Path(os.environ.get("SL_AUTOPILOT", r"D:\UO\cc-autopilot"))
+PROMPTS   = Path(os.environ.get("SL_PROMPTS", r"D:\UO\cc-prompts"))
+STALE_DAYS = 7   # the judgment turns amber on the page when its newest confirmed date is older than this
 
 def check_inputs():
     """Refuse to write a degraded README. If the shard or ServUO tree is not where
@@ -115,13 +119,118 @@ def counted(shard):
         out["test_files"] = out["test_cases"] = None
     return out
 
+# --- cc-P85: derived facts (no person keeps these) -----------------------------------------------------------------
+
+_NOTE_END = re.compile(r"^P(\d+) (DONE|STOPPED)(?::\s*(.*))?$")
+_PROMPT = re.compile(r"^cc-P(\d+)-(.+)\.md$")
+
+def _read_json(path):
+    try:
+        return json.loads(Path(path).read_text(encoding="utf-8"))
+    except Exception:
+        return None
+
+def _mdate(path):
+    from datetime import datetime
+    try:
+        return datetime.fromtimestamp(Path(path).stat().st_mtime).strftime("%Y-%m-%d")
+    except OSError:
+        return ""
+
+def finished_prompts(notes_dir):
+    """Every notes/cc-Pnn-*.md whose last line is "Pnn DONE" or "Pnn STOPPED: why", newest number first."""
+    out = []
+    for f in Path(notes_dir).glob("cc-P*.md"):
+        m = _PROMPT.match(f.name)
+        if not m: continue
+        try:
+            lines = [l.strip() for l in f.read_text(encoding="utf-8", errors="replace").splitlines() if l.strip()]
+        except OSError:
+            continue
+        e = _NOTE_END.match(lines[-1]) if lines else None
+        if not e or e.group(1) != m.group(1): continue
+        out.append({"n": int(m.group(1)), "slug": m.group(2), "state": e.group(2).lower(),
+                    "why": (e.group(3) or "").strip(), "date": _mdate(f), "notes": "notes/" + f.name})
+    out.sort(key=lambda r: -r["n"])
+    return out
+
+def queue_state(notes_dir=None, prompts=None, autopilot=None):
+    """The CC prompt queue: queued (cc-prompts/queue), running (the autopilot's state.json), and the latest finished
+    (each prompt's notes ends DONE or STOPPED). Read only; the autopilot and the overseer own these files."""
+    notes_dir = Path(notes_dir or MIGRATE / "notes")
+    prompts = Path(prompts or PROMPTS)
+    autopilot = Path(autopilot or AUTOPILOT)
+    fin = finished_prompts(notes_dir)
+    done_n = {r["n"] for r in fin}
+    st = _read_json(autopilot / "state.json") or {}
+    enabled = (autopilot / "ENABLED").exists()
+    running = None
+    m = re.match(r"^P(\d+)$", str(st.get("current") or ""))
+    if m and int(m.group(1)) not in done_n:
+        f = _PROMPT.match(str(st.get("currentFile") or ""))
+        running = {"n": int(m.group(1)), "slug": f.group(2) if f else "", "state": "running",
+                   "since": str(st.get("startedAt") or "")}
+    queued = []
+    qdir = prompts / "queue"
+    if qdir.is_dir():
+        for f in qdir.glob("cc-P*.md"):
+            q = _PROMPT.match(f.name)
+            if q and int(q.group(1)) not in done_n and not (running and running["n"] == int(q.group(1))):
+                queued.append({"n": int(q.group(1)), "slug": q.group(2), "state": "queued"})
+    queued.sort(key=lambda r: r["n"])
+    return {"autopilot": "on" if enabled else "off", "running": running, "queued": queued,
+            "finished": fin[:10], "finished_total": len(fin),
+            "stopped_total": sum(1 for r in fin if r["state"] == "stopped"),
+            "latest_done": next((r for r in fin if r["state"] == "done"), None)}
+
+def playtest_counts(path=None):
+    """Open, failed and passed play tests from testing/play-tests.json (cc-P83), as its own summary counts them."""
+    doc = _read_json(path or MIGRATE / "testing" / "play-tests.json")
+    if not doc or not isinstance(doc.get("summary"), dict): return None
+    s = doc["summary"]
+    return {k: s.get(k) for k in ("open", "failed", "passed", "later", "blocked", "total", "unloggedFails", "generatedAt")}
+
+def newest_confirmed(obj):
+    """The newest "confirmed" date anywhere in the hand-written state: when the judgment was last reviewed."""
+    best = ""
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            if k == "confirmed" and isinstance(v, str) and re.match(r"^\d{4}-\d{2}-\d{2}$", v):
+                best = max(best, v)
+            else:
+                best = max(best, newest_confirmed(v))
+    elif isinstance(obj, list):
+        for v in obj:
+            best = max(best, newest_confirmed(v))
+    return best
+
+def derived(st):
+    ver = None
+    try:
+        ver = (SHARD / "VERSION").read_text(encoding="utf-8").strip()
+    except OSError:
+        pass
+    return {"version": ver, "playtests": playtest_counts(), "queue": queue_state(),
+            "reviewed": newest_confirmed(st), "stale_days": STALE_DAYS}
+
 def build():
-    st = load(); cnt = counted(SHARD)
+    st = load(); cnt = counted(SHARD); dv = derived(st)
     d = st["setup_defects"]
     done, total = sum(1 for v in d.values() if v), len(d)
 
     L = []
     L.append("**Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.")
+    L.append("")
+    # cc-P85: how old the hand-written judgment is, and the facts derived each run.
+    q = dv["queue"]; pt = dv["playtests"] or {}
+    run = q["running"]
+    L.append(f"Judgment reviewed {dv['reviewed'] or 'never'}. Shard version {dv['version'] or 'unknown'}. "
+             f"Autopilot {q['autopilot']}"
+             + (f", running P{run['n']} ({run['slug']})" if run else "")
+             + f", {len(q['queued'])} queued"
+             + (f", latest done P{q['latest_done']['n']}" if q.get('latest_done') else "") + ". "
+             + (f"Play tests: {pt.get('open')} open, {pt.get('failed')} failed, {pt.get('passed')} passed."
+                if pt else "Play tests: no data."))
     L.append("")
 
     # Overall headline. This used to say a single percentage was impossible by design,
@@ -171,7 +280,10 @@ def build():
         L.append("|---|---|---|")
         for g in gates:
             mark = "**yes**" if g.get("done") else "no"
-            L.append(f"| {mark} | {g['name']} | {g.get('detail','')} |")
+            src = "; ".join(g.get("sources", []))
+            L.append(f"| {mark} | {g['name']} | {g.get('detail','')}"
+                     + (f" _Sources: {src}._" if src else "")
+                     + (f" _Confirmed {g['confirmed']}._" if g.get("confirmed") else "") + " |")
         L.append("")
 
     L.append("| Setup defect | Resolved |")
@@ -238,18 +350,31 @@ def build():
         L.append("")
         L.append("```")
         L.append(f"Tasks          {bar(nd,len(tk))}  {nd}/{len(tk)}   "
-                 "Foundation and the port pipeline")
+                 "Open work the overseer tracks")
         L.append("```")
         L.append("")
-        L.append("| | Task | Status | Notes |")
-        L.append("|---|---|---|---|")
+        L.append("| | Task | Status | Notes | Confirmed |")
+        L.append("|---|---|---|---|---|")
         for t in tk:
             mark = {"done":"done","in-progress":"**in progress**","blocked":"**blocked**","todo":"todo"}[t["status"]]
-            L.append(f"| `{t['id']}` | {t['title']} | {mark} | {t.get('note','')} |")
+            L.append(f"| `{t['id']}` | {t['title']} | {mark} | {t.get('note','')} | {t.get('confirmed','')} |")
         L.append("")
-        L.append("_Detail and acceptance criteria in `docs/tasks.md`. Status lives in "
-                 "`tools/progress-state.json`._")
+        L.append("_Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._")
         L.append("")
+
+    # cc-P85: the CC prompt queue, derived each run (never hand-kept).
+    q = dv["queue"]
+    L.append(f"### Queue (autopilot {q['autopilot']}; {q['finished_total']} prompts finished, "
+             f"{q['stopped_total']} of them stopped early)")
+    L.append("")
+    L.append("| Prompt | State | When |")
+    L.append("|---|---|---|")
+    rows = ([q["running"]] if q["running"] else []) + q["queued"] + q["finished"]
+    for r in rows:
+        when = r.get("since") or r.get("date") or ""
+        state = r["state"] + (f": {r['why']}" if r.get("why") else "")
+        L.append(f"| P{r['n']} {r['slug']} | {state} | {when} |")
+    L.append("")
 
     up = st.get("upstream_patches") or {}
     if up:
@@ -289,7 +414,10 @@ def build():
               if cnt.get('test_cases') else None),
              "stale migrations subfolder still present" if cnt['stale_migrations_present'] else None]
     L.append("Counted from the trees: " + ", ".join(f for f in facts if f) + ".")
-    L.append(f"Shard status: {st.get('shard_status','unknown')}.")
+    ss = st.get("shard_status", "unknown")
+    if isinstance(ss, dict):
+        ss = ss.get("text", "unknown") + (f" (confirmed {ss['confirmed']})" if ss.get("confirmed") else "")
+    L.append(f"Shard status: {ss}.")
 
     snap = {"generated": __import__("datetime").datetime.now().astimezone().isoformat(timespec="seconds"),
             "direction": "stay on ModernUO; pull ServUO content selectively",
@@ -297,7 +425,9 @@ def build():
             "patches": p, "ported_content": pc, "declined_content": dc,
             "upstream_patches": st.get("upstream_patches"), "counted": cnt, "content_progress": content_progress(), "tasks": st.get("tasks", []),
             "playable_gates": st.get("playable_gates"),
-            "shard_status": st.get("shard_status")}
+            "shard_status": st.get("shard_status"),
+            # cc-P85: the direction note, the as-of dates of the page's hand-written sections, and the derived facts.
+            "direction": st.get("direction"), "sections": st.get("sections"), "derived": dv}
     try:
         (MIGRATE / "tools" / "progress.json").write_text(json.dumps(snap, indent=2) + "\n", encoding="utf-8", newline="\n")
     except Exception as e:
