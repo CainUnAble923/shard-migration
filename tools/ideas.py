@@ -39,7 +39,7 @@ def new_doc():
 
 def new_idea(**kw):
     idea = {"id": "", "title": "", "description": "", "area": "", "playtest": "", "status": "new", "feature": "",
-            "reason": "", "createdAt": "", "updatedAt": "", "statusAt": ""}
+            "reason": "", "by": "", "createdAt": "", "updatedAt": "", "statusAt": ""}
     idea.update(kw)
     return idea
 
@@ -143,14 +143,15 @@ def clean_fields(title=None, description=None, area=None, playtest=None):
 
 # --- the actions ------------------------------------------------------------------------------------
 
-def add(root, title, description="", area="", playtest=""):
+def add(root, title, description="", area="", playtest="", by=""):
     fields = clean_fields(title, description, area, playtest)
 
     def fn(doc):
         iid = "I-%03d" % doc["nextId"]
         doc["nextId"] += 1
         stamp = pt.now_iso()
-        doc["ideas"].append(new_idea(id=iid, createdAt=stamp, updatedAt=stamp, **fields))
+        # cc-P105: by is the writer identity (Cloudflare Access when on), empty otherwise.
+        doc["ideas"].append(new_idea(id=iid, createdAt=stamp, updatedAt=stamp, by=pt.norm(by)[:60], **fields))
         return dict(doc["ideas"][-1])
     return update(root, fn)
 

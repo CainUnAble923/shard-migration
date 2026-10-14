@@ -219,6 +219,9 @@ def new_item(**kw):
         "bug": "", "textChanged": False, "previousText": "", "removedFromNotes": False, "addedAt": "",
         # cc-P102: when the item was last set back to Open from a result, so the overnight bot re-runs its check.
         "reopenedAt": "",
+        # cc-P105: who set the result (or added the item): the writer identity, from Cloudflare Access when the
+        # service checks it; empty otherwise (the game PC today).
+        "by": "",
     }
     item.update(kw)
     return item
@@ -486,9 +489,11 @@ def import_client_queue(doc, root, log):
     return n > 0
 
 
-def import_all(root, write=True, log=print, first=FIRST_PROMPT):
-    """Scan notes, merge DONE checklists and the T-rows. Returns (changed, doc). Idempotent."""
-    path = os.path.join(root, DATA_REL)
+def import_all(root, write=True, log=print, first=FIRST_PROMPT, data=None):
+    """Scan notes, merge DONE checklists and the T-rows. Returns (changed, doc). Idempotent.
+    cc-P105: notes and docs are read from root; testing/ is read and written under data (default: root)."""
+    data = data or root
+    path = os.path.join(data, DATA_REL)
 
     def run():
         doc = load(path)
@@ -513,7 +518,7 @@ def import_all(root, write=True, log=print, first=FIRST_PROMPT):
     with Lock(path):
         changed, doc = run()
         if changed or not os.path.exists(path):
-            doc = save(root, doc)
+            doc = save(data, doc)
         else:
             doc = ordered_doc(doc)
     return changed, doc
@@ -529,7 +534,7 @@ def update(root, fn):
     return value
 
 
-def set_result(root, item_id, status, note=""):
+def set_result(root, item_id, status, note="", by=""):
     if status not in SET_STATUSES:
         raise ValueError("status must be one of " + ", ".join(SET_STATUSES))
     note = norm(note)[:500]
@@ -547,6 +552,7 @@ def set_result(root, item_id, status, note=""):
         it["resultAt"] = now_iso() if status != "open" else ""
         if status != "fail":
             it["bug"] = ""
+        it["by"] = norm(by)[:60]
         return dict(it)
     return update(root, fn)
 
@@ -563,7 +569,7 @@ def set_bug(root, item_id, bug):
     return update(root, fn)
 
 
-def add_manual(root, what, expect=""):
+def add_manual(root, what, expect="", by=""):
     what = norm(what)[:500]
     if not what:
         raise ValueError("say what to test")
@@ -572,7 +578,7 @@ def add_manual(root, what, expect=""):
         nums = [int(i["id"][2:]) for i in doc["items"] if re.match(r"^M-\d+$", i["id"])]
         iid = "M-%03d" % ((max(nums) if nums else 0) + 1)
         doc["items"].append(new_item(id=iid, source="manual", prompt="", what=what, expect=norm(expect)[:500],
-                                     text=what, addedAt=now_iso()))
+                                     text=what, addedAt=now_iso(), by=norm(by)[:60]))
         return dict(doc["items"][-1])
     return update(root, fn)
 
