@@ -18,7 +18,7 @@ requested still gets finished (the P80 tutorial framework, for one). Anything no
 4. Chase commits with `Commit-ShardWork.ps1`.
 
 F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and questions (Q-n).
-**Next free: F-44.**
+**Next free: F-45.**
 
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
@@ -3253,6 +3253,31 @@ Decided with Chase, 2026-10-11:
 Open: book and scroll prices, drop chances (playtesting); the Order's rank names (CC proposes); the custom Band V+
 recipe list (grows with F-42 and new materials).
 
+### F-44: Inn room, a tiny instanced first home (added 2026-10-14)
+
+**Ours.** Raised by Chase 2026-10-14 while answering P80's tutorial questions. The tutorial's housing wing gives each
+new character a **teeny tiny house**: a room, probably **instanced** and reached through an **Inn**, that the player
+can decorate and use, with **very little space and storage**. It teaches housing (placing, locking down, securing)
+before a real plot is affordable.
+
+Decided with Chase, 2026-10-14:
+- The tutorial's trial order is the **hybrid** (P80 decision 8, option C): the 9-station core is required; the Echo
+  then guides through the wings in F-35's story order as the suggested path, and any wing can be taken or left.
+- The **combat wing teaches melee and ranged**, both, not one pick.
+- The housing wing ends with the player's Inn room.
+
+Decided with Chase, 2026-10-14 (second pass):
+- **One room per character.** Characters per account will be limited (the number is open).
+- **It cannot grow.** No upgrades: the point is to push players to buy real estate.
+- **Instanced, reachable from any Inn**, through a special gate in the back of the Inn.
+- **Weekly rent** (amount, grace period and what happens on non-payment are open).
+- **When the player places a real house,** the Inn moves everything in the room to their bank and congratulates them
+  on becoming a home owner; the room closes.
+
+Open (the features chat designs it):
+- The character limit per account; rent amount, grace, and non-payment rules.
+- Room size, lockdown and secure counts; which decorations are allowed.
+- Whether anyone can visit; whether it survives loops (the tutorial wipe policy covers 1.0).- Fidelity: OSI has no player inn rooms; log as a deviation when designed.
 ## Batched
 
 | ID | Batch prompt | Notes |

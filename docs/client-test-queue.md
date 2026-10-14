@@ -3,9 +3,10 @@
 **The standing list of things only a person at a screen can settle.** Add to it as findings appear,
 tick items off as they are run. It never "completes"; it drains and refills.
 
-**Chase runs every one of these. No agent does, and no agent may.** There is no client in the
-sandbox, and most of these need a server built from current source, which is a deploy decision and
-his alone.
+**Chase decides every one of these. No agent marks a result.** Since cc-P91 an overnight bot
+(`tools\playtest-bot`) runs the ones a headless client can settle, on a scratch copy of the test world only, and
+leaves evidence in `testing\bot-runs\`. Chase reviews its report and marks. Most items still need a server built
+from current source, which is a deploy decision and his alone; and anything about how it looks is his to see.
 
 ---
 

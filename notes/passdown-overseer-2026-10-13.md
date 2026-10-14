@@ -101,3 +101,13 @@ Next free prompt: **P92**. Nothing else is drafted.
 - P93 drafts P94-P98 live inside the assessment, not queued, waiting on Chase's go. They will be renumbered from P95
   because the autopilot progress-console draft was numbered **P94** (standard Before/Repo size/Preflight sections added,
   plus a report-only look at the false emails) and is in `queue\`. Next free number: **P95**.
+## Update 2026-10-14 06:10
+
+- Chase answered the open questions: all recorded in `notes\decisions-2026-10-14.md`.
+- D89 (HEAD does not boot) logged in `docs\bug-list.md`; next free bug **D90**. Fix prompt **P95** queued behind P94.
+- `docs\client-test-queue.md` rule reworded per P91 (bot gathers evidence, Chase marks).
+- Still to draft (in order): Building Duplicator, Visual Builder (from P93's drafts), Shard Console website controls
+  plus NPM tab plus Haven deploy buttons, bot nightly task (only when items, email before and after, transcript
+  retention), ideas reason-required, TazUO tutorial patch, UORespawn closer read, Haven H1 (H6 login moved up).
+  Next free prompt: **P96**.
+- (06:15) **P96 bug-reports inbox** (plus reason required on ideas) queued. Next free prompt **P97**. Bot transcripts: 14 days, then archive to iCloud Drive (`D:\Cloud Drives\iCloudDrive`); goes in the bot prompt.
