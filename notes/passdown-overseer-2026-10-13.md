@@ -122,3 +122,9 @@ Next free prompt: **P92**. Nothing else is drafted.
 - (07:20) Test shard down at 07:07 from D89 (HEAD deploy). Queue renumbered: new **P96 Fix test shard** (console panel, health check, good-build tags, rollback, prune); old P96-P103 are now P97-P104. Next free **P105**.
 
 - (07:45) Chase renamed autopilot to **the Golem**; start phrase "Golem, please work on the shard tasks". **P105** builds D:\UO\golem beside cc-autopilot, renames every console button and string (Wake/Rest the Golem, GOLEM tile), fixes D90-D92 in both, and leaves a cutover script Chase runs. Next free **P106**. Bug batches still to draft on Chase's go.
+
+## Update 2026-10-14 10:20
+
+- P95 (D89 boot fix), P96 (Fix test shard tab, health check, good-* tags), P97 (Bugs tab) DONE and pushed. Test shard healthy on sl-modernuo:good-61db33c.
+- P98 (Building Duplicator) work complete but STOPPED: every build fails on NuGet audit (logged **D93**). Overseer committed P98's files; prompt archived. Waiting on Chase's audit decision before the queue resumes at P99.
+- Live container stuck at a delete prompt (logged **D94**); do not answer y. Next free bug **D95**.

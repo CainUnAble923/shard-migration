@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-14T09:30:03-05:00",
+  "generated": "2026-10-14T10:16:05-05:00",
   "direction": {
     "eyebrow": "Direction",
     "title": "Our own shard on ModernUO, OSI where OSI has an answer",
@@ -565,7 +565,7 @@
     "confirmed": "2026-09-19"
   },
   "counted": {
-    "customization_files": 864,
+    "customization_files": 865,
     "patch_files": 72,
     "stale_migrations_present": false,
     "upstream_patch_files": 67,
@@ -581,8 +581,8 @@
       "RegenRates.cs",
       "ResourceInfo.cs"
     ],
-    "test_files": 142,
-    "test_cases": 753
+    "test_files": 143,
+    "test_cases": 758
   },
   "content_progress": [
     {
@@ -1270,26 +1270,21 @@
     "corrections": "2026-09-19"
   },
   "derived": {
-    "version": "2026.10.14.4",
+    "version": "2026.10.14.5",
     "playtests": {
-      "open": 174,
+      "open": 175,
       "failed": 2,
       "passed": 18,
       "later": 0,
       "blocked": 1,
-      "total": 194,
+      "total": 195,
       "unloggedFails": 1,
-      "generatedAt": "2026-10-14T14:08:13Z"
+      "generatedAt": "2026-10-14T14:30:14Z"
     },
     "queue": {
       "autopilot": "on",
       "running": null,
       "queued": [
-        {
-          "n": 98,
-          "slug": "building-duplicator",
-          "state": "queued"
-        },
         {
           "n": 99,
           "slug": "visual-builder",
@@ -1327,6 +1322,14 @@
         }
       ],
       "finished": [
+        {
+          "n": 98,
+          "slug": "building-duplicator",
+          "state": "stopped",
+          "why": "work complete and verified, but every build is blocked by NuGet audit errors NU1902/NU1903 on System.Security.Cryptography.Pkcs 10.0.0 (needs Chase to choose a fix before the queue goes on)",
+          "date": "2026-10-14",
+          "notes": "notes/cc-P98-building-duplicator.md"
+        },
         {
           "n": 97,
           "slug": "bug-reports",
@@ -1398,18 +1401,10 @@
           "why": "",
           "date": "2026-10-13",
           "notes": "notes/cc-P89-haven-pages-plan.md"
-        },
-        {
-          "n": 88,
-          "slug": "shared-menu",
-          "state": "done",
-          "why": "",
-          "date": "2026-10-13",
-          "notes": "notes/cc-P88-shared-menu.md"
         }
       ],
-      "finished_total": 48,
-      "stopped_total": 0,
+      "finished_total": 49,
+      "stopped_total": 1,
       "latest_done": {
         "n": 97,
         "slug": "bug-reports",
