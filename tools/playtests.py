@@ -217,6 +217,8 @@ def new_item(**kw):
         "id": "", "source": "", "prompt": "", "position": 0, "label": "", "what": "", "expect": "",
         "text": "", "version": "", "unmarked": False, "status": "open", "note": "", "resultAt": "",
         "bug": "", "textChanged": False, "previousText": "", "removedFromNotes": False, "addedAt": "",
+        # cc-P102: when the item was last set back to Open from a result, so the overnight bot re-runs its check.
+        "reopenedAt": "",
     }
     item.update(kw)
     return item
@@ -538,6 +540,8 @@ def set_result(root, item_id, status, note=""):
         it = find_item(doc, item_id)
         if it is None:
             raise KeyError(item_id)
+        if status == "open" and it["status"] != "open":
+            it["reopenedAt"] = now_iso()
         it["status"] = status
         it["note"] = note if status in ("fail", "later", "pass") else ""
         it["resultAt"] = now_iso() if status != "open" else ""
