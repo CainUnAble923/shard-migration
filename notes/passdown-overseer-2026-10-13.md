@@ -116,3 +116,5 @@ Next free prompt: **P92**. Nothing else is drafted.
   any Inn, weekly rent, items to bank on placing a real house). Drafted and queued **P97-P103**: Building Duplicator,
   Visual Builder, console Websites tab (+NPM, Haven deploys), bot nightly + iCloud archive, TazUO ClientCommand
   patch, UORespawn read, Haven H1. Next free prompt **P104**. Autopilot sorts numerically, so P100+ is safe.
+
+- (06:40) **Lesson:** P94 STOPPED at 06:01 because the overseer's own passdown append was uncommitted in shard-migration (every prompt's "Before you start" refuses non-CC changes). **Commit overseer edits with `Commit-ShardWork.ps1 -Message ...` before CC is handed a prompt.** Committed, P94 moved back to `queue\`.

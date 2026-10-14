@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.13.13. Autopilot on, 9 queued, latest done P93. Play tests: 166 open, 2 failed, 18 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.13.13. Autopilot on, 10 queued, latest done P93. Play tests: 166 open, 2 failed, 18 passed.
 
 ## Port list: 1 of 16 systems in. 283 of 983 files (29%).
 
@@ -234,6 +234,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 
 | Prompt | State | When |
 |---|---|---|
+| P94 autopilot-progress-console | queued |  |
 | P95 imbue-boot-fix | queued |  |
 | P96 bug-reports | queued |  |
 | P97 building-duplicator | queued |  |
