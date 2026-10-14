@@ -20,6 +20,8 @@ MIGRATE = Path(os.environ.get("SL_MIGRATE", Path(__file__).resolve().parent.pare
 STATE   = MIGRATE / "tools" / "progress-state.json"
 # cc-P85: what progress.py now derives instead of a person writing it down. Read only.
 AUTOPILOT = Path(os.environ.get("SL_AUTOPILOT", r"D:\UO\cc-autopilot"))
+# cc-P99: the autopilot became the Golem. Its folder is read once Move-ToGolem.ps1 has written ACTIVE there.
+GOLEM     = Path(os.environ.get("SL_GOLEM", r"D:\UO\golem"))
 PROMPTS   = Path(os.environ.get("SL_PROMPTS", r"D:\UO\cc-prompts"))
 STALE_DAYS = 7   # the judgment turns amber on the page when its newest confirmed date is older than this
 
@@ -234,12 +236,21 @@ def finished_prompts(notes_dir):
     out.sort(key=lambda r: -r["n"])
     return out
 
+def runner_folder(golem=None, autopilot=None):
+    """cc-P99: the folder the queue runner keeps its state in. The Golem's once it is active (ACTIVE and
+    Start-Golem.ps1 both there, as the Shard Console decides), else cc-autopilot's."""
+    golem = Path(golem or GOLEM)
+    if (golem / "ACTIVE").exists() and (golem / "Start-Golem.ps1").exists():
+        return golem
+    return Path(autopilot or AUTOPILOT)
+
 def queue_state(notes_dir=None, prompts=None, autopilot=None):
-    """The CC prompt queue: queued (cc-prompts/queue), running (the autopilot's state.json), and the latest finished
-    (each prompt's notes ends DONE or STOPPED). Read only; the autopilot and the overseer own these files."""
+    """The CC prompt queue: queued (cc-prompts/queue), running (the Golem's state.json; cc-autopilot's before the
+    cutover), and the latest finished (each prompt's notes ends DONE or STOPPED). Read only; the Golem and the
+    overseer own these files. The "autopilot" key (on or off) keeps its name so older readers still work."""
     notes_dir = Path(notes_dir or MIGRATE / "notes")
     prompts = Path(prompts or PROMPTS)
-    autopilot = Path(autopilot or AUTOPILOT)
+    autopilot = Path(autopilot) if autopilot else runner_folder()
     fin = finished_prompts(notes_dir)
     done_n = {r["n"] for r in fin}
     st = _read_json(autopilot / "state.json") or {}
@@ -305,7 +316,7 @@ def build():
     q = dv["queue"]; pt = dv["playtests"] or {}
     run = q["running"]
     L.append(f"Judgment reviewed {dv['reviewed'] or 'never'}. Shard version {dv['version'] or 'unknown'}. "
-             f"Autopilot {q['autopilot']}"
+             f"Golem {q['autopilot']}"
              + (f", running P{run['n']} ({run['slug']})" if run else "")
              + f", {len(q['queued'])} queued"
              + (f", latest done P{q['latest_done']['n']}" if q.get('latest_done') else "") + ". "
@@ -456,7 +467,7 @@ def build():
 
     # cc-P85: the CC prompt queue, derived each run (never hand-kept).
     q = dv["queue"]
-    L.append(f"### Queue (autopilot {q['autopilot']}; {q['finished_total']} prompts finished, "
+    L.append(f"### Queue (Golem {q['autopilot']}; {q['finished_total']} prompts finished, "
              f"{q['stopped_total']} of them stopped early)")
     L.append("")
     L.append("| Prompt | State | When |")

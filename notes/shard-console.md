@@ -627,7 +627,28 @@ thing about itself.
   keep reading it after. `LogWindowMinutes` in `Get-ConsoleConfig` if that ever happens.
 - **The live paths** (section 6 item 9).
 
-## 11. Autopilot (cc-P74, 2026-10-12)
+## 11. The Golem (cc-P74 as Autopilot, 2026-10-12; renamed by cc-P99, 2026-10-14)
+
+**cc-P99: the autopilot is now the Golem** (`D:\UO\golem`, its own `README.md`), and everything below that says
+autopilot is the Golem under its old name. What changed in the console:
+
+- The tile is **GOLEM**, the tab **Golem**, the button group **Golem**, and window titles `GOLEM - golem.<key> (golem) -
+  Shard Console`. Buttons: **Wake the Golem**, **Rest the Golem**, **Golem email setup**, **Send test email**, **Open the
+  queue folder**, **Golem log**, **Golem settings**, **Open Golem folder**, **Move to the Golem**. Keys are `golem.*`;
+  the old `autopilot.*` keys resolve to them (`Resolve-ActionAlias`), so shortcuts and scripts still work.
+- **Which folder.** `Get-GolemConfig` (pure part `Select-GolemKind`) reads `D:\UO\golem` once `Move-ToGolem.ps1` has
+  written its `ACTIVE` file beside `Start-Golem.ps1`, else `D:\UO\cc-autopilot`. It is re-read on every refresh, so a
+  cutover shows at the next one. The buttons run the active folder's scripts; the tab's `active` line says which.
+- The tab's panel opens with the start phrase: `In a CC session, say: "Golem, please work on the shard tasks"`.
+- **Move to the Golem** asks the phrase `move to the golem`, then opens `Move-ToGolem.ps1` in its own window, which
+  prints its own dry run and asks you to type `move`. Refused while a prompt runs, and once the Golem is active.
+- `Test-PlanSafety` refuses both hooks (`golem.ps1` and `cc-autopilot.ps1`), allows the five scripts in a window,
+  Notepad on the log or settings.json, and Explorer on the folder.
+- status.json's new `note` field (D91, `waiting on background agents`) shows on the tile's second line and as `note`
+  on the tab.
+- Details and tests: `notes\cc-P99-golem.md`.
+
+The cc-P74 text, unchanged:
 
 Chase's CC autopilot (`D:\UO\cc-autopilot`, its own `README.md`) hands CC the next queued prompt each time the last one
 ends `P<nn> DONE`. In between, it commits and pushes both repos through `Commit-ShardWork.ps1`. It also emails Chase

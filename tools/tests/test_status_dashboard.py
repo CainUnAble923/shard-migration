@@ -64,6 +64,17 @@ class QueueAndCounts(unittest.TestCase):
         q = progress.queue_state(self.root / "notes", self.root / "prompts", self.root / "autopilot")
         self.assertEqual(q["autopilot"], "off")
 
+    def test_the_golems_folder_is_read_once_it_is_active(self):
+        # cc-P99: cc-autopilot's folder until Move-ToGolem.ps1 writes ACTIVE beside Start-Golem.ps1.
+        g, ap = self.root / "golem", self.root / "autopilot"
+        self.assertEqual(progress.runner_folder(g, ap), ap, "no Golem folder")
+        write(g / "Start-Golem.ps1", "")
+        self.assertEqual(progress.runner_folder(g, ap), ap, "built, not moved to")
+        write(g / "ACTIVE", "x")
+        self.assertEqual(progress.runner_folder(g, ap), g, "active")
+        (g / "Start-Golem.ps1").unlink()
+        self.assertEqual(progress.runner_folder(g, ap), ap, "ACTIVE alone is not trusted")
+
     def test_play_test_counts_come_from_the_files_own_summary(self):
         p = self.root / "play-tests.json"
         write(p, json.dumps({"schema": 1, "summary": {"open": 5, "failed": 1, "passed": 2, "later": 0, "blocked": 0, "total": 8, "unloggedFails": 1, "generatedAt": "2026-10-12T21:21:17Z"}, "items": []}))

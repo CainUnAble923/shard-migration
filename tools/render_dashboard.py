@@ -289,10 +289,10 @@ def queue_html(pg):
     lead = (f'P{run["n"]} running' if run else "nothing running") + f', {len(q.get("queued", []))} queued'
     ld = q.get("latest_done")
     return (f'<div class="card"><div class="hero"><span class="big">{esc(lead)}</span>'
-            f'<span class="cap"><strong>Autopilot {esc(q.get("autopilot"))}.</strong> {q.get("finished_total", 0)} '
+            f'<span class="cap"><strong>Golem {esc(q.get("autopilot"))}.</strong> {q.get("finished_total", 0)} '
             f'prompts finished, {q.get("stopped_total", 0)} stopped early'
             + (f'; latest done P{ld["n"]}.' if ld else '.') +
-            ' Read from <code>D:\\UO\\cc-prompts\\queue</code>, the autopilot\'s <code>state.json</code> and each '
+            ' Read from <code>D:\\UO\\cc-prompts\\queue</code>, the Golem\'s <code>state.json</code> and each '
             'prompt\'s notes, every run.</span></div></div>'
             '<div class="scroller"><table><thead><tr><th class="n">Prompt</th><th>Task</th><th>State</th>'
             f'<th>When</th></tr></thead><tbody>{trs}</tbody></table></div>'
