@@ -93,3 +93,11 @@ Next free prompt: **P92**. Nothing else is drafted.
   line at the top. Kept: TUTORIAL (P80 framework built), P90-P92 (port or tooling). The open P67/P71/P72 calls
   (caps past OSI, Fletching, Lumberjacking, Lockpicking, Nerve Strike, leveling gear) are after-the-port too.
   These edits are uncommitted in shard-migration; autopilot commits them with P90.
+## Update 2026-10-14 05:50
+
+- Overnight: P91 (play-test bot), P92 (port-list headline), P93 (servuo.dev code port assessment) all DONE and pushed.
+  Queue went empty 17:29, autopilot off.
+- P93 sent five false "NEEDS YOU: stopped mid-task" emails 17:16-17:23 before its real DONE (parallel subagents).
+- P93 drafts P94-P98 live inside the assessment, not queued, waiting on Chase's go. They will be renumbered from P95
+  because the autopilot progress-console draft was numbered **P94** (standard Before/Repo size/Preflight sections added,
+  plus a report-only look at the false emails) and is in `queue\`. Next free number: **P95**.

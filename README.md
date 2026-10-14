@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.13.13. Autopilot on, 0 queued, latest done P93. Play tests: 166 open, 1 failed, 18 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.13.13. Autopilot on, 0 queued, latest done P93. Play tests: 167 open, 1 failed, 18 passed.
 
 ## Port list: 1 of 16 systems in. 283 of 983 files (29%).
 
