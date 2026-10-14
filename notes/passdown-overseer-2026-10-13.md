@@ -118,3 +118,5 @@ Next free prompt: **P92**. Nothing else is drafted.
   patch, UORespawn read, Haven H1. Next free prompt **P104**. Autopilot sorts numerically, so P100+ is safe.
 
 - (06:40) **Lesson:** P94 STOPPED at 06:01 because the overseer's own passdown append was uncommitted in shard-migration (every prompt's "Before you start" refuses non-CC changes). **Commit overseer edits with `Commit-ShardWork.ps1 -Message ...` before CC is handed a prompt.** Committed, P94 moved back to `queue\`.
+
+- (07:20) Test shard down at 07:07 from D89 (HEAD deploy). Queue renumbered: new **P96 Fix test shard** (console panel, health check, good-build tags, rollback, prune); old P96-P103 are now P97-P104. Next free **P105**.

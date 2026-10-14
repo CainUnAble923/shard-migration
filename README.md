@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.14. Autopilot on, 9 queued, latest done P94. Play tests: 169 open, 2 failed, 18 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.14. Autopilot on, 10 queued, latest done P94. Play tests: 169 open, 2 failed, 18 passed.
 
 ## Port list: 1 of 16 systems in. 283 of 983 files (29%).
 
@@ -235,14 +235,15 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | Prompt | State | When |
 |---|---|---|
 | P95 imbue-boot-fix | queued |  |
-| P96 bug-reports | queued |  |
-| P97 building-duplicator | queued |  |
-| P98 visual-builder | queued |  |
-| P99 console-websites | queued |  |
-| P100 bot-nightly-archive | queued |  |
-| P101 tazuo-client-command | queued |  |
-| P102 uorespawn-read | queued |  |
-| P103 haven-h1-host-agnostic | queued |  |
+| P96 fix-test-shard | queued |  |
+| P97 bug-reports | queued |  |
+| P98 building-duplicator | queued |  |
+| P99 visual-builder | queued |  |
+| P100 console-websites | queued |  |
+| P101 bot-nightly-archive | queued |  |
+| P102 tazuo-client-command | queued |  |
+| P103 uorespawn-read | queued |  |
+| P104 haven-h1-host-agnostic | queued |  |
 | P94 autopilot-progress-console | done | 2026-10-14 |
 | P93 servuo-code-port-assessment | done | 2026-10-13 |
 | P92 port-list-target | done | 2026-10-13 |
