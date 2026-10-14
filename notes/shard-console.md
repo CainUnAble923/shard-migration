@@ -652,6 +652,26 @@ when CC needs him. The console gives it a fifth glance tile and a tab, and reimp
   - the queue in run order, with any unnumbered file named as IGNORED
   - the last 20 log actions, without commit output
 - **Safety.** `Test-PlanSafety` lets nothing in the autopilot's folder run except those four scripts, each in a window
-  of its own. Notepad opens only the log. The hook `cc-autopilot.ps1`, which commits and pushes, never runs from
+  of its own. Notepad opens only the log (and settings.json, cc-P94). The hook `cc-autopilot.ps1`, which commits and pushes, never runs from
   the console. The console never reorders or renumbers the queue: numbers belong to the overseer.
 - Details, tests and three hook bugs found on the way: `notes\cc-P74-autopilot-console.md`.
+
+### 11.1 status.json: run position, steps and last activity (cc-P94, 2026-10-14)
+
+Since 2026-10-13 the hook also writes `D:\UO\cc-autopilot\status.json` (schema 1): one summary rewritten, tmp then
+rename, on every hand-off, stop and tool use, and every 10 minutes by the scheduled task "Shard CC Autopilot Watch".
+
+- **The tile reads status.json first** when it is there and parses as schema 1 with a known state. Otherwise
+  (missing, unreadable, another schema) it falls back to the cc-P74 reading above, unchanged, so an older autopilot
+  still works. The tab's `status` line says which reading is in use and why.
+- **RUNNING** is two lines: `P92  2 of 5  step 3/6  14m` (prompt, position in the run, steps from CC's task list,
+  time since `startedAt`), then the step CC is on and `last activity 2m ago`, or `running Bash for 9m` while a tool
+  runs. There is no step part until CC has a task list (never `0/0`).
+- **Amber, never red**, for: NEEDS YOU (the detail is the hook's `needsYou`), quiet past `stallMinutes`
+  (`quiet for 52m`), a status.json more than 15 minutes old while RUNNING (`status 40 min old; watch task not
+  running?`), and failing email (still from the log). IDLE and OFF add `N done this run` when above 0.
+- **The tab** adds `status`, `run` (`2 of 5, cap 6, 1 done, started ...`), `steps`, `activity` and `settings`
+  (`progressEmails`, `maxPerRun`, `stallMinutes`, with the hook's defaults when `settings.json` is missing). One new
+  button, **Open settings.json**, opens it in Notepad and does nothing else; `Test-PlanSafety` lets Notepad open
+  only the log and settings.json. The caption says what the run cap does.
+- Details and tests: `notes\cc-P94-autopilot-progress-console.md`.

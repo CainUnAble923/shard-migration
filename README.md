@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.13.13. Autopilot on, 10 queued, latest done P93. Play tests: 166 open, 2 failed, 18 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.14. Autopilot on, 9 queued, latest done P94. Play tests: 169 open, 2 failed, 18 passed.
 
 ## Port list: 1 of 16 systems in. 283 of 983 files (29%).
 
@@ -230,11 +230,10 @@ Tasks          ██░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (autopilot on; 44 prompts finished, 0 of them stopped early)
+### Queue (autopilot on; 45 prompts finished, 0 of them stopped early)
 
 | Prompt | State | When |
 |---|---|---|
-| P94 autopilot-progress-console | queued |  |
 | P95 imbue-boot-fix | queued |  |
 | P96 bug-reports | queued |  |
 | P97 building-duplicator | queued |  |
@@ -244,6 +243,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P101 tazuo-client-command | queued |  |
 | P102 uorespawn-read | queued |  |
 | P103 haven-h1-host-agnostic | queued |  |
+| P94 autopilot-progress-console | done | 2026-10-14 |
 | P93 servuo-code-port-assessment | done | 2026-10-13 |
 | P92 port-list-target | done | 2026-10-13 |
 | P91 overnight-playtest-bot | done | 2026-10-13 |
@@ -253,7 +253,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P87 console-readability | done | 2026-10-13 |
 | P86 console-vpn-disconnect | done | 2026-10-13 |
 | P85 status-dashboard | done | 2026-10-13 |
-| P84 console-uo-skin | done | 2026-10-13 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 67 patches, 10 replacements
 

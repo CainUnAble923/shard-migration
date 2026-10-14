@@ -1,14 +1,14 @@
 {
   "schema": 1,
   "summary": {
-    "generatedAt": "2026-10-14T11:05:14Z",
-    "open": 166,
+    "generatedAt": "2026-10-14T11:49:49Z",
+    "open": 169,
     "failed": 2,
     "passed": 18,
     "later": 0,
     "blocked": 1,
     "moot": 0,
-    "total": 186,
+    "total": 189,
     "unloggedFails": 1,
     "failures": [
       {
@@ -449,6 +449,17 @@
       "parsed": false,
       "items": 0,
       "skipped": 8
+    },
+    "P94": {
+      "notesFile": "notes/cc-P94-autopilot-progress-console.md",
+      "title": "cc-P94: Autopilot tile and tab show run position, steps and last activity (2026-10-14)",
+      "version": "",
+      "sourceHash": "7292a5bf54101de0",
+      "importedAt": "2026-10-14T11:43:48Z",
+      "updatedAt": "2026-10-14T11:49:49Z",
+      "parsed": true,
+      "items": 3,
+      "skipped": 0
     }
   },
   "imports": {
@@ -4178,6 +4189,66 @@
       "previousText": "",
       "removedFromNotes": false,
       "addedAt": "2026-10-13T22:29:45Z"
+    },
+    {
+      "id": "P94-1",
+      "source": "notes",
+      "prompt": "P94",
+      "position": 1,
+      "label": "",
+      "what": "**Autopilot will not commit P94 (`cc-autopilot.ps1:423`).** - My first P94 STOPPED (06:01) set `lastHandled` to 94 (`:413`). P94 was then handed again (06:23), and Hand-Off (`:273-276`) does not reset `lastHandled`. - When this session ends with `P94 DONE`, `:423` sees `94 = lastHandled` and treats it as \"already committed\". `current` is still P94, so it does nothing",
+      "expect": "no commit, no hand-off, no email (`:425-426`). The queue stalls silently with P95-P103 waiting, and the tile will keep saying RUNNING P94. - **Do now:** commit P94 from the Console's Commit tab. Then either set `\"lastHandled\": 93` in state.json before P94 DONE is read, or clear `current` and say go to start P95. - **Fix** (one line in each branch): treat a prompt as already handled only when it is not the one running. - `:412`: `if ($n -eq [int]$state.lastHandled -and $state.current -ne \"P$n\") { exit 0 }` - `:423`: `if ($n -eq [int]$state.lastHandled -and $state.current -ne \"P$n\") {` - Or reset `lastHandled` in Hand-Off when it hands a number at or below it.",
+      "text": "**Autopilot will not commit P94 (`cc-autopilot.ps1:423`).** - My first P94 STOPPED (06:01) set `lastHandled` to 94 (`:413`). P94 was then handed again (06:23), and Hand-Off (`:273-276`) does not reset `lastHandled`. - When this session ends with `P94 DONE`, `:423` sees `94 = lastHandled` and treats it as \"already committed\". `current` is still P94, so it does nothing: no commit, no hand-off, no email (`:425-426`). The queue stalls silently with P95-P103 waiting, and the tile will keep saying RUNNING P94. - **Do now:** commit P94 from the Console's Commit tab. Then either set `\"lastHandled\": 93` in state.json before P94 DONE is read, or clear `current` and say go to start P95. - **Fix** (one line in each branch): treat a prompt as already handled only when it is not the one running. - `:412`: `if ($n -eq [int]$state.lastHandled -and $state.current -ne \"P$n\") { exit 0 }` - `:423`: `if ($n -eq [int]$state.lastHandled -and $state.current -ne \"P$n\") {` - Or reset `lastHandled` in Hand-Off when it hands a number at or below it.",
+      "version": "",
+      "unmarked": true,
+      "status": "open",
+      "note": "",
+      "resultAt": "",
+      "bug": "",
+      "textChanged": false,
+      "previousText": "",
+      "removedFromNotes": false,
+      "addedAt": "2026-10-14T11:43:48Z"
+    },
+    {
+      "id": "P94-2",
+      "source": "notes",
+      "prompt": "P94",
+      "position": 2,
+      "label": "",
+      "what": "**P93's five false \"NEEDS YOU: stopped mid-task\" emails (`cc-autopilot.ps1:499-503`).** - **Cause, proven from P93's transcript** (`C:\\Users\\ckfle\\.claude\\projects\\D--UO-shard-migration\\c598dd1c-....jsonl`)",
+      "expect": "at 22:14:36-22:15:38Z P93 started five subagents with `run_in_background: true`. It then ended its turn to wait for them at 22:16:34, 22:20:19, 22:21:05, 22:21:33 and 22:23:22Z. Each turn end fires the Stop hook. With no `P93 DONE` in the last message, `:499` reads it as a question and emails. The five stop_hook_summary times match the five log lines (17:16:33-17:23:21 local) one for one. The real DONE came at 22:29:16Z. - **Fix:** before the email at `:499`, check the transcript (already read by `Get-LastText`, `:118-127`) for background agents started since the hand-off with no `<task-notification>` naming their `tool-use-id` yet. If any are still out, log `P93 waiting on N background agent(s)`, write status `waiting on background agents`, and exit without email. - **Cheaper alternative:** add to the hand-off text (`:291-294`) \"run subagents in the foreground (run_in_background: false)\". This also helps the stall watch, which sees no tool use while CC waits.",
+      "text": "**P93's five false \"NEEDS YOU: stopped mid-task\" emails (`cc-autopilot.ps1:499-503`).** - **Cause, proven from P93's transcript** (`C:\\Users\\ckfle\\.claude\\projects\\D--UO-shard-migration\\c598dd1c-....jsonl`): at 22:14:36-22:15:38Z P93 started five subagents with `run_in_background: true`. It then ended its turn to wait for them at 22:16:34, 22:20:19, 22:21:05, 22:21:33 and 22:23:22Z. Each turn end fires the Stop hook. With no `P93 DONE` in the last message, `:499` reads it as a question and emails. The five stop_hook_summary times match the five log lines (17:16:33-17:23:21 local) one for one. The real DONE came at 22:29:16Z. - **Fix:** before the email at `:499`, check the transcript (already read by `Get-LastText`, `:118-127`) for background agents started since the hand-off with no `<task-notification>` naming their `tool-use-id` yet. If any are still out, log `P93 waiting on N background agent(s)`, write status `waiting on background agents`, and exit without email. - **Cheaper alternative:** add to the hand-off text (`:291-294`) \"run subagents in the foreground (run_in_background: false)\". This also helps the stall watch, which sees no tool use while CC waits.",
+      "version": "",
+      "unmarked": true,
+      "status": "open",
+      "note": "",
+      "resultAt": "",
+      "bug": "",
+      "textChanged": false,
+      "previousText": "",
+      "removedFromNotes": false,
+      "addedAt": "2026-10-14T11:43:48Z"
+    },
+    {
+      "id": "P94-3",
+      "source": "notes",
+      "prompt": "P94",
+      "position": 3,
+      "label": "",
+      "what": "**Play-test results make the start check fail.** The play-test service (`docker/test-queue/server.py:60`, `importer_loop`) and the play-test page both write `testing/play-tests.json` and `testing/SUMMARY.md` straight into shard-migration, after a commit or whenever a result is recorded. Any prompt whose \"Before you start\" rule stops on files that are not its own will stop on them, as P94 did at 06:01. Either",
+      "expect": "- prompts treat those two files as expected, or - autopilot runs the import right after its commit and commits the two files with the prompt.",
+      "text": "**Play-test results make the start check fail.** The play-test service (`docker/test-queue/server.py:60`, `importer_loop`) and the play-test page both write `testing/play-tests.json` and `testing/SUMMARY.md` straight into shard-migration, after a commit or whenever a result is recorded. Any prompt whose \"Before you start\" rule stops on files that are not its own will stop on them, as P94 did at 06:01. Either: - prompts treat those two files as expected, or - autopilot runs the import right after its commit and commits the two files with the prompt.",
+      "version": "",
+      "unmarked": true,
+      "status": "open",
+      "note": "",
+      "resultAt": "",
+      "bug": "",
+      "textChanged": false,
+      "previousText": "",
+      "removedFromNotes": false,
+      "addedAt": "2026-10-14T11:43:48Z"
     }
   ]
 }
