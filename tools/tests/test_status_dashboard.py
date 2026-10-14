@@ -129,7 +129,7 @@ class Freshness(unittest.TestCase):
         # cc-P88 replaced the header's two links with the shared menu (nav.js, inlined in DATA:NAV): Homepage is its
         # Dashboard entry. cc-P107: on the game PC's port 3000, wherever the page itself is served (Haven after the
         # cutover), until Haven step H5 moves Homepage.
-        self.assertIn("key: 'dashboard', label: 'Dashboard',    host: '192.168.1.58', port: 3000", page)
+        self.assertIn("key: 'dashboard', label: 'Dashboard',    host: '192.168.1.61', port: 3000", page)  # cc-P110 (H5); pin updated in cc-P112
 
 
 class Judge(unittest.TestCase):

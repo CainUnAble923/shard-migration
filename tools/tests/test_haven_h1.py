@@ -450,7 +450,8 @@ class Menu(unittest.TestCase):
         self.assertIn("{ key: 'playtests', label: 'Play tests',   host: null, port: 8093, path: '/' }", text)
         self.assertIn("{ key: 'status',    label: 'Shard status', host: null, port: 8093, path: '/status' }", text)
         # cc-P107 pinned Homepage to the game PC until H5.
-        self.assertIn("{ key: 'dashboard', label: 'Dashboard',    host: '192.168.1.58', port: 3000, path: '/', lanOnly: true }", text)
+        # cc-P110 (H5) moved the Dashboard entry to Haven's Homepage; cc-P112 updated this pin (P110 missed it).
+        self.assertIn("{ key: 'dashboard', label: 'Dashboard',    host: '192.168.1.61', port: 3000, path: '/', lanOnly: true }", text)
 
 
 if __name__ == "__main__":
