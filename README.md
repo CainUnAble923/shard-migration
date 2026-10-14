@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.14.16. Golem on, 3 queued, latest done P110. Play tests: 205 open, 2 failed, 18 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.14.17. Golem on, 2 queued, latest done P111. Play tests: 213 open, 2 failed, 18 passed.
 
 ## Port list: 1 of 16 systems in. 283 of 983 files (29%).
 
@@ -230,13 +230,13 @@ Tasks          ██░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 61 prompts finished, 1 of them stopped early)
+### Queue (Golem on; 62 prompts finished, 1 of them stopped early)
 
 | Prompt | State | When |
 |---|---|---|
-| P111 tazuo-paperdoll-option | queued |  |
 | P112 playtest-bot-icon | queued |  |
 | P113 console-window-icon | queued |  |
+| P111 tazuo-paperdoll-option | done | 2026-10-14 |
 | P110 haven-mega-dashboard | done | 2026-10-14 |
 | P109 haven-print-queue | done | 2026-10-14 |
 | P108 retire-live | done | 2026-10-14 |
@@ -246,7 +246,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P104 uorespawn-read | done | 2026-10-14 |
 | P103 tazuo-client-command | done | 2026-10-14 |
 | P102 bot-nightly-archive | done | 2026-10-14 |
-| P101 console-websites | done | 2026-10-14 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 67 patches, 10 replacements
 
