@@ -127,8 +127,9 @@ class Freshness(unittest.TestCase):
         self.assertNotIn("localhost", page)
         self.assertIn('data-port="8093"', page)
         # cc-P88 replaced the header's two links with the shared menu (nav.js, inlined in DATA:NAV): Homepage is its
-        # Dashboard entry, on port 3000 of the host the browser used.
-        self.assertIn("key: 'dashboard', label: 'Dashboard',    host: null, port: 3000", page)
+        # Dashboard entry. cc-P107: on the game PC's port 3000, wherever the page itself is served (Haven after the
+        # cutover), until Haven step H5 moves Homepage.
+        self.assertIn("key: 'dashboard', label: 'Dashboard',    host: '192.168.1.58', port: 3000", page)
 
 
 class Judge(unittest.TestCase):

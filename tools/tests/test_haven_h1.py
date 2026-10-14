@@ -449,7 +449,8 @@ class Menu(unittest.TestCase):
         self.assertIn("if (PAGES[i].lanOnly && !onLan()) continue;", text)
         self.assertIn("{ key: 'playtests', label: 'Play tests',   host: null, port: 8093, path: '/' }", text)
         self.assertIn("{ key: 'status',    label: 'Shard status', host: null, port: 8093, path: '/status' }", text)
-        self.assertIn("{ key: 'dashboard', label: 'Dashboard',    host: null, port: 3000, path: '/', lanOnly: true }", text)
+        # cc-P107 pinned Homepage to the game PC until H5.
+        self.assertIn("{ key: 'dashboard', label: 'Dashboard',    host: '192.168.1.58', port: 3000, path: '/', lanOnly: true }", text)
 
 
 if __name__ == "__main__":

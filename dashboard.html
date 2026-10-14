@@ -118,7 +118,8 @@
   var PAGES = [
     { key: 'playtests', label: 'Play tests',   host: null, port: 8093, path: '/' },
     { key: 'status',    label: 'Shard status', host: null, port: 8093, path: '/status' },
-    { key: 'dashboard', label: 'Dashboard',    host: null, port: 3000, path: '/', lanOnly: true }
+    // cc-P107: Homepage stays on the game PC until Haven step H5; Haven's own :3000 is its stale June copy (cc-P89).
+    { key: 'dashboard', label: 'Dashboard',    host: '192.168.1.58', port: 3000, path: '/', lanOnly: true }
   ];
   // The Windows box (docker/test-queue/docker-compose.yml), for a page opened from disk.
   var FALLBACK_HOST = '192.168.1.58';
@@ -145,10 +146,11 @@
   }
 
   // cc-P105: a home-network address: private IPv4, loopback, Tailscale's 100.64.0.0/10, a .home.arpa or .ts.net name,
-  // a bare host name, or no host at all (the file opened from disk).
+  // a bare host name (the PC's own name among them), or no host at all (the file opened from disk). cc-P107: the
+  // loopback name is not spelled out, since the status page inlines this file and its links must never name it.
   function onLan(host) {
     var h = String(host == null ? window.location.hostname : host).toLowerCase();
-    if (!h || h === 'localhost' || h.indexOf('.') < 0) return true;
+    if (!h || h.indexOf('.') < 0) return true;
     if (/\.(home\.arpa|ts\.net|local)$/.test(h)) return true;
     var m = /^(\d+)\.(\d+)\.\d+\.\d+$/.exec(h);
     if (!m) return false;
@@ -157,9 +159,14 @@
       (a === 100 && b >= 64 && b <= 127);
   }
 
+  // cc-P107: host null means the host that served this file. On the pages sl-play-tests serves that is the page's own
+  // host, as before; on Homepage (another origin) it is wherever the menu was loaded from, Haven after the cutover.
+  var SCRIPT_HOST = '';
+  try { if (document.currentScript && document.currentScript.src) SCRIPT_HOST = new URL(document.currentScript.src).hostname; } catch (e) { SCRIPT_HOST = ''; }
+
   function url(p) {
     if (p.url) return p.url;
-    var host = p.host || window.location.hostname || FALLBACK_HOST;
+    var host = p.host || SCRIPT_HOST || window.location.hostname || FALLBACK_HOST;
     var proto = (!p.host && window.location.protocol === 'https:') ? 'https:' : 'http:';
     return proto + '//' + host + ':' + p.port + p.path;
   }
@@ -262,9 +269,9 @@
     <span class="eyebrow">Shattered Legacy &middot; ModernUO</span>
     <h1>Shard status</h1>
     <div class="meta">
-      <span>Last updated <!-- DATA:GENERATED -->2026-10-14 14:16<!-- /DATA:GENERATED --></span>
+      <span>Last updated <!-- DATA:GENERATED -->2026-10-14 15:30<!-- /DATA:GENERATED --></span>
       <!-- DATA:REVIEWED --><span class="reviewed" data-reviewed="2026-10-13" data-stale-days="7" title="The hand-written judgment (gates, tasks, status) was last confirmed 2026-10-13. It turns amber after 7 days; tools/README.md says how to update it.">Judgment reviewed 2026-10-13</span><!-- /DATA:REVIEWED -->
-      <!-- DATA:VERSION --><span>Version 2026.10.14.12</span><!-- /DATA:VERSION -->
+      <!-- DATA:VERSION --><span>Version 2026.10.14.13</span><!-- /DATA:VERSION -->
     </div>
   </header>
 
@@ -285,14 +292,14 @@
   <section>
     <div class="section-head"><span class="eyebrow">Work in flight</span><h2>Queue</h2></div>
 <!-- DATA:QUEUE -->
-<div class="card"><div class="hero"><span class="big">nothing running, 4 queued</span><span class="cap"><strong>Golem on.</strong> 57 prompts finished, 1 stopped early; latest done P106. Read from <code>D:\UO\cc-prompts\queue</code>, the Golem's <code>state.json</code> and each prompt's notes, every run.</span></div></div><div class="scroller"><table><thead><tr><th class="n">Prompt</th><th>Task</th><th>State</th><th>When</th></tr></thead><tbody><tr><td class="n">P107</td><td>haven ops move</td><td><span class="pill p-todo">queued</span></td><td class="foot"></td></tr><tr><td class="n">P108</td><td>haven print queue</td><td><span class="pill p-todo">queued</span></td><td class="foot"></td></tr><tr><td class="n">P109</td><td>haven mega dashboard</td><td><span class="pill p-todo">queued</span></td><td class="foot"></td></tr><tr><td class="n">P110</td><td>tazuo paperdoll option</td><td><span class="pill p-todo">queued</span></td><td class="foot"></td></tr><tr><td class="n">P106</td><td>shard questions</td><td><span class="pill p-ok">done</span></td><td class="foot">2026-10-14</td></tr><tr><td class="n">P105</td><td>haven h1 host agnostic</td><td><span class="pill p-ok">done</span></td><td class="foot">2026-10-14</td></tr><tr><td class="n">P104</td><td>uorespawn read</td><td><span class="pill p-ok">done</span></td><td class="foot">2026-10-14</td></tr><tr><td class="n">P103</td><td>tazuo client command</td><td><span class="pill p-ok">done</span></td><td class="foot">2026-10-14</td></tr><tr><td class="n">P102</td><td>bot nightly archive</td><td><span class="pill p-ok">done</span></td><td class="foot">2026-10-14</td></tr><tr><td class="n">P101</td><td>console websites</td><td><span class="pill p-ok">done</span></td><td class="foot">2026-10-14</td></tr><tr><td class="n">P100</td><td>visual builder</td><td><span class="pill p-ok">done</span></td><td class="foot">2026-10-14</td></tr><tr><td class="n">P99</td><td>golem</td><td><span class="pill p-ok">done</span></td><td class="foot">2026-10-14</td></tr><tr><td class="n">P98</td><td>building duplicator</td><td><span class="pill p-no">stopped</span></td><td class="foot">2026-10-14 &middot; work complete and verified, but every build is blocked by NuGet audit errors NU1902/NU1903 on System.Security.Cryptography.Pkcs 10.0.0 (needs Chase to choose a fix before the queue goes on)</td></tr><tr><td class="n">P97</td><td>bug reports</td><td><span class="pill p-ok">done</span></td><td class="foot">2026-10-14</td></tr></tbody></table></div><p class="foot">The ten most recently numbered finished prompts are shown.</p>
+<div class="card"><div class="hero"><span class="big">nothing running, 5 queued</span><span class="cap"><strong>Golem on.</strong> 58 prompts finished, 1 stopped early; latest done P107. Read from <code>D:\UO\cc-prompts\queue</code>, the Golem's <code>state.json</code> and each prompt's notes, every run.</span></div></div><div class="scroller"><table><thead><tr><th class="n">Prompt</th><th>Task</th><th>State</th><th>When</th></tr></thead><tbody><tr><td class="n">P108</td><td>retire live</td><td><span class="pill p-todo">queued</span></td><td class="foot"></td></tr><tr><td class="n">P109</td><td>haven print queue</td><td><span class="pill p-todo">queued</span></td><td class="foot"></td></tr><tr><td class="n">P110</td><td>haven mega dashboard</td><td><span class="pill p-todo">queued</span></td><td class="foot"></td></tr><tr><td class="n">P111</td><td>tazuo paperdoll option</td><td><span class="pill p-todo">queued</span></td><td class="foot"></td></tr><tr><td class="n">P112</td><td>playtest bot icon</td><td><span class="pill p-todo">queued</span></td><td class="foot"></td></tr><tr><td class="n">P107</td><td>haven ops move</td><td><span class="pill p-ok">done</span></td><td class="foot">2026-10-14</td></tr><tr><td class="n">P106</td><td>shard questions</td><td><span class="pill p-ok">done</span></td><td class="foot">2026-10-14</td></tr><tr><td class="n">P105</td><td>haven h1 host agnostic</td><td><span class="pill p-ok">done</span></td><td class="foot">2026-10-14</td></tr><tr><td class="n">P104</td><td>uorespawn read</td><td><span class="pill p-ok">done</span></td><td class="foot">2026-10-14</td></tr><tr><td class="n">P103</td><td>tazuo client command</td><td><span class="pill p-ok">done</span></td><td class="foot">2026-10-14</td></tr><tr><td class="n">P102</td><td>bot nightly archive</td><td><span class="pill p-ok">done</span></td><td class="foot">2026-10-14</td></tr><tr><td class="n">P101</td><td>console websites</td><td><span class="pill p-ok">done</span></td><td class="foot">2026-10-14</td></tr><tr><td class="n">P100</td><td>visual builder</td><td><span class="pill p-ok">done</span></td><td class="foot">2026-10-14</td></tr><tr><td class="n">P99</td><td>golem</td><td><span class="pill p-ok">done</span></td><td class="foot">2026-10-14</td></tr><tr><td class="n">P98</td><td>building duplicator</td><td><span class="pill p-no">stopped</span></td><td class="foot">2026-10-14 &middot; work complete and verified, but every build is blocked by NuGet audit errors NU1902/NU1903 on System.Security.Cryptography.Pkcs 10.0.0 (needs Chase to choose a fix before the queue goes on)</td></tr></tbody></table></div><p class="foot">The ten most recently numbered finished prompts are shown.</p>
 <!-- /DATA:QUEUE -->
   </section>
 
   <section>
     <div class="section-head"><span class="eyebrow">In a client</span><h2>Play tests</h2><!-- DATA:ASOF-PLAYTESTS --><!-- /DATA:ASOF-PLAYTESTS --></div>
 <!-- DATA:PLAYTESTS -->
-<div class="card"><div class="hero"><span class="big">195 open</span><span class="cap"><strong>2 failed, 18 passed</strong>, 0 later, 1 blocked, 215 in all. <strong>1 failure(s) not yet in the bug list.</strong></span></div></div><p class="foot">From <code>testing/play-tests.json</code> (the play-test page writes it). <a class="lan" data-port="8093" data-path="/" href="http://192.168.1.58:8093/">Open the play-test page</a>.</p>
+<div class="card"><div class="hero"><span class="big">196 open</span><span class="cap"><strong>2 failed, 18 passed</strong>, 0 later, 1 blocked, 216 in all. <strong>1 failure(s) not yet in the bug list.</strong></span></div></div><p class="foot">From <code>testing/play-tests.json</code> (the play-test page writes it). <a class="lan" data-port="8093" data-path="/" href="http://192.168.1.58:8093/">Open the play-test page</a>.</p>
 <!-- /DATA:PLAYTESTS -->
   </section>
 
