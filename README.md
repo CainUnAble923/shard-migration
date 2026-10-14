@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.14.2. Autopilot on, 10 queued, latest done P95. Play tests: 169 open, 2 failed, 18 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.14.3. Autopilot on, 9 queued, latest done P96. Play tests: 174 open, 2 failed, 18 passed.
 
 ## Port list: 1 of 16 systems in. 283 of 983 files (29%).
 
@@ -230,11 +230,10 @@ Tasks          ██░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (autopilot on; 46 prompts finished, 0 of them stopped early)
+### Queue (autopilot on; 47 prompts finished, 0 of them stopped early)
 
 | Prompt | State | When |
 |---|---|---|
-| P96 fix-test-shard | queued |  |
 | P97 bug-reports | queued |  |
 | P98 building-duplicator | queued |  |
 | P99 visual-builder | queued |  |
@@ -244,6 +243,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P103 uorespawn-read | queued |  |
 | P104 haven-h1-host-agnostic | queued |  |
 | P105 golem | queued |  |
+| P96 fix-test-shard | done | 2026-10-14 |
 | P95 imbue-boot-fix | done | 2026-10-14 |
 | P94 autopilot-progress-console | done | 2026-10-14 |
 | P93 servuo-code-port-assessment | done | 2026-10-13 |
@@ -253,7 +253,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P89 haven-pages-plan | done | 2026-10-13 |
 | P88 shared-menu | done | 2026-10-13 |
 | P87 console-readability | done | 2026-10-13 |
-| P86 console-vpn-disconnect | done | 2026-10-13 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 67 patches, 10 replacements
 
