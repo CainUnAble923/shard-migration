@@ -696,3 +696,34 @@ rename, on every hand-off, stop and tool use, and every 10 minutes by the schedu
   button, **Open settings.json**, opens it in Notepad and does nothing else; `Test-PlanSafety` lets Notepad open
   only the log and settings.json. The caption says what the run cap does.
 - Details and tests: `notes\cc-P94-autopilot-progress-console.md`.
+
+## 12. Websites (cc-P101, 2026-10-14)
+
+One tile and one tab for every website, on the game PC and on Haven. The site list is
+`D:\ShatteredLegacy\scripts\websites.json` (name, URL, where, container, start script, and the deploy allowlist), so
+a site that moves (P89 H3) changes only that file.
+
+- **WEBSITES tile** (the seventh). One GET per site, redirects not followed, 4 s timeout, every 60 s, in a runspace of
+  its own (`Start-WebsiteProbe`), so a dead site never holds the window. It reads `7 OF 7 UP` (green), or `6 OF 7 UP`
+  (amber) with the down ones named and why: `down: Public website (no answer: ConnectFailure)`. It reads `CHECKING`
+  before the first check, `UNKNOWN` with no usable config, and amber whenever `websites.json` has a problem.
+  `-Status` checks once and prints it. Judged by `Get-WebsitesGlance`, which is pure.
+- **Websites tab.** Pick a site, then:
+  - **Open**: the browser.
+  - **Restart**: `docker restart <container>`, in a window.
+  - **Redeploy**: the site's own start script (`Start-TestQueue.ps1`; `Start-Dashboard.ps1`, new), in a window.
+  - **Logs**: `docker logs --tail 200`, in a window.
+  - **Deploy to Haven**: after the phrase `deploy to haven`, `scripts\Invoke-WebsiteDeploy.ps1 -Deploy <name>` in a
+    window. It re-checks the allowlist, runs the named script from `D:\UO\haven-migration` with Chase's own SSH key,
+    and keeps a transcript in `scripts\shard-console-output\deploys\` (git-ignored, `*.log`).
+  - **Open NPM**: `ssh -N -L 8081:localhost:81 chase@192.168.1.61` in a window, then `http://localhost:8081/`. NPM's
+    admin page listens only on Haven's own 127.0.0.1:81.
+
+  Restart, Redeploy and Logs refuse a Haven site; Deploy refuses a game-PC site, a site without a deploy, and a name
+  not in the allowlist. **Check now** re-checks at once.
+- **Safety.** A window `docker restart` names only a game-PC site's container from the config, never a shard.
+  `ssh` runs only as exactly that tunnel. The deploy helper runs only as `-Deploy <allowlisted name>`, after the
+  phrase. No key, password or token is stored by the console or the config.
+- **Tiles wrap** for seven: all in one row when each fits, otherwise four across in two rows. The row cap is now
+  150 px (was 130).
+- Details and tests: `notes\cc-P101-console-websites.md`.

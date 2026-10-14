@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.14.7. Golem on, 6 queued, latest done P100. Play tests: 182 open, 2 failed, 18 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.14.8. Golem on, 5 queued, latest done P101. Play tests: 185 open, 2 failed, 18 passed.
 
 ## Port list: 1 of 16 systems in. 283 of 983 files (29%).
 
@@ -230,16 +230,16 @@ Tasks          ██░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 51 prompts finished, 1 of them stopped early)
+### Queue (Golem on; 52 prompts finished, 1 of them stopped early)
 
 | Prompt | State | When |
 |---|---|---|
-| P101 console-websites | queued |  |
 | P102 bot-nightly-archive | queued |  |
 | P103 tazuo-client-command | queued |  |
 | P104 uorespawn-read | queued |  |
 | P105 haven-h1-host-agnostic | queued |  |
 | P106 shard-questions | queued |  |
+| P101 console-websites | done | 2026-10-14 |
 | P100 visual-builder | done | 2026-10-14 |
 | P99 golem | done | 2026-10-14 |
 | P98 building-duplicator | stopped: work complete and verified, but every build is blocked by NuGet audit errors NU1902/NU1903 on System.Security.Cryptography.Pkcs 10.0.0 (needs Chase to choose a fix before the queue goes on) | 2026-10-14 |
@@ -249,7 +249,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P94 autopilot-progress-console | done | 2026-10-14 |
 | P93 servuo-code-port-assessment | done | 2026-10-13 |
 | P92 port-list-target | done | 2026-10-13 |
-| P91 overnight-playtest-bot | done | 2026-10-13 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 67 patches, 10 replacements
 
