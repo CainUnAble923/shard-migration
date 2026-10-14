@@ -111,3 +111,8 @@ Next free prompt: **P92**. Nothing else is drafted.
   retention), ideas reason-required, TazUO tutorial patch, UORespawn closer read, Haven H1 (H6 login moved up).
   Next free prompt: **P96**.
 - (06:15) **P96 bug-reports inbox** (plus reason required on ideas) queued. Next free prompt **P97**. Bot transcripts: 14 days, then archive to iCloud Drive (`D:\Cloud Drives\iCloudDrive`); goes in the bot prompt.
+
+- (06:35) F-44 Inn room decisions added to `docs\feature-queue.md` (per character, cannot grow, instanced via a gate in
+  any Inn, weekly rent, items to bank on placing a real house). Drafted and queued **P97-P103**: Building Duplicator,
+  Visual Builder, console Websites tab (+NPM, Haven deploys), bot nightly + iCloud archive, TazUO ClientCommand
+  patch, UORespawn read, Haven H1. Next free prompt **P104**. Autopilot sorts numerically, so P100+ is safe.
