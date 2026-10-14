@@ -128,3 +128,5 @@ Next free prompt: **P92**. Nothing else is drafted.
 - P95 (D89 boot fix), P96 (Fix test shard tab, health check, good-* tags), P97 (Bugs tab) DONE and pushed. Test shard healthy on sl-modernuo:good-61db33c.
 - P98 (Building Duplicator) work complete but STOPPED: every build fails on NuGet audit (logged **D93**). Overseer committed P98's files; prompt archived. Waiting on Chase's audit decision before the queue resumes at P99.
 - Live container stuck at a delete prompt (logged **D94**); do not answer y. Next free bug **D95**.
+
+- (10:45) D93 worked around (Chase approved): `/p:NuGetAuditLevel=critical` in docker/uo/Dockerfile, builder stage verified clean. Bugs tab deployed. Pruned 85 sl-modernuo and 46 sl-uo-builder tags (images 248 GB to 78 GB). Golem moved up to **P99** (others P100-P105). New **P106**: console shows and answers a shard's console question (D94). Next free **P107**. Live left waiting at its D94 prompt for Chase to answer via P106.
