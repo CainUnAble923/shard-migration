@@ -32,7 +32,9 @@ LIMITS = {"title": 140, "description": 2000, "reason": 300}
 # --- the store ----------------------------------------------------------------------------------
 
 def new_doc():
-    return {"schema": SCHEMA, "nextId": 1, "ideas": []}
+    # cc-P97: 'deleted' keeps each deleted idea's id, title and reason (a delete needs one), and 'copiedAt' is when the
+    # copied ideas were last marked taken, so "Copy new ideas" can list what was declined or deleted since.
+    return {"schema": SCHEMA, "nextId": 1, "copiedAt": "", "ideas": [], "deleted": []}
 
 
 def new_idea(**kw):
@@ -47,9 +49,15 @@ def ordered_idea(it):
     return {k: it.get(k, base[k]) for k in base}
 
 
+def ordered_deleted(d):
+    return {k: d.get(k, "") for k in ("id", "title", "reason", "by", "deletedAt")}
+
+
 def ordered_doc(doc):
     ideas = sorted((ordered_idea(i) for i in doc.get("ideas", [])), key=lambda i: int(i["id"][2:]))
-    return {"schema": SCHEMA, "nextId": int(doc.get("nextId") or 1), "ideas": ideas}
+    gone = sorted((ordered_deleted(d) for d in doc.get("deleted", [])), key=lambda d: int(d["id"][2:]))
+    return {"schema": SCHEMA, "nextId": int(doc.get("nextId") or 1), "copiedAt": doc.get("copiedAt", ""),
+            "ideas": ideas, "deleted": gone}
 
 
 def path_of(root):
@@ -67,7 +75,7 @@ def load(root):
     for k, v in new_doc().items():
         doc.setdefault(k, v)
     # The counter can never fall behind an id that exists (a hand-edited file, say).
-    used = [int(i["id"][2:]) for i in doc["ideas"] if re.match(r"^I-\d+$", i.get("id", ""))]
+    used = [int(i["id"][2:]) for i in doc["ideas"] + doc["deleted"] if re.match(r"^I-\d+$", i.get("id", ""))]
     doc["nextId"] = max([int(doc["nextId"] or 1)] + [u + 1 for u in used])
     return doc
 
@@ -188,15 +196,24 @@ def mark_taken(root, ids):
             if it["id"] in ids and it["status"] == "new":
                 it.update(status="taken", statusAt=stamp, updatedAt=stamp)
                 done.append(it["id"])
+        doc["copiedAt"] = stamp
         return done
     return update(root, fn)
 
 
-def delete(root, idea_id):
-    """Removes the idea. nextId is untouched, so its id is never handed out again."""
+def delete(root, idea_id, reason, by=""):
+    """Removes the idea. cc-P97: only with a one-line reason, kept with its id and title under 'deleted' ("otherwise
+    someone (me) will forget why we didn't go with that idea", Chase, Q17). nextId is untouched, so the id is never
+    handed out again."""
+    reason = pt.norm(reason)[:LIMITS["reason"]]
+    if not reason:
+        raise ValueError("deleting an idea needs a one-line reason")
+
     def fn(doc):
         it = find(doc, idea_id)
         doc["ideas"].remove(it)
+        doc["deleted"].append({"id": it["id"], "title": it["title"], "reason": reason, "by": pt.norm(by)[:60],
+                               "deletedAt": pt.now_iso()})
         return it["id"]
     return update(root, fn)
 
@@ -228,10 +245,27 @@ def copy_text(doc, playtests=None):
         else:
             lines.append("Description: (none)")
         blocks.append("\n".join(lines))
-    if not blocks:
+    # cc-P97: what was declined or deleted since the copied ideas were last marked taken, each with its reason. An
+    # idea declined before reasons were required says so rather than nothing.
+    since = doc.get("copiedAt", "")
+    closed = []
+    for it in doc["ideas"]:
+        if it["status"] == "declined" and it.get("statusAt", "") > since:
+            closed.append((it["id"], "declined", it["title"], it.get("reason", "")))
+    for d in doc.get("deleted", []):
+        if d.get("deletedAt", "") > since:
+            closed.append((d["id"], "deleted", d.get("title", ""), d.get("reason", "")))
+    closed.sort(key=lambda c: int(c[0][2:]))
+    if not blocks and not closed:
         return ""
-    head = "New feature ideas from the play-test page (%d), for F-numbers or a decline:" % len(blocks)
-    return head + "\n\n" + "\n\n".join(blocks) + "\n"
+    out = ""
+    if blocks:
+        head = "New feature ideas from the play-test page (%d), for F-numbers or a decline:" % len(blocks)
+        out = head + "\n\n" + "\n\n".join(blocks) + "\n"
+    if closed:
+        out += ("\n" if out else "") + "Declined or deleted since the last copy (%d):\n" % len(closed)
+        out += "".join("%s (%s): %s\n  Reason: %s\n" % (c[0], c[1], c[2], c[3] or "no reason recorded") for c in closed)
+    return out
 
 
 # --- the real feature queue, read only ------------------------------------------------------------------

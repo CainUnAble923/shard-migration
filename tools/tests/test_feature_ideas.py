@@ -57,7 +57,7 @@ class IdeasStore(unittest.TestCase):
         self.assertEqual(("crafting", "P71-3", "new"), (a["area"], a["playtest"], a["status"]))
         text = self.read()
         doc = json.loads(text)
-        self.assertEqual(["schema", "nextId", "ideas"], list(doc))
+        self.assertEqual(["schema", "nextId", "copiedAt", "ideas", "deleted"], list(doc))
         self.assertEqual(list(ideas.new_idea()), list(doc["ideas"][0]))
         self.assertEqual(3, doc["nextId"])
         self.assertTrue(text.endswith("}\n") and "\n  \"ideas\": [" in text, "pretty-printed, one trailing newline")
@@ -105,12 +105,12 @@ class IdeasStore(unittest.TestCase):
     def test_delete_and_an_id_is_never_reused(self):
         ideas.add(self.root, "One")
         two = ideas.add(self.root, "Two")
-        self.assertEqual("I-002", ideas.delete(self.root, two["id"]))
+        self.assertEqual("I-002", ideas.delete(self.root, two["id"], "Same as One"))
         three = ideas.add(self.root, "Three")
         self.assertEqual("I-003", three["id"], "the deleted I-002 is not handed out again")
         self.assertEqual(["I-001", "I-003"], [i["id"] for i in ideas.load(self.root)["ideas"]])
         with self.assertRaises(KeyError):
-            ideas.delete(self.root, "I-002")
+            ideas.delete(self.root, "I-002", "again")
         # A file whose counter fell behind (edited by hand) still never reuses an id.
         path = os.path.join(self.root, "testing", "feature-ideas.json")
         doc = json.loads(self.read())
@@ -269,7 +269,7 @@ class ServiceRoutes(unittest.TestCase):
         code, j = self.post("/api/ideas/add", {"title": "Climbing gear", "area": "world"})
         self.assertEqual((200, "I-001"), (code, j["idea"]["id"]))
         self.assertEqual(400, self.post("/api/ideas/add", {"title": ""})[0], "no title is a 400")
-        self.assertEqual(404, self.post("/api/ideas/delete", {"id": "I-404"})[0], "an unknown id is a 404")
+        self.assertEqual(404, self.post("/api/ideas/delete", {"id": "I-404", "reason": "gone"})[0], "an unknown id is a 404")
         doc = self.get("/api/ideas")
         self.assertEqual((1, 1), (doc["summary"]["new"], len(doc["ideas"])))
         self.assertIn("F-43", [f["id"] for f in doc["features"]], "the real queue is listed")
@@ -281,7 +281,7 @@ class ServiceRoutes(unittest.TestCase):
         self.assertEqual(0, self.get("/api/summary")["ideas_new"])
         self.assertEqual(200, self.post("/api/ideas/status", {"id": "I-001", "status": "became", "feature": "F-44"})[0])
         self.assertEqual(200, self.post("/api/ideas/edit", {"id": "I-001", "description": "Ropes"})[0])
-        self.assertEqual((200, {"deleted": "I-001"}), self.post("/api/ideas/delete", {"id": "I-001"}))
+        self.assertEqual((200, {"deleted": "I-001"}), self.post("/api/ideas/delete", {"id": "I-001", "reason": "Became F-44 elsewhere"}))
         self.assertEqual("I-002", self.post("/api/ideas/add", {"title": "Next"})[1]["idea"]["id"])
 
 
