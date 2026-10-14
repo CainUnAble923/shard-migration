@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.14. Autopilot on, 11 queued, latest done P94. Play tests: 169 open, 2 failed, 18 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.14.2. Autopilot on, 10 queued, latest done P95. Play tests: 169 open, 2 failed, 18 passed.
 
 ## Port list: 1 of 16 systems in. 283 of 983 files (29%).
 
@@ -230,11 +230,10 @@ Tasks          ██░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (autopilot on; 45 prompts finished, 0 of them stopped early)
+### Queue (autopilot on; 46 prompts finished, 0 of them stopped early)
 
 | Prompt | State | When |
 |---|---|---|
-| P95 imbue-boot-fix | queued |  |
 | P96 fix-test-shard | queued |  |
 | P97 bug-reports | queued |  |
 | P98 building-duplicator | queued |  |
@@ -245,6 +244,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P103 uorespawn-read | queued |  |
 | P104 haven-h1-host-agnostic | queued |  |
 | P105 golem | queued |  |
+| P95 imbue-boot-fix | done | 2026-10-14 |
 | P94 autopilot-progress-console | done | 2026-10-14 |
 | P93 servuo-code-port-assessment | done | 2026-10-13 |
 | P92 port-list-target | done | 2026-10-13 |
@@ -254,7 +254,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P88 shared-menu | done | 2026-10-13 |
 | P87 console-readability | done | 2026-10-13 |
 | P86 console-vpn-disconnect | done | 2026-10-13 |
-| P85 status-dashboard | done | 2026-10-13 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 67 patches, 10 replacements
 
@@ -291,7 +290,7 @@ What a MODERNUO_COMMIT bump must reconcile. Patches fail LOUDLY - apply-patches.
 - **S3 costed menu - declines upheld with their ratios recorded** — Measured 2026-09-07, notes/s3-decline-costs.md. Skill Masteries (45 files/8,542 lines, unblocks 14, patches 35 upstream files - fails the layering test). Vice vs Virtue (57/9,613, unblocks 5, patches 21). Exploring the Deep (70/10,292, unblocks 2 - structurally the safest build here and the worst ratio). Shadowguard (14/11,222, unblocks 8). City Loyalty (28/8,177, unblocks 15 - decline on ratio, not structure; revisit with Town Cryer). Instanced Peerless (13/1,543, unblocks 2, and BasePeerless and PeerlessAltar are both absent from ModernUO, so there is no base to instance - cost Services/Peerless first). ServUO's ML quest framework (22 files/6,269 lines, not the 21/5,625 the brief stated) - declined because ModernUO already ships the same OSI system. NOT declined and recommended instead: SAAbsorptionAttributes, the TribeType transformation, and a one-quest spike onto ModernUO's ML quest engine. Vendor Searching (4/2,545) is a player feature, not content; the unblock ratio is the wrong test and it is Chase's call.
 - **ServUO ML quest framework - decline REAFFIRMED by S5** — S5 translated one quest end to end and the objective mapping holds for 4 of 5 types, two of them pinned by tests. Porting ServUO's 22-file, 6,269-line framework would put a second engine in the tree to do a job the engine we already have does correctly. The decline was always on two-engines-for-one-job; it now rests on measurement rather than on principle alone. What is NOT declined: the 164 of 203 missing quests that use a single standard objective type. The 39 that hand-write a BaseObjective subclass (25 InternalObjective, 3 CollectionsObtain, 2 QuestionAndAnswer, ~9 one-offs) are per-quest work, not a framework port, and are the thing to cost before the next quest batch.
 
-Counted from the trees: 864 customization files, 72 patch files, 751 tests in 141 files.
+Counted from the trees: 864 customization files, 72 patch files, 753 tests in 142 files.
 Shard status: the test shard is the only one running (sl-modernuo:latest, 2026.10.10); there is no live shard until the fresh-world wipe; players get the 2026-10-05 package and TazUO; P65-P84 are committed, not deployed (confirmed 2026-10-13).
 <!-- PROGRESS:END -->
 
