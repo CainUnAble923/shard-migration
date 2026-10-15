@@ -600,6 +600,19 @@ Added by cc-P122 (2026-10-15).
 | P122-3 | BOT-PARTIAL | Offers and the guild master's refusal are server-sent; the deed gump's button is Chase's |
 | P122-4 | BOT | The bribe price, the bank withdrawal and the improved deed are all server-sent |
 
+### P123
+
+Added by cc-P123 (2026-10-15).
+
+| id | bucket | reason |
+|---|---|---|
+| P123-1 | BOT-PARTIAL | Each vendor's offer, bank gold and the points gump are server-sent; reading the rewards list is Chase's |
+| P123-2 | BOT-PARTIAL | The combine messages and the points line are server-sent; the wood line on the deed is Chase's eyes |
+| P123-3 | BOT-PARTIAL | Book entries and the filtered rows are server-sent; the filter page's eight-craft layout is Chase's eyes |
+| P123-4 | BOT-PARTIAL | Context menus, offers and turn-ins are server-sent; the Foresters' craft question is a gump Chase reads |
+| P123-5 | BOT-PARTIAL | The keg's uses, the dye's hue and uses and the talisman's charges are server-sent; the looks are Chase's |
+| P123-6 | CC | The test world loads and saves with the new deeds: done by CC on a scratch copy |
+
 Count check (cc-P115): 219 ids listed, 219 unique, against 219 open or blocked items in `testing/play-tests.json`. The
 P119 group above is outside that count.
 

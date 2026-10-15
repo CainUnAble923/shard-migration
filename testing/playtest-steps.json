@@ -1165,6 +1165,67 @@
     "Hand the deed to the Blacksmith"
    ],
    "pass": "The Blacksmith names a price; handing the deed over takes that gold from your bank and the deed comes back better (more items, exceptional, or a better metal)."
+  },
+  "P123-1": {
+   "where": "Test shard, a player character with the craft's skill at 60, at each town vendor: Carpenter, Bowyer, Tinker, Cook (and a Baker), Alchemist, Scribe",
+   "do": [
+    "Set the craft's skill to 60 (`[SetSkill Carpentry 60` as staff; Fletching, Tinkering, Cooking, Alchemy, Inscribe for the others)",
+    "Single-click the vendor, choose Bulk Order Info, and take the offer",
+    "Fill the small deed (double-click it, Combine, target the items; a stack of arrows, scrolls or potions fills its count at once) and hand it to the vendor"
+   ],
+   "pass": "Each vendor offers its own craft's deed. The turn-in puts gold in your bank and asks whether to bank the points or claim a reward; claiming shows that craft's rewards list.",
+   "check": "Not built yet: a bot check would request an offer at each of the six vendors and read the accept gump, then hand in a filled deed and read the bank gold and the 1157076 gump."
+  },
+  "P123-2": {
+   "where": "Test shard, a player character with Carpentry or Fletching at 100, at a Carpenter or Bowyer",
+   "do": [
+    "Ask for Bulk Order Info until a large deed comes (or `[add LargeCarpentryBOD` as staff)",
+    "Fill a small deed for each line of the large deed and combine them into it",
+    "Hand the large deed in"
+   ],
+   "pass": "The small deeds combine into the large one; a deed that names a wood (for example \"Oak\") takes only items made of that wood; the large turn-in pays more points than a small one.",
+   "check": "Not built yet: a bot check would combine prepared small deeds into a large one and read the combine messages and the points line."
+  },
+  "P123-3": {
+   "where": "Test shard, any character with a bulk order book and deeds of three crafts (for example carpentry, cooking and a blacksmith deed)",
+   "do": [
+    "Drop the deeds into the book",
+    "Open the book, choose Set Filter, and pick Carpentry",
+    "Take a deed back out of the book"
+   ],
+   "pass": "The book takes every craft's deeds. The filter page lists all eight crafts with their metals and woods; with Carpentry chosen only carpentry deeds show. A deed taken out is the same deed it was.",
+   "check": "Not built yet: a bot check would drop deeds into a book, set the filter by its button, and read the book gump's rows."
+  },
+  "P123-4": {
+   "where": "Test shard, New Haven: the Tinkers' Union (Springs N Things), the Arcane Society (Magery School), the Maritime Brotherhood (the docks), the Order of the Alembic (Little Shop of Alchemy) and the Foresters' Union (Carpenters of New Haven) guild masters",
+   "do": [
+    "As a character not in the guild, single-click the guild master",
+    "Join the guild, set its craft skill to 60, and single-click again; choose Bulk Order Info",
+    "At the Foresters' guild master, with both Carpentry and Fletching, choose Bulk Order Info",
+    "Hand a filled deed of the guild's craft to the guild master"
+   ],
+   "pass": "A non-member sees no Bulk Order Info. A member gets an offer of the guild's craft; the Foresters' guild master asks Carpentry or Fletching when you have both. The guild master takes the filled deed and pays as a town vendor does.",
+   "check": "Not built yet: a bot check would join each guild, read the context menu for 3006152, take an offer, and hand in a deed."
+  },
+  "P123-5": {
+   "where": "Test shard, staff and a player character",
+   "do": [
+    "`[add MasterChefsApron`, wear it, and look at its tooltip; craft a few items that can be exceptional",
+    "`[add PowderOfFortKeg`; drop powder of fortification on it, then double-click it",
+    "`[add PlumTreeAddonDeed` and place it in a house; pick plums",
+    "`[add SpecialNaturalDye DullRuby` and dye a robe; `[add SpecialNaturalDye WindAzul true` and try a shirt, then a spellbook",
+    "Wear `[add GuaranteedSpellbookImprovementTalisman` and scribe a spellbook with Magery 80 or more"
+   ],
+   "pass": "The apron shows its Cooking exceptional bonus and makes exceptional items more often; the keg fills and gives powder back one use at a time; the tree grows plums; the dye colours the robe and the spellbook-only dye refuses the shirt but colours the book; the talisman's charges go down and the book gets one more property.",
+   "check": "Partly a bot check: the keg's uses, the dye's hue and uses, and the talisman's charges are server-sent; the looks are Chase's."
+  },
+  "P123-6": {
+   "where": "The test world (scratch copy), before and after the change",
+   "do": [
+    "Boot the test world on the new image, wait for it to load, and stop it (it saves)"
+   ],
+   "pass": "The start log shows the bulk order census line with the same smith and tailor deeds and books as before, and no error.",
+   "check": "Done by CC on a scratch copy (cc-P123 notes, Test world boot)."
   }
  }
 }
