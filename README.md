@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.15.8. Golem on, 13 queued, latest done P123. Play tests: 235 open, 2 failed, 21 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.15.9. Golem on, 12 queued, latest done P124. Play tests: 236 open, 2 failed, 21 passed.
 
 ## Port list: 1 of 16 systems in. 340 of 983 files (35%).
 
@@ -230,11 +230,10 @@ Tasks          ██░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 74 prompts finished, 3 of them stopped early)
+### Queue (Golem on; 75 prompts finished, 3 of them stopped early)
 
 | Prompt | State | When |
 |---|---|---|
-| P124 package-ships-our-tazuo | queued |  |
 | P125 golem-long-run-toggle | queued |  |
 | P126 second-machine-design | queued |  |
 | P127 port-treasure-maps-monster-stealing | queued |  |
@@ -247,6 +246,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P134 vseuoaware-art-checks-mcp | queued |  |
 | P135 vseuoaware-staff-commands | queued |  |
 | P136 status-page-self-judging | queued |  |
+| P124 package-ships-our-tazuo | done | 2026-10-15 |
 | P123 port-bulk-orders-crafts | done | 2026-10-15 |
 | P122 port-bulk-orders-core | done | 2026-10-15 |
 | P121 pet-ability-core | done | 2026-10-15 |
@@ -256,7 +256,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P117 fresh-login-bulletin-regression | done | 2026-10-15 |
 | P116 console-tab-scroll | done | 2026-10-15 |
 | P115 playtest-who-and-how | done | 2026-10-15 |
-| P114 test-shortcuts-our-build | done | 2026-10-15 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 78 patches, 10 replacements
 

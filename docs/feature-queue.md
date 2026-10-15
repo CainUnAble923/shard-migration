@@ -3278,6 +3278,49 @@ Open (the features chat designs it):
 - The character limit per account; rent amount, grace, and non-payment rules.
 - Room size, lockdown and secure counts; which decorations are allowed.
 - Whether anyone can visit; whether it survives loops (the tutorial wipe policy covers 1.0).- Fidelity: OSI has no player inn rooms; log as a deviation when designed.
+
+### F-45: Rootdeep Burrows bestiary and the tutorial Vault (added 2026-10-15)
+
+**Ours** (on top of P24 and P36's dungeon, F-35's tutorial and F-32's mimic). From the features chat with Chase,
+2026-10-15, after the 10-13 to 10-15 creature art downloads.
+
+Decided with Chase, 2026-10-15:
+- **Player name: the Rootdeep Burrows** (code keeps `OldHavenBurrowsRegion`). The root zone is renamed **the Tangle** so
+  the names do not collide.
+- **Zones**, shallow to deep: the Warren (Burrowers, Burrowhide, Brood Pit mini champ), the Tangle (roots, Rootwood) and
+  the Dawnseam (stone, Dawnstone) side by side, then the Gloom (spiders, Gloomsilk). Layout draft approved; tile ranges in
+  the prompt.
+- **The Vault**: a tutorial-only room beside the landing, inside the Burrows region. The Overdraft dies, a one-way
+  crawlway opens into the Warren, the Vault seals. Resurrection point at the landing.
+- **Tutorial creatures drop loot**: fixed, scripted drops, so the looting lesson always works (changes P80's "no loot").
+- **Bosses:** the Overdraft (tutorial miniboss) is a **chest monster at boss scale**, a living bank strongbox (WoW crate
+  creature art, upscaled; AI art chat if the upscale fails). The Burrow Mother is the large sand maggot, with small
+  maggots as her grubs. **The Gloom Queen is the drider** (Underdark Drider Female).
+- **Decoy mimics:** two or three P50 ChestMimics in the Vault teach "that chest has teeth" before the boss.
+- **Recolors:** the Burrow Scamp archer goes rust red; the crop crow is the stock bird (body 6) enlarged to between
+  the bird and the eagle, with a black hue (L_Bird rejected).
+- **Overdraft art confirmed** after a side-by-side of seven chest and mimic options: the walking crate (strongbox).
+- **Rips:** Baldur's Gate, Icewind Dale and other game rips are cleared like WoW and Diablo; every creature renamed.
+- Full lineup with art files: the prompt below and Chase's "Burrows Bestiary" artifact page.
+
+Prompt: `cc-prompts\cc-P-rootdeep-burrows-creatures.md` (unnumbered, written 2026-10-15). Depends on F-46.
+
+Open: final in-game names for every creature (working names stand until then); the Overdraft scale (1.5x or 2x) and
+the crow scale (1.33x, 1.5x or 1.75x), both from the CC render sheet; whether the Vault needs to grow for a boss-scale
+fight.
+
+### F-46: Third-party creature bodies in the client (added 2026-10-15)
+
+**Ours** (client and package). Found while picking the Burrows lineup: nothing third-party has ever shipped as a
+**creature body**. The package carries item art, one worn-item animation (the kitsune) and gumps; P40 found no loose
+override for creature animation files. Every `.vd` mob (the Burrows lineup, the evo pets' L_Fox, L_Bird and L_Griffin
+stages, mounts, bosses) is blocked on this.
+
+What it needs: one proven route from a UOFiddler `.vd` to a body ID in our package and our TazUO, with the per-body
+checklist (free slot, `mobtypes.txt`, `bodyTable.cfg`, Bodyconv if used), proven first on the Kobold Bow.
+
+Prompt: Part A of `cc-P-rootdeep-burrows-creatures.md` (the gate for F-45; the overseer may split it out).
+
 ## Batched
 
 | ID | Batch prompt | Notes |
