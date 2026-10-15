@@ -1107,6 +1107,28 @@
    ],
    "pass": "About two casts in five, it throws an axe back that hits you for 50 physical.",
    "check": "Not built yet: the damage is a shard test (CCP119CreatureVerification); a bot check would cast at it and read the player's hit points."
+  },
+  "P121-1": {
+   "where": "Test shard, SL TEST - Admin (Eve), anywhere open",
+   "do": [
+    "`[add Dragon`, then `[props` and target it",
+    "Open AbilityProfile and read AbilityNames",
+    "Do the same for `[add CuSidhe` and `[add GiantSpider`"
+   ],
+   "pass": "The dragon lists Magery, DragonBreath; the cu sidhe lists Heal; the giant spider lists Poisoning. Each ability once."
+  },
+  "P121-2": {
+   "where": "Test shard, SL TEST - Admin (Eve) plus a player character",
+   "do": [
+    "As Eve, `[add GiantSpider` and make it a pet of yours (`[set ControlMaster` on it, target yourself, and Controlled true)",
+    "`[props` it, Skills, set Poisoning to 100",
+    "Tell it to attack the player character and let it bite a few times"
+   ],
+   "pass": "Within a few bites the player is poisoned with lethal poison (the strongest message), and each poisoning hit shows a green flash on the player.",
+   "check": "Not built yet: a bot check would tame the spider through admin commands, set Poisoning 100, let it attack the player and read the poison level from the status packet."
+  },
+  "P121-3": {
+   "check": "Done by CC (cc-P121): sl-modernuo:cc-p121 booted twice on a copy of the test world's 2026-10-15-16-50-00 backup; it loaded, saved PetAbilityProfiles.bin and loaded it again with no error."
   }
  }
 }

@@ -579,6 +579,16 @@ Added by cc-P119 (2026-10-15), after the cc-P115 sort below was counted.
 | P119-3 | EYES | Riding the two mounts: the mounted rider's look |
 | P119-4 | BOT-PARTIAL | The hatchet's 50 damage is server-sent (and pinned by a shard test); the thrown-axe effect is Chase's |
 
+### P121
+
+Added by cc-P121 (2026-10-15).
+
+| id | bucket | reason |
+|---|---|---|
+| P121-1 | EYES | Reading a creature's ability list in the [props gump: staff tooling, on screen |
+| P121-2 | BOT-PARTIAL | A tamed spider's poison level and the poisoned message are server-sent; the green flash is Chase's eyes |
+| P121-3 | CC | The test world loads and saves with the new save file: done by CC on a scratch copy (two boots) |
+
 Count check (cc-P115): 219 ids listed, 219 unique, against 219 open or blocked items in `testing/play-tests.json`. The
 P119 group above is outside that count.
 

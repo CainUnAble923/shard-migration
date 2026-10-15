@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-15T10:21:16-05:00",
+  "generated": "2026-10-15T12:10:20-05:00",
   "direction": {
     "eyebrow": "Direction",
     "title": "Our own shard on ModernUO, OSI where OSI has an answer",
@@ -565,10 +565,10 @@
     "confirmed": "2026-09-19"
   },
   "counted": {
-    "customization_files": 899,
-    "patch_files": 72,
+    "customization_files": 907,
+    "patch_files": 77,
     "stale_migrations_present": false,
-    "upstream_patch_files": 67,
+    "upstream_patch_files": 72,
     "upstream_replacements": [
       "BaseGuildmaster.cs",
       "BulkMaterialType.cs",
@@ -581,8 +581,8 @@
       "RegenRates.cs",
       "ResourceInfo.cs"
     ],
-    "test_files": 146,
-    "test_cases": 782
+    "test_files": 147,
+    "test_cases": 804
   },
   "content_progress": [
     {
@@ -628,6 +628,12 @@
       "pct": 10.3
     },
     {
+      "area": "Items/Functional",
+      "total": 49,
+      "done": 4,
+      "pct": 8.2
+    },
+    {
       "area": "Items/Containers",
       "total": 31,
       "done": 4,
@@ -638,12 +644,6 @@
       "total": 84,
       "done": 3,
       "pct": 3.6
-    },
-    {
-      "area": "Items/Functional",
-      "total": 49,
-      "done": 3,
-      "pct": 6.1
     },
     {
       "area": "Items/Decorative",
@@ -912,9 +912,9 @@
         "feeds": "F-35 evo pets, companions, Animal Lore to 200",
         "why": "132 ServUO creature files call it; Animal Lore past its ceiling needs high-level tameables. Decided 2026-10-13 (Chase): port it fully; evo pets and companions sit on top of OSI animal training, they do not replace it",
         "candidates": 11,
-        "done": 0,
+        "done": 4,
         "complete": false,
-        "pct": 0.0
+        "pct": 36.4
       },
       {
         "id": "eodon",
@@ -967,9 +967,9 @@
         "feeds": "everything above",
         "why": "the plain remainder a ported system reaches for; trap training kits are Lockpicking and Remove Trap gain paths",
         "candidates": 298,
-        "done": 168,
+        "done": 169,
         "complete": false,
-        "pct": 56.4
+        "pct": 56.7
       },
       {
         "id": "rewardpool",
@@ -1031,7 +1031,7 @@
       "port": {
         "systems": 16,
         "files": 983,
-        "done": 313,
+        "done": 318,
         "titles": [
           "Bulk orders, all crafts",
           "Treasure maps revamp",
@@ -1110,9 +1110,9 @@
     "counted": {
       "systems": 16,
       "in": 1,
-      "done": 313,
+      "done": 318,
       "total": 983,
-      "pct": 31.8
+      "pct": 32.3
     },
     "next": "Bulk orders, all crafts",
     "decided": [
@@ -1270,31 +1270,21 @@
     "corrections": "2026-09-19"
   },
   "derived": {
-    "version": "2026.10.15.5",
+    "version": "2026.10.15.6",
     "playtests": {
-      "open": 224,
+      "open": 228,
       "failed": 2,
       "passed": 21,
       "later": 0,
       "blocked": 1,
-      "total": 247,
+      "total": 251,
       "unloggedFails": 1,
-      "generatedAt": "2026-10-15T14:09:19Z"
+      "generatedAt": "2026-10-15T15:21:28Z"
     },
     "queue": {
       "autopilot": "on",
       "running": null,
       "queued": [
-        {
-          "n": 120,
-          "slug": "port-pet-training",
-          "state": "queued"
-        },
-        {
-          "n": 121,
-          "slug": "port-creatures-part2",
-          "state": "queued"
-        },
         {
           "n": 122,
           "slug": "port-bulk-orders-core",
@@ -1329,9 +1319,50 @@
           "n": 128,
           "slug": "port-consumables-crafting-gaps",
           "state": "queued"
+        },
+        {
+          "n": 129,
+          "slug": "port-creatures-part2",
+          "state": "queued"
+        },
+        {
+          "n": 130,
+          "slug": "pet-training",
+          "state": "queued"
+        },
+        {
+          "n": 131,
+          "slug": "wake-golem-from-console",
+          "state": "queued"
+        },
+        {
+          "n": 132,
+          "slug": "console-layout-and-art-slots",
+          "state": "queued"
+        },
+        {
+          "n": 133,
+          "slug": "haven-intranet-dashboard",
+          "state": "queued"
         }
       ],
       "finished": [
+        {
+          "n": 121,
+          "slug": "pet-ability-core",
+          "state": "done",
+          "why": "",
+          "date": "2026-10-15",
+          "notes": "notes/cc-P121-pet-ability-core.md"
+        },
+        {
+          "n": 120,
+          "slug": "port-pet-training",
+          "state": "stopped",
+          "why": "needs Chase",
+          "date": "2026-10-15",
+          "notes": "notes/cc-P120-port-pet-training.md"
+        },
         {
           "n": 119,
           "slug": "port-creatures-part1",
@@ -1395,33 +1426,17 @@
           "why": "",
           "date": "2026-10-14",
           "notes": "notes/cc-P112-playtest-bot-icon.md"
-        },
-        {
-          "n": 111,
-          "slug": "tazuo-paperdoll-option",
-          "state": "done",
-          "why": "",
-          "date": "2026-10-14",
-          "notes": "notes/cc-P111-tazuo-paperdoll-option.md"
-        },
-        {
-          "n": 110,
-          "slug": "haven-mega-dashboard",
-          "state": "done",
-          "why": "",
-          "date": "2026-10-14",
-          "notes": "notes/cc-P110-haven-mega-dashboard.md"
         }
       ],
-      "finished_total": 70,
-      "stopped_total": 2,
+      "finished_total": 72,
+      "stopped_total": 3,
       "latest_done": {
-        "n": 119,
-        "slug": "port-creatures-part1",
+        "n": 121,
+        "slug": "pet-ability-core",
         "state": "done",
         "why": "",
         "date": "2026-10-15",
-        "notes": "notes/cc-P119-port-creatures-part1.md"
+        "notes": "notes/cc-P121-pet-ability-core.md"
       }
     },
     "reviewed": "2026-10-13",
