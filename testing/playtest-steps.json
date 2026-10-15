@@ -162,7 +162,7 @@
    "check": "Not built yet: a Society member with a known Seal balance fills and hands in a small iron 10 regular deed; assert the +52 Seals message and balance +52; result in the nightly report once built."
   },
   "P56-2": {
-   "check": "Not built yet: a non-member hands the same deed to a town Blacksmith; assert gold and an item in pack; result in the nightly report once built."
+   "check": "Not built yet: a non-member hands the same deed to a town Blacksmith; assert gold arrives in the bank and the bank-points gump (1157076) opens (cc-P122: OSI's 2016 rules; was gold and an item in pack). Result in the nightly report once built."
   },
   "P56-3": {
    "check": "Not built yet: set Completed orders to Ask each time, hand in a deed; assert the Bank button text shows the Seal figure; result in the nightly report once built."
@@ -1129,6 +1129,42 @@
   },
   "P121-3": {
    "check": "Done by CC (cc-P121): sl-modernuo:cc-p121 booted twice on a copy of the test world's 2026-10-15-16-50-00 backup; it loaded, saved PetAbilityProfiles.bin and loaded it again with no error."
+  },
+  "P122-1": {
+   "where": "Test shard, a player character not in the Society of Smiths, at a town Blacksmith",
+   "do": [
+    "Set Blacksmithy to 80 (`[SetSkill Blacksmith 80` as staff)",
+    "Single-click the Blacksmith, choose Bulk Order Info, and take Small three times",
+    "Ask a fourth time",
+    "Fill one small deed and hand it to the Blacksmith"
+   ],
+   "pass": "Three offers come, the fourth says an offer may be available in about 360 minutes. The turn-in puts gold in your bank and asks whether to bank the points or claim a reward; claiming shows the rewards list.",
+   "check": "Not built yet: a bot check would request four offers and read the accept gumps and the 1072058 message, then hand in a filled deed and read the bank gold and the 1157076 gump."
+  },
+  "P122-2": {
+   "where": "Test shard, a Society of Smiths member at the Society guildmaster and at a town Blacksmith",
+   "do": [
+    "Hand in a completed smith deed at the guildmaster",
+    "Hand in another at a town Blacksmith"
+   ],
+   "pass": "Both pay the Society's way as before: Seals banked (or cash out, by your setting), no rewards gump."
+  },
+  "P122-3": {
+   "where": "Test shard, a tailor character (Tailoring 60 or more) at a town Tailor, and a Tailors' Circle member at the Tailors' Circle guild master",
+   "do": [
+    "Ask the Tailor for Bulk Order Info three times",
+    "Hand in a completed tailor deed with the deed's points-mode button set to Automatic",
+    "As a Tailors' Circle member, ask the guild master for Bulk Order Info"
+   ],
+   "pass": "The Tailor gives offers; the Automatic turn-in banks the points without asking and opens the rewards list; the guild master gives a tailor deed to a member and none to a non-member."
+  },
+  "P122-4": {
+   "where": "Test shard, any character with an unfilled smith deed and gold in the bank, at a town Blacksmith",
+   "do": [
+    "Choose Bribe on the Blacksmith's menu and target the deed",
+    "Hand the deed to the Blacksmith"
+   ],
+   "pass": "The Blacksmith names a price; handing the deed over takes that gold from your bank and the deed comes back better (more items, exceptional, or a better metal)."
   }
  }
 }

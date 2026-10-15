@@ -94,7 +94,7 @@ checked.
 | id | bucket | reason |
 |---|---|---|
 | P56-1 | BOT | Member hands in a deed; system message "Society of Smiths: +n standing, +52 Smithing Seals banked." and the balance grows by that |
-| P56-2 | BOT | Non-member hands a deed to a town Blacksmith; gold and a reward item land in pack |
+| P56-2 | BOT | Non-member hands a deed to a town Blacksmith; gold lands in the bank and the bank-points gump opens (cc-P122, OSI's 2016 rules; was gold and an item in pack) |
 | P56-3 | BOT | Ask mode: the hand-in gump's Bank button text carries the new Seal figure |
 | P56-4 | BOT | Smelt Platinum at 112.4: refusal message, ore stays; at 112.5 smelts about half the time |
 | P56-5 | BOT | Satchel smelt at 112.4: "left unsmelted"; at 112.5 ingots appear in the satchel |
@@ -589,6 +589,17 @@ Added by cc-P121 (2026-10-15).
 | P121-2 | BOT-PARTIAL | A tamed spider's poison level and the poisoned message are server-sent; the green flash is Chase's eyes |
 | P121-3 | CC | The test world loads and saves with the new save file: done by CC on a scratch copy (two boots) |
 
+### P122
+
+Added by cc-P122 (2026-10-15).
+
+| id | bucket | reason |
+|---|---|---|
+| P122-1 | BOT-PARTIAL | Offers, the wait message, bank gold and the points gump are server-sent; reading the rewards list is Chase's |
+| P122-2 | BOT-PARTIAL | Seals and the absence of the rewards gump are server-sent; the Society's own gumps are Chase's |
+| P122-3 | BOT-PARTIAL | Offers and the guild master's refusal are server-sent; the deed gump's button is Chase's |
+| P122-4 | BOT | The bribe price, the bank withdrawal and the improved deed are all server-sent |
+
 Count check (cc-P115): 219 ids listed, 219 unique, against 219 open or blocked items in `testing/play-tests.json`. The
 P119 group above is outside that count.
 
@@ -622,7 +633,7 @@ Assert exact strings where quoted; numbers are from the notes.
 - **T-047** Young player; assert countdown text like "13 days and 23 hours of play time"; say "I want to grow up!"; assert the confirm gump.
 - **T-048** [go New Haven mine camp; assert Liaison and Survey Archivist positions and two tent pieces west of the existing one. Chase checks the look.
 - **P56-1** member with known Seals; [add SmallSmithBOD until iron 10 regular, fill, hand in; assert "Society of Smiths: +n standing, +52 Smithing Seals banked." and balance +52.
-- **P56-2** non-member hands the same deed to a town Blacksmith; assert gold and an item in pack.
+- **P56-2** non-member hands the same deed to a town Blacksmith; assert gold in the bank and the 1157076 gump (cc-P122).
 - **P56-3** set "Completed orders" to "Ask each time"; hand in; assert the Bank button's text shows the Seal figure.
 - **P56-4** [SetSkill Mining 112.4, [add PlatinumOre 10, target a forge; assert "You have no idea how to smelt this strange ore!" and ore remains; at 112.5 assert ingots about half the time.
 - **P56-5** [add ReinforcedOreSatchel with the ore; Smelt at 112.4: assert "left unsmelted"; at 112.5 assert ingots in the satchel.

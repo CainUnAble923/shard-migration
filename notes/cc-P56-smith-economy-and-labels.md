@@ -290,8 +290,8 @@ In game on the test shard (a Society member smith; `[SetSkill Blacksmith 120`, `
    until you get one, or the guild's own Small order): "Society of Smiths: +n standing, +52 Smithing Seals banked." (an
    iron 10 regular; about 178 for an iron 20 regular, about 305 for an iron 20 exceptional). Your old balance is still there
    plus that.
-5. **Non-member comparison:** on a character not in the Society, hand the same kind of deed to a town Blacksmith: gold and an
-   item, as before (unchanged).
+5. **Non-member comparison:** on a character not in the Society, hand the same kind of deed to a town Blacksmith: gold to
+   your bank and the bulk-order rewards gump (OSI's 2016 rules, cc-P122; was "gold and an item, as before").
 6. **Ask mode:** set "Completed orders" to "Ask each time" at the guildmaster; hand in a deed: the Bank button shows the new
    Seal figure.
 7. **Smelting (D78):** `[SetSkill Mining 112.4`, `[add PlatinumOre 10`, stand by a forge, double-click the ore and target the
