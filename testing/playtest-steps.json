@@ -1079,6 +1079,34 @@
     "Then Publish package with the new build"
    ],
    "pass": "The published package is built from 7fea506 or later, and the four SL TEST shortcuts still start after accepting its update."
+  },
+  "P119-1": {
+   "check": "Built (cc-P119, `p119_1`): admin [adds IceHound, OrcChopper, Lifestealer, EffeteUndeadGargoyle and Wight beside a fresh player at Wrestling and Tactics 100 and Str 250, pins each at 1 hit point and CantWalk; the player attacks. Asserts each shows with its port's body, leaves the player's view, and a corpse (0x2006, amount = body) lands. Result in the nightly report."
+  },
+  "P119-2": {
+   "where": "Test shard, SL TEST - Admin (Eve), anywhere open",
+   "do": [
+    "`[add EffeteUndeadGargoyle`, then the same for PutridUndeadGargoyle, Wight, SkeletalDrake, DreamWraith, NightTerror, Mimic, GargoyleGuardian, EnragedColossus and Ortanord",
+    "Watch each stand, then walk your character close so it moves and attacks"
+   ],
+   "pass": "Each draws as a whole creature (not invisible, not a stray item, not a wrong-sized sprite) and animates when it moves and attacks. ServUO's own files say the two undead gargoyles' and the Wight's bodies are guesses, so say which look wrong."
+  },
+  "P119-3": {
+   "where": "Test shard, SL TEST - Admin (Eve)",
+   "do": [
+    "`[add DreadWarhorse` and `[add Palomino`",
+    "`[tame` each (or `[set ControlMaster` to yourself, then Controlled true), then double-click it to mount"
+   ],
+   "pass": "You ride each one: a dark warhorse (like a nightmare) and a palomino-coloured horse under your character, and you can dismount."
+  },
+  "P119-4": {
+   "where": "Test shard, SL TEST - Admin (Eve), plus a player character",
+   "do": [
+    "As Eve, `[add GargoyleGuardian` (it does not move or attack)",
+    "As the player, cast Magic Arrow at it several times from a few tiles away"
+   ],
+   "pass": "About two casts in five, it throws an axe back that hits you for 50 physical.",
+   "check": "Not built yet: the damage is a shard test (CCP119CreatureVerification); a bot check would cast at it and read the player's hit points."
   }
  }
 }

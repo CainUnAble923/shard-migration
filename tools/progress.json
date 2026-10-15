@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-15T09:09:08-05:00",
+  "generated": "2026-10-15T10:21:16-05:00",
   "direction": {
     "eyebrow": "Direction",
     "title": "Our own shard on ModernUO, OSI where OSI has an answer",
@@ -565,7 +565,7 @@
     "confirmed": "2026-09-19"
   },
   "counted": {
-    "customization_files": 867,
+    "customization_files": 899,
     "patch_files": 72,
     "stale_migrations_present": false,
     "upstream_patch_files": 67,
@@ -581,8 +581,8 @@
       "RegenRates.cs",
       "ResourceInfo.cs"
     ],
-    "test_files": 145,
-    "test_cases": 774
+    "test_files": 146,
+    "test_cases": 782
   },
   "content_progress": [
     {
@@ -600,14 +600,14 @@
     {
       "area": "Mobiles/Normal",
       "total": 138,
-      "done": 58,
-      "pct": 42.0
+      "done": 86,
+      "pct": 62.3
     },
     {
       "area": "Items/Resource",
       "total": 61,
-      "done": 36,
-      "pct": 59.0
+      "done": 37,
+      "pct": 60.7
     },
     {
       "area": "Services/Revamped Dungeons",
@@ -624,14 +624,20 @@
     {
       "area": "Items/Quest",
       "total": 78,
-      "done": 7,
-      "pct": 9.0
+      "done": 8,
+      "pct": 10.3
     },
     {
       "area": "Items/Containers",
       "total": 31,
       "done": 4,
       "pct": 12.9
+    },
+    {
+      "area": "Quests",
+      "total": 84,
+      "done": 3,
+      "pct": 3.6
     },
     {
       "area": "Items/Functional",
@@ -644,12 +650,6 @@
       "total": 88,
       "done": 2,
       "pct": 2.3
-    },
-    {
-      "area": "Quests",
-      "total": 84,
-      "done": 2,
-      "pct": 2.4
     },
     {
       "area": "Services/CleanUpBritannia",
@@ -901,9 +901,9 @@
         "feeds": "gate: things to fight; F-24, F-40, F-42",
         "why": "'Things to fight' gate (19 spawn orphans), League hunts and culling, monster parts for imbuing and epic crafting; WoW/Diablo art lands on these, renamed",
         "candidates": 193,
-        "done": 80,
+        "done": 109,
         "complete": false,
-        "pct": 41.5
+        "pct": 56.5
       },
       {
         "id": "pettraining",
@@ -967,9 +967,9 @@
         "feeds": "everything above",
         "why": "the plain remainder a ported system reaches for; trap training kits are Lockpicking and Remove Trap gain paths",
         "candidates": 298,
-        "done": 167,
+        "done": 168,
         "complete": false,
-        "pct": 56.0
+        "pct": 56.4
       },
       {
         "id": "rewardpool",
@@ -1022,16 +1022,16 @@
         "feeds": "",
         "why": "ported with the system that uses them, never on their own; not counted",
         "candidates": 361,
-        "done": 11,
+        "done": 12,
         "complete": false,
-        "pct": 3.0
+        "pct": 3.3
       }
     ],
     "tiers": {
       "port": {
         "systems": 16,
         "files": 983,
-        "done": 283,
+        "done": 313,
         "titles": [
           "Bulk orders, all crafts",
           "Treasure maps revamp",
@@ -1056,7 +1056,7 @@
       "ride": {
         "systems": 1,
         "files": 361,
-        "done": 11,
+        "done": 12,
         "titles": [
           "Ride-along: NPCs, quest items, books, internals"
         ],
@@ -1110,9 +1110,9 @@
     "counted": {
       "systems": 16,
       "in": 1,
-      "done": 283,
+      "done": 313,
       "total": 983,
-      "pct": 28.8
+      "pct": 31.8
     },
     "next": "Bulk orders, all crafts",
     "decided": [
@@ -1270,31 +1270,21 @@
     "corrections": "2026-09-19"
   },
   "derived": {
-    "version": "2026.10.15.4",
+    "version": "2026.10.15.5",
     "playtests": {
-      "open": 223,
+      "open": 224,
       "failed": 2,
       "passed": 21,
       "later": 0,
       "blocked": 1,
-      "total": 246,
+      "total": 247,
       "unloggedFails": 1,
-      "generatedAt": "2026-10-15T13:57:18Z"
+      "generatedAt": "2026-10-15T14:09:19Z"
     },
     "queue": {
       "autopilot": "on",
       "running": null,
       "queued": [
-        {
-          "n": 118,
-          "slug": "port-bulk-orders",
-          "state": "queued"
-        },
-        {
-          "n": 119,
-          "slug": "port-creatures-part1",
-          "state": "queued"
-        },
         {
           "n": 120,
           "slug": "port-pet-training",
@@ -1304,9 +1294,60 @@
           "n": 121,
           "slug": "port-creatures-part2",
           "state": "queued"
+        },
+        {
+          "n": 122,
+          "slug": "port-bulk-orders-core",
+          "state": "queued"
+        },
+        {
+          "n": 123,
+          "slug": "port-bulk-orders-crafts",
+          "state": "queued"
+        },
+        {
+          "n": 124,
+          "slug": "package-ships-our-tazuo",
+          "state": "queued"
+        },
+        {
+          "n": 125,
+          "slug": "golem-long-run-toggle",
+          "state": "queued"
+        },
+        {
+          "n": 126,
+          "slug": "second-machine-design",
+          "state": "queued"
+        },
+        {
+          "n": 127,
+          "slug": "port-treasure-maps-monster-stealing",
+          "state": "queued"
+        },
+        {
+          "n": 128,
+          "slug": "port-consumables-crafting-gaps",
+          "state": "queued"
         }
       ],
       "finished": [
+        {
+          "n": 119,
+          "slug": "port-creatures-part1",
+          "state": "done",
+          "why": "",
+          "date": "2026-10-15",
+          "notes": "notes/cc-P119-port-creatures-part1.md"
+        },
+        {
+          "n": 118,
+          "slug": "port-bulk-orders",
+          "state": "stopped",
+          "why": "needs Chase",
+          "date": "2026-10-15",
+          "notes": "notes/cc-P118-port-bulk-orders.md"
+        },
         {
           "n": 117,
           "slug": "fresh-login-bulletin-regression",
@@ -1370,33 +1411,17 @@
           "why": "",
           "date": "2026-10-14",
           "notes": "notes/cc-P110-haven-mega-dashboard.md"
-        },
-        {
-          "n": 109,
-          "slug": "haven-print-queue",
-          "state": "done",
-          "why": "",
-          "date": "2026-10-14",
-          "notes": "notes/cc-P109-haven-print-queue.md"
-        },
-        {
-          "n": 108,
-          "slug": "retire-live",
-          "state": "done",
-          "why": "",
-          "date": "2026-10-14",
-          "notes": "notes/cc-P108-retire-live.md"
         }
       ],
-      "finished_total": 68,
-      "stopped_total": 1,
+      "finished_total": 70,
+      "stopped_total": 2,
       "latest_done": {
-        "n": 117,
-        "slug": "fresh-login-bulletin-regression",
+        "n": 119,
+        "slug": "port-creatures-part1",
         "state": "done",
         "why": "",
         "date": "2026-10-15",
-        "notes": "notes/cc-P117-fresh-login-bulletin-regression.md"
+        "notes": "notes/cc-P119-port-creatures-part1.md"
       }
     },
     "reviewed": "2026-10-13",

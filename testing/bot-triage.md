@@ -47,6 +47,7 @@ By Who on the page: You 48 (EYES 17 + DEPLOY 31), Bot, then you 17, You decide 1
 - `D41`: the Guild Directory regression.
 
 Ids with a check: P56-4, P56-6, P58-0, P61-3, P61-5, P62-1, P62-7, P64-1, P64-2, P64-3, P64-4, P64-5, P64-6, P66-7, P71-7, T-039, T-046, T-047.
+cc-P119 added one more: P119-1 (`p119_1` in `uobot/checks.py`).
 The other BOT and BOT-PARTIAL items are the backlog for the next nights: the sketches at the end say how each could be
 checked.
 
@@ -567,7 +568,19 @@ checked.
 | P114-5 | CC | A recovery command for later; CC can confirm its paths and that repo and install match today |
 | P114-6 | DEPLOY | Player package: before any publish, build a new package (Shard Console, Player package tab); the 10.13 zip in dist predates P114 |
 
-Count check: 219 ids listed, 219 unique, against 219 open or blocked items in `testing/play-tests.json`.
+### P119
+
+Added by cc-P119 (2026-10-15), after the cc-P115 sort below was counted.
+
+| id | bucket | reason |
+|---|---|---|
+| P119-1 | BOT | Each creature appears with its body, dies to the player and leaves a corpse: all server-sent. Built, `p119_1` |
+| P119-2 | EYES | Whether each body draws whole and animates: art, on screen |
+| P119-3 | EYES | Riding the two mounts: the mounted rider's look |
+| P119-4 | BOT-PARTIAL | The hatchet's 50 damage is server-sent (and pinned by a shard test); the thrown-axe effect is Chase's |
+
+Count check (cc-P115): 219 ids listed, 219 unique, against 219 open or blocked items in `testing/play-tests.json`. The
+P119 group above is outside that count.
 
 ## Not built yet: how each BOT item could be checked
 

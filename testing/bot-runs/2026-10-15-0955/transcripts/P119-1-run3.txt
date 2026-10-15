@@ -1,0 +1,61 @@
+    0.00 harness  == P119-1 run 3: Five of cc-P119's ported creatures spawn, fight back and die to a player, leaving a corpse
+    0.00 admin    -> say '[go 0x1C09A'
+    1.00 admin    -> say '[SetSkill Wrestling 100'
+    1.01 admin    <- 0x6C target cursor 28 (type 0)
+    1.21 admin    -> 0x6C target object 0x0001C09A
+    1.21 admin    <- unicode(0) System: Wrestling : 100 (Base: 100)
+    1.82 admin    -> say '[go 0x1C09A'
+    2.83 admin    -> say '[SetSkill Tactics 100'
+    2.84 admin    <- 0x6C target cursor 29 (type 0)
+    3.05 admin    -> 0x6C target object 0x0001C09A
+    3.05 admin    <- unicode(0) System: Tactics : 100 (Base: 100)
+    3.66 admin    -> say '[go 0x1C09A'
+    4.66 admin    -> say '[add IceHound'
+    4.67 admin    <- 0x6C target cursor 30 (type 1)
+    4.88 admin    -> 0x6C target ground 3666,2587,0
+    4.88 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+    4.88 admin    -> say '[set CantWalk true Hits 1'
+    4.88 admin    <- 0x6C target cursor 31 (type 0)
+    5.09 admin    -> 0x6C target object 0x0001C0CA
+    5.09 admin    <- unicode(0) System: Property has been set. (2)
+   66.92 admin    -> say '[go 0x1C09A'
+   67.93 admin    -> say '[add OrcChopper'
+   67.94 admin    <- 0x6C target cursor 33 (type 1)
+   68.15 admin    -> 0x6C target ground 3666,2587,0
+   68.15 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   68.15 admin    -> say '[set CantWalk true Hits 1'
+   68.15 admin    <- 0x6C target cursor 34 (type 0)
+   68.36 admin    -> 0x6C target object 0x0001C0D2
+   68.36 admin    <- unicode(0) System: Property has been set. (2)
+  130.20 admin    -> say '[go 0x1C09A'
+  131.21 admin    -> say '[add Ortanord'
+  131.22 admin    <- 0x6C target cursor 35 (type 1)
+  131.43 admin    -> 0x6C target ground 3666,2587,0
+  131.43 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+  131.43 admin    -> say '[set CantWalk true Hits 1'
+  131.43 admin    <- 0x6C target cursor 36 (type 0)
+  131.64 admin    -> 0x6C target object 0x0001C0DD
+  131.64 admin    <- unicode(0) System: Property has been set. (2)
+  193.47 admin    -> say '[go 0x1C09A'
+  194.49 admin    -> say '[add EffeteUndeadGargoyle'
+  194.49 admin    <- 0x6C target cursor 37 (type 1)
+  194.69 admin    -> 0x6C target ground 3666,2587,0
+  194.69 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+  194.69 admin    -> say '[set CantWalk true Hits 1'
+  194.69 admin    <- 0x6C target cursor 38 (type 0)
+  194.89 admin    -> 0x6C target object 0x0001C0DE
+  194.90 admin    <- unicode(0) System: Property has been set. (2)
+  256.72 admin    -> say '[go 0x1C09A'
+  257.72 admin    -> say '[add Wight'
+  257.72 admin    <- 0x6C target cursor 39 (type 1)
+  257.92 admin    -> 0x6C target ground 3666,2587,0
+  257.92 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+  257.92 admin    -> say '[set CantWalk true Hits 1'
+  257.92 admin    <- 0x6C target cursor 40 (type 0)
+  258.12 admin    -> 0x6C target object 0x0001C0EE
+  258.12 admin    <- unicode(0) System: Property has been set. (2)
+  274.76 player   <- ascii(0) System: The world is saving, please wait.
+  274.76 admin    <- ascii(0) System: The world is saving, please wait.
+  274.76 player   <- ascii(0) System: World save completed in 0.02 seconds.
+  274.76 admin    <- ascii(0) System: World save completed in 0.02 seconds.
+  319.95 harness  == P119-1 run 3: FAIL (IceHound: killed False, corpse False; OrcChopper: killed False, corpse False; Ortanord: killed False, corpse False; EffeteUndeadGargoyle: killed False, corpse False; Wight: killed False, corpse False)
