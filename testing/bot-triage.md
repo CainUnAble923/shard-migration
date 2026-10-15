@@ -1,35 +1,44 @@
-# Open play tests, sorted for the overnight bot (cc-P91)
+# Open play tests: who tests each one (cc-P91, re-sorted cc-P115)
 
-Every open item in `testing/play-tests.json` on 2026-10-13 (164: 163 open, 1 blocked), in exactly one bucket. The bot
-(`D:\ShatteredLegacy\tools\playtest-bot`) is a headless UO protocol client on a SCRATCH copy of the test world
+Every open or blocked item in `testing/play-tests.json` on 2026-10-15 (219: 218 open, 1 blocked), in exactly one bucket.
+**This file is the single source of each item's Who.** The play-test page reads it (through `tools/playwho.py`, merged
+into `/api/items` when it is read; nothing is written back), and so does the overnight bot's plan
+(`uobot/tonight.py`: BOT and BOT-PARTIAL are "bot-checkable"). The steps for each item are beside it in
+`testing/playtest-steps.json`. The importer (`tools/playtests.py`) never writes either file. A new item that is not in
+this file yet shows "Who: not sorted yet" on the page until it is added here.
+
+The bot (`D:\ShatteredLegacy\tools\playtest-bot`) is a headless UO protocol client on a SCRATCH copy of the test world
 (127.0.0.1:2595, client 7.0.117.0), with an admin and player accounts of its own. **It never marks a result**: a check
 is evidence, and Chase marks on the play-test page.
 
-- **BOT**: the pass condition is something the server sends (a message, a gump's text or buttons, an item in a pack, a
-  skill value, a mobile at a place, a refusal, staying connected).
-- **BOT-PARTIAL**: the bot can settle the mechanics, but part of the pass condition is how it looks. The reason says
-  which half is left for Chase.
-- **EYES**: art, hues, rendering, paperdolls, animation, "reads right", "feels fast enough".
-- **DEPLOY**: needs live, the player package, Windows Sandbox, the website, the Shard Console, the web pages, or
-  anything rule 1 forbids.
-- **DECISION**: Chase picks something.
+| Bucket | Who on the page | Meaning |
+|---|---|---|
+| **BOT** | Bot | the pass condition is something the server sends (a message, a gump's text or buttons, an item in a pack, a skill value, a mobile at a place, a refusal, staying connected) |
+| **BOT-PARTIAL** | Bot, then you | the bot can settle the mechanics, but part of the pass condition is how it looks; the reason says which half is Chase's |
+| **EYES** | You | art, hues, rendering, paperdolls, animation, "reads right", "feels fast enough": in the game or on screen |
+| **DEPLOY** | You | needs a deploy, the Shard Console, the player package, Windows Sandbox, a web page, a router/DNS step, or live (retired since 2026-10-14); the reason says which |
+| **DECISION** | You decide | Chase picks something |
+| **CC** | CC | Claude Code can settle it with no game client and no eyes: a file, a log, a test suite, a script's output, a page's HTML, a database row, git history. Not run by cc-P115; queued as CC verification prompts |
 
 Where a check depends on a context-menu label, a tooltip line or a gump colour, the bot sees the server's cliloc number,
 property text or layout code, not what the client draws, so those items are BOT-PARTIAL.
 
-**Code under test on 2026-10-13: commit 36c7ae9 (P81), not HEAD**, because HEAD (with P82) crashes at boot. Items
-from P82 on cannot be checked until that is fixed.
+**Code under test:** HEAD. cc-P95 fixed the boot crash (D89); the 2026-10-15 01:30 run tested commit 68631cb. The old
+note "items from P82 on cannot be checked" no longer applies.
 
 ## Counts
 
 | Bucket | Items |
 |---|---|
-| BOT | 76 |
-| BOT-PARTIAL | 15 |
-| EYES | 8 |
-| DEPLOY | 55 |
-| DECISION | 10 |
-| **All** | **164** |
+| BOT | 80 |
+| BOT-PARTIAL | 17 |
+| EYES | 17 |
+| DEPLOY | 31 |
+| DECISION | 14 |
+| CC | 60 |
+| **All** | **219** |
+
+By Who on the page: You 48 (EYES 17 + DEPLOY 31), Bot, then you 17, You decide 14, Bot 80, CC 60.
 
 ## Checks built (cc-P91)
 
@@ -48,58 +57,58 @@ checked.
 
 | id | bucket | reason |
 |---|---|---|
-| T-001 | BOT-PARTIAL | Bot: the craft gump layout carries the MAKE X entry text/cliloc; Chase: the text is actually visible in the client (the original bug was a drawing one) |
-| T-002 | BOT | Quest gump, skill updates and the quest-complete message are all server-sent; note the 5x test multiplier caveat |
-| T-003 | BOT | Craft gargish plate (Blacksmithy) and cloth (Tailoring) on a gargoyle, equip: item in pack then worn layer. Row is BLOCKED; bot result says whether it still is |
-| T-004 | BOT | Walk the four craft gumps, read each new entry's required skill from the detail page; assert not 0 and not 120 |
+| T-001 | BOT-PARTIAL | Bot: the craft gump layout carries the MAKE X entry text/cliloc; Chase: the text actually draws in the client (the original bug was a drawing one) |
+| T-002 | BOT | Quest gump, skill updates and the quest-complete message are all server-sent; the test shard's 5x multiplier makes it a smoke test only |
+| T-003 | BOT | Craft gargish plate (Blacksmithy) and cloth (Tailoring) on a gargoyle, equip: item in pack then worn layer. Row is BLOCKED; the bot result says whether it still is |
+| T-004 | BOT | Walk the four craft gumps, read each new entry's required skill from its detail page; assert not 0 and not 120 |
 | T-005 | BOT | Scan every craft gump page for WoodPulp / WorkableGlass entries; assert none |
 | T-006 | BOT | Admin runs [GenerateSpawners, [go to Ter Mur, Abyss, Underworld; count mobiles in range |
-| T-007 | BOT | Run the two generators, visit both, count distinct mobile names/bodies seen against 41 and 37 |
-| T-008 | DECISION | Pass condition is "decides whether Q-064's lines get written"; bot can [go 719 1863 40 and list what is there |
+| T-007 | BOT | Run the two generators, visit both, count distinct mobile types seen against 41 and 37 |
+| T-008 | DECISION | Pass condition is a choice: whether Q-064's forty Eodon lines get written; Chase looks at what is there |
 | T-010 | BOT | Find the gargoyle alchemist, save, restart the scratch shard, re-read its name/title and [props type |
-| T-011 | DEPLOY | Website panel |
+| T-011 | DEPLOY | Website panel (homepage) reads live's status.json and live is retired; the publisher half can be checked now on the test shard's status.json |
 | T-012 | EYES | Paperdoll rendering of a petrified clone |
-| T-013 | BOT-PARTIAL | Bot: the chest is locked and trapped (lock/trap messages, trap fires); Chase: it renders as a chest |
-| T-023 | BOT | Thief character steals LightInTheVoid; item lands in pack or the refusal text says why (weight) |
-| T-024 | BOT | [go Labyrinth, find a Miasma mobile near the spawner, kill it, corpse appears |
+| T-013 | BOT-PARTIAL | Bot: the chest is locked and trapped (lock message, trap fires); Chase: it renders as a chest |
+| T-023 | BOT | Thief steals LightInTheVoid; item lands in pack or the refusal text says why (weight over 10) |
+| T-024 | BOT | [go Labyrinth, find a Miasma mobile near its spawner, kill it, corpse appears |
 | T-025 | BOT | Same as T-024 for Lady Lissith in Twisted Weald |
-| T-026 | BOT | [GenStealArties, wait 15 min, [go TerMur 1134 1204 7, see HalfEatenSupperArtifact item, steal succeeds |
+| T-026 | BOT | [GenStealArties, wait 15 min, go TerMur 1134 1204 7, see HalfEatenSupperArtifact, steal succeeds |
 | T-027 | BOT | [add TreasureMapChest 5 several times, list contents; count orc/tribal masks and read their properties |
-| T-028 | DEPLOY | Live deploy, console Stop/Start, docker logs |
+| T-028 | DEPLOY | Shard Console stop/start and docker logs; live is retired, so run the same D36 check on the test shard (same image, Test shard tab) |
 | T-031 | BOT | Measure skill gain per use with and without the multiplier; ClusterFSkillGain bonus gains still appear |
-| T-032 | DEPLOY | Config edit on the live port and reading the server log; not a protocol check |
-| T-039 | BOT-PARTIAL | Bot: first-login message names the board and the board item is within range of the start point; Chase: a new player can actually find it by eye |
-| T-041 | BOT | Join a guild, list pack: the creation items for the guild skills are there; Smiths join keeps ingots |
+| T-032 | CC | Pass is one log line at startup; CC can start a throwaway shard with testCenter on and an internal 2593 listener and read its log |
+| T-039 | BOT-PARTIAL | Bot: first-login welcome names the board and the board is in range of the start point; Chase: a new player can actually find it by eye |
+| T-041 | BOT | Join a guild, list pack: the creation items for the guild skills are there; joining the Smiths keeps ingots |
 | T-042 | BOT | Ask for the starter item twice: item once, quest marked done, second ask gives nothing |
 | T-044 | BOT | Gargoyle Tailoring gump lists the 8 gargish cloth armor pieces and they craft; garments absent |
 | T-045 | BOT | Second character on a joined account: guild gump says not a member; joining hands its own items |
-| T-046 | BOT | Reset stone and [ResetMyAccount open the same gump (same text/buttons); each scope clears what it says |
-| T-047 | BOT | Young countdown message text (days and hours vs 336 h); "I want to grow up!" brings the confirm gump |
-| T-048 | BOT-PARTIAL | Bot: Liaison and Survey Archivist positions and the tent pieces' coordinates; Chase: two tents look right and the NPCs stand at the openings |
-| T-014 | DEPLOY | Website panel |
-| T-015 | DEPLOY | Website heartbeat |
+| T-046 | BOT-PARTIAL | Bot: the stone and [ResetMyAccount open the same gump (passed); Chase: press each scope, which the bot will not (it would wipe its own characters) |
+| T-047 | BOT | Young countdown text (days and hours vs 336 h); "I want to grow up!" brings the confirm gump |
+| T-048 | BOT-PARTIAL | Bot: Liaison and Survey Archivist positions and the tent pieces' coordinates; Chase: the two tents look right and the NPCs stand at the openings |
+| T-014 | DEPLOY | Website panel shows live's status.json; live is retired (cc-P108), so it waits for the new live |
+| T-015 | DEPLOY | Website heartbeat reads live's status.json; live is retired, so it waits for the new live |
 
 ### P56
 
 | id | bucket | reason |
 |---|---|---|
-| P56-1 | BOT | Hand in a deed as a member; system message "Society of Smiths: +n standing, +52 Smithing Seals banked." and balance grows |
+| P56-1 | BOT | Member hands in a deed; system message "Society of Smiths: +n standing, +52 Smithing Seals banked." and the balance grows by that |
 | P56-2 | BOT | Non-member hands a deed to a town Blacksmith; gold and a reward item land in pack |
 | P56-3 | BOT | Ask mode: the hand-in gump's Bank button text carries the new Seal figure |
 | P56-4 | BOT | Smelt Platinum at 112.4: refusal message, ore stays; at 112.5 smelts about half the time |
 | P56-5 | BOT | Satchel smelt at 112.4: "left unsmelted"; at 112.5 ingots appear in the satchel |
 | P56-6 | BOT | Valorite refused at 98.9, smelts at 99; iron smelts at any skill |
-| P56-7 | BOT-PARTIAL | Bot: context menu entries' cliloc ids and that each opens its gump / breeding target prompt; Chase: the labels show as words in the client (custom clilocs, D79) |
+| P56-7 | BOT-PARTIAL | Bot: the context-menu entries' cliloc ids and that each opens its gump; Chase: the labels show as words (custom clilocs) |
 
 ### P57
 
 | id | bucket | reason |
 |---|---|---|
 | P57-1 | BOT | Seal catalog gump text: Sturdy Shovel 150, Mining Gloves +5 1,800, Salvage Bag 750, Valorite runic 45,000; deed still +52 |
-| P57-2 | BOT | Celestial exceptional 20 deed banks about 1,466 Seals (message) |
-| P57-3 | BOT | Mine a Platinum vein at 112.4 (iron only) and 112.5 (Platinum about half), count ore types in pack |
-| P57-4 | BOT-PARTIAL | Bot: Bulk Order Info opens the Small/Large gump with the "Completed orders" line; Chase: opaque and the line fits |
-| P57-5 | BOT-PARTIAL | Bot: context menu cliloc ids for Breed, Smelt Ore, Metal Familiarity and the panel opens; Chase: labels read in the client, and the un-updated TazUO.exe blank-row check (real client launch) |
+| P57-2 | BOT | A Celestial exceptional 20 deed banks about 1,466 Seals (message) |
+| P57-3 | BOT | Mine a Platinum vein at 112.4 (iron only) and 112.5 (Platinum about half); count ore types in pack |
+| P57-4 | BOT-PARTIAL | Bot: Bulk Order Info opens the Small/Large gump with the Completed orders line and no deed; Chase: the gump is opaque and the line fits |
+| P57-5 | BOT-PARTIAL | Bot: context menu cliloc ids for Breed, Smelt Ore, Metal Familiarity and the panel opens; Chase: the words draw in our client, and a client without overrides shows a blank row |
 | P57-6 | EYES | No row overlaps, tabs on two rows, opaque, line breaks: layout |
 | P57-7 | BOT | Steal from a 150-ingot pile at Stealing 150; amount moved to pack at most 100 |
 
@@ -107,94 +116,88 @@ checked.
 
 | id | bucket | reason |
 |---|---|---|
-| P58-0 | BOT-PARTIAL | Bot: [version history on a player has the 2026.10.02 to 10.05 sections and no Staff lines; Chase: the patch-note wording reads right |
+| P58-0 | BOT-PARTIAL | Bot: [version on a player has the 2026.10.02 to 10.05 sections and no Staff lines (passed); Chase: the patch-note wording reads right |
 
 ### P59
 
 | id | bucket | reason |
 |---|---|---|
-| P59-0 | DECISION | Evo pet body sheet: pick bodies per stage ("Decisions for Chase") |
+| P59-0 | CC | Research notes whose 8 decisions Chase already answered on 2026-10-05 (f35 hand-off) and P65 built; CC confirms from files |
 
 ### P60
 
 | id | bucket | reason |
 |---|---|---|
-| P60-1 | DEPLOY | Shard Console Commit tab |
-| P60-2 | DEPLOY | Console Preview commit |
-| P60-3 | DEPLOY | Console DRY RUN commit dialog |
-| P60-4 | DEPLOY | Console commit wait list |
-| P60-5 | DEPLOY | Real commit and push |
-| P60-6 | DEPLOY | SYSTEM remote shell refusal of the commit script |
+| P60-1 | CC | The Commit tab's place is asserted by the console's form fact, and shard-console.log shows Chase has used commit.run from it 14 times since 2026-10-05 |
+| P60-2 | CC | Five real Preview commit runs are logged (scripts\shard-console-output\*_commit.preview_repos.log) with the PREVIEW banner, WARNING lines and the -DryRun table; -NoExit is a fact |
+| P60-3 | CC | The DRY RUN dialog title, BEFORE YOU TYPE preface and the doubled-quote -Message line are each held by console facts that run a real dry child |
+| P60-4 | CC | The in-flight guard (notes not DONE, files changed in 5 min) refusing with names and no dialog is fully unit-tested on facts |
+| P60-5 | CC | Already done for real: 14 commit.run logs in scripts\shard-console-output each end with the script's table, 'pushed' (or 'clean') for code and docs |
+| P60-6 | CC | The SYSTEM refusal is a plan rule tested by P60_SystemRefusesCommitRunAndThePreviewSaysSo; a real SYSTEM shell would only re-test WindowsIdentity.IsSystem |
 
 ### P61
 
 | id | bucket | reason |
 |---|---|---|
-| P61-1 | BOT | Craft in Frost/Obsidian/Valorite at the given skills; read Blacksmithy base updates and success counts |
-| P61-2 | BOT | At 150 with "Orders that still teach me", Frost deeds name any armor piece, not only plate tunics |
-| P61-3 | BOT | Achievements gump text: "Oh Look, It's Dead" has its Earned line and no "Progress: 9/1"; unearned ones show progress |
-| P61-4 | BOT-PARTIAL | Bot: deed gump text "All items must be made with Frost ingots." and the same OPL line, large deed too; Chase: the un-updated TazUO.exe blank-line check (real client launch) |
-| P61-5 | BOT | [version history holds 2026.10.05.2 with its four lines (current version is newer, assert the history page) |
+| P61-1 | BOT | Skill gains per metal and craft success counts are server state the bot reads |
+| P61-2 | BOT | Order deed item names at 150 with 'Orders that still teach me' on are gump/OPL text |
+| P61-3 | BOT | Achievements gump text: Earned line, no 'Progress: 9/1', unearned rows keep progress |
+| P61-4 | BOT-PARTIAL | Bot: deed gump and tooltip line 'All items must be made with Frost ingots.' (small and large); Chase: the blank line in a client started without the launcher |
+| P61-5 | BOT | [version history holds 2026.10.05.2 with its four lines (current version is newer) |
 
 ### P62
 
 | id | bucket | reason |
 |---|---|---|
-| P62-1 | BOT | Female character: [add KitsuneEarsTail, equip; the item shows on her worn layer |
-| P62-2 | EYES | Paperdoll placement of ears and tail |
-| P62-3 | EYES | Walk animation down-left |
-| P62-4 | EYES | Walk animation down-right |
-| P62-5 | EYES | Other directions show nothing (visual expectation) |
-| P62-6 | EYES | Does it read as fox ears and a tail |
-| P62-7 | BOT | Male equips it: message "Only females can wear this." (cliloc 1010388), item stays in pack |
-| P62-8 | BOT | Restart the scratch shard, the female still has the item on its layer |
+| P62-1 | BOT | Female equips KitsuneEarsTail: the item is on her worn layer |
+| P62-2 | EYES | Paperdoll placement of the ears and tail is art |
+| P62-3 | EYES | Walk animation sync is client rendering |
+| P62-4 | EYES | Mirrored walk animation is client rendering |
+| P62-5 | EYES | What shows in the other directions, standing and running is client rendering |
+| P62-6 | EYES | Whether it reads as fox ears and a tail is a judgment by eye |
+| P62-7 | BOT | Male equips it: 'Only females can wear this.' and the item stays in the pack |
+| P62-8 | BOT | After a restart the female still has the item on its layer: server state |
 
 ### P63
 
 | id | bucket | reason |
 |---|---|---|
-| P63-1 | DEPLOY | Console Player package tab |
-| P63-2 | DEPLOY | Player package build |
-| P63-3 | DEPLOY | Publish player package |
-| P63-4 | DEPLOY | Console window prompt visibility |
-| P63-5 | DEPLOY | Deploy built image to the test shard |
-| P63-6 | DEPLOY | Console refuses the current image |
+| P63-1 | CC | Blank notes refusal and the dirty-tree file list are console facts; the tab is in the form fact; Chase has used the tab (package.build 2026-10-06) |
+| P63-2 | CC | Done for real: 20261006-063853_package.build_package.log shows the build, GATE 4, 6 and 5 on the new zip; the dry-run quote doubling is a fact |
+| P63-3 | CC | Done for real: 2026-10-05 16:07:09 publish answered no ('Nothing done.', exit 3), 16:07:25 PUBLISHED; the no-version.json refusal and PUBLIC preface are facts |
+| P63-4 | CC | Chase answered the 'Type yes' prompt in the real window three times (no, then yes twice), so it was visible; the logs record each answer's outcome |
+| P63-5 | DEPLOY | Shard Console, Test shard tab, Deploy built image: never run for real (shard-console.log has no test.deploy); it retags latest and restarts the test shard |
+| P63-6 | CC | Picking the image latest already is refuses before any phrase: asserted by a console fact |
 
 ### P64
 
 | id | bucket | reason |
 |---|---|---|
-| P64-1 | BOT | Fresh account login: bulletin gump title is the current version, has the new lines, an "All patch notes" button and no wiki button (version is newer than 2026.10.05.3 now) |
-| P64-2 | BOT | Press All patch notes: history gump arrives; relog, no bulletin gump |
-| P64-3 | BOT-PARTIAL | Bot: [version text and "(you are here)" on page 1; Chase: the entry shows gold |
-| P64-4 | BOT | Page with Next to "Page N of N", last page ends with 2026.10.01; Previous returns |
-| P64-5 | BOT-PARTIAL | Bot: the 2026.10.05.2 line ends "The chance to make the item is unchanged."; Chase: it wraps onto four rows |
-| P64-6 | BOT-PARTIAL | Bot: "Staff (players do not see this list)" present for admin, absent for player; Chase: shown lavender |
-
-### P65
-
-| id | bucket | reason |
-|---|---|---|
-| P65-0 | BOT-PARTIAL | Bot: [EvoPet give/xp/loops/bond/info walk (Echo lines, pick gump, body id changes), reset stone, stable/claim, death and res, doors; Chase: the swing/hit/death/idle animation table, plus the section 9 decisions |
+| P64-1 | BOT | Fresh account login: bulletin gump title, new lines, All patch notes button, no wiki button |
+| P64-2 | BOT | Press All patch notes: history gump arrives; a relog shows no bulletin |
+| P64-3 | BOT-PARTIAL | Bot: [version text and '(you are here)' on page 1; Chase: the current entry shows gold |
+| P64-4 | BOT | Next to 'Page N of N', last page ends with 2026.10.01, Previous returns |
+| P64-5 | BOT-PARTIAL | Bot: the 2026.10.05.2 line ends 'The chance to make the item is unchanged.'; Chase: it wraps onto four rows in the client |
+| P64-6 | BOT-PARTIAL | Bot: 'Staff (players do not see this list)' present for admin, absent for player; Chase: shown lavender |
 
 ### P66
 
 | id | bucket | reason |
 |---|---|---|
 | P66-1 | BOT | Hide 5 tiles from a fight: "You can't seem to hide right now."; at 9+ works; Hiding base passes 100 |
-| P66-2 | BOT | Detect Hidden: no gain on empty spot, reveals a hidden second character, "[trapped]" on a trapped chest, 15-tile hider not found |
-| P66-3 | BOT | Repeated steals from a monster at 127.5 with +20: caught roughly 1 in 5 (caught message count) |
-| P66-4 | BOT | Peacemaking success rate at 200 vs 120 the same; Musicianship base rises past 120 |
-| P66-5 | BOT-PARTIAL | Bot: share of incoming swings that cost HP at Parry 200 vs 120; Chase: blocks as seen (parry has no server message) |
-| P66-6 | BOT | Tactics base rises toward 200 with a +15 item worn |
-| P66-7 | BOT | [ClusterFSkillGain output text includes the rate and "past stock ceilings on" |
+| P66-2 | BOT | Detect Hidden: no gain on an empty spot, reveals a hidden second character, "[trapped]" on a trapped chest, 15-tile hider not found |
+| P66-3 | BOT | Repeated steals from a monster at 127.5 with +20: caught roughly 1 in 5 (count of caught messages) |
+| P66-4 | BOT | Peacemaking success rate at Musicianship 200 vs 120 the same; Musicianship base rises past 120 |
+| P66-5 | BOT-PARTIAL | Bot: share of incoming swings that cost HP at Parry 200 vs 120; Chase: the blocks as seen in a fight (a parry sends no server message) |
+| P66-6 | BOT | Tactics base rises toward 200 with a +15 Tactics item worn |
+| P66-7 | BOT | [ClusterFSkillGain output includes the rate and "past stock ceilings on" |
 
 ### P67
 
 | id | bucket | reason |
 |---|---|---|
 | P67-1 | BOT | Carpentry gains in Frostbark, stops at 155, Shadowbark gains; at 99.9 Ironwood says "You cannot work this strange and unusual wood." |
-| P67-2 | BOT | Fletching 150 Frostbark bows gain, kindling never |
+| P67-2 | BOT | Fletching 150 with Frostbark logs: bows gain, kindling never |
 | P67-3 | BOT | Tinkering gump material list Platinum..Celestial; scissors gain at 150, stop at 162.5 |
 | P67-4 | BOT | Blacksmithy 180 plus a +10 item: base caps at 187.5 |
 | P67-5 | BOT | Orders at 150 with the toggle on are all Frost post-Valorite; off: Platinum, Toxic, Blaze reappear |
@@ -205,45 +208,18 @@ checked.
 
 | id | bucket | reason |
 |---|---|---|
-| P68-1 | DEPLOY | Console commit countdown and Force |
-| P68-2 | DEPLOY | Console Check selected package |
-
-### P69
-
-| id | bucket | reason |
-|---|---|---|
-| P69-1 | BOT | Registrar errand: refused at Iron, 49 ore refused, 50 ore + 25 ingots accepted, bonded Compact mule (hue number), "You have your mule", "Replace my mule" |
-| P69-2 | BOT-PARTIAL | Bot: upgrade to Bronzeback, name, hue number, hits, pack size, contents and bond kept; Chase: each tier's hue looks right on the body |
-| P69-3 | BOT | Breed two mules, restart scratch shard (or [props DeliverAt), foal deed arrives in bank |
-| P69-4 | BOT | Foal deed OPL lines: sex, tier 1, generation, family line, qualities, bloodline |
-| P69-5 | BOT | Trade a foal deed between the bot's two characters; the receiver's mule is theirs with the foal's genes ([props) |
-| P69-6 | BOT | Existing mules on the copied world: Shadowhide, 1 slot, owner's follower count |
-
-### P70
-
-| id | bucket | reason |
-|---|---|---|
-| P70-1 | BOT | Tinkers' Union hall gump: buy Clockwork Load Harness I schematic with scrip and vouchers |
-| P70-2 | BOT | Mule Modules group: crafts with materials, gump refuses without |
-| P70-3 | BOT | Drop module on mule (OPL lists it), Options > Remove returns it to pack as tier I |
-| P70-4 | BOT | [add MuleModule TimberRack 3 on a tier 1 mule: refused, still in pack |
-| P70-5 | BOT | Tier II craft consumes the tier I only on success |
-| P70-6 | BOT | Trailwise Tack III: status follower count drops by one, returns on removal |
-| P70-7 | BOT | Trailwise II homing: after a gate the mule appears beside the bot within seconds; "all come" works |
-| P70-8 | BOT | Soul Tether II: corpse empty, pack still on the ghost ([props), resurrect |
-| P70-9 | BOT | Ore Hopper fitted: mule pack weight drops ([props or container weight) |
-| P70-10 | BOT | Survey II: Options lists the map, quest arrow packet points at it; III: "Dig here" spawns chest and guardians |
-| P70-11 | BOT | Trader's Ledger III: bank opens in town, refused in a dungeon, while criminal, after a fight |
+| P68-1 | DEPLOY | Shard Console, Commit tab: the live countdown and the Force box are a hand check (built and tested only with stubs) |
+| P68-2 | DEPLOY | Shard Console, Player package tab: the Check selected button and its window are a hand check |
 
 ### P71
 
 | id | bucket | reason |
 |---|---|---|
 | P71-1 | BOT | Twenty Nerve Strikes at Bushido 200 vs 120; count paralyze messages |
-| P71-2 | BOT | Stable 23 pets at 200 taming/lore/vet, the 24th refused |
+| P71-2 | BOT | Stable 23 pets at Taming/Lore/Vet 200, the 24th refused |
 | P71-3 | BOT | Fire Horn damage at 200 vs 120 (target HP via [props), about +10% |
-| P71-4 | BOT | Count steps until "revealed" at Stealth 200 (about 34) and 120 (about 24) |
-| P71-5 | BOT | Bandage heal amounts at 200 within 54 to 90 |
+| P71-4 | BOT | Count steps until revealed at Stealth 200 (about 34) and 120 (about 24) |
+| P71-5 | BOT | Bandage heal amounts at Healing/Anatomy 200 within 54 to 90 |
 | P71-6 | BOT | Harness edits the scratch copy's stepsAt200 to 30 and restarts; steps become 30 (scratch config only) |
 | P71-7 | BOT | [version history holds 2026.10.10 with five lines (current version is newer) |
 
@@ -251,109 +227,347 @@ checked.
 
 | id | bucket | reason |
 |---|---|---|
-| P72-0 | DECISION | Leveling gear research; "Decisions for Chase" |
+| P72-0 | DECISION | Leveling gear research (plan only): 10 decisions (port code or design, how an item becomes levelable, XP rules, resets, trade); nothing built to test |
 
 ### P73
 
 | id | bucket | reason |
 |---|---|---|
-| P73-1 | DEPLOY | Console run as Chase |
-| P73-2 | DEPLOY | Real test shard on the P73 image |
-| P73-3 | DEPLOY | Console wipe test accounts |
-| P73-4 | DEPLOY | Console wipe dialog |
-| P73-5 | DEPLOY | Console wipe confirmation |
-| P73-6 | DEPLOY | Wipe window, real test shard saves |
-| P73-7 | DEPLOY | Log in after the real test shard wipe, TazUO profiles |
+| P73-1 | DEPLOY | Shard Console run from Chase's own Windows login (the wipe is refused as SYSTEM); step 1 of the real test-account wipe |
+| P73-2 | CC | Precondition only: the test shard must run an image with P73's wipe; its log proves it |
+| P73-3 | DEPLOY | Shard Console, Test shard tab: Wipe test accounts (keep world). Wipes Ringo, Eve, Garg and Elf Female, so Chase picks the moment |
+| P73-4 | DEPLOY | Shard Console wipe, first dialog: counts shown and the new admin name typed |
+| P73-5 | DEPLOY | Shard Console wipe, second dialog: the confirmation phrase |
+| P73-6 | DEPLOY | Shard Console wipe window: password, then stop, back up Saves, start, DONE line |
+| P73-7 | DEPLOY | After the real wipe: log in with the four test shortcuts (admin password rehash, new characters) |
 
 ### P74
 
 | id | bucket | reason |
 |---|---|---|
-| P74-1 | DEPLOY | Console launch |
-| P74-2 | DEPLOY | Console Autopilot tab |
-| P74-3 | DEPLOY | Test email |
+| P74-1 | DEPLOY | Shard Console launch; cc-P99's Golem replaced cc-autopilot, so P74's tile and tab are now GOLEM / Golem but the check still applies |
+| P74-2 | DEPLOY | Shard Console GOLEM tile and Golem tab (P74's AUTOPILOT, renamed by cc-P99); the Golem is active since 2026-10-14 |
+| P74-3 | DEPLOY | Shard Console, Golem tab: Send test email (now the Golem's Send-TestEmail.ps1); Chase checks his inbox |
 
-### P75 to P82
+### P65
 
 | id | bucket | reason |
 |---|---|---|
-| P75-0 | DECISION | League rewards proposal; open questions for Chase |
-| P76-0 | DECISION | Extra facets research; B.6 decisions |
-| P77-0 | DECISION | Alembic guild: rank names, currency, guildmaster, world step; bot can run [ClusterFSeedAlembicHall on scratch and read the 18-row directory |
-| P78-0 | DECISION | Recipe gating: 12 decisions with defaults taken; bot can gather [RecipeGating and [Recipes output |
-| P79-0 | DECISION | Loot boxes and fanfare: 9 decisions; bot can gather [LootBox / [Fanfare output |
-| P80-0 | DECISION | Tutorial: 8 decisions (veterans, recruiter, voice); bot can run [Tutorial status on scratch |
-| P81-0 | EYES | Paperdoll bodies, spell icons, custom art, local NSFW switch |
-| P82-0 | BOT | **Could not run: the code with P82 does not boot** (ImbueCatalogue's static initializer reads SkillInfo.Table before SkillsInfo.Configure fills it; cc-P91 notes). Otherwise server-side: imbue rows at the table, read a formula book, Overcharged at an ArtificersSoulForge, custom property OPL line; rank-4 rung and mule socket are separate decisions |
+| P65-0 | BOT-PARTIAL | Bot: [EvoPet give/xp/loops/bond/info walk (Echo lines, pick gump, body ids), reset stone, stable/claim, death/res, doors; Chase: the animation table, plus the 10 section-9 decisions |
+
+### P69
+
+| id | bucket | reason |
+|---|---|---|
+| P69-1 | BOT | Registrar errand: refused at Iron, 49 ore refused, 50 ore + 25 ingots accepted, bonded Compact mule (hue number), "You have your mule", "Replace my mule" |
+| P69-2 | BOT-PARTIAL | Bot: upgrade to Bronzeback, name, hue number, hits, pack size, contents and bond kept; Chase: each tier's hue looks right on the body |
+| P69-3 | BOT | Breed two mules, restart the scratch shard (or [props DeliverAt), foal deed arrives in bank |
+| P69-4 | BOT | Foal deed tooltip lines: sex, tier 1, generation, family line, qualities, bloodline |
+| P69-5 | BOT | Trade a foal deed between the bot's two characters; the receiver's mule is theirs with the foal's genes ([props) |
+| P69-6 | BOT | Existing mules on the test shard world: Shadowhide, 1 slot, owner's follower count |
+
+### P70
+
+| id | bucket | reason |
+|---|---|---|
+| P70-1 | BOT | Tinkers' Union hall gump: buy Clockwork Load Harness I schematic with scrip and vouchers |
+| P70-2 | BOT | Mule Modules craft group: crafts with materials, gump refuses without |
+| P70-3 | BOT | Drop module on mule (tooltip lists it), Options > Remove returns it to pack as tier I |
+| P70-4 | BOT | [add MuleModule TimberRack 3 on a tier 1 mule: refused, still in pack |
+| P70-5 | BOT | Tier II craft consumes the tier I only on success |
+| P70-6 | BOT | Trailwise Tack III: follower count drops by one, returns on removal |
+| P70-7 | BOT | Trailwise II homing: after a gate the mule appears beside the bot within seconds; "all come" works |
+| P70-8 | BOT | Soul Tether II: corpse empty, pack still on the ghost ([props), resurrect |
+| P70-9 | BOT | Ore Hopper fitted: mule pack weight drops ([props or container weight) |
+| P70-10 | BOT | Survey II: Options lists the map, quest arrow points at it; III: "Dig here" spawns chest and guardians |
+| P70-11 | BOT | Trader's Ledger III: bank opens in town, refused in a dungeon, while criminal, after a fight |
+
+### P75
+
+| id | bucket | reason |
+|---|---|---|
+| P75-0 | DECISION | League rewards proposal after keeping TazUO's assistants: 7 open questions (Scavenger, Field Salvager, Corpse Claim, Courier, Ledger, prices); nothing built |
+
+### P76
+
+| id | bucket | reason |
+|---|---|---|
+| P76-0 | DECISION | Extra facets research: 8 decisions (map-file policy, first facet, names, packaging, timing); nothing built |
+
+### P77
+
+| id | bucket | reason |
+|---|---|---|
+| P77-0 | DECISION | Alembic guild built with placeholders: 8 decisions (rank names A/B/C, currency, guildmaster, world step, mule module); the hall itself can be bot-checked later |
+
+### P78
+
+| id | bucket | reason |
+|---|---|---|
+| P78-0 | DECISION | Recipe gating built with defaults taken: 12 decisions to confirm or change (promotion model, merge rule, prices, empty categories, fidelity entry) |
+
+### P79
+
+| id | bucket | reason |
+|---|---|---|
+| P79-0 | DECISION | Loot boxes and fanfare built: 9 decisions (per-account achievements, level stand-in, tier rules, leather tier 5, box strength, placeholders) |
+
+### P80
+
+| id | bucket | reason |
+|---|---|---|
+| P80-0 | CC | Tutorial decisions are answered and recorded; what is left is confirming the record, not a choice |
+
+### P81
+
+| id | bucket | reason |
+|---|---|---|
+| P81-0 | EYES | Siege of Sosaria paperdoll art, spell icons, custom art and the NSFW body switch: all art; the switch is now in TazUO's Options (cc-P111) |
+
+### P82
+
+| id | bucket | reason |
+|---|---|---|
+| P82-0 | BOT | Imbuing rework is server-side (menu rows, hint lines, book teaching, Overcharged near a soul forge, tooltip line); boot crash fixed by cc-P95 so it can run now. Rank-4 rung and mule socket cap are separate decisions |
 
 ### P83
 
 | id | bucket | reason |
 |---|---|---|
-| P83-1 | DEPLOY | Play-test page |
-| P83-2 | DEPLOY | Play-test page cards |
-| P83-3 | DEPLOY | Play-test page buttons |
-| P83-4 | DEPLOY | Play-test page Failed view and console tile |
-| P83-5 | DEPLOY | Play-test page manual items |
-| P83-6 | DEPLOY | Play-test page picks up new notes |
-| P83-7 | DEPLOY | Console PLAY TESTS tile |
+| P83-1 | CC | The play-test page answers on the game PC's LAN address; Chase uses it daily |
+| P83-2 | CC | Open view order (newest prompt first) and card contents (what, Expect:, needs <version>) are in the API and the page's script |
+| P83-3 | CC | Pass, Fail, Later and Reopen are API writes with tests (test_playtests_reopen.py); real results are in play-tests.json |
+| P83-4 | CC | Failed view and Bug id are /api/bug writes; the tile's amber rule is console fact P83_AFailNotYetLoggedTurnsItAmber |
+| P83-5 | CC | 'Add an item by hand' posts /api/manual; numbering M-001, M-002 is in tools\playtests.py add_manual |
+| P83-6 | CC | The service imports every 60 s; P114's notes ended 'P114 DONE' and its 6 items landed with nobody running the importer |
+| P83-7 | CC | Console PLAY TESTS tile count and its two links are console behaviour under Shard-Console.Tests.ps1 |
 
 ### P84
 
 | id | bucket | reason |
 |---|---|---|
-| P84-1 | DEPLOY | Console Look setting |
-| P84-2 | DEPLOY | Console separate windows |
-| P84-3 | DEPLOY | Console output pane |
-| P84-4 | DEPLOY | Console gump art cache |
-| P84-5 | DEPLOY | Console tooltips |
+| P84-1 | DEPLOY | Shard Console, status bar Look: box (UO or Plain); takes effect on the next open |
+| P84-2 | DEPLOY | Shard Console, status bar tick 'actions in their own windows'; applies at once |
+| P84-3 | DEPLOY | Shard Console output pane beside the output, with Copy, Clear, Stop and Hide/Show |
+| P84-4 | DEPLOY | Shard Console gump art read from the client data and cached in scripts\shard-console-cache\ |
+| P84-5 | DEPLOY | Shard Console tooltips on hover |
 
 ### P85
 
 | id | bucket | reason |
 |---|---|---|
-| P85-1 | DEPLOY | Homepage services.yaml entry |
-| P85-2 | DEPLOY | judge.py and the Shard status header; not a shard check |
+| P85-1 | CC | Homepage has reloaded since P85; its 'Shard status' entry is visible in its services API |
+| P85-2 | CC | judge.py list/confirm/gate/task/status and the 7-day amber review date are tools\ code with tests |
 
 ### P86
 
 | id | bucket | reason |
 |---|---|---|
-| P86-0 | DEPLOY | Console VPN disconnect with Proton, DNS tile, sl-ddns |
+| P86-0 | DEPLOY | Shard Console Disconnect VPN button with Proton VPN (PUBLIC DNS tile), sl-ddns restart offer; needs Chase's own VPN |
 
 ### P87
 
 | id | bucket | reason |
 |---|---|---|
-| P87-1 | DEPLOY | Console screenshots and window narrowing |
-| P87-2 | DEPLOY | Autopilot commit script quoting fix (cc-autopilot.ps1) |
-| P87-3 | DEPLOY | Docs repo commit contents |
+| P87-2 | CC | Note to the overseer about cc-autopilot.ps1's commit quoting; the Golem's golem.ps1:611 turns double quotes into single before the -File call |
+| P87-3 | CC | Claim that the two dirty testing\ files went into P87's commit |
 
 ### P88
 
 | id | bucket | reason |
 |---|---|---|
-| P88-1 | DEPLOY | Restart sl-play-tests service |
-| P88-2 | DEPLOY | Homepage reload |
-| P88-3 | DEPLOY | Shared menu on three web pages, phone |
-| P88-4 | DEPLOY | Play-test page notice and Homepage bar |
+| P88-1 | CC | The one deploy step is done: /nav.js answers |
+| P88-2 | CC | Homepage's custom.js (cc-P88 loader) is served on every request |
+| P88-3 | EYES | The shared menu bar on three pages, on a phone, current page in gold: a look check |
+| P88-4 | CC | Describes the state before the restart; the fallback text is in the page and the condition has passed |
 
 ### P89
 
 | id | bucket | reason |
 |---|---|---|
-| P89-0 | DECISION | Haven move plan (plan only); Chase's decisions and his own Cloudflare/Tailscale steps; no shard check |
+| P89-0 | DECISION | Haven pages plan: 10 of 11 decisions answered 10-14 (decisions-2026-10-14.md); #10, whether NPM routes dashboard.shatteredlegacyuo.com, is still Chase's own check |
 
 ### P90
 
 | id | bucket | reason |
 |---|---|---|
-| P90-1 | DEPLOY | Play-test page Ideas |
-| P90-2 | DEPLOY | Play-test page Similar line and queue |
-| P90-3 | DEPLOY | Play-test page Copy new ideas |
-| P90-4 | DEPLOY | Play-test page Became F-NN / Declined |
+| P90-1 | CC | Idea from this and the Ideas tab post /api/ideas/add; tests in tools\tests\test_feature_ideas.py |
+| P90-2 | CC | 'Similar:' matching and the feature-queue list with a filter are page script over /api/ideas features |
+| P90-3 | EYES | Copy new ideas puts text on the clipboard of a plain-http page and marks ideas taken; the API side is tested, the copy-paste is Chase's |
+| P90-4 | CC | Became F-NN and Declined (reason required, decision 10-14) are /api/ideas/status writes |
 
-Count check: 164 ids listed, 164 unique, against 164 in `open-items.txt`.
+### P91
+
+| id | bucket | reason |
+|---|---|---|
+| P91-0 | CC | The bot exists and runs nightly; its 'For Chase' is how to run and read it, the schtasks line (done by P102) and a docs rewording for the overseer |
+
+### P92
+
+| id | bucket | reason |
+|---|---|---|
+| P92-0 | DECISION | Page change is done (status page reads 'Port list: 1 of 16 systems in. 283 of 983 files'); one question left: is 283 of 983 the right count |
+
+### P93
+
+| id | bucket | reason |
+|---|---|---|
+| P93-0 | DECISION | Read-and-report assessment; its 'Open questions' need Chase's answers (8). Some are already moot: P98/P100 (drafts) and P104 (UORespawn read) ran |
+
+### P94
+
+| id | bucket | reason |
+|---|---|---|
+| P94-1 | CC | Autopilot bug D90 (a prompt handed twice never commits); fixed in P99 in the Golem and cc-autopilot, the Golem replaced autopilot, and P94 was committed (537f293) |
+| P94-2 | CC | False 'stopped mid-task' emails (D91); fixed in P99 (Get-AgentsOut check plus a foreground-subagents hand-off line) |
+| P94-3 | CC | Play-test files tripping the start check (D92); P99 added the 'machine output' hand-off sentence and Commit-ShardWork stages with git add -A |
+
+### P95
+
+| id | bucket | reason |
+|---|---|---|
+| P95-1 | CC | Note to the overseer: D89 is marked FIXED but still sits in section 1 of docs/bug-list.md (line 88) |
+| P95-2 | CC | Claim about the bot: the nightly task passes no -Commit 36c7ae9; last night built HEAD 68631cb and it booted |
+| P95-3 | CC | Claim about a file: testing/bot-runs/2026-10-14-0817/ was left as evidence to be committed |
+| P95-4 | CC | Claim about which files P95 changed in D:\ShatteredLegacy |
+
+### P96
+
+| id | bucket | reason |
+|---|---|---|
+| P96-0 | DEPLOY | Shard Console, Fix test shard tab: try Diagnose on the healthy shard; Prune images (frees 7.2 GB or more) is Chase's call |
+
+### P97
+
+| id | bucket | reason |
+|---|---|---|
+| P97-0 | EYES | Deploy is done (page has the Bugs tab, /api/summary has bugs_new); left: Chase files a bug from the page, ideally from his phone with a screenshot |
+
+### P99
+
+| id | bucket | reason |
+|---|---|---|
+| P99-0 | CC | The Golem cutover ran (D:\UO\golem\ACTIVE exists) and it drives the queue; its 'For Chase' was the cutover steps |
+
+### P100
+
+| id | bucket | reason |
+|---|---|---|
+| P100-1 | BOT | Server sends the Visual Builder gump on `[VBuild` (staff); its title and buttons are gump text |
+| P100-2 | BOT-PARTIAL | Bot: items placed, hue value, 21x21 refused, nudge moves 1 tile; Chase: the painted pieces and hue look right on screen |
+| P100-3 | BOT | Server-side: Wipe box removes builder-placed items and leaves the town's own decoration (items in the box before and after) |
+| P100-4 | BOT | Server-side: Undo restores what the wipe removed, step by step, until the area matches its start |
+| P100-5 | BOT | Server-side, as Administrator: world mode lets a wipe take loose decoration, and undo puts it back |
+| P100-6 | BOT | Server-side: the undo record survives a save and a restart |
+
+### P101
+
+| id | bucket | reason |
+|---|---|---|
+| P101-1 | DEPLOY | Router/NPM: whether https://shatteredlegacyuo.com/ answers from outside; P101's 'public DNS gives 192.168.1.58' was the router answering port 53 |
+| P101-2 | DEPLOY | Shard Console, Websites tab: the buttons (Logs, Open NPM, Deploy to Haven) need Chase's console and SSH key |
+| P101-3 | CC | Done by P107: scripts/websites.json has ops-pages, ops-cutover and ops-rollback deploys and _deploySlots says P107 filled the slot |
+
+### P102
+
+| id | bucket | reason |
+|---|---|---|
+| P102-1 | CC | Done: last night's 01:30 run stopped and removed the scratch shard (run.log 04:00 'Container sl-modernuo-bot Removed') |
+| P102-2 | CC | Done: the play-test service was restarted; play-tests.json carries reopenedAt on every item |
+| P102-3 | CC | Done: the nightly task is registered and ran |
+| P102-4 | CC | Done: the 01:30 run found 18 items and emailed 'starting' first |
+
+### P103
+
+| id | bucket | reason |
+|---|---|---|
+| P103-1 | CC | Claim: the server half ships with the test-shard deploy; the test shard now runs 68631cb, which contains P103 (2d82e7b) |
+| P103-2 | EYES | The buttons open client windows (World Map, Journal, Options): only a real client shows that, and stock TazUO must show none |
+
+### P104
+
+| id | bucket | reason |
+|---|---|---|
+| P104-1 | DECISION | Chase's call to delete a 436 KB scratch folder nothing refers to; nothing to test |
+| P104-2 | CC | Note for whoever keeps the third-party records (overseer); SOURCE.txt still says '0 .cs' and 'TERMS: none stated' |
+
+### P105
+
+| id | bucket | reason |
+|---|---|---|
+| P105-1 | CC | Done: sl-play-tests was restarted since (after P102 and P112), so it runs H1's code and the page answers as before |
+| P105-2 | CC | Information: H2 came next and P107 built it (046541a); the cutover itself is P107-0 |
+
+### P106
+
+| id | bucket | reason |
+|---|---|---|
+| P106-0 | DECISION | The live question it was built for is gone (live retired, sl-modernuo absent); left: 2 small choices from the notes |
+
+### P107
+
+| id | bucket | reason |
+|---|---|---|
+| P107-0 | DEPLOY | Haven ops cutover: Shard Console Websites tab (Ops pages: deploy, cut over), a GitHub deploy key and the snapshot task; not done (no haven-ops state.json) |
+
+### P108
+
+| id | bucket | reason |
+|---|---|---|
+| P108-1 | DECISION | Whether the player launcher (Play.ps1, Launch-Settings.ps1, Play-Lan.bat) points at the test shard 2594 or stays on 2593 until 1.0; it changes a published package |
+| P108-2 | DEPLOY | Router step: the 2593 forward to this PC now leads nowhere; closing it is optional |
+| P108-3 | CC | Done: Homepage serves the new services.yaml ('UO Test Shard' tile, no 'UO Server' or 'UO Who's Online') |
+| P108-4 | CC | Claim: status containers recreated and the test shard back up on the same image |
+| P108-5 | CC | Claim: the overseer's passdown note went in with P108 |
+
+### P109
+
+| id | bucket | reason |
+|---|---|---|
+| P109-1 | DEPLOY | Hostinger hPanel SSH key, after the print-queue deploy (Shard Console, Websites tab); not deployed yet (192.168.1.61:8787 does not answer) |
+| P109-2 | DEPLOY | After the print-queue deploy: the LAN page opens from the desktop shortcut; no NPM host |
+| P109-3 | CC | Information: the rollback exists (Websites tab, Print queue: roll back, word `roll back`) |
+
+### P110
+
+| id | bucket | reason |
+|---|---|---|
+| P110-1 | DEPLOY | Shard Console, Websites tab, Mega dashboard: deploy; best after P107 and P109 (neither done yet) |
+| P110-2 | DECISION | A rule, nothing to test: never route Homepage through NPM or Cloudflare |
+| P110-3 | CC | Information: the rollback exists (Websites tab, Mega dashboard: roll back, word `roll back`) |
+
+### P111
+
+| id | bucket | reason |
+|---|---|---|
+| P111-4 | EYES | Client-side only: the Options list and the paperdoll art when the add-on folder is missing |
+| P111-5 | CC | Claim: nothing to deploy; the commit pushed the patch and launcher change |
+
+### P112
+
+| id | bucket | reason |
+|---|---|---|
+| P112-1 | CC | Done: the play-test page was restarted and serves the P112 robot code |
+| P112-2 | EYES | How the robot icons and bot chip look on the cards; nobody has seen them on screen |
+
+### P113
+
+| id | bucket | reason |
+|---|---|---|
+| P113-0 | EYES | The console window's icon in the title bar and taskbar; one small choice (copy the icon under scripts\) is in the notes |
+
+### P114
+
+| id | bucket | reason |
+|---|---|---|
+| P114-1 | EYES | Which client starts and where it lands: window title and character in the world |
+| P114-2 | EYES | Gumps and macros in place, the Options list, and a Legion script starting: all on screen |
+| P114-3 | CC | Rollback instructions, nothing to test; the .bak shortcuts exist |
+| P114-4 | CC | Rollback instructions, nothing to test; the installed launcher backups exist |
+| P114-5 | CC | A recovery command for later; CC can confirm its paths and that repo and install match today |
+| P114-6 | DEPLOY | Player package: before any publish, build a new package (Shard Console, Player package tab); the 10.13 zip in dist predates P114 |
+
+Count check: 219 ids listed, 219 unique, against 219 open or blocked items in `testing/play-tests.json`.
 
 ## Not built yet: how each BOT item could be checked
 
