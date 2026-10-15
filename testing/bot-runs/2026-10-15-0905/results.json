@@ -1,0 +1,72 @@
+{
+ "checks": [
+  {
+   "id": "P64-1",
+   "title": "Fresh account login: bulletin with the current version, All patch notes, no wiki button",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "title 'Shattered Legacy 2026.10.15.3'; All patch notes button yes; wiki text none",
+     "seconds": 7.5,
+     "transcript": "transcripts/P64-1-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "title 'Shattered Legacy 2026.10.15.3'; All patch notes button yes; wiki text none",
+     "seconds": 7.2,
+     "transcript": "transcripts/P64-1-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "title 'Shattered Legacy 2026.10.15.3'; All patch notes button yes; wiki text none",
+     "seconds": 7.2,
+     "transcript": "transcripts/P64-1-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P64-2",
+   "title": "All patch notes opens the history; a relog shows no bulletin",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "history gump after All patch notes: yes; bulletin on relog: none (observed during the matching P64-1 run)",
+     "seconds": 0.0,
+     "transcript": "transcripts/P64-2-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "history gump after All patch notes: yes; bulletin on relog: none (observed during the matching P64-1 run)",
+     "seconds": 0.0,
+     "transcript": "transcripts/P64-2-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "history gump after All patch notes: yes; bulletin on relog: none (observed during the matching P64-1 run)",
+     "seconds": 0.0,
+     "transcript": "transcripts/P64-2-run3.txt"
+    }
+   ]
+  }
+ ],
+ "soak": null,
+ "firstLogins": [
+  "slbot-player2",
+  "slbot-player3",
+  "slbot-player4"
+ ]
+}

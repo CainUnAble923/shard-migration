@@ -1,0 +1,14 @@
+Overnight play tests starting: 0 checks on fe7e11b (forced)
+
+The overnight play-test bot is starting on fe7e11b.
+
+No item has work: this run was started with -Force.
+
+It runs all 20 checks (some hand results to others), so the report covers more than the list above.
+Expected length: about 51 min (build, boot, checks, soak).
+
+To stop it:
+  schtasks /End /TN "SL overnight play tests"
+  docker compose -p sl-uo-bot down -t 60
+The first stops the script; the second stops the scratch shard (sl-modernuo-bot only, never live or test).
+A summary email follows when it finishes.
