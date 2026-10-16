@@ -1362,6 +1362,83 @@
       ],
       "pass": "The world loads and saves with no error; the plants and seeds it holds carry over unchanged.",
       "check": "Done by CC on a scratch copy (cc-P128 notes, Test world boot)."
+    },
+    "P129-1": {
+      "check": "Built (cc-P129, `p129_1`): admin [adds BloodFox, OsseinRam, LeatherWolfFellow, GargishOutcast, ParoxysmusSwampDragon and Drelgor beside a fresh player at Wrestling and Tactics 100, Str 250 and Dex 100, refills the player's hits before each one, pins each at 1 hit point and CantWalk; the player attacks. Asserts each shows with its port's body (the outcast's is 666 or 667), leaves the player's view, and a corpse (0x2006, amount = body) lands. Result in the nightly report. The breathers, the macaw and the stygian drake kill the player before a bare-handed kill lands (cc-P129 notes), so they are not in the sample."
+    },
+    "P129-2": {
+      "where": "Test shard, SL TEST - Admin (Eve), anywhere open",
+      "do": [
+        "`[add` each of BloodFox, OsseinRam, FrostMite, Lion, Triceratops, SabertoothedTiger, CrimsonDrake, PlatinumDrake, StygianDrake, GiantTurkey, DragonWolf, Viscera, ShadowDweller, Macaw, StoneMonster (six forms; add it a few times), LeatherWolf, TheButcher, GargishOutcast, WildTiger, WildWhiteTiger and WildBlackTiger",
+        "Watch each stand, then walk your character close so it moves and attacks"
+      ],
+      "pass": "Each draws as a whole creature (not invisible, not a stray item, not a wrong-sized sprite) and animates when it moves and attacks. The crimson and platinum drakes come in five colours (one of them plain); the gargish outcast is a gargoyle man or woman in cloth with a thrown weapon."
+    },
+    "P129-3": {
+      "where": "Test shard, SL TEST - Admin (Eve), anywhere open",
+      "do": [
+        "`[add ColdDrake`, then `[props` it and open AbilityProfile: read AbilityNames",
+        "Do the same for `[add Lion` and `[add OsseinRam`",
+        "Stand a player character within a few tiles of the cold drake for ten seconds"
+      ],
+      "pass": "The cold drake lists DragonBreath and AuraDamage once each; the lion lists Piercing and Heal; the ram lists BattleDefense and LifeLeech. Near the drake the player takes 15 cold every 5 seconds with a blue swirl and 'The intense cold is damaging you!'."
+    },
+    "P129-4": {
+      "where": "Test shard, SL TEST - Admin (Eve) plus a player character with Animal Taming 100",
+      "do": [
+        "`[add WildTiger`, tame it, then `[props` it and set CanRide to true; double-click it as its owner",
+        "`[add WildBlackTiger`, kill it and carve the corpse with a knife"
+      ],
+      "pass": "With CanRide set you ride the tiger and can dismount; before it is set a double-click does nothing for a player. The black tiger's corpse gives four black tiger pelts (hue 1175) beside its meat and hides."
+    },
+    "P129-5": {
+      "where": "Test shard, SL TEST - Admin (Eve) and a player character",
+      "do": [
+        "`[add MacawSpawner` on open ground: a gold foil sheet appears with a nest beside it",
+        "As the player, pick the foil up (try a few times: half the time it spawns, half it refuses to move)"
+      ],
+      "pass": "Three to five vicious macaws appear around the foil and attack the player; the foil vanishes for a minute or so and returns. A macaw chased more than 20 tiles away stops counting as the nest's.",
+      "check": "Not built: the bot could lift the foil as a player and count new body-5 mobiles within 3 tiles."
+    },
+    "P129-6": {
+      "where": "Test shard, SL TEST - Admin (Eve), anywhere open",
+      "do": [
+        "`[add PumpkinCarvingKit` into your pack and `[add CarvablePumpkinTall` on the ground",
+        "Double-click the kit and target the pumpkin; then double-click the pumpkin"
+      ],
+      "pass": "The pumpkin becomes a carved face (one of eight), its name reads 'carved pumpkin' with 'Carved By <you>', the kit is used up, and double-clicking the carved pumpkin lights it. An uncarved pumpkin does not light."
+    },
+    "P129-7": {
+      "where": "Test shard, a house you own, SL TEST - Admin (Eve) as co-owner or owner",
+      "do": [
+        "`[add ParrotPerchDeed`, place the perch in the house; `[add ParrotItem` and double-click it, target the perch",
+        "`[add ParrotWafer` and drop it on the parrot; say something near it a few times",
+        "Chop the perch (axe it as the owner) and read the deed; place the deed again"
+      ],
+      "pass": "A pet parrot sits on the perch (a second parrot item is refused: the perch has one). Fed a wafer it squawks a pirate line; now and then it repeats what is said. The chopped perch's deed reads 'Includes a pet Parrot' (and its age in weeks), and placing it puts the same parrot back on the new perch."
+    },
+    "P129-8": {
+      "where": "Test shard, SL TEST - Admin (Eve) plus a player character with a pet, somewhere wide open",
+      "do": [
+        "`[add ChiefParoxysmus` and have the pet attack him; `[add LadyMelisande` and watch her first seconds; `[add MonstrousInterredGrizzle` and hit him a few dozen times; `[add CrimsonDragon` and walk a player up to him"
+      ],
+      "pass": "Each draws as a whole creature. The Chief eats the pet (it dies, he heals) and pulls a player who hits him from range to his side; Lady Melisande summons four enslaved satyrs; the Grizzle spills green ooze that burns 40 poison to whoever stands in it; the dragon freezes the player for five seconds with the terror message."
+    },
+    "P129-9": {
+      "where": "Test shard, SL TEST - Admin (Eve)",
+      "do": [
+        "`[ClusterFSeedOldHaven dryrun`, then `[ClusterFSeedOldHaven missing`",
+        "`[go 3651 2509` on Trammel and wait a moment; then `[go 3622 2488`"
+      ],
+      "pass": "The dry run reports one spawner to create (Drelgor) and the rest skipped (Vorlak's existing spawner, under its old DrelgorTheImpaler entry, counts as found). After seeding, Drelgor the Impaler (a bone-armoured skeleton, body 147) stands in the ruins at 3651,2509; Vorlak the Impaler still spawns at 3622,2488 under his new name, and killing him still earns 'You Fought a Man Called The Impaler and Won'."
+    },
+    "P129-10": {
+      "where": "The test world (scratch copy), before and after the change",
+      "do": [
+        "Boot the test world on the new image, wait for it to load, and stop it (it saves); boot it again"
+      ],
+      "pass": "The world loads and saves with no error; parrot perches and their deeds carry over at version 1.",
+      "check": "Done by CC on a scratch copy (cc-P129 notes, Test world boot)."
     }
   }
 }

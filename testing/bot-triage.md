@@ -643,6 +643,23 @@ Added by cc-P128 (2026-10-16).
 | P128-8 | CHASE | Eight small things to look at; the tincture gump is the one worth eyes |
 | P128-9 | CC | The test world loads and saves on the new image: done by CC on a scratch copy |
 
+### P129
+
+Added by cc-P129 (2026-10-16).
+
+| id | bucket | reason |
+|---|---|---|
+| P129-1 | BOT | Each creature appears with its body, dies to the player and leaves a corpse: all server-sent. Built, `p129_1` |
+| P129-2 | EYES | Whether each new body draws whole and animates: art, on screen |
+| P129-3 | EYES | A tamed drake's and lion's ability lists in [props, and the cold aura's message and particles: the list is staff tooling, the particles are art |
+| P129-4 | EYES | Riding a wild tiger once CanRide is set, and the pelts on its carved corpse: the mounted look is art; the pelts are a shard test |
+| P129-5 | BOT-PARTIAL | Lifting the gold foil spawns three to five macaws that attack (server-sent); the nest's art is Chase's eyes |
+| P129-6 | EYES | Carving a pumpkin with the kit and lighting it: the carved face and the lit form are art |
+| P129-7 | EYES | A parrot on a perch in a house, fed a wafer, chopped into its deed and placed again: the house check needs a real house, and the parrot's look is art |
+| P129-8 | EYES | The four peerless bosses by eye, and their tricks (a pet eaten, satyrs, the ooze, the terror): bodies and effects are art |
+| P129-9 | CHASE | Seeding Old Haven: the seeder's dry run and placement on the test shard, and Vorlak still spawning under his old spawner, are a staff command and a world decision |
+| P129-10 | CC | The test world loads and saves on the new image, the perch patch included: done by CC on a scratch copy |
+
 Count check (cc-P115): 219 ids listed, 219 unique, against 219 open or blocked items in `testing/play-tests.json`. The
 P119 group above is outside that count.
 

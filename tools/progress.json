@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-16T09:30:32-05:00",
+  "generated": "2026-10-16T13:02:55-05:00",
   "direction": {
     "eyebrow": "Direction",
     "title": "Our own shard on ModernUO, OSI where OSI has an answer",
@@ -565,10 +565,10 @@
     "confirmed": "2026-09-19"
   },
   "counted": {
-    "customization_files": 1018,
-    "patch_files": 99,
+    "customization_files": 1062,
+    "patch_files": 100,
     "stale_migrations_present": false,
-    "upstream_patch_files": 92,
+    "upstream_patch_files": 93,
     "upstream_replacements": [
       "BaseGuildmaster.cs",
       "BulkMaterialType.cs",
@@ -583,8 +583,8 @@
       "TreasureMap.cs",
       "TreasureMapChest.cs"
     ],
-    "test_files": 154,
-    "test_cases": 893
+    "test_files": 155,
+    "test_cases": 911
   },
   "content_progress": [
     {
@@ -602,8 +602,8 @@
     {
       "area": "Mobiles/Normal",
       "total": 138,
-      "done": 86,
-      "pct": 62.3
+      "done": 110,
+      "pct": 79.7
     },
     {
       "area": "Items/Resource",
@@ -638,8 +638,14 @@
     {
       "area": "Items/Quest",
       "total": 78,
-      "done": 8,
-      "pct": 10.3
+      "done": 9,
+      "pct": 11.5
+    },
+    {
+      "area": "Items/Addons",
+      "total": 169,
+      "done": 4,
+      "pct": 2.4
     },
     {
       "area": "Items/Functional",
@@ -654,16 +660,16 @@
       "pct": 12.9
     },
     {
+      "area": "Items/Decorative",
+      "total": 88,
+      "done": 3,
+      "pct": 3.4
+    },
+    {
       "area": "Quests",
       "total": 84,
       "done": 3,
       "pct": 3.6
-    },
-    {
-      "area": "Items/Decorative",
-      "total": 88,
-      "done": 2,
-      "pct": 2.3
     },
     {
       "area": "Services/CleanUpBritannia",
@@ -676,12 +682,6 @@
       "total": 40,
       "done": 2,
       "pct": 5.0
-    },
-    {
-      "area": "Items/Addons",
-      "total": 169,
-      "done": 1,
-      "pct": 0.6
     },
     {
       "area": "Mobiles/NPCs",
@@ -903,9 +903,9 @@
         "feeds": "gate: things to fight; F-24, F-40, F-42",
         "why": "'Things to fight' gate (19 spawn orphans), League hunts and culling, monster parts for imbuing and epic crafting; WoW/Diablo art lands on these, renamed",
         "candidates": 193,
-        "done": 109,
+        "done": 138,
         "complete": false,
-        "pct": 56.5
+        "pct": 71.5
       },
       {
         "id": "pettraining",
@@ -980,9 +980,9 @@
         "feeds": "",
         "why": "stock for loot boxes (F-40), the League shop (F-13), recipe and commission rewards; ported on demand, not counted",
         "candidates": 717,
-        "done": 288,
+        "done": 292,
         "complete": false,
-        "pct": 40.2
+        "pct": 40.7
       },
       {
         "id": "src",
@@ -1024,16 +1024,16 @@
         "feeds": "",
         "why": "ported with the system that uses them, never on their own; not counted",
         "candidates": 361,
-        "done": 12,
+        "done": 14,
         "complete": false,
-        "pct": 3.3
+        "pct": 3.9
       }
     ],
     "tiers": {
       "port": {
         "systems": 16,
         "files": 983,
-        "done": 417,
+        "done": 446,
         "titles": [
           "Bulk orders, all crafts",
           "Treasure maps revamp",
@@ -1058,7 +1058,7 @@
       "ride": {
         "systems": 1,
         "files": 361,
-        "done": 12,
+        "done": 14,
         "titles": [
           "Ride-along: NPCs, quest items, books, internals"
         ],
@@ -1068,7 +1068,7 @@
       "reward": {
         "systems": 1,
         "files": 717,
-        "done": 288,
+        "done": 292,
         "titles": [
           "Reward pool: addons, decorative, store items, artifact remainder, Clean Up rewards"
         ],
@@ -1112,9 +1112,9 @@
     "counted": {
       "systems": 16,
       "in": 3,
-      "done": 417,
+      "done": 446,
       "total": 983,
-      "pct": 42.4
+      "pct": 45.4
     },
     "next": "Bulk orders, all crafts",
     "decided": [
@@ -1272,26 +1272,26 @@
     "corrections": "2026-09-19"
   },
   "derived": {
-    "version": "2026.10.16.2",
+    "version": "2026.10.16.3",
     "playtests": {
-      "open": 242,
+      "open": 243,
       "failed": 2,
       "passed": 23,
       "later": 0,
       "blocked": 1,
-      "total": 267,
+      "total": 268,
       "unloggedFails": 1,
-      "generatedAt": "2026-10-16T14:10:37Z"
+      "generatedAt": "2026-10-16T14:31:54Z"
     },
     "queue": {
       "autopilot": "on",
-      "running": null,
+      "running": {
+        "n": 129,
+        "slug": "port-creatures-part2",
+        "state": "running",
+        "since": "2026-10-16T10:57:13"
+      },
       "queued": [
-        {
-          "n": 129,
-          "slug": "port-creatures-part2",
-          "state": "queued"
-        },
         {
           "n": 130,
           "slug": "pet-training",
@@ -1375,6 +1375,31 @@
         {
           "n": 146,
           "slug": "playtest-decisions-inbox",
+          "state": "queued"
+        },
+        {
+          "n": 147,
+          "slug": "achievements-button",
+          "state": "queued"
+        },
+        {
+          "n": 148,
+          "slug": "console-one-stop-shop",
+          "state": "queued"
+        },
+        {
+          "n": 149,
+          "slug": "away-mode-and-email-controls",
+          "state": "queued"
+        },
+        {
+          "n": 150,
+          "slug": "requisitions-and-leads",
+          "state": "queued"
+        },
+        {
+          "n": 151,
+          "slug": "guild-halls-survey",
           "state": "queued"
         }
       ],

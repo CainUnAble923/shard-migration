@@ -18,7 +18,7 @@ requested still gets finished (the P80 tutorial framework, for one). Anything no
 4. Chase commits with `Commit-ShardWork.ps1`.
 
 F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and questions (Q-n).
-**Next free: F-45.**
+**Next free: F-50.**
 
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
@@ -3328,6 +3328,113 @@ What it needs: one proven route from a UOFiddler `.vd` to a body ID in our packa
 checklist (free slot, `mobtypes.txt`, `bodyTable.cfg`, Bodyconv if used), proven first on the Kobold Bow.
 
 Prompt: Part A of `cc-P-rootdeep-burrows-creatures.md` (the gate for F-45; the overseer may split it out).
+
+### F-47: Requisitions, a destination for magic loot, and the Appraiser (added 2026-10-16)
+
+**Ours** (on top of the guild system, F-9; the League, F-24; commissions, F-37). From the overseer hand-off
+`overseer\feature-handoffs\requisitions-leads-and-guild-halls.md` (2026-10-16) and the features chat the same day.
+Chase: "Selling magic weapons found/looted: could they be sold to the League? or the Warriors' guild?" and "don't
+forget slayer weapons etc".
+
+Decided with Chase, 2026-10-16:
+- **The League runs a requisitions board** ("the guild for the guilds"); **each guild posts requests on it**, and each
+  guild hall (chapter and real hall, F-49) shows its own guild's requests too.
+- Requests are **themed per guild**: Warriors' Brotherhood swords and maces with Hit Chance or a hit spell; Arcane
+  Society spellbooks and Lower Mana Cost jewelry; Rangers' League bows; Thieves' Den "no questions asked" goods; and so
+  on for every guild.
+- **Slayer weapons are a request type** ("an Undead slayer before the next culling"), tied to League monster hunts and
+  culls where it fits.
+- **Found or crafted both count**, so requisitions also give crafters work.
+- **Board is personal:** each player sees their own rolled set, **3 open requests per guild, refreshed daily**. Quality
+  and pay scale with **the player's rank in that guild**; **League rank gates the request tier** (better requests at
+  higher League ranks).
+- **Expiry is quiet:** open requests sit until the daily refresh and simply roll over. No Renown loss and no Infamy
+  (they are open postings, not promises; F-37's commission penalty does not apply).
+- **Pay: Renown plus that guild's reputation, plus gold equal to the Appraiser's price for the item**, so a
+  requisition never loses to plain selling. Renown and rep are the real reward; gold stays at the floor so magic loot
+  gets a destination without flooding the shard with gold.
+- **The Appraiser:** a plain low-value sell for unrequested magic items, so nothing is worthless. **Price scales with
+  the item's property count and intensity, kept near stock NPC sell levels** (a floor, not a farm). **Stands in every
+  League hall and in the major bank towns** (Britain, Luna and the like; CC lists the towns it picks).
+- Sits beside the existing exits for magic loot: keep, unravel (Artificers), Clean Up Britannia points (ported, keeps
+  its own rules), and the loot rater in the combat script (P145) can tag "Requisition" as a tier.
+
+Open (for the build prompt to report, not block on):
+- The exact Appraiser formula and the bank-town list; CC proposes numbers and Chase tunes in play.
+- Whether an item turned in for a requisition also counts toward Clean Up Britannia (proposed: no, one exit per item).
+- Fidelity: OSI has no requisition board or Appraiser; log as a deviation when built.
+
+Prompt: `cc-P-requisitions-and-leads.md` (unnumbered, with F-48). Waits behind the port list unless Chase pulls it
+forward.
+
+### F-48: Leads, a requisition that points to where the item drops (added 2026-10-16)
+
+**Ours** (with F-47). Chase: "maybe quests that request a specific type of item and give you a location it is more
+likely to spawn/be?"
+
+Decided with Chase, 2026-10-16:
+- A requisition can come with a **Lead**: a rumor naming an area ("orc captains in the Rootdeep Warren carry heavy
+  axes"). **Personal, not world-wide:** only the holder's chances change.
+- **Strength: 2x drop chance** for that item type in that area while the Lead is held, **plus a pity timer**: each
+  qualifying kill in the area adds a little chance, and the item is **guaranteed by about the 40th qualifying kill**.
+  So a Lead always pays off.
+- **Leads last 3 days and expire quietly** (no Renown loss, no Infamy).
+- **Better Leads at higher League ranks.**
+- Ties in: exploration achievements, treasure maps and Cartography (P127), monster stealing's family parts (P142),
+  slayer requests pointing at the matching creature family.
+
+Open (for the build prompt to report):
+- What counts as a "qualifying kill" (proposed: a creature in the Lead's area whose loot table can roll that item type).
+- How the dropped item is marked so it can be turned in (proposed: a normal item of the requested type and properties,
+  no special tag).
+- Fidelity: log with F-47's deviation.
+
+Prompt: `cc-P-requisitions-and-leads.md` (with F-47).
+
+### F-49: The guilds' real halls in the world (added 2026-10-16)
+
+**Ours.** Chase, 2026-10-16: "We may need to make or plan where the 'real' guild hall is in the world, not just the
+'chapter' in Haven." Today each guild's presence is its New Haven chapter (F-9, `ClusterFGuildStarterPath.cs`). Each
+guild gets a real headquarters somewhere in the world; **the New Haven one stays as the local chapter.**
+
+Locations, decided with Chase 2026-10-16 (the overseer's proposed list, accepted as is):
+
+| Guild | Real hall |
+|---|---|
+| The League (HQ) | Britain, Castle British grounds |
+| Warriors' Brotherhood | Jhelom |
+| Arcane Society | Moonglow |
+| Healers' Covenant | Empath Abbey (by Yew) |
+| Rangers' League | Skara Brae |
+| Miners' Compact | Minoc |
+| Society of Smiths | Serpent's Hold |
+| Tinkers' Union | Vesper |
+| Thieves' Den | Buccaneer's Den |
+| Twin Paths Dojo | Zento (Tokuno) |
+| Keepers of the Last Door | Umbra (Malas) |
+| Foresters' Union | Yew |
+| Tailors' Circle | Nujel'm |
+| Maritime Brotherhood | Ocllo |
+| Merchants' Exchange | Magincia |
+| Bards' Consortium | Britain |
+| Artificers' Order | Royal City, Ter Mur (already posted) |
+| Order of the Alembic | Papua (Lost Lands, swamp herbs) |
+| Custodians | folded into Clean Up Britannia (2026-09-29); Britain |
+
+Rules that bind it:
+- **Server-placed buildings from existing UO tiles first** (Chase, 2026-09-30); map edits and new art stay open for
+  later.
+- A real hall holds what the chapter cannot: the guild's full shop, its requisitions view (F-47), the **top guild
+  rank's trial** (F-43), and a stop on the travel network.
+- Each hall gets its own design pass later. This entry fixes only where.
+
+Open:
+- Which facet each hall sits on (proposed: Trammel, with the travel network reaching it; Felucca copies only if a
+  Felucca reason comes up).
+- Whether a stock building is reused or a new one is placed, per town (the survey prompt reports).
+- Fidelity: OSI towns do not have these halls; log as a deviation when placed.
+
+Prompt: `cc-P-guild-halls-survey.md` (unnumbered; a survey only, places nothing).
 
 ## Batched
 
