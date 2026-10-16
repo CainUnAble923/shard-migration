@@ -660,6 +660,23 @@ Added by cc-P129 (2026-10-16).
 | P129-9 | CHASE | Seeding Old Haven: the seeder's dry run and placement on the test shard, and Vorlak still spawning under his old spawner, are a staff command and a world decision |
 | P129-10 | CC | The test world loads and saves on the new image, the perch patch included: done by CC on a scratch copy |
 
+### P130
+
+Added by cc-P130 (2026-10-16).
+
+| id | bucket | reason |
+|---|---|---|
+| P130-1 | BOT-PARTIAL | The lore gump's training section and the second-lore refusal are server-sent (clilocs in the gump layout, a 0xC1); how it draws is Chase's eyes |
+| P130-2 | BOT-PARTIAL | The battle-experience overheads and the tracker gump are server-sent; the bar's drawing is Chase's eyes |
+| P130-3 | EYES | The training menu, the slider and the confirmation are a chain of gumps: art and layout on screen; the arithmetic is a shard test |
+| P130-4 | EYES | The planning gump: layout on screen; the zeroing rule is a shard test |
+| P130-5 | BOT | The trainer's greeting and his Quest Giver tooltip line are both server-sent |
+| P130-6 | CHASE | Reading slot ranges on the live world (a new dragon, a nightmare, a dragon from before the build): staff props on a world decision |
+| P130-7 | EYES | The gate's sparkle is art; the bar and the gump are a shard test |
+| P130-8 | CHASE | A live retame with two taming skills: a world sequence with a second character |
+| P130-9 | EYES | No training section on an evo pet's or a pack mule's lore gump: on screen; the exclusion is a shard test |
+| P130-10 | CC | The test world loads and saves on the new image, the slot pass logged: done by CC on a scratch copy |
+
 Count check (cc-P115): 219 ids listed, 219 unique, against 219 open or blocked items in `testing/play-tests.json`. The
 P119 group above is outside that count.
 

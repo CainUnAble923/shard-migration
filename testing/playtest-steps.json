@@ -1439,6 +1439,97 @@
       ],
       "pass": "The world loads and saves with no error; parrot perches and their deeds carry over at version 1.",
       "check": "Done by CC on a scratch copy (cc-P129 notes, Test world boot)."
+    },
+    "P130-1": {
+      "where": "Test shard, SL TEST - Admin (Eve), anywhere open",
+      "do": [
+        "`[PetTrainTest GrizzlyBear` (a tamed, bonded bear appears at your feet)",
+        "Use Animal Lore on the bear",
+        "Press the Begin Animal Training button on the first page, then page to the Pet Slots page (page 7)"
+      ],
+      "pass": "The lore gump has a training section under the pet's name: 'Begin Animal Training' before, a 'Pet Training Progress:' bar at 0.0% after, with the real-time tracker button beside it. Page 7 reads Pet Slots 1 => 3 and the taming skill the bear asks for (its own 59.1). Using Animal Lore again while the gump is open says 'You must wait a few moments to use another skill.'",
+      "check": "Not built yet: admin [PetTrainTest GrizzlyBear, uses Animal Lore on it and asserts the 0xDD gump holds cliloc 1157487, replies button 4 and asserts the resent gump holds 1157491; a second lore use asserts 500118."
+    },
+    "P130-2": {
+      "where": "Test shard, SL TEST - Admin (Eve), anywhere open",
+      "do": [
+        "With the bear of P130-1 in training, `[add Rat` and `[add GiantRat` a few times and let the bear kill them (say 'all kill' and target each)",
+        "Watch the bear's overhead lines and the small tracker window"
+      ],
+      "pass": "Now and then the bear says '*The pet's battle experience has slightly increased!*' (or fairly, or greatly, by the victim's barding difficulty), the tracker window shows the bar climbing, and the first fight of the day announces the Pet Training Power Hour. Rats are weak, so most fights say '*The pet does not appear to train from that*'; against grizzly bears or ogres the bar fills in a few dozen kills, ending with '*The creature surges with battle experience and is ready to train!*'.",
+      "check": "Not built yet: the bot's pet kills [added creatures and asserts a 1157565/1157573/1157574 overhead from the pet and a PetTrainingProgressGump on the wire; the bar's drawing is Chase's eyes."
+    },
+    "P130-3": {
+      "where": "Test shard, SL TEST - Admin (Eve), anywhere open",
+      "do": [
+        "With the bear's bar at 100% (P130-2, or walk it over a `[add PetTrainingGate` with you beside it), use Animal Lore on it and press Pet Training Options (accept the control-slot warning once)",
+        "Pick Stats, then Strength; in the confirmation gump push the value up with the > buttons and press Train Pet, then Yes",
+        "Open Animal Lore on the bear again and page to Pet Slots"
+      ],
+      "pass": "'You successfully train the pet!' and 'Your pet's control slot have been updated.'; the bear's Strength is what you chose; Pet Slots reads 2 => 3 and the taming skill it asks for went up by 22 (to 81.1); your follower count rose by one. The menu's categories are Stats, Resists, Increase Magic Skill Caps, Increase Combat Skill Caps, Magical Abilities, Special Abilities, Special Moves (a bear has no Area Effect Abilities). Trying a skill cap with no matching power scroll in your main pack says the scroll was not found.",
+      "check": "The training menu, the slider gump and the confirmation are a sequence of gumps drawn by the client: Chase's eyes. The arithmetic (cost, slots, taming skill) is a shard test."
+    },
+    "P130-4": {
+      "where": "Test shard, SL TEST - Admin (Eve), anywhere open",
+      "do": [
+        "In Pet Training Options press PLAN, then ENABLE",
+        "Pick a few training points (the button now reads Add To Plan), then DISABLE"
+      ],
+      "pass": "Each choice lands on the Pet Training Planning list with its category, name, value and cost, and the remaining points add up at the bottom; the red minus button drops a line; picking a magical ability zeroes any planned special move it requires. Disabled, the confirmation gump reads Train Pet again.",
+      "check": "The plan's arithmetic and the zeroing rule are a shard test; the gump is Chase's eyes."
+    },
+    "P130-5": {
+      "where": "Test shard, SL TEST - Admin (Eve), Britain or any stable",
+      "do": [
+        "Walk away from an animal trainer and back within eight tiles of him, a few times a minute",
+        "Hover the trainer for his tooltip"
+      ],
+      "pass": "About every other approach (at most once per fifteen seconds) the trainer says 'Such an exciting time to be an Animal Trainer! New taming techniques have been discovered!'; his tooltip has a 'Quest Giver' line.",
+      "check": "Not built yet: the bot walks a player out of and into the trainer's range up to twenty times, asserting a 0xC1 with cliloc 1157526 from the trainer, and reads the Quest Giver (1072269) line from the trainer's property list."
+    },
+    "P130-6": {
+      "where": "Test shard, SL TEST - Admin (Eve), anywhere open",
+      "do": [
+        "`[add Dragon` and `[props` it: read ControlSlots, ControlSlotsMin, ControlSlotsMax and CurrentTameSkill",
+        "`[add Nightmare` and `[add WhiteWyrm` and read the same",
+        "`[props` a dragon that was already in the world before this build (a stabled or spawned one)"
+      ],
+      "pass": "A new dragon is 4 / 4 / 5 (it was 3 slots): Time of Legends raised dragons. A nightmare is 3 / 3 / 5 and a white wyrm 4 / 4 / 5; once in a long while a nightmare or wyrm built with poor rolls shows a minimum one lower (2 or 3) and sits at it. A dragon from before this build reads 4 as well: the one-time pass at startup raised every tameable below its new minimum.",
+      "check": "The slot ranges and the lowering are shard tests on the real roll; the pass over an old world is the test-world boot (P130-10). What is in Chase's hands is reading them on the live world."
+    },
+    "P130-7": {
+      "where": "Test shard, SL TEST - Admin (Eve), anywhere open",
+      "do": [
+        "`[add PetTrainingGate` on open ground; with a pet that has begun training (P130-1) beside you, say 'all follow me' and walk it over the gate"
+      ],
+      "pass": "The pet sparkles as it crosses, the lore gump opens (or refreshes) with the bar at 100.0% and the Pet Training Options button showing. A pet that has not begun training crosses with no effect, and so does a training pet whose owner is more than 25 tiles away.",
+      "check": "The bar and the gump are a shard test; the sparkle is art, Chase's eyes."
+    },
+    "P130-8": {
+      "where": "Test shard, SL TEST - Admin (Eve) plus a player character with Animal Taming about 65",
+      "do": [
+        "Train the bear of P130-3 once (its taming requirement is 81.1 now; `[props` CurrentTameSkill shows it), then release it ('all release')",
+        "Have the player with Taming 65 try to tame it, then set the player's Taming to 90 and try again"
+      ],
+      "pass": "At 65 the attempt is refused outright: 'You have no chance of taming this creature.' (its own 59.1 would have let the attempt start). At 90 it starts and, after the usual tries, succeeds.",
+      "check": "The refusal through the real taming target is a shard test (TamingReadsCurrentTameSkillAndCallsOnAfterTame); what is in Chase's hands is the live sequence."
+    },
+    "P130-9": {
+      "where": "Test shard, SL TEST - Admin (Eve), anywhere open",
+      "do": [
+        "`[EvoPet give` yourself an evo pet and use Animal Lore on it; `[add PackMule`, tame it (`[props` Controlled/ControlMaster or [PetTrainTest PackMule) and use Animal Lore on it",
+        "`[props` each: ControlSlotsMin and ControlSlotsMax"
+      ],
+      "pass": "Neither lore gump has a training section (no Begin Animal Training, no bar); each pet's minimum and maximum slots equal its slots, and they fight exactly as before this build.",
+      "check": "Pinned by EvoPetsAndPackMulesGainNothing and the unchanged P65 facts; the gumps are Chase's eyes."
+    },
+    "P130-10": {
+      "where": "The test world (scratch copy), before and after the change",
+      "do": [
+        "Boot the test world on the new image, wait for it to load, and stop it (it saves); boot it again"
+      ],
+      "pass": "The world loads and saves with no error, PetTraining.bin is written and read back, and the first boot logs the one-time slot pass with how many tameables it raised.",
+      "check": "Done by CC on a scratch copy (cc-P130 notes, Test world boot)."
     }
   }
 }

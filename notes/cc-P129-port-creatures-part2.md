@@ -292,7 +292,7 @@ image `sl-modernuo:cc-p129` tagged `sl-modernuo:bot`, a scratch copy of the test
 | `testing/bot-runs/2026-10-16-1202` | FAIL 0/3 | The fights add up. Run 3's transcript: the blood fox's Bleed Attack and bites left the player at 139 of 175, the cold drake's aura (15 cold every 5 s) and bites at 62, and the stygian drake's spells killed it; the dragon wolf, the Butcher and Drelgor met a ghost. Run 1 died at the fox (its bleed kept ticking). **A check defect**, P119-1's own first-run lesson in another form: P119's fight topped the player up once; it now refills the player's hits before every creature (`_p119_fight`, both samples) |
 | `testing/bot-runs/2026-10-16-1220` | FAIL 0/3 | With the refill: the fox, the cold drake and the stygian drake die in runs 2 and 3, then **the dragon wolf takes the player from 175 to 59 in 2.5 s and kills it**. Its DragonBreath, stored on the profile and fired through the twin before the admin's pin to 1 hit, deals 16% of the breather's current hits (pinned FireBreath, 800-860 hits): the ability core dispatching a ported creature's breath, live. Run 1 died at the fox: Grasping Claw ("The blow from the creature's claws has made you more susceptible to physical attacks", cliloc 1070836, in the 1202 run-1 transcript too) plus bleed plus 16-22 bites against a Dex 10 player swinging every few seconds. **A sample defect:** the two breathers are out (OsseinRam and Macaw in), the player gets Dex 100 for its swings, and stamina is refilled with its hits |
 | `testing/bot-runs/2026-10-16-1235` | FAIL 0/3 | The fox and the ram die 3 of 3 now; the stygian drake 1 of 3 (its spells kill the player in 8 s) and the macaw 0 of 3 (Dex 400-500 and Wrestling 120-140: dead in 13 s); the Butcher and Drelgor met ghosts. The sample again: a bare-handed fair kill is for creatures that cannot kill a 175-hit player first. Final sample: BloodFox, OsseinRam, LeatherWolfFellow, GargishOutcast (either body), ParoxysmusSwampDragon, Drelgor |
-| `testing/bot-runs/TBD4` | TBD4 | TBD4 |
+| `testing/bot-runs/2026-10-16-1250` | **FLAKY 1/3** | Run 3 **PASS 6/6**: every creature appears with its port's body, dies to the player and leaves a corpse; the player ends at 176 of 177. Runs 1 and 2 died at the ossein ram: "You have been mortally wounded!" twice in four seconds (its Mortal Strike, the GetWeaponAbility port, live) with its Life Leech bites, 177 to 3 in 7 s. Left as it is: the bot produces evidence and Chase marks; the sample is now six creatures a 175-hit player can beat, and the ram's two abilities are what makes it a coin toss. The fact in the shard tests is the gate; this item is the live look |
 
 The creatures did what their ServUO values say: the fox bled, the drake's aura burned, the drake cast. The bot says
 "rule 1 held: both real shards are exactly as they were" in both runs.
@@ -339,7 +339,14 @@ The creatures did what their ServUO values say: the fox bled, the drake's aura b
     (c) `docs/feature-queue.md` (F-47 to F-49, dated today) was uncommitted in shard-migration when I finished: the
     overseer's own edit, made while this ran, not mine. The Golem's commit stages everything, so it rides along;
     both repos were clean when I started.
-13. **The Golem's start phrase** did not match "golem please resume working on the shard tasks" (the word "resume"),
+13. **The Golem committed P129 early, on a chat reply.** Chase asked how it was going while the last bot run was out; my
+    reply ended with the words "end with P129 DONE" in prose, and the Golem's Stop hook reads the tail of any message
+    for `P<nn> DONE`, so it committed and pushed both repos (`b856926` code, `65d9d08` docs) with this note still
+    holding four placeholders and no DONE line, and handed P130. The code was green and complete; the note is finished
+    here and rides in P130's commit, which also archives this prompt file (the archive step wants the DONE line). For
+    the Golem's bug list: a DONE token quoted inside a sentence should not count; the prompt asks for it as the last
+    words of the message, so the detector could require the message to end with it.
+14. **The Golem's start phrase** did not match "golem please resume working on the shard tasks" (the word "resume"),
     which the previous session's note also hit with a missing "the"; `Test-GolemPhrase` is an exact match after
     stripping punctuation. I re-queued P129 and ran the hook's own hand-off by hand so its DONE is committed; a looser
     match (any message starting "golem" that contains "work") would spare the next session that.
@@ -373,4 +380,21 @@ and the patch's staging folders stayed in the session scratchpad, outside both r
 
 ## Commit preflight
 
-TBD
+`powershell -NoProfile -ExecutionPolicy Bypass -File D:\UO\Commit-ShardWork.ps1 -DryRun`, after the notes were written
+(and after the Golem's early commit, so the code repo reads clean and docs holds this note and the last bot run):
+
+```
+Repo Result 
+---- ------ 
+code clean  
+docs dry run
+```
+
+- **code:** everything of P129's is in `b856926` already (43 new files, the rename, the patch, the migrations, the test
+  file, the seven orphan-count facts, checks.py, CHANGELOG and VERSION); after it the only code change is `checks.py`'s
+  final sample (the fourth bot run), which goes with P130's commit.
+- **docs:** this note, finished; the 1250 bot run (machine output); the overseer's own `docs/feature-queue.md` edit if it
+  is still uncommitted.
+
+P129 DONE
+
