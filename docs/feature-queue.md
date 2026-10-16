@@ -3305,9 +3305,10 @@ Decided with Chase, 2026-10-15:
 
 Prompt: `cc-prompts\cc-P-rootdeep-burrows-creatures.md` (unnumbered, written 2026-10-15). Depends on F-46.
 
-Open: final in-game names for every creature (working names stand until then); the Overdraft scale (1.5x or 2x) and
-the crow scale (1.33x, 1.5x or 1.75x), both from the CC render sheet; whether the Vault needs to grow for a boss-scale
-fight.
+Decided with Chase, 2026-10-15 (later): **the Overdraft and the crop crow are both upscaled 1.5x**; **the Vault is a
+little bigger** than the first draft (x 5142-5178, y 1132-1159).
+
+Open: final in-game names for every creature (working names stand until then).
 
 ### F-46: Third-party creature bodies in the client (added 2026-10-15)
 

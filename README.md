@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.15.10. Golem on, 11 queued, latest done P125. Play tests: 242 open, 2 failed, 21 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.15.10. Golem on, 12 queued, latest done P126. Play tests: 243 open, 2 failed, 21 passed.
 
 ## Port list: 1 of 16 systems in. 340 of 983 files (35%).
 
@@ -230,11 +230,10 @@ Tasks          ██░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 76 prompts finished, 3 of them stopped early)
+### Queue (Golem on; 77 prompts finished, 3 of them stopped early)
 
 | Prompt | State | When |
 |---|---|---|
-| P126 second-machine-design | queued |  |
 | P127 port-treasure-maps-monster-stealing | queued |  |
 | P128 port-consumables-crafting-gaps | queued |  |
 | P129 port-creatures-part2 | queued |  |
@@ -245,6 +244,9 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P134 vseuoaware-art-checks-mcp | queued |  |
 | P135 vseuoaware-staff-commands | queued |  |
 | P136 status-page-self-judging | queued |  |
+| P137 usable-ankhs-and-playtest-fixes | queued |  |
+| P138 kitsune-paperdoll-refit | queued |  |
+| P126 second-machine-design | done | 2026-10-16 |
 | P125 golem-long-run-toggle | done | 2026-10-15 |
 | P124 package-ships-our-tazuo | done | 2026-10-15 |
 | P123 port-bulk-orders-crafts | done | 2026-10-15 |
@@ -254,7 +256,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P119 port-creatures-part1 | done | 2026-10-15 |
 | P118 port-bulk-orders | stopped: needs Chase | 2026-10-15 |
 | P117 fresh-login-bulletin-regression | done | 2026-10-15 |
-| P116 console-tab-scroll | done | 2026-10-15 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 78 patches, 10 replacements
 
