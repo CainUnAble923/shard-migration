@@ -613,6 +613,20 @@ Added by cc-P123 (2026-10-15).
 | P123-5 | BOT-PARTIAL | The keg's uses, the dye's hue and uses and the talisman's charges are server-sent; the looks are Chase's |
 | P123-6 | CC | The test world loads and saves with the new deeds: done by CC on a scratch copy |
 
+### P127
+
+Added by cc-P127 (2026-10-16).
+
+| id | bucket | reason |
+|---|---|---|
+| P127-1 | BOT-PARTIAL | The map's name line, facet line and the decode messages are server-sent; that the map opens and draws is Chase's eyes |
+| P127-2 | BOT-PARTIAL | The chest's item id and the four hued spawns are server-sent; the dig animation and the chest art are Chase's eyes |
+| P127-3 | BOT-PARTIAL | The refusals, the disarm messages, the guardian and the chest's contents are server-sent; how the loot looks is Chase's |
+| P127-4 | BOT-PARTIAL | The facet cliloc and the spawn types are server-sent; that the client shows the Malas map is Chase's eyes |
+| P127-5 | BOT | The special-item message, the pack, the once-per-creature rule and the balm's refusal are all server-sent |
+| P127-6 | BOT | Skill update packets |
+| P127-7 | CC | The test world loads and saves with the old maps and chests carried over: done by CC on a scratch copy |
+
 Count check (cc-P115): 219 ids listed, 219 unique, against 219 open or blocked items in `testing/play-tests.json`. The
 P119 group above is outside that count.
 

@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-16T06:08:32-05:00",
+  "generated": "2026-10-16T07:38:59-05:00",
   "direction": {
     "eyebrow": "Direction",
     "title": "Our own shard on ModernUO, OSI where OSI has an answer",
@@ -565,10 +565,10 @@
     "confirmed": "2026-09-19"
   },
   "counted": {
-    "customization_files": 938,
-    "patch_files": 83,
+    "customization_files": 954,
+    "patch_files": 90,
     "stale_migrations_present": false,
-    "upstream_patch_files": 78,
+    "upstream_patch_files": 83,
     "upstream_replacements": [
       "BaseGuildmaster.cs",
       "BulkMaterialType.cs",
@@ -579,10 +579,12 @@
       "Meditation.cs",
       "Mining.cs",
       "RegenRates.cs",
-      "ResourceInfo.cs"
+      "ResourceInfo.cs",
+      "TreasureMap.cs",
+      "TreasureMapChest.cs"
     ],
-    "test_files": 149,
-    "test_cases": 840
+    "test_files": 151,
+    "test_cases": 858
   },
   "content_progress": [
     {
@@ -813,9 +815,9 @@
         "feeds": "F-20; gate: train without a wall",
         "why": "F-20 Cartography (explore and map) and the gain path to 200; OSI has the answer",
         "candidates": 2,
-        "done": 0,
-        "complete": false,
-        "pct": 0.0
+        "done": 2,
+        "complete": true,
+        "pct": 100.0
       },
       {
         "id": "mstealing",
@@ -824,9 +826,9 @@
         "feeds": "gate: train without a wall",
         "why": "Stealing's gain path past the stock ceiling (D82 area); OSI has the answer",
         "candidates": 14,
-        "done": 0,
-        "complete": false,
-        "pct": 0.0
+        "done": 14,
+        "complete": true,
+        "pct": 100.0
       },
       {
         "id": "despiseshame",
@@ -1031,7 +1033,7 @@
       "port": {
         "systems": 16,
         "files": 983,
-        "done": 340,
+        "done": 356,
         "titles": [
           "Bulk orders, all crafts",
           "Treasure maps revamp",
@@ -1109,10 +1111,10 @@
     "unassigned_first": [],
     "counted": {
       "systems": 16,
-      "in": 1,
-      "done": 340,
+      "in": 3,
+      "done": 356,
       "total": 983,
-      "pct": 34.6
+      "pct": 36.2
     },
     "next": "Bulk orders, all crafts",
     "decided": [
@@ -1270,26 +1272,21 @@
     "corrections": "2026-09-19"
   },
   "derived": {
-    "version": "2026.10.15.10",
+    "version": "2026.10.16",
     "playtests": {
-      "open": 243,
+      "open": 244,
       "failed": 2,
       "passed": 21,
       "later": 0,
       "blocked": 1,
-      "total": 266,
+      "total": 267,
       "unloggedFails": 1,
-      "generatedAt": "2026-10-16T11:08:28Z"
+      "generatedAt": "2026-10-16T12:38:42Z"
     },
     "queue": {
       "autopilot": "on",
       "running": null,
       "queued": [
-        {
-          "n": 127,
-          "slug": "port-treasure-maps-monster-stealing",
-          "state": "queued"
-        },
         {
           "n": 128,
           "slug": "port-consumables-crafting-gaps",
@@ -1344,9 +1341,37 @@
           "n": 138,
           "slug": "kitsune-paperdoll-refit",
           "state": "queued"
+        },
+        {
+          "n": 139,
+          "slug": "rootdeep-burrows-body-route",
+          "state": "queued"
+        },
+        {
+          "n": 140,
+          "slug": "rootdeep-burrows-creatures",
+          "state": "queued"
+        },
+        {
+          "n": 141,
+          "slug": "rootdeep-burrows-vault-layout",
+          "state": "queued"
+        },
+        {
+          "n": 142,
+          "slug": "monster-stealing-shard-rules",
+          "state": "queued"
         }
       ],
       "finished": [
+        {
+          "n": 127,
+          "slug": "port-treasure-maps-monster-stealing",
+          "state": "done",
+          "why": "",
+          "date": "2026-10-16",
+          "notes": "notes/cc-P127-port-treasure-maps-monster-stealing.md"
+        },
         {
           "n": 126,
           "slug": "second-machine-design",
@@ -1418,25 +1443,17 @@
           "why": "needs Chase",
           "date": "2026-10-15",
           "notes": "notes/cc-P118-port-bulk-orders.md"
-        },
-        {
-          "n": 117,
-          "slug": "fresh-login-bulletin-regression",
-          "state": "done",
-          "why": "",
-          "date": "2026-10-15",
-          "notes": "notes/cc-P117-fresh-login-bulletin-regression.md"
         }
       ],
-      "finished_total": 77,
+      "finished_total": 78,
       "stopped_total": 3,
       "latest_done": {
-        "n": 126,
-        "slug": "second-machine-design",
+        "n": 127,
+        "slug": "port-treasure-maps-monster-stealing",
         "state": "done",
         "why": "",
         "date": "2026-10-16",
-        "notes": "notes/cc-P126-second-machine-design.md"
+        "notes": "notes/cc-P127-port-treasure-maps-monster-stealing.md"
       }
     },
     "reviewed": "2026-10-13",

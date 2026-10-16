@@ -3308,7 +3308,14 @@ Prompt: `cc-prompts\cc-P-rootdeep-burrows-creatures.md` (unnumbered, written 202
 Decided with Chase, 2026-10-15 (later): **the Overdraft and the crop crow are both upscaled 1.5x**; **the Vault is a
 little bigger** than the first draft (x 5142-5178, y 1132-1159).
 
-Open: final in-game names for every creature (working names stand until then).
+- **Hoarding Rat** (2026-10-16): the Vault's rat pack leader, on the Ratman Lord art. Sharks were considered and dropped.
+
+- **Final names** (2026-10-16): Echo Rat, Gourdling, Crop Crow, Burrow Scamp Slinger, Cackler Scrapper / Slasher /
+  Veteran / Packleader, Burrow Hog; Ledger Bat, Penny Rat, Hoarding Rat, Safe Deposit Box, The Overdraft; Burrow Grub,
+  Burrow Scamp, Redcap Scamp, The Burrow Mother; Rootling, Sporecap, Bramblehulk; Dawnshard, Seamguard; Gloomling,
+  Gloomspinner, Gloomweaver, The Gloom Queen.
+
+No open questions; ready for the overseer to number the prompt.
 
 ### F-46: Third-party creature bodies in the client (added 2026-10-15)
 
