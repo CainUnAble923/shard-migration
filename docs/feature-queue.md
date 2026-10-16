@@ -18,7 +18,7 @@ requested still gets finished (the P80 tutorial framework, for one). Anything no
 4. Chase commits with `Commit-ShardWork.ps1`.
 
 F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and questions (Q-n).
-**Next free: F-50.**
+**Next free: F-51.**
 
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
@@ -3436,6 +3436,17 @@ Open:
 
 Prompt: `cc-P-guild-halls-survey.md` (unnumbered; a survey only, places nothing).
 
+### F-50: Unravel results auto-fill the Artificer's satchel (added 2026-10-16)
+
+**Ours.** Chase, 2026-10-16: "auto placement of essences into artificer satchel."
+
+Decided with Chase, 2026-10-16:
+- **What:** all Unravel results (magical residue, enchanted essence, relic fragments, and our Essence Shards).
+- **When:** on unravel and on loot pickup, only while the satchel is in the backpack (like the ore satchel). A full
+  satchel spills to the backpack; nothing is lost.
+- Fidelity: OSI drops unravel results in the backpack; log as a deviation.
+
+**Batched: cc-P137** section 6 (folded in, 2026-10-16; small, and P137 already touches the disenchant code).
 ## Batched
 
 | ID | Batch prompt | Notes |
