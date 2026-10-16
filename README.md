@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.16.5. Golem on, 20 queued, latest done P131. Play tests: 245 open, 2 failed, 23 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.16.6. Golem on, 19 queued, latest done P132. Play tests: 251 open, 2 failed, 23 passed.
 
 ## Port list: 3 of 16 systems in. 455 of 983 files (46%).
 
@@ -230,11 +230,10 @@ Tasks          ██░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 82 prompts finished, 3 of them stopped early)
+### Queue (Golem on; 83 prompts finished, 3 of them stopped early)
 
 | Prompt | State | When |
 |---|---|---|
-| P132 console-layout-and-art-slots | queued |  |
 | P133 haven-intranet-dashboard | queued |  |
 | P134 vseuoaware-art-checks-mcp | queued |  |
 | P135 vseuoaware-staff-commands | queued |  |
@@ -254,6 +253,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P149 away-mode-and-email-controls | queued |  |
 | P150 requisitions-and-leads | queued |  |
 | P151 guild-halls-survey | queued |  |
+| P132 console-layout-and-art-slots | done | 2026-10-16 |
 | P131 wake-golem-from-console | done | 2026-10-16 |
 | P130 pet-training | done | 2026-10-16 |
 | P129 port-creatures-part2 | done | 2026-10-16 |
@@ -263,7 +263,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P125 golem-long-run-toggle | done | 2026-10-15 |
 | P124 package-ships-our-tazuo | done | 2026-10-15 |
 | P123 port-bulk-orders-crafts | done | 2026-10-15 |
-| P122 port-bulk-orders-core | done | 2026-10-15 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 98 patches, 12 replacements
 
