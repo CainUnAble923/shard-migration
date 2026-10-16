@@ -627,6 +627,22 @@ Added by cc-P127 (2026-10-16).
 | P127-6 | BOT | Skill update packets |
 | P127-7 | CC | The test world loads and saves with the old maps and chests carried over: done by CC on a scratch copy |
 
+### P128
+
+Added by cc-P128 (2026-10-16).
+
+| id | bucket | reason |
+|---|---|---|
+| P128-1 | BOT-PARTIAL | The craft results, the grapes' cliloc and the stat packets are server-sent; that the foods look right is Chase's eyes |
+| P128-2 | BOT-PARTIAL | The craft, the refusal cliloc and the resistance packets are server-sent; the buff icons are Chase's eyes |
+| P128-3 | BOT-PARTIAL | The paralyze, the pack count and the speed-control packet are server-sent; the thrown effects are Chase's eyes |
+| P128-4 | BOT | The stat packets, loyalty and cliloc 1113051 are all server-sent |
+| P128-5 | BOT-PARTIAL | The book's clilocs, the reeds' hues and the craft gump's rows are server-sent; the basket's look is Chase's eyes |
+| P128-6 | BOT | Pigment hues, the mix clilocs and the dyed shirt's hue are all server-sent |
+| P128-7 | BOT-PARTIAL | The placement, the plant gump and the growth are server-sent; the bed's art is Chase's eyes |
+| P128-8 | CHASE | Eight small things to look at; the tincture gump is the one worth eyes |
+| P128-9 | CC | The test world loads and saves on the new image: done by CC on a scratch copy |
+
 Count check (cc-P115): 219 ids listed, 219 unique, against 219 open or blocked items in `testing/play-tests.json`. The
 P119 group above is outside that count.
 

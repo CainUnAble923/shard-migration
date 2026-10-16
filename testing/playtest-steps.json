@@ -1288,6 +1288,80 @@
       ],
       "pass": "The world loads with every old treasure map and chest carried over (maps show a revamp level and a theme), and no error.",
       "check": "Done by CC on a scratch copy (cc-P127 notes, Test world boot)."
+    },
+    "P128-1": {
+      "where": "Test shard, a cook with Cooking 95 (`[SetSkill Cooking 95`), a skillet or heating stand, and in the pack: an apple, grapes, a greater heal potion, a greater strength potion, an empty wooden bowl, three pears, three apples, three bananas",
+      "do": [
+        "Open the cooking menu and make an enchanted apple, grapes of wrath and a fruit bowl (Magical Foods)",
+        "Eat the grapes, then try another bunch; eat the fruit bowl while hungry"
+      ],
+      "pass": "The three foods are made. The grapes say they invigorate you, your status shows +35 damage increase for 20 seconds, a second bunch is refused, and two minutes later it is not. The bowl fills you and your stats read +5 each for two minutes.",
+      "check": "Not built yet: the bot would craft the three entries and read the cliloc 1074847 and the stat packets."
+    },
+    "P128-2": {
+      "where": "Test shard, an alchemist with Alchemy 100 (`[SetSkill Alchemy 100`), a mortar, and in the pack: Medusa blood, spiders' silk, bottles; then `[add BarrabHemolymphConcentrate` and `[add SakkhraProphylaxisPotion` as staff",
+      "do": [
+        "Make an elixir of rebirth (Healing and Curative) and use it on a dead bonded pet",
+        "Drink the Barrab concentrate, then a second; drink the Sakkhra potion and look at your resistances"
+      ],
+      "pass": "The elixir is made and revives the pet. The first concentrate shows a buff icon and a second is refused as a similar effect; the Sakkhra potion raises poison resist by 10 and energy by 5 for ten minutes. The five tribal potions show in the alchemy menu under Enhancement and Healing and Curative, each needing a recipe scroll.",
+      "check": "Not built yet: the bot would craft the elixir, drink the potions and read the buff and resistance packets."
+    },
+    "P128-3": {
+      "where": "Test shard, as staff: `[add FearEssence`, `[add ShatterPotion`, `[add ExplodingTarPotion`, a second character or a summoned creature nearby with 25 potions in its pack",
+      "do": [
+        "Throw each at the other: the fear essence at a spot near them, the shatter potion at them, the tar potion at a spot near them"
+      ],
+      "pass": "Fear essence paralyzes those who fail to resist for three seconds; the shatter potion destroys a fifth of 20 or more potions in the victim's pack (none of fewer); the tar potion slows a player to a walk for a minute. Each refuses a second throw for a minute.",
+      "check": "Not built yet: the bot would throw each and read the paralyze, the pack and the speed-control packets."
+    },
+    "P128-4": {
+      "where": "Test shard, a tamer with a pet; `[add TastyTreat` and `[add IrresistiblyTastyTreat`",
+      "do": [
+        "Double-click a treat and target your pet, then try a second at once; drop the irresistibly tasty treat on the pet after the first wears off (22 minutes)"
+      ],
+      "pass": "Your pet looks much happier: its stats rise 5% for 20 minutes and its loyalty fills; a second is refused while it enjoys the last; the irresistibly tasty treat raises stats 15% and the pet hits a tenth harder.",
+      "check": "Not built yet: the bot would feed a pet and read the stat packets and cliloc 1113051."
+    },
+    "P128-5": {
+      "where": "Test shard, a tinker with Tinkering 100, `[add BasketWeavingBook`, `[add Clippers`, `[add ScouringToxin`, and two decorative plants of one colour (`[add PlantItem` grown and set decorative, or two from a gardener)",
+      "do": [
+        "Read the book; set the clippers to cut reeds (context menu) and clip both plants; double-click the toxin on the reeds; open the tinkering menu with softened reeds and shafts and weave a round basket"
+      ],
+      "pass": "The book teaches a Grandmaster Tinker once (below 100 it refuses). Clipping gives dry reeds of the plant's colour; the toxin makes softened reeds of that colour from two; the Wooden Items section lists the eleven baskets once the book is read and the basket comes out the reeds' colour. Without the book the baskets are not offered.",
+      "check": "Not built yet: the bot would read the book, clip, scour, open the craft gump and craft; the hues are server-sent."
+    },
+    "P128-6": {
+      "where": "Test shard, an alchemist with Alchemy 75; `[add PlantClippings` (set its PlantHue to Red with [props), another to Blue, bottles, `[add ColorFixative`",
+      "do": [
+        "Make plant pigment from each at the alchemy menu (Ingredients); double-click the red pigment and target the blue; make a natural dye from the purple pigment and the fixative; dye a shirt in your pack five times"
+      ],
+      "pass": "Red and blue pigments mix into purple and leave an empty bottle (the same colour twice is refused). The dye colours the shirt and is gone after five uses; an ingot is refused.",
+      "check": "Not built yet: the bot would craft and mix, then read the hues."
+    },
+    "P128-7": {
+      "where": "Test shard, in your own house: `[add RaisedGardenDeed`, a seed in the pack, some fertile dirt",
+      "do": [
+        "Double-click the deed, choose a shape, place the bed; use the seed on a plot; answer the fertile dirt question; open the mound and wait for it to grow (or `[props` it and set ForceGrow)"
+      ],
+      "pass": "The bed places in the chosen shape. The seed goes into a mound on the plot (no watering asked for), the dirt reads soft, the plant grows a stage a day with no pests and no watering, and the bed refuses to be chopped while a plot is planted. A stranger cannot use the mound.",
+      "check": "Not built yet: the bot would place the bed, plant, force growth and read the plant gump."
+    },
+    "P128-8": {
+      "where": "Test shard, as staff: `[add PottedCoffeePlant` in a house, `[add PoppiesDust`, `[add SkinTingeingTincture`, `[add ChocolateNutcracker`, `[add TurkeyPlatter`, `[add ValentineChocolate`, `[add BegCookies`",
+      "do": [
+        "Set the coffee plant to stage 4 ([props PlantStatus) and double-click it; use the dust on an unidentified seed; use the tincture and pick a hue; unwrap the nutcracker; take pieces from the platter; look at the chocolate and the cookies"
+      ],
+      "pass": "The plant gives a coffee pod and drops a stage. The seed shows its type. The tincture opens a gump of skin hues over your paperdoll and OK changes your skin. The nutcracker unwraps into its chocolate. The platter hands out eight roast pieces and goes. The chocolate carries a Valentine message; the cookies say Acquired by begging.",
+      "check": "Not built yet: the bot would use each and read the properties and gump packets."
+    },
+    "P128-9": {
+      "where": "The test world (scratch copy), before and after the change",
+      "do": [
+        "Boot the test world on the new image, wait for it to load, and stop it (it saves)"
+      ],
+      "pass": "The world loads and saves with no error; the plants and seeds it holds carry over unchanged.",
+      "check": "Done by CC on a scratch copy (cc-P128 notes, Test world boot)."
     }
   }
 }

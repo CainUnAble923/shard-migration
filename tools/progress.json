@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-16T07:38:59-05:00",
+  "generated": "2026-10-16T09:30:32-05:00",
   "direction": {
     "eyebrow": "Direction",
     "title": "Our own shard on ModernUO, OSI where OSI has an answer",
@@ -565,10 +565,10 @@
     "confirmed": "2026-09-19"
   },
   "counted": {
-    "customization_files": 954,
-    "patch_files": 90,
+    "customization_files": 1018,
+    "patch_files": 99,
     "stale_migrations_present": false,
-    "upstream_patch_files": 83,
+    "upstream_patch_files": 92,
     "upstream_replacements": [
       "BaseGuildmaster.cs",
       "BulkMaterialType.cs",
@@ -583,8 +583,8 @@
       "TreasureMap.cs",
       "TreasureMapChest.cs"
     ],
-    "test_files": 151,
-    "test_cases": 858
+    "test_files": 154,
+    "test_cases": 893
   },
   "content_progress": [
     {
@@ -608,8 +608,14 @@
     {
       "area": "Items/Resource",
       "total": 61,
-      "done": 37,
-      "pct": 60.7
+      "done": 40,
+      "pct": 65.6
+    },
+    {
+      "area": "Items/Consumables",
+      "total": 59,
+      "done": 36,
+      "pct": 61.0
     },
     {
       "area": "Services/BulkOrders",
@@ -686,12 +692,6 @@
     {
       "area": "Services/XmlSpawner",
       "total": 97,
-      "done": 0,
-      "pct": 0.0
-    },
-    {
-      "area": "Items/Consumables",
-      "total": 59,
       "done": 0,
       "pct": 0.0
     },
@@ -947,9 +947,9 @@
         "feeds": "F-43 recipe gating; Herbalism",
         "why": "recipe gating (F-43) needs the stock OSI recipes present to gate; raised gardens and potted plants feed Herbalism",
         "candidates": 33,
-        "done": 0,
+        "done": 22,
         "complete": false,
-        "pct": 0.0
+        "pct": 66.7
       },
       {
         "id": "consumables",
@@ -958,9 +958,9 @@
         "feeds": "F-43; Alembic, Cooking designs",
         "why": "Cooking (Maritime) and the Order of the Alembic need OSI's consumables to have anything to make and gate",
         "candidates": 44,
-        "done": 0,
+        "done": 36,
         "complete": false,
-        "pct": 0.0
+        "pct": 81.8
       },
       {
         "id": "basics",
@@ -969,9 +969,9 @@
         "feeds": "everything above",
         "why": "the plain remainder a ported system reaches for; trap training kits are Lockpicking and Remove Trap gain paths",
         "candidates": 298,
-        "done": 169,
+        "done": 172,
         "complete": false,
-        "pct": 56.7
+        "pct": 57.7
       },
       {
         "id": "rewardpool",
@@ -1033,7 +1033,7 @@
       "port": {
         "systems": 16,
         "files": 983,
-        "done": 356,
+        "done": 417,
         "titles": [
           "Bulk orders, all crafts",
           "Treasure maps revamp",
@@ -1112,9 +1112,9 @@
     "counted": {
       "systems": 16,
       "in": 3,
-      "done": 356,
+      "done": 417,
       "total": 983,
-      "pct": 36.2
+      "pct": 42.4
     },
     "next": "Bulk orders, all crafts",
     "decided": [
@@ -1272,26 +1272,21 @@
     "corrections": "2026-09-19"
   },
   "derived": {
-    "version": "2026.10.16",
+    "version": "2026.10.16.2",
     "playtests": {
-      "open": 244,
+      "open": 242,
       "failed": 2,
-      "passed": 21,
+      "passed": 23,
       "later": 0,
       "blocked": 1,
       "total": 267,
       "unloggedFails": 1,
-      "generatedAt": "2026-10-16T12:38:42Z"
+      "generatedAt": "2026-10-16T14:10:37Z"
     },
     "queue": {
       "autopilot": "on",
       "running": null,
       "queued": [
-        {
-          "n": 128,
-          "slug": "port-consumables-crafting-gaps",
-          "state": "queued"
-        },
         {
           "n": 129,
           "slug": "port-creatures-part2",
@@ -1361,9 +1356,37 @@
           "n": 142,
           "slug": "monster-stealing-shard-rules",
           "state": "queued"
+        },
+        {
+          "n": 143,
+          "slug": "console-remote-mode",
+          "state": "queued"
+        },
+        {
+          "n": 144,
+          "slug": "legion-scripts-updater",
+          "state": "queued"
+        },
+        {
+          "n": 145,
+          "slug": "combat-script",
+          "state": "queued"
+        },
+        {
+          "n": 146,
+          "slug": "playtest-decisions-inbox",
+          "state": "queued"
         }
       ],
       "finished": [
+        {
+          "n": 128,
+          "slug": "port-consumables-crafting-gaps",
+          "state": "done",
+          "why": "",
+          "date": "2026-10-16",
+          "notes": "notes/cc-P128-port-consumables-crafting-gaps.md"
+        },
         {
           "n": 127,
           "slug": "port-treasure-maps-monster-stealing",
@@ -1435,25 +1458,17 @@
           "why": "",
           "date": "2026-10-15",
           "notes": "notes/cc-P119-port-creatures-part1.md"
-        },
-        {
-          "n": 118,
-          "slug": "port-bulk-orders",
-          "state": "stopped",
-          "why": "needs Chase",
-          "date": "2026-10-15",
-          "notes": "notes/cc-P118-port-bulk-orders.md"
         }
       ],
-      "finished_total": 78,
+      "finished_total": 79,
       "stopped_total": 3,
       "latest_done": {
-        "n": 127,
-        "slug": "port-treasure-maps-monster-stealing",
+        "n": 128,
+        "slug": "port-consumables-crafting-gaps",
         "state": "done",
         "why": "",
         "date": "2026-10-16",
-        "notes": "notes/cc-P127-port-treasure-maps-monster-stealing.md"
+        "notes": "notes/cc-P128-port-consumables-crafting-gaps.md"
       }
     },
     "reviewed": "2026-10-13",
