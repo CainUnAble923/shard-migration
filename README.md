@@ -63,7 +63,11 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.17.5. Golem on, 20 queued, latest done P155. Play tests: 265 open, 2 failed, 23 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.17.6. Golem on, 19 queued, latest done P155. Play tests: 268 open, 2 failed, 23 passed.
+
+### Needs overseer review (1)
+
+- **direction**: Confirmed 2026-10-13; notes/decisions-2026-10-14.md (2026-10-14) is newer. Read it; if the direction moved, edit "direction" in tools/progress-state.json. `python tools/judge.py confirm direction`
 
 ## Port list: 3 of 16 systems in. 455 of 983 files (46%).
 
@@ -206,10 +210,10 @@ _Counted by matching ServUO file stems (excluding those stock ModernUO already h
 | CC6 batch 1: twenty creatures the stock spawn data places and could not spawn (20 files + GoblinOppositionGroup, 1 test) | CC6 | Selection rule: pinned ModernUO's Distribution/Data/Spawns names 109 types no loaded assembly declares (BaseSpawner marks them InvalidType and spawns nothing); the twenty are the low-to-mid-level Mobiles/Normal part that is clean to port (Underworld goblins, Abyss enslaved goblins, Ter Mur spiders/skree/undead guardians, Old Haven spellbinders). Headless on the real map: the probe imported the four stock files (168 spawners, 0 failures), all twenty spawned by their stock spawners (127 live), save and reload identical; 60 tests green incl. 6 new (values, every stock entry now resolves and 89 names remain, gray/green goblin enmity, trapdoor stealth walk, tangling roots entangle+acid, the rest's shape). TribeType -> a fourth OppositionGroup, additive; CanStealth -> ServUO's BaseCreature.OnMove branch inlined in TrapdoorSpider. Deviations D-44 GreenGoblinScout on AI_Melee (no OrcScout AI), D-45 Spellbinder on AI_Mage (no Spellbinder AI), Skree on AI_Mage (D-41's shape), D-46 ShameWall constructor sets Visible (Q-046). Route extended: the test fixture never wired the skill-check handlers, so every CheckSkill failed in the test host; SkillCheck.Initialize added to the S8 fixture patch, proved red first. Nothing seen in a client; Q-048 asks whether the live world's Ter Mur spawners exist so these start on deploy. |
 | CC4 Shame: the Revamped Shame dungeon on both facets (19 ServUO files + XmlSpawner XML -> 20 files, 3,772 lines) | CC4 | The brief's 11 files are 19 plus the XML: 116 of the XML's 194 rows spawn TreasureLevel1-4 (Nerun's chest pack, not in ModernUO, ported levels 1-4; Q-047), and the cave troll's four High Seas powder ingredients and the vortex's VoidCore are leaf items ported at ServUO's paths. No region layer: Shame constructs none, the creatures test regions.json's static Shame DungeonRegion by name on both facets, so Despise's priority trap does not arise. XmlSpawner XML became a 194-row table on plain Spawners (no constructor arguments in this file; Q-044's shape does not occur), 97 per facet and identical. Headless on the real map: 384 of 386 requested (two rows exceed their entries) all inside their rectangles and inside the Shame region on both facets, 58 locked chests with loot per facet, 6 altars / 6 walls / 6 trolls / 22 wall teleporters, save/reload identical, 54 tests green, ClayGolem gate proved red, no patch. Deviations (note-local D-37..D-43 in notes/cc4-shame.md): crystal points inert behind a seam for S7 so the altars answer 'not yet worthy' and the guardians are GM-only until then; chest loot unreforged and no refinement roll; StickySkin/ColossalRage/SearingWounds dropped; LifeLeech is DrainLifeAttack; CrazedMage on AI_Mage; TreasureMapChance absent; a timed-out challenge now frees the altar (ServUO leaves it stuck). ServUO's wall teleporters reproduced as read - inert until the first troll dies, then active whenever the wall stands (Q-046). |
 
-### Task list (1 of 13 done)
+### Task list (1 of 7 done)
 
 ```
-Tasks          ██░░░░░░░░░░░░░░░░░░░░  1/13   Open work the overseer tracks
+Tasks          ███░░░░░░░░░░░░░░░░░░░  1/7   Open work the overseer tracks
 ```
 
 | | Task | Status | Notes | Confirmed |
@@ -219,22 +223,15 @@ Tasks          ██░░░░░░░░░░░░░░░░░░░�
 | `WIPE` | Fresh-world wipe plan | todo | No single plan document; gather D34, D50, T-006, T-010, F-4 and the tutorial's greeting into one. | 2026-10-13 |
 | `BUGS` | Bug list pass | todo | 60 rows in section 1, 34 of them say fixed or built; at least D49, D56-D58 and D66 were fixed later. Close or move them. | 2026-10-13 |
 | `P83-DEPLOY` | Deploy sl-play-tests (P83) on port 8093 | done | Deployed by Chase 2026-10-13; 8093 answers sl-play-tests, page and /status load. | 2026-10-13 |
-| `C2` | Revamped Dungeons | todo | Despise and Shame landed 09-19; no Revamped Dungeons work since. Dungeon work moved to P36 (the Burrows) and F-32 (dungeon chests, P49/P50). | 2026-10-13 |
-| `C4` | Creatures and NPCs | todo | Last batch CC6 batch 8 (09-21); 19 spawn names still place nothing (tools/spawn-orphans.txt). | 2026-10-13 |
-| `C3` | High Seas, cheap half | todo | Unchanged: costed, no prompt has taken it. | 2026-10-13 |
-| `C5` | Decoration, housing, crafting | todo | Unchanged: costed, no prompt has taken it. | 2026-10-13 |
-| `C7` | High Seas naval - written proposal only | todo | Do not start; Chase decides from the proposal. | 2026-10-13 |
-| `S7` | Services/PointsSystems | todo | Partly superseded: P33 built our own PointsSystem.cs for Clean Up Britannia. ServUO's still blocks Vice vs Virtue and City Loyalty. | 2026-10-13 |
 | `F-12` | Levels and loops | todo | After the port (Chase 2026-10-13: faithful port first, customizations after). Research done (P54, P72), decisions in notes/f12-decisions-2026-10-05.md; nothing built beyond the CompleteLoop hook. | 2026-10-13 |
 | `F-37` | Commissions move to the League | todo | After the port (Chase 2026-10-13: faithful port first, customizations after). Planned (docs/feature-queue.md F-37), with F-13 (League reward shop); nothing spends Renown yet (cc-P75 A.1). | 2026-10-13 |
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 88 prompts finished, 3 of them stopped early)
+### Queue (Golem on; 86 prompts done, 3 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
-| P136 status-page-self-judging | queued |  |
 | P137 usable-ankhs-and-playtest-fixes | queued |  |
 | P138 kitsune-paperdoll-refit | queued |  |
 | P139 rootdeep-burrows-body-route | queued |  |
@@ -256,6 +253,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P159 codex-lane-second-pc | queued |  |
 | P155 web-console-phase1-status | done | 2026-10-17 |
 | P154 console-responsive | done | 2026-10-17 |
+| P136 status-page-self-judging | done | 2026-10-17 |
 | P135 vseuoaware-staff-commands | done | 2026-10-17 |
 | P134 vseuoaware-art-checks-mcp | done | 2026-10-17 |
 | P133 haven-intranet-dashboard | done | 2026-10-17 |
@@ -263,7 +261,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P131 wake-golem-from-console | done | 2026-10-16 |
 | P130 pet-training | done | 2026-10-16 |
 | P129 port-creatures-part2 | done | 2026-10-16 |
-| P128 port-consumables-crafting-gaps | done | 2026-10-16 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 98 patches, 12 replacements
 

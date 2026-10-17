@@ -10,13 +10,19 @@ script is the cheap way to keep those dates honest: change a row, or only re-con
     python tools/judge.py gate "Things to fight" --done no --detail "..." --source "notes/cc-P76-extra-facets.md"
     python tools/judge.py task S7 --status in-progress --note "..."
     python tools/judge.py add-task F-50 --title "..." --status todo --note "..."
-    python tools/judge.py retire-task C3                           # remove a finished or dropped task
+    python tools/judge.py retire-task C3 --why "..."               # move a finished or dropped task to tasks_retired
+    python tools/judge.py gate "Things to fight" --needs-confirm "Chase: ..."   # owed on the review box until settled
     python tools/judge.py status "running on ModernUO; ..."        # the one-line shard status
     python tools/judge.py confirm gate "Things to fight"           # still true: only the date changes
     python tools/judge.py confirm all                              # every hand-written item re-read today
 
 A gate is found by its exact name, else by the one name that starts with what you typed. Then run
 python tools/progress.py to redraw the page (Commit-ShardWork.ps1 also runs it before every commit).
+
+cc-P136: --needs-confirm marks a gate or task as waiting on Chase's or the overseer's word; the page lists it under
+"Needs overseer review" and nothing derives it. Only a decision clears the mark: `gate --done`, `task --status`,
+`confirm gate` or `confirm task` on that one item (or --needs-confirm ""). `confirm all` and a detail or note edit
+keep it.
 --state and --date are for tests. Standard library only. ASCII only.
 """
 import argparse
@@ -54,6 +60,15 @@ def find_task(st, tid):
     raise SystemExit(f"no task '{tid}'")
 
 
+def mark(x, needs_confirm, decided):
+    """cc-P136: set, keep or clear an item's needs_confirm. A decision (--done, --status) clears it; an empty string
+    clears it; any other edit keeps it."""
+    if needs_confirm:
+        x["needs_confirm"] = needs_confirm
+    elif needs_confirm == "" or decided:
+        x.pop("needs_confirm", None)
+
+
 def run(argv, state=DEFAULT_STATE, today=None):
     ap = argparse.ArgumentParser(prog="judge.py", description=__doc__.split("\n\n")[0])
     ap.add_argument("--state", default=str(state))
@@ -61,12 +76,12 @@ def run(argv, state=DEFAULT_STATE, today=None):
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("list")
     g = sub.add_parser("gate"); g.add_argument("name"); g.add_argument("--done", choices=["yes", "no"])
-    g.add_argument("--detail"); g.add_argument("--source", action="append")
+    g.add_argument("--detail"); g.add_argument("--source", action="append"); g.add_argument("--needs-confirm")
     t = sub.add_parser("task"); t.add_argument("id"); t.add_argument("--status", choices=["todo", "in-progress", "blocked", "done"])
-    t.add_argument("--note"); t.add_argument("--title")
+    t.add_argument("--note"); t.add_argument("--title"); t.add_argument("--needs-confirm")
     a = sub.add_parser("add-task"); a.add_argument("id"); a.add_argument("--title", required=True)
     a.add_argument("--status", choices=["todo", "in-progress", "blocked", "done"], default="todo"); a.add_argument("--note", default="")
-    r = sub.add_parser("retire-task"); r.add_argument("id")
+    r = sub.add_parser("retire-task"); r.add_argument("id"); r.add_argument("--why", default="")
     s = sub.add_parser("status"); s.add_argument("text")
     c = sub.add_parser("confirm"); c.add_argument("what", choices=["gate", "task", "status", "direction", "section", "all"])
     c.add_argument("key", nargs="?")
@@ -79,9 +94,11 @@ def run(argv, state=DEFAULT_STATE, today=None):
         print(f"status    {st.get('shard_status', {}).get('confirmed', '?')}  {st.get('shard_status', {}).get('text', '')}")
         print(f"direction {st.get('direction', {}).get('confirmed', '?')}  {st.get('direction', {}).get('title', '')}")
         for x in (st.get("playable_gates") or {}).get("gates", []):
-            print(f"gate      {x.get('confirmed', '?')}  {'yes' if x.get('done') else 'no '}  {x['name']}")
+            print(f"gate      {x.get('confirmed', '?')}  {'yes' if x.get('done') else 'no '}  {x['name']}"
+                  + (f"  [needs confirm: {x['needs_confirm']}]" if x.get("needs_confirm") else ""))
         for x in st.get("tasks", []):
-            print(f"task      {x.get('confirmed', '?')}  {x['status']:<11}  {x['id']}  {x['title']}")
+            print(f"task      {x.get('confirmed', '?')}  {x['status']:<11}  {x['id']}  {x['title']}"
+                  + (f"  [needs confirm: {x['needs_confirm']}]" if x.get("needs_confirm") else ""))
         for k, v in (st.get("sections") or {}).items():
             print(f"section   {v}  {k}")
         return 0
@@ -91,11 +108,13 @@ def run(argv, state=DEFAULT_STATE, today=None):
         if args.done: x["done"] = args.done == "yes"
         if args.detail is not None: x["detail"] = args.detail
         if args.source: x["sources"] = args.source
+        mark(x, args.needs_confirm, decided=args.done is not None)
         x["confirmed"] = day; said.append(f"gate '{x['name']}' confirmed {day}")
     elif args.cmd == "task":
         x = find_task(st, args.id)
         for k in ("status", "note", "title"):
             if getattr(args, k) is not None: x[k] = getattr(args, k)
+        mark(x, args.needs_confirm, decided=args.status is not None)
         x["confirmed"] = day; said.append(f"task {x['id']} confirmed {day}")
     elif args.cmd == "add-task":
         if any(t["id"].lower() == args.id.lower() for t in st.get("tasks", [])):
@@ -105,6 +124,8 @@ def run(argv, state=DEFAULT_STATE, today=None):
     elif args.cmd == "retire-task":
         x = find_task(st, args.id)
         st["tasks"].remove(x); said.append(f"task {x['id']} retired")
+        st.setdefault("tasks_retired", []).append({"id": x["id"], "title": x.get("title", ""), "retired": day,
+                                                    "why": args.why})
         st.setdefault("sections", {})["tasks-reviewed"] = day
     elif args.cmd == "status":
         st["shard_status"] = {"text": args.text, "confirmed": day}; said.append("status set")
@@ -115,9 +136,11 @@ def run(argv, state=DEFAULT_STATE, today=None):
             for x in st.get("tasks", []): x["confirmed"] = day
             said.append("everything confirmed " + day)
         elif args.what == "gate":
-            find_gate(st, args.key or "")["confirmed"] = day; said.append("gate confirmed")
+            x = find_gate(st, args.key or ""); x["confirmed"] = day; x.pop("needs_confirm", None)
+            said.append("gate confirmed")
         elif args.what == "task":
-            find_task(st, args.key or "")["confirmed"] = day; said.append("task confirmed")
+            x = find_task(st, args.key or ""); x["confirmed"] = day; x.pop("needs_confirm", None)
+            said.append("task confirmed")
         elif args.what == "status":
             st["shard_status"]["confirmed"] = day; said.append("status confirmed")
         elif args.what == "direction":

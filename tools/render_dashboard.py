@@ -224,7 +224,38 @@ def tasks_html(pg):
             f'<code>python tools/judge.py</code> updates one row and stamps its date.</p>'
             '<div class="scroller"><table><thead><tr><th class="n">ID</th><th>Task</th>'
             '<th>Status</th><th>Notes</th><th class="n">Confirmed</th></tr></thead><tbody>'
-            f'{rows}</tbody></table></div>')
+            f'{rows}</tbody></table></div>' + covered_html(pg))
+
+def covered_html(pg):
+    """cc-P136: task rows a port-list system covers. Listed, not counted: the port list already counts the work."""
+    cv = pg.get("tasks_covered") or []
+    if not cv:
+        return ""
+    items = "".join(f'<li><code>{esc(c["id"])}</code> {esc(c["title"])}: {esc(", ".join(c["by"]))}, '
+                    f'{c["done"]} of {c["files"]} files'
+                    + (' <span class="pill p-ok">in</span>' if c["in"] else "") + '</li>' for c in cv)
+    return ('<p class="foot"><strong>Covered by the port list</strong> (its systems count this work, so these rows '
+            f'are not in the totals above):</p><ul class="foot">{items}</ul>')
+
+def review_html(pg):
+    """cc-P136: the "Needs overseer review" box. Each owed judgment says what to check and the judge.py command that
+    settles it; an empty list says nothing is owed; None (the step failed this run) never reads as empty."""
+    rv = pg.get("review")
+    if rv is None:
+        return ('<div class="flag"><span class="eyebrow">Needs overseer review</span><p><strong>The review box could '
+                'not be worked out this run.</strong> Run <code>python tools/progress.py</code> and read its '
+                'output.</p></div>')
+    if not rv:
+        return ('<div class="card"><span class="eyebrow">Needs overseer review</span><p><strong>Nothing owed.</strong> '
+                'Every judgment the page cannot work out for itself is current.</p></div>')
+    items = "".join(
+        f'<li><strong>{esc(x["item"] if x["kind"] in x["item"] else x["kind"] + " " + x["item"])}</strong>: '
+        f'{esc(x["check"])}<br>'
+        + " or ".join(f"<code>{esc(c)}</code>" for c in x["cmd"]) + "</li>" for x in rv)
+    return (f'<div class="flag"><span class="eyebrow">Needs overseer review: {len(rv)} item{"s" if len(rv) != 1 else ""}'
+            f'</span><p>What the page cannot judge for itself. A new overseer starts here; each command stamps '
+            f'today&#x27;s date, then <code>python tools/progress.py</code> (or a commit) redraws the page.</p>'
+            f'<ul>{items}</ul></div>')
 
 # --- cc-P85: freshness, the direction note, the queue and the play tests ------------------------------------------
 
@@ -289,8 +320,8 @@ def queue_html(pg):
     lead = (f'P{run["n"]} running' if run else "nothing running") + f', {len(q.get("queued", []))} queued'
     ld = q.get("latest_done")
     return (f'<div class="card"><div class="hero"><span class="big">{esc(lead)}</span>'
-            f'<span class="cap"><strong>Golem {esc(q.get("autopilot"))}.</strong> {q.get("finished_total", 0)} '
-            f'prompts finished, {q.get("stopped_total", 0)} stopped early'
+            f'<span class="cap"><strong>Golem {esc(q.get("autopilot"))}.</strong> {q.get("done_total", 0)} '
+            f'prompts done; {q.get("stopped_total", 0)} more stopped early, never counted as progress'
             + (f'; latest done P{ld["n"]}.' if ld else '.') +
             ' Read from <code>D:\\UO\\cc-prompts\\queue</code>, the Golem\'s <code>state.json</code> and each '
             'prompt\'s notes, every run.</span></div></div>'
@@ -368,7 +399,8 @@ def main():
     if nav is not None:
         txt, ok = replace(txt, "NAV", nav)
         if ok: hit.append("NAV")
-    for tag, body in (("DIRECTION", direction_html(pg)),
+    for tag, body in (("REVIEW", review_html(pg)),
+                      ("DIRECTION", direction_html(pg)),
                       ("QUEUE", queue_html(pg)),
                       ("PLAYTESTS", playtests_html(pg)),
                       ("HEADLINE", headline_html(pg)),

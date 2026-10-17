@@ -111,7 +111,8 @@ python tools/judge.py gate "Things to fight" --done no --detail "..." --source "
 python tools/judge.py confirm gate "Things to fight"              # still true: only the date moves
 python tools/judge.py task DEPLOY --status done --note "deployed 2026-10-14"
 python tools/judge.py add-task F-44 --title "..." --note "..."
-python tools/judge.py retire-task C3
+python tools/judge.py retire-task C3 --why "..."                 # kept in tasks_retired with today's date
+python tools/judge.py gate "Things to fight" --needs-confirm "Chase: ..."   # owed on the review box until decided
 python tools/judge.py status "the test shard ..."
 python tools/judge.py confirm all                                 # after a full review
 python tools/progress.py                                          # redraw the page (or just commit)
@@ -119,6 +120,32 @@ python tools/progress.py                                          # redraw the p
 
 A gate is named exactly or by a unique start. Every write stamps today's date, so "Judgment reviewed" moves only when
 someone actually confirmed something. Tests: `python -m unittest tools/tests/test_status_dashboard.py`.
+
+### What the page judges for itself, and the "Needs overseer review" box (cc-P136)
+
+`progress.py` works these out on every run; nobody stores them:
+
+1. A port-list system whose candidate files are all ported is **in**.
+2. A task whose id a port-list system lists under `covers` (in `port-list.json`) is **covered by** that system: shown
+   under the task table with the system's counts, and left out of the task totals.
+3. A prompt whose notes end `STOPPED` is **never progress**: not in the done count, never "latest done", and it never
+   makes a task row owe a review.
+4. **Next to land** is the first Port row, in `port-list.json` order, that is not in.
+
+The page opens with **Needs overseer review**: what it cannot judge for itself, one line per item with the
+`judge.py` command that settles it. A new overseer checks it first. A line is owed when:
+
+- a gate or task carries `needs_confirm` (Chase's or the overseer's call). Nothing sets it from the facts; only a
+  decision clears it (`gate --done`, `task --status`, `confirm gate` or `confirm task` on that item). `confirm all`
+  and detail or note edits keep it;
+- a gate or the shard status was last confirmed more than 7 days ago;
+- a task row was last confirmed more than 7 days ago and a prompt it names (`P80`, `P65-P84`, or a `prompts` list)
+  finished DONE after that date;
+- the direction was confirmed before the newest `notes/*decision*.md` (dated by its file name).
+
+An empty box says "Nothing owed". If working the box out fails, the page says so rather than showing it empty, and
+the rest still refreshes: each step that fails prints one line, and the commit script shows that line and commits
+anyway. Tests: `python -m unittest tools/tests/test_self_judging.py`.
 
 ### The port list: `port-list.json` (cc-P92)
 

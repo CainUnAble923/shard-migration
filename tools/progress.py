@@ -119,7 +119,8 @@ def port_list(path=None, servuo=None, shard=None, stems=None):
     systems = pl.get("systems", [])
     rx = [re.compile(s["exclude"]) if s.get("exclude") else None for s in systems]
     rows = [{"id": s.get("id"), "tier": s.get("tier"), "title": s.get("title"), "feeds": s.get("feeds", ""),
-             "why": s.get("why", ""), "candidates": 0, "done": 0} for s in systems]
+             "why": s.get("why", ""), "covers": list(s.get("covers") or []), "candidates": 0, "done": 0}
+            for s in systems]
     unassigned = []
     total = 0
     for top in PORT_ROOTS:
@@ -271,6 +272,8 @@ def queue_state(notes_dir=None, prompts=None, autopilot=None):
     queued.sort(key=lambda r: r["n"])
     return {"autopilot": "on" if enabled else "off", "running": running, "queued": queued,
             "finished": fin[:10], "finished_total": len(fin),
+            # cc-P136: a STOPPED prompt is never progress; done_total is what the page counts.
+            "done_total": sum(1 for r in fin if r["state"] == "done"),
             "stopped_total": sum(1 for r in fin if r["state"] == "stopped"),
             "latest_done": next((r for r in fin if r["state"] == "done"), None)}
 
@@ -304,6 +307,138 @@ def derived(st):
     return {"version": ver, "playtests": playtest_counts(), "queue": queue_state(),
             "reviewed": newest_confirmed(st), "stale_days": STALE_DAYS}
 
+# --- cc-P136: judgments derived every run, and the ones still owed by the overseer ----------------------------------
+# The rules, each computed here and never stored in progress-state.json:
+#   1. a port-list system whose candidate files are all ported is "in" (port_list(), "complete");
+#   2. a task whose id a port-list system lists under "covers" is that system's work: shown as covered by it, with the
+#      system's counts, and left out of the task totals (split_tasks());
+#   3. a prompt whose notes end STOPPED is never progress: it is not in done_total, not the latest done, and never
+#      makes a task row owe a review (queue_state(), review_owed());
+#   4. "next to land" is the first Port row, in port-list order, that is not in (port_list(), "next").
+# What cannot be derived goes in the "Needs overseer review" box (review_owed()), one line per item with the judge.py
+# command that settles it. Nothing here writes progress-state.json: a needs_confirm mark stays until a person clears it.
+REVIEW_DAYS = STALE_DAYS
+_PREFS = re.compile(r"\bP(\d+)(?:\s*-\s*P?(\d+))?\b")
+_DATE_IN_NAME = re.compile(r"(\d{4}-\d{2}-\d{2})")
+
+
+def safely(what, fn, fallback):
+    """Run one derived step; on any error say so in one line and carry on, so a refresh never blocks a commit."""
+    try:
+        return fn()
+    except Exception as e:
+        print(f"  {what} not worked out ({type(e).__name__}: {e}); the rest of the page is refreshed", file=sys.stderr)
+        return fallback
+
+
+def split_tasks(tasks, pl):
+    """Rule 2: (own, covered). own keeps the order of tasks; covered rows carry the covering systems' titles, their
+    summed done and files, and "in" when every covering system is in. Ids match case-insensitively."""
+    by = {}
+    for r in (pl or {}).get("systems", []):
+        for tid in r.get("covers") or []:
+            by.setdefault(str(tid).lower(), []).append(r)
+    own, covered = [], []
+    for t in tasks:
+        rs = by.get(str(t.get("id", "")).lower())
+        if not rs:
+            own.append(t)
+            continue
+        covered.append({"id": t.get("id"), "title": t.get("title", ""), "by": [r["title"] for r in rs],
+                        "done": sum(r["done"] for r in rs), "files": sum(r["candidates"] for r in rs),
+                        "in": all(r["complete"] for r in rs)})
+    return own, covered
+
+
+def prompt_refs(text):
+    """The prompt numbers a task names: "P80", "P65-P84" and "P65-84" (a range of at most 200)."""
+    out = set()
+    for a, b in _PREFS.findall(text or ""):
+        lo = int(a); hi = int(b) if b else lo
+        out.update(range(lo, hi + 1) if lo <= hi <= lo + 200 else (lo,))
+    return out
+
+
+def newest_decisions_note(notes_dir):
+    """(date, "notes/<name>") of the newest notes/*decision*.md, dated by the YYYY-MM-DD in its name, else its mtime."""
+    best = ("", "")
+    for f in Path(notes_dir).glob("*decision*.md"):
+        m = _DATE_IN_NAME.search(f.name)
+        best = max(best, (m.group(1) if m else _mdate(f), "notes/" + f.name))
+    return best
+
+
+def review_label(x):
+    """"gate Things to fight", "task DEPLOY"; "shard status" and "direction" once, not twice."""
+    return x["item"] if x["kind"] in x["item"] else f"{x['kind']} {x['item']}"
+
+
+def review_owed(st, finished, notes_dir=None, today=None, days=REVIEW_DAYS):
+    """The "Needs overseer review" box: [{kind, item, check, cmd: [judge.py lines]}], gates first, then tasks, the
+    shard status and the direction. Owed: a gate or task judge.py marked needs_confirm (Chase's or the overseer's call;
+    never settled here); a gate or the status confirmed more than `days` ago; a task row confirmed more than `days` ago
+    while a prompt it names finished DONE after that date; the direction confirmed before the newest decisions note.
+    An empty list means nothing is owed."""
+    from datetime import date as _date
+    today = today or _date.today()
+    notes_dir = Path(notes_dir or MIGRATE / "notes")
+
+    def age(d):
+        try:
+            return (today - _date.fromisoformat(d)).days
+        except (TypeError, ValueError):
+            return None
+
+    def old(d):
+        a = age(d)
+        return a is None or a > days
+
+    out = []
+    for g in (st.get("playable_gates") or {}).get("gates", []):
+        name, c = g["name"], g.get("confirmed", "")
+        settle = [f'python tools/judge.py gate "{name}" --done {"no" if g.get("done") else "yes"} --detail "..."',
+                  f'python tools/judge.py confirm gate "{name}"']
+        if g.get("needs_confirm"):
+            out.append({"kind": "gate", "item": name, "check": f"Waits on a confirmation: {g['needs_confirm']} "
+                        "Settle it with whoever was asked, then record the answer (or re-confirm as it stands).",
+                        "cmd": settle})
+        elif old(c):
+            out.append({"kind": "gate", "item": name, "check": f"Last confirmed {c or 'never'}"
+                        + (f" ({age(c)} days ago)" if age(c) is not None else "")
+                        + ". Re-read its sources; still " + ("met" if g.get("done") else "not met") + "?",
+                        "cmd": [settle[1], settle[0]]})
+    done_prompts = [r for r in finished if r.get("state") == "done"]
+    for t in st.get("tasks", []):
+        tid, c = t["id"], t.get("confirmed", "")
+        settle = [f'python tools/judge.py task {tid} --status todo|in-progress|blocked|done --note "..."',
+                  f"python tools/judge.py confirm task {tid}"]
+        if t.get("needs_confirm"):
+            out.append({"kind": "task", "item": tid, "check": f"{t.get('title', '')}: waits on a confirmation: "
+                        f"{t['needs_confirm']}", "cmd": settle})
+            continue
+        if t.get("status") == "done" or not old(c):
+            continue
+        refs = prompt_refs(f"{t.get('title', '')} {t.get('note', '')}") | {int(x) for x in t.get("prompts", [])}
+        since = sorted(r["n"] for r in done_prompts if r["n"] in refs and r.get("date", "") > c)
+        if since:
+            out.append({"kind": "task", "item": tid, "check": f"{t.get('title', '')}: untouched since {c} while "
+                        + ", ".join(f"P{n}" for n in since) + " finished. Does its status or note change?",
+                        "cmd": settle})
+    ss = st.get("shard_status")
+    if isinstance(ss, dict) and old(ss.get("confirmed", "")):
+        out.append({"kind": "status", "item": "shard status", "check": f"Last confirmed {ss.get('confirmed') or 'never'}:"
+                    f" \"{ss.get('text', '')}\". Still what runs?",
+                    "cmd": ['python tools/judge.py status "..."', "python tools/judge.py confirm status"]})
+    dr = st.get("direction")
+    if isinstance(dr, dict):
+        nd, nf = newest_decisions_note(notes_dir)
+        if nd and nd > dr.get("confirmed", ""):
+            out.append({"kind": "direction", "item": "direction", "check": f"Confirmed {dr.get('confirmed') or 'never'};"
+                        f" {nf} ({nd}) is newer. Read it; if the direction moved, edit \"direction\" in "
+                        "tools/progress-state.json.", "cmd": ["python tools/judge.py confirm direction"]})
+    return out
+
+
 def build():
     st = load(); cnt = counted(SHARD); dv = derived(st)
     d = st["setup_defects"]
@@ -327,6 +462,20 @@ def build():
     # cc-P92: the headline is the ServUO port list (tools/port-list.json), not every ServUO file ModernUO lacks.
     # That pool still has its own section lower down; it was never a target and the page always said so.
     pl = port_list()
+    # cc-P136: the derived judgments and the review box. Each step that fails says so in one line and the rest goes on.
+    own_tasks, covered_tasks = safely("covered tasks", lambda: split_tasks(st.get("tasks", []), pl),
+                                      (st.get("tasks", []), []))
+    review = safely("review box", lambda: review_owed(st, finished_prompts(MIGRATE / "notes")), None)
+    if review is None:
+        L.append("### Needs overseer review: **could not be worked out this run** (see the progress.py output).")
+    elif review:
+        L.append(f"### Needs overseer review ({len(review)})")
+        L.append("")
+        for x in review:
+            L.append(f"- **{review_label(x)}**: {x['check']} " + " or ".join(f"`{c}`" for c in x["cmd"]))
+    else:
+        L.append("### Needs overseer review: nothing owed.")
+    L.append("")
     if pl:
         c = pl["counted"]
         L.append("## " + port_list_headline(pl))
@@ -445,7 +594,7 @@ def build():
         L.append("_None yet. Blocked until the setup defects above are resolved._")
     L.append("")
 
-    tk = st.get("tasks", [])
+    tk = own_tasks
     if tk:
         SYM = {"done":"x", "in-progress":"~", "blocked":"!", "todo":" "}
         nd = sum(1 for t in tk if t["status"]=="done")
@@ -464,11 +613,16 @@ def build():
         L.append("")
         L.append("_Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._")
         L.append("")
+    if covered_tasks:
+        L.append("Covered by the port list (not counted above): "
+                 + "; ".join(f"`{c['id']}` {c['title']}: {', '.join(c['by'])}, {c['done']}/{c['files']} files"
+                             + (" (in)" if c["in"] else "") for c in covered_tasks) + ".")
+        L.append("")
 
     # cc-P85: the CC prompt queue, derived each run (never hand-kept).
     q = dv["queue"]
-    L.append(f"### Queue (Golem {q['autopilot']}; {q['finished_total']} prompts finished, "
-             f"{q['stopped_total']} of them stopped early)")
+    L.append(f"### Queue (Golem {q['autopilot']}; {q['done_total']} prompts done, "
+             f"{q['stopped_total']} more stopped early and not counted)")
     L.append("")
     L.append("| Prompt | State | When |")
     L.append("|---|---|---|")
@@ -526,7 +680,10 @@ def build():
             "direction": "stay on ModernUO; pull ServUO content selectively",
             "setup_defects": d, "setup_done": done, "setup_total": total,
             "patches": p, "ported_content": pc, "declined_content": dc,
-            "upstream_patches": st.get("upstream_patches"), "counted": cnt, "content_progress": content_progress(), "tasks": st.get("tasks", []),
+            "upstream_patches": st.get("upstream_patches"), "counted": cnt, "content_progress": content_progress(),
+            # cc-P136: tasks a port-list system covers are listed apart and left out of the task totals; review is
+            # the "Needs overseer review" box (None when it could not be worked out, [] when nothing is owed).
+            "tasks": own_tasks, "tasks_covered": covered_tasks, "review": review,
             # cc-P92: the port list, counted from the trees against tools/port-list.json.
             "port_list": pl,
             "playable_gates": st.get("playable_gates"),
@@ -543,7 +700,12 @@ START, END = "<!-- PROGRESS:START -->", "<!-- PROGRESS:END -->"
 
 def main():
     if "--dry-run" not in sys.argv: check_inputs()
-    rep = build(); _emit(rep)
+    try:
+        rep = build()
+    except Exception as e:   # cc-P136: one line, so the commit script can say why and commit anyway
+        print(f"  progress.py failed: {type(e).__name__}: {e}; the page was left as it was", file=sys.stderr)
+        sys.exit(1)
+    _emit(rep)
     if "--dry-run" in sys.argv: return
     rm = MIGRATE / "README.md"
     if not rm.exists(): return

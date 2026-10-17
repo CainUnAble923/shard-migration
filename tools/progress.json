@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-17T17:16:16-05:00",
+  "generated": "2026-10-17T17:31:06-05:00",
   "direction": {
     "eyebrow": "Direction",
     "title": "Our own shard on ModernUO, OSI where OSI has an answer",
@@ -739,48 +739,6 @@
       "confirmed": "2026-10-13"
     },
     {
-      "id": "C2",
-      "title": "Revamped Dungeons",
-      "status": "todo",
-      "note": "Despise and Shame landed 09-19; no Revamped Dungeons work since. Dungeon work moved to P36 (the Burrows) and F-32 (dungeon chests, P49/P50).",
-      "confirmed": "2026-10-13"
-    },
-    {
-      "id": "C4",
-      "title": "Creatures and NPCs",
-      "status": "todo",
-      "note": "Last batch CC6 batch 8 (09-21); 19 spawn names still place nothing (tools/spawn-orphans.txt).",
-      "confirmed": "2026-10-13"
-    },
-    {
-      "id": "C3",
-      "title": "High Seas, cheap half",
-      "status": "todo",
-      "note": "Unchanged: costed, no prompt has taken it.",
-      "confirmed": "2026-10-13"
-    },
-    {
-      "id": "C5",
-      "title": "Decoration, housing, crafting",
-      "status": "todo",
-      "note": "Unchanged: costed, no prompt has taken it.",
-      "confirmed": "2026-10-13"
-    },
-    {
-      "id": "C7",
-      "title": "High Seas naval - written proposal only",
-      "status": "todo",
-      "note": "Do not start; Chase decides from the proposal.",
-      "confirmed": "2026-10-13"
-    },
-    {
-      "id": "S7",
-      "title": "Services/PointsSystems",
-      "status": "todo",
-      "note": "Partly superseded: P33 built our own PointsSystem.cs for Clean Up Britannia. ServUO's still blocks Vice vs Virtue and City Loyalty.",
-      "confirmed": "2026-10-13"
-    },
-    {
       "id": "F-12",
       "title": "Levels and loops",
       "status": "todo",
@@ -795,6 +753,17 @@
       "confirmed": "2026-10-13"
     }
   ],
+  "tasks_covered": [],
+  "review": [
+    {
+      "kind": "direction",
+      "item": "direction",
+      "check": "Confirmed 2026-10-13; notes/decisions-2026-10-14.md (2026-10-14) is newer. Read it; if the direction moved, edit \"direction\" in tools/progress-state.json.",
+      "cmd": [
+        "python tools/judge.py confirm direction"
+      ]
+    }
+  ],
   "port_list": {
     "systems": [
       {
@@ -803,6 +772,7 @@
         "title": "Bulk orders, all crafts",
         "feeds": "F-18, F-20, F-25, F-37",
         "why": "F-18, F-20, F-25, F-37: BODs for every craft skill; ServUO's 2016 revamp is the named port source",
+        "covers": [],
         "candidates": 28,
         "done": 22,
         "complete": false,
@@ -814,6 +784,7 @@
         "title": "Treasure maps revamp",
         "feeds": "F-20; gate: train without a wall",
         "why": "F-20 Cartography (explore and map) and the gain path to 200; OSI has the answer",
+        "covers": [],
         "candidates": 2,
         "done": 2,
         "complete": true,
@@ -825,6 +796,7 @@
         "title": "Monster stealing",
         "feeds": "gate: train without a wall",
         "why": "Stealing's gain path past the stock ceiling (D82 area); OSI has the answer",
+        "covers": [],
         "candidates": 14,
         "done": 14,
         "complete": true,
@@ -836,6 +808,9 @@
         "title": "Despise and Shame (revamped)",
         "feeds": "gate: somewhere to go",
         "why": "ported and client-checked (CC4); kept on the list so the target counts what is done",
+        "covers": [
+          "C2"
+        ],
         "candidates": 15,
         "done": 15,
         "complete": true,
@@ -847,6 +822,9 @@
         "title": "Blackthorn Dungeon (revamped)",
         "feeds": "gate: somewhere to go; F-24, F-32",
         "why": "'Somewhere to go' gate, League dungeon dives (F-24), dungeon chests (F-32)",
+        "covers": [
+          "C2"
+        ],
         "candidates": 147,
         "done": 4,
         "complete": false,
@@ -858,6 +836,9 @@
         "title": "Covetous Void Spawn",
         "feeds": "gate: somewhere to go; F-24, F-32",
         "why": "same as above; Void creatures feed monster parts",
+        "covers": [
+          "C2"
+        ],
         "candidates": 29,
         "done": 3,
         "complete": false,
@@ -869,6 +850,9 @@
         "title": "Wrong (revamped)",
         "feeds": "gate: somewhere to go; F-24, F-32",
         "why": "same as above",
+        "covers": [
+          "C2"
+        ],
         "candidates": 26,
         "done": 2,
         "complete": false,
@@ -880,6 +864,9 @@
         "title": "The Exodus Encounter",
         "feeds": "gate: somewhere to go; F-40 boss boxes",
         "why": "same; boss content for loot boxes (boss kills roll boxes, F-40)",
+        "covers": [
+          "C2"
+        ],
         "candidates": 38,
         "done": 1,
         "complete": false,
@@ -891,6 +878,9 @@
         "title": "Underworld (Stygian Abyss) + mini champions",
         "feeds": "gate: somewhere to go; F-24 culling",
         "why": "a dungeon open to every race; puzzles fit the snark; mini champs feed League culling",
+        "covers": [
+          "C2"
+        ],
         "candidates": 27,
         "done": 3,
         "complete": false,
@@ -902,6 +892,9 @@
         "title": "Creatures: Mobiles/Normal remainder, bosses, Void creatures, AI",
         "feeds": "gate: things to fight; F-24, F-40, F-42",
         "why": "'Things to fight' gate (19 spawn orphans), League hunts and culling, monster parts for imbuing and epic crafting; WoW/Diablo art lands on these, renamed",
+        "covers": [
+          "C4"
+        ],
         "candidates": 193,
         "done": 138,
         "complete": false,
@@ -913,6 +906,7 @@
         "title": "Pet Training (OSI animal training)",
         "feeds": "F-35 evo pets, companions, Animal Lore to 200",
         "why": "132 ServUO creature files call it; Animal Lore past its ceiling needs high-level tameables. Decided 2026-10-13 (Chase): port it fully; evo pets and companions sit on top of OSI animal training, they do not replace it",
+        "covers": [],
         "candidates": 11,
         "done": 10,
         "complete": false,
@@ -924,6 +918,7 @@
         "title": "Eodon (Time of Legends) remainder, no Myrmidex or Shadowguard",
         "feeds": "gate: somewhere to go, things to fight",
         "why": "a whole facet of places and dinosaurs, half already ported (CC3)",
+        "covers": [],
         "candidates": 19,
         "done": 6,
         "complete": false,
@@ -935,6 +930,9 @@
         "title": "High Seas, fishing half",
         "feeds": "F-20 Fishing; Maritime Brotherhood",
         "why": "F-20 Fishing deeds, Maritime Brotherhood (Fishing, Cooking), fish and lobster traps, profession fish quests, sea champions",
+        "covers": [
+          "C3"
+        ],
         "candidates": 59,
         "done": 4,
         "complete": false,
@@ -946,6 +944,9 @@
         "title": "Crafting gaps: basket weaving, armor refinement, craft helpers, raised gardens",
         "feeds": "F-43 recipe gating; Herbalism",
         "why": "recipe gating (F-43) needs the stock OSI recipes present to gate; raised gardens and potted plants feed Herbalism",
+        "covers": [
+          "C5"
+        ],
         "candidates": 33,
         "done": 23,
         "complete": false,
@@ -957,6 +958,7 @@
         "title": "Food, drink and potions",
         "feeds": "F-43; Alembic, Cooking designs",
         "why": "Cooking (Maritime) and the Order of the Alembic need OSI's consumables to have anything to make and gate",
+        "covers": [],
         "candidates": 44,
         "done": 36,
         "complete": false,
@@ -968,6 +970,9 @@
         "title": "Base items: resources, equipment, containers, tools, functional",
         "feeds": "everything above",
         "why": "the plain remainder a ported system reaches for; trap training kits are Lockpicking and Remove Trap gain paths",
+        "covers": [
+          "C5"
+        ],
         "candidates": 298,
         "done": 172,
         "complete": false,
@@ -979,6 +984,9 @@
         "title": "Reward pool: addons, decorative, store items, artifact remainder, Clean Up rewards",
         "feeds": "",
         "why": "stock for loot boxes (F-40), the League shop (F-13), recipe and commission rewards; ported on demand, not counted",
+        "covers": [
+          "C5"
+        ],
         "candidates": 717,
         "done": 293,
         "complete": false,
@@ -990,6 +998,9 @@
         "title": "Design source only, ours replaces",
         "feeds": "",
         "why": "Imbuing (P82 Artificers), Runic Reforging (F-42 epic crafting), Huntmaster (F-24 hunts), PointsSystems (P33), XmlSpawner (P32 importer; P72 'the design, not the code'), Town Cryer (F-15, P64), ML quest framework (declined twice)",
+        "covers": [
+          "S7"
+        ],
         "candidates": 178,
         "done": 4,
         "complete": false,
@@ -1001,6 +1012,9 @@
         "title": "Later, deliberately",
         "feeds": "",
         "why": "seasonal events (with the F-30 Events tab: Forsaken Foes, Krampus, the Treasures of ... events, Rising Tide), Shadowguard, Tomb of Kings and Ter Mur (races last), Instanced Peerless and Peerless, Astronomy, Fortune's Fire, High Seas naval (C7, proposal only), champion and Doom extras",
+        "covers": [
+          "C7"
+        ],
         "candidates": 307,
         "done": 14,
         "complete": false,
@@ -1012,6 +1026,7 @@
         "title": "Dropped: no longer fits",
         "feeds": "",
         "why": "account and staff tokens (name, race, gender change; GM tools; bless and pardon deeds) and PvP and faction systems (Vice vs Virtue, Factions, PvP Arena, Myrmidex Invasion), player-economy systems for a two-player shard (New Magincia bazaar and lotto, Vendor Searching, City Loyalty, AuctionSafe), the paid store shell (no donations), Exploring the Deep (worst ratio on the menu), staff/engine plumbing ModernUO already has (Reports, RemoteAdmin, Pathing, Chat, Party, Help, Ethics, Spawner, GiftGiving, Loyalty)",
+        "covers": [],
         "candidates": 304,
         "done": 8,
         "complete": false,
@@ -1023,6 +1038,7 @@
         "title": "Ride-along: NPCs, quest items, books, internals",
         "feeds": "",
         "why": "ported with the system that uses them, never on their own; not counted",
+        "covers": [],
         "candidates": 361,
         "done": 15,
         "complete": false,
@@ -1269,29 +1285,25 @@
   "sections": {
     "foundation": "2026-10-13",
     "portlist": "2026-10-13",
-    "corrections": "2026-09-19"
+    "corrections": "2026-09-19",
+    "tasks-reviewed": "2026-10-17"
   },
   "derived": {
-    "version": "2026.10.17.5",
+    "version": "2026.10.17.6",
     "playtests": {
-      "open": 265,
+      "open": 268,
       "failed": 2,
       "passed": 23,
       "later": 0,
       "blocked": 1,
-      "total": 290,
+      "total": 293,
       "unloggedFails": 1,
-      "generatedAt": "2026-10-17T21:14:38Z"
+      "generatedAt": "2026-10-17T22:18:42Z"
     },
     "queue": {
       "autopilot": "on",
       "running": null,
       "queued": [
-        {
-          "n": 136,
-          "slug": "status-page-self-judging",
-          "state": "queued"
-        },
         {
           "n": 137,
           "slug": "usable-ankhs-and-playtest-fixes",
@@ -1406,6 +1418,14 @@
           "notes": "notes/cc-P154-console-responsive.md"
         },
         {
+          "n": 136,
+          "slug": "status-page-self-judging",
+          "state": "done",
+          "why": "",
+          "date": "2026-10-17",
+          "notes": "notes/cc-P136-status-page-self-judging.md"
+        },
+        {
           "n": 135,
           "slug": "vseuoaware-staff-commands",
           "state": "done",
@@ -1460,17 +1480,10 @@
           "why": "",
           "date": "2026-10-16",
           "notes": "notes/cc-P129-port-creatures-part2.md"
-        },
-        {
-          "n": 128,
-          "slug": "port-consumables-crafting-gaps",
-          "state": "done",
-          "why": "",
-          "date": "2026-10-16",
-          "notes": "notes/cc-P128-port-consumables-crafting-gaps.md"
         }
       ],
-      "finished_total": 88,
+      "finished_total": 89,
+      "done_total": 86,
       "stopped_total": 3,
       "latest_done": {
         "n": 155,
