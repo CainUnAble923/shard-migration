@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.17.3. Golem on, 22 queued, latest done P155. Play tests: 256 open, 2 failed, 23 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.17.4. Golem on, 21 queued, latest done P155. Play tests: 262 open, 2 failed, 23 passed.
 
 ## Port list: 3 of 16 systems in. 455 of 983 files (46%).
 
@@ -230,11 +230,10 @@ Tasks          ██░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 86 prompts finished, 3 of them stopped early)
+### Queue (Golem on; 87 prompts finished, 3 of them stopped early)
 
 | Prompt | State | When |
 |---|---|---|
-| P134 vseuoaware-art-checks-mcp | queued |  |
 | P135 vseuoaware-staff-commands | queued |  |
 | P136 status-page-self-judging | queued |  |
 | P137 usable-ankhs-and-playtest-fixes | queued |  |
@@ -258,6 +257,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P159 codex-lane-second-pc | queued |  |
 | P155 web-console-phase1-status | done | 2026-10-17 |
 | P154 console-responsive | done | 2026-10-17 |
+| P134 vseuoaware-art-checks-mcp | done | 2026-10-17 |
 | P133 haven-intranet-dashboard | done | 2026-10-17 |
 | P132 console-layout-and-art-slots | done | 2026-10-16 |
 | P131 wake-golem-from-console | done | 2026-10-16 |
@@ -265,7 +265,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P129 port-creatures-part2 | done | 2026-10-16 |
 | P128 port-consumables-crafting-gaps | done | 2026-10-16 |
 | P127 port-treasure-maps-monster-stealing | done | 2026-10-16 |
-| P126 second-machine-design | done | 2026-10-16 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 98 patches, 12 replacements
 

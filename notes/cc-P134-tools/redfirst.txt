@@ -1,0 +1,23 @@
+baseline: rc 0 OK
+RED  bodyconv: first column wins (vseUOAware): rc 1 FAILED (failures=1); red: test_bodyconv_last_applicable_column_wins
+RED  bodyconv: columns for missing files applied: rc 1 FAILED (failures=1); red: test_bodyconv_column_for_a_missing_file_is_skipped
+RED  layout: mobtypes type ignored: rc 1 FAILED (failures=1); red: test_mobtypes_type_decides_the_layout_the_kirin_case
+RED  layout: slot range ignored: rc 1 FAILED (failures=2); red: test_no_mobtypes_entry_uses_the_slot_range, test_our_equip_anim_override_reaches_anim7
+RED  uop: wrong flag bit: rc 1 FAILED (failures=1); red: test_flag_10000_sends_the_body_to_uop
+RED  layout: animal 0x20 ignored: rc 1 FAILED (failures=1); red: test_animal_flags
+RED  overrides: equipAnims not applied: rc 1 FAILED (failures=1); red: test_our_equip_anim_override_reaches_anim7
+RED  check-vd: planned slot frames not checked: rc 1 FAILED (failures=1); red: test_slot_with_frames_is_not_free
+RED  check-vd: layout mismatch not reported: rc 1 FAILED (failures=1); red: test_layout_mismatch_is_a_problem
+RED  check-vd: existing bodyconv line not a problem: rc 1 FAILED (failures=1); red: test_body_with_a_bodyconv_line_is_not_free_for_a_new_line
+RED  check-vd: Body.def applied to every body: rc 1 FAILED (failures=1); red: test_body_def_redirect_counts_only_in_anim_mul
+RED  check-vd: server body table not read: rc 1 FAILED (failures=1); red: test_server_body_table_is_reported
+RED  check-vd: hover hint missing: rc 1 FAILED (failures=1); red: test_hover_flag_hint
+RED  vd: header not checked: rc 1 FAILED (failures=1); red: test_bad_vd_is_refused
+RED  propose: bodyTable bodies offered: rc 1 FAILED (failures=1); red: test_propose_gives_distinct_free_slots
+RED  check-registry: duplicates missed: rc 1 FAILED (failures=1); red: test_check_registry_flags_collisions_and_missing_mobtypes
+RED  check-registry: missing mobtypes missed: rc 1 FAILED (failures=1); red: test_check_registry_flags_collisions_and_missing_mobtypes
+RED  hues: alpha bit compared: rc 1 FAILED (failures=1); red: test_alpha_bit_is_not_a_difference
+RED  hues: names counted as colours: rc 1 FAILED (failures=1); red: test_colour_and_name_differences_are_counted_apart
+RED  render: header XOR (double bias): rc 1 FAILED (failures=1); red: test_frame_decodes_to_the_right_pixel
+RED  render: mirror wrong: rc 1 FAILED (failures=1); red: test_render_mirrors_directions_5_to_7
+restored: sha256 identical; rc 0 OK
