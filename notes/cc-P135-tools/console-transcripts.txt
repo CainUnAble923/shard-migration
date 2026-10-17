@@ -1,0 +1,301 @@
+==============================================================================
+  DRY RUN  art.registry (map and art)
+  Nothing will be run. This window only prints the plan.
+==============================================================================
+== DRY RUN: art.registry (mapart) ====================================================
+  1. SAY      Check the art registry: rows registered twice, art ids with EA art in the slot, anim rows mobtypes names or records.json does not route, body rows with no mobtypes entry.
+  2. RUN      python D:\ShatteredLegacy\scripts\validate-art.py check-registry
+         # validate-art.py reads the client data and the art registry and writes nothing. Exit 1 means it found problems to read above, not that it failed.
+   (dry run: nothing was run)
+
+==============================================================================
+  DRY RUN  art.bodies (map and art)
+  Nothing will be run. This window only prints the plan.
+==============================================================================
+== DRY RUN: art.bodies (mapart) ======================================================
+  1. SAY      The body table: every body the client data names or draws (about 1,300 lines): type, flags, classic or UOP, file, slot, layout, the actions it has frames for, and which line defines it. Copy from the pane, or read the run file in scripts\shard-console-output.
+  2. RUN      python D:\ShatteredLegacy\scripts\validate-art.py bodies
+         # validate-art.py reads the client data and the art registry and writes nothing. Exit 1 means it found problems to read above, not that it failed.
+   (dry run: nothing was run)
+
+==============================================================================
+  DRY RUN  art.checkvd (map and art)
+  Nothing will be run. This window only prints the plan.
+==============================================================================
+== DRY RUN: art.checkvd (mapart) =====================================================
+  1. SAY      Check Kirin.vd against body 2052: its layout and actions, whether the body is free, where it lands, whether the layout fits, and what mobtypes must say.
+  2. RUN      python D:\ShatteredLegacy\scripts\validate-art.py check-vd D:\UO\third-party\kirin\Kirin.vd 2052
+         # validate-art.py reads the client data and the art registry and writes nothing. Exit 1 means it found problems to read above, not that it failed.
+   (dry run: nothing was run)
+
+==============================================================================
+  DRY RUN  art.checkvd (map and art)
+  Nothing will be run. This window only prints the plan.
+==============================================================================
+== DRY RUN: art.checkvd (mapart) =====================================================
+  1. SAY      No body given, so propose one: a free server body (from 0x800) and a free anim7 slot of the right layout for Kirin.vd, then the check on it. Registers nothing.
+  2. RUN      python D:\ShatteredLegacy\scripts\validate-art.py propose D:\UO\third-party\kirin\Kirin.vd
+         # validate-art.py reads the client data and the art registry and writes nothing. Exit 1 means it found problems to read above, not that it failed.
+   (dry run: nothing was run)
+
+==============================================================================
+  DRY RUN  art.hues (map and art)
+  Nothing will be run. This window only prints the plan.
+==============================================================================
+== DRY RUN: art.hues (mapart) ========================================================
+  1. SAY      Compare D:\UO\third-party\argonious-buildings\hues.mul with ours (D:\ShatteredLegacy\client-data\classic-client-7.0.117.0\hues.mul): the hues whose colours differ, and those that differ only in name or table range. Report only; neither file is changed.
+  2. RUN      python D:\ShatteredLegacy\scripts\validate-art.py hues-diff D:\ShatteredLegacy\client-data\classic-client-7.0.117.0\hues.mul D:\UO\third-party\argonious-buildings\hues.mul
+         # validate-art.py reads the client data and the art registry and writes nothing. Exit 1 means it found problems to read above, not that it failed.
+   (dry run: nothing was run)
+
+==============================================================================
+  DRY RUN  map.footprint (map and art)
+  Nothing will be run. This window only prints the plan.
+==============================================================================
+== DRY RUN: map.footprint (mapart) ===================================================
+  1. SAY      [CheckFootprint <width> <height> [maxZSpread=5]   (GameMaster; then target the top-left corner)
+  2. SAY      CAN or CANNOT a w x h building stand there: the blocked tiles (water, impassable land, an impassable non-surface static within 16 Z) and the land Z spread. Max 64x64.
+  3. SAY      Type it in a client on the shard you mean; the console cannot run in-game commands. It reads and reports, and nothing it places outlives its timer.
+   (dry run: nothing was run)
+
+==============================================================================
+  DRY RUN  map.spots (map and art)
+  Nothing will be run. This window only prints the plan.
+==============================================================================
+== DRY RUN: map.spots (mapart) =======================================================
+  1. SAY      [ValidateSpots <file under Data> [map]   (GameMaster; no target)
+  2. SAY      Names each bad spot in a spawn .json, a decoration .cfg (give the map, or Britannia for both) or x,y[,z][,map] lines; at most 500 a file. The full report goes to the map-checks folder beside the saves.
+  3. SAY      Type it in a client on the shard you mean; the console cannot run in-game commands. It reads and reports, and nothing it places outlives its timer.
+   (dry run: nothing was run)
+
+==============================================================================
+  DRY RUN  map.statics (map and art)
+  Nothing will be run. This window only prints the plan.
+==============================================================================
+== DRY RUN: map.statics (mapart) =====================================================
+  1. SAY      [FindStaticProblems   (GameMaster; then target two corners (max 512x512))
+  2. SAY      Duplicate statics (the same id and Z on a tile), statics buried 10 or more Z under the land, and ids with no tiledata entry.
+  3. SAY      Type it in a client on the shard you mean; the console cannot run in-game commands. It reads and reports, and nothing it places outlives its timer.
+   (dry run: nothing was run)
+
+==============================================================================
+  DRY RUN  map.walkable (map and art)
+  Nothing will be run. This window only prints the plan.
+==============================================================================
+== DRY RUN: map.walkable (mapart) ====================================================
+  1. SAY      [Walkable [list|overlay [seconds]|clear]   (GameMaster; then target two corners (max 512x512))
+  2. SAY      The tiles a mobile cannot stand on, by cause. overlay marks each with a red rune that deletes itself (default 60 s, max 600; test shard only); clear removes every marker now.
+  3. SAY      Type it in a client on the shard you mean; the console cannot run in-game commands. It reads and reports, and nothing it places outlives its timer.
+   (dry run: nothing was run)
+
+==============================================================================
+  DRY RUN  map.shore (map and art)
+  Nothing will be run. This window only prints the plan.
+==============================================================================
+== DRY RUN: map.shore (mapart) =======================================================
+  1. SAY      [ShoreCheck [stepThreshold]   (GameMaster; then target two corners (max 512x512))
+  2. SAY      Water touching non-water land: coast heights in buckets, the water and shore tile ids, and any water surface outside -120..120.
+  3. SAY      Type it in a client on the shard you mean; the console cannot run in-game commands. It reads and reports, and nothing it places outlives its timer.
+   (dry run: nothing was run)
+
+==============================================================================
+  DRY RUN  map.export (map and art)
+  Nothing will be run. This window only prints the plan.
+==============================================================================
+== DRY RUN: map.export (mapart) ======================================================
+  1. SAY      [ExportPoints <name> [rect|point|clear]   (GameMaster; rect: two corners; point: one spot at a time)
+  2. SAY      Writes the rectangle (spawnBounds and its centre) or the points as spawn-file JSON to <world folder>\map-checks\<name>.json. [ValidateSpots <name>.json reads it back.
+  3. SAY      Type it in a client on the shard you mean; the console cannot run in-game commands. It reads and reports, and nothing it places outlives its timer.
+   (dry run: nothing was run)
+
+=== REAL RUN: -Mode Execute -Action art.registry
+==============================================================================
+  MAP AND ART  art.registry (map and art)
+  Runs scripts\validate-art.py, which reads the client data and writes nothing, or prints a command's syntax. No shard is touched.
+==============================================================================
+== PLAN: art.registry (mapart) ====================================================
+  1. SAY      Check the art registry: rows registered twice, art ids with EA art in the slot, anim rows mobtypes names or records.json does not route, body rows with no mobtypes entry.
+  2. RUN      python D:\ShatteredLegacy\scripts\validate-art.py check-registry
+         # validate-art.py reads the client data and the art registry and writes nothing. Exit 1 means it found problems to read above, not that it failed.
+
+[1/2] Check the art registry: rows registered twice, art ids with EA art in the slot, anim rows mobtypes names or records.json does not route, body rows with no mobtypes entry.
+[2/2] validate-art.py reads the client data and the art registry and writes nothing. Exit 1 means it found problems to read above, not that it failed.
+      > python D:\ShatteredLegacy\scripts\validate-art.py check-registry
+art 15376 (0x3C10) shattered runestone design 1 frame 1 of 11 (base ID: the item ID; has : ok
+art 15377 (0x3C11) shattered runestone design 1 frame 2 of 11: ok
+art 15378 (0x3C12) shattered runestone design 1 frame 3 of 11: ok
+art 15379 (0x3C13) shattered runestone design 1 frame 4 of 11: ok
+art 15380 (0x3C14) shattered runestone design 1 frame 5 of 11: ok
+art 15381 (0x3C15) shattered runestone design 1 frame 6 of 11: ok
+art 15382 (0x3C16) shattered runestone design 1 frame 7 of 11: ok
+art 15383 (0x3C17) shattered runestone design 1 frame 8 of 11: ok
+art 15384 (0x3C18) shattered runestone design 1 frame 9 of 11: ok
+art 15385 (0x3C19) shattered runestone design 1 frame 10 of 11: ok
+art 15386 (0x3C1A) shattered runestone design 1 frame 11 of 11: ok
+art 15387 (0x3C1B) shattered runestone design 2 frame 1 of 11 (base ID: the item ID; has : ok
+art 15388 (0x3C1C) shattered runestone design 2 frame 2 of 11: ok
+art 15389 (0x3C1D) shattered runestone design 2 frame 3 of 11: ok
+art 15390 (0x3C1E) shattered runestone design 2 frame 4 of 11: ok
+art 15391 (0x3C1F) shattered runestone design 2 frame 5 of 11: ok
+art 15392 (0x3C20) shattered runestone design 2 frame 6 of 11: ok
+art 15393 (0x3C21) shattered runestone design 2 frame 7 of 11: ok
+art 15394 (0x3C22) shattered runestone design 2 frame 8 of 11: ok
+art 15395 (0x3C23) shattered runestone design 2 frame 9 of 11: ok
+art 15396 (0x3C24) shattered runestone design 2 frame 10 of 11: ok
+art 15397 (0x3C25) shattered runestone design 2 frame 11 of 11: ok
+art 15398 (0x3C26) shattered runestone design 3 frame 1 of 11 (base ID: the item ID; has : ok
+art 15399 (0x3C27) shattered runestone design 3 frame 2 of 11: ok
+art 15400 (0x3C28) shattered runestone design 3 frame 3 of 11: ok
+art 15401 (0x3C29) shattered runestone design 3 frame 4 of 11: ok
+art 15402 (0x3C2A) shattered runestone design 3 frame 5 of 11: ok
+art 15403 (0x3C2B) shattered runestone design 3 frame 6 of 11: ok
+art 15404 (0x3C2C) shattered runestone design 3 frame 7 of 11: ok
+art 15405 (0x3C2D) shattered runestone design 3 frame 8 of 11: ok
+art 15406 (0x3C2E) shattered runestone design 3 frame 9 of 11: ok
+art 15407 (0x3C2F) shattered runestone design 3 frame 10 of 11: ok
+art 15408 (0x3C30) shattered runestone design 3 frame 11 of 11: ok
+art 15409 (0x3C31) shattered runestone design 4 frame 1 of 11 (base ID: the item ID; has : ok
+art 15410 (0x3C32) shattered runestone design 4 frame 2 of 11: ok
+art 15411 (0x3C33) shattered runestone design 4 frame 3 of 11: ok
+art 15412 (0x3C34) shattered runestone design 4 frame 4 of 11: ok
+art 15413 (0x3C35) shattered runestone design 4 frame 5 of 11: ok
+art 15414 (0x3C36) shattered runestone design 4 frame 6 of 11: ok
+art 15415 (0x3C37) shattered runestone design 4 frame 7 of 11: ok
+art 15416 (0x3C38) shattered runestone design 4 frame 8 of 11: ok
+art 15417 (0x3C39) shattered runestone design 4 frame 9 of 11: ok
+art 15418 (0x3C3A) shattered runestone design 4 frame 10 of 11: ok
+art 15419 (0x3C3B) shattered runestone design 4 frame 11 of 11: ok
+art 15420 (0x3C3C) fox ears and tail: item icon (the item ID; tiledata record: Earrings l: ok
+anim 4783 (0x12AF) fox ears and tail on the female human body 401 (anim7 slot 400; walk d: ok [anim7 slot 400 people; no mobtypes entry, as an equipment animation needs]
+gump 64783 (0xFD0F) fox ears and tail: female paperdoll gump (60000 + Animation 4783): ok
+art 15424 (0x3C40) winter decor (F-22): Father Christmas statue frame 1 of 5 (base ID: th: ok
+art 15425 (0x3C41) winter decor (F-22): Father Christmas statue frame 2 of 5: ok
+art 15426 (0x3C42) winter decor (F-22): Father Christmas statue frame 3 of 5: ok
+art 15427 (0x3C43) winter decor (F-22): Father Christmas statue frame 4 of 5: ok
+art 15428 (0x3C44) winter decor (F-22): Father Christmas statue frame 5 of 5: ok
+art 15429 (0x3C45) winter decor (F-22): raised firepit frame 1 of 5 (base ID: the item ID: ok
+art 15430 (0x3C46) winter decor (F-22): raised firepit frame 2 of 5: ok
+art 15431 (0x3C47) winter decor (F-22): raised firepit frame 3 of 5: ok
+art 15432 (0x3C48) winter decor (F-22): raised firepit frame 4 of 5: ok
+art 15433 (0x3C49) winter decor (F-22): raised firepit frame 5 of 5: ok
+art 15434 (0x3C4A) winter decor (F-22): iron stove frame 1 of 4 (base ID: the item ID; ha: ok
+art 15435 (0x3C4B) winter decor (F-22): iron stove frame 2 of 4: ok
+art 15436 (0x3C4C) winter decor (F-22): iron stove frame 3 of 4: ok
+art 15437 (0x3C4D) winter decor (F-22): iron stove frame 4 of 4: ok
+art 15438 (0x3C4E) winter decor (F-22): stone stove frame 1 of 4 (base ID: the item ID; h: ok
+art 15439 (0x3C4F) winter decor (F-22): stone stove frame 2 of 4: ok
+art 15440 (0x3C50) winter decor (F-22): stone stove frame 3 of 4: ok
+art 15441 (0x3C51) winter decor (F-22): stone stove frame 4 of 4: ok
+art 15442 (0x3C52) winter decor (F-22): decorated Christmas tree (base ID: the item ID; h: ok
+art 15443 (0x3C53) winter decor (F-22): Santa's bag: ok
+art 15444 (0x3C54) winter decor (F-22): present (orange): ok
+art 15445 (0x3C55) winter decor (F-22): present (pink): ok
+art 15446 (0x3C56) winter decor (F-22): present (green): ok
+art 15447 (0x3C57) winter decor (F-22): candy cane arch, facing 1: ok
+art 15448 (0x3C58) winter decor (F-22): candy cane arch, facing 2: ok
+art 15449 (0x3C59) winter decor (F-22): eggnog tray: ok
+art 15450 (0x3C5A) winter decor (F-22): eggnog tray (second): ok
+art 15451 (0x3C5B) winter decor (F-22): pan of Christmas cookies: ok
+art 15452 (0x3C5C) winter decor (F-22): tray of candy canes: ok
+art 15453 (0x3C5D) winter decor (F-22): holiday platter: ok
+art 15454 (0x3C5E) winter decor (F-22): roast turkey: ok
+art 15455 (0x3C5F) winter decor (F-22): gingerbread house: ok
+art 15456 (0x3C60) winter decor (F-22): Christmas fireplace (base ID: the item ID; has ou: ok
+art 15457 (0x3C61) winter decor (F-22): garland (on a north wall, faces south): ok
+art 15458 (0x3C62) winter decor (F-22): garland (on a west wall, faces east): ok
+art 15459 (0x3C63) winter decor (F-22): holiday painting A (north wall, faces south): ok
+art 15460 (0x3C64) winter decor (F-22): holiday painting A (west wall, faces east): ok
+art 15461 (0x3C65) winter decor (F-22): holiday painting B (north wall, faces south): ok
+art 15462 (0x3C66) winter decor (F-22): holiday painting B (west wall, faces east): ok
+art 15463 (0x3C67) winter decor (F-22): snow-covered painting (west wall, faces east): ok
+art 15464 (0x3C68) winter decor (F-22): snow-covered painting (north wall, faces south): ok
+art 15465 (0x3C69) winter decor (F-22): snow-covered shield (west wall, faces east): ok
+art 15466 (0x3C6A) winter decor (F-22): snow-covered shield (north wall, faces south): ok
+art 15467 (0x3C6B) winter decor (F-22): snow patch 1: ok
+art 15468 (0x3C6C) winter decor (F-22): snow patch 2: ok
+art 15469 (0x3C6D) winter decor (F-22): snow patch 3: ok
+art 15470 (0x3C6E) winter decor (F-22): Christmas sleigh (base ID: the item ID; has our t: ok
+art 15472 (0x3C70) chest mimic (F-32) NS (stock wooden chest 0xE43 facing): teeth showing: ok
+art 15473 (0x3C71) chest mimic (F-32) NS (stock wooden chest 0xE43 facing): mouth open (s: ok
+art 15474 (0x3C72) chest mimic (F-32) NS (stock wooden chest 0xE43 facing): tongue out 1 : ok
+art 15475 (0x3C73) chest mimic (F-32) NS (stock wooden chest 0xE43 facing): tongue out 2 : ok
+art 15476 (0x3C74) chest mimic (F-32) NS (stock wooden chest 0xE43 facing): tongue out 3 : ok
+art 15477 (0x3C75) chest mimic (F-32) NS (stock wooden chest 0xE43 facing): idle loop fra: ok
+art 15478 (0x3C76) chest mimic (F-32) NS (stock wooden chest 0xE43 facing): idle loop fra: ok
+art 15479 (0x3C77) chest mimic (F-32) NS (stock wooden chest 0xE43 facing): dead, lid flu: ok
+art 15480 (0x3C78) chest mimic (F-32) NS (stock wooden chest 0xE43 facing): dead, tongue : ok
+art 15481 (0x3C79) chest mimic (F-32) WE (stock wooden chest 0xE42 facing): teeth showing: ok
+art 15482 (0x3C7A) chest mimic (F-32) WE (stock wooden chest 0xE42 facing): mouth open (s: ok
+art 15483 (0x3C7B) chest mimic (F-32) WE (stock wooden chest 0xE42 facing): tongue out 1 : ok
+art 15484 (0x3C7C) chest mimic (F-32) WE (stock wooden chest 0xE42 facing): tongue out 2 : ok
+art 15485 (0x3C7D) chest mimic (F-32) WE (stock wooden chest 0xE42 facing): tongue out 3 : ok
+art 15486 (0x3C7E) chest mimic (F-32) WE (stock wooden chest 0xE42 facing): idle loop fra: ok
+art 15487 (0x3C7F) chest mimic (F-32) WE (stock wooden chest 0xE42 facing): idle loop fra: ok
+art 15488 (0x3C80) chest mimic (F-32) WE (stock wooden chest 0xE42 facing): dead, lid flu: ok
+art 15489 (0x3C81) chest mimic (F-32) WE (stock wooden chest 0xE42 facing): dead, tongue : ok
+0 of 112 rows have problems
+art.registry: done.
+exit 0
+
+=== REAL RUN: -Mode Execute -Action art.checkvd -VdFile D:\UO\third-party\kirin\Kirin.vd -Body 2052
+==============================================================================
+  MAP AND ART  art.checkvd (map and art)
+  Runs scripts\validate-art.py, which reads the client data and writes nothing, or prints a command's syntax. No shard is touched.
+==============================================================================
+== PLAN: art.checkvd (mapart) =====================================================
+  1. SAY      Check Kirin.vd against body 2052: its layout and actions, whether the body is free, where it lands, whether the layout fits, and what mobtypes must say.
+  2. RUN      python D:\ShatteredLegacy\scripts\validate-art.py check-vd D:\UO\third-party\kirin\Kirin.vd 2052
+         # validate-art.py reads the client data and the art registry and writes nothing. Exit 1 means it found problems to read above, not that it failed.
+
+[1/2] Check Kirin.vd against body 2052: its layout and actions, whether the body is free, where it lands, whether the layout fits, and what mobtypes must say.
+[2/2] validate-art.py reads the client data and the art registry and writes nothing. Exit 1 means it found problems to read above, not that it failed.
+      > python D:\ShatteredLegacy\scripts\validate-art.py check-vd D:\UO\third-party\kirin\Kirin.vd 2052
+D:\UO\third-party\kirin\Kirin.vd: high layout, 110 records, 65 with frames, actions 0-12
+lands: anim slot 2052, read as HUMAN (people layout, 35 actions) at records 324100-324274
+mobtypes: needs "2052 MONSTER 0"
+note: only actions 0-12: a monster, or an animal (a mount) cut into a high block, as the kirin. An animal needs ANIMAL 0, and the client then reads a low block (13 actions) at the slot low-layout offset, so the frames must be written there, not at slot x 110. Render it to tell.
+note: has action 8; if that is a hover idle the body needs flag 0x4 (IdleAt8Frame)
+PROBLEM layout: the .vd is a high block but the client reads a people block here
+verdict: 1 problem(s)
+      exited with 1: it found something; read the lines above. Not a failure.
+art.checkvd: done.
+exit 0
+
+=== REAL RUN: -Mode Execute -Action art.hues -HuesFile D:\UO\third-party\argonious-buildings\hues.mul
+==============================================================================
+  MAP AND ART  art.hues (map and art)
+  Runs scripts\validate-art.py, which reads the client data and writes nothing, or prints a command's syntax. No shard is touched.
+==============================================================================
+== PLAN: art.hues (mapart) ========================================================
+  1. SAY      Compare D:\UO\third-party\argonious-buildings\hues.mul with ours (D:\ShatteredLegacy\client-data\classic-client-7.0.117.0\hues.mul): the hues whose colours differ, and those that differ only in name or table range. Report only; neither file is changed.
+  2. RUN      python D:\ShatteredLegacy\scripts\validate-art.py hues-diff D:\ShatteredLegacy\client-data\classic-client-7.0.117.0\hues.mul D:\UO\third-party\argonious-buildings\hues.mul
+         # validate-art.py reads the client data and the art registry and writes nothing. Exit 1 means it found problems to read above, not that it failed.
+
+[1/2] Compare D:\UO\third-party\argonious-buildings\hues.mul with ours (D:\ShatteredLegacy\client-data\classic-client-7.0.117.0\hues.mul): the hues whose colours differ, and those that differ only in name or table range. Report only; neither file is changed.
+[2/2] validate-art.py reads the client data and the art registry and writes nothing. Exit 1 means it found problems to read above, not that it failed.
+      > python D:\ShatteredLegacy\scripts\validate-art.py hues-diff D:\ShatteredLegacy\client-data\classic-client-7.0.117.0\hues.mul D:\UO\third-party\argonious-buildings\hues.mul
+D:\ShatteredLegacy\client-data\classic-client-7.0.117.0\hues.mul: 265500 bytes, 3000 hues
+D:\UO\third-party\argonious-buildings\hues.mul: 265500 bytes, 3000 hues
+   ... 40 lines not quoted ...
+  hue 1259 (0x4EB): 32 of 32 colours; table 15360-32513 -> 54016-54272; name "FireWeap5" -> ""
+  hue 1260 (0x4EC): 32 of 32 colours; table 19648-33737 -> 65280-33792; name "FireWeap6" -> "???'-(-I1I5j9?=?=?I?"
+  hue 1261 (0x4ED): 32 of 32 colours; table 231-1071 -> 45418-45674; name "ColdWeap1" -> "n?{6?y???????'9?A?E?"
+  ... 1322 more (raise --limit)
+art.hues: done.
+exit 0
+
+=== -Action map.shore with no -Mode (a read-only action runs)
+==============================================================================
+  MAP AND ART  map.shore (map and art)
+  Runs scripts\validate-art.py, which reads the client data and writes nothing, or prints a command's syntax. No shard is touched.
+==============================================================================
+== PLAN: map.shore (mapart) =======================================================
+  1. SAY      [ShoreCheck [stepThreshold]   (GameMaster; then target two corners (max 512x512))
+  2. SAY      Water touching non-water land: coast heights in buckets, the water and shore tile ids, and any water surface outside -120..120.
+  3. SAY      Type it in a client on the shard you mean; the console cannot run in-game commands. It reads and reports, and nothing it places outlives its timer.
+
+[1/3] [ShoreCheck [stepThreshold]   (GameMaster; then target two corners (max 512x512))
+[2/3] Water touching non-water land: coast heights in buckets, the water and shore tile ids, and any water surface outside -120..120.
+[3/3] Type it in a client on the shard you mean; the console cannot run in-game commands. It reads and reports, and nothing it places outlives its timer.
+map.shore: done.
+exit 0

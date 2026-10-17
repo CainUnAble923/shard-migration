@@ -1,0 +1,76 @@
+# build6-red2: the test gate's own output (step 2 of build.sh), test lines only: the failures with their first lines, the MapCheck results, the totals.
+1833:  Passed ShatteredLegacy.Tests.MapCheckVerification.ExportedPointsAndRectanglesReadBackThroughModernUOsOwnConvertersAndThePointsFileValidates
+1834:  Passed ShatteredLegacy.Tests.MapCheckVerification.AStaticAboveStandHeightBelowTheLandOrASurfaceDoesNotBlockAndOneAtTheEdgeDoes
+1835:  Passed ShatteredLegacy.Tests.MapCheckVerification.MarkersAreRedNamedForTheCauseNotMovableExpireWhenToldAndClearTogether
+1868:  Failed ShatteredLegacy.Tests.MapCheckVerification.ASpawnerJsonAndADecorationCfgGiveSpots
+1877:  Passed ShatteredLegacy.Tests.MapCheckVerification.AFlatGrassFootprintCanBePlacedAndEachBlockerSaysWhy
+1878:  Passed ShatteredLegacy.Tests.MapCheckVerification.AFootprintOverSixtyFourOrOffTheMapIsRefusedBeforeReading
+1879:  Passed ShatteredLegacy.Tests.MapCheckVerification.ValidationNamesAnUnknownMapASpotOffTheMapAndTheBlockedRuleAtTheSpotsOwnZ
+1880:  Failed ShatteredLegacy.Tests.MapCheckVerification.StaticProblemsAreDuplicatesBuriedAndUnknownIdsWithTheAreaCap
+1889:  Failed ShatteredLegacy.Tests.MapCheckVerification.WalkableCountsEachCauseAndListsTheBlockedTilesAndTheOverlayIsTestShardOnly
+1898:  Failed ShatteredLegacy.Tests.MapCheckVerification.ShoreFindsWaterTouchingLandShallowBedsAndTheHeightBucketsAndOnlyASurfaceOutsideTheLimitIsAFault
+1907:  Passed ShatteredLegacy.Tests.MapCheckVerification.ADataFileIsReadOnlyUnderTheGivenRootsAndNeverByARootedPathOrDotDot
+1908:  Passed ShatteredLegacy.Tests.MapCheckVerification.TheZSpreadIsMeasuredAndRefusedPastTheLimit
+1932:  Failed ShatteredLegacy.Tests.MapCheckVerification.SpotLinesParseWithOptionalZAndMapAndBadLinesAreNamedAndTheFirstFiveHundredAreRead
+1941:  Skipped ShatteredLegacy.Tests.MapCheckRealDataVerification.NewHavenStaticsWalkabilityAndShore
+1942:  Skipped ShatteredLegacy.Tests.MapCheckRealDataVerification.ValidateSpotsOverThePinnedSpawnFiles
+1943:  Skipped ShatteredLegacy.Tests.MapCheckRealDataVerification.ValidateSpotsOverThePinnedDecorationFiles
+1944:  Skipped ShatteredLegacy.Tests.MapCheckRealDataVerification.TheRealAdapterReadsNewHavenAsTheIndependentUopReadDid
+3146:Total tests: 1402
+3147:     Passed: 1393
+3148:     Failed: 5
+3149:    Skipped: 4
+3153:exit 1
+3154:98e8546bfb78f52953596270816a246addb1d78135302fea9bc3035ef31b5748 *server/customizations/StaffHub/ClusterFMapCheck.cs
+
+## each failure's message
+  Failed ShatteredLegacy.Tests.MapCheckVerification.ASpawnerJsonAndADecorationCfgGiveSpots
+      Error Message:
+       Assert.Equal() Failure: Values differ
+    Expected: 6
+    Actual:   3
+      Stack Trace:
+         at ShatteredLegacy.Tests.MapCheckVerification.ASpawnerJsonAndADecorationCfgGiveSpots() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/MapCheckVerification.cs:line 262
+       at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+       at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+      Passed ShatteredLegacy.Tests.MapCheckVerification.AFlatGrassFootprintCanBePlacedAndEachBlockerSaysWhy [1 ms]
+  Failed ShatteredLegacy.Tests.MapCheckVerification.StaticProblemsAreDuplicatesBuriedAndUnknownIdsWithTheAreaCap
+      Error Message:
+       Assert.Equal() Failure: Values differ
+    Expected: 1
+    Actual:   0
+      Stack Trace:
+         at ShatteredLegacy.Tests.MapCheckVerification.StaticProblemsAreDuplicatesBuriedAndUnknownIdsWithTheAreaCap() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/MapCheckVerification.cs:line 295
+       at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+       at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+      Failed ShatteredLegacy.Tests.MapCheckVerification.WalkableCountsEachCauseAndListsTheBlockedTilesAndTheOverlayIsTestShardOnly [2 ms]
+  Failed ShatteredLegacy.Tests.MapCheckVerification.WalkableCountsEachCauseAndListsTheBlockedTilesAndTheOverlayIsTestShardOnly
+      Error Message:
+       Assert.Contains() Failure: Sub-string not found
+    String:    null
+    Not found: "test shard only"
+      Stack Trace:
+         at ShatteredLegacy.Tests.MapCheckVerification.WalkableCountsEachCauseAndListsTheBlockedTilesAndTheOverlayIsTestShardOnly() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/MapCheckVerification.cs:line 327
+       at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+       at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+      Failed ShatteredLegacy.Tests.MapCheckVerification.ShoreFindsWaterTouchingLandShallowBedsAndTheHeightBucketsAndOnlyASurfaceOutsideTheLimitIsAFault [7 ms]
+  Failed ShatteredLegacy.Tests.MapCheckVerification.ShoreFindsWaterTouchingLandShallowBedsAndTheHeightBucketsAndOnlyASurfaceOutsideTheLimitIsAFault
+      Error Message:
+       Assert.Equal() Failure: Values differ
+    Expected: 1
+    Actual:   0
+      Stack Trace:
+         at ShatteredLegacy.Tests.MapCheckVerification.ShoreFindsWaterTouchingLandShallowBedsAndTheHeightBucketsAndOnlyASurfaceOutsideTheLimitIsAFault() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/MapCheckVerification.cs:line 397
+       at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+       at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+      Passed ShatteredLegacy.Tests.MapCheckVerification.ADataFileIsReadOnlyUnderTheGivenRootsAndNeverByARootedPathOrDotDot [1 ms]
+  Failed ShatteredLegacy.Tests.MapCheckVerification.SpotLinesParseWithOptionalZAndMapAndBadLinesAreNamedAndTheFirstFiveHundredAreRead
+      Error Message:
+       Assert.Equal() Failure: Values differ
+    Expected: 4
+    Actual:   3
+      Stack Trace:
+         at ShatteredLegacy.Tests.MapCheckVerification.SpotLinesParseWithOptionalZAndMapAndBadLinesAreNamedAndTheFirstFiveHundredAreRead() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/MapCheckVerification.cs:line 224
+       at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+       at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+      Skipped ShatteredLegacy.Tests.MapCheckRealDataVerification.NewHavenStaticsWalkabilityAndShore [< 1 ms]

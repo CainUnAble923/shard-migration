@@ -1,0 +1,128 @@
+cc-P135 red-first, console facts (SL_FACT_FILTER=P135_|TheFormBuildsFromACapture), D:\ShatteredLegacy\scripts\Shard-Console.ps1
+original sha256 0644466514f7d7558b9dc9efb4f2e9031cd04a870800ace520114f6f4f63a155
+
+== baseline (unbroken)
+  PASS  TheFormBuildsFromACaptureWithoutBeingShown
+  PASS  P135_TheFourArtChecksRunOnlyValidateArtReadOnlyAndReportExitOne
+  PASS  P135_CheckVdAndHuesRefuseAMissingWrongOrOwnFileAndANonNumericBody
+  PASS  P135_TheSafetyCheckRefusesPythonOutsideValidateArtAndRenderOrAnyOtherSubcommand
+  PASS  P135_EveryMapButtonPrintsItsCommandsSyntaxAndRunsNothing
+  PASS  P135_TheChildLineCarriesTheVdFileBodyAndHuesFileAndOnlyDigitsForTheBody
+  PASS  P135_AReportedExitCodeIsSaidInAmberAndTheRunIsDoneAnyOtherFails
+  PASS  P135_TheTabIsBuiltWithItsBoxesButtonsAndTooltips
+  PASS  P135_EveryMapAndArtButtonRunHeadlessWithDryRunRunsNothing
+9 facts, 9 passed, 0 failed
+
+== BREAK C1 the safety check lets any validate-art subcommand through (render included)
+  PASS  TheFormBuildsFromACaptureWithoutBeingShown
+  PASS  P135_TheFourArtChecksRunOnlyValidateArtReadOnlyAndReportExitOne
+  PASS  P135_CheckVdAndHuesRefuseAMissingWrongOrOwnFileAndANonNumericBody
+  FAIL  P135_TheSafetyCheckRefusesPythonOutsideValidateArtAndRenderOrAnyOtherSubcommand
+        not true: a subcommand not listed: 
+  PASS  P135_EveryMapButtonPrintsItsCommandsSyntaxAndRunsNothing
+  PASS  P135_TheChildLineCarriesTheVdFileBodyAndHuesFileAndOnlyDigitsForTheBody
+  PASS  P135_AReportedExitCodeIsSaidInAmberAndTheRunIsDoneAnyOtherFails
+  PASS  P135_TheTabIsBuiltWithItsBoxesButtonsAndTooltips
+  PASS  P135_EveryMapAndArtButtonRunHeadlessWithDryRunRunsNothing
+9 facts, 8 passed, 1 failed
+restored, hash identical: True
+
+== BREAK C2 a reported exit code is not reported: exit 1 fails the run
+  PASS  TheFormBuildsFromACaptureWithoutBeingShown
+  PASS  P135_TheFourArtChecksRunOnlyValidateArtReadOnlyAndReportExitOne
+  PASS  P135_CheckVdAndHuesRefuseAMissingWrongOrOwnFileAndANonNumericBody
+  PASS  P135_TheSafetyCheckRefusesPythonOutsideValidateArtAndRenderOrAnyOtherSubcommand
+  PASS  P135_EveryMapButtonPrintsItsCommandsSyntaxAndRunsNothing
+  PASS  P135_TheChildLineCarriesTheVdFileBodyAndHuesFileAndOnlyDigitsForTheBody
+  FAIL  P135_AReportedExitCodeIsSaidInAmberAndTheRunIsDoneAnyOtherFails
+        expected [True] but got [False]. the reported exit is done
+  PASS  P135_TheTabIsBuiltWithItsBoxesButtonsAndTooltips
+  PASS  P135_EveryMapAndArtButtonRunHeadlessWithDryRunRunsNothing
+9 facts, 8 passed, 1 failed
+restored, hash identical: True
+
+== BREAK C3 the child line drops -Body
+  PASS  TheFormBuildsFromACaptureWithoutBeingShown
+  PASS  P135_TheFourArtChecksRunOnlyValidateArtReadOnlyAndReportExitOne
+  PASS  P135_CheckVdAndHuesRefuseAMissingWrongOrOwnFileAndANonNumericBody
+  PASS  P135_TheSafetyCheckRefusesPythonOutsideValidateArtAndRenderOrAnyOtherSubcommand
+  PASS  P135_EveryMapButtonPrintsItsCommandsSyntaxAndRunsNothing
+  FAIL  P135_TheChildLineCarriesTheVdFileBodyAndHuesFileAndOnlyDigitsForTheBody
+        not true: -NoProfile -ExecutionPolicy Bypass -NoExit -File "C:\x\Shard-Console.ps1" -Mode Execute -Action art.checkvd -VdFile "D:\art\my kirin.vd"
+  PASS  P135_AReportedExitCodeIsSaidInAmberAndTheRunIsDoneAnyOtherFails
+  PASS  P135_TheTabIsBuiltWithItsBoxesButtonsAndTooltips
+  PASS  P135_EveryMapAndArtButtonRunHeadlessWithDryRunRunsNothing
+9 facts, 8 passed, 1 failed
+restored, hash identical: True
+
+== BREAK C4 Check a .vd with no body runs check-vd anyway instead of propose
+  PASS  TheFormBuildsFromACaptureWithoutBeingShown
+  FAIL  P135_TheFourArtChecksRunOnlyValidateArtReadOnlyAndReportExitOne
+        expected [D:\ShatteredLegacy\scripts\validate-art.py propose C:\Users\ckfle\AppData\Local\Temp\sl-console-p135-2d8337ef87894896ab7b0607aa431fce\Sample.vd] but got []. no body: propose one
+  PASS  P135_CheckVdAndHuesRefuseAMissingWrongOrOwnFileAndANonNumericBody
+  PASS  P135_TheSafetyCheckRefusesPythonOutsideValidateArtAndRenderOrAnyOtherSubcommand
+  PASS  P135_EveryMapButtonPrintsItsCommandsSyntaxAndRunsNothing
+  PASS  P135_TheChildLineCarriesTheVdFileBodyAndHuesFileAndOnlyDigitsForTheBody
+  PASS  P135_AReportedExitCodeIsSaidInAmberAndTheRunIsDoneAnyOtherFails
+  PASS  P135_TheTabIsBuiltWithItsBoxesButtonsAndTooltips
+  FAIL  P135_EveryMapAndArtButtonRunHeadlessWithDryRunRunsNothing
+        not true: art.checkvd: ==============================================================================
+9 facts, 7 passed, 2 failed
+restored, hash identical: True
+
+== BREAK C5 a map button no longer says the console cannot run the command
+  PASS  TheFormBuildsFromACaptureWithoutBeingShown
+  PASS  P135_TheFourArtChecksRunOnlyValidateArtReadOnlyAndReportExitOne
+  PASS  P135_CheckVdAndHuesRefuseAMissingWrongOrOwnFileAndANonNumericBody
+  PASS  P135_TheSafetyCheckRefusesPythonOutsideValidateArtAndRenderOrAnyOtherSubcommand
+  FAIL  P135_EveryMapButtonPrintsItsCommandsSyntaxAndRunsNothing
+        expected [say,say,say] but got [say,say]. map.footprint only says
+  PASS  P135_TheChildLineCarriesTheVdFileBodyAndHuesFileAndOnlyDigitsForTheBody
+  PASS  P135_AReportedExitCodeIsSaidInAmberAndTheRunIsDoneAnyOtherFails
+  PASS  P135_TheTabIsBuiltWithItsBoxesButtonsAndTooltips
+  PASS  P135_EveryMapAndArtButtonRunHeadlessWithDryRunRunsNothing
+9 facts, 8 passed, 1 failed
+restored, hash identical: True
+
+== BREAK C6 the tab is added after Diagnostics instead of after World setup
+  FAIL  TheFormBuildsFromACaptureWithoutBeingShown
+        expected [Test shard,Fix test shard,Shard question,Snapshots,World setup,Map and Art,Diagnostics,Commit,Player package,Golem,Websites,LIVE shard] but got [Test shard,Fix test shard,Shard question,Snapshots,World setup,Diagnostics,Map and Art,Commit,Player package,Golem,Websites,LIVE shard]. cc-P74 adds Autopilot (Golem since cc-P99), cc-P101 Websites, cc-P96 Fix test shard beside Test shard, cc-P106 Shard question after it, cc-P135 Map and Art after World setup; LIVE stays last
+  PASS  P135_TheFourArtChecksRunOnlyValidateArtReadOnlyAndReportExitOne
+  PASS  P135_CheckVdAndHuesRefuseAMissingWrongOrOwnFileAndANonNumericBody
+  PASS  P135_TheSafetyCheckRefusesPythonOutsideValidateArtAndRenderOrAnyOtherSubcommand
+  PASS  P135_EveryMapButtonPrintsItsCommandsSyntaxAndRunsNothing
+  PASS  P135_TheChildLineCarriesTheVdFileBodyAndHuesFileAndOnlyDigitsForTheBody
+  PASS  P135_AReportedExitCodeIsSaidInAmberAndTheRunIsDoneAnyOtherFails
+  FAIL  P135_TheTabIsBuiltWithItsBoxesButtonsAndTooltips
+        expected [5] but got [6]. right after World setup
+  PASS  P135_EveryMapAndArtButtonRunHeadlessWithDryRunRunsNothing
+9 facts, 7 passed, 2 failed
+restored, hash identical: True
+
+== BREAK C7 the headless entry does not name the map and art family (its banner and plan say test)
+  PASS  TheFormBuildsFromACaptureWithoutBeingShown
+  PASS  P135_TheFourArtChecksRunOnlyValidateArtReadOnlyAndReportExitOne
+  PASS  P135_CheckVdAndHuesRefuseAMissingWrongOrOwnFileAndANonNumericBody
+  PASS  P135_TheSafetyCheckRefusesPythonOutsideValidateArtAndRenderOrAnyOtherSubcommand
+  PASS  P135_EveryMapButtonPrintsItsCommandsSyntaxAndRunsNothing
+  PASS  P135_TheChildLineCarriesTheVdFileBodyAndHuesFileAndOnlyDigitsForTheBody
+  PASS  P135_AReportedExitCodeIsSaidInAmberAndTheRunIsDoneAnyOtherFails
+  PASS  P135_TheTabIsBuiltWithItsBoxesButtonsAndTooltips
+  FAIL  P135_EveryMapAndArtButtonRunHeadlessWithDryRunRunsNothing
+        not true: art.registry: ==============================================================================
+         # validate-art.py reads the client data and the art registry and writes nothing. Exit 1 means it found problems to read above, not that it failed.
+9 facts, 8 passed, 1 failed
+restored, hash identical: True
+
+== after the last restore
+  PASS  TheFormBuildsFromACaptureWithoutBeingShown
+  PASS  P135_TheFourArtChecksRunOnlyValidateArtReadOnlyAndReportExitOne
+  PASS  P135_CheckVdAndHuesRefuseAMissingWrongOrOwnFileAndANonNumericBody
+  PASS  P135_TheSafetyCheckRefusesPythonOutsideValidateArtAndRenderOrAnyOtherSubcommand
+  PASS  P135_EveryMapButtonPrintsItsCommandsSyntaxAndRunsNothing
+  PASS  P135_TheChildLineCarriesTheVdFileBodyAndHuesFileAndOnlyDigitsForTheBody
+  PASS  P135_AReportedExitCodeIsSaidInAmberAndTheRunIsDoneAnyOtherFails
+  PASS  P135_TheTabIsBuiltWithItsBoxesButtonsAndTooltips
+  PASS  P135_EveryMapAndArtButtonRunHeadlessWithDryRunRunsNothing
+9 facts, 9 passed, 0 failed
+final sha256 0644466514f7d7558b9dc9efb4f2e9031cd04a870800ace520114f6f4f63a155 identical: True
