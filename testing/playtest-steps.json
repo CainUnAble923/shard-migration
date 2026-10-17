@@ -1147,7 +1147,8 @@
         "Hand in a completed smith deed at the guildmaster",
         "Hand in another at a town Blacksmith"
       ],
-      "pass": "Both pay the Society's way as before: Seals banked (or cash out, by your setting), no rewards gump."
+      "pass": "Both pay the Society's way as before: Seals banked (or cash out, by your setting), no rewards gump.",
+      "check": "Seals banked and no rewards gump are server-sent (the bot can read both); the Society's own gumps are Chase's."
     },
     "P122-3": {
       "where": "Test shard, a tailor character (Tailoring 60 or more) at a town Tailor, and a Tailors' Circle member at the Tailors' Circle guild master",
@@ -1156,7 +1157,8 @@
         "Hand in a completed tailor deed with the deed's points-mode button set to Automatic",
         "As a Tailors' Circle member, ask the guild master for Bulk Order Info"
       ],
-      "pass": "The Tailor gives offers; the Automatic turn-in banks the points without asking and opens the rewards list; the guild master gives a tailor deed to a member and none to a non-member."
+      "pass": "The Tailor gives offers; the Automatic turn-in banks the points without asking and opens the rewards list; the guild master gives a tailor deed to a member and none to a non-member.",
+      "check": "Offers and the guild master's refusal are server-sent (the bot can read them); the deed gump's button is Chase's."
     },
     "P122-4": {
       "where": "Test shard, any character with an unfilled smith deed and gold in the bank, at a town Blacksmith",
@@ -1164,7 +1166,8 @@
         "Choose Bribe on the Blacksmith's menu and target the deed",
         "Hand the deed to the Blacksmith"
       ],
-      "pass": "The Blacksmith names a price; handing the deed over takes that gold from your bank and the deed comes back better (more items, exceptional, or a better metal)."
+      "pass": "The Blacksmith names a price; handing the deed over takes that gold from your bank and the deed comes back better (more items, exceptional, or a better metal).",
+      "check": "The bribe price, the bank withdrawal and the improved deed are server-sent: the bot reads the offer text, the bank total and the deed's properties."
     },
     "P123-1": {
       "where": "Test shard, a player character with the craft's skill at 60, at each town vendor: Carpenter, Bowyer, Tinker, Cook (and a Baker), Alchemist, Scribe",
@@ -1530,6 +1533,302 @@
       ],
       "pass": "The world loads and saves with no error, PetTraining.bin is written and read back, and the first boot logs the one-time slot pass with how many tameables it raised.",
       "check": "Done by CC on a scratch copy (cc-P130 notes, Test world boot)."
+    },
+    "P115-1": {
+      "where": "The play-test page, http://192.168.1.61:8093/",
+      "do": [
+        "Open the page and look at any card"
+      ],
+      "pass": "Every card has a Who badge and the Mine, Bot and CC chips are there: the page runs P115's code (and reloads itself from cc-P137 on)."
+    },
+    "P115-2": {
+      "where": "The play-test page",
+      "do": [
+        "Look at the Who badges on a few cards",
+        "Open How to test under one card"
+      ],
+      "pass": "You is blue, Bot then you a blue outline, You decide amber, Bot grey, CC its own; How to test opens the steps with the Where."
+    },
+    "P115-3": {
+      "where": "The play-test page",
+      "do": [
+        "Press Mine"
+      ],
+      "pass": "Only You, Bot then you and You decide items show, and their number matches the header's Mine count."
+    },
+    "P116-0": {
+      "where": "The Shard Console on the game PC",
+      "do": [
+        "Close and reopen the console",
+        "Make the window small and visit each tab"
+      ],
+      "pass": "Every tab scrolls when it does not fit, the Golem tab's buttons show at normal size, and the GOLEM tile counts the queue folder."
+    },
+    "P117-0": {
+      "where": "Shard Console > Test shard, then the test shard with a new character",
+      "do": [
+        "Rebuild the test shard",
+        "Log in a brand-new character"
+      ],
+      "pass": "The login bulletin shows the newest player notes under the current version, even after a Staff-only update."
+    },
+    "P123-0": {
+      "check": "CC reads notes/cc-P123-port-bulk-orders-crafts.md, For Chase. Its checks are P123-1 to P123-6 in this file. Mark this placeholder Moot once those checks are on the page (see cc-P137 notes: the parser fix is proposed)."
+    },
+    "P124-0": {
+      "where": "Shard Console > Player package, then a clean PC or Windows Sandbox",
+      "do": [
+        "Build package, then Publish as usual",
+        "Install it and start the client"
+      ],
+      "pass": "The client is our TazUO (3212623f with our two patches)."
+    },
+    "P125-1": {
+      "where": "Shard Console > Golem tab",
+      "do": [
+        "Set Long run cap 3 (and until), press Start long run, type `start long run`"
+      ],
+      "pass": "The tile reads 'long run: N of 3, until ...' and the run ends by itself at the cap, back to maxPerRun 12 (or press End long run)."
+    },
+    "P125-2": {
+      "where": "Shard Console > Golem tab, while a prompt runs",
+      "do": [
+        "Press Wrap up",
+        "Another time, press it twice"
+      ],
+      "pass": "The prompt finishes, is committed and pushed, the Golem rests and emails 'P<n> done, resting (wrap up)'; the second press cancels."
+    },
+    "P125-3": {
+      "where": "Shard Console > Golem tab, while a prompt runs",
+      "do": [
+        "Press Find a stopping point"
+      ],
+      "pass": "CC ends PAUSED with a continuation prompt; the Golem commits, rests and emails 'P<n> paused at a stopping point, P<cont> queued'; the continuation runs first next time."
+    },
+    "P125-4": {
+      "where": "Shard Console, then a Claude Code session",
+      "do": [
+        "After a rest, read the GOLEM tile",
+        "Say 'Golem, please work on the shard tasks' in a CC session"
+      ],
+      "pass": "The tile reads e.g. 'Resting after P125 (wrap up). Tree clean, safe to package'; the phrase starts the next prompt."
+    },
+    "P125-5": {
+      "where": "Your email",
+      "do": [
+        "Watch the Golem's emails over a few rests"
+      ],
+      "pass": "One email per rest, naming why: wrap up, stopping point, context full or compacted, model wanted, usage limit (with the reset time), or no progress for 45 min."
+    },
+    "P126-0": {
+      "where": "notes/cc-P126-second-machine-design.md, For Chase",
+      "do": [
+        "Read the recommendation",
+        "Decide Docker Desktop on the work PC or not, and send the facts it asks for (edition, RAM and cores, Docker and Tailscale allowed, a second volume)"
+      ],
+      "pass": "The decision and the facts are written down for the setup checklist."
+    },
+    "P127-0": {
+      "check": "CC reads notes/cc-P127-port-treasure-maps-monster-stealing.md, For Chase. Its checks are P127-1 to P127-7 in this file. Mark this placeholder Moot once those checks are on the page (see cc-P137 notes: the parser fix is proposed)."
+    },
+    "P128-0": {
+      "check": "CC reads notes/cc-P128-port-consumables-crafting-gaps.md, For Chase. Its checks are P128-1 to P128-9 in this file. Mark this placeholder Moot once those checks are on the page (see cc-P137 notes: the parser fix is proposed)."
+    },
+    "P129-0": {
+      "check": "CC reads notes/cc-P129-port-creatures-part2.md, For Chase. Its checks are P129-1 to P129-10 in this file. Mark this placeholder Moot once those checks are on the page (see cc-P137 notes: the parser fix is proposed)."
+    },
+    "P130-0": {
+      "check": "CC reads notes/cc-P130-pet-training.md, For Chase. Its checks are P130-1 to P130-10 in this file (their numbers run one ahead of the notes' list from the seventh on). Mark this placeholder Moot once those checks are on the page (see cc-P137 notes: the parser fix is proposed)."
+    },
+    "P131-1": {
+      "where": "A new PowerShell window, then Shard Console > Golem tab",
+      "do": [
+        "Run `claude auth login` and finish in the browser",
+        "Press Check CLI sign-in"
+      ],
+      "pass": "The console says the CLI is signed in."
+    },
+    "P131-2": {
+      "where": "Shard Console > Golem tab",
+      "do": [
+        "Pick Fable or Opus, press Wake, type `wake the golem`",
+        "Try it again while a prompt runs"
+      ],
+      "pass": "A terminal opens, says the phrase and takes the next prompt; the second try is refused with the reason on screen."
+    },
+    "P131-3": {
+      "where": "Shard Console > Golem tab",
+      "do": [
+        "Read the self-wake line",
+        "Toggle 'Self-wake: on (turn off)' and back"
+      ],
+      "pass": "The line shows a pending wake and the last one; a wake emails '[Golem] woke a Fable session for P<n>'."
+    },
+    "P131-4": {
+      "where": "Shard Console > Golem tab",
+      "do": [
+        "Set the two night-shift boxes and turn it on (type `night shift on`)",
+        "Read the night line"
+      ],
+      "pass": "The line says when the next run is and why it would not run as things stand."
+    },
+    "P131-5": {
+      "where": "Shard Console and your email",
+      "do": [
+        "Watch the GOLEM tile through one rest"
+      ],
+      "pass": "RESTING with the reason and 'ready in ...' (or STOPPED with what CC needs); the email subject leads with it; a notification when it rests and when a usage limit resets."
+    },
+    "P131-6": {
+      "check": "CC reads D:\\UO\\golem\\settings.json for autoWake, autoWakeMinMinutes, autoWakeMaxPerDay, usageLimitPct, usageUnknownMinutes, cliPath, cliPermissionMode, defaultModel, the nightShift keys, restAfterLarge and notifications."
+    },
+    "P132-0": {
+      "where": "The Shard Console",
+      "do": [
+        "Close and reopen the console",
+        "Drag the splitter bars; try UO and Plain in the Look picker",
+        "Read the TEST tile's second line and the Player package line"
+      ],
+      "pass": "It starts in Enhanced with the drawn stand-ins, remembers size and place, the splitters drag, and the lights say whether a rebuild or a publish is due and why."
+    },
+    "P133-0": {
+      "where": "Shard Console > Websites, then a browser on the tailnet",
+      "do": [
+        "Follow notes/cc-P133-haven-intranet-dashboard.md For Chase, steps 1 to 6",
+        "Open the final URLs it lists"
+      ],
+      "pass": "The dashboard is up on the tailnet only, every service with a live up/down."
+    },
+    "P154-1": {
+      "where": "The Shard Console",
+      "do": [
+        "Open it; switch tabs; wait for a status refresh; open the Commit and Golem tabs"
+      ],
+      "pass": "It opens in about 2 s, a refresh never freezes it, the Commit tab never stalls, the Golem tab opens in 0.3 to 0.5 s."
+    },
+    "P154-2": {
+      "where": "The Shard Console, freshly opened",
+      "do": [
+        "Open World setup, then the Golem tab, for the first time"
+      ],
+      "pass": "World setup says 'loading the world commands...' for about a second and the Golem tab takes about half a second; after that every switch is quick."
+    },
+    "P154-3": {
+      "where": "The Shard Console",
+      "do": [
+        "Close and reopen it"
+      ],
+      "pass": "P154-1 and P154-2 hold."
+    },
+    "P155-1": {
+      "where": "Tailscale admin console",
+      "do": [
+        "Access controls: add `\"tagOwners\": { \"tag:uoconsole\": [\"autogroup:admin\"] }` and save",
+        "Settings > Keys > Generate auth key: reusable off, ephemeral off, tag tag:uoconsole"
+      ],
+      "pass": "A key tagged tag:uoconsole exists."
+    },
+    "P155-2": {
+      "where": "PowerShell on the game PC",
+      "do": [
+        "`D:\\ShatteredLegacy\\web-console\\Install-WebConsole.ps1 -DryRun` and read the plan",
+        "`D:\\ShatteredLegacy\\web-console\\Install-WebConsole.ps1 -Tailscale`"
+      ],
+      "pass": "The scheduled task SL web console is registered and running."
+    },
+    "P155-3": {
+      "where": "Your phone or the work PC with Tailscale on; the game PC",
+      "do": [
+        "Open https://uoconsole.tail81098d.ts.net/",
+        "On the game PC open http://127.0.0.1:8095/"
+      ],
+      "pass": "The read-only console loads; anyone else on the tailnet gets 'not allowed'."
+    },
+    "P155-4": {
+      "where": "The web console",
+      "do": [
+        "Visit Today, the Golem, Needs you, the Timeline and Logs"
+      ],
+      "pass": "Each view shows its data (Logs: pick one, search, tail); there are no buttons yet."
+    },
+    "P155-5": {
+      "where": "notes/cc-P155 notes, For Chase",
+      "do": [
+        "Decide whether and when to queue Phase 2"
+      ],
+      "pass": "Phase 2 is queued or declined."
+    },
+    "P155-6": {
+      "where": "PowerShell on the game PC, then the Tailscale admin console",
+      "do": [
+        "`Install-WebConsole.ps1 -Uninstall` (add -Purge to drop the node's state)",
+        "Remove the machine in the Tailscale admin console"
+      ],
+      "pass": "The task and the node are gone."
+    },
+    "P134-1": {
+      "check": "CC reads the P134 commit (32ade5e) in both repos for the listed files, CHANGELOG 2026.10.17.4 and VERSION."
+    },
+    "P134-2": {
+      "check": "CC lists D:\\UO\\tools\\vseUOAware\\ (source copy, build, exports) and checks nothing under D:\\UO\\third-party\\ changed after P134 started."
+    },
+    "P134-3": {
+      "check": "cc-P137 (2026-10-17) called the vseUOAware MCP server from a CC session in D:\\UO\\shard-migration (get_saved_uo_directory, find_item_id_by_name on tiledata.mul) and it answered; see the cc-P137 notes."
+    },
+    "P135-1": {
+      "check": "CC reads the P135 commit (ff6c564) for ClusterFMapCheck.cs, ClusterFMapCheckCommands.cs, the two verification files and notes/cc-P135-tools/."
+    },
+    "P135-2": {
+      "check": "CC checks D:\\UO\\third-party\\, D:\\UO\\ModernUO-pinned and docs\\ have no change from P135, and no file over 5 MB."
+    },
+    "P135-3": {
+      "where": "The test shard on sl-modernuo:cc-p135 or later, as a GameMaster in New Haven",
+      "do": [
+        "`[CheckFootprint 8 8` and target the bank's doorstep (about 3503,2574)",
+        "Target the open field north of town",
+        "Try the other checks in notes/cc-P135 For Chase"
+      ],
+      "pass": "CANNOT at the doorstep (eight wall and door tiles, land Z 14..14); CAN on the field; the overlay's red runes sit where the reply says.",
+      "check": "Each command's reply is a server message the bot can read; the overlay is Chase's."
+    },
+    "P137-1": {
+      "where": "The test shard on this build, after `[ClusterFSeedAnkhs` as Administrator",
+      "do": [
+        "Kill a test character",
+        "Walk its ghost up to the ankh beside the League Registrar (3464,2600)"
+      ],
+      "pass": "The resurrection gump opens.",
+      "check": "A fresh character is killed by staff and walks next to 3464,2600; the bot reads the ResurrectGump (0xDD) the server sends. Pinned by AnkhVerification fact 3 (the last gate on a test host)."
+    },
+    "P137-2": {
+      "check": "A living character opens the New Haven ankh's context menu: entries Resurrect and Tithe Gold, no Lock Karma; choosing Tithe Gold sends the tithing gump. Pinned by AnkhVerification fact 4."
+    },
+    "P137-3": {
+      "where": "The test shard on this build, as Administrator",
+      "do": [
+        "`[ClusterFSeedAnkhs dryrun`, then `[ClusterFSeedAnkhs`",
+        "`[ClusterFAnkhSurvey`; open Logs/ankh-survey.txt"
+      ],
+      "pass": "The dry run would place 9 (fewer if any is already there); after the seeder the survey reports nothing waiting, and the log lists every ankh with working or decoration."
+    },
+    "P137-4": {
+      "check": "A member targets a vendor dagger for Full Disenchant: the server says 'There is no magic in this to unravel.' and opens no disenchant page; the shard total in the gump is unchanged. Pinned by UnravelSatchelVerification facts 1 and 2."
+    },
+    "P137-5": {
+      "check": "With an Artificers' Essence Satchel in the pack: extract a property, the essence arrives in the satchel; pick up `[add MagicalResidue` from the ground, it arrives in the satchel; with the satchel full the next stays in the pack and the full message comes. Pinned by UnravelSatchelVerification facts 3 to 6."
+    },
+    "P137-6": {
+      "check": "After the one restart, CC reads /api/items service.code and service.codeLoadedAt on Haven before and after a commit that changes tools\\: both change within about two minutes, and the service never restarted (its log says 'new tools code loaded')."
+    },
+    "P137-7": {
+      "check": "The next overnight run that builds reports P119-1 3 of 3; a dead fighter would read 'the fighter died (a test problem ...)', never 'never killed'."
+    },
+    "P136-0": {
+      "where": "The status page (http://192.168.1.61:8093/status, or dashboard.html)",
+      "do": [
+        "Open the page after a commit"
+      ],
+      "pass": "It opens with 'Needs overseer review': each owed item with its judge.py command, or 'Nothing owed'."
     }
   }
 }

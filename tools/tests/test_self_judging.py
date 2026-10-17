@@ -173,6 +173,38 @@ class ReviewBox(unittest.TestCase):
         self.assertIn("could not be worked out", html)
 
 
+class PlaytestSortReview(unittest.TestCase):
+    """cc-P137: open play-test items with no Who, or triage rows with an unknown bucket, owe the overseer a sort."""
+
+    def setUp(self):
+        import playtests as pt
+        self.pt = pt
+        self.tmp = tempfile.TemporaryDirectory()
+        self.root = Path(self.tmp.name)
+        doc = pt.new_doc()
+        doc["items"] = [pt.new_item(id="P9-1", source="notes", prompt="P9", status="open"),
+                        pt.new_item(id="P9-2", source="notes", prompt="P9", status="open"),
+                        pt.new_item(id="P9-3", source="notes", prompt="P9", status="pass")]
+        write(self.root / pt.DATA_REL, json.dumps(doc))
+        write(self.root / "testing" / "playtest-steps.json", json.dumps({"schema": 1, "items": {}}))
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def test_unsorted_items_and_unknown_buckets_are_owed(self):
+        write(self.root / "testing" / "bot-triage.md", "| P9-2 | CHASE | looks |" + chr(10))
+        lines = progress.review_playtests(self.root)
+        self.assertEqual(1, len(lines))
+        self.assertIn("P9-1", lines[0]["check"])
+        self.assertIn("P9-2 CHASE", lines[0]["check"])
+        self.assertNotIn("P9-3", lines[0]["check"], "a passed item owes nothing")
+        self.assertIn("python -m unittest tools/tests/test_play_who.py", " ".join(lines[0]["cmd"]))
+
+    def test_nothing_owed_when_every_open_item_is_sorted(self):
+        write(self.root / "testing" / "bot-triage.md", "| P9-1 | BOT | a |" + chr(10) + "| P9-2 | EYES | b |" + chr(10))
+        self.assertEqual([], progress.review_playtests(self.root))
+
+
 class Refresh(unittest.TestCase):
     def test_a_failing_rule_writes_one_line_and_the_refresh_carries_on(self):
         import io

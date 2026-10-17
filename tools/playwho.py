@@ -50,6 +50,16 @@ def parse_triage(text):
     return out
 
 
+ANY_ROW = re.compile(r"^\|\s*([A-Za-z]+\d*-[A-Za-z0-9-]+)\s*\|\s*([A-Za-z-]+)\s*\|\s*(.*?)\s*\|\s*$")
+
+
+def malformed_rows(text):
+    """cc-P137: item rows whose bucket is not one of BUCKETS ("id bucket" each). ROW skips them, so their items read
+    "Not sorted yet" with nothing to say why; four CHASE rows did."""
+    return ["%s %s" % (m.group(1), m.group(2)) for m in map(ANY_ROW.match, (text or "").splitlines())
+            if m and m.group(2) not in BUCKETS]
+
+
 _CACHE = {}
 
 

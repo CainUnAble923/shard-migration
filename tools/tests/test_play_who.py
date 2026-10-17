@@ -273,28 +273,32 @@ class Page(unittest.TestCase):
         self.assertTrue(all(ord(c) < 128 for c in self.t))
 
 
-class RealFiles(unittest.TestCase):
-    """The real check: every open and blocked item has a Who, and the counts match the triage's own table."""
+class MalformedRows(unittest.TestCase):
+    def test_a_row_with_an_unknown_bucket_is_reported_and_a_good_row_is_not(self):
+        text = "\n".join(["| id | bucket | reason |", "|---|---|---|", "| P1-1 | BOT | fine |", "| P1-2 | CHASE | looks |",
+                          "| P1-3 | bot | lower case |", "| Gate | Where it stands | not an item row |"])
+        self.assertEqual(["P1-2 CHASE", "P1-3 bot"], playwho.malformed_rows(text))
 
-    def test_every_open_item_has_a_who_and_the_counts_match_the_triage(self):
+
+class RealFiles(unittest.TestCase):
+    """The real check: every open and blocked item has a Who, and every triage row names a bucket the page knows.
+    cc-P137: the hand-kept Counts table is no longer compared with the page (every result and every new prompt's
+    items changed it, so the check failed for no fault); the page's header counts them live."""
+
+    def test_every_open_item_has_a_who(self):
         self.assertIsNotNone(playwho, "tools/playwho.py does not exist")
         triage, steps = playwho.load_sources([str(ROOT)])
         doc = pt.ordered_doc(pt.load(str(ROOT / pt.DATA_REL)))
         w = playwho.annotate(doc, triage, steps)["who"]
-        self.assertEqual([], w["unsorted"], "open items with no Who")
-        text = (ROOT / "testing" / "bot-triage.md").read_text(encoding="utf-8")
-        table = {}
-        for line in text.splitlines():
-            parts = [p.strip() for p in line.strip().strip("|").split("|")]
-            if len(parts) == 2 and parts[0] in playwho.BUCKETS and parts[1].isdigit():
-                table[parts[0]] = int(parts[1])
-        served = {}
-        for i in doc["items"]:
-            if "who" in i:
-                served[i["who"]["bucket"]] = served.get(i["who"]["bucket"], 0) + 1
-        self.assertEqual(table, served, "the triage's Counts table against what the page counts")
+        self.assertEqual([], w["unsorted"], "open items with no Who: sort each into testing/bot-triage.md, with its "
+                                            "steps in testing/playtest-steps.json")
         open_n = sum(1 for i in doc["items"] if i["status"] in ("open", "blocked", "later"))
         self.assertEqual(open_n, sum(w["counts"].values()))
+
+    def test_every_triage_row_names_a_known_bucket(self):
+        # cc-P137: four rows said CHASE, which the row pattern does not read, so those items had no Who at all.
+        text = (ROOT / "testing" / "bot-triage.md").read_text(encoding="utf-8")
+        self.assertEqual([], playwho.malformed_rows(text))
 
     def test_every_item_has_steps_of_the_right_shape(self):
         self.assertIsNotNone(playwho, "tools/playwho.py does not exist")

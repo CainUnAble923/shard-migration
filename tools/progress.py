@@ -439,6 +439,32 @@ def review_owed(st, finished, notes_dir=None, today=None, days=REVIEW_DAYS):
     return out
 
 
+def review_playtests(root=None):
+    """cc-P137: open play-test items with no Who, and triage rows naming a bucket the page does not know, owe the
+    overseer a sort (testing/bot-triage.md says where each new prompt's items go). One review line, or none."""
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import playtests as pt
+    import playwho
+    root = Path(root or MIGRATE)
+    triage, steps = playwho.load_sources([str(root)])
+    if triage is None:
+        return []
+    doc = playwho.annotate(pt.ordered_doc(pt.load(str(root / pt.DATA_REL))), triage, steps)
+    unsorted = doc["who"]["unsorted"]
+    bad = playwho.malformed_rows((root / "testing" / "bot-triage.md").read_text(encoding="utf-8"))
+    if not unsorted and not bad:
+        return []
+    parts = []
+    if unsorted:
+        parts.append(f"{len(unsorted)} open play-test item(s) have no Who: {', '.join(unsorted[:20])}"
+                     + (" ..." if len(unsorted) > 20 else ""))
+    if bad:
+        parts.append(f"{len(bad)} triage row(s) name an unknown bucket: {', '.join(bad)}")
+    return [{"kind": "play tests", "item": "not sorted", "check": "; ".join(parts) + ". Sort each into "
+             "testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's "
+             "items are sorted'), then run the check.", "cmd": ["python -m unittest tools/tests/test_play_who.py"]}]
+
+
 def build():
     st = load(); cnt = counted(SHARD); dv = derived(st)
     d = st["setup_defects"]
@@ -466,6 +492,8 @@ def build():
     own_tasks, covered_tasks = safely("covered tasks", lambda: split_tasks(st.get("tasks", []), pl),
                                       (st.get("tasks", []), []))
     review = safely("review box", lambda: review_owed(st, finished_prompts(MIGRATE / "notes")), None)
+    if review is not None:
+        review += safely("play-test sort check", review_playtests, [])
     if review is None:
         L.append("### Needs overseer review: **could not be worked out this run** (see the progress.py output).")
     elif review:

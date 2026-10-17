@@ -1,6 +1,6 @@
 # Open play tests: who tests each one (cc-P91, re-sorted cc-P115)
 
-Every open or blocked item in `testing/play-tests.json` on 2026-10-15 (219: 218 open, 1 blocked), in exactly one bucket.
+Every open or blocked item in `testing/play-tests.json`, in exactly one bucket (219 on 2026-10-15; cc-P137 sorted the 40 that had none on 2026-10-17, 268 in all).
 **This file is the single source of each item's Who.** The play-test page reads it (through `tools/playwho.py`, merged
 into `/api/items` when it is read; nothing is written back), and so does the overnight bot's plan
 (`uobot/tonight.py`: BOT and BOT-PARTIAL are "bot-checkable"). The steps for each item are beside it in
@@ -28,17 +28,21 @@ note "items from P82 on cannot be checked" no longer applies.
 
 ## Counts
 
-| Bucket | Items |
-|---|---|
-| BOT | 80 |
-| BOT-PARTIAL | 17 |
-| EYES | 17 |
-| DEPLOY | 31 |
-| DECISION | 14 |
-| CC | 60 |
-| **All** | **219** |
+The page's header counts each Who live (`/api/items`, `who.counts`). This file no longer keeps a Counts table: every
+result and every new prompt's items changed it, so it was always out of date (cc-P137). On 2026-10-17, after cc-P137
+sorted the 40 items that had none: BOT 82, BOT-PARTIAL 23, EYES 24, DEPLOY 53, DECISION 14, CC 72; 268 in all.
 
-By Who on the page: You 48 (EYES 17 + DEPLOY 31), Bot, then you 17, You decide 14, Bot 80, CC 60.
+## Where a new prompt's items are sorted (cc-P137)
+
+**The prompt that writes the items sorts them**, before it writes DONE: one row per item under its own `### P<nn>`
+group here (`| P<nn>-<k> | BUCKET | reason |`, BUCKET one of the six above, never anything else), and its steps in
+`testing/playtest-steps.json`. The item numbers are the order of the list under the notes' **For Chase** heading, as
+`tools/playtests.py` reads it: put a line containing "To try it" (or "in game", "checklist") right before that list,
+because any other paragraph there makes the importer skip the whole list and leave one "checklist not parsed"
+placeholder instead (P123 and P127 to P130 lost their items that way). Run
+`python -m unittest tools/tests/test_play_who.py`: `RealFiles` fails while any open item has no Who, while any row
+names a bucket the page does not know, or while any row's steps have the wrong shape. Anything that still slips
+through shows on the status page's **Needs overseer review** box ("play-test items not sorted"), so the overseer sorts it.
 
 ## Checks built (cc-P91)
 
@@ -640,7 +644,7 @@ Added by cc-P128 (2026-10-16).
 | P128-5 | BOT-PARTIAL | The book's clilocs, the reeds' hues and the craft gump's rows are server-sent; the basket's look is Chase's eyes |
 | P128-6 | BOT | Pigment hues, the mix clilocs and the dyed shirt's hue are all server-sent |
 | P128-7 | BOT-PARTIAL | The placement, the plant gump and the growth are server-sent; the bed's art is Chase's eyes |
-| P128-8 | CHASE | Eight small things to look at; the tincture gump is the one worth eyes |
+| P128-8 | EYES | Eight small things to look at; the tincture gump is the one worth eyes |
 | P128-9 | CC | The test world loads and saves on the new image: done by CC on a scratch copy |
 
 ### P129
@@ -657,7 +661,7 @@ Added by cc-P129 (2026-10-16).
 | P129-6 | EYES | Carving a pumpkin with the kit and lighting it: the carved face and the lit form are art |
 | P129-7 | EYES | A parrot on a perch in a house, fed a wafer, chopped into its deed and placed again: the house check needs a real house, and the parrot's look is art |
 | P129-8 | EYES | The four peerless bosses by eye, and their tricks (a pet eaten, satyrs, the ooze, the terror): bodies and effects are art |
-| P129-9 | CHASE | Seeding Old Haven: the seeder's dry run and placement on the test shard, and Vorlak still spawning under his old spawner, are a staff command and a world decision |
+| P129-9 | DEPLOY | Seeding Old Haven: the seeder's dry run and placement on the test shard, and Vorlak still spawning under his old spawner, are a staff command and a world decision |
 | P129-10 | CC | The test world loads and saves on the new image, the perch patch included: done by CC on a scratch copy |
 
 ### P130
@@ -671,9 +675,9 @@ Added by cc-P130 (2026-10-16).
 | P130-3 | EYES | The training menu, the slider and the confirmation are a chain of gumps: art and layout on screen; the arithmetic is a shard test |
 | P130-4 | EYES | The planning gump: layout on screen; the zeroing rule is a shard test |
 | P130-5 | BOT | The trainer's greeting and his Quest Giver tooltip line are both server-sent |
-| P130-6 | CHASE | Reading slot ranges on the live world (a new dragon, a nightmare, a dragon from before the build): staff props on a world decision |
+| P130-6 | DEPLOY | Reading slot ranges on the live world (a new dragon, a nightmare, a dragon from before the build): staff props on a world decision |
 | P130-7 | EYES | The gate's sparkle is art; the bar and the gump are a shard test |
-| P130-8 | CHASE | A live retame with two taming skills: a world sequence with a second character |
+| P130-8 | DEPLOY | A live retame with two taming skills: a world sequence with a second character |
 | P130-9 | EYES | No training section on an evo pet's or a pack mule's lore gump: on screen; the exclusion is a shard test |
 | P130-10 | CC | The test world loads and saves on the new image, the slot pass logged: done by CC on a scratch copy |
 
@@ -778,3 +782,65 @@ Assert exact strings where quoted; numbers are from the notes.
 - **P71-7** [version history; assert 2026.10.10 with five lines.
 - **P82-0** imbue a few rows at the table, read a formula book, place an ArtificersSoulForge and try Overcharged, read the custom property's OPL line.
 - **D41 regression (extra)** player double-clicks the New Haven board: Guild Directory gump; assert each guild name appears once (Artificers' Order once), 18 rows across 3 pages of 8 now that the Alembic is registered (P23 said 17 before P77); League Registrar's Guild Referrals lists the same rows.
+
+### Sorted by cc-P137 (2026-10-17)
+
+Open items the page showed as "Not sorted yet", from P115 to P155; the four rows above that said CHASE now name a real bucket.
+
+| id | bucket | reason |
+|---|---|---|
+| P115-1 | DEPLOY | Restarting the play-test page: the overseer restarted sl-play-tests on 10-16 05:56 and Haven serves it now |
+| P115-2 | EYES | The Who badges' colours and outlines on the page |
+| P115-3 | DEPLOY | The Mine filter on the web page |
+| P116-0 | DEPLOY | The P116 checklist is one paragraph: reopen the Shard Console and check the tabs scroll |
+| P117-0 | DEPLOY | The P117 checklist is one paragraph: rebuild the test shard, then a fresh login shows the bulletin |
+| P123-0 | CC | Placeholder: the importer could not read this prompt's For Chase list (a paragraph before the list that is not a marker switches the parser off; cc-P137 notes). CC reads the notes; the prompt's own checks are the rows it wrote here |
+| P124-0 | DEPLOY | The P124 checklist is one line: the player package now ships our TazUO build |
+| P125-1 | DEPLOY | The Golem's long run is a Shard Console control |
+| P125-2 | DEPLOY | Wrap up is a Shard Console control |
+| P125-3 | DEPLOY | Find a stopping point is a Shard Console control |
+| P125-4 | DEPLOY | The GOLEM tile at rest, and waking it with the phrase |
+| P125-5 | DEPLOY | The rest emails arrive in Chase's inbox |
+| P126-0 | DECISION | P126 is a design: its For Chase is one decision and a few facts about the work PC |
+| P127-0 | CC | Placeholder: the importer could not read this prompt's For Chase list (a paragraph before the list that is not a marker switches the parser off; cc-P137 notes). CC reads the notes; the prompt's own checks are the rows it wrote here |
+| P128-0 | CC | Placeholder: the importer could not read this prompt's For Chase list (a paragraph before the list that is not a marker switches the parser off; cc-P137 notes). CC reads the notes; the prompt's own checks are the rows it wrote here |
+| P129-0 | CC | Placeholder: the importer could not read this prompt's For Chase list (a paragraph before the list that is not a marker switches the parser off; cc-P137 notes). CC reads the notes; the prompt's own checks are the rows it wrote here |
+| P130-0 | CC | Placeholder: the importer could not read this prompt's For Chase list (a paragraph before the list that is not a marker switches the parser off; cc-P137 notes). CC reads the notes; the prompt's own checks are the rows it wrote here |
+| P131-1 | DEPLOY | Signing the CLI in is Chase's own account, on the game PC |
+| P131-2 | DEPLOY | Waking the Golem is a Shard Console control |
+| P131-3 | DEPLOY | Self-wake is a Shard Console setting and an email |
+| P131-4 | DEPLOY | The night shift is a Shard Console setting |
+| P131-5 | DEPLOY | The GOLEM tile, the email subject and the Windows notification through a rest |
+| P131-6 | CC | The new keys are a file CC can read |
+| P132-0 | EYES | The P132 checklist is prose: the console's Enhanced look, its splitters and the art slots |
+| P133-0 | DEPLOY | P133's For Chase is the Haven dashboard's deploy steps (Websites deploys, tokens, keys) |
+| P154-1 | EYES | How fast the console feels is Chase's call |
+| P154-2 | EYES | The two first-open waits are on screen |
+| P154-3 | DEPLOY | Restart the console to get P154's code |
+| P155-1 | DEPLOY | The auth key is made in Chase's Tailscale admin console |
+| P155-2 | DEPLOY | Installing the web console on the game PC |
+| P155-3 | DEPLOY | Opening the web console on the tailnet |
+| P155-4 | DEPLOY | Reading the web console's views |
+| P155-5 | DECISION | Phase 2 (Golem controls on the web console) is a later prompt for Chase to queue |
+| P155-6 | DEPLOY | Uninstalling the web console, only if wanted |
+| P134-1 | CC | Which files P134 added and changed is git history |
+| P134-2 | CC | Where the vseUOAware copy lives and that third-party was untouched is on disk |
+| P134-3 | CC | Asking the vseUOAware server from a CC session in shard-migration; cc-P137 did exactly that |
+| P135-1 | CC | Which files P135 added is git history |
+| P135-2 | CC | What P135 did not touch is on disk and in git |
+| P135-3 | BOT-PARTIAL | The map check commands' replies are server messages; the red-rune overlay is Chase's eyes |
+| P136-0 | DEPLOY | P136's For Chase is one line: the status page keeps itself current and opens with the Needs overseer review box (a web page) |
+
+### P137
+
+Added by cc-P137 (2026-10-17).
+
+| id | bucket | reason |
+|---|---|---|
+| P137-1 | BOT | The resurrection gump is server-sent, and the bot can die (P119-1 run 2 on 10-16 did) and walk (the soak's walker). Check not written yet: an admin `[kill`s a fresh character, it walks to 3463,2600, and the bot waits for the ResurrectGump |
+| P137-2 | BOT | The context menu's entries (clilocs 3006195, 3006198) and the tithing gump are server-sent |
+| P137-3 | DEPLOY | The survey and the seeder are staff commands on the test shard after a deploy |
+| P137-4 | BOT | The refusal message and the shard total are server-sent |
+| P137-5 | BOT | Where an item lands (0x25 into the satchel or the pack) and the full message are server-sent |
+| P137-6 | CC | The service state on /api/items says which tools code runs and since when |
+| P137-7 | BOT | The overnight bot's own P119-1 result |
