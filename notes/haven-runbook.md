@@ -306,6 +306,30 @@ Its database. **A dump before any move** (`docker exec kevins-parts-db mysqldump
 `tailscale funnel`** (that would make it public). Changing Serve as `chase` needs a one-time `sudo tailscale set
 --operator=chase` on Haven. Its tile reads the game PC's view of Haven's node (online or not).
 
+### Web console `web-console`
+
+*cc-P155, 2026-10-17.* The Shard Console's status, read only, for the phone and the work PC: tiles, lights, the Golem
+and its queue, Needs you, the timeline, logs and links. A Python service on the **game PC** (`D:\ShatteredLegacy\web-console\server.py`,
+standard library only), started at Chase's logon by the scheduled task **SL web console** (`web-console\Install-WebConsole.ps1`;
+`-Uninstall` removes it). It listens on **127.0.0.1 only**: `:8095` for this PC's browser, `:8096` for the uoconsole sidecar,
+where a request is answered only if Tailscale Serve's `Tailscale-User-Login` is an allowed login (default: this PC's own
+Tailscale login, Chase's; or `allowedLogins` in `D:\UO\web-console\settings.json`, kept out of git). It starts the status
+collector (`scripts\Write-ConsoleStatus.ps1 -Loop`), which writes `scripts\shard-console-cache\console-status.json`; the Shard
+Console writes the same file after its own refreshes. **Restart:** `Stop-ScheduledTask -TaskName 'SL web console'; Start-ScheduledTask -TaskName 'SL web console'`.
+**Data:** `D:\UO\web-console` (settings, the key file, `access.log`, `collector.log`); nothing to back up but `settings.json`.
+**Move it:** it reads the game PC's Docker, files, Golem and repos, so it moves only with them; on another PC, run the
+installer there and point the sidecar at it. Up or down on Haven's dashboard from the game PC snapshot (the process).
+
+### uoconsole (the web console's Tailscale node) `uoconsole-ts`
+
+*cc-P155.* A Tailscale container on the game PC's Docker (`web-console\tailscale\docker-compose.yml`, project `uoconsole`,
+image `tailscale/tailscale:v1.88.3`, userspace networking, **no port published**), hostname `uoconsole`: Tailscale Serve
+gives `https://uoconsole.tail81098d.ts.net/` its certificate and proxies to `host.docker.internal:8096`. **Funnel off**
+(`serve.json` AllowFunnel false). Its auth key (tagged `tag:uoconsole`) is `TS_AUTHKEY` in `D:\UO\web-console\tailscale.env`,
+outside git; after the first login the node's state is in the volume `uoconsole_uoconsole-ts-state` and the key is not
+needed again. **Start:** `web-console\Install-WebConsole.ps1 -Tailscale`. **Remove:** `-Uninstall` (`-Purge` also drops the
+state; then remove the machine in the Tailscale admin console). **Never** `tailscale funnel`, never a published port.
+
 ## Paths to add to Haven's backups
 
 - `/home/chase/sl-home/dashboard.env`
@@ -326,3 +350,5 @@ Its database. **A dump before any move** (`docker exec kevins-parts-db mysqldump
 - 2026-10-17 cc-P133: this runbook and `services.json` (29 services); the dashboard generated from it; Tailscale only
   (Serve on :80, :8093, :8787; LAN and loopback binds, never `0.0.0.0`); the game PC snapshot reports every service; the
   print queue proves its key from Haven before the tower copy stops.
+- 2026-10-17 cc-P155: the web console (`web-console`, game PC, 127.0.0.1:8095 and :8096) and its tailnet node
+  (`uoconsole-ts`, planned until Chase makes the auth key); `services.json` 31 services.
