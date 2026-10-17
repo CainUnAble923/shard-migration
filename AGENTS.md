@@ -388,6 +388,12 @@ and `docs/bug-list.md` holds defects. So:
   that makes something *broken* is fixed), or ModernUO's to report. Do not fix a ServUO bug without
   arguing it in the note first.
 
+## Haven and game PC services: one inventory
+
+Any change to a service on Haven or the game PC (added, moved, removed, a new port, volume or secret) updates
+`D:\ShatteredLegacy\docker\haven\services.json` and `notes/haven-runbook.md` (with a dated "Changed on" line) in the same
+prompt, and regenerates the dashboard with `docker\haven\Build-HavenDashboard.ps1`. Names of secrets only, never values.
+
 ## Keeping progress current
 
 `tools/progress.py` counts real state from the working trees.

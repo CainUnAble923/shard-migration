@@ -211,6 +211,25 @@ class GamePcSnapshot(unittest.TestCase):
         finally:
             shutil.rmtree(d, ignore_errors=True)
 
+    def test_up_reads_each_service_and_says_offline_when_the_game_pc_sleeps(self):
+        """cc-P133: Haven's dashboard shows one State line per game PC service (field up.<key>), from the snapshot's
+        services; while the snapshot is stale every one of them says the game PC is offline, never a stale Up."""
+        d = tempfile.mkdtemp(prefix="p133-gpc-")
+        try:
+            self.assertEqual({}, opsdata.gamepc_status(d)["up"], "nothing received: nothing to show")
+            opsdata.save_gamepc(d, {"services": {"sl-uo-status": {"up": True, "detail": "Up 2 days"},
+                                                 "sl-play-tests": {"up": False, "detail": "Exited (137) 29 hours ago"},
+                                                 "odd": "not an object"}}, now=1_000_000)
+            up = opsdata.gamepc_status(d, now=1_000_000 + 60)["up"]
+            self.assertEqual({"sl-uo-status": "Up", "sl-play-tests": "Down: Exited (137) 29 hours ago", "odd": "Unknown"}, up)
+            s = opsdata.gamepc_status(d, now=1_000_000 + opsdata.OFFLINE_SECONDS + 1)
+            self.assertTrue(all(v.startswith("Game PC offline since ") for v in s["up"].values()), s["up"])
+            self.assertIn(s["offlineSince"][:10], s["up"]["sl-uo-status"])
+            opsdata.save_gamepc(d, {"autopilot": "on"}, now=2_000_000)
+            self.assertEqual({}, opsdata.gamepc_status(d, now=2_000_000)["up"], "an older snapshot with no services")
+        finally:
+            shutil.rmtree(d, ignore_errors=True)
+
 
 class AccessCheck(unittest.TestCase):
     def verifier(self, keys=None):
@@ -451,7 +470,10 @@ class Menu(unittest.TestCase):
         self.assertIn("{ key: 'status',    label: 'Shard status', host: null, port: 8093, path: '/status' }", text)
         # cc-P107 pinned Homepage to the game PC until H5.
         # cc-P110 (H5) moved the Dashboard entry to Haven's Homepage; cc-P112 updated this pin (P110 missed it).
-        self.assertIn("{ key: 'dashboard', label: 'Dashboard',    host: '192.168.1.61', port: 3000, path: '/', lanOnly: true }", text)
+        # cc-P133 added the row's tailnet address (Tailscale Serve's :80 on Haven); this pin missed it at first.
+        self.assertIn("{ key: 'dashboard', label: 'Dashboard',    host: '192.168.1.61', port: 3000, path: '/', lanOnly: true,\n"
+                      "      tailnetUrl: 'http://haven.tail81098d.ts.net/' }", text)
+        self.assertIn("if (p.tailnetUrl && onTailnet()) return p.tailnetUrl;", text)
 
 
 if __name__ == "__main__":

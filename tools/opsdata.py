@@ -138,17 +138,32 @@ def save_gamepc(data, snapshot, now=None):
 
 
 def gamepc_status(data, now=None):
-    """{receivedAt, ageSeconds, offline, offlineSince, snapshot}. Never received: receivedAt empty, offline None."""
+    """{receivedAt, ageSeconds, offline, offlineSince, snapshot, up}. Never received: receivedAt empty, offline None.
+
+    cc-P133: up is one line per service the snapshot reports (its services, keyed as in docker/haven/services.json):
+    "Up", "Down: <why>", or, while the snapshot is stale, "Game PC offline since <time>" for every one, so Haven's
+    dashboard never shows a stale Up for a machine that is asleep."""
     try:
         with open(os.path.join(data, GAMEPC_REL), "r", encoding="utf-8") as f:
             rec = json.load(f)
     except (OSError, ValueError):
-        return {"receivedAt": "", "ageSeconds": None, "offline": None, "offlineSince": "", "snapshot": None}
+        return {"receivedAt": "", "ageSeconds": None, "offline": None, "offlineSince": "", "snapshot": None, "up": {}}
     got = parse_iso(rec.get("receivedAt", ""))
     age = None if got is None else max(0, int((time.time() if now is None else now) - got))
     offline = age is not None and age > OFFLINE_SECONDS
+    since = rec.get("receivedAt", "") if offline else ""
+    snap = rec.get("snapshot")
+    services = snap.get("services") if isinstance(snap, dict) else None
+    up = {}
+    for key, svc in (services.items() if isinstance(services, dict) else []):
+        if offline:
+            up[key] = "Game PC offline since " + since[:16].replace("T", " ")
+        elif not isinstance(svc, dict) or not isinstance(svc.get("up"), bool):
+            up[key] = "Unknown"
+        else:
+            up[key] = "Up" if svc["up"] else "Down: " + str(svc.get("detail") or "not running")
     return {"receivedAt": rec.get("receivedAt", ""), "ageSeconds": age, "offline": offline,
-            "offlineSince": rec.get("receivedAt", "") if offline else "", "snapshot": rec.get("snapshot")}
+            "offlineSince": since, "snapshot": snap, "up": up}
 
 
 # --- how fresh the notes are -------------------------------------------------------------------------------
