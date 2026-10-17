@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.17. Golem on, 20 queued, latest done P133. Play tests: 252 open, 2 failed, 23 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.17.2. Golem on, 23 queued, latest done P154. Play tests: 253 open, 2 failed, 23 passed.
 
 ## Port list: 3 of 16 systems in. 455 of 983 files (46%).
 
@@ -230,7 +230,7 @@ Tasks          ██░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 84 prompts finished, 3 of them stopped early)
+### Queue (Golem on; 85 prompts finished, 3 of them stopped early)
 
 | Prompt | State | When |
 |---|---|---|
@@ -252,8 +252,12 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P151 guild-halls-survey | queued |  |
 | P152 art-requests-openai | queued |  |
 | P153 queue-notes-and-package-whats-new | queued |  |
-| P154 cont-console-responsive | queued |  |
 | P155 cont-web-console-phase1-status | queued |  |
+| P156 night-shift-batches | queued |  |
+| P157 plain-english-emails | queued |  |
+| P158 codex-second-agent | queued |  |
+| P159 codex-lane-second-pc | queued |  |
+| P154 console-responsive | done | 2026-10-17 |
 | P133 haven-intranet-dashboard | done | 2026-10-17 |
 | P132 console-layout-and-art-slots | done | 2026-10-16 |
 | P131 wake-golem-from-console | done | 2026-10-16 |
@@ -263,7 +267,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P127 port-treasure-maps-monster-stealing | done | 2026-10-16 |
 | P126 second-machine-design | done | 2026-10-16 |
 | P125 golem-long-run-toggle | done | 2026-10-15 |
-| P124 package-ships-our-tazuo | done | 2026-10-15 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 98 patches, 12 replacements
 
