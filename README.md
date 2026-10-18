@@ -63,12 +63,12 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.17.10. Golem on, 17 queued, latest done P161. Play tests: 284 open, 2 failed, 23 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.17.11. Golem on, 16 queued, latest done P162. Play tests: 290 open, 2 failed, 23 passed.
 
 ### Needs overseer review (2)
 
 - **direction**: Confirmed 2026-10-13; notes/decisions-2026-10-14.md (2026-10-14) is newer. Read it; if the direction moved, edit "direction" in tools/progress-state.json. `python tools/judge.py confirm direction`
-- **play tests not sorted**: 1 open play-test item(s) have no Who: P160-0. Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
+- **play tests not sorted**: 7 open play-test item(s) have no Who: P160-0, P161-1, P161-2, P161-3, P161-4, P161-5, P161-6. Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
 
 ## Port list: 3 of 16 systems in. 455 of 983 files (46%).
 
@@ -229,7 +229,7 @@ Tasks          ███░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 90 prompts done, 3 more stopped early and not counted)
+### Queue (Golem on; 91 prompts done, 3 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -249,7 +249,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P157 plain-english-emails | queued |  |
 | P158 codex-second-agent | queued |  |
 | P159 codex-lane-second-pc | queued |  |
-| P162 cont-end-of-week-spend | queued |  |
+| P162 end-of-week-spend | done | 2026-10-17 |
 | P161 close-finished-sessions | done | 2026-10-17 |
 | P160 plan-usage-pacing | done | 2026-10-17 |
 | P155 web-console-phase1-status | done | 2026-10-17 |
@@ -259,7 +259,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P136 status-page-self-judging | done | 2026-10-17 |
 | P135 vseuoaware-staff-commands | done | 2026-10-17 |
 | P134 vseuoaware-art-checks-mcp | done | 2026-10-17 |
-| P133 haven-intranet-dashboard | done | 2026-10-17 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 98 patches, 12 replacements
 
