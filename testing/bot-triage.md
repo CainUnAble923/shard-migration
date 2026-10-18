@@ -989,3 +989,12 @@ Added by cc-P145 (2026-10-18).
 | P146-2 | DEPLOY | Answering a card (a choice, Keep what's built, the box, Ask me later) is done on the page |
 | P146-3 | CC | After Chase answers, the next commit's testing/decisions.json holds the answer with who and when; checked in the repo |
 | P146-4 | CC | The service's /api/items service.code changes after Haven's pull with no restart, and /api/items carries decisions; read from the page's API |
+
+### P166
+
+Added by cc-P166 (2026-10-18).
+
+| id | bucket | reason |
+|---|---|---|
+| P166-1 | EYES | How the tail reads facing west and north (and that the other six directions did not change) is a look; the renders are in the notes |
+| P166-2 | EYES | Whether the ears sit right on a bald head and still rise out of hair is a look, side by side |
