@@ -1909,6 +1909,62 @@
     "Open app\\uo-overrides\\Bodyconv.def and app\\uo-overrides\\mobtypes.txt in Notepad after a launch"
    ],
    "pass": "Bodyconv.def ends with our comment, the 4783 line and `2048 -1 -1 -1 -1 -1 1`; mobtypes.txt ends with our comment and `2048 MONSTER 0`; your Ultima Online folder's own files are unchanged."
+  },
+  "P140-1": {
+   "check": "Built (cc-P140, `p140_1`): admin [adds BurrowHog, BurrowGrub, BurrowScamp, Rootling, Sporecap and Gloomling beside a fresh player at Wrestling and Tactics 100, Str 250 and Dex 100, refills the player before each, pins each at 1 hit point and CantWalk; the player attacks. Asserts each shows with its body (2054, 2058, 2059, 779, 2062 or 2063, 2067), leaves the view, and a corpse (0x2006, amount = body) lands. Run on the cc-P140 image before DONE (notes); in the nightly report after."
+  },
+  "P140-2": {
+   "where": "Shard Console on the game PC: Player package tab, then Test shard tab",
+   "do": [
+    "Player package > Build package (the ANIMATION ENCODE GATE runs the encoder; the zip grows by about 25 MB), then Publish",
+    "Test shard > Rebuild (or Start-TestShard.ps1 -Image sl-modernuo:cc-P140)",
+    "Run the launcher once on your PC so app\\uo-overrides\\Bodyconv.def and mobtypes.txt carry the 24 lines"
+   ],
+   "pass": "Every gate green, the test shard healthy, the launcher starts with no yellow line about creature art."
+  },
+  "P140-3": {
+   "where": "Test shard, SL TEST - Admin (Eve), open ground; the farm and Vault creatures need a tutorial participant to fight, so [add them and look, or use a fresh tutorial character to fight them",
+   "do": [
+    "`[add` each of Gourdling, CropCrow, BurrowScampSlinger, CacklerScrapper, CacklerSlasher, CacklerVeteran, CacklerPackleader, BurrowHog, LedgerBat, PennyRat, HoardingRat, TheOverdraft, BurrowGrub, BurrowScamp, RedcapScamp, TheBurrowMother, Rootling, Sporecap (twice: two bodies), Bramblehulk, Dawnshard, Seamguard, Gloomling, Gloomspinner, Gloomweaver, TheGloomQueen",
+    "Watch each stand and walk; attack the Warren, Tangle, Dawnseam and Gloom ones so they attack back, take a hit and die",
+    "Compare with notes\\art\\bestiary\\cc-P140-sheet\\contact-sheet-walk-1x.png and flags.md"
+   ],
+   "pass": "Each draws as its sheet picture (not invisible, not a stray item, not another creature) and animates when it moves, attacks (where it has attack frames), is hit (where it has hit frames: the Cackler Scrapper, Hoarding Rat and Gloom Queen have none and stand still instead) and dies; the corpse draws. The Rootling is a hued bogling (stock), the Penny Rat a stock giant rat."
+  },
+  "P140-4": {
+   "where": "Test shard, a Burrow Scamp Slinger beside the sheet panel",
+   "do": [
+    "`[add BurrowScampSlinger` and look at it next to notes\\art\\bestiary\\cc-P140-sheet\\panel-slinger-rust.png (hue 1258 vs the frame recolour with the bow kept brown)"
+   ],
+   "pass": "Pick one: hue 1258 as shipped (the bow turns rust too), or the recolour (then say so: it is a new .vd to register)."
+  },
+  "P140-5": {
+   "where": "Test shard, a Crop Crow beside a stock bird and eagle",
+   "do": [
+    "`[add CropCrow`, `[add Bird`, `[add Eagle` side by side; panel-crow-scale.png has the same three"
+   ],
+   "pass": "The crow is black, bigger than the bird and smaller than the eagle, and flies, flees when struck and comes back."
+  },
+  "P140-6": {
+   "where": "Test shard, The Overdraft beside your character",
+   "do": [
+    "`[add TheOverdraft` (it only fights a tutorial participant) and stand next to it; panel-overdraft-scale.png shows it with a human and the Otyugh"
+   ],
+   "pass": "It reads as a walking strongbox about one and a half humans tall in the brown hue 1740 (or say which hue: 1901 iron is the alternative on the sheet), its lid-mouth attack animates, and it walks slowly."
+  },
+  "P140-7": {
+   "where": "Test shard, a fresh tutorial character (not graduated) beside a `[add SafeDepositBox`",
+   "do": [
+    "Walk up and open or hit it; a graduated character does the same"
+   ],
+   "pass": "For the participant it springs (cc-P50's teeth and tongue frames), bites and dies leaving 25 gold; for the graduate it does nothing and takes no damage."
+  },
+  "P140-8": {
+   "where": "The notes (cc-P140, Decisions)",
+   "do": [
+    "Read the Tree Fellow sizes (213 to 390 px tall, 6 to 17 MB each) and the options"
+   ],
+   "pass": "A decision: the hued stock bogling stays, or one Tree Fellow file is cut to size and stored outside the repo."
   }
  }
 }

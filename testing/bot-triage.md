@@ -869,3 +869,18 @@ Added by cc-P139 (2026-10-17).
 | P139-2 | DEPLOY | The new package (anim7 with the body, the launcher's Bodyconv.def and mobtypes.txt copies) has to be built and published from the committed tree, and the test shard rebuilt, before anything draws |
 | P139-3 | EYES | Whether body 2048 draws and animates in TazUO: walk, stand, the bow shot (action 4), get hit, death, the corpse, the fidgets: art on screen |
 | P139-4 | EYES | The launcher's copies on Chase's PC (app\uo-overrides\Bodyconv.def and mobtypes.txt end with our lines): a file on his machine |
+
+### P140
+
+Added by cc-P140 (2026-10-18).
+
+| id | bucket | reason |
+|---|---|---|
+| P140-1 | BOT | Six Burrows spawns appear with their bodies in the mobile packet, fight back, die and leave a corpse (0x2006, amount = body): server-sent. Built, `p140_1`, run on this prompt's image (notes) |
+| P140-2 | DEPLOY | The package (anim7 with 24 bodies, about 25 MB more) must be built and published from the committed tree, and the test shard rebuilt, before any new body draws |
+| P140-3 | EYES | Every new body draws whole and animates (walk, stand, attack, hit, death, corpse): art on screen, 23 bodies |
+| P140-4 | EYES | The Slinger's rust red (hue 1258) against the sheet's frame recolour: a colour call |
+| P140-5 | EYES | The Crop Crow: the 1.5x bird in black between the bird and the eagle: a look |
+| P140-6 | EYES | The Overdraft's 1.5x scale next to a player, and its strongbox-brown hue 1740: a look |
+| P140-7 | EYES | The decoy Safe Deposit Boxes spring and bite a tutorial participant (cc-P50's mimic frames): art, on screen; the engagement rule is a shard fact |
+| P140-8 | DECISION | The Tree Fellows (Rootling): keep the hued stock bogling, or decide the 6 to 17 MB files' route (notes, Decisions) |
