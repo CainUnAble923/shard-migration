@@ -926,3 +926,21 @@ Added by cc-P144 (2026-10-18).
 | P144-5 | DEPLOY | Needs the work PC, the tower and GitHub |
 | P144-6 | DEPLOY | Needs the new package's launcher on a PC flagged dev, Haven's dev channel and Tailscale switched off |
 | P144-7 | DEPLOY | Needs a built and published player package on a player's PC or in Windows Sandbox |
+
+### P145
+
+Added by cc-P145 (2026-10-18).
+
+| id | bucket | reason |
+|---|---|---|
+| P145-1 | EYES | TazUO's script list and the SL_Combat window on screen |
+| P145-2 | EYES | A Legion script fighting in a real client: targeting, the highlight, the cooldown bar |
+| P145-3 | EYES | Which mobiles the script attacks, watched in the client |
+| P145-4 | EYES | Companion care in the client with a pet out |
+| P145-5 | EYES | AFK seeking, looting and walking back, watched in the client |
+| P145-6 | EYES | The panic hotkey mid-fight in the client |
+| P145-7 | EYES | The rater's lines and the Results window |
+| P145-8 | BOT-PARTIAL | The bot can check [artificerrank's lines (a server message); the window's rank label and the Unravel tier are Chase's |
+| P145-9 | EYES | The profile editor and Suggest's notes in the client |
+| P145-10 | EYES | Per-character settings across a relog |
+| P145-11 | EYES | Auto-sort moving items into bags in the client |

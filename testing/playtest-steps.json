@@ -2151,6 +2151,100 @@
    ],
    "pass": "After the first start app\\tazuo\\LegionScripts holds the three SL_ scripts and .sl-scripts.json and TazUO lists them; Update Scripts.bat says 'Legion scripts are up to date.' After the promote, the start says 'SL_Retaliate.py: your own edits were kept in backup\\SL_Retaliate.<yyyyMMdd-HHmm>.py' and the new copy is in place. It never mentions a scripts repo or the dev channel.",
    "check": "Needs a built and published package and another PC or Windows Sandbox: Chase's."
+  },
+  "P145-1": {
+   "where": "TazUO on the test shard, with the scripts repo pulled (or the scripts published)",
+   "do": [
+    "Open the Legion scripts list",
+    "Play SL_Combat.py",
+    "Press CTRL+F9 twice"
+   ],
+   "pass": "SL_Combat.py and seven SL_Combat_* modules are listed; running SL_Combat.py opens the SL_Combat window (status, On, Assist, Pause, PANIC, the three checkboxes, Profile) and says '[SL_Combat] ready'; CTRL+F9 says ON then off and the window's first button follows."
+  },
+  "P145-2": {
+   "where": "Test shard, a red or orange spawn (brigands, orcs) in Assist mode",
+   "do": [
+    "Click On (Assist)",
+    "Walk up to a red or orange",
+    "Let your hits fall under 70%"
+   ],
+   "pass": "The script enters war mode and attacks it (the target is highlighted red, 'Fighting ...' over your head), toggles the weapon special when mana allows, bandages you under 70% with a 'Bandaging' cooldown bar, and drops war mode when it dies."
+  },
+  "P145-3": {
+   "where": "Test shard, animals and a gray monster (an ettin or a horse that fights back)",
+   "do": [
+    "Stand beside a horse or cow with the script On",
+    "Let a gray attack you",
+    "Add 'ettin' to the hunt list in Settings and stand near one"
+   ],
+   "pass": "A gray minding its own business is never attacked; one that attacks you is fought; a gray whose name is on the hunt list is fought; blues and greens are never attacked at any point."
+  },
+  "P145-4": {
+   "where": "Test shard with your evo pet or squire out",
+   "do": [
+    "Settings > Add companion, target the companion",
+    "Fight something; let the companion drop under 60% and yourself under 50%"
+   ],
+   "pass": "The companion is never targeted (even when it goes gray); when it is under 60% the script walks to it and bandages it (cooldown bar); when you drop under 50% you say 'all guard me' once."
+  },
+  "P145-5": {
+   "where": "Test shard, a spawn area, AFK mode",
+   "do": [
+    "Click Assist to switch to AFK (the anchor is set where you stand)",
+    "Step away and watch",
+    "Pull a target more than 20 tiles from the anchor"
+   ],
+   "pass": "The script seeks targets within 12 tiles of the anchor, pathfinds to them, fights, loots, waits to recover to 80% hits and 60% stamina, and walks back to the anchor; a target further than the leash is given up with 'Too far from the anchor'."
+  },
+  "P145-6": {
+   "where": "Test shard, mid-fight",
+   "do": [
+    "Settings: panic action recall, Recall rune targeted, Save",
+    "Press CTRL+F12 during a fight"
+   ],
+   "pass": "It stops attacking, drops war mode, says PANIC, bandages and drinks as needed, then recalls to the rune once you are over 70%; with panic action 'run' it walks to the anchor instead; 'heal' just stands and heals."
+  },
+  "P145-7": {
+   "where": "Test shard, something that drops magic loot, Loot helper on",
+   "do": [
+    "Kill it and let autoloot take the corpse (or open the corpse and move a magic item to your pack)",
+    "Open Results",
+    "Toggle Compare off and click Rate backpack"
+   ],
+   "pass": "Each new magic item gets one '[Rater] <name>: <tier> <score> (+/-x vs <slot>). <top three properties>' line; Results lists them newest first with the item picture, tier colour and reason; with Compare off no delta is shown and Keep is decided by score alone."
+  },
+  "P145-8": {
+   "where": "Test shard (the bot can check the command; the gump half is yours)",
+   "do": [
+    "Type [artificerrank",
+    "Click Refresh rank in the SL_Combat window"
+   ],
+   "pass": "The command prints '[Artificer] rank N of 5 (<rank>), standing X, Y properties known', one or more '[Artificer] Basic:' lines (Luck among them), Refined and Full lines where you know more, and '[Artificer] end'; the window's rank label shows the same rank and count, and an item with only a property you cannot imbue is Sell, not Unravel.",
+   "check": "[artificerrank as a fresh player: the first line starts '[Artificer] rank 0 of 5', contains 'not a member', a Basic line contains Luck, the last line is '[Artificer] end', and no line is over 180 characters."
+  },
+  "P145-9": {
+   "where": "Test shard, the SL_Combat window",
+   "do": [
+    "Click Profile; change Hit Chance Increase to 20; Save as 'Mine'",
+    "Click Suggest; read the notes; click Accept"
+   ],
+   "pass": "The profile dropdown gains 'Mine' and selects it; Suggest fills the weight boxes and the notes box with one plain line per decision ('Hit Chance is 25 of 45: ...'); Accept saves 'Suggested <date>' and selects it."
+  },
+  "P145-10": {
+   "where": "Test shard, two characters",
+   "do": [
+    "Change a threshold and the mode, Save, stop the script, log out and back in, run it again",
+    "Log in another character and run it"
+   ],
+   "pass": "The first character gets the saved settings back; the second starts from the defaults (settings are per character)."
+  },
+  "P145-11": {
+   "where": "Test shard, three bags in your pack",
+   "do": [
+    "Settings: Keep bag, Unravel bag, Sell bag targeted; Auto-sort on",
+    "Rate backpack, or kill something with magic loot"
+   ],
+   "pass": "Each rated item is queued into its tier's bag (Upgrade goes to Keep); Results shows '[to the Keep bag]'; with a bag unset the item stays and the row says 'no Sell bag set'."
   }
  }
 }
