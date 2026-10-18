@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.18.7. Golem on, 9 queued, latest done P162. Play tests: 337 open, 2 failed, 23 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.18.7. Golem on, 10 queued, latest done P162. Play tests: 332 open, 1 failed, 34 passed.
 
 ### Needs overseer review (1)
 
@@ -241,6 +241,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P157 plain-english-emails | queued |  |
 | P158 codex-second-agent | queued |  |
 | P159 codex-lane-second-pc | queued |  |
+| P163 cont-dashboard-fixes-portainer | queued |  |
 | P162 end-of-week-spend | done | 2026-10-17 |
 | P161 close-finished-sessions | done | 2026-10-17 |
 | P160 plan-usage-pacing | done | 2026-10-17 |

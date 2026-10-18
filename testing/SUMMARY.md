@@ -2,20 +2,19 @@
 
 Regenerated on every write of `play-tests.json` (cc-P83). Do not edit; the page and the importer rewrite it.
 
-Generated 2026-10-18T13:10:43Z: **337 open**, **2 failed** (1 not yet logged as a bug), **23 passed**, 0 later, 1 blocked, 0 moot, 362 in all.
+Generated 2026-10-18T14:33:18Z: **332 open**, **1 failed** (0 not yet logged as a bug), **34 passed**, 8 later, 1 blocked, 0 moot, 367 in all.
 
 ## Failures
 
 - **T-040** (client-test-queue, 2026-10-01) bug D41: Board first page, pick a guild, use "Show me the way", join. Note: FAIL, and it splits in two. Joining a guild works. (a) The Guild Directory lists the Artificers twice, one row per guildmaster rather than per guild: D41. (b) Nothing points a player to the League of Extraordinary Citizens (the Registrar's organization, not the Rangers' League guild). F-9 only speci
-- **P87-1** (P87, 2026-10-14T11:05:14Z) NOT LOGGED: `scripts\shard-console-cache\screenshots\p87\after-uo-1280-tab0.png` against `before-uo-1300.png`, then open the console itself and narrow the window. Note: some other windows like once commit shard button is pressed have red text on black. I have screen shots... might be worth adding an upload to play test/bug reporting
 
 ## Open, by prompt
 
 - P162: 3
 - P161: 6
 - P160: 1
-- P155: 6
-- P154: 3
+- P155: 3
+- P147: 5
 - P146: 4
 - P145: 11
 - P144: 7
@@ -27,8 +26,7 @@ Generated 2026-10-18T13:10:43Z: **337 open**, **2 failed** (1 not yet logged as 
 - P137: 7
 - P136: 1
 - P135: 3
-- P134: 3
-- P133: 1
+- P134: 2
 - P132: 1
 - P131: 6
 - P130: 1
@@ -49,8 +47,8 @@ Generated 2026-10-18T13:10:43Z: **337 open**, **2 failed** (1 not yet logged as 
 - P113: 1
 - P112: 2
 - P111: 2
-- P110: 2
-- P109: 3
+- P110: 1
+- P109: 2
 - P108: 5
 - P107: 1
 - P106: 1
