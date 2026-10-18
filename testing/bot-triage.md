@@ -858,3 +858,14 @@ Added by cc-P138 (2026-10-17).
 | P138-5 | BOT | The refusal is server-sent: a gargoyle gets "Only humans and elves can wear this." and the item stays in the pack |
 | P138-6 | EYES | Standing, walking and running in the eight directions, with and without a robe: how the tail reads is a look |
 | P138-7 | EYES | Chase's local Topless and Nude add-on only; never on the test shard's package |
+
+### P139
+
+Added by cc-P139 (2026-10-17).
+
+| id | bucket | reason |
+|---|---|---|
+| P139-1 | BOT | The body-route creature spawns with body 2048 in the mobile packet, fights back with its bow, dies to the player and leaves a corpse (0x2006, amount 2048): all server-sent. Built, `p139_1`, run on this prompt's image (notes) |
+| P139-2 | DEPLOY | The new package (anim7 with the body, the launcher's Bodyconv.def and mobtypes.txt copies) has to be built and published from the committed tree, and the test shard rebuilt, before anything draws |
+| P139-3 | EYES | Whether body 2048 draws and animates in TazUO: walk, stand, the bow shot (action 4), get hit, death, the corpse, the fidgets: art on screen |
+| P139-4 | EYES | The launcher's copies on Chase's PC (app\uo-overrides\Bodyconv.def and mobtypes.txt end with our lines): a file on his machine |

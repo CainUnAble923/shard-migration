@@ -2,7 +2,7 @@ import sys,os,io,base64,json
 sys.path.insert(0,os.path.dirname(__file__))
 from vd import load,frames
 from PIL import Image
-HIGH={0:'walk',1:'idle',2:'die',3:'die 2',4:'attack',5:'attack 2',6:'attack 3',7:'bow',8:'crossbow',9:'throw',10:'hit',11:'pillage',12:'cast',13:'cast 2',14:'block R',15:'block L',16:'fidget',17:'fidget 2',18:'fly',19:'land',20:'hit air',21:'extra'}
+HIGH={0:'walk',1:'idle',2:'die',3:'die 2',4:'attack',5:'attack 2',6:'attack 3',7:'bow',8:'crossbow',9:'throw',10:'hit',11:'pillage',12:'stomp',13:'cast',14:'cast 2',15:'block R',16:'block L',17:'fidget',18:'fidget 2',19:'fly',20:'land',21:'die in flight'}  # cc-P139: 12 stomp was missing, so 12-21 were one off
 LOW={0:'walk',1:'run',2:'idle',3:'eat',4:'alert',5:'attack',6:'attack 2',7:'hit',8:'die',9:'idle 2',10:'fidget',11:'lie down',12:'die 2'}
 def anim(fr,scale):
     if not fr: return None

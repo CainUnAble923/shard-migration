@@ -1881,6 +1881,34 @@
     "With the ears and tail on, switch Paperdoll bodies to Topless and to Nude"
    ],
    "pass": "The ears and tail sit the same on all three sets (the add-on bodies have the SFW outline at the crown and hips; the check proves it, section 3 of the notes)."
+  },
+  "P139-1": {
+   "check": "Built (cc-P139, `p139_1`): admin [adds BurrowScampSlingerBodyTest beside a fresh player at Wrestling and Tactics 100, Str 250 and Dex 100, pins it at 1 hit point and CantWalk; the player attacks. Asserts it shows with body 2048, leaves the player's view, and a corpse (0x2006, amount 2048) lands. Run on the cc-P139 image before DONE (notes, section 6); in the nightly report after."
+  },
+  "P139-2": {
+   "where": "Shard Console on the game PC: Player package tab, then Test shard tab",
+   "do": [
+    "Player package > Build package, then Publish (the committed tree; the console refuses an uncommitted one)",
+    "Test shard > Rebuild (or Start-TestShard.ps1 -Image sl-modernuo:cc-P139)",
+    "On your PC: run the launcher once so it updates and rebuilds app\\uo-overrides (Bodyconv.def, mobtypes.txt)"
+   ],
+   "pass": "The package builds with every gate green (ANIMATION GATE included), the test shard comes up healthy, and the launcher starts TazUO with no yellow line about worn-item or creature art."
+  },
+  "P139-3": {
+   "where": "Test shard, SL TEST - Admin (Eve), open ground",
+   "do": [
+    "`[add BurrowScampSlingerBodyTest` and step back two tiles so it walks to you (it is an archer: it stands off and shoots)",
+    "Watch a few shots, hit it once with a weapon, then `[kill` it (or let it die)",
+    "Compare with notes\\art\\bestiary\\p139-kobold\\sheet-dir1-2x.png: the little archer with a bow, about 41 x 57 pixels"
+   ],
+   "pass": "It draws as the kobold archer (not invisible, not a stray item, not another creature): walks with its walk frames, stands between shots, draws the bow on every shot (one 4-frame attack, never a frozen stand pose), flinches when hit, falls on death, and its corpse draws on the ground and opens with the bow and arrows inside."
+  },
+  "P139-4": {
+   "where": "Your PC, the game folder of the installed package (Play.ps1's app\\uo-overrides\\)",
+   "do": [
+    "Open app\\uo-overrides\\Bodyconv.def and app\\uo-overrides\\mobtypes.txt in Notepad after a launch"
+   ],
+   "pass": "Bodyconv.def ends with our comment, the 4783 line and `2048 -1 -1 -1 -1 -1 1`; mobtypes.txt ends with our comment and `2048 MONSTER 0`; your Ultima Online folder's own files are unchanged."
   }
  }
 }
