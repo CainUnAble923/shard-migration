@@ -898,3 +898,17 @@ Added by cc-P141 (2026-10-18).
 | P141-5 | DECISION | A Young trainee who dies in the Vault wakes at New Haven's healer (pinned's Young rule), not the landing: keep it, or ask for a Vault rule (a pinned patch) |
 | P141-6 | DECISION | The Warren fillers: Rotworm and Grubber kept as rare spawns, BloodWorm moved to the Gloom (too strong for tier 1), or dropped |
 | P141-7 | DEPLOY | After the map batch: run the seeder on the test shard (dry run, then for real) and look at the 33 spawners, the ankh and the crawlway in place |
+
+### P142
+
+Added by cc-P142 (2026-10-18).
+
+| id | bucket | reason |
+|---|---|---|
+| P142-1 | BOT | The refusal lines (system messages) and the special-item cliloc are server-sent; the standing is set with `[GuildStanding` |
+| P142-2 | BOT | The special-item cliloc inside a champion spawn region is server-sent |
+| P142-3 | BOT | The special-item cliloc inside the Burrows region at Initiate, and The Burrow Mother's refusal line, are server-sent; the region exists before the map batch |
+| P142-4 | BOT | The minor haul (pack contents, the scrip line) and the skill update packets are server-sent |
+| P142-5 | BOT | The caught, wary and already-stolen lines, the reveal and the creature attacking are all server-sent |
+| P142-6 | BOT-PARTIAL | The scroll's learning, the craft menu row and the item properties are server-sent; the cloak and the ring on a paperdoll are Chase's eyes |
+| P142-7 | DEPLOY | Needs a save and a restart of the test shard through the Shard Console |

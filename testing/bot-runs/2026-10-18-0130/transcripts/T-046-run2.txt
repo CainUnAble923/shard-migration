@@ -1,0 +1,24 @@
+    0.00 harness  == T-046 run 2: Reset stone and [ResetMyAccount open the same gump
+    2.06 harness  Traceback (most recent call last):
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\run.py", line 148, in run_checks
+    ok, evidence = chk.fn(ctx)
+                   ^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\checks.py", line 735, in t_046
+    a = ctx.ensure_admin()
+        ^^^^^^^^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\run.py", line 57, in ensure_admin
+    chars = c.login()
+            ^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\client.py", line 206, in login
+    self.sock = self._connect(HOST, PORT)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\client.py", line 114, in _connect
+    s = socket.create_connection((host, port), timeout=10)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\socket.py", line 865, in create_connection
+    raise exceptions[0]
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\socket.py", line 850, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+
+    2.07 harness  == T-046 run 2: ERROR (ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it)

@@ -1,0 +1,35 @@
+    0.00 harness  == T-047 run 1: Young by time played: the countdown, and 'I want to grow up!' brings the confirm gump
+    0.00 harness  all pool accounts busy or resting; waiting 30 s
+   30.00 harness  all pool accounts busy or resting; waiting 30 s
+   60.00 harness  all pool accounts busy or resting; waiting 30 s
+   90.00 harness  all pool accounts busy or resting; waiting 30 s
+  120.00 harness  all pool accounts busy or resting; waiting 30 s
+  150.00 harness  all pool accounts busy or resting; waiting 30 s
+  180.00 harness  all pool accounts busy or resting; waiting 30 s
+  210.00 harness  all pool accounts busy or resting; waiting 30 s
+  240.01 harness  all pool accounts busy or resting; waiting 30 s
+  270.01 harness  all pool accounts busy or resting; waiting 30 s
+  300.01 harness  all pool accounts busy or resting; waiting 12 s
+  314.10 harness  Traceback (most recent call last):
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\run.py", line 148, in run_checks
+    ok, evidence = chk.fn(ctx)
+                   ^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\checks.py", line 388, in t_047
+    c = ctx.fresh(race="human", female=True)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\run.py", line 97, in fresh
+    chars = c.login()
+            ^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\client.py", line 206, in login
+    self.sock = self._connect(HOST, PORT)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\client.py", line 114, in _connect
+    s = socket.create_connection((host, port), timeout=10)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\socket.py", line 865, in create_connection
+    raise exceptions[0]
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\socket.py", line 850, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+
+  314.10 harness  == T-047 run 1: ERROR (ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it)

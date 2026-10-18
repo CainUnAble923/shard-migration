@@ -2021,6 +2021,69 @@
     "Walk the zones with the mockup's spawner table beside you"
    ],
    "pass": "The dry run says it would place 33 spawners, 1 ankh, 1 crawlway; the real run places them; each spawner stands where the table says and its creatures stay in their room."
+  },
+  "P142-1": {
+   "where": "Test shard, a Trammel dungeon (Despise or Shame on Trammel), a Thieves' Den member with Stealing 120 (`[SetSkill Stealing 120`), standing 0 (Initiate) then 5000 (Journeyman) through `[GuildStanding thieves <amount>` on the thief (test shard staff command; join the Den first at its guildmaster in the Bountiful Harvest Inn's back room, or `[guild`)",
+   "do": [
+    "As an Initiate, use Stealing on a monster's pack: read the red line",
+    "Set standing 5000 (Journeyman) and steal from fresh monsters, ten or more"
+   ],
+   "pass": "The Initiate is told the Den does not trust an Initiate to work the dungeons beyond Felucca and to come back a Journeyman (nothing special is ever stolen). The Journeyman gets the special-item message now and then (about one try in six at 120 against a famous creature), and a non-member standing in the same dungeon is told only a hand sworn to the Den knows where a monster keeps its treasures.",
+   "check": "Not built yet: the bot would use Stealing on monsters in a Trammel dungeon at standing 0 and 5000 and read the system message (the refusal lines) and cliloc 1094947."
+  },
+  "P142-2": {
+   "where": "Test shard, a champion spawn on any facet (Trammel Despise's spawn or an Ilshenar one; `[go` to the altar), the same thief at standing 0 (Initiate)",
+   "do": [
+    "Steal from the spawn's monsters, ten or more"
+   ],
+   "pass": "An Initiate works a champion spawn on any facet: the special-item message comes now and then, no refusal line.",
+   "check": "Not built yet: the bot would steal inside a ChampionSpawnRegion at standing 0 and read cliloc 1094947 or the pack."
+  },
+  "P142-3": {
+   "where": "Test shard, the Rootdeep Burrows (`[go 5200 1200 0` on Trammel; the region exists before the map batch), a Den member at standing 0 (Initiate) with Stealing 120; `[add Skeleton` beside you for a mark, then `[add TheBurrowMother`",
+   "do": [
+    "As an Initiate, steal from the skeleton, ten or more fresh ones",
+    "Steal from The Burrow Mother as an Initiate: read the line",
+    "Set standing 15000 (Master) and steal from The Burrow Mother again"
+   ],
+   "pass": "An Initiate works the Burrows like Felucca's dungeons (it is the tutorial dungeon): the special-item message comes now and then, no refusal line; a non-member there is told only a hand sworn to the Den knows where a monster keeps its treasures. The Burrow Mother tells the Initiate the Den does not trust an Initiate to work a creature of that renown and to come back a Master; the Master steals from her.",
+   "check": "Not built yet: the bot would steal inside OldHavenBurrowsRegion at standing 0 (cliloc 1094947, no refusal), then from The Burrow Mother at standing 0 (the refusal line naming Master) and 15000 (cliloc 1094947)."
+  },
+  "P142-4": {
+   "where": "Test shard, Felucca Shame, a Den member (standing 0) with Stealing 80 (`[SetSkill Stealing 80`)",
+   "do": [
+    "Steal from fresh monsters, thirty or more",
+    "Open the Guild Directory (`[guild`) and look at the Thieves' Den scrip"
+   ],
+   "pass": "Now and then (about one try in thirty at 80) a minor haul: a little gold, lockpicks, a small potion, bandages, or Thieves' Den scrip (the scrip line names the amount and the purse rises). Never a balm, lotion, seed, draught or gem below 100. Stealing rises on the way.",
+   "check": "Not built yet: the bot would read the pack, the scrip message and the skill update packets."
+  },
+  "P142-5": {
+   "where": "Test shard, Felucca Shame, a Den member with Stealing 60, hidden",
+   "do": [
+    "Steal from one monster and fail (almost every try fails at 60)",
+    "Steal from the same monster at once, then again after six seconds"
+   ],
+   "pass": "On the miss you are revealed, the creature turns on you and attacks, and the line says it caught your hand. The at-once retry says the creature is wary; the retry after a few seconds rolls again. Once a steal succeeds the creature says there is nothing left to steal from then on.",
+   "check": "Not built yet: the bot would read the caught, wary and already-stolen lines and the creature's combatant (it attacks the bot)."
+  },
+  "P142-6": {
+   "where": "Test shard, a Den member with Stealing 120 in Felucca Shame, then a tailor with Tailoring 100 and a sewing kit",
+   "do": [
+    "Steal until a recipe scroll comes (one special steal in twenty-five); or `[add AccountRecipeScroll recipe:9400` for the Shadowsilk Cloak",
+    "Double-click the scroll to learn it, then open the Tailoring menu's Misc page",
+    "`[add ShadowsilkThread 10` and craft the cloak"
+   ],
+   "pass": "The scroll teaches the account; the Shadowsilk Cloak appears in the Tailoring menu only after learning it (a tailor who has not learned it never sees it, and it is never in a guild shop's rotation); the cloak gives Stealth +5 and Hiding +3. The Thief's Smoke Bomb (Alchemy, `recipe:9401`) hides a thief with Hiding 50 and no Ninjitsu; the Pickpocket's Charm (Tinkering, `recipe:9402`) gives Stealing +5 and Snooping +5.",
+   "check": "The learning, the menu row and the crafted item's properties are server-sent; how the cloak and the ring look on a paperdoll is Chase's eyes."
+  },
+  "P142-7": {
+   "where": "Test shard, after a monster steal succeeded (P142-1 to P142-3)",
+   "do": [
+    "Save and restart the test shard (Shard Console), log back in, steal from the same creature again"
+   ],
+   "pass": "The creature still says there is nothing left to steal: the stolen flag came back from Saves/MonsterStealing. A Gem of Salvation used before the restart still waits out its six hours after it.",
+   "check": "A restart through the Shard Console: Chase's, or a CC prompt with a scratch copy of the world."
   }
  }
 }
