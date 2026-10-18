@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-17T19:48:06-05:00",
+  "generated": "2026-10-17T22:21:24-05:00",
   "direction": {
     "eyebrow": "Direction",
     "title": "Our own shard on ModernUO, OSI where OSI has an answer",
@@ -762,6 +762,14 @@
       "cmd": [
         "python tools/judge.py confirm direction"
       ]
+    },
+    {
+      "kind": "play tests",
+      "item": "not sorted",
+      "check": "1 open play-test item(s) have no Who: P160-0. Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check.",
+      "cmd": [
+        "python -m unittest tools/tests/test_play_who.py"
+      ]
     }
   ],
   "port_list": {
@@ -1289,16 +1297,16 @@
     "tasks-reviewed": "2026-10-17"
   },
   "derived": {
-    "version": "2026.10.17.9",
+    "version": "2026.10.17.10",
     "playtests": {
-      "open": 283,
+      "open": 284,
       "failed": 2,
       "passed": 23,
       "later": 0,
       "blocked": 1,
-      "total": 308,
+      "total": 309,
       "unloggedFails": 1,
-      "generatedAt": "2026-10-18T00:09:49Z"
+      "generatedAt": "2026-10-18T00:50:52Z"
     },
     "queue": {
       "autopilot": "on",
@@ -1383,9 +1391,22 @@
           "n": 159,
           "slug": "codex-lane-second-pc",
           "state": "queued"
+        },
+        {
+          "n": 162,
+          "slug": "cont-end-of-week-spend",
+          "state": "queued"
         }
       ],
       "finished": [
+        {
+          "n": 161,
+          "slug": "close-finished-sessions",
+          "state": "done",
+          "why": "",
+          "date": "2026-10-17",
+          "notes": "notes/cc-P161-close-finished-sessions.md"
+        },
         {
           "n": 160,
           "slug": "plan-usage-pacing",
@@ -1457,26 +1478,18 @@
           "why": "",
           "date": "2026-10-17",
           "notes": "notes/cc-P133-haven-intranet-dashboard.md"
-        },
-        {
-          "n": 132,
-          "slug": "console-layout-and-art-slots",
-          "state": "done",
-          "why": "",
-          "date": "2026-10-16",
-          "notes": "notes/cc-P132-console-layout-and-art-slots.md"
         }
       ],
-      "finished_total": 92,
-      "done_total": 89,
+      "finished_total": 93,
+      "done_total": 90,
       "stopped_total": 3,
       "latest_done": {
-        "n": 160,
-        "slug": "plan-usage-pacing",
+        "n": 161,
+        "slug": "close-finished-sessions",
         "state": "done",
         "why": "",
         "date": "2026-10-17",
-        "notes": "notes/cc-P160-plan-usage-pacing.md"
+        "notes": "notes/cc-P161-close-finished-sessions.md"
       }
     },
     "reviewed": "2026-10-13",
