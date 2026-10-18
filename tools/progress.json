@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-18T11:20:58-05:00",
+  "generated": "2026-10-18T16:00:15-05:00",
   "direction": {
     "eyebrow": "Direction",
     "title": "Our own shard on ModernUO, OSI where OSI has an answer",
@@ -762,6 +762,14 @@
       "cmd": [
         "python tools/judge.py confirm direction"
       ]
+    },
+    {
+      "kind": "play tests",
+      "item": "not sorted",
+      "check": "1 open play-test item(s) have no Who: M-001. Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check.",
+      "cmd": [
+        "python -m unittest tools/tests/test_play_who.py"
+      ]
     }
   ],
   "port_list": {
@@ -1289,16 +1297,16 @@
     "tasks-reviewed": "2026-10-17"
   },
   "derived": {
-    "version": "2026.10.18.7",
+    "version": "2026.10.18.8",
     "playtests": {
-      "open": 332,
-      "failed": 1,
-      "passed": 34,
+      "open": 321,
+      "failed": 4,
+      "passed": 43,
       "later": 8,
       "blocked": 1,
-      "total": 367,
-      "unloggedFails": 0,
-      "generatedAt": "2026-10-18T14:33:18Z"
+      "total": 368,
+      "unloggedFails": 3,
+      "generatedAt": "2026-10-18T19:35:27Z"
     },
     "queue": {
       "autopilot": "on",
@@ -1350,17 +1358,70 @@
           "state": "queued"
         },
         {
-          "n": 163,
-          "slug": "cont-dashboard-fixes-portainer",
+          "n": 164,
+          "slug": "cont-playtest-sessions",
           "state": "queued"
         },
         {
-          "n": 164,
-          "slug": "cont-playtest-sessions",
+          "n": 165,
+          "slug": "cont-achievements-button-fix",
+          "state": "queued"
+        },
+        {
+          "n": 166,
+          "slug": "cont-kitsune-fit-west-bald",
+          "state": "queued"
+        },
+        {
+          "n": 167,
+          "slug": "cont-rootdeep-map-batch",
+          "state": "queued"
+        },
+        {
+          "n": 168,
+          "slug": "hammer-t3-craft-order",
+          "state": "queued"
+        },
+        {
+          "n": 169,
+          "slug": "requirement-colors",
+          "state": "queued"
+        },
+        {
+          "n": 170,
+          "slug": "cont-smith-teaching-orders-fix",
+          "state": "queued"
+        },
+        {
+          "n": 171,
+          "slug": "cont-taming-anger-scales",
+          "state": "queued"
+        },
+        {
+          "n": 172,
+          "slug": "pet-gain-speed",
+          "state": "queued"
+        },
+        {
+          "n": 173,
+          "slug": "cont-imbue-all-slayers",
+          "state": "queued"
+        },
+        {
+          "n": 174,
+          "slug": "cont-session-closer-fix",
           "state": "queued"
         }
       ],
       "finished": [
+        {
+          "n": 163,
+          "slug": "dashboard-fixes-portainer",
+          "state": "done",
+          "why": "",
+          "date": "2026-10-18",
+          "notes": "notes/cc-P163-dashboard-fixes-portainer.md"
+        },
         {
           "n": 162,
           "slug": "end-of-week-spend",
@@ -1432,26 +1493,18 @@
           "why": "",
           "date": "2026-10-18",
           "notes": "notes/cc-P144-legion-scripts-updater.md"
-        },
-        {
-          "n": 142,
-          "slug": "monster-stealing-shard-rules",
-          "state": "done",
-          "why": "",
-          "date": "2026-10-18",
-          "notes": "notes/cc-P142-monster-stealing-shard-rules.md"
         }
       ],
-      "finished_total": 102,
-      "done_total": 99,
+      "finished_total": 103,
+      "done_total": 100,
       "stopped_total": 3,
       "latest_done": {
-        "n": 162,
-        "slug": "end-of-week-spend",
+        "n": 163,
+        "slug": "dashboard-fixes-portainer",
         "state": "done",
         "why": "",
-        "date": "2026-10-17",
-        "notes": "notes/cc-P162-end-of-week-spend.md"
+        "date": "2026-10-18",
+        "notes": "notes/cc-P163-dashboard-fixes-portainer.md"
       }
     },
     "reviewed": "2026-10-13",

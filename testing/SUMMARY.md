@@ -2,11 +2,14 @@
 
 Regenerated on every write of `play-tests.json` (cc-P83). Do not edit; the page and the importer rewrite it.
 
-Generated 2026-10-18T14:33:18Z: **332 open**, **1 failed** (0 not yet logged as a bug), **34 passed**, 8 later, 1 blocked, 0 moot, 367 in all.
+Generated 2026-10-18T19:35:27Z: **321 open**, **4 failed** (3 not yet logged as a bug), **43 passed**, 8 later, 1 blocked, 0 moot, 368 in all.
 
 ## Failures
 
 - **T-040** (client-test-queue, 2026-10-01) bug D41: Board first page, pick a guild, use "Show me the way", join. Note: FAIL, and it splits in two. Joining a guild works. (a) The Guild Directory lists the Artificers twice, one row per guildmaster rather than per guild: D41. (b) Nothing points a player to the League of Extraordinary Citizens (the Registrar's organization, not the Rangers' League guild). F-9 only speci
+- **P138-6** (P138, 2026-10-18T16:32:44Z) NOT LOGGED: standing still shows the ears and tail in all eight directions (they used to vanish until she walked); walking and running too, with and without a robe. Facing you or sideways the tail peeks out beside her hip, never across her front; facing away it hangs down her back over the robe. In war mode or holding a weapon they still vanish. Note: 10-18 11:32 Chase: the tail sits wrong when the character faces west; ears sit a little high on a bald head
+- **P147-1** (P147, 2026-10-18T16:28:55Z) NOT LOGGED: open your own paperdoll (classic style). Note: 10-18 11:27 Eve (admin, test shard, client 1122 with patch 0003): classic paperdoll still shows Help, no Achievements
+- **P147-3** (P147, 2026-10-18T16:28:55Z) NOT LOGGED: at the right end of the top bar, click Achievements. Note: 10-18 11:27: top bar ends at More + / Xml Gumps, no Achievements button
 
 ## Open, by prompt
 
@@ -14,7 +17,7 @@ Generated 2026-10-18T14:33:18Z: **332 open**, **1 failed** (0 not yet logged as 
 - P161: 6
 - P160: 1
 - P155: 3
-- P147: 5
+- P147: 3
 - P146: 4
 - P145: 11
 - P144: 7
@@ -22,7 +25,7 @@ Generated 2026-10-18T14:33:18Z: **332 open**, **1 failed** (0 not yet logged as 
 - P141: 7
 - P140: 7
 - P139: 1
-- P138: 7
+- P138: 5
 - P137: 7
 - P136: 1
 - P135: 3
@@ -37,9 +40,8 @@ Generated 2026-10-18T14:33:18Z: **332 open**, **1 failed** (0 not yet logged as 
 - P125: 5
 - P124: 1
 - P123: 1
-- P122: 4
-- P121: 3
-- P119: 4
+- P121: 2
+- P119: 2
 - P117: 1
 - P116: 1
 - P115: 3
@@ -98,6 +100,7 @@ Generated 2026-10-18T14:33:18Z: **332 open**, **1 failed** (0 not yet logged as 
 - P60: 6
 - P59: 1
 - P58: 1
-- P57: 7
+- P57: 6
 - P56: 7
+- manual: 1
 - client-test-queue: 30

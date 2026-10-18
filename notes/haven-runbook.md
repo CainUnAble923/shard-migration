@@ -38,16 +38,22 @@ nothing else.
    |  sl-homepage :3000 (LAN + loopback) <--- Tailscale :80
    |  sl-play-tests :8093 page, :8094 token listener <--- Tailscale :8093
    |  sunflower-print-queue :8787 <--- Tailscale :8787 ----- pushes over SSH ---> Hostinger
-   |  spoolman :7912   prometheus :9090 (planned)   grafana :3001 (planned)   portainer :9443
+   |  spoolman :7912 (all interfaces)   monitoring-prometheus :9090, monitoring-grafana :3001 (tailnet IP only)
+   |  npm-admin-tailnet (tailnet :81 -> NPM admin)   portainer :9443 (LAN + loopback) <--- Tailscale :9000
    +----------------------------------+
                     ^  snapshot every minute (POST :8094, bearer token)
                     |
    +----------------+-----------------+
    |  Game PC 192.168.1.58            |
    |  sl-modernuo-test :2594   sl-uo-status :8092   sl-shard-probe   sl-ddns   sl-portainer :9000/:9443
-   |  sl-dashboard :3000 (old)   sl-play-tests (stopped since the cutover)   print queue (tower copy, 127.0.0.1:8787)
+   |  sl-dashboard :3000 (old, stopped)   sl-play-tests (stopped since the cutover)   print queue (tower copy: retired 10-18)
    +----------------------------------+
 ```
+
+**What a tile shows** (cc-P163): a dot or a State line for everything running. A *planned*, *retired* or *built, not
+installed yet* service gets **no tile** (it stays in `services.json`, here, and in Discover's "in the inventory, not on
+Haven"); set its `state` to `running` when it is, and the next build gives it its tile. An *on-demand* service (the
+Sunflower dev store, stopped by design) says **"Stopped, started by hand"** with no monitor instead of a red dot.
 
 **Up or down on every tile** (Chase's decision 2): Haven's containers through the dashboard's read-only Docker proxy;
 web services by their health URL (`siteMonitor`); the game PC's services from the snapshot it pushes to Haven every
@@ -68,13 +74,20 @@ plan. Launchers are one line each in `D:\UO\haven-migration`; transcripts land i
 | Ops pages: cut over / roll back | same, `-Mode Cutover` / `Rollback` | `cut over` / `roll back` | Moves the play-test pages between the game PC and Haven (done 2026-10-16) |
 | Print queue: deploy | `C:\dev\sunflower\print-queue\haven\Deploy-PrintQueue.ps1 -Mode Deploy` | `deploy` | Builds the queue on Haven, makes its own key; **proves the key from Haven before the move** (refuses, tower untouched, if Hostinger does not take it); stops the tower copy; moves the data (SHA-256 checked); starts Haven's; makes and checks the first push |
 | Print queue: roll back | same, `-Mode Rollback` | `roll back` | Data back to the tower, Haven's stopped and set aside, the tower copy started |
+| Portainer (Haven): deploy (cc-P163) | `docker\portainer-haven\Deploy-PortainerHaven.ps1 -Mode Deploy` | `deploy` | Refuses if a `portainer` container exists that is not its own (project `sl-portainer`) or 9443 is taken. Backs up the volume `portainer_data` first when it exists (Portainer stopped, tarred to `~/sl-portainer/backup-<time>.tgz`); copies the compose to `~/sl-portainer`; starts `portainer/portainer-ce:2.45.2` on `192.168.1.61:9443` and `127.0.0.1:9443` (HTTPS), `127.0.0.1:9000` (HTTP, for Serve); Serve :9000; the first time, prints the first-login link, the **5-minute** limit and the setup token |
+| Portainer (Haven): roll back (cc-P163) | same, `-Mode Rollback` | `roll back` | Stops Portainer (the volume and backups kept); Serve :9000 off |
 | Deploy to Haven (website, wiki macros) | `Deploy-Website.ps1`, `Publish-WikiMacros.ps1` | phrase | Content only; never NPM |
 | Player package tab: Publish to dev (cc-P144) | `scripts\legion\Publish-LegionScripts.ps1 -Mode Dev` | phrase `publish scripts to dev`, then `yes` | `~/sl-scripts-dev/html` (the dev channel): backs up the set to `~/backups/legion-scripts/dev/<version>/`, swaps the scripts in, downloads each back, `scripts.json` last; rolls back on a mismatch. Refused unless the scripts repo is committed and level with GitHub |
 | Player package tab: Promote to official (cc-P144) | same, `-Mode Promote` | phrase `promote scripts to official`, then `yes` | `<sl-downloads html>/scripts/` (the official channel), from the dev folder on Haven, with the same steps; backups in `~/backups/legion-scripts/<version>/`; tags `official-<version>` in the scripts repo |
 | (once, by hand) dev channel setup (cc-P144) | same, `-Mode SetupDev` | `yes` | Makes `~/sl-scripts-dev`, copies the compose file, `docker compose -p sl-scripts-dev up -d` |
 
 The console's **Open NPM** opens the SSH tunnel to NPM's admin page (`ssh -N -L 8081:localhost:81 chase@192.168.1.61`,
-then `http://localhost:8081/`).
+then `http://localhost:8081/`). On the tailnet it is also `http://haven.tail81098d.ts.net:81/` (the `npm-admin-tailnet`
+forwarder, found by Discover on 2026-10-18).
+
+**Discover's port check** (cc-P163): the Mega dashboard deploy's plan prints `PORTS OR IMAGES DIFFER` for any running
+container whose published addresses (IPv4; the `[::]` twins left out) or image are not what its entry says, and the
+mounts of any entry whose volumes still say "from Discover". Copy those into `services.json` and here.
 
 ## Tokens and keys
 
@@ -86,6 +99,7 @@ Where each is made and where it lives. **No value is ever in git, a log, a deplo
 | `HOMEPAGE_VAR_GRAFANA_TOKEN` | same file, pasted by Chase | Grafana > Administration > Users and access > **Service accounts** > Add service account, name `homepage`, role **Viewer** > Add service account token (no expiry, or a year) > copy it once |
 | `HOMEPAGE_VAR_PORTAINER_KEY` | same file, pasted by Chase | Portainer on Haven > your user (top right) > **My account** > **Access tokens** > Add access token, name `homepage` > copy it once |
 | `HOMEPAGE_VAR_PORTAINER_ENV` | same file (not a secret) | Portainer > **Environments** > click Haven's: the number in the address bar after `/endpoints/` (often `1`, sometimes `2` or `3`) |
+| Portainer admin login | the vault | Portainer's first-time setup page, **within 5 minutes** of its first start, with the setup token Portainer (Haven): deploy prints (single use; dead once the admin exists) |
 | `PLAYTESTS_TOKEN` | Haven `~/sl-ops/ops.env` and the game PC's `D:\UO\haven-ops\token.txt` | Ops pages: deploy (asked once, or made) |
 | `keys/shard-migration` | Haven `~/sl-ops/keys` | Ops pages: deploy; public half is a read-only deploy key on GitHub |
 | `keys/sunflower-live` | Haven `~/sunflower-print-queue/keys` | Print queue: deploy; public half goes in Hostinger hPanel > Advanced > SSH Access > SSH keys |
@@ -106,8 +120,9 @@ admin, and a Viewer service account cannot have it. The Viewer token reads `/api
   is ever added to NPM, Cloudflare, or Tailscale Funnel.
 - **Nothing intranet binds `0.0.0.0`.** The dashboard, the ops pages and the print queue publish on `192.168.1.61` and
   `127.0.0.1` only; the tailnet reaches them through Tailscale Serve. (Older stacks that do bind all interfaces, and are
-  not forwarded by the router: Spoolman *(unverified)*, Portainer, the old Homepage, the game PC's `sl-uo-status`,
-  `sl-portainer` and the test shard. Do not add router forwards for any of them.)
+  not forwarded by the router: Spoolman (seen on `0.0.0.0:7912` by Discover, 2026-10-18), the old Homepage, the game PC's
+  `sl-uo-status`, `sl-portainer` and the test shard. Do not add router forwards for any of them. Grafana and Prometheus
+  publish on Haven's tailnet address only, and Haven's Portainer on its LAN address and loopback.)
 - **`docker volume prune`** on Haven: never. Several services keep their data in named volumes.
 
 ## Moving any service (the general steps)
@@ -140,9 +155,10 @@ otherwise; logs `docker logs --tail 200 <container>`.
 
 ### Sunflower print queue `print-queue`
 
-The opener orders page and the public lead-time page's pusher. Built on Haven from `C:\dev\sunflower\print-queue`
-(Dockerfile, python:3-alpine) by **Print queue: deploy**; files in `/home/chase/sunflower-print-queue/{stack,data,logs,keys}`;
-`http://192.168.1.61:8787/` and, once Serve has it, `http://haven.tail81098d.ts.net:8787/`. Pushes to Hostinger over SSH
+The opener orders page and the public lead-time page's pusher. **On Haven since 2026-10-18 08:56** (Print queue: deploy:
+key proved from Haven, 7 files moved and checked, first push OK). Built on Haven from `C:\dev\sunflower\print-queue`
+(Dockerfile, python:3-alpine); files in `/home/chase/sunflower-print-queue/{stack,data,logs,keys}`;
+`http://192.168.1.61:8787/` and `http://haven.tail81098d.ts.net:8787/` (Serve :8787). Pushes to Hostinger over SSH
 with **its own key** (made on Haven), 60 seconds after the last edit (a debounced timer, not a loop). **Data:** `data/`
 (customer orders: back it up). **Restore:** stop it, put `queue.json` back in `data/`, start it. **Move:** the general
 steps; the key moves with `keys/` (or make a new one and add it in Hostinger), and the new host's Serve needs :8787.
@@ -150,10 +166,10 @@ steps; the key moves with `keys/` (or make a new one and add it in Hostinger), a
 
 ### Sunflower print queue (the tower copy) `print-queue-tower`
 
-`py queue_server.py` in `C:\dev\sunflower\print-queue` on the game PC, `127.0.0.1:8787`, started by the desktop
-shortcut. Pushes with Chase's own key. **Print queue: deploy stops it** after Haven's key is proved, so the two never push
-at once; its data becomes `data.moved-YYYYMMDD` (kept). Its tile reads the snapshot (is the process running); after the
-move it should read Down for good. **Roll back** starts it again.
+**Retired 2026-10-18** (state `retired`, no tile since cc-P163). It was `py queue_server.py` in
+`C:\dev\sunflower\print-queue` on the game PC, `127.0.0.1:8787`, pushing with Chase's own key. The move found it not
+running and renamed its data `data.moved-20261018` (kept, not served); the desktop shortcut now opens Haven's page.
+**Print queue: roll back** would start it again (and the entry's state and tile would come back with it).
 
 ### Sunflower Custom Gifts store `sunflower-store`
 
@@ -162,28 +178,35 @@ print queue pushes its lead-time snippet there.
 
 ### Sunflower dev store `sunflower-devstack`
 
-`C:\dev\sunflower\sunflower-devstack` on the game PC, `:8080` while it runs (by hand). Down is its usual state.
+`C:\dev\sunflower\sunflower-devstack` on the game PC, `:8080` while it runs (by hand). Stopped is its usual state, so its
+tile says "Stopped, started by hand" and has no monitor (cc-P163).
 
 ### Spoolman `spoolman`
 
 Filament inventory: `http://haven.tail81098d.ts.net:7912/`, REST at `/api/v1/`, health `/api/v1/health`, no login.
-`SPOOLMAN_METRICS_ENABLED=TRUE` gives `/metrics` for Prometheus. *Unverified:* the container name (`spoolman` assumed), the
-image tag, the compose folder and the data volume; Discover prints them. **Never touch its data volume.** **Back up:**
+`SPOOLMAN_METRICS_ENABLED=TRUE` gives `/metrics` for Prometheus. Discover 2026-10-18: container `spoolman`, image
+`ghcr.io/donkie/spoolman:latest`, compose folder `/opt/spoolman`, published on `0.0.0.0:7912` (all interfaces: its own
+compose, not ours). *Still unverified:* the data volume; the next Discover prints its mounts. **Never touch its data volume.** **Back up:**
 `docker run --rm -v <its volume>:/v -v ~/backups:/b alpine tar czf /b/spoolman-$(date +%F).tgz -C /v .` (Spoolman can
 also export from its own UI). **Restore:** stop it, untar into the volume, start it. **Move:** the general steps; the
 volume tar is the whole state; Prometheus's scrape target follows it.
 
-### Prometheus `prometheus`
+### Prometheus `monitoring-prometheus`
 
-*Planned* (Chase's notes): `/opt/monitoring`, config `/opt/monitoring/prometheus.yml`, port 9090, scrapes Spoolman's
-`/metrics` every 5 minutes, 5-year retention. Not installed by P133. When it is: publish on `192.168.1.61:9090` (not all
-interfaces) and update its entry in `services.json` if anything differs. **Back up** the config and the data folder.
+Running on Haven, installed by hand (not by a console deploy). Discover 2026-10-18: container `monitoring-prometheus`,
+`prom/prometheus:v3.14.0`, compose folder `/opt/monitoring`, published on **Haven's tailnet address only**
+(`100.98.32.16:9090`), so `http://haven.tail81098d.ts.net:9090/` works and the LAN address does not. Chase's notes: config
+`/opt/monitoring/prometheus.yml`, scrapes Spoolman's `/metrics` every 5 minutes, 5-year retention. The dashboard watches
+`http://100.98.32.16:9090/-/healthy`. *From Discover (next deploy):* its data volume. **Back up** the config and the data.
+(Was the planned entry `prometheus` until cc-P163.)
 
-### Grafana `grafana`
+### Grafana `monitoring-grafana`
 
-*Planned* on top of Prometheus. **Port: 3001, not 3000** (3000 is the dashboard's LAN port on Haven); change
-`services.json` if it lands elsewhere. Its tile needs `HOMEPAGE_VAR_GRAFANA_TOKEN` (Tokens and keys). **Back up**
-`/var/lib/grafana` (its volume).
+Running on Haven, installed by hand. Discover 2026-10-18: container `monitoring-grafana`, `grafana/grafana:13.1.8`, compose
+folder `/opt/monitoring`, **tailnet address only** (`100.98.32.16:3001`, container port 3000):
+`http://haven.tail81098d.ts.net:3001/`. The dashboard watches `http://100.98.32.16:3001/api/health`; its tile needs
+`HOMEPAGE_VAR_GRAFANA_TOKEN` (Tokens and keys). *From Discover (next deploy):* its data volume. **Back up**
+`/var/lib/grafana` (its volume or folder). (Was the planned entry `grafana` until cc-P163.)
 
 ### Game PC `gamepc-host`
 
@@ -250,7 +273,7 @@ writes it through a throwaway `nginx:alpine` container (the folder is root-owned
 
 ### Legion scripts dev channel `scripts-dev`
 
-*cc-P144, planned until Chase runs the setup.* `sl-scripts-dev` (nginx:alpine) on Haven, project `sl-scripts-dev` in
+*cc-P144; running since 2026-10-18 (Discover 09:46; Serve :8097 set by that deploy).* `sl-scripts-dev` (nginx:alpine) on Haven, project `sl-scripts-dev` in
 `~/sl-scripts-dev/stack` (source `D:\ShatteredLegacy\docker\scripts-dev`), serving `~/sl-scripts-dev/html` read only on
 `192.168.1.61:8097` and `127.0.0.1:8097`, on the tailnet as `http://haven.tail81098d.ts.net:8097/` (Tailscale Serve :8097).
 **Never public, never NPM.** It holds half-tested scripts for Chase's own PCs (the tower and the work PC, flagged dev in
@@ -266,7 +289,17 @@ nginx; change `scripts-dev` here and in `services.json` and each dev PC's `devUr
 
 `sl-proxy` on Haven: **the public entry**, 80 and 443 on all interfaces, admin on `127.0.0.1:81` (SSH tunnel). Volumes
 `proxy_npm_data` and `proxy_npm_letsencrypt`. **Back up both volumes before any change.** Never add an intranet host to it.
-Moving it means moving the router's 80/443 forward too: plan it as its own prompt.
+Moving it means moving the router's 80/443 forward too: plan it as its own prompt. Its tile is watched at its front door,
+`http://192.168.1.61:80/` (cc-P163; the admin port answers only on Haven's loopback, and `localhost` inside Homepage's
+container is Homepage itself), and links the admin page through the console's SSH tunnel.
+
+### NPM admin on the tailnet `npm-admin-tailnet`
+
+Found by Discover on 2026-10-18, running 3 days: `npm-admin-tailnet`, `alpine/socat:1.8.1.1`, compose folder
+`/home/chase/shattered-legacy/docker/npm-admin-tailnet` (**not in git**; made by hand on Haven, by whom and when not
+recorded). No published ports, and Haven listens on `100.98.32.16:81`, so it runs in the host network and forwards the
+tailnet's :81 to NPM's admin on `127.0.0.1:81` (inferred). `http://haven.tail81098d.ts.net:81/` answered from the game PC.
+**Back up** its compose folder (it is not in git). Nothing else to keep.
 
 ### Password vault `vaultwarden`
 
@@ -288,8 +321,17 @@ on containers only; every POST refused). Moves with the dashboard.
 
 ### Portainer (Haven) `portainer-haven`
 
-Docker on Haven, *unverified:* container name, port (9443 assumed) and compose folder. Its tile needs
-`HOMEPAGE_VAR_PORTAINER_KEY` and `HOMEPAGE_VAR_PORTAINER_ENV`. **Stacks and Portainer:** the stacks the console deploys
+Portainer CE on Haven, installed by **Portainer (Haven): deploy** (cc-P163; it was not on Haven before: Discover 2026-10-18).
+Container `portainer`, `portainer/portainer-ce:2.45.2` (the `lts` tag of Portainer's docs, pinned), project `sl-portainer`
+in `~/sl-portainer` (source `D:\ShatteredLegacy\docker\portainer-haven`). HTTPS with its own self-signed certificate on
+`https://192.168.1.61:9443/` and `127.0.0.1:9443`; its plain HTTP port on `127.0.0.1:9000` only, which Tailscale Serve
+gives the tailnet as `http://haven.tail81098d.ts.net:9000/`. **Data:** the Docker volume `portainer_data` (the admin user,
+tokens, settings). **Back up:** every deploy tars it to `~/sl-portainer/backup-<time>.tgz` first; by hand,
+`docker stop portainer; docker run --rm -v portainer_data:/data:ro -v ~/backups:/b alpine:3.20 tar czf /b/portainer-$(date +%F).tgz -C /data .; docker start portainer`.
+**Restore:** stop it, untar into the volume, start it. **First start:** the admin user must be made within 5 minutes, with
+the setup token from `docker logs portainer` (`setup_token=`; the deploy prints it); missed, deploy again. Its tile needs
+`HOMEPAGE_VAR_PORTAINER_KEY` and `HOMEPAGE_VAR_PORTAINER_ENV`. It mounts the Docker socket read-write: it can change any
+container on Haven. **Stacks and Portainer:** the stacks the console deploys
 (`sl-home`, `sl-ops`, `sunflower-pq`) are made with `docker compose` from git, so Portainer lists them as *limited*
 (created outside Portainer). Read them there; change them in git and redeploy, never in Portainer's editor, or the two
 drift.
@@ -305,7 +347,7 @@ deploy and kept for the rollback. Exited is right. Remove it (and this entry) on
 
 ### Old Homepage on the game PC `old-homepage-gamepc`
 
-`sl-dashboard` on the game PC, stopped by the deploy, started by the rollback. Same advice.
+`sl-dashboard` on the game PC, stopped by the deploy (2026-10-18), started by the rollback. Same advice.
 
 ### Ops pages on the game PC `play-tests-gamepc`
 
@@ -324,8 +366,9 @@ Its database. **A dump before any move** (`docker exec kevins-parts-db mysqldump
 
 `tailscaled` on Haven (and on the game PC, Chase's phone, the work PC). The only way in from outside the house. Haven's
 **Serve** config (persisted in `/var/lib/tailscale`, survives a restart): tailnet :80 to `127.0.0.1:3000` (dashboard),
-:8093 to `127.0.0.1:8093` (ops page), :8787 to `127.0.0.1:8787` (print queue), and since cc-P144 :8097 to `127.0.0.1:8097`
-(the Legion scripts' dev channel, once it runs). `tailscale serve status` shows it. **Never
+:8093 to `127.0.0.1:8093` (ops page), :8787 to `127.0.0.1:8787` (print queue), since cc-P144 :8097 to `127.0.0.1:8097`
+(the Legion scripts' dev channel; all four seen in Discover, 2026-10-18 09:46), and since cc-P163 :9000 to
+`127.0.0.1:9000` (Portainer, once its deploy runs). `tailscale serve status` shows it. **Never
 `tailscale funnel`** (that would make it public). Changing Serve as `chase` needs a one-time `sudo tailscale set
 --operator=chase` on Haven. Its tile reads the game PC's view of Haven's node (online or not).
 
@@ -358,9 +401,11 @@ state; then remove the machine in the Tailscale admin console). **Never** `tails
 - `/home/chase/sl-home/dashboard.env`
 - `/home/chase/sl-ops/data` and `/home/chase/sl-ops/ops.env` and `/home/chase/sl-ops/keys`
 - `/home/chase/sunflower-print-queue/data` and `/home/chase/sunflower-print-queue/keys`
-- Spoolman's data volume *(name unverified; Discover prints its mounts)*
-- `/opt/monitoring` (Prometheus config and data, Grafana's data) once installed
-- Docker volumes `proxy_npm_data`, `proxy_npm_letsencrypt`, `sl-wiki-storage`, Portainer's data volume
+- Spoolman's data volume *(name unverified; the next Discover prints its mounts)*
+- `/opt/monitoring` (Prometheus config and data, Grafana's data; installed, running since about 2026-10-15)
+- Docker volumes `proxy_npm_data`, `proxy_npm_letsencrypt`, `sl-wiki-storage`, `portainer_data` (and `~/sl-portainer`,
+  where the deploy leaves its backups)
+- `/home/chase/shattered-legacy/docker/npm-admin-tailnet` (not in git)
 - Vaultwarden's data folder (as now: `~/backups/vault-data-*.tgz`)
 - `/home/chase/clients/kevins-parts` and its database dump
 - `/var/lib/tailscale` (or just re-login after a rebuild)
@@ -379,3 +424,10 @@ state; then remove the machine in the Tailscale admin console). **Never** `tails
 - 2026-10-18 cc-P144: the Legion scripts' dev channel (`scripts-dev`, `sl-scripts-dev` on `192.168.1.61:8097` and
   `127.0.0.1:8097`, Tailscale Serve :8097; planned until Chase runs `-Mode SetupDev`) and the official channel in
   `downloads`' `scripts/` folder; `services.json` 32 services (counted from the file).
+- 2026-10-18 cc-P163: after the first deploys (Chase, 08:49-09:46). The print queue runs on Haven (since 08:56) and the
+  tower copy is retired (no tile); the dev channel, the dashboard and its proxy are running; `prometheus` and `grafana`
+  renamed to the real `monitoring-prometheus` and `monitoring-grafana` (tailnet address only) and `npm-admin-tailnet` added,
+  all from Discover; NPM watched at its front door; planned, retired and not-installed entries get no tile, the dev store
+  says "Stopped, started by hand"; Discover prints mounts and flags ports or images that differ; Portainer on Haven
+  (`portainer-haven`, `~/sl-portainer`, volume `portainer_data`, Serve :9000) gets its deploy and roll back buttons.
+  `services.json` 33 services (counted from the file).
