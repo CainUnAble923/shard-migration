@@ -1,0 +1,86 @@
+{
+  "_about": "cc-P141 layout spec for the Rootdeep Burrows map batch (P24 batch 5). Trammel. Rectangles are inclusive tiles [x1, y1, x2, y2]. 'floors' are walkable; 'obstacles' are solid blocks inside a floor (pillars, shelving, root and crystal clusters, web masses); every non-floor tile touching a floor is a wall. Spawners, the ankh, the arrival tile and the crawlway are not here: build_mockup.py reads them from the seeder (D:/ShatteredLegacy/server/customizations/ClusterFRootdeepSeeder.cs and Regions/RootdeepVault.cs), which is the data the map batch runs.",
+  "area": [5136, 1128, 5247, 1263],
+  "buildFromX": 5140,
+  "zones": [
+    {"key": "Landing", "name": "The Landing", "tier": "safe", "rect": [5180, 1132, 5206, 1144], "color": "#8fb3c9"},
+    {"key": "Vault", "name": "The Vault (tutorial only)", "tier": "tutorial", "rect": [5142, 1132, 5178, 1159], "color": "#d9b45a"},
+    {"key": "Warren", "name": "The Warren", "tier": "1", "rect": [5142, 1162, 5242, 1192], "color": "#a7865a"},
+    {"key": "Brood Pit", "name": "Brood Pit", "tier": "1 boss", "rect": [5212, 1168, 5240, 1188], "color": "#c46a3c"},
+    {"key": "Tangle", "name": "The Tangle", "tier": "2", "rect": [5142, 1198, 5188, 1228], "color": "#6f9a4a"},
+    {"key": "Dawnseam", "name": "The Dawnseam", "tier": "2", "rect": [5194, 1198, 5242, 1228], "color": "#c9a24a"},
+    {"key": "Gloom", "name": "The Gloom", "tier": "3", "rect": [5150, 1234, 5236, 1260], "color": "#6a5a8c"},
+    {"key": "Gloom lair", "name": "Gloom Queen's lair", "tier": "3 boss", "rect": [5184, 1238, 5226, 1256], "color": "#8c4a8c"}
+  ],
+  "floors": [
+    {"zone": "Landing", "name": "landing", "rect": [5180, 1132, 5206, 1144]},
+    {"zone": "Landing", "name": "landing tunnel south", "rect": [5192, 1145, 5195, 1161]},
+
+    {"zone": "Vault", "name": "Counting Room", "rect": [5170, 1132, 5178, 1142]},
+    {"zone": "Vault", "name": "The Stacks", "rect": [5156, 1132, 5168, 1142]},
+    {"zone": "Vault", "name": "Deposit Hall", "rect": [5142, 1132, 5154, 1142]},
+    {"zone": "Vault", "name": "Strongroom", "rect": [5142, 1144, 5178, 1159]},
+    {"zone": "Vault", "name": "gap Counting Room to Stacks", "rect": [5169, 1140, 5169, 1141]},
+    {"zone": "Vault", "name": "gap Stacks to Deposit Hall", "rect": [5155, 1133, 5155, 1134]},
+    {"zone": "Vault", "name": "gap Deposit Hall to Strongroom", "rect": [5146, 1143, 5148, 1143]},
+
+    {"zone": "Warren", "name": "Crawl Den", "rect": [5146, 1162, 5170, 1172]},
+    {"zone": "Warren", "name": "Tunnel Foot", "rect": [5186, 1162, 5200, 1170]},
+    {"zone": "Warren", "name": "tunnel Crawl Den to Tunnel Foot", "rect": [5171, 1165, 5185, 1167]},
+    {"zone": "Warren", "name": "tunnel Crawl Den to Great Burrow", "rect": [5156, 1173, 5159, 1175]},
+    {"zone": "Warren", "name": "tunnel Tunnel Foot to Great Burrow", "rect": [5192, 1171, 5195, 1175]},
+    {"zone": "Warren", "name": "Great Burrow", "rect": [5146, 1176, 5208, 1192]},
+    {"zone": "Warren", "name": "tunnel to the Brood Pit", "rect": [5209, 1180, 5211, 1183]},
+    {"zone": "Brood Pit", "name": "Brood Pit", "rect": [5212, 1168, 5240, 1188]},
+    {"zone": "Warren", "name": "descent to the Tangle", "rect": [5160, 1193, 5163, 1197]},
+    {"zone": "Warren", "name": "descent to the Dawnseam", "rect": [5200, 1193, 5203, 1197]},
+
+    {"zone": "Tangle", "name": "the Tangle", "rect": [5142, 1198, 5188, 1216]},
+    {"zone": "Tangle", "name": "the Tangle, south", "rect": [5158, 1217, 5188, 1228]},
+    {"zone": "Tangle", "name": "the Thicket (Bramblehulk)", "rect": [5142, 1218, 5156, 1228]},
+    {"zone": "Tangle", "name": "gap into the Thicket", "rect": [5157, 1222, 5157, 1223]},
+    {"zone": "Tangle", "name": "Tangle to Dawnseam", "rect": [5189, 1212, 5193, 1214]},
+
+    {"zone": "Dawnseam", "name": "the Dawnseam", "rect": [5194, 1198, 5242, 1216]},
+    {"zone": "Dawnseam", "name": "the Dawnseam, south", "rect": [5194, 1217, 5226, 1228]},
+    {"zone": "Dawnseam", "name": "the Seam Heart (Seamguard)", "rect": [5228, 1218, 5242, 1228]},
+    {"zone": "Dawnseam", "name": "gap into the Seam Heart", "rect": [5227, 1222, 5227, 1223]},
+
+    {"zone": "Gloom", "name": "descent from the Tangle", "rect": [5166, 1229, 5169, 1233]},
+    {"zone": "Gloom", "name": "descent from the Dawnseam", "rect": [5214, 1229, 5217, 1233]},
+    {"zone": "Gloom", "name": "the Gloom, north", "rect": [5150, 1234, 5236, 1236]},
+    {"zone": "Gloom", "name": "the Gloom, west", "rect": [5150, 1237, 5182, 1257]},
+    {"zone": "Gloom", "name": "the Gloom, east", "rect": [5228, 1237, 5236, 1257]},
+    {"zone": "Gloom", "name": "the Gloom, south", "rect": [5150, 1258, 5236, 1260]},
+    {"zone": "Gloom lair", "name": "Gloom Queen's lair", "rect": [5184, 1238, 5226, 1256]},
+    {"zone": "Gloom lair", "name": "lair mouth (west)", "rect": [5183, 1246, 5183, 1248]}
+  ],
+  "obstacles": [
+    {"zone": "Vault", "name": "Stacks shelving, north row", "rect": [5156, 1135, 5166, 1135]},
+    {"zone": "Vault", "name": "Stacks shelving, south row", "rect": [5158, 1139, 5168, 1139]},
+    {"zone": "Vault", "name": "Strongroom pillar west (kite loop)", "rect": [5151, 1149, 5153, 1154]},
+    {"zone": "Vault", "name": "Strongroom pillar east (kite loop)", "rect": [5167, 1149, 5169, 1154]},
+    {"zone": "Tangle", "name": "root mass", "rect": [5150, 1204, 5153, 1207]},
+    {"zone": "Tangle", "name": "root mass", "rect": [5166, 1202, 5170, 1205]},
+    {"zone": "Tangle", "name": "root mass", "rect": [5178, 1208, 5181, 1212]},
+    {"zone": "Tangle", "name": "root mass", "rect": [5163, 1213, 5166, 1215]},
+    {"zone": "Tangle", "name": "root mass", "rect": [5172, 1220, 5175, 1222]},
+    {"zone": "Dawnseam", "name": "crystal cluster", "rect": [5202, 1204, 5205, 1206]},
+    {"zone": "Dawnseam", "name": "crystal cluster", "rect": [5216, 1201, 5219, 1204]},
+    {"zone": "Dawnseam", "name": "crystal cluster", "rect": [5230, 1206, 5233, 1209]},
+    {"zone": "Dawnseam", "name": "crystal cluster", "rect": [5208, 1214, 5211, 1217]},
+    {"zone": "Dawnseam", "name": "crystal cluster", "rect": [5218, 1222, 5220, 1225]},
+    {"zone": "Gloom", "name": "web mass", "rect": [5158, 1240, 5161, 1243]},
+    {"zone": "Gloom", "name": "web mass", "rect": [5170, 1250, 5173, 1253]},
+    {"zone": "Gloom", "name": "web mass", "rect": [5231, 1241, 5233, 1244]},
+    {"zone": "Gloom lair", "name": "web pillar", "rect": [5196, 1244, 5198, 1246]},
+    {"zone": "Gloom lair", "name": "web pillar", "rect": [5212, 1247, 5214, 1249]}
+  ],
+  "marks": {
+    "vaultDoorway": {"rect": [5179, 1137, 5179, 1138], "label": "Vault doorway (refuses non-trainees)"},
+    "crawlway": {"rect": [5160, 1159, 5160, 1162], "label": "crawlway, one way south (opens when the Overdraft dies)"},
+    "fightSpace": {"rect": [5142, 1144, 5178, 1159], "label": "Overdraft fight space"},
+    "kiteLoops": [[5150, 1148, 5154, 1155], [5166, 1148, 5170, 1155]],
+    "fromB1Hole": "arrival from the B1 hole (Old Haven 3619,2620): the map batch's teleporter"
+  }
+}

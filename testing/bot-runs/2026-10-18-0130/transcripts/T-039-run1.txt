@@ -1,0 +1,61 @@
+    0.00 harness  == T-039 run 1: A new character is pointed at the board
+    0.00 harness  all pool accounts busy or resting; waiting 30 s
+   12.98 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   12.98 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   30.00 harness  all pool accounts busy or resting; waiting 30 s
+   33.54 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   33.55 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   39.41 player   <- unicode(0) Sanitation Warden: Britannia's streets won't clean themselves!
+   39.41 admin    <- unicode(0) Sanitation Warden: Britannia's streets won't clean themselves!
+   54.58 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   54.62 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   60.00 harness  all pool accounts busy or resting; waiting 30 s
+   76.06 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   76.06 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   80.42 player   <- ascii(0) System: The world is saving, please wait.
+   80.42 admin    <- ascii(0) System: The world is saving, please wait.
+   80.42 player   <- ascii(0) System: World save completed in 0.06 seconds.
+   80.42 admin    <- ascii(0) System: World save completed in 0.06 seconds.
+   90.00 harness  all pool accounts busy or resting; waiting 30 s
+   96.43 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   96.43 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+  101.73 player   <- unicode(0) Sanitation Warden: Britannia's streets won't clean themselves!
+  101.73 admin    <- unicode(0) Sanitation Warden: Britannia's streets won't clean themselves!
+  116.58 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+  116.58 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+  118.19 player   <- ascii(0) System: The world is saving, please wait.
+  118.19 admin    <- ascii(0) System: The world is saving, please wait.
+  118.19 admin    <- ascii(0) System: World save completed in 0.02 seconds.
+  118.19 player   <- ascii(0) System: World save completed in 0.02 seconds.
+  119.28 player   DISCONNECTED: the server closed the connection
+  119.28 admin    DISCONNECTED: the server closed the connection
+  120.00 harness  all pool accounts busy or resting; waiting 30 s
+  150.00 harness  all pool accounts busy or resting; waiting 30 s
+  180.01 harness  all pool accounts busy or resting; waiting 30 s
+  210.01 harness  all pool accounts busy or resting; waiting 30 s
+  240.01 harness  all pool accounts busy or resting; waiting 30 s
+  270.01 harness  all pool accounts busy or resting; waiting 30 s
+  300.01 harness  all pool accounts busy or resting; waiting 11 s
+  314.11 harness  Traceback (most recent call last):
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\run.py", line 148, in run_checks
+    ok, evidence = chk.fn(ctx)
+                   ^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\checks.py", line 353, in t_039
+    c = ctx.fresh(race=race, female=female)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\run.py", line 97, in fresh
+    chars = c.login()
+            ^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\client.py", line 206, in login
+    self.sock = self._connect(HOST, PORT)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\client.py", line 114, in _connect
+    s = socket.create_connection((host, port), timeout=10)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\socket.py", line 865, in create_connection
+    raise exceptions[0]
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\socket.py", line 850, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+
+  314.11 harness  == T-039 run 1: ERROR (ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it)

@@ -1,0 +1,407 @@
+{
+ "checks": [
+  {
+   "id": "P64-1",
+   "title": "Fresh account login: bulletin with the current version, All patch notes, no wiki button",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "title 'Shattered Legacy 2026.10.18'; All patch notes button yes; wiki text none",
+     "seconds": 7.8,
+     "transcript": "transcripts/P64-1-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "title 'Shattered Legacy 2026.10.18'; All patch notes button yes; wiki text none",
+     "seconds": 7.2,
+     "transcript": "transcripts/P64-1-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "title 'Shattered Legacy 2026.10.18'; All patch notes button yes; wiki text none",
+     "seconds": 7.2,
+     "transcript": "transcripts/P64-1-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P64-2",
+   "title": "All patch notes opens the history; a relog shows no bulletin",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "history gump after All patch notes: yes; bulletin on relog: none (observed during the matching P64-1 run)",
+     "seconds": 0.0,
+     "transcript": "transcripts/P64-2-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "history gump after All patch notes: yes; bulletin on relog: none (observed during the matching P64-1 run)",
+     "seconds": 0.0,
+     "transcript": "transcripts/P64-2-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "history gump after All patch notes: yes; bulletin on relog: none (observed during the matching P64-1 run)",
+     "seconds": 0.0,
+     "transcript": "transcripts/P64-2-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P64-3",
+   "title": "[version: the current version first, with (you are here)",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "P64-3: the entry shows gold",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "first heading 'Shattered Legacy 2026.10.18'; (you are here) on page 1: True",
+     "seconds": 1.5,
+     "transcript": "transcripts/P64-3-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "first heading 'Shattered Legacy 2026.10.18'; (you are here) on page 1: True",
+     "seconds": 0.4,
+     "transcript": "transcripts/P64-3-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "first heading 'Shattered Legacy 2026.10.18'; (you are here) on page 1: True",
+     "seconds": 0.4,
+     "transcript": "transcripts/P64-3-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P64-4",
+   "title": "[version pages: Next to Page N of N, last version 2026.10.01, Previous goes back",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "FAIL",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "fail",
+     "evidence": "last page ['Page 41 of 44']; last version 2026.10.02; after Previous ['Page 40 of 44']",
+     "seconds": 0.4,
+     "transcript": "transcripts/P64-4-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "fail",
+     "evidence": "last page ['Page 41 of 44']; last version 2026.10.02; after Previous ['Page 40 of 44']",
+     "seconds": 0.4,
+     "transcript": "transcripts/P64-4-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "fail",
+     "evidence": "last page ['Page 41 of 44']; last version 2026.10.02; after Previous ['Page 40 of 44']",
+     "seconds": 0.4,
+     "transcript": "transcripts/P64-4-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P58-0",
+   "title": "[version as a player: 2026.10.02 to 2026.10.05 sections, no Staff lines",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "P58-0: the patch-note wording reads right",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "versions 10.02-10.05 shown: ['2026.10.05.3', '2026.10.05.2', '2026.10.05', '2026.10.04', '2026.10.03', '2026.10.02']; missing none; Staff list visible to a player: False",
+     "seconds": 0.4,
+     "transcript": "transcripts/P58-0-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "versions 10.02-10.05 shown: ['2026.10.05.3', '2026.10.05.2', '2026.10.05', '2026.10.04', '2026.10.03', '2026.10.02']; missing none; Staff list visible to a player: False",
+     "seconds": 0.4,
+     "transcript": "transcripts/P58-0-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "versions 10.02-10.05 shown: ['2026.10.05.3', '2026.10.05.2', '2026.10.05', '2026.10.04', '2026.10.03', '2026.10.02']; missing none; Staff list visible to a player: False",
+     "seconds": 0.4,
+     "transcript": "transcripts/P58-0-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P61-5",
+   "title": "[version history holds 2026.10.05.2 with its four lines",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "2026.10.05.2 present: True, 4 player lines (CHANGELOG at the code under test: 4)",
+     "seconds": 0.4,
+     "transcript": "transcripts/P61-5-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "2026.10.05.2 present: True, 4 player lines (CHANGELOG at the code under test: 4)",
+     "seconds": 0.4,
+     "transcript": "transcripts/P61-5-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "2026.10.05.2 present: True, 4 player lines (CHANGELOG at the code under test: 4)",
+     "seconds": 0.4,
+     "transcript": "transcripts/P61-5-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P64-5",
+   "title": "The 2026.10.05.2 line ends 'The chance to make the item is unchanged.'",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "P64-5: it wraps onto four rows",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "matching line: 'thril to 187.5, Adamantium and Celestial to 200. The chance to make the item is unchanged.'",
+     "seconds": 0.4,
+     "transcript": "transcripts/P64-5-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "matching line: 'thril to 187.5, Adamantium and Celestial to 200. The chance to make the item is unchanged.'",
+     "seconds": 0.4,
+     "transcript": "transcripts/P64-5-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "matching line: 'thril to 187.5, Adamantium and Celestial to 200. The chance to make the item is unchanged.'",
+     "seconds": 0.4,
+     "transcript": "transcripts/P64-5-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P71-7",
+   "title": "[version history holds 2026.10.10 with five lines",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "2026.10.10 present: True, 5 player lines (CHANGELOG at the code under test: 5)",
+     "seconds": 0.4,
+     "transcript": "transcripts/P71-7-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "2026.10.10 present: True, 5 player lines (CHANGELOG at the code under test: 5)",
+     "seconds": 0.4,
+     "transcript": "transcripts/P71-7-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "2026.10.10 present: True, 5 player lines (CHANGELOG at the code under test: 5)",
+     "seconds": 0.4,
+     "transcript": "transcripts/P71-7-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P64-6",
+   "title": "Staff list: shown to staff, hidden from players",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "P64-6: the staff list shows lavender",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "admin sees 'Staff (players do not see this list)': True; player sees it: False",
+     "seconds": 1.9,
+     "transcript": "transcripts/P64-6-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "admin sees 'Staff (players do not see this list)': True; player sees it: False",
+     "seconds": 0.8,
+     "transcript": "transcripts/P64-6-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "admin sees 'Staff (players do not see this list)': True; player sees it: False",
+     "seconds": 0.8,
+     "transcript": "transcripts/P64-6-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P66-7",
+   "title": "[ClusterFSkillGain reports the rate and 'past stock ceilings on'",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "reply: 'ClusterF skill gain: rate enabled, 3 chance attempt(s), 5x gain amount; past stock ceilings on.'",
+     "seconds": 1.0,
+     "transcript": "transcripts/P66-7-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "reply: 'ClusterF skill gain: rate enabled, 3 chance attempt(s), 5x gain amount; past stock ceilings on.'",
+     "seconds": 1.0,
+     "transcript": "transcripts/P66-7-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "reply: 'ClusterF skill gain: rate enabled, 3 chance attempt(s), 5x gain amount; past stock ceilings on.'",
+     "seconds": 1.0,
+     "transcript": "transcripts/P66-7-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P62-1",
+   "title": "A female character can wear the Kitsune Ears and Tail",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "worn: True (layer 18); messages []",
+     "seconds": 4.9,
+     "transcript": "transcripts/P62-1-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "worn: True (layer 18); messages ['Double Click On Me For Help!']",
+     "seconds": 4.8,
+     "transcript": "transcripts/P62-1-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "worn: True (layer 18); messages []",
+     "seconds": 4.9,
+     "transcript": "transcripts/P62-1-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P62-7",
+   "title": "A male character cannot: 'Only females can wear this.', the item stays in the pack",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "FAIL",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "fail",
+     "evidence": "refusal False; worn True; back in pack False; messages ['Welcome to Shattered Legacy BOT.']",
+     "seconds": 295.4,
+     "transcript": "transcripts/P62-7-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "fail",
+     "evidence": "refusal False; worn True; back in pack False; messages ['Welcome to Shattered Legacy BOT.']",
+     "seconds": 9.3,
+     "transcript": "transcripts/P62-7-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "fail",
+     "evidence": "refusal False; worn True; back in pack False; messages ['Welcome to Shattered Legacy BOT.']",
+     "seconds": 9.2,
+     "transcript": "transcripts/P62-7-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "T-039",
+   "title": "A new character is pointed at the board",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "T-039: a new player can find the board by eye",
+   "result": "ERROR",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "error",
+     "evidence": "ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it",
+     "seconds": 314.1,
+     "transcript": "transcripts/T-039-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "error",
+     "evidence": "ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it",
+     "seconds": 8.7,
+     "transcript": "transcripts/T-039-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "error",
+     "evidence": "ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it",
+     "seconds": 9.2,
+     "transcript": "transcripts/T-039-run3.txt"
+    }
+   ]
+  }
+ ]
+}

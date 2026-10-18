@@ -1965,6 +1965,62 @@
     "Read the Tree Fellow sizes (213 to 390 px tall, 6 to 17 MB each) and the options"
    ],
    "pass": "A decision: the hued stock bogling stays, or one Tree Fellow file is cut to size and stored outside the repo."
+  },
+  "P141-1": {
+   "where": "notes\\art\\rootdeep-mockup\\index.html (open it from the game PC so the third-party previews show)",
+   "do": [
+    "Look over layout.png: zones, the Vault's four rooms, the doorway, the crawlway, the ankh, the spawners",
+    "Pick one look set per zone (or mix floor, wall and door) and answer the open choices at the top"
+   ],
+   "pass": "A decision: the layout and a look per zone approved, or a list of changes. The map batch starts only after this."
+  },
+  "P141-2": {
+   "where": "Test shard, after the map batch has built the landing and the Vault",
+   "do": [
+    "A fresh tutorial character with a pet walks from the landing through the doorway at 5179,1137",
+    "A graduated character and a character that skipped the tutorial try the same"
+   ],
+   "pass": "The trainee and the pet walk in; the graduate is stopped with \"System: You graduated. The Vault does not do reunions.\" and the other with \"System: The Vault is for the League's trainees...\".",
+   "check": "Not built yet (the floor is void land): admin makes a trainee, a graduate and a skipper on the landing; each walks west into 5178,1137; the bot asserts the trainee's position moves and the others get the Echo line and stay at 5179. Pinned by RootdeepVaultVerification V2 (the shard fact)."
+  },
+  "P141-3": {
+   "where": "Test shard, after the map batch and [ClusterFSeedRootdeep, a fresh tutorial character in the Strongroom",
+   "do": [
+    "Fight and kill The Overdraft",
+    "Walk to the rocks in the south wall at 5160,1159 and step on them"
+   ],
+   "pass": "On its death the Echo says a crawlway opened, the rocks become a hole with a puff of dust, and stepping on it puts you (and your pet) in the Warren at 5160,1163; walking back to the landing, the Vault doorway now refuses you. Two minutes later the hole is rocks again.",
+   "check": "Not built yet: the bot kills a [add TheOverdraft as a trainee, asserts the item at 5160,1159 changes from 0x1367 to 0x1B71 and the player's position after the step is 5160,1163. Pinned by RootdeepVaultVerification V3 and V4."
+  },
+  "P141-4": {
+   "where": "Test shard, after the map batch and [ClusterFSeedRootdeep",
+   "do": [
+    "Look at the landing's east wall at 5206,1136",
+    "Kill a character that is not Young on the landing and walk its ghost to the ankh"
+   ],
+   "pass": "A west-facing ankh stands on the floor (not floating or sunk), and the resurrection gump opens beside it."
+  },
+  "P141-5": {
+   "where": "The notes (cc-P141, Decisions for Chase, item 2)",
+   "do": [
+    "Read how a Young death in the Burrows is handled today"
+   ],
+   "pass": "A decision: keep pinned's rule (the ghost wakes by New Haven's healer and walks back for the corpse), or a Vault rule that keeps a trainee's ghost in the Burrows."
+  },
+  "P141-6": {
+   "where": "The notes (cc-P141, section 4) and the mockup's spawner table",
+   "do": [
+    "Read the Warren filler numbers (Rotworm, Grubber, BloodWorm)"
+   ],
+   "pass": "A decision: keep as placed, move or drop any of them."
+  },
+  "P141-7": {
+   "where": "Test shard, SL TEST - Admin, after the map batch",
+   "do": [
+    "[ClusterFSeedRootdeep dryrun, then [ClusterFSeedRootdeep",
+    "Walk the zones with the mockup's spawner table beside you"
+   ],
+   "pass": "The dry run says it would place 33 spawners, 1 ankh, 1 crawlway; the real run places them; each spawner stands where the table says and its creatures stay in their room."
   }
  }
 }

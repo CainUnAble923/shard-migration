@@ -1,0 +1,257 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rootdeep Burrows Mockup</title><style>
+:root { --bg:#f6f4ef; --fg:#1f1d1a; --muted:#6b6560; --card:#ffffff; --line:#ddd6cc; --accent:#8a5a1c; --warn:#a33; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#16151a; --fg:#ece8e1; --muted:#a39d95; --card:#211f26; --line:#3a3640; --accent:#e0a85a; --warn:#f27; } }
+:root[data-theme="dark"] { --bg:#16151a; --fg:#ece8e1; --muted:#a39d95; --card:#211f26; --line:#3a3640; --accent:#e0a85a; --warn:#f27; }
+body { background:var(--bg); color:var(--fg); font:15px/1.5 system-ui, sans-serif; margin:0 auto; max-width:1180px; padding:16px; }
+h1 { font-size:24px; margin:8px 0 4px; } h2 { font-size:19px; margin:28px 0 8px; border-bottom:1px solid var(--line); }
+h3 { font-size:16px; margin:16px 0 6px; } .muted { color:var(--muted); }
+.ask { background:var(--card); border:2px solid var(--accent); border-radius:8px; padding:12px 16px; }
+.plan img { width:100%; height:auto; image-rendering:pixelated; border:1px solid var(--line); }
+.sets { display:flex; flex-wrap:wrap; gap:12px; }
+.set { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:10px; min-width:240px; flex:1 1 260px; }
+.tiles { display:flex; flex-wrap:wrap; gap:8px; align-items:flex-end; }
+.tile { text-align:center; font-size:12px; color:var(--muted); }
+.tile img { display:block; margin:0 auto; max-height:120px; image-rendering:pixelated; background:repeating-conic-gradient(#8882 0 25%, transparent 0 50%) 50% / 12px 12px; }
+.flag { display:inline-block; font-size:12px; border:1px solid var(--warn); color:var(--warn); border-radius:4px; padding:0 5px; margin:2px 0; }
+table { border-collapse:collapse; width:100%; font-size:13px; } td, th { border-bottom:1px solid var(--line); padding:4px 6px; text-align:left; vertical-align:top; }
+.scroll { overflow-x:auto; } code { font-size:13px; }
+</style></head><body>
+<h1>Rootdeep Burrows: layout and look</h1>
+<p class="muted">cc-P141, 2026-10-18. Drawn from the layout spec (<code>layout.json</code>) and the seeder's data (<code>ClusterFRootdeepSeeder.cs</code>), over a vseUOAware radar export of the same rectangle. Nothing is placed and no map is edited until you approve.</p>
+<div class="ask"><b>Approve this layout and look, or tell me what to change.</b><br>Open choices:<ol><li>The layout as drawn (zones, rooms, the Vault's four rooms, the crawlway at x 5160, the landing ankh).</li><li>One look per zone: pick a set below (or mix: say which floor, wall and door).</li><li>The Warren fillers: Rotworm (rare tank) and Grubber (rare runner) kept; BloodWorm moved to the Gloom (it has 374-422 hits, too strong for tier 1). Or drop it.</li><li>A Young trainee who dies in the Vault wakes at New Haven's healer (pinned's Young rule), not the landing: keep, or ask for a Vault rule (needs a pinned patch).</li><li>Third-party kits: DRC1K's terms forbid modifications and reposting; say if any of them should be asked for or used.</li></ol></div>
+<h2>The layout</h2><div class="plan"><a href="layout.png"><img src="layout.png" alt="Top-down layout of the Rootdeep Burrows"></a></div>
+<p class="muted">Legend: zone colours are floor; brown-gray is wall; near-black is a solid block (pillar, shelving, roots, crystal, webs); yellow is the Vault doorway; orange is the one-way crawlway (arrow south); white is the ankh; the blue ring is the arrival from the B1 hole; numbered dots are spawners (table below), brown squares are the decoy chests; the red box is the Overdraft's fight space and the dotted white rings are its kite loops around the two pillars; faint squares are each spawner's home range; the red line is x 5140.</p>
+<h3>Does the Vault fit the Overdraft fight?</h3><p>Yes. The Strongroom is 37 x 16 tiles (556 walkable after the two 3 x 6 pillars). The Overdraft is one mobile on one tile, drawn about 89 x 83 px at 1.5x (about two tiles wide on screen) and walks at 0.4 s a tile; a running player covers a tile in 0.2 s. Each pillar loop is 22 tiles round, so a player can kite it around either pillar or in a figure eight through the 13-tile gap between them, with the three decoy chests a room away in the Deposit Hall. Nothing more is needed; the spare room is the space between the pillars and the walls (4 to 8 tiles each side).</p>
+<h2>Spawners (the seeder's data)</h2><div class="scroll"><table><tr><th>#</th><th>Where</th><th>Zone</th><th>Tile</th><th>Creatures</th><th>At once</th><th>Home</th><th>Group</th><th>Respawn (min)</th></tr>
+<tr><td>1</td><td>Counting Room: Ledger Bats</td><td>Vault</td><td>5174,1137</td><td>LedgerBat</td><td>3</td><td>4</td><td>yes</td><td>1-2</td></tr>
+<tr><td>2</td><td>The Stacks: Penny Rats</td><td>Vault</td><td>5163,1141</td><td>PennyRat</td><td>2</td><td>1</td><td>yes</td><td>1-2</td></tr>
+<tr><td>3</td><td>The Stacks: the Hoarding Rat</td><td>Vault</td><td>5160,1133</td><td>HoardingRat</td><td>1</td><td>2</td><td>no</td><td>2-3</td></tr>
+<tr><td>4</td><td>Deposit Hall: decoy chest 1</td><td>Vault</td><td>5150,1133</td><td>SafeDepositBox</td><td>1</td><td>0</td><td>no</td><td>2-3</td></tr>
+<tr><td>5</td><td>Deposit Hall: decoy chest 2</td><td>Vault</td><td>5143,1137</td><td>SafeDepositBox</td><td>1</td><td>0</td><td>no</td><td>2-3</td></tr>
+<tr><td>6</td><td>Deposit Hall: decoy chest 3</td><td>Vault</td><td>5152,1141</td><td>SafeDepositBox</td><td>1</td><td>0</td><td>no</td><td>2-3</td></tr>
+<tr><td>7</td><td>Strongroom: the Overdraft</td><td>Vault</td><td>5160,1151</td><td>TheOverdraft</td><td>1</td><td>6</td><td>no</td><td>3-4</td></tr>
+<tr><td>8</td><td>Crawl Den: grubs</td><td>Warren</td><td>5158,1167</td><td>BurrowGrub</td><td>2</td><td>5</td><td>yes</td><td>3-5</td></tr>
+<tr><td>9</td><td>Crawl Den: hog</td><td>Warren</td><td>5150,1170</td><td>BurrowHog</td><td>1</td><td>4</td><td>no</td><td>5-8</td></tr>
+<tr><td>10</td><td>Tunnel Foot: scamps</td><td>Warren</td><td>5193,1166</td><td>BurrowScamp</td><td>2</td><td>4</td><td>yes</td><td>3-5</td></tr>
+<tr><td>11</td><td>Great Burrow west: grubs and scamps</td><td>Warren</td><td>5156,1184</td><td>BurrowGrub, BurrowScamp</td><td>3</td><td>6</td><td>yes</td><td>4-6</td></tr>
+<tr><td>12</td><td>Great Burrow middle: scamps</td><td>Warren</td><td>5177,1184</td><td>BurrowScamp, RedcapScamp</td><td>2</td><td>6</td><td>yes</td><td>4-6</td></tr>
+<tr><td>13</td><td>Great Burrow east: redcap and grub</td><td>Warren</td><td>5200,1186</td><td>RedcapScamp, BurrowGrub</td><td>2</td><td>5</td><td>yes</td><td>4-6</td></tr>
+<tr><td>14</td><td>Great Burrow: hogs</td><td>Warren</td><td>5190,1188</td><td>BurrowHog</td><td>2</td><td>6</td><td>no</td><td>5-8</td></tr>
+<tr><td>15</td><td>Great Burrow: rotworm</td><td>Warren</td><td>5170,1190</td><td>Rotworm</td><td>1</td><td>6</td><td>no</td><td>8-12</td></tr>
+<tr><td>16</td><td>Great Burrow: grubber</td><td>Warren</td><td>5186,1178</td><td>Grubber</td><td>1</td><td>8</td><td>no</td><td>20-30</td></tr>
+<tr><td>17</td><td>Brood Pit: the Burrow Mother</td><td>Brood Pit</td><td>5226,1178</td><td>TheBurrowMother</td><td>1</td><td>4</td><td>no</td><td>20-30</td></tr>
+<tr><td>18</td><td>Tangle north: rootlings</td><td>Tangle</td><td>5160,1202</td><td>Rootling</td><td>2</td><td>5</td><td>yes</td><td>4-6</td></tr>
+<tr><td>19</td><td>Tangle: sporecaps</td><td>Tangle</td><td>5176,1201</td><td>Sporecap</td><td>2</td><td>5</td><td>yes</td><td>4-6</td></tr>
+<tr><td>20</td><td>Tangle south: roots</td><td>Tangle</td><td>5168,1224</td><td>Rootling, Sporecap</td><td>3</td><td>6</td><td>yes</td><td>5-7</td></tr>
+<tr><td>21</td><td>Tangle east: rootlings</td><td>Tangle</td><td>5184,1216</td><td>Rootling</td><td>2</td><td>4</td><td>yes</td><td>4-6</td></tr>
+<tr><td>22</td><td>The Thicket: Bramblehulk</td><td>Tangle</td><td>5148,1223</td><td>Bramblehulk</td><td>1</td><td>4</td><td>no</td><td>10-15</td></tr>
+<tr><td>23</td><td>Dawnseam north: shards</td><td>Dawnseam</td><td>5209,1201</td><td>Dawnshard</td><td>2</td><td>5</td><td>yes</td><td>4-6</td></tr>
+<tr><td>24</td><td>Dawnseam west: shards</td><td>Dawnseam</td><td>5200,1222</td><td>Dawnshard</td><td>2</td><td>5</td><td>yes</td><td>4-6</td></tr>
+<tr><td>25</td><td>Dawnseam east: shards</td><td>Dawnseam</td><td>5222,1209</td><td>Dawnshard</td><td>3</td><td>6</td><td>yes</td><td>5-7</td></tr>
+<tr><td>26</td><td>The Seam Heart: Seamguard</td><td>Dawnseam</td><td>5236,1223</td><td>Seamguard</td><td>1</td><td>4</td><td>no</td><td>10-15</td></tr>
+<tr><td>27</td><td>Gloom: north hatchery</td><td>Gloom</td><td>5166,1236</td><td>Gloomling</td><td>3</td><td>5</td><td>yes</td><td>4-6</td></tr>
+<tr><td>28</td><td>Gloom: west spinners</td><td>Gloom</td><td>5156,1248</td><td>Gloomspinner</td><td>2</td><td>5</td><td>yes</td><td>5-7</td></tr>
+<tr><td>29</td><td>Gloom: south run</td><td>Gloom</td><td>5205,1259</td><td>Gloomling, Gloomspinner</td><td>3</td><td>2</td><td>yes</td><td>5-7</td></tr>
+<tr><td>30</td><td>Gloom: east weavers</td><td>Gloom</td><td>5232,1250</td><td>Gloomweaver, Gloomspinner</td><td>2</td><td>4</td><td>yes</td><td>6-8</td></tr>
+<tr><td>31</td><td>Gloom: bloodworm</td><td>Gloom</td><td>5176,1258</td><td>BloodWorm</td><td>1</td><td>6</td><td>no</td><td>15-20</td></tr>
+<tr><td>32</td><td>Queen&#x27;s lair: guards</td><td>Gloom lair</td><td>5198,1242</td><td>Gloomweaver, Gloomspinner</td><td>2</td><td>3</td><td>yes</td><td>10-15</td></tr>
+<tr><td>33</td><td>Queen&#x27;s lair: the Gloom Queen</td><td>Gloom lair</td><td>5212,1252</td><td>TheGloomQueen</td><td>1</td><td>5</td><td>no</td><td>30-45</td></tr>
+</table></div><p class="muted">Placed by <code>[ClusterFSeedRootdeep</code> once the walls exist (it refuses on void land). Also placed: the landing ankh at 5206,1136 (AnkhWest, P137's method) and the crawlway at 5160,1159.</p>
+<h2>Look: candidate tiles per zone</h2><p class="muted">Stock tiles are rendered by vseUOAware's <code>render_art_tile</code> from the client's art; every one is a tile OSI's own Trammel dungeons use (see <code>dungeon-survey.json</code>). vseUOAware has no texture (texmaps) renderer, so floors show as their land-art diamond, which is how the client draws flat land anyway. Third-party previews are local only (their terms forbid reposting and both repos are public): they show when this page is opened from Chase's PC after <code>build_mockup.py</code> has run.</p>
+<h3>The Landing</h3><div class="sets">
+<div class="set"><b>L-A Dungeon stone cave</b><br><span class="muted">stock (EA art, ships as is); used in Deceit, Hythloth</span><div class="tiles">
+<div class="tile"><img src="swatches/land-0245.png" alt="land 0x0245"><div>floor<br>land 0x0245</div><div>cave</div></div>
+<div class="tile"><img src="swatches/item-0242.png" alt="item 0x0242"><div>wall<br>item 0x0242</div><div>dungeon wall</div></div>
+<div class="tile"><img src="swatches/item-0241.png" alt="item 0x0241"><div>wall<br>item 0x0241</div><div>dungeon wall</div></div>
+<div class="tile"><img src="swatches/item-0247.png" alt="item 0x0247"><div>arch<br>item 0x0247</div><div>dungeon arch</div></div>
+</div></div>
+<div class="set"><b>L-B Rough cave</b><br><span class="muted">stock (EA art, ships as is); used in Orc Cave, Covetous</span><div class="tiles">
+<div class="tile"><img src="swatches/item-053D.png" alt="item 0x053D"><div>floor<br>item 0x053D</div><div>cave floor</div></div>
+<div class="tile"><img src="swatches/land-025A.png" alt="land 0x025A"><div>wall<br>land 0x025A</div><div>cave</div></div>
+<div class="tile"><img src="swatches/item-079E.png" alt="item 0x079E"><div>steps<br>item 0x079E</div><div>cave steps</div></div>
+<div class="tile"><img src="swatches/item-08E1.png" alt="item 0x08E1"><div>decor<br>item 0x08E1</div><div>stalagmites</div></div>
+</div></div>
+<div class="set"><b>X-1 Custom cave entrances (otimpyre)</b><br><span class="muted">third-party: <code>third-party\custom-caves\Custom Caves Entrances</code></span><br><span class="flag">CREDIT (otimpyre); no terms stated: ship only in the player package or a private repo, never repost</span><div class="tiles">
+<div class="tile"><img src="local-previews/X-1-1.png" alt="1.bmp (local preview)"><div>1.bmp</div></div>
+<div class="tile"><img src="local-previews/X-1-5.png" alt="5.bmp (local preview)"><div>5.bmp</div></div>
+<div class="tile"><img src="local-previews/X-1-9.png" alt="9.bmp (local preview)"><div>9.bmp</div></div>
+</div></div>
+</div>
+<p class="muted">Cave Entrances (Q#347) is queued, not on disk yet.</p>
+<h3>The Vault (tutorial only)</h3><div class="sets">
+<div class="set"><b>V-A Marble strongroom</b><br><span class="muted">stock (EA art, ships as is); used in stock marble (banks, Wind)</span><div class="tiles">
+<div class="tile"><img src="swatches/land-0486.png" alt="land 0x0486"><div>floor<br>land 0x0486</div><div>marble</div></div>
+<div class="tile"><img src="swatches/item-00F8.png" alt="item 0x00F8"><div>wall<br>item 0x00F8</div><div>marble wall</div></div>
+<div class="tile"><img src="swatches/item-0675.png" alt="item 0x0675"><div>door<br>item 0x0675</div><div>metal door</div></div>
+<div class="tile"><img src="swatches/item-0B40.png" alt="item 0x0B40"><div>decor<br>item 0x0B40</div><div>counter</div></div>
+</div></div>
+<div class="set"><b>V-B Sandstone vault</b><br><span class="muted">stock (EA art, ships as is); used in stock sandstone</span><div class="tiles">
+<div class="tile"><img src="swatches/item-051D.png" alt="item 0x051D"><div>floor<br>item 0x051D</div><div>stone pavers</div></div>
+<div class="tile"><img src="swatches/item-0158.png" alt="item 0x0158"><div>wall<br>item 0x0158</div><div>sandstone wall</div></div>
+<div class="tile"><img src="swatches/item-0190.png" alt="item 0x0190"><div>arch<br>item 0x0190</div><div>sandstone arch</div></div>
+<div class="tile"><img src="swatches/item-0824.png" alt="item 0x0824"><div>door<br>item 0x0824</div><div>iron gate</div></div>
+</div></div>
+<div class="set"><b>V-C Dungeon stone vault</b><br><span class="muted">stock (EA art, ships as is); used in Wrong, Terathan Keep</span><div class="tiles">
+<div class="tile"><img src="swatches/land-043E.png" alt="land 0x043E"><div>floor<br>land 0x043E</div><div>stone</div></div>
+<div class="tile"><img src="swatches/item-001A.png" alt="item 0x001A"><div>wall<br>item 0x001A</div><div>stone wall</div></div>
+<div class="tile"><img src="swatches/item-06F5.png" alt="item 0x06F5"><div>door<br>item 0x06F5</div><div>portcullis</div></div>
+<div class="tile"><img src="swatches/item-01E6.png" alt="item 0x01E6"><div>arch<br>item 0x01E6</div><div>stone arch</div></div>
+</div></div>
+<div class="set"><b>X-2 Blue stone tiles (DRC1K)</b><br><span class="muted">third-party: <code>third-party\drc1k-uoassets\Blue_Stone_Assets</code></span><br><span class="flag">CREDIT (DRC1K); non-commercial; no redistribution outside the client; NO MODIFICATIONS (recolour needs his OK)</span><div class="tiles">
+<div class="tile"><img src="local-previews/X-2-church_wall.png" alt="church_wall.bmp (local preview)"><div>church_wall.bmp</div></div>
+<div class="tile"><img src="local-previews/X-2-arch_west.png" alt="arch_west.bmp (local preview)"><div>arch_west.bmp</div></div>
+<div class="tile"><img src="local-previews/X-2-round.png" alt="round.bmp (local preview)"><div>round.bmp</div></div>
+</div></div>
+<div class="set"><b>X-3 Ultimate Dungeon Wall Set (DRC1K)</b><br><span class="muted">third-party: <code>third-party\drc1k-uoassets\The Ultimate Dungeon Wall Set by-DRC1K</code></span><br><span class="flag">CREDIT (DRC1K); non-commercial; no redistribution outside the client; NO MODIFICATIONS</span><div class="tiles">
+<div class="tile"><img src="local-previews/X-3-Ruined_Dungeon_Wall_1.png" alt="Ruined_Dungeon_Wall_1.bmp (local preview)"><div>Ruined_Dungeon_Wall_1.bmp</div></div>
+<div class="tile"><img src="local-previews/X-3-Round_Ruined_Dungeon_Wall_1.png" alt="Round_Ruined_Dungeon_Wall_1.bmp (local preview)"><div>Round_Ruined_Dungeon_Wall_1.bmp</div></div>
+<div class="tile"><img src="local-previews/X-3-Dungeon_Stairs_1.png" alt="Dungeon_Stairs_1.bmp (local preview)"><div>Dungeon_Stairs_1.bmp</div></div>
+</div></div>
+</div>
+<h3>The Warren</h3><div class="sets">
+<div class="set"><b>W-A Dirt burrows</b><br><span class="muted">stock (EA art, ships as is); used in stock dirt, cave walls</span><div class="tiles">
+<div class="tile"><img src="swatches/land-0071.png" alt="land 0x0071"><div>floor<br>land 0x0071</div><div>dirt</div></div>
+<div class="tile"><img src="swatches/land-025A.png" alt="land 0x025A"><div>wall<br>land 0x025A</div><div>cave</div></div>
+<div class="tile"><img src="swatches/item-08E1.png" alt="item 0x08E1"><div>decor<br>item 0x08E1</div><div>stalagmites</div></div>
+<div class="tile"><img src="swatches/item-0F34.png" alt="item 0x0F34"><div>decor<br>item 0x0F34</div><div>hay</div></div>
+</div></div>
+<div class="set"><b>W-B Cave burrows</b><br><span class="muted">stock (EA art, ships as is); used in Destard, Despise</span><div class="tiles">
+<div class="tile"><img src="swatches/land-0246.png" alt="land 0x0246"><div>floor<br>land 0x0246</div><div>cave</div></div>
+<div class="tile"><img src="swatches/item-0241.png" alt="item 0x0241"><div>wall<br>item 0x0241</div><div>dungeon wall</div></div>
+<div class="tile"><img src="swatches/item-08E5.png" alt="item 0x08E5"><div>decor<br>item 0x08E5</div><div>stalagmites</div></div>
+<div class="tile"><img src="swatches/item-10EE.png" alt="item 0x10EE"><div>decor<br>item 0x10EE</div><div>garbage</div></div>
+</div></div>
+<div class="set"><b>X-4 Gray rocks (DRC1K)</b><br><span class="muted">third-party: <code>third-party\drc1k-uoassets\gray-rocks-asset-by-DRC1K</code></span><br><span class="flag">CREDIT (DRC1K); non-commercial; no redistribution outside the client; NO MODIFICATIONS</span><div class="tiles">
+<div class="tile"><img src="local-previews/X-4-rock1.png" alt="rock1.bmp (local preview)"><div>rock1.bmp</div></div>
+<div class="tile"><img src="local-previews/X-4-rock4.png" alt="rock4.bmp (local preview)"><div>rock4.bmp</div></div>
+<div class="tile"><img src="local-previews/X-4-rock8.png" alt="rock8.bmp (local preview)"><div>rock8.bmp</div></div>
+</div></div>
+</div>
+<h3>The Tangle</h3><div class="sets">
+<div class="set"><b>T-A Rooted cave</b><br><span class="muted">stock (EA art, ships as is); used in Despise (mushrooms), stock vines</span><div class="tiles">
+<div class="tile"><img src="swatches/land-0246.png" alt="land 0x0246"><div>floor<br>land 0x0246</div><div>cave</div></div>
+<div class="tile"><img src="swatches/land-0266.png" alt="land 0x0266"><div>wall<br>land 0x0266</div><div>cave</div></div>
+<div class="tile"><img src="swatches/item-0CF1.png" alt="item 0x0CF1"><div>decor<br>item 0x0CF1</div><div>vines</div></div>
+<div class="tile"><img src="swatches/item-0D16.png" alt="item 0x0D16"><div>decor<br>item 0x0D16</div><div>mushroom</div></div>
+<div class="tile"><img src="swatches/item-0CF3.png" alt="item 0x0CF3"><div>decor<br>item 0x0CF3</div><div>fallen log</div></div>
+</div></div>
+<div class="set"><b>T-B Root forest under earth</b><br><span class="muted">stock (EA art, ships as is); used in stock dirt and o&#x27;hii roots</span><div class="tiles">
+<div class="tile"><img src="swatches/land-0071.png" alt="land 0x0071"><div>floor<br>land 0x0071</div><div>dirt</div></div>
+<div class="tile"><img src="swatches/land-025A.png" alt="land 0x025A"><div>wall<br>land 0x025A</div><div>cave</div></div>
+<div class="tile"><img src="swatches/item-0C9E.png" alt="item 0x0C9E"><div>decor<br>item 0x0C9E</div><div>o&#x27;hii tree</div></div>
+<div class="tile"><img src="swatches/item-0D0C.png" alt="item 0x0D0C"><div>decor<br>item 0x0D0C</div><div>mushrooms</div></div>
+</div></div>
+</div>
+<p class="muted">Giant Blue / Red Mushrooms (Q#235, Q#236) are queued, not on disk yet.</p>
+<h3>The Dawnseam</h3><div class="sets">
+<div class="set"><b>D-A Crystal seam</b><br><span class="muted">stock (EA art, ships as is); used in stock crystal (Ter Mur style)</span><div class="tiles">
+<div class="tile"><img src="swatches/land-3867.png" alt="land 0x3867"><div>floor<br>land 0x3867</div><div>crystal</div></div>
+<div class="tile"><img src="swatches/land-025A.png" alt="land 0x025A"><div>wall<br>land 0x025A</div><div>cave</div></div>
+<div class="tile"><img src="swatches/item-2224.png" alt="item 0x2224"><div>decor<br>item 0x2224</div><div>crystal</div></div>
+<div class="tile"><img src="swatches/item-2228.png" alt="item 0x2228"><div>decor<br>item 0x2228</div><div>crystal</div></div>
+</div></div>
+<div class="set"><b>D-B Stone seam</b><br><span class="muted">stock (EA art, ships as is); used in Wrong, Hythloth</span><div class="tiles">
+<div class="tile"><img src="swatches/land-0441.png" alt="land 0x0441"><div>floor<br>land 0x0441</div><div>stone</div></div>
+<div class="tile"><img src="swatches/item-02FE.png" alt="item 0x02FE"><div>wall<br>item 0x02FE</div><div>dungeon wall</div></div>
+<div class="tile"><img src="swatches/item-08E3.png" alt="item 0x08E3"><div>decor<br>item 0x08E3</div><div>flowstone</div></div>
+<div class="tile"><img src="swatches/item-08E8.png" alt="item 0x08E8"><div>decor<br>item 0x08E8</div><div>flowstone</div></div>
+</div></div>
+</div>
+<p class="muted">Crystal Set (Q#284) and Crystal Wall (Q#302) are queued, not on disk yet; Ore Stalagmite deposits Q#299 too.</p>
+<h3>The Gloom</h3><div class="sets">
+<div class="set"><b>G-A Terathan dark stone</b><br><span class="muted">stock (EA art, ships as is); used in Terathan Keep</span><div class="tiles">
+<div class="tile"><img src="swatches/land-0440.png" alt="land 0x0440"><div>floor<br>land 0x0440</div><div>stone</div></div>
+<div class="tile"><img src="swatches/item-01D0.png" alt="item 0x01D0"><div>wall<br>item 0x01D0</div><div>stone wall</div></div>
+<div class="tile"><img src="swatches/item-01EA.png" alt="item 0x01EA"><div>wall<br>item 0x01EA</div><div>stone wall</div></div>
+<div class="tile"><img src="swatches/item-10B8.png" alt="item 0x10B8"><div>decor<br>item 0x10B8</div><div>web</div></div>
+<div class="tile"><img src="swatches/item-0EE3.png" alt="item 0x0EE3"><div>decor<br>item 0x0EE3</div><div>spiderweb</div></div>
+</div></div>
+<div class="set"><b>G-B Webbed cave</b><br><span class="muted">stock (EA art, ships as is); used in Covetous, Terathan Keep</span><div class="tiles">
+<div class="tile"><img src="swatches/land-025A.png" alt="land 0x025A"><div>floor<br>land 0x025A</div><div>cave</div></div>
+<div class="tile"><img src="swatches/item-0242.png" alt="item 0x0242"><div>wall<br>item 0x0242</div><div>dungeon wall</div></div>
+<div class="tile"><img src="swatches/item-0523.png" alt="item 0x0523"><div>floor<br>item 0x0523</div><div>stone pavers Dark</div></div>
+<div class="tile"><img src="swatches/item-10B8.png" alt="item 0x10B8"><div>decor<br>item 0x10B8</div><div>web</div></div>
+</div></div>
+<div class="set"><b>X-5 Ruined dungeon walls, dark (DRC1K)</b><br><span class="muted">third-party: <code>third-party\drc1k-uoassets\The Ultimate Dungeon Wall Set by-DRC1K</code></span><br><span class="flag">CREDIT (DRC1K); non-commercial; no redistribution outside the client; NO MODIFICATIONS</span><div class="tiles">
+<div class="tile"><img src="local-previews/X-5-Ruined_Dungeon_Wall_20.png" alt="Ruined_Dungeon_Wall_20.bmp (local preview)"><div>Ruined_Dungeon_Wall_20.bmp</div></div>
+<div class="tile"><img src="local-previews/X-5-Ruined_Dungeon_Wall_30.png" alt="Ruined_Dungeon_Wall_30.bmp (local preview)"><div>Ruined_Dungeon_Wall_30.bmp</div></div>
+</div></div>
+</div>
+<h3>Gloom Queen&#x27;s lair</h3><div class="sets">
+<div class="set"><b>Q-A Lair arch and webs</b><br><span class="muted">stock (EA art, ships as is); used in Terathan Keep</span><div class="tiles">
+<div class="tile"><img src="swatches/item-01E6.png" alt="item 0x01E6"><div>arch<br>item 0x01E6</div><div>stone arch</div></div>
+<div class="tile"><img src="swatches/item-01E9.png" alt="item 0x01E9"><div>wall<br>item 0x01E9</div><div>stone wall</div></div>
+<div class="tile"><img src="swatches/item-0EE3.png" alt="item 0x0EE3"><div>decor<br>item 0x0EE3</div><div>spiderweb</div></div>
+<div class="tile"><img src="swatches/item-10B8.png" alt="item 0x10B8"><div>decor<br>item 0x10B8</div><div>web</div></div>
+</div></div>
+</div>
+<h3>The crawlway</h3><div class="sets">
+<div class="set"><b>C-A Cave-in and crawlway (as built)</b><br><span class="muted">stock (EA art, ships as is); used in the RootdeepCrawlway item: closed rocks, open hole</span><div class="tiles">
+<div class="tile"><img src="swatches/item-1367.png" alt="item 0x1367"><div>closed<br>item 0x1367</div><div>rocks</div></div>
+<div class="tile"><img src="swatches/item-1B71.png" alt="item 0x1B71"><div>open<br>item 0x1B71</div><div>hole</div></div>
+</div></div>
+<div class="set"><b>X-6 Cave hole (otimpyre)</b><br><span class="muted">third-party: <code>third-party\holes\Holes\[Custom Art] Hole Cave</code></span><br><span class="flag">EA (built from EA solen hole art: ship as patch records only); CREDIT (otimpyre); no terms stated, never repost</span><div class="tiles">
+<div class="tile"><img src="local-previews/X-6-1.png" alt="1.bmp (local preview)"><div>1.bmp</div></div>
+<div class="tile"><img src="local-previews/X-6-2.png" alt="2.bmp (local preview)"><div>2.bmp</div></div>
+<div class="tile"><img src="local-previews/X-6-3.png" alt="3.bmp (local preview)"><div>3.bmp</div></div>
+<div class="tile"><img src="local-previews/X-6-4.png" alt="4.bmp (local preview)"><div>4.bmp</div></div>
+</div></div>
+</div>
+<h2>Floors and blocks in the spec</h2><div class="scroll"><table><tr><th>Zone</th><th>Piece</th><th>Tiles (x1,y1 to x2,y2)</th></tr>
+<tr><td>Landing</td><td>landing</td><td>5180,1132 to 5206,1144</td></tr>
+<tr><td>Landing</td><td>landing tunnel south</td><td>5192,1145 to 5195,1161</td></tr>
+<tr><td>Vault</td><td>Counting Room</td><td>5170,1132 to 5178,1142</td></tr>
+<tr><td>Vault</td><td>The Stacks</td><td>5156,1132 to 5168,1142</td></tr>
+<tr><td>Vault</td><td>Deposit Hall</td><td>5142,1132 to 5154,1142</td></tr>
+<tr><td>Vault</td><td>Strongroom</td><td>5142,1144 to 5178,1159</td></tr>
+<tr><td>Vault</td><td>gap Counting Room to Stacks</td><td>5169,1140 to 5169,1141</td></tr>
+<tr><td>Vault</td><td>gap Stacks to Deposit Hall</td><td>5155,1133 to 5155,1134</td></tr>
+<tr><td>Vault</td><td>gap Deposit Hall to Strongroom</td><td>5146,1143 to 5148,1143</td></tr>
+<tr><td>Warren</td><td>Crawl Den</td><td>5146,1162 to 5170,1172</td></tr>
+<tr><td>Warren</td><td>Tunnel Foot</td><td>5186,1162 to 5200,1170</td></tr>
+<tr><td>Warren</td><td>tunnel Crawl Den to Tunnel Foot</td><td>5171,1165 to 5185,1167</td></tr>
+<tr><td>Warren</td><td>tunnel Crawl Den to Great Burrow</td><td>5156,1173 to 5159,1175</td></tr>
+<tr><td>Warren</td><td>tunnel Tunnel Foot to Great Burrow</td><td>5192,1171 to 5195,1175</td></tr>
+<tr><td>Warren</td><td>Great Burrow</td><td>5146,1176 to 5208,1192</td></tr>
+<tr><td>Warren</td><td>tunnel to the Brood Pit</td><td>5209,1180 to 5211,1183</td></tr>
+<tr><td>Brood Pit</td><td>Brood Pit</td><td>5212,1168 to 5240,1188</td></tr>
+<tr><td>Warren</td><td>descent to the Tangle</td><td>5160,1193 to 5163,1197</td></tr>
+<tr><td>Warren</td><td>descent to the Dawnseam</td><td>5200,1193 to 5203,1197</td></tr>
+<tr><td>Tangle</td><td>the Tangle</td><td>5142,1198 to 5188,1216</td></tr>
+<tr><td>Tangle</td><td>the Tangle, south</td><td>5158,1217 to 5188,1228</td></tr>
+<tr><td>Tangle</td><td>the Thicket (Bramblehulk)</td><td>5142,1218 to 5156,1228</td></tr>
+<tr><td>Tangle</td><td>gap into the Thicket</td><td>5157,1222 to 5157,1223</td></tr>
+<tr><td>Tangle</td><td>Tangle to Dawnseam</td><td>5189,1212 to 5193,1214</td></tr>
+<tr><td>Dawnseam</td><td>the Dawnseam</td><td>5194,1198 to 5242,1216</td></tr>
+<tr><td>Dawnseam</td><td>the Dawnseam, south</td><td>5194,1217 to 5226,1228</td></tr>
+<tr><td>Dawnseam</td><td>the Seam Heart (Seamguard)</td><td>5228,1218 to 5242,1228</td></tr>
+<tr><td>Dawnseam</td><td>gap into the Seam Heart</td><td>5227,1222 to 5227,1223</td></tr>
+<tr><td>Gloom</td><td>descent from the Tangle</td><td>5166,1229 to 5169,1233</td></tr>
+<tr><td>Gloom</td><td>descent from the Dawnseam</td><td>5214,1229 to 5217,1233</td></tr>
+<tr><td>Gloom</td><td>the Gloom, north</td><td>5150,1234 to 5236,1236</td></tr>
+<tr><td>Gloom</td><td>the Gloom, west</td><td>5150,1237 to 5182,1257</td></tr>
+<tr><td>Gloom</td><td>the Gloom, east</td><td>5228,1237 to 5236,1257</td></tr>
+<tr><td>Gloom</td><td>the Gloom, south</td><td>5150,1258 to 5236,1260</td></tr>
+<tr><td>Gloom lair</td><td>Gloom Queen&#x27;s lair</td><td>5184,1238 to 5226,1256</td></tr>
+<tr><td>Gloom lair</td><td>lair mouth (west)</td><td>5183,1246 to 5183,1248</td></tr>
+<tr><td>Vault</td><td>Stacks shelving, north row (solid)</td><td>5156,1135 to 5166,1135</td></tr>
+<tr><td>Vault</td><td>Stacks shelving, south row (solid)</td><td>5158,1139 to 5168,1139</td></tr>
+<tr><td>Vault</td><td>Strongroom pillar west (kite loop) (solid)</td><td>5151,1149 to 5153,1154</td></tr>
+<tr><td>Vault</td><td>Strongroom pillar east (kite loop) (solid)</td><td>5167,1149 to 5169,1154</td></tr>
+<tr><td>Tangle</td><td>root mass (solid)</td><td>5150,1204 to 5153,1207</td></tr>
+<tr><td>Tangle</td><td>root mass (solid)</td><td>5166,1202 to 5170,1205</td></tr>
+<tr><td>Tangle</td><td>root mass (solid)</td><td>5178,1208 to 5181,1212</td></tr>
+<tr><td>Tangle</td><td>root mass (solid)</td><td>5163,1213 to 5166,1215</td></tr>
+<tr><td>Tangle</td><td>root mass (solid)</td><td>5172,1220 to 5175,1222</td></tr>
+<tr><td>Dawnseam</td><td>crystal cluster (solid)</td><td>5202,1204 to 5205,1206</td></tr>
+<tr><td>Dawnseam</td><td>crystal cluster (solid)</td><td>5216,1201 to 5219,1204</td></tr>
+<tr><td>Dawnseam</td><td>crystal cluster (solid)</td><td>5230,1206 to 5233,1209</td></tr>
+<tr><td>Dawnseam</td><td>crystal cluster (solid)</td><td>5208,1214 to 5211,1217</td></tr>
+<tr><td>Dawnseam</td><td>crystal cluster (solid)</td><td>5218,1222 to 5220,1225</td></tr>
+<tr><td>Gloom</td><td>web mass (solid)</td><td>5158,1240 to 5161,1243</td></tr>
+<tr><td>Gloom</td><td>web mass (solid)</td><td>5170,1250 to 5173,1253</td></tr>
+<tr><td>Gloom</td><td>web mass (solid)</td><td>5231,1241 to 5233,1244</td></tr>
+<tr><td>Gloom lair</td><td>web pillar (solid)</td><td>5196,1244 to 5198,1246</td></tr>
+<tr><td>Gloom lair</td><td>web pillar (solid)</td><td>5212,1247 to 5214,1249</td></tr>
+</table></div><p class="muted">8555 floor tiles, 1618 wall tiles, 272 solid tiles.</p></body></html>

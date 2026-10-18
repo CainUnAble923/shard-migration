@@ -1,0 +1,21 @@
+Overnight play tests starting: 7 checks on 73a0348
+
+The overnight play-test bot is starting on 73a0348.
+
+Play-test items with work tonight (open, with a bot check that has not run on this code):
+  T-039: code changed since f057b97 (run 2026-10-16-0130)
+  T-046: code changed since f057b97 (run 2026-10-16-0130)
+  T-047: code changed since f057b97 (run 2026-10-16-0130)
+  P56-4: code changed since f057b97 (run 2026-10-16-0130)
+  P56-6: code changed since f057b97 (run 2026-10-16-0130)
+  P61-3: code changed since f057b97 (run 2026-10-16-0130)
+  P119-1: code changed since f057b97 (run 2026-10-16-0130)
+
+It runs all 24 checks (some hand results to others), so the report covers more than the list above.
+Expected length: about 41 min (build, boot, checks, soak).
+
+To stop it:
+  schtasks /End /TN "SL overnight play tests"
+  docker compose -p sl-uo-bot down -t 60
+The first stops the script; the second stops the scratch shard (sl-modernuo-bot only, never live or test).
+A summary email follows when it finishes.

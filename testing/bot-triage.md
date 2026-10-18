@@ -884,3 +884,17 @@ Added by cc-P140 (2026-10-18).
 | P140-6 | EYES | The Overdraft's 1.5x scale next to a player, and its strongbox-brown hue 1740: a look |
 | P140-7 | EYES | The decoy Safe Deposit Boxes spring and bite a tutorial participant (cc-P50's mimic frames): art, on screen; the engagement rule is a shard fact |
 | P140-8 | DECISION | The Tree Fellows (Rootling): keep the hued stock bogling, or decide the 6 to 17 MB files' route (notes, Decisions) |
+
+### P141
+
+Added by cc-P141 (2026-10-18).
+
+| id | bucket | reason |
+|---|---|---|
+| P141-1 | DECISION | Approve the Burrows layout and the look per zone on the mockup page, or say what to change: the map batch waits on it |
+| P141-2 | BOT | After the map batch: the Vault doorway's refusal (the Echo's line for a non-trainee and a graduate) and a trainee and pet walking in are server-sent (system message, the mobile's position). Check not written yet: the floor is void land today |
+| P141-3 | BOT-PARTIAL | After the map batch: the Overdraft's death, the crawlway's item id changing from rocks (0x1367) to a hole (0x1B71) and the move into the Warren are server-sent; whether the cave-in and the dust read right is Chase's. Check not written yet |
+| P141-4 | EYES | After the map batch and the seeder: the landing ankh stands against the east wall facing the arrival and a ghost that walks to it is offered resurrection; how it sits on the new floor is a look |
+| P141-5 | DECISION | A Young trainee who dies in the Vault wakes at New Haven's healer (pinned's Young rule), not the landing: keep it, or ask for a Vault rule (a pinned patch) |
+| P141-6 | DECISION | The Warren fillers: Rotworm and Grubber kept as rare spawns, BloodWorm moved to the Gloom (too strong for tier 1), or dropped |
+| P141-7 | DEPLOY | After the map batch: run the seeder on the test shard (dry run, then for real) and look at the 33 spawners, the ankh and the crawlway in place |
