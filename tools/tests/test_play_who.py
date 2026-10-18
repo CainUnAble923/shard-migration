@@ -259,8 +259,8 @@ class Page(unittest.TestCase):
         self.assertIn("if (filter === 'whobot') return !!OPEN[it.status] && whoKey(it) === 'bot';", self.t)
         self.assertIn("if (filter === 'cc') return !!OPEN[it.status] && whoKey(it) === 'cc';", self.t)
         self.assertIn("var MINE = { you: 1, botyou: 1, decide: 1 };", self.t)
-        self.assertIn("var filter = 'open';", self.t)
-        self.assertIn('<button data-f="open" aria-pressed="true">Open</button>', self.t)
+        self.assertIn("var listFilter = 'open';", self.t, "cc-P164: the page opens on Up next; the full list's default is still Open")
+        self.assertIn('<button data-f="open" aria-pressed="false">Open</button>', self.t)
         self.assertIn('<button data-f="bot" aria-pressed="false"', self.t, "P112's Bot tonight is still there")
         self.assertIn("if (filter === 'open') return !!OPEN[it.status];", self.t, "Open still shows every open item")
 

@@ -557,6 +557,30 @@ def set_result(root, item_id, status, note="", by=""):
     return update(root, fn)
 
 
+def set_later_many(root, entries, by=""):
+    """cc-P164: several items Later at once, each with its own note (the Probably stale group), in one write under the
+    lock. Every id must exist, or nothing changes."""
+    entries = [(i, norm(n)[:500]) for i, n in entries]
+
+    def fn(doc):
+        found = []
+        for item_id, note in entries:
+            it = find_item(doc, item_id)
+            if it is None:
+                raise KeyError(item_id)
+            found.append((it, note))
+        out = []
+        for it, note in found:
+            it["status"] = "later"
+            it["note"] = note
+            it["resultAt"] = now_iso()
+            it["bug"] = ""
+            it["by"] = norm(by)[:60]
+            out.append(dict(it))
+        return out
+    return update(root, fn)
+
+
 def set_bug(root, item_id, bug):
     bug = norm(bug)[:40]
 

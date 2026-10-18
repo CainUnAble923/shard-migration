@@ -183,8 +183,8 @@ class Page(unittest.TestCase):
     def test_the_filter_is_an_extra_and_open_stays_the_default(self):
         self.assertIn('<button data-f="bot" aria-pressed="false"', self.t)
         self.assertIn("if (filter === 'bot') return botInfo(it.id).state === 'tonight';", self.t)
-        self.assertIn("var filter = 'open';", self.t)
-        self.assertIn('<button data-f="open" aria-pressed="true">Open</button>', self.t)
+        self.assertIn("var listFilter = 'open';", self.t, "cc-P164: the page opens on Up next; the full list's default is still Open")
+        self.assertIn('<button data-f="open" aria-pressed="false">Open</button>', self.t)
 
     def test_the_header_count_and_the_quiet_line(self):
         self.assertIn("'\">Bot tonight: ' + bot.count + '</span>'", self.t)

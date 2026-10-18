@@ -214,7 +214,8 @@ The machine itself. Its tile reads `GET http://192.168.1.61:8094/api/gamepc` wit
 "offline since" (3 minutes after the last snapshot), and the Golem's running prompt. The snapshot is the scheduled task
 **SL game PC snapshot** (`scripts\Publish-GamePcSnapshot.ps1`, every minute while Chase is logged on;
 `scripts\Install-GamePcSnapshotTask.ps1` installs it). Since P133 it also reports every game PC service the dashboard shows
-(the `snapshot` keys in `services.json`).
+(the `snapshot` keys in `services.json`), and since cc-P164 the test shard's deploy record (`testShard`: commit, version,
+when), so Haven's play-test page can say "needs: rebuild test shard" and its bug reports carry the version.
 
 ### Status feed `uo-status`
 

@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "about": "cc-P164: the play-test page's sessions (Up next). THE OVERSEER'S FILE, like decisions-overlay.json: edit it by hand; nothing writes it. Each session is one sitting: an id (letters, digits, -), a title, a one-line why, a 'before' list (what to do before the first item) and item ids in order, 6 to 12 of Chase's own items (Who You or Bot then you; Bot and CC items are left out whatever this file says). An item belongs to one session: the first that lists it. Open items in no session go into automatic sessions the page builds (by Where, then prompt, newest first, 12 at most). 'stale' is the Probably stale group: ids with a reason; the page adds what its own rules find. 'superseded' maps a prompt to why its items are out of date (its open items go to Probably stale). Seeded 2026-10-18 from D:\\UO\\overseer\\playtest-plan-2026-10-18.md (session 4 there is split in two to keep each under 12). Rules: tools/playsessions.py. ASCII only.",
+  "sessions": [
+    {
+      "id": "rootdeep",
+      "title": "Rootdeep Burrows and the tutorial",
+      "why": "The Burrows came in over P139 to P142: seed them as admin, then walk them with a fresh tutorial character.",
+      "before": [
+        "Shard Console > Test shard: Rebuild, so the test shard has today's code (P140 to P147)",
+        "Log in as Admin (Eve) for the first item, then make a fresh tutorial character for the rest"
+      ],
+      "items": ["P141-7", "P140-6", "P140-5", "P141-3", "P141-4", "P140-3", "P140-4", "P142-6", "P142-7"]
+    },
+    {
+      "id": "bulk-orders",
+      "title": "Bulk orders",
+      "why": "The smith and tailor bulk orders, the Society and the Civic Mule Exchange, on player characters.",
+      "before": [
+        "Log in as a player character with Blacksmithy 80 (and one with Tailoring 60); Admin (Eve) for the deeds you add"
+      ],
+      "items": ["P122-1", "P122-2", "P122-3", "P122-4", "P57-4", "P61-4", "T-001", "P69-2"]
+    },
+    {
+      "id": "creatures",
+      "title": "Creatures and combat",
+      "why": "The ported creatures, dragon abilities, pet poison and the high-skill combat checks, spawned as admin.",
+      "before": [
+        "Log in as Admin (Eve); keep a player character ready for the Magic Arrow and poison checks"
+      ],
+      "items": ["P119-2", "P119-3", "P119-4", "P121-1", "P121-2", "P66-5", "P137-3"]
+    },
+    {
+      "id": "achievements-ui",
+      "title": "Achievements button, [achievements and [version",
+      "why": "The new Achievements button (P147) in both paperdolls, the top bar and stock TazUO, and the pages it opens.",
+      "before": [
+        "Install the newest player package (the Achievements button comes with it)",
+        "Log in with a player character in our TazUO build; SL - TazUO TEST (stock) for one item"
+      ],
+      "items": ["P147-1", "P147-2", "P147-3", "P147-4", "P147-5", "P57-6", "P64-3", "P64-5", "P64-6", "T-039"]
+    },
+    {
+      "id": "kitsune",
+      "title": "Kitsune ears and tail refit",
+      "why": "P138's refit of the ears and tail: female and male, human and elf, robes, standing, the body options.",
+      "before": [
+        "Log in as Admin (Eve) to add the item, with a female human, a male human and an elf to try it on"
+      ],
+      "items": ["P138-1", "P138-2", "P138-3", "P138-4", "P138-5", "P138-6", "P138-7"]
+    },
+    {
+      "id": "legion-scripts",
+      "title": "Legion scripts: SL_Combat",
+      "why": "P145's combat script, every switch in turn, and P144's script editor round trip.",
+      "before": [
+        "Install the newest player package (P144's scripts updater, P145's SL_Combat.py)",
+        "Log in with a player character in our TazUO build, near something to fight"
+      ],
+      "items": ["P145-1", "P145-2", "P145-3", "P145-4", "P145-5", "P145-6", "P145-7", "P145-8", "P145-9", "P145-10", "P145-11", "P144-2"]
+    },
+    {
+      "id": "staff-tools",
+      "title": "Staff tools",
+      "why": "Builder paint, the map check overlay, the double-click items and the staff-only bits, as admin.",
+      "before": [
+        "Log in as Admin (Eve)",
+        "P135-3 needs the cc-p135 image deployed first if the item asks for it; T-028 waits for the next live deploy"
+      ],
+      "items": ["P100-2", "P135-3", "P114-1", "P114-2", "P56-7", "T-046", "T-011", "T-013", "T-012", "T-048", "T-028"]
+    }
+  ],
+  "stale": {
+    "title": "Probably stale",
+    "why": "Replaced by a later prompt, never parsed, or pointing at the old game PC pages: check each, then mark it Later with the reason.",
+    "items": [
+      { "id": "P58-0", "reason": "a 'checklist not parsed' placeholder: read the notes, then mark it" },
+      { "id": "P65-0", "reason": "a 'checklist not parsed' placeholder: read the notes, then mark it" },
+      { "id": "P81-0", "reason": "a 'checklist not parsed' placeholder: read the notes, then mark it" },
+      { "id": "P117-0", "reason": "a 'checklist not parsed' placeholder: read the notes, then mark it" },
+      { "id": "P139-0", "reason": "a 'checklist not parsed' placeholder: read the notes, then mark it" },
+      { "id": "P73-7", "reason": "the new admin's first login: done long ago if the admin account has been used since" },
+      { "id": "P103-2", "reason": "the tutorial pages' manual check, probably covered since by later client builds" },
+      { "id": "P111-4", "reason": "the hidden paperdoll-bodies case, probably settled by P138's refit" }
+    ]
+  },
+  "superseded": {
+    "P62": "P138 refit the kitsune ears and tail, so P62's old frames are gone"
+  }
+}

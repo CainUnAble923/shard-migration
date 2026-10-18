@@ -422,7 +422,7 @@ class Page(unittest.TestCase):
         self.assertIn("' new answer' + (na === 1 ? '' : 's')", self.t)
         self.assertIn("var DEC_OPEN = { open: 1, later: 1, answered: 1 }, DEC_ASK = { open: 1, later: 1 };", self.t)
         self.assertIn("if (it.replacedBy && filter !== 'all') return false;", self.t)
-        self.assertIn("var filter = 'open';", self.t, "the default view is still Open")
+        self.assertIn("var listFilter = 'open';", self.t, "the full list's default is still Open (cc-P164: the page opens on Up next)")
         self.assertIn("(s.open - (s.replaced || 0)) + ' open</span>'", self.t, "the open count leaves out replaced items")
 
     def test_the_source_stays_ascii(self):

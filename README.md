@@ -63,12 +63,12 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.18.8. Golem on, 20 queued, latest done P163. Play tests: 321 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.18.9. Golem on, 19 queued, latest done P164. Play tests: 322 open, 4 failed, 43 passed.
 
 ### Needs overseer review (2)
 
 - **direction**: Confirmed 2026-10-13; notes/cc-P146-playtest-decisions-inbox.md (2026-10-18) is newer. Read it; if the direction moved, edit "direction" in tools/progress-state.json. `python tools/judge.py confirm direction`
-- **play tests not sorted**: 1 open play-test item(s) have no Who: M-001. Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
+- **play tests not sorted**: 2 open play-test item(s) have no Who: M-001, P163-0. Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
 
 ## Port list: 3 of 16 systems in. 455 of 983 files (46%).
 
@@ -229,7 +229,7 @@ Tasks          ███░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 100 prompts done, 3 more stopped early and not counted)
+### Queue (Golem on; 101 prompts done, 3 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -242,7 +242,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P157 plain-english-emails | queued |  |
 | P158 codex-second-agent | queued |  |
 | P159 codex-lane-second-pc | queued |  |
-| P164 cont-playtest-sessions | queued |  |
 | P165 cont-achievements-button-fix | queued |  |
 | P166 cont-kitsune-fit-west-bald | queued |  |
 | P167 cont-rootdeep-map-batch | queued |  |
@@ -253,6 +252,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P172 pet-gain-speed | queued |  |
 | P173 cont-imbue-all-slayers | queued |  |
 | P174 cont-session-closer-fix | queued |  |
+| P164 playtest-sessions | done | 2026-10-18 |
 | P163 dashboard-fixes-portainer | done | 2026-10-18 |
 | P162 end-of-week-spend | done | 2026-10-17 |
 | P161 close-finished-sessions | done | 2026-10-17 |
@@ -262,7 +262,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P147 achievements-button | done | 2026-10-18 |
 | P146 playtest-decisions-inbox | done | 2026-10-18 |
 | P145 combat-script | done | 2026-10-18 |
-| P144 legion-scripts-updater | done | 2026-10-18 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 98 patches, 12 replacements
 
