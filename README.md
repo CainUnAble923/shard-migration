@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.18.3. Golem on, 12 queued, latest done P162. Play tests: 308 open, 2 failed, 23 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.18.4. Golem on, 11 queued, latest done P162. Play tests: 315 open, 2 failed, 23 passed.
 
 ### Needs overseer review (2)
 
@@ -229,11 +229,10 @@ Tasks          ███░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 95 prompts done, 3 more stopped early and not counted)
+### Queue (Golem on; 96 prompts done, 3 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
-| P144 legion-scripts-updater | queued |  |
 | P145 combat-script | queued |  |
 | P146 playtest-decisions-inbox | queued |  |
 | P147 achievements-button | queued |  |
@@ -250,11 +249,11 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P160 plan-usage-pacing | done | 2026-10-17 |
 | P155 web-console-phase1-status | done | 2026-10-17 |
 | P154 console-responsive | done | 2026-10-17 |
+| P144 legion-scripts-updater | done | 2026-10-18 |
 | P142 monster-stealing-shard-rules | done | 2026-10-18 |
 | P141 rootdeep-burrows | done | 2026-10-18 |
 | P140 rootdeep-burrows | done | 2026-10-18 |
 | P139 rootdeep-burrows | done | 2026-10-17 |
-| P138 kitsune-paperdoll-refit | done | 2026-10-17 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 98 patches, 12 replacements
 

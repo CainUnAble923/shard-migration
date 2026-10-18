@@ -69,6 +69,9 @@ plan. Launchers are one line each in `D:\UO\haven-migration`; transcripts land i
 | Print queue: deploy | `C:\dev\sunflower\print-queue\haven\Deploy-PrintQueue.ps1 -Mode Deploy` | `deploy` | Builds the queue on Haven, makes its own key; **proves the key from Haven before the move** (refuses, tower untouched, if Hostinger does not take it); stops the tower copy; moves the data (SHA-256 checked); starts Haven's; makes and checks the first push |
 | Print queue: roll back | same, `-Mode Rollback` | `roll back` | Data back to the tower, Haven's stopped and set aside, the tower copy started |
 | Deploy to Haven (website, wiki macros) | `Deploy-Website.ps1`, `Publish-WikiMacros.ps1` | phrase | Content only; never NPM |
+| Player package tab: Publish to dev (cc-P144) | `scripts\legion\Publish-LegionScripts.ps1 -Mode Dev` | phrase `publish scripts to dev`, then `yes` | `~/sl-scripts-dev/html` (the dev channel): backs up the set to `~/backups/legion-scripts/dev/<version>/`, swaps the scripts in, downloads each back, `scripts.json` last; rolls back on a mismatch. Refused unless the scripts repo is committed and level with GitHub |
+| Player package tab: Promote to official (cc-P144) | same, `-Mode Promote` | phrase `promote scripts to official`, then `yes` | `<sl-downloads html>/scripts/` (the official channel), from the dev folder on Haven, with the same steps; backups in `~/backups/legion-scripts/<version>/`; tags `official-<version>` in the scripts repo |
+| (once, by hand) dev channel setup (cc-P144) | same, `-Mode SetupDev` | `yes` | Makes `~/sl-scripts-dev`, copies the compose file, `docker compose -p sl-scripts-dev up -d` |
 
 The console's **Open NPM** opens the SSH tunnel to NPM's admin page (`ssh -N -L 8081:localhost:81 chase@192.168.1.61`,
 then `http://localhost:8081/`).
@@ -238,7 +241,26 @@ Wiki macros: `Publish-WikiMacros.ps1`.
 
 `sl-downloads` (nginx) on Haven, public through NPM as `https://get.shatteredlegacyuo.com`. Files in
 `/home/chase/sharttered-legacy/downloads` (sic: the misspelt folder is the real one, seen 2026-09-28).
-`Publish-PlayerPackage.ps1` rebuilds it.
+`Publish-PlayerPackage.ps1` rebuilds it. Its `scripts/` subfolder is the **official channel of the Legion scripts**
+(cc-P144): `https://get.shatteredlegacyuo.com/scripts/scripts.json` and the `.py` files it lists, which every player package
+install pulls on each start and every new package ships. Written only by the Shard Console's **Promote to official**
+(`scripts\legion\Publish-LegionScripts.ps1 -Mode Promote`), which finds the folder with `docker inspect sl-downloads`,
+writes it through a throwaway `nginx:alpine` container (the folder is root-owned), and backs up each set it replaces to
+`~/backups/legion-scripts/<version>/`.
+
+### Legion scripts dev channel `scripts-dev`
+
+*cc-P144, planned until Chase runs the setup.* `sl-scripts-dev` (nginx:alpine) on Haven, project `sl-scripts-dev` in
+`~/sl-scripts-dev/stack` (source `D:\ShatteredLegacy\docker\scripts-dev`), serving `~/sl-scripts-dev/html` read only on
+`192.168.1.61:8097` and `127.0.0.1:8097`, on the tailnet as `http://haven.tail81098d.ts.net:8097/` (Tailscale Serve :8097).
+**Never public, never NPM.** It holds half-tested scripts for Chase's own PCs (the tower and the work PC, flagged dev in
+their `%LOCALAPPDATA%\ShatteredLegacy\legion-scripts.json`); players never read it. Written by **Publish to dev**
+(`Publish-LegionScripts.ps1 -Mode Dev`), from either PC, over the LAN or Tailscale, with that PC's own SSH key; each set it
+replaces is backed up to `~/backups/legion-scripts/dev/<version>/`. **Start it (once):** `Publish-LegionScripts.ps1 -Mode
+SetupDev`, then Mega dashboard: deploy for the Serve port. **Restart:** `cd ~/sl-scripts-dev/stack && docker compose -p
+sl-scripts-dev restart`. **Data:** nothing to back up that git does not have (the scripts are in the private repo
+`CainUnAble923/shattered-legacy-scripts`); the backups folder is history only. **Move it:** any host on the tailnet with
+nginx; change `scripts-dev` here and in `services.json` and each dev PC's `devUrl`.
 
 ### Nginx Proxy Manager `npm`
 
@@ -302,7 +324,8 @@ Its database. **A dump before any move** (`docker exec kevins-parts-db mysqldump
 
 `tailscaled` on Haven (and on the game PC, Chase's phone, the work PC). The only way in from outside the house. Haven's
 **Serve** config (persisted in `/var/lib/tailscale`, survives a restart): tailnet :80 to `127.0.0.1:3000` (dashboard),
-:8093 to `127.0.0.1:8093` (ops page), :8787 to `127.0.0.1:8787` (print queue). `tailscale serve status` shows it. **Never
+:8093 to `127.0.0.1:8093` (ops page), :8787 to `127.0.0.1:8787` (print queue), and since cc-P144 :8097 to `127.0.0.1:8097`
+(the Legion scripts' dev channel, once it runs). `tailscale serve status` shows it. **Never
 `tailscale funnel`** (that would make it public). Changing Serve as `chase` needs a one-time `sudo tailscale set
 --operator=chase` on Haven. Its tile reads the game PC's view of Haven's node (online or not).
 
@@ -341,6 +364,7 @@ state; then remove the machine in the Tailscale admin console). **Never** `tails
 - Vaultwarden's data folder (as now: `~/backups/vault-data-*.tgz`)
 - `/home/chase/clients/kevins-parts` and its database dump
 - `/var/lib/tailscale` (or just re-login after a rebuild)
+- `~/backups/legion-scripts` is optional (history of replaced script sets; the scripts themselves are in GitHub)
 
 ## Changed on
 
@@ -352,3 +376,6 @@ state; then remove the machine in the Tailscale admin console). **Never** `tails
   print queue proves its key from Haven before the tower copy stops.
 - 2026-10-17 cc-P155: the web console (`web-console`, game PC, 127.0.0.1:8095 and :8096) and its tailnet node
   (`uoconsole-ts`, planned until Chase makes the auth key); `services.json` 31 services.
+- 2026-10-18 cc-P144: the Legion scripts' dev channel (`scripts-dev`, `sl-scripts-dev` on `192.168.1.61:8097` and
+  `127.0.0.1:8097`, Tailscale Serve :8097; planned until Chase runs `-Mode SetupDev`) and the official channel in
+  `downloads`' `scripts/` folder; `services.json` 32 services (counted from the file).

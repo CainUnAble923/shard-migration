@@ -2084,6 +2084,73 @@
    ],
    "pass": "The creature still says there is nothing left to steal: the stolen flag came back from Saves/MonsterStealing. A Gem of Salvation used before the restart still waits out its six hours after it.",
    "check": "A restart through the Shard Console: Chase's, or a CC prompt with a scratch copy of the world."
+  },
+  "P144-1": {
+   "where": "Shard Console on the tower, Player package tab, Legion scripts row (after the deploy steps in the P144 notes' For Chase)",
+   "do": [
+    "Click Check scripts"
+   ],
+   "pass": "Its window says the repo D:\\UO\\sl-scripts is committed and level with GitHub, gives the official and dev versions (or 'nothing published yet'), lists SL_Lumberjack.py, SL_Mining.py and SL_Retaliate.py with their hashes, and ends 'this PC can publish (SSH key accepted by Haven over LAN)'.",
+   "check": "Needs Haven reached over SSH from the tower: Chase's button."
+  },
+  "P144-2": {
+   "where": "TazUO on the tower (any SL shortcut), its Legion script editor; then the Shard Console's Commit tab",
+   "do": [
+    "Open SL_Retaliate.py in TazUO's script editor, change a comment line, save",
+    "In PowerShell: git -C D:\\UO\\sl-scripts status",
+    "Commit tab: Preview commit"
+   ],
+   "pass": "git status shows SL_Retaliate.py modified in D:\\UO\\sl-scripts (the client's LegionScripts is the repo), and the preview has a third section, 'scripts', listing it. No API.py, .log or __pycache__ is listed.",
+   "check": "TazUO and the console on the tower: Chase's."
+  },
+  "P144-3": {
+   "where": "Shard Console on the tower, Player package tab",
+   "do": [
+    "With the edit from P144-2 still uncommitted, click Publish to dev and type the phrase",
+    "Commit and push it (Commit tab), then click Publish to dev again, type the phrase, then yes"
+   ],
+   "pass": "The first try stops: '... has 1 uncommitted change(s) ... Commit and push first, so both PCs match.' The second lists new/changed scripts and ends 'PUBLISHED to dev: version <stamp>, read back from this PC'. Check scripts then shows dev equal to the repo.",
+   "check": "Publishes to Haven: Chase's button."
+  },
+  "P144-4": {
+   "where": "Shard Console on the tower; then a browser and the GitHub repo's Tags page",
+   "do": [
+    "Click Promote to official, type the phrase, press Enter for all, type yes",
+    "Open https://get.shatteredlegacyuo.com/scripts/scripts.json",
+    "Open github.com/CainUnAble923/shattered-legacy-scripts, Tags"
+   ],
+   "pass": "The window lists each dev script with its dev and official hashes, then 'PROMOTED to official: version <stamp>' and 'Tagged official-<stamp> ... and pushed the tag'. The browser shows a scripts.json listing the three scripts; GitHub shows the tag official-<stamp>.",
+   "check": "Changes what every install pulls: Chase's button."
+  },
+  "P144-5": {
+   "where": "The work PC (after its setup steps), then the tower",
+   "do": [
+    "On the work PC: change a comment in SL_Lumberjack.py (TazUO or Notepad), commit and push (Commit tab)",
+    "On the tower, before pulling: click Publish to dev",
+    "On the tower: click Pull scripts, then look at SL_Lumberjack.py in TazUO's script list"
+   ],
+   "pass": "Publish to dev on the tower stops with '... behind GitHub. Pull scripts first, so both PCs match.' After Pull scripts the change is in D:\\UO\\sl-scripts and in TazUO's copy (the same file). The reverse (tower to work PC) works the same way.",
+   "check": "Two PCs and GitHub: Chase's."
+  },
+  "P144-6": {
+   "where": "A PC flagged dev with no scripts repo yet (the work PC before Set up scripts repo is the easy one), Play Shattered Legacy",
+   "do": [
+    "Make %LOCALAPPDATA%\\ShatteredLegacy\\legion-scripts.json holding the single word dev (Notepad)",
+    "With Tailscale on, start Play Shattered Legacy and answer N to the scripts repo question",
+    "Turn Tailscale off and start it again"
+   ],
+   "pass": "The first start asks once 'This is a dev PC with no scripts repo yet. Set it up now ...? [y/N]'; after N it never asks again, and app\\tazuo\\LegionScripts gets the dev scripts on top of the official ones. With Tailscale off it says one grey line, 'Dev scripts not reachable (is Tailscale running?): official scripts only.', and the game starts.",
+   "check": "Needs the new package's launcher, the dev channel on Haven and Tailscale: Chase's."
+  },
+  "P144-7": {
+   "where": "A player's install of the NEW package (the daughter's PC, or a Windows Sandbox run with the clean-test kit)",
+   "do": [
+    "Start Play Shattered Legacy once",
+    "Double-click Update Scripts.bat",
+    "Change a line in app\\tazuo\\LegionScripts\\SL_Retaliate.py; promote a changed SL_Retaliate.py from the tower (P144-3, P144-4); start Play again"
+   ],
+   "pass": "After the first start app\\tazuo\\LegionScripts holds the three SL_ scripts and .sl-scripts.json and TazUO lists them; Update Scripts.bat says 'Legion scripts are up to date.' After the promote, the start says 'SL_Retaliate.py: your own edits were kept in backup\\SL_Retaliate.<yyyyMMdd-HHmm>.py' and the new copy is in place. It never mentions a scripts repo or the dev channel.",
+   "check": "Needs a built and published package and another PC or Windows Sandbox: Chase's."
   }
  }
 }

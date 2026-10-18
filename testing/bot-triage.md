@@ -912,3 +912,17 @@ Added by cc-P142 (2026-10-18).
 | P142-5 | BOT | The caught, wary and already-stolen lines, the reveal and the creature attacking are all server-sent |
 | P142-6 | BOT-PARTIAL | The scroll's learning, the craft menu row and the item properties are server-sent; the cloak and the ring on a paperdoll are Chase's eyes |
 | P142-7 | DEPLOY | Needs a save and a restart of the test shard through the Shard Console |
+
+### P144
+
+Added by cc-P144 (2026-10-18).
+
+| id | bucket | reason |
+|---|---|---|
+| P144-1 | DEPLOY | Check scripts is a Shard Console button that reaches Haven over SSH |
+| P144-2 | DEPLOY | TazUO's script editor and the Shard Console's Commit tab on the tower |
+| P144-3 | DEPLOY | Publish to dev is a Shard Console button that changes what Haven serves |
+| P144-4 | DEPLOY | Promote to official changes what every install pulls, then a browser and GitHub |
+| P144-5 | DEPLOY | Needs the work PC, the tower and GitHub |
+| P144-6 | DEPLOY | Needs the new package's launcher on a PC flagged dev, Haven's dev channel and Tailscale switched off |
+| P144-7 | DEPLOY | Needs a built and published player package on a player's PC or in Windows Sandbox |
