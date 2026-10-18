@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.17.7. Golem on, 18 queued, latest done P155. Play tests: 269 open, 2 failed, 23 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.17.8. Golem on, 18 queued, latest done P155. Play tests: 276 open, 2 failed, 23 passed.
 
 ### Needs overseer review (1)
 
@@ -228,11 +228,10 @@ Tasks          ███░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 87 prompts done, 3 more stopped early and not counted)
+### Queue (Golem on; 88 prompts done, 3 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
-| P138 kitsune-paperdoll-refit | queued |  |
 | P139 rootdeep-burrows-body-route | queued |  |
 | P140 rootdeep-burrows-creatures | queued |  |
 | P141 rootdeep-burrows-vault-layout | queued |  |
@@ -250,8 +249,10 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P157 plain-english-emails | queued |  |
 | P158 codex-second-agent | queued |  |
 | P159 codex-lane-second-pc | queued |  |
+| P160 cont-plan-usage-pacing | queued |  |
 | P155 web-console-phase1-status | done | 2026-10-17 |
 | P154 console-responsive | done | 2026-10-17 |
+| P138 kitsune-paperdoll-refit | done | 2026-10-17 |
 | P137 usable-ankhs-and-playtest-fixes | done | 2026-10-17 |
 | P136 status-page-self-judging | done | 2026-10-17 |
 | P135 vseuoaware-staff-commands | done | 2026-10-17 |
@@ -259,7 +260,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P133 haven-intranet-dashboard | done | 2026-10-17 |
 | P132 console-layout-and-art-slots | done | 2026-10-16 |
 | P131 wake-golem-from-console | done | 2026-10-16 |
-| P130 pet-training | done | 2026-10-16 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 98 patches, 12 replacements
 

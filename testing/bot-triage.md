@@ -844,3 +844,17 @@ Added by cc-P137 (2026-10-17).
 | P137-5 | BOT | Where an item lands (0x25 into the satchel or the pack) and the full message are server-sent |
 | P137-6 | CC | The service state on /api/items says which tools code runs and since when |
 | P137-7 | BOT | The overnight bot's own P119-1 result |
+
+### P138
+
+Added by cc-P138 (2026-10-17).
+
+| id | bucket | reason |
+|---|---|---|
+| P138-1 | EYES | Where the ears and tail sit on the paperdoll is a drawing question; the before/after images are in the notes (section 2) |
+| P138-2 | EYES | The hood case: the ears poke through the hood of a GM robe; a look, not a packet |
+| P138-3 | BOT-PARTIAL | Bot: a man equips it (the worn-item packet, layer 0x12); Chase: the male paperdoll 54783 looks right |
+| P138-4 | EYES | The elf bodies (14 and 15) take the same gumps; a look |
+| P138-5 | BOT | The refusal is server-sent: a gargoyle gets "Only humans and elves can wear this." and the item stays in the pack |
+| P138-6 | EYES | Standing, walking and running in the eight directions, with and without a robe: how the tail reads is a look |
+| P138-7 | EYES | Chase's local Topless and Nude add-on only; never on the test shard's package |
