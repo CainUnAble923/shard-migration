@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.17.8. Golem on, 18 queued, latest done P155. Play tests: 276 open, 2 failed, 23 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.17.9. Golem on, 16 queued, latest done P160. Play tests: 283 open, 2 failed, 23 passed.
 
 ### Needs overseer review (1)
 
@@ -228,7 +228,7 @@ Tasks          ███░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 88 prompts done, 3 more stopped early and not counted)
+### Queue (Golem on; 89 prompts done, 3 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -242,14 +242,13 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P147 achievements-button | queued |  |
 | P149 away-mode-and-email-controls | queued |  |
 | P150 requisitions-and-leads | queued |  |
-| P151 guild-halls-survey | queued |  |
 | P152 art-requests-openai | queued |  |
 | P153 queue-notes-and-package-whats-new | queued |  |
 | P156 night-shift-batches | queued |  |
 | P157 plain-english-emails | queued |  |
 | P158 codex-second-agent | queued |  |
 | P159 codex-lane-second-pc | queued |  |
-| P160 cont-plan-usage-pacing | queued |  |
+| P160 plan-usage-pacing | done | 2026-10-17 |
 | P155 web-console-phase1-status | done | 2026-10-17 |
 | P154 console-responsive | done | 2026-10-17 |
 | P138 kitsune-paperdoll-refit | done | 2026-10-17 |
@@ -259,7 +258,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P134 vseuoaware-art-checks-mcp | done | 2026-10-17 |
 | P133 haven-intranet-dashboard | done | 2026-10-17 |
 | P132 console-layout-and-art-slots | done | 2026-10-16 |
-| P131 wake-golem-from-console | done | 2026-10-16 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 98 patches, 12 replacements
 
