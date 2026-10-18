@@ -970,3 +970,22 @@ Added by cc-P145 (2026-10-18).
 | P162-1 | CC | After the Wed 10-21 4:00 PM reset, golem.log, the Golem's state and the sent mail show whether the window opened Tue 4:00 PM, handed on to 97%, ignored the warning and the night pace check, self-woke and mailed the summary |
 | P162-2 | CC | The three settings and their defaults are in D:\UO\golem\settings.json, the README and the Golem tests |
 | P162-3 | CC | That the Golem never spends the free reset or usage credits is read from golem.ps1 and golem.log |
+
+### P147 (sorted by cc-P147)
+
+| id | bucket | reason |
+|---|---|---|
+| P147-1 | EYES | The Achievements button in Help's slot on the classic paperdoll, and that it opens the page, are on screen |
+| P147-2 | EYES | That another character's paperdoll has no Achievements button is on screen |
+| P147-3 | EYES | The top bar's Achievements button and the page it opens are on screen |
+| P147-4 | EYES | The modern paperdoll menu's Achievements line is on screen |
+| P147-5 | EYES | That the stock TazUO shows Help and no Achievements is on screen |
+
+### P146 (sorted by cc-P147)
+
+| id | bucket | reason |
+|---|---|---|
+| P146-1 | DEPLOY | The decisions on the page and the Where chips (Mine + Questions, Mine + In game: Player + Elf) are on Chase's screen |
+| P146-2 | DEPLOY | Answering a card (a choice, Keep what's built, the box, Ask me later) is done on the page |
+| P146-3 | CC | After Chase answers, the next commit's testing/decisions.json holds the answer with who and when; checked in the repo |
+| P146-4 | CC | The service's /api/items service.code changes after Haven's pull with no restart, and /api/items carries decisions; read from the page's API |

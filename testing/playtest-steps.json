@@ -2307,6 +2307,67 @@
   },
   "P162-3": {
    "check": "CC greps D:\\UO\\golem\\golem.ps1 for any path that uses the free full reset or usage credits (none) and reads golem.log over the end-of-week window: it stopped at the plan limit and never spent either. The result goes in a CC verification note."
+  },
+  "P147-1": {
+   "where": "Test shard, desktop shortcut SL - TazUO TEST (our build), any character (after the test shard is rebuilt)",
+   "do": [
+    "Open your own paperdoll (classic style)",
+    "Click the top button, Achievements"
+   ],
+   "pass": "Achievements sits where Help was, in the button style, and opens your achievements page (the same as `[achievements`)."
+  },
+  "P147-2": {
+   "where": "Test shard, desktop shortcut SL - TazUO TEST (our build), any character (after the test shard is rebuilt), next to another character",
+   "do": [
+    "Double-click another character to open their paperdoll"
+   ],
+   "pass": "Their paperdoll has no Achievements button."
+  },
+  "P147-3": {
+   "where": "Test shard, desktop shortcut SL - TazUO TEST (our build), any character (after the test shard is rebuilt)",
+   "do": [
+    "Find the Achievements button at the right end of the top bar",
+    "Click it"
+   ],
+   "pass": "The button is there and opens your achievements page."
+  },
+  "P147-4": {
+   "where": "Test shard, desktop shortcut SL - TazUO TEST (our build), any character (after the test shard is rebuilt)",
+   "do": [
+    "Options: turn on the modern paperdoll",
+    "Open your paperdoll, then its menu (top right)",
+    "Click Achievements"
+   ],
+   "pass": "The menu has an Achievements line after Quests, and it opens the page."
+  },
+  "P147-5": {
+   "where": "Test shard, desktop shortcut SL - TazUO TEST (stock), any character",
+   "do": [
+    "Open your paperdoll and look at the top bar"
+   ],
+   "pass": "The paperdoll shows Help, and the top bar has no Achievements button."
+  },
+  "P146-1": {
+   "where": "The play-test page, http://192.168.1.61:8093/ (phone or PC)",
+   "do": [
+    "Press Mine, then the Questions chip",
+    "Press In game: Player, then Elf"
+   ],
+   "pass": "Mine + Questions lists the open questions by prompt; each chip shows a count, and the counts change with the button pressed."
+  },
+  "P146-2": {
+   "where": "The play-test page, http://192.168.1.61:8093/ (phone or PC)",
+   "do": [
+    "On any question card press a choice (or Keep what's built), or write in the box and press Save answer",
+    "On another, press Ask me later"
+   ],
+   "pass": "The card says Your answer: ... with the date; the header shows N new answers; the asked-later card says so."
+  },
+  "P146-3": {
+   "check": "CC: after an answer on the page and the next commit, testing/decisions.json in shard-migration holds it (status answered, choice or text, at); result in a CC verification prompt's notes."
+  },
+  "P146-4": {
+   "check": "CC: http://192.168.1.61:8093/api/items has decisions (124 or so open) and service.codeLoadedAt after the P146 commit's pull, with no restart; result in a CC verification prompt's notes."
   }
  }
 }
