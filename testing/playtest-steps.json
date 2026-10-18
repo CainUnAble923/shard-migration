@@ -311,7 +311,11 @@
    "do": [
     "Stand next to the other character at normal zoom"
    ],
-   "pass": "At a glance it reads as fox ears and a fox tail."
+   "pass": "At a glance it reads as fox ears and a fox tail.",
+   "place": "player",
+   "chars": [
+    "elf"
+   ]
   },
   "P62-7": {
    "check": "Built: bot male player tries to equip, asserts the refusal message, not worn, back in pack; passed 3/3 on 2026-10-15; result is the bot chip on the card / the nightly report."
@@ -544,13 +548,13 @@
    "pass": "The console prints 'sent' and exactly one test email arrives; nothing else changes."
   },
   "P65-0": {
-   "where": "Test shard, SL TEST - Admin (Eve); notes/cc-P65-evo-pets-framework.md sections 8 and 9",
+   "where": "Test shard, SL TEST - Admin (Eve); notes/cc-P65-evo-pets-framework.md section 8",
    "do": [
     "`[EvoPet give dog` on yourself, then `[EvoPet stage <n> <body>` on the pet for each body in section 8's table (cat, fox, bird via `[EvoPet give cat` / `fox` / `bird`)",
     "`[add Rabbit` to attack, `[add Mongbat` near it to hit the pet, then `[kill` the pet; watch it idle too",
-    "Read section 9 and answer its 10 decisions"
+    "Answer its 10 decisions on this page: Questions chip, P65-D1 to P65-D10"
    ],
-   "pass": "Each body swings, flinches (not an attack), falls and idles as the table says; 1309 never vanishes and no body shows a death pose while idle; you have told the overseer your 10 answers.",
+   "pass": "Each body swings, flinches (not an attack), falls and idles as the table says; 1309 never vanishes and no body shows a death pose while idle; your 10 answers are on the page.",
    "check": "Not built yet: bot [EvoPet give dog, xp 500/2500/10000, loops 1, xp 40000, loops 5, bond on, info; asserts bodies 217 > 739 > pick > 277 > 1410 and the Echo lines; reset stone keeps stage/hue/pick/bond; stable/claim; die/res; door stays shut; result in the nightly report once built."
   },
   "P69-1": {
@@ -659,7 +663,7 @@
     "Open each paperdoll naked, then in robe, plate, cloak, hat and shield; compare with the test\\*.png renders",
     "Open spellbooks (Magery, Necro, Chivalry, Bushido, Ninjitsu, Mysticism) and look at our custom items (kitsune ears and tail, satchels)",
     "Options > Paperdoll > Shattered Legacy > Paperdoll bodies: switch SFW, Topless, Nude, then back to SFW",
-    "Answer the 5 'Decisions for Chase' in notes\\cc-P81-paperdoll-sos.md (decision 1 is settled by cc-P111)"
+    "Answer P81's decisions on this page: Questions chip, P81-D2, D4 and D5 (D1 was settled by cc-P111)"
    ],
    "pass": "Bodies match the renders and skin hues tint them; icons and our art look right; the open paperdoll changes with each body choice and SFW returns."
   },
@@ -1043,7 +1047,7 @@
    "do": [
     "Close the console and reopen it from the desktop shortcut",
     "Look at the title bar, taskbar and Alt+Tab; open any typed-confirmation dialog",
-    "Optional: decide notes/cc-P113-console-window-icon.md decision 2 (keep sharing favicon.ico, or copy it)"
+    "Optional: answer P113-D2 on this page (Questions chip): keep sharing favicon.ico, or copy it"
    ],
    "pass": "All show the shortcut's sword-in-ring icon, not PowerShell's."
   },
@@ -1873,7 +1877,11 @@
    "do": [
     "Stand still and turn through the eight directions (click around her); then walk and run through them, with and without a robe"
    ],
-   "pass": "Standing shows the ears and tail in every direction (they used to vanish until she walked). Facing you or in profile the tail peeks out beside her hip, never across her front; facing away (up-left, up, up-right) it hangs down her back over the robe. In war mode or with a weapon they still vanish (no frames yet; notes/art/kitsune-ears-tail-remaining-actions.md)."
+   "pass": "Standing shows the ears and tail in every direction (they used to vanish until she walked). Facing you or in profile the tail peeks out beside her hip, never across her front; facing away (up-left, up, up-right) it hangs down her back over the robe. In war mode or with a weapon they still vanish (no frames yet; notes/art/kitsune-ears-tail-remaining-actions.md).",
+   "place": "player",
+   "chars": [
+    "elf"
+   ]
   },
   "P138-7": {
    "where": "Your PC only: our TazUO build with the client-addons/paperdoll-nsfw folder (Options > Paperdoll > Paperdoll bodies)",
@@ -2245,6 +2253,60 @@
     "Rate backpack, or kill something with magic loot"
    ],
    "pass": "Each rated item is queued into its tier's bag (Upgrade goes to Keep); Results shows '[to the Keep bag]'; with a bag unset the item stays and the row says 'no Sell bag set'."
+  },
+  "P139-0": {
+   "where": "Shard Console on the game PC (Player package tab, then Test shard tab), then the test shard as SL TEST - Admin (Eve)",
+   "do": [
+    "Player package > Build package, then Publish (committed tree)",
+    "Test shard > Rebuild (or Start-TestShard.ps1 -Image sl-modernuo:cc-P139); run the launcher once on your PC",
+    "On open ground: `[add BurrowScampSlingerBodyTest`, step back two tiles, watch it shoot, then `[kill` it"
+   ],
+   "pass": "The package builds with every gate green, the launcher shows no yellow art line, and the creature draws and animates as the kobold archer (P139-3) with its corpse on the ground; mark P139-2 to P139-4 by their own steps."
+  },
+  "P160-0": {
+   "check": "CC reads D:\\UO\\golem\\golem.log for Sat 10-17 night to Mon: the Golem rested 'ahead of pace' on Saturday, self-woke on or after Sun 4:00 AM, handed on until ahead again, and sent exactly one free-full-reset email that day; the week's usage did not run out before Wed 4:00 PM (usage.json). The result goes in a CC verification note."
+  },
+  "P161-1": {
+   "check": "CC reads golem.log and the session records after a night of hand-offs: each old window closed after the new session's first hook, each rested window closed at the first 10-minute watch at least 2 minutes after its last message, and no running, recently busy, PAUSED/STOPPED or non-Golem window was closed; then reruns D:\\UO\\golem\\tests\\Golem.Tests.ps1 (P161 facts green). The result goes in a CC verification note."
+  },
+  "P161-2": {
+   "check": "CC reads D:\\UO\\golem\\settings.json and README.md: closeFinishedSessions true, closeFinishedAfterMinutes 2, closeQuietMinutes 5, cliWindow tabs, each documented. The result goes in a CC verification note."
+  },
+  "P161-3": {
+   "where": "Your desktop, a finished Golem session window (after a DONE and a rest)",
+   "do": [
+    "Within 2 minutes of its last message, type anything in it and press Enter",
+    "Wait 10 minutes without typing again"
+   ],
+   "pass": "It stays open at least 5 minutes after each time you type, then closes at a later watch."
+  },
+  "P161-4": {
+   "where": "Your desktop, the Windows Terminal window named golem (after a Windows Terminal restart or a reboot)",
+   "do": [
+    "Close the dead \"Golem P999 (P161 check)\" tab if it is there",
+    "Over a night of hand-offs, look at the tabs in the golem window the next morning"
+   ],
+   "pass": "Closed sessions' tabs are gone, with no \"process exited\" tabs piling up (if they do, tell CC or set cliWindow to windows)."
+  },
+  "P161-5": {
+   "check": "CC reruns D:\\UO\\golem\\tests\\Golem.Tests.ps1 (P161_SelfWake_RecordsTheSessionAndRefusesASecondForTheSamePrompt green) and reads golem.log for any second wake of a prompt within 2 minutes after P161: refused with 'a session for P<nn> was opened N s ago', never a second window. The result goes in a CC verification note."
+  },
+  "P161-6": {
+   "where": "The Shard Console on the game PC, Golem tab",
+   "do": [
+    "Close and reopen the console",
+    "Open the Golem tab"
+   ],
+   "pass": "A `sessions :` line after the self-wake line says how many Golem sessions are open, which are kept open for you, and the last one closed."
+  },
+  "P162-1": {
+   "check": "After the Wed 10-21 4:00 PM reset, CC reads golem.log, the Golem's state and the sent mail: the end-of-week window opened Tue 10-20 at 4:00 PM, the 'it opened' email went out, prompts were handed on until the week was at 97% whatever paceMode and the claude.ai warning said, the night shift ran without its pace check, the Golem self-woke at the window and after each 5-hour reset, and the unused-summary email followed the reset. The result goes in a CC verification note."
+  },
+  "P162-2": {
+   "check": "CC reads D:\\UO\\golem\\settings.json and README.md: endOfWeekSpend true, endOfWeekHours 24, endOfWeekReservePct 3, each documented, and the Golem tests' P162 facts are green. The result goes in a CC verification note."
+  },
+  "P162-3": {
+   "check": "CC greps D:\\UO\\golem\\golem.ps1 for any path that uses the free full reset or usage credits (none) and reads golem.log over the end-of-week window: it stopped at the plan limit and never spent either. The result goes in a CC verification note."
   }
  }
 }

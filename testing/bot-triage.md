@@ -869,6 +869,7 @@ Added by cc-P139 (2026-10-17).
 | P139-2 | DEPLOY | The new package (anim7 with the body, the launcher's Bodyconv.def and mobtypes.txt copies) has to be built and published from the committed tree, and the test shard rebuilt, before anything draws |
 | P139-3 | EYES | Whether body 2048 draws and animates in TazUO: walk, stand, the bow shot (action 4), get hit, death, the corpse, the fidgets: art on screen |
 | P139-4 | EYES | The launcher's copies on Chase's PC (app\uo-overrides\Bodyconv.def and mobtypes.txt end with our lines): a file on his machine |
+| P139-0 | DEPLOY | Placeholder for P139's For Chase list; Chase's part is the deploy (build and publish the package, rebuild the test shard, run the launcher) then the look, as rows P139-2 to P139-4 say; P139-1 is the bot's |
 
 ### P140
 
@@ -944,3 +945,28 @@ Added by cc-P145 (2026-10-18).
 | P145-9 | EYES | The profile editor and Suggest's notes in the client |
 | P145-10 | EYES | Per-character settings across a relog |
 | P145-11 | EYES | Auto-sort moving items into bags in the client |
+
+### P160 (sorted by cc-P146)
+
+| id | bucket | reason |
+|---|---|---|
+| P160-0 | CC | P160's For Chase only explains the pacing; nothing to do by hand. golem.log shows the Saturday rest, the Sunday 4:00 AM self-wake and hand-ons, and the one free-reset email |
+
+### P161 (sorted by cc-P146)
+
+| id | bucket | reason |
+|---|---|---|
+| P161-1 | CC | Which windows close and which are kept open is in golem.log and the session records after a night of hand-offs, against the Golem tests |
+| P161-2 | CC | The four settings and their defaults are in D:\UO\golem\settings.json and the Golem README |
+| P161-3 | EYES | Typing in a finished window on the desktop and watching it stay open is Chase's, on screen |
+| P161-4 | EYES | Whether closed sessions' tabs vanish from the golem Windows Terminal window, and closing the dead P999 test tab, is on Chase's screen |
+| P161-5 | CC | The duplicate-wake refusal is a Golem test fact and shows in golem.log as a refused second wake |
+| P161-6 | DEPLOY | The new sessions line is on the Shard Console's Golem tab, after a console restart loads P161's code |
+
+### P162 (sorted by cc-P146)
+
+| id | bucket | reason |
+|---|---|---|
+| P162-1 | CC | After the Wed 10-21 4:00 PM reset, golem.log, the Golem's state and the sent mail show whether the window opened Tue 4:00 PM, handed on to 97%, ignored the warning and the night pace check, self-woke and mailed the summary |
+| P162-2 | CC | The three settings and their defaults are in D:\UO\golem\settings.json, the README and the Golem tests |
+| P162-3 | CC | That the Golem never spends the free reset or usage credits is read from golem.ps1 and golem.log |

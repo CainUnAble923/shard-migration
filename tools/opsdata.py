@@ -3,8 +3,8 @@
 Notes: notes/cc-P105-haven-h1-host-agnostic.md; the design is notes/cc-P89-haven-pages-plan.md Part B items 2 and 3.
 
 - export_bundle(data) is what GET /api/export returns: every file the service writes under testing/ (play tests and
-  their summary, feature ideas, bug reports and their screenshots), as one JSON object. Text files go as text, the
-  screenshots as base64, each with its SHA-256.
+  their summary, feature ideas, bug reports and their screenshots, cc-P146's answers to decisions), as one JSON
+  object. Text files go as text, the screenshots as base64, each with its SHA-256.
 - write_bundle(bundle, dest) puts a bundle back as files under dest, replacing the mirror wholesale: each file is
   checked against its hash and written by temp file and rename, and a screenshot the bundle no longer has is removed.
   Only the names listed here are ever written, so a bundle cannot write anywhere else. H2's Commit-ShardWork.ps1 uses
@@ -31,6 +31,8 @@ TEXT_FILES = [
     os.path.join("testing", "SUMMARY.md"),
     os.path.join("testing", "feature-ideas.json"),
     os.path.join("testing", "bug-reports.json"),
+    # cc-P146: the answers to decisions given on the page, and the overseer's "taken into P<nn>".
+    os.path.join("testing", "decisions.json"),
 ]
 SHOTS_REL = os.path.join("testing", "bug-reports", "files")
 SHOT_RE = re.compile(r"^B-\d{3,}-\d+\.(png|jpg)$")

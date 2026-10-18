@@ -63,12 +63,11 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.18.5. Golem on, 10 queued, latest done P162. Play tests: 322 open, 2 failed, 23 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.18.6. Golem on, 9 queued, latest done P162. Play tests: 333 open, 2 failed, 23 passed.
 
-### Needs overseer review (2)
+### Needs overseer review (1)
 
-- **direction**: Confirmed 2026-10-13; notes/decisions-2026-10-14.md (2026-10-14) is newer. Read it; if the direction moved, edit "direction" in tools/progress-state.json. `python tools/judge.py confirm direction`
-- **play tests not sorted**: 11 open play-test item(s) have no Who: P160-0, P161-1, P161-2, P161-3, P161-4, P161-5, P161-6, P162-1, P162-2, P162-3, P139-0. Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
+- **direction**: Confirmed 2026-10-13; notes/cc-P146-playtest-decisions-inbox.md (2026-10-18) is newer. Read it; if the direction moved, edit "direction" in tools/progress-state.json. `python tools/judge.py confirm direction`
 
 ## Port list: 3 of 16 systems in. 455 of 983 files (46%).
 
@@ -229,11 +228,10 @@ Tasks          ███░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 97 prompts done, 3 more stopped early and not counted)
+### Queue (Golem on; 98 prompts done, 3 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
-| P146 playtest-decisions-inbox | queued |  |
 | P147 achievements-button | queued |  |
 | P149 away-mode-and-email-controls | queued |  |
 | P150 requisitions-and-leads | queued |  |
@@ -248,11 +246,11 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P160 plan-usage-pacing | done | 2026-10-17 |
 | P155 web-console-phase1-status | done | 2026-10-17 |
 | P154 console-responsive | done | 2026-10-17 |
+| P146 playtest-decisions-inbox | done | 2026-10-18 |
 | P145 combat-script | done | 2026-10-18 |
 | P144 legion-scripts-updater | done | 2026-10-18 |
 | P142 monster-stealing-shard-rules | done | 2026-10-18 |
 | P141 rootdeep-burrows | done | 2026-10-18 |
-| P140 rootdeep-burrows | done | 2026-10-18 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 98 patches, 12 replacements
 

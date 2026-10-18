@@ -295,6 +295,26 @@ class RealFiles(unittest.TestCase):
         open_n = sum(1 for i in doc["items"] if i["status"] in ("open", "blocked", "later"))
         self.assertEqual(open_n, sum(w["counts"].values()))
 
+    def test_every_open_item_and_decision_has_one_who_and_one_where(self):
+        # cc-P146: the decisions count too (each is You decide, Where Questions), and every open item has exactly one
+        # Where: from its Who, or its steps' Where line, or a "place" set by hand in testing/playtest-steps.json.
+        import decisions
+        import playwhere
+        triage, steps = playwho.load_sources([str(ROOT)])
+        doc = pt.ordered_doc(pt.load(str(ROOT / pt.DATA_REL)))
+        playwho.annotate(doc, triage, steps)
+        ov = decisions.load_overlay([str(ROOT)])
+        decisions.annotate(doc, decisions.build(decisions.read_all_notes(str(ROOT)), ov, decisions.new_doc()), ov)
+        playwhere.annotate(doc)
+        self.assertEqual([], doc["where"]["missing"], "open items with no Where: give their steps a Where line or a place")
+        live = [i for i in doc["items"] if i["status"] in ("open", "blocked", "later")] + \
+               [d for d in doc["decisions"] if d["state"] in decisions.ACTIVE]
+        for it in live:
+            self.assertTrue(it.get("who", {}).get("key"), it["id"])
+            self.assertIn(it.get("where", {}).get("key"), playwhere.KEYS, it["id"])
+        self.assertEqual(sum(doc["where"]["counts"][k] for k in playwhere.KEYS),
+                         len([i for i in live if not i.get("replacedBy")]), "each one counted under exactly one Where")
+
     def test_every_triage_row_names_a_known_bucket(self):
         # cc-P137: four rows said CHASE, which the row pattern does not read, so those items had no Who at all.
         text = (ROOT / "testing" / "bot-triage.md").read_text(encoding="utf-8")

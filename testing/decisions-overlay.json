@@ -1,0 +1,2971 @@
+{
+ "schema": 1,
+ "about": "cc-P146: hand-written, checked in. tools/decisions.py reads every notes file's decisions section; this file says which older prompts are only noted (notAsked: their deviations were never put to Chase as questions, and stay out of the default view), gives the wording, options and default where the parse is not enough, splits prose sections by hand (entries with a prompt and a section), records answers given elsewhere (status elsewhere, with answer and source) and moot ones (status moot, with reason), and names the play-test items each prompt's decisions replace on the page. A prompt not listed in notAsked is asked: from P146 on, a new prompt's decisions are open questions with nobody editing this file. The importer never writes it.",
+ "notesUrl": "https://github.com/CainUnAble923/shard-migration/blob/main/",
+ "notAsked": [
+  "P61",
+  "P62",
+  "P64",
+  "P66",
+  "P67",
+  "P69",
+  "P70",
+  "P71",
+  "P73",
+  "P74",
+  "P83",
+  "P84",
+  "P85",
+  "P86",
+  "P87",
+  "P88",
+  "P90",
+  "P91",
+  "P94",
+  "P95",
+  "P96",
+  "P97",
+  "P99",
+  "P100",
+  "P101",
+  "P102",
+  "P103",
+  "P105",
+  "P107",
+  "P109",
+  "P111",
+  "P112",
+  "P114",
+  "P115",
+  "P116",
+  "P117",
+  "P119",
+  "P121",
+  "P122",
+  "P123",
+  "P124",
+  "P125",
+  "P127",
+  "P128",
+  "P129",
+  "P130",
+  "P131",
+  "P132",
+  "P133",
+  "P134",
+  "P135"
+ ],
+ "replaces": {
+  "P72-0": [
+   "P72-D1",
+   "P72-D2",
+   "P72-D3",
+   "P72-D4",
+   "P72-D5",
+   "P72-D6",
+   "P72-D7",
+   "P72-D8",
+   "P72-D9",
+   "P72-D10"
+  ],
+  "P75-0": [
+   "P75-D1",
+   "P75-D2",
+   "P75-D3",
+   "P75-D4",
+   "P75-D5",
+   "P75-D6",
+   "P75-D7"
+  ],
+  "P76-0": [
+   "P76-D1",
+   "P76-D2",
+   "P76-D3",
+   "P76-D4",
+   "P76-D5",
+   "P76-D6",
+   "P76-D7",
+   "P76-D8"
+  ],
+  "P77-0": [
+   "P77-D1",
+   "P77-D2",
+   "P77-D3",
+   "P77-D4",
+   "P77-D5",
+   "P77-D6",
+   "P77-D7",
+   "P77-D8"
+  ],
+  "P78-0": [
+   "P78-D1",
+   "P78-D2",
+   "P78-D3",
+   "P78-D4",
+   "P78-D5",
+   "P78-D6",
+   "P78-D7",
+   "P78-D8",
+   "P78-D9",
+   "P78-D10"
+  ],
+  "P79-0": [
+   "P79-D1",
+   "P79-D2",
+   "P79-D3",
+   "P79-D4",
+   "P79-D5",
+   "P79-D6",
+   "P79-D7",
+   "P79-D8"
+  ],
+  "P92-0": [
+   "P92-D1"
+  ],
+  "P93-0": [
+   "P93-D8",
+   "P93-D9",
+   "P93-D10",
+   "P93-D11",
+   "P93-D12",
+   "P93-D13",
+   "P93-D14",
+   "P93-D15"
+  ],
+  "P104-1": [
+   "P104-D5"
+  ],
+  "P106-0": [
+   "P106-D6",
+   "P106-D9",
+   "P106-D10"
+  ],
+  "P108-1": [
+   "P108-D8"
+  ],
+  "P110-2": [
+   "P110-D7"
+  ],
+  "P126-0": [
+   "P126-D7"
+  ],
+  "P140-8": [
+   "P140-D2"
+  ],
+  "P141-1": [
+   "P141-D1",
+   "P141-D8",
+   "P141-D5"
+  ],
+  "P141-5": [
+   "P141-D2"
+  ],
+  "P141-6": [
+   "P141-D3"
+  ],
+  "P155-5": [
+   "P155-D9"
+  ],
+  "T-008": [
+   "T-008-D1"
+  ]
+ },
+ "decisions": {
+  "P59-D1": {
+   "question": "Should recolored bodies (25, 27, 34, 37, 23, 98, 63, 64, 65 and 127) count as the same creature, so none of them is an evo pet stage?",
+   "options": [],
+   "built": true,
+   "default": "Recolors are not stages",
+   "recommended": "Yes, none of them is a stage",
+   "status": "elsewhere",
+   "answer": "Yes: recolors count as the same creature, so none of them is a stage. Built in cc-P65.",
+   "source": "notes/f35-evo-pets-handoff-2026-10-05.md, answer 1"
+  },
+  "P59-D2": {
+   "question": "Should evo pet lines use third-party creature art, which means shipping custom client art (an animal slot or a UOP entry) to every player?",
+   "options": [],
+   "built": true,
+   "default": "Third-party stages are data rows marked art-pending",
+   "recommended": "Yes for the fox (L_Fox) and the bird line (L_Bird 01, L_Griffin) once a delivery route exists",
+   "status": "elsewhere",
+   "answer": "Yes, use third-party art for the fox and bird lines; the route to ship custom creature art is part of the F-35 work. Built in cc-P65 as data rows marked art-pending, switched on when a later prompt ships the art.",
+   "source": "notes/f35-evo-pets-handoff-2026-10-05.md, answer 2; docs/feature-queue.md (F-35, \"Build plan, decided (Chase, 2026-10-05 13:40)\")"
+  },
+  "P59-D3": {
+   "question": "How long should the fox evo line be, and which bodies make up its stages?",
+   "options": [],
+   "built": true,
+   "default": "1423 Small Fox, L_Fox, 246 Bake Kitsune, kitsune (L_Fox and kitsune art-pending)",
+   "recommended": "3 stages now (1423, L_Fox, 246), two new foxes later to reach 5",
+   "status": "elsewhere",
+   "answer": "The fox line's top stage is a human kitsune: 1423 Small Fox, L_Fox, 246 Bake Kitsune, then the kitsune as stage 4. No mid fox for now. Built in cc-P65 (live today: 1423 and 246; L_Fox and the kitsune art-pending).",
+   "source": "notes/f35-evo-pets-handoff-2026-10-05.md, answer 3; docs/feature-queue.md (F-35, \"Build plan, decided (Chase, 2026-10-05 13:40)\")"
+  },
+  "P59-D4": {
+   "question": "Which five bodies should make up the dog evo line?",
+   "options": [],
+   "built": true,
+   "default": "217, 739, player's pick of breed at stage 3, 277, 1410",
+   "recommended": "217, 739, 1547, 277, 1410, other breeds as stage 3 variants",
+   "status": "elsewhere",
+   "answer": "217 Dog, 739 Leather Wolf, stage 3 is the player's pick of breed (1547 Malamute, 1548 Great Dane, 1549 Saint Bernard, 1546 Newfoundland, 1552 Rottweiler, 1551 Black Russian Terrier), 277 Cu Sidhe, 1410 Windrunner. Built in cc-P65.",
+   "source": "docs/feature-queue.md (F-35, \"Stage picks, decided (Chase, 2026-10-05)\")"
+  },
+  "P59-D5": {
+   "question": "Which five bodies should make up the cat evo line?",
+   "options": [],
+   "built": true,
+   "default": "201, 1309, pick of 1254 Tiger or 1426 Lion, 1416, 1573",
+   "recommended": "201, 1309, 1254, 1416, 1573",
+   "status": "elsewhere",
+   "answer": "201 Cat, 1309 Baby Tiger, stage 3 is the player's pick of 1254 Tiger or 1426 Lion, 1416 Sabertooth, 1573 Manticore. Built in cc-P65.",
+   "source": "docs/feature-queue.md (F-35, \"Stage picks, decided (Chase, 2026-10-05)\")"
+  },
+  "P59-D6": {
+   "question": "Which five bodies should make up the bird evo line, and what if third-party art is declined?",
+   "options": [],
+   "built": true,
+   "default": "254, 832, L_Bird 01, L_Griffin, 243 (the two third-party stages art-pending)",
+   "recommended": "254, 1440, L_Bird 01, L_Griffin, 243; 3 stages without third-party art",
+   "status": "elsewhere",
+   "answer": "254 Crane, 832 Phoenix Bird (P59's Peacock dropped), L_Bird 01, L_Griffin, 243 Lesser Hiryu. Built in cc-P65 (live today: 254, 832, 243; the two third-party stages art-pending).",
+   "source": "docs/feature-queue.md (F-35, \"Stage picks, decided (Chase, 2026-10-05)\")"
+  },
+  "P59-D7": {
+   "question": "Is it fine that the dog (217) and cat (201) starter stages are bodies players already see everywhere as town critters?",
+   "options": [],
+   "built": true,
+   "default": "Dog 217 and Cat 201 are stage 1",
+   "recommended": "Accept it for stage 1",
+   "status": "elsewhere",
+   "answer": "Accepted: Dog 217 and Cat 201 stay as stage 1 even though they are common town critters. Built in cc-P65.",
+   "source": "notes/f35-evo-pets-handoff-2026-10-05.md, answer 4"
+  },
+  "P59-D8": {
+   "question": "Should every chosen unused body get a bodyTable.cfg entry (Animal) as part of the F-35 build, so pets cannot open doors and keep their idle and feed animations?",
+   "options": [],
+   "built": true,
+   "default": "Body table entries added in the F-35 build",
+   "recommended": "Include them in the F-35 build task",
+   "status": "elsewhere",
+   "answer": "Yes: every chosen unused body gets a bodyTable.cfg entry (Animal) in the F-35 build. Built in cc-P65.",
+   "source": "notes/f35-evo-pets-handoff-2026-10-05.md, answer 5"
+  },
+  "P65-D1": {
+   "question": "Are the evo pet XP thresholds (500 / 3,000 / 13,000 / 53,000 total) and the kill XP formula right, given they are server settings tunable without a build once F-12 lands?",
+   "options": [],
+   "built": true,
+   "default": "500 / 3,000 / 13,000 / 53,000 and the section 3 kill formula",
+   "recommended": ""
+  },
+  "P65-D2": {
+   "question": "Is the evo pet stat curve right, with stage 5 as strong as a Cu Sidhe on 1 control slot and the same curve for every line until roles are designed?",
+   "options": [],
+   "built": true,
+   "default": "Stage 5 is a 1-slot Cu Sidhe, one curve for all lines",
+   "recommended": ""
+  },
+  "P65-D3": {
+   "question": "Keep the seven placeholder evo pet hues, knowing some may look odd on the already coloured UOP bodies, or pick a new list?",
+   "options": [],
+   "built": true,
+   "default": "Seven placeholder hues",
+   "recommended": ""
+  },
+  "P65-D4": {
+   "question": "Keep the placeholder Echo lines the evo pets use, or write new ones?",
+   "options": [],
+   "built": true,
+   "default": "Placeholder lines in the Echo's voice",
+   "recommended": ""
+  },
+  "P65-D5": {
+   "question": "The Bond Trial is only a staff flag until it is designed. How should a player pass it?",
+   "options": [],
+   "built": true,
+   "default": "A staff-set flag",
+   "recommended": ""
+  },
+  "P65-D6": {
+   "question": "A player's stage pick (for example the dog breed) is permanent and only staff can change it. Should players get one change of their own?",
+   "options": [
+    {
+     "label": "Keep the pick permanent for players",
+     "mark": "built"
+    },
+    {
+     "label": "Let players change it once",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "Permanent for players, staff can change it",
+   "recommended": ""
+  },
+  "P65-D7": {
+   "question": "A released evo pet cannot be re-tamed by anyone (Tamable is false). Should someone be able to tame it again?",
+   "options": [
+    {
+     "label": "No, a released evo pet cannot be re-tamed",
+     "mark": "built"
+    },
+    {
+     "label": "Yes, let it be re-tamed",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "Not re-tamable",
+   "recommended": ""
+  },
+  "P65-D8": {
+   "question": "Keep the placeholder stage names (pup, young hound, hound, guardian hound, windrunner; kitten to manticore; kit to kitsune; chick to hiryu), which are a pet's default name until the owner renames it?",
+   "options": [],
+   "built": true,
+   "default": "The placeholder stage names",
+   "recommended": ""
+  },
+  "P65-D9": {
+   "question": "The sabertooth costume body (1416) now swings with animal actions. Keep that, or exclude 1416 from the animation change?",
+   "options": [
+    {
+     "label": "Keep 1416 on animal actions",
+     "mark": "built"
+    },
+    {
+     "label": "Exclude 1416 from the change",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "1416 uses animal actions",
+   "recommended": ""
+  },
+  "P65-D10": {
+   "question": "When F-12 lands, should EvoPet.OwnerLoopsSource be set to the real loop count and the real loop reset added to the evo pet test?",
+   "options": [],
+   "built": true,
+   "default": "A placeholder loop source until F-12",
+   "recommended": ""
+  },
+  "P72-D1": {
+   "question": "For leveling gear, should we port ServUO XmlLevelItems' code, or only its design, rewritten under our rules?",
+   "options": [
+    {
+     "label": "Port the design only",
+     "mark": "recommended"
+    },
+    {
+     "label": "Port the code",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "",
+   "recommended": "Port the design"
+  },
+  "P72-D2": {
+   "question": "How should a crafted item become levelable?",
+   "options": [
+    {
+     "label": "A League quest once per character, then a crafter-made consumable per item",
+     "mark": "recommended"
+    },
+    {
+     "label": "A guild Seal fee",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "",
+   "recommended": "A League quest once, then a crafter-made consumable per item"
+  },
+  "P72-D3": {
+   "question": "Should leveling items earn XP from hits paid out when the creature dies, or on every hit?",
+   "options": [
+    {
+     "label": "At death, from the damage list (no patch)",
+     "mark": "recommended"
+    },
+    {
+     "label": "On every hit (needs a damage hook patch, opens farms)",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "",
+   "recommended": "At death, from the damage list"
+  },
+  "P72-D4": {
+   "question": "When several players damage a creature, should each contributor's items get full XP or a share split by damage?",
+   "options": [
+    {
+     "label": "Full XP to every contributor with 10 percent or more of max hits",
+     "mark": "recommended"
+    },
+    {
+     "label": "Split by damage share",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "",
+   "recommended": "Full, to every contributor with 10 percent or more"
+  },
+  "P72-D5": {
+   "question": "What happens to a leveled item when its owner's loop resets?",
+   "options": [
+    {
+     "label": "Level kept, bonuses above wearer level plus attunement dormant, always wearable",
+     "mark": "recommended"
+    },
+    {
+     "label": "Item level is the equip requirement (F-12 read literally)",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "",
+   "recommended": "Level kept, extra bonuses dormant, always wearable; no leveling past owner's max"
+  },
+  "P72-D6": {
+   "question": "Should companions' gear earn item XP and have its bonuses act now, given that how much a companion's weapon matters waits on P41's parity work?",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": "Yes, it earns XP now and its bonuses act"
+  },
+  "P72-D7": {
+   "question": "Is this anti-farm list for item XP right: no XP from own or player-owned creatures, summons or NoKillAwards creatures, a creature-level floor of item level / 4, and a per-minute award cap?",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": "As listed, no separate paralysis rule"
+  },
+  "P72-D8": {
+   "question": "What may item level points buy?",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": "AosAttribute properties and the five resists only, within imbuing ceilings; no skill bonuses, Self Repair or hit effects"
+  },
+  "P72-D9": {
+   "question": "Is the item XP curve of 13 x n^1.4 (about 150 hours to level 200 for a steady player) the right starting point, with playtest setting the final number?",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": "13 x n^1.4 as a config table"
+  },
+  "P72-D10": {
+   "question": "Should levelable items stay tradeable, or bind to a character on their first level?",
+   "options": [
+    {
+     "label": "Stay tradeable",
+     "mark": "recommended"
+    },
+    {
+     "label": "Bind on first level",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "",
+   "recommended": "Stay tradeable"
+  },
+  "P75-D1": {
+   "question": "Should the Clockwork Scavenger be dropped as the League auto-loot reward, since TazUO's Autoloot already does the job? If so, keep the name for a cosmetic construct companion or retire it?",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": "Drop it as an auto-looter"
+  },
+  "P75-D2": {
+   "question": "Should the Field Salvager only work at a forge, or allow salvaging anywhere at a lower yield?",
+   "options": [
+    {
+     "label": "Keep the forge rule",
+     "mark": "recommended"
+    },
+    {
+     "label": "Allow salvaging anywhere at a lower yield",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "",
+   "recommended": "Keep the forge rule, against AFK conversion"
+  },
+  "P75-D3": {
+   "question": "Are Corpse Claim's range and cooldown (12 tiles, 10 seconds) right, and should it work on party members' kills?",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": "12 tiles, 10 seconds"
+  },
+  "P75-D4": {
+   "question": "Which commodities should Loot Courier tier II send to the bank, and when the bank is full should it stop or spill into the mule?",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": ""
+  },
+  "P75-D5": {
+   "question": "Is the Expedition Ledger (offline progress) wanted at all, and if so only after F-24's jobs exist?",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": ""
+  },
+  "P75-D6": {
+   "question": "Should League utility rewards cost more AP and Renown than cosmetics, or stay inside F-13's range (up to 1,750 AP and 1,000 Renown)?",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": "Inside F-13's range"
+  },
+  "P75-D7": {
+   "question": "Should the server send TazUO's DisableFeatures for anything, given it can only disable tree stumps today?",
+   "options": [
+    {
+     "label": "No, send nothing",
+     "mark": "recommended"
+    },
+    {
+     "label": "Yes, send it",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "",
+   "recommended": "No action"
+  },
+  "P76-D1": {
+   "question": "May we ship whole community-made map files (with no EA bytes in them) as our own data in the player package?",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": ""
+  },
+  "P76-D2": {
+   "question": "Which extra facet should be added first?",
+   "options": [
+    {
+     "label": "The Proving Ward (termur-replacement)",
+     "mark": "recommended"
+    },
+    {
+     "label": "Another candidate",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "",
+   "recommended": "The Proving Ward"
+  },
+  "P76-D3": {
+   "question": "Keep the placeholder facet names (The Proving Ward, The Hiltdeeps, Sosaria Before, The Unwritten Reach), or rename them?",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": ""
+  },
+  "P76-D4": {
+   "question": "Should the big extra maps ship as a separate optional facet pack, or in the main player package?",
+   "options": [
+    {
+     "label": "A separate optional facet pack",
+     "mark": ""
+    },
+    {
+     "label": "In the main package",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "",
+   "recommended": ""
+  },
+  "P76-D5": {
+   "question": "Is it fine to fetch UOFiddler and CentrED+ (and RadCopy for Siege of Sosaria) when facet wiring starts?",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": "Fetch them when wiring starts"
+  },
+  "P76-D6": {
+   "question": "What should the Siege of Sosaria map be for, given it is a second Trammel?",
+   "options": [
+    {
+     "label": "Loop-gated content",
+     "mark": ""
+    },
+    {
+     "label": "An expedition world",
+     "mark": ""
+    },
+    {
+     "label": "Skip it",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "",
+   "recommended": ""
+  },
+  "P76-D7": {
+   "question": "Should extra facets be added before the world wipe, which is cheapest, or after the stock-map buildings that come first?",
+   "options": [
+    {
+     "label": "Before the world wipe (cheapest)",
+     "mark": ""
+    },
+    {
+     "label": "After the stock-map buildings",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "",
+   "recommended": ""
+  },
+  "P76-D8": {
+   "question": "CALYPSO is still to download (5 a day on servuo.dev). Revisit it as a facet candidate when it lands?",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": "Revisit when it lands"
+  },
+  "P77-D1": {
+   "question": "Which rank names should the Order of the Alembic use: set A (the still), B (the work), C (the order), or your own?",
+   "options": [
+    {
+     "label": "A, the still: Bottle-washer, Stillhand, Distiller, ... Master Alchemist, Alembic Sage",
+     "mark": "recommended"
+    },
+    {
+     "label": "B, the work: Calcinator, Distiller, ... Magus of the Philosopher's Stone",
+     "mark": ""
+    },
+    {
+     "label": "C, the order: Postulant, Acolyte of the Alembic, ... Elder of the Order, Grand Alembic",
+     "mark": ""
+    },
+    {
+     "label": "Your own names",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "Placeholders: the generic rank names stay in ClusterFAlembicGuild.RankNames until a set is picked",
+   "recommended": "Set A"
+  },
+  "P77-D2": {
+   "question": "Keep \"Alembic Drams\" as the Order's currency name, or use another such as \"Still Marks\" or \"Vial Tokens\"?",
+   "options": [
+    {
+     "label": "Alembic Drams",
+     "mark": "built"
+    },
+    {
+     "label": "Still Marks",
+     "mark": ""
+    },
+    {
+     "label": "Vial Tokens",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "Alembic Drams (placeholder)",
+   "recommended": ""
+  },
+  "P77-D3": {
+   "question": "Keep the guildmaster as \"Distiller Orla Vance\" in a pink-hued robe and half apron, or rename or restyle her?",
+   "options": [],
+   "built": true,
+   "default": "Distiller Orla Vance, pink-hued robe and half apron",
+   "recommended": ""
+  },
+  "P77-D4": {
+   "question": "Is the Order's Apprentice task (Alchemy 50, or 10 Empty Bottles) right, or should Taste ID be part of it?",
+   "options": [],
+   "built": true,
+   "default": "Alchemy 50 or 10 Empty Bottles",
+   "recommended": ""
+  },
+  "P77-D5": {
+   "question": "When should the guild hall seed commands ([ClusterFSeedGuildHalls and [ClusterFSeedAlembicHall) run on the test world, or should the two seedOnWorldLoad settings be set for the fresh world instead?",
+   "options": [
+    {
+     "label": "Run the seed commands on the test world",
+     "mark": ""
+    },
+    {
+     "label": "Set seedOnWorldLoad for the fresh world",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "",
+   "recommended": ""
+  },
+  "P77-D6": {
+   "question": "Should the Order get its own mule module like the other 17 guilds, or be left without one and the \"one from each guild\" patch note reworded?",
+   "options": [
+    {
+     "label": "A module for the Order (a tonic drip, or a lighter reagent rack)",
+     "mark": ""
+    },
+    {
+     "label": "Leave it, and reword \"one from each guild\" in a later note",
+     "mark": "built"
+    }
+   ],
+   "built": true,
+   "default": "No module for the Order",
+   "recommended": ""
+  },
+  "P77-D7": {
+   "question": "Glassblowing stays a stock book unlock inside the Alchemy menu, with nothing gating or teaching it. Should the Order sell the Glassblowing book under F-43's recipe gating?",
+   "options": [],
+   "built": true,
+   "default": "Stock book unlock in the Alchemy menu",
+   "recommended": ""
+  },
+  "P77-D8": {
+   "question": "Which of the Order's hall art pieces should be registered first?",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": "The pillar lamp (on disk), then the bubble vat and partialhue flasks"
+  },
+  "P78-D1": {
+   "question": "Craft guild rank is standing under a skill cap that only rises, and only the 7 craft guilds are gated. Should the other guilds get skill gates too, and with which skill?",
+   "options": [
+    {
+     "label": "Skill gates for the 7 craft guilds only",
+     "mark": "built"
+    },
+    {
+     "label": "Add skill gates to other guilds too",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "Only the 7 craft guilds have skill gates (rank = standing under a skill cap that only rises); the other guilds rank by standing alone",
+   "recommended": ""
+  },
+  "P78-D2": {
+   "question": "Is the promotion skill right as the best Base of the guild's own craft skills (Foresters: Carpentry or Fletching; Arcane Society: Inscription, not Magery; Maritime Brotherhood: Cooking or Cartography)?",
+   "options": [],
+   "built": true,
+   "default": "The best Base of the guild's own craft skills (Foresters: Carpentry or Fletching; Arcane Society: Inscription; Maritime Brotherhood: Cooking or Cartography)",
+   "recommended": ""
+  },
+  "P78-D3": {
+   "question": "The recipe band merge rule leaves Fletching with one Band IV book holding Bands I to III, and Alchemy, Inscription and Cooking each with a Band IV book of Band II or III items. Keep the literal rule, or fold a leftover backward into the previous book?",
+   "options": [
+    {
+     "label": "Keep the literal merge rule",
+     "mark": "built"
+    },
+    {
+     "label": "Fold a leftover backward into the previous book",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "The literal merge rule: Fletching's one Band IV book holds Bands I to III; Alchemy, Inscription and Cooking each have a Band IV book holding Band II or III items",
+   "recommended": ""
+  },
+  "P78-D4": {
+   "question": "The recipe hint names the rank that sells the book (one band ahead), while the help page names both the selling and the granting rank. Keep that?",
+   "options": [],
+   "built": true,
+   "default": "The hint names the rank that sells the book (one band ahead); the help page names both the selling and the granting rank",
+   "recommended": ""
+  },
+  "P78-D5": {
+   "question": "Reading a recipe book or scroll needs no skill, unlike stock RecipeScroll, which needs the item's minimum skill. Add a skill floor?",
+   "options": [
+    {
+     "label": "No skill floor",
+     "mark": "built"
+    },
+    {
+     "label": "Add a skill floor (the item's min skill)",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "No skill floor: reading a book or scroll needs no skill",
+   "recommended": ""
+  },
+  "P78-D6": {
+   "question": "Alchemy, Inscription and Cooking Band V recipes cost currency only (no material), and leather stops at Barbed. Keep that, or add Band V materials?",
+   "options": [],
+   "built": true,
+   "default": "Alchemy, Inscription and Cooking Band V cost currency only; leather stops at Barbed",
+   "recommended": ""
+  },
+  "P78-D7": {
+   "question": "Are the placeholder recipe prices and chances right (books 100/200/400/800, Band V scroll 1,500 plus 10 material, large BOD 2 percent, commission 5 percent, Rank 5 starter set 2 scrolls per skill, rotation 3 and 5)?",
+   "options": [],
+   "built": true,
+   "default": "Placeholders: books 100/200/400/800, Band V scroll 1,500 plus 10 material, large BOD 2 percent, commission 5 percent (empty table), Rank 5 starter set 2 scrolls per skill, rotation 3 and 5",
+   "recommended": ""
+  },
+  "P78-D8": {
+   "question": "Staff (GameMaster and up) bypass the recipe gate and see every craft item. Keep that?",
+   "options": [],
+   "built": true,
+   "default": "GameMaster and up bypass the gate and see everything",
+   "recommended": ""
+  },
+  "P78-D9": {
+   "question": "Craft categories whose items are all hidden still show in the category column with an empty list. Hide them (an edit to the craft gump paging patch)?",
+   "options": [
+    {
+     "label": "List empty categories",
+     "mark": "built"
+    },
+    {
+     "label": "Hide empty categories",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "Empty categories stay listed in the category column with an empty item list",
+   "recommended": ""
+  },
+  "P78-D10": {
+   "question": "Existing OSI recipe items are now hidden until learned, with the wild hint line, instead of listed and greyed. Keep that?",
+   "options": [],
+   "built": true,
+   "default": "Existing OSI recipe items are hidden until learned and show the wild hint line",
+   "recommended": ""
+  },
+  "P78-D11": {
+   "status": "noted",
+   "reason": "an overseer task, not a choice: the F-43 entry in docs/fidelity-principle.md is still owed"
+  },
+  "P78-D12": {
+   "status": "noted",
+   "reason": "information: no world step is needed"
+  },
+  "P79-D1": {
+   "question": "Achievements are per account, so a second character on the account gets no loot box for achievements the account already holds. Keep that, or make achievements per character (a larger change to the achievement system)?",
+   "options": [
+    {
+     "label": "Keep achievements per account (one box per account)",
+     "mark": "built"
+    },
+    {
+     "label": "Make achievements per character",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "per account, box to the online character",
+   "recommended": ""
+  },
+  "P79-D2": {
+   "question": "Until F-12 brings real levels, the loot-box level stand-in is total Base skill / 10. Keep that stand-in?",
+   "options": [],
+   "built": true,
+   "default": "total Base skill / 10",
+   "recommended": ""
+  },
+  "P79-D3": {
+   "question": "Loot-box tiers: achievements by AP (10/25/50/100/250), bosses 4/5/6, League ranks in threes, clears 3, loops 6. Keep these tier rules?",
+   "options": [],
+   "built": true,
+   "default": "the rules as listed, all in the config file",
+   "recommended": ""
+  },
+  "P79-D4": {
+   "question": "The leather ladder has no tier past Barbed, so a tier 5 box repeats Barbed and tier 6 uses Celestial in the metal hue. Should there be a fifth leather name, and what?",
+   "options": [
+    {
+     "label": "Keep tier 5 as Barbed and tier 6 as Celestial",
+     "mark": "built"
+    },
+    {
+     "label": "Name a fifth leather for tier 5",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "tier 5 repeats Barbed",
+   "recommended": ""
+  },
+  "P79-D5": {
+   "question": "Box gear rolls 1 to 4 properties at up to 60 percent intensity, plain quality. Is that weak enough to sit below exceptional crafted gear, or should it be lower?",
+   "options": [
+    {
+     "label": "Keep 1-4 properties at up to 60 percent",
+     "mark": "built"
+    },
+    {
+     "label": "Lower the box gear strength",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "1-4 properties, up to 60 percent, plain",
+   "recommended": ""
+  },
+  "P79-D6": {
+   "question": "Seven loot-box rewards are placeholders: satchel upgrade, grove ledger page, companion items, boss trophy, League discount token, unique title and unique hue. What real items should replace them?",
+   "options": [],
+   "built": true,
+   "default": "placeholder items",
+   "recommended": ""
+  },
+  "P79-D7": {
+   "question": "Repeat counts on the achievement page show only for achievements earned on 2 or more loops, so the page looks the same until loops exist. Keep that?",
+   "options": [],
+   "built": true,
+   "default": "counts shown from 2 loops",
+   "recommended": ""
+  },
+  "P79-D8": {
+   "question": "Achievement fanfare is minor below tier 4 and major from tier 4; capstone fanfare is only for loops, reaching 200 and trial chapters. Keep these fanfare levels?",
+   "options": [],
+   "built": true,
+   "default": "minor below tier 4, major from 4",
+   "recommended": ""
+  },
+  "P79-D9": {
+   "status": "noted",
+   "reason": "to-do: trial, loop, level and clear hooks get wired as those systems land; nothing to choose"
+  },
+  "P80-D1": {
+   "question": "Every account starts the tutorial as NotStarted, so existing characters would be greeted at their next login. Turn `tutorial.enabled` off on live until the fresh world, or mark existing accounts Graduated?",
+   "options": [
+    {
+     "label": "Turn tutorial.enabled off on live until the fresh world",
+     "mark": ""
+    },
+    {
+     "label": "Mark existing accounts Graduated",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "",
+   "recommended": "",
+   "status": "elsewhere",
+   "answer": "No live ever; all accounts wiped when the tutorial ships",
+   "source": "notes/decisions-2026-10-14.md, Tutorial (P80) #1"
+  },
+  "P80-D2": {
+   "question": "The tutorial recruiter is Rook Hallowell, the League recruiter, on the plaza at 3500,2572,14. Keep him, or have Elara Voss (the Registrar) play the recruiter too?",
+   "options": [
+    {
+     "label": "Rook Hallowell",
+     "mark": "built"
+    },
+    {
+     "label": "Elara Voss, the Registrar",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "Rook Hallowell",
+   "recommended": "",
+   "status": "elsewhere",
+   "answer": "Keep Rook Hallowell",
+   "source": "notes/decisions-2026-10-14.md, Tutorial (P80) #2"
+  },
+  "P80-D3": {
+   "question": "The tutorial speaks as \"System: ...\"; F-35 called that voice the Echo. Are they the same voice?",
+   "options": [],
+   "built": true,
+   "default": "\"System:\" text",
+   "recommended": "",
+   "status": "elsewhere",
+   "answer": "Yes, the System voice is the Echo",
+   "source": "notes/decisions-2026-10-14.md, Tutorial (P80) #3"
+  },
+  "P80-D4": {
+   "question": "Tutorial achievements: \"Didn't Read the Manual\" 5 AP, \"Read the Manual Eventually\" 10 AP and 25 Renown, League category, not hidden. Keep these values?",
+   "options": [],
+   "built": true,
+   "default": "as proposed",
+   "recommended": "",
+   "status": "elsewhere",
+   "answer": "As proposed",
+   "source": "notes/decisions-2026-10-14.md, Tutorial (P80) #4"
+  },
+  "P80-D5": {
+   "question": "The tutorial graduation box is an Explorer's tier 1 (Common). Keep it, or pick another theme or tier?",
+   "options": [],
+   "built": true,
+   "default": "Explorer's tier 1, Common",
+   "recommended": "",
+   "status": "elsewhere",
+   "answer": "As proposed (Explorer's tier 1)",
+   "source": "notes/decisions-2026-10-14.md, Tutorial (P80) #5"
+  },
+  "P80-D6": {
+   "question": "Tutorial hints are server-driven only. Add the about-30-line TazUO client patch (a whitelisted 0xCE ClientCommand) so station buttons can open the World Map, Journal or options?",
+   "options": [
+    {
+     "label": "Server-driven hints only",
+     "mark": "built"
+    },
+    {
+     "label": "Add the whitelisted 0xCE client patch",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "server-driven hints only",
+   "recommended": "",
+   "status": "elsewhere",
+   "answer": "Yes, add the client patch",
+   "source": "notes/decisions-2026-10-14.md, Tutorial (P80) #6"
+  },
+  "P80-D7": {
+   "question": "The loop placeholders disagree: loot boxes start at loop 1, evo pets at loop 0. Which should F-12 use?",
+   "options": [],
+   "built": true,
+   "default": "loot boxes 1, evo pets 0",
+   "recommended": "",
+   "status": "elsewhere",
+   "answer": "Parked with F-12, after the port",
+   "source": "notes/decisions-2026-10-14.md, Tutorial (P80) #7"
+  },
+  "P80-D8": {
+   "question": "Which trial order should the tutorial use: F-35's story order (gather, craft, tame, fight, heal, spell, dungeon, travel, echo) or this brief's core and wings?",
+   "options": [
+    {
+     "label": "F-35 story order",
+     "mark": ""
+    },
+    {
+     "label": "Core and wings",
+     "mark": ""
+    },
+    {
+     "label": "Hybrid: short core, then wings in F-35's story order",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "",
+   "recommended": "",
+   "status": "elsewhere",
+   "answer": "Hybrid (option C): 9-station core, then wings in F-35 order",
+   "source": "notes/decisions-2026-10-14.md, Tutorial (P80) #8"
+  },
+  "P81-D1": {
+   "question": "The local NSFW paperdoll switch lives in our launcher (`Play.ps1`, `Paperdoll-Bodies.ps1`), not in TazUO, because we ship TazUO's release build. Keep it there, or fork and build TazUO to put it in the client's options?",
+   "options": [
+    {
+     "label": "Keep the switch in our launcher",
+     "mark": "built"
+    },
+    {
+     "label": "Fork TazUO and add it to the Options window",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "launcher swap",
+   "recommended": "",
+   "status": "elsewhere",
+   "answer": "Done in our TazUO build: Options, Paperdoll bodies SFW/Topless/Nude",
+   "source": "notes/cc-P111-tazuo-paperdoll-option.md, Headlines"
+  },
+  "P81-D2": {
+   "question": "Gump ids 62000-62026 stay Fiddle-Me-This's, so the kit's female versions of those 27 DLC wearables are not shipped (fine while no shipped item uses animation 2000-2026). Keep that, or renumber now?",
+   "options": [
+    {
+     "label": "Keep FMT's 62000-62026; renumber only if needed",
+     "mark": "built"
+    },
+    {
+     "label": "Renumber now and ship the kit's female versions",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "kept as Fiddle-Me-This's",
+   "recommended": ""
+  },
+  "P81-D3": {
+   "status": "noted",
+   "reason": "the kit's JSON layout was not adopted because our TazUO cannot load it and it misaligns; a technical finding"
+  },
+  "P81-D4": {
+   "question": "The DLC templates shipped as the grayscale (hueable) set, not the pre-hued one. Keep the grayscale set?",
+   "options": [
+    {
+     "label": "Grayscale, hueable set",
+     "mark": "built"
+    },
+    {
+     "label": "Pre-hued set",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "grayscale set",
+   "recommended": ""
+  },
+  "P81-D5": {
+   "question": "Do you want a later prompt for the kit's 18 animation VDs and its Equipconv.def changes?",
+   "options": [],
+   "built": false,
+   "default": "not done",
+   "recommended": ""
+  },
+  "P82-D1": {
+   "question": "The Artificers' ladder has five rungs (0, 1,000, 5,000, 15,000, 40,000) and no rank 4, so the rank 4 book (FC, FCR, SSI, super slayers, Casting Focus) and the rank 5 Master Formulary both open at Arcane Artisan (40,000). Add a rung, or accept it?",
+   "options": [
+    {
+     "label": "Accept: rank 4 and 5 books both open at 40,000",
+     "mark": "built"
+    },
+    {
+     "label": "Add a rank 4 rung to the ladder",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "both books at Arcane Artisan",
+   "recommended": "",
+   "prompt": "P82",
+   "section": "6. Hooks, TODOs and mismatches with the design",
+   "anchor": "6-hooks-todos-and-mismatches-with-the-design",
+   "notesFile": "notes/cc-P82-artificers-imbuing.md"
+  },
+  "P82-D2": {
+   "question": "Members with the Artificers' Toolkit can imbue anywhere up to Full, so mule socket II (Refined) adds nothing for them. Keep \"anywhere\" at Full, or lower `siteCaps.Anywhere` so the mule matters?",
+   "options": [
+    {
+     "label": "Keep anywhere at Full (old behaviour)",
+     "mark": "built"
+    },
+    {
+     "label": "Lower siteCaps.Anywhere so socket II matters",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "siteCaps.Anywhere = Full",
+   "recommended": "",
+   "prompt": "P82",
+   "section": "6. Hooks, TODOs and mismatches with the design",
+   "anchor": "6-hooks-todos-and-mismatches-with-the-design",
+   "notesFile": "notes/cc-P82-artificers-imbuing.md"
+  },
+  "P82-D3": {
+   "question": "ServUO gives an ordinary soul forge no bonus (only the Queen's 6 and the Royal City's 2). We use 2 percentage points as the standard forge bonus and 6 for the Queen's. Keep those values?",
+   "options": [
+    {
+     "label": "Standard forge 2, Queen's 6",
+     "mark": "built"
+    },
+    {
+     "label": "Standard forge 0, as ServUO",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "forgeBonusPercent 2, Queen's 6",
+   "recommended": "",
+   "prompt": "P82",
+   "section": "6. Hooks, TODOs and mismatches with the design",
+   "anchor": "6-hooks-todos-and-mismatches-with-the-design",
+   "notesFile": "notes/cc-P82-artificers-imbuing.md"
+  },
+  "P82-D4": {
+   "question": "The design names crafter +skill as new without a rank, so it was put at rank 1 beside Jewelry +skill. Keep it at rank 1?",
+   "options": [],
+   "built": true,
+   "default": "rank 1",
+   "recommended": "",
+   "prompt": "P82",
+   "section": "6. Hooks, TODOs and mismatches with the design",
+   "anchor": "6-hooks-todos-and-mismatches-with-the-design",
+   "notesFile": "notes/cc-P82-artificers-imbuing.md"
+  },
+  "P82-D5": {
+   "question": "The design gives no flavor text for the Creature of Habit achievement, so CC wrote one (\"Twenty-five times. The System has stopped taking notes and opened a file...\"). Keep it or replace it?",
+   "options": [],
+   "built": true,
+   "default": "CC's flavor text",
+   "recommended": "",
+   "prompt": "P82",
+   "section": "6. Hooks, TODOs and mismatches with the design",
+   "anchor": "6-hooks-todos-and-mismatches-with-the-design",
+   "notesFile": "notes/cc-P82-artificers-imbuing.md"
+  },
+  "P89-D1": {
+   "question": "Approve the Haven pages shape: Haven serves, the game PC builds Shard status and pushes a snapshot, and Haven is the only writer of results (mirrored into git at commit)?",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": "yes",
+   "status": "elsewhere",
+   "answer": "Yes",
+   "source": "notes/decisions-2026-10-14.md, Haven pages (P89) #1"
+  },
+  "P89-D2": {
+   "question": "Who gets into the Haven pages: Chase only, or Chase and his daughter? And should she see play tests as well as ideas?",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": "both, both pages, each result marked by who made it",
+   "status": "elsewhere",
+   "answer": "Both, both pages, results marked by who made them",
+   "source": "notes/decisions-2026-10-14.md, Haven pages (P89) #2"
+  },
+  "P89-D3": {
+   "question": "What outside hostname should the Haven pages use?",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": "ops.shatteredlegacyuo.com, Cloudflare Access email code, 24 h",
+   "status": "elsewhere",
+   "answer": "ops.shatteredlegacyuo.com with Access (later replaced by Tailscale only, cc-P133)",
+   "source": "notes/decisions-2026-10-14.md, Haven pages (P89) #3"
+  },
+  "P89-D4": {
+   "question": "How should Haven pull the repo: a git-pull container or a systemd timer?",
+   "options": [
+    {
+     "label": "git-pull container in compose, every 2 minutes",
+     "mark": "recommended"
+    },
+    {
+     "label": "systemd timer",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "",
+   "recommended": "the container, every 2 minutes",
+   "status": "elsewhere",
+   "answer": "git-pull container, every 2 minutes",
+   "source": "notes/decisions-2026-10-14.md, Haven pages (P89) #4"
+  },
+  "P89-D5": {
+   "question": "Build the shard login for the pages (H6) now or later? If built it uses a separate `[webpassword`, never the game password.",
+   "options": [
+    {
+     "label": "Now",
+     "mark": ""
+    },
+    {
+     "label": "Later, when the player account page is wanted",
+     "mark": "recommended"
+    }
+   ],
+   "built": false,
+   "default": "",
+   "recommended": "later",
+   "status": "elsewhere",
+   "answer": "Sooner: right after the first Haven pages",
+   "source": "notes/decisions-2026-10-14.md, Haven pages (P89) #5"
+  },
+  "P89-D6": {
+   "question": "Game PC container stats on Homepage: status from the snapshot, or live CPU and memory through a read-only Docker socket proxy on the LAN?",
+   "options": [
+    {
+     "label": "Status from the snapshot",
+     "mark": "recommended"
+    },
+    {
+     "label": "Live stats through a read-only socket proxy",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "",
+   "recommended": "the snapshot",
+   "status": "elsewhere",
+   "answer": "From the snapshot",
+   "source": "notes/decisions-2026-10-14.md, Haven pages (P89) #6"
+  },
+  "P89-D7": {
+   "question": "Show Haven's containers (Vaultwarden, website, wiki, NPM up or down) on Homepage through a read-only socket proxy?",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": "yes, read-only socket proxy, Homepage home and tailnet only",
+   "status": "elsewhere",
+   "answer": "Yes, read-only socket proxy",
+   "source": "notes/decisions-2026-10-14.md, Haven pages (P89) #7"
+  },
+  "P89-D8": {
+   "question": "Deploys on Haven: keep them Chase-run (paste one command), or give a CC prompt SSH write access for named deploy scripts only?",
+   "options": [
+    {
+     "label": "Chase-run",
+     "mark": "recommended"
+    },
+    {
+     "label": "CC SSH access for named deploy scripts",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "",
+   "recommended": "Chase-run for H3 and H5",
+   "status": "elsewhere",
+   "answer": "Chase-run, as a one-click console button",
+   "source": "notes/decisions-2026-10-14.md, Haven pages (P89) #8"
+  },
+  "P89-D9": {
+   "question": "Haven's stale Homepage and its June `~/shattered-legacy` checkout: replace that Homepage in H5 and leave the checkout alone, noting which Homepage is real in `docker\\dashboard\\README.md`?",
+   "options": [],
+   "built": true,
+   "default": "stale Homepage still on Haven",
+   "recommended": "yes",
+   "status": "elsewhere",
+   "answer": "As recommended",
+   "source": "notes/decisions-2026-10-14.md, Haven pages (P89) #9"
+  },
+  "P89-D10": {
+   "question": "`dashboard.shatteredlegacyuo.com` resolves publicly to the house and is in Homepage's allowed hosts. Does NPM route it, and if so should the host be removed or put behind Access?",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": "check NPM's proxy hosts now; if routed, remove it or put it behind Access",
+   "status": "moot",
+   "reason": "Since cc-P133 the Haven dashboard is Tailscale only: it binds Haven's LAN and loopback, never 0.0.0.0, and is served by Tailscale Serve; Chase was checking NPM himself (10-14)"
+  },
+  "P89-D11": {
+   "question": "Rename Homepage's \"Migration status\" entry (from P88) to \"Public progress page\" when Haven's Homepage is built?",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": "yes",
+   "status": "elsewhere",
+   "answer": "Yes",
+   "source": "notes/decisions-2026-10-14.md, Haven pages (P89) #11"
+  },
+  "P92-D1": {
+   "question": "The status page counts the Port tier as 283 of 983 files, not the 222 of 905 in your port-list note; the gap is the Base items row (mostly Items/Equipment). Is 283 of 983 the right count, or did the note use a different rule (for example Equipment counted elsewhere)?",
+   "options": [
+    {
+     "label": "Keep 283 of 983 (Equipment counts in Base items)",
+     "mark": "built"
+    },
+    {
+     "label": "Move the Equipment prefixes elsewhere in tools/port-list.json",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "283 of 983",
+   "recommended": ""
+  },
+  "P92-D2": {
+   "status": "noted",
+   "reason": "reports a stale path in docs/port-triage.md for the overseer; nothing to choose"
+  },
+  "P92-D3": {
+   "status": "noted",
+   "reason": "no task-list tool; progress went to chat"
+  },
+  "P92-D4": {
+   "status": "noted",
+   "reason": "pre-existing modified testing files left as found"
+  },
+  "P92-D5": {
+   "status": "noted",
+   "reason": "README keeps its existing non-ASCII progress bars"
+  },
+  "P92-D6": {
+   "status": "noted",
+   "reason": "ShatteredLegacy CHANGELOG and VERSION bumped as the prompt asked"
+  },
+  "P93-D1": {
+   "status": "noted",
+   "reason": "where the project copy was written; the add-to-project question is P93-D15"
+  },
+  "P93-D2": {
+   "status": "noted",
+   "reason": "citations use the shard's engine commit d4531cd94"
+  },
+  "P93-D3": {
+   "status": "noted",
+   "reason": "third-party folder not in a repo; notes copy committed"
+  },
+  "P93-D4": {
+   "status": "noted",
+   "reason": "SOURCE.txt errors listed for the features overseer, not edited"
+  },
+  "P93-D5": {
+   "status": "noted",
+   "reason": "Vault IPL is a launcher, needs no port"
+  },
+  "P93-D6": {
+   "status": "noted",
+   "reason": "no task-list tool; progress went to chat"
+  },
+  "P93-D7": {
+   "status": "noted",
+   "reason": "ran the commit preflight without a Finishing section"
+  },
+  "P93-D8": {
+   "question": "Go on the servuo.dev draft prompts? Say which of draft P94 to P98 to save to the queue, and in what order.",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": "",
+   "status": "elsewhere",
+   "answer": "Go: staff tools now; Animal Lore, rating, League hunts after the port",
+   "source": "notes/decisions-2026-10-14.md, servuo.dev assessment (P93)",
+   "prompt": "P93",
+   "section": "Open questions for Chase",
+   "anchor": "open-questions-for-chase",
+   "notesFile": "notes/servuo-code-port-assessment.md"
+  },
+  "P93-D9": {
+   "question": "Is the servuo.dev Vault Pass worth buying? Every Vault module needs Vita-Nex Core (months to port), and IPL is a launcher the shard does not need.",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": "no, unless wanted for design ideas",
+   "status": "elsewhere",
+   "answer": "Not at this time",
+   "source": "notes/decisions-2026-10-14.md, servuo.dev assessment (P93)",
+   "prompt": "P93",
+   "section": "Open questions for Chase",
+   "anchor": "open-questions-for-chase",
+   "notesFile": "notes/servuo-code-port-assessment.md"
+  },
+  "P93-D10": {
+   "question": "Are virtual storage chests wanted at all, given F-19's 1,000-item banks, the satchels and the mule? If yes it is a native rebuild.",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": "",
+   "status": "elsewhere",
+   "answer": "Not at this time; keep as a possibility",
+   "source": "notes/decisions-2026-10-14.md, servuo.dev assessment (P93)",
+   "prompt": "P93",
+   "section": "Open questions for Chase",
+   "anchor": "open-questions-for-chase",
+   "notesFile": "notes/servuo-code-port-assessment.md"
+  },
+  "P93-D11": {
+   "question": "Is Power Hour wanted? It would be a small native rebuild in `ClusterFSkillGain`; the Test Center already has a x5 gain factor.",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": "",
+   "status": "elsewhere",
+   "answer": "Yes, rebuild natively after the port",
+   "source": "notes/decisions-2026-10-14.md, servuo.dev assessment (P93)",
+   "prompt": "P93",
+   "section": "Open questions for Chase",
+   "anchor": "open-questions-for-chase",
+   "notesFile": "notes/servuo-code-port-assessment.md"
+  },
+  "P93-D12": {
+   "question": "The Animal Lore dashboard declares GPL-3.0: fine in the private repo, but it constrains any public release of the server code. OK to use?",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": "",
+   "status": "elsewhere",
+   "answer": "Fine",
+   "source": "notes/decisions-2026-10-14.md, servuo.dev assessment (P93)",
+   "prompt": "P93",
+   "section": "Open questions for Chase",
+   "anchor": "open-questions-for-chase",
+   "notesFile": "notes/servuo-code-port-assessment.md"
+  },
+  "P93-D13": {
+   "question": "Hunter's Bestiary gives +20% damage that stacks on slayers (about x2.4). When it joins F-24, keep it, shrink it, or cap it?",
+   "options": [
+    {
+     "label": "Keep +20% stacking on slayers",
+     "mark": ""
+    },
+    {
+     "label": "Shrink the bonus",
+     "mark": ""
+    },
+    {
+     "label": "Cap the combined bonus with slayers",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "",
+   "recommended": "",
+   "prompt": "P93",
+   "section": "Open questions for Chase",
+   "anchor": "open-questions-for-chase",
+   "notesFile": "notes/servuo-code-port-assessment.md"
+  },
+  "P93-D14": {
+   "question": "UORespawn: keep it as an idea only, or unzip its ModernUO server scripts for a closer read?",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": "",
+   "status": "elsewhere",
+   "answer": "Unzip for a closer read (P104 read it)",
+   "source": "notes/decisions-2026-10-14.md, servuo.dev assessment (P93)",
+   "prompt": "P93",
+   "section": "Open questions for Chase",
+   "anchor": "open-questions-for-chase",
+   "notesFile": "notes/servuo-code-port-assessment.md"
+  },
+  "P93-D15": {
+   "question": "Add the assessment copy (`notes\\servuo-code-port-assessment.md`) to the Claude project as `claude/servuo-code-port-assessment.md`?",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": "",
+   "status": "elsewhere",
+   "answer": "Yes",
+   "source": "notes/decisions-2026-10-14.md, servuo.dev assessment (P93)",
+   "prompt": "P93",
+   "section": "Open questions for Chase",
+   "anchor": "open-questions-for-chase",
+   "notesFile": "notes/servuo-code-port-assessment.md"
+  },
+  "P104-D1": {
+   "status": "noted",
+   "reason": "how the reading was done"
+  },
+  "P104-D2": {
+   "status": "noted",
+   "reason": "reports two findings are inferences"
+  },
+  "P104-D3": {
+   "status": "noted",
+   "reason": "reports a one-time read-only fetch"
+  },
+  "P104-D4": {
+   "question": "Should UORespawn stay an idea only, or do you want an M-sized wilderness filler of our own for custom areas? Nothing on the current plan needs one.",
+   "options": [
+    {
+     "label": "Keep it as an idea only",
+     "mark": "recommended"
+    },
+    {
+     "label": "Ask for an M-sized wilderness filler of our own",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "idea only, nothing built",
+   "recommended": "keep it as an idea only"
+  },
+  "P104-D5": {
+   "question": "Delete `D:\\UO\\third-party\\code\\uorespawn\\_extracted-muo\\` (436 KB, still there)? Nothing refers to it.",
+   "options": [
+    {
+     "label": "Delete it",
+     "mark": ""
+    },
+    {
+     "label": "Keep it",
+     "mark": "built"
+    }
+   ],
+   "built": true,
+   "default": "the folder is still there",
+   "recommended": "",
+   "prompt": "P104",
+   "section": "For Chase",
+   "anchor": "for-chase"
+  },
+  "P106-D1": {
+   "status": "noted",
+   "reason": "reports where the panel lives"
+  },
+  "P106-D2": {
+   "status": "noted",
+   "reason": "reports how the proof ran"
+  },
+  "P106-D3": {
+   "status": "noted",
+   "reason": "reports no compose change was needed"
+  },
+  "P106-D4": {
+   "status": "noted",
+   "reason": "reports the tile colours"
+  },
+  "P106-D5": {
+   "status": "noted",
+   "reason": "reports what the panel does not answer"
+  },
+  "P106-D6": {
+   "question": "Should `Shard-Console.ps1 -Status` run on a schedule every few minutes, so a shard question still emails you while the console is shut?",
+   "options": [
+    {
+     "label": "Schedule -Status every few minutes",
+     "mark": ""
+    },
+    {
+     "label": "Leave it: emails only while the console or -Status runs",
+     "mark": "built"
+    }
+   ],
+   "built": true,
+   "default": "email only when the console or -Status runs",
+   "recommended": ""
+  },
+  "P106-D7": {
+   "status": "noted",
+   "reason": "reports the 20 s quiet time"
+  },
+  "P106-D8": {
+   "status": "noted",
+   "reason": "reports the answer phrases"
+  },
+  "P106-D9": {
+   "question": "Delete `D:\\UO\\question-proof\\` (the scratch world, its broken copy and snapshot, about 138 MB, still there)? Nothing refers to it.",
+   "options": [
+    {
+     "label": "Delete it",
+     "mark": ""
+    },
+    {
+     "label": "Keep it",
+     "mark": "built"
+    }
+   ],
+   "built": true,
+   "default": "the folder is still there",
+   "recommended": "",
+   "prompt": "P106",
+   "section": "For Chase",
+   "anchor": "for-chase"
+  },
+  "P106-D10": {
+   "prompt": "P106",
+   "section": "For Chase",
+   "anchor": "for-chase",
+   "question": "Live is stopped at D94's load question (Delete the object and continue? y/n/a): answer y or a, n, or stop live?",
+   "options": [
+    {
+     "label": "y or a: delete ClusterFAccountPersistence and go on",
+     "mark": ""
+    },
+    {
+     "label": "n: delete nothing (live stops at press return)",
+     "mark": ""
+    },
+    {
+     "label": "Stop live (type stop live)",
+     "mark": "recommended"
+    }
+   ],
+   "built": false,
+   "default": "",
+   "recommended": "Stop live",
+   "status": "moot",
+   "reason": "live is retired (cc-P108): live never exists until 1.0 and sl-modernuo is gone"
+  },
+  "P108-D1": {
+   "question": "Start fresh is greyed because its new world took accounts from the live save, which is gone. Do you want a fresh test world again, and if so where should its accounts come from?",
+   "options": [
+    {
+     "label": "Leave Start fresh greyed (points at Wipe test accounts)",
+     "mark": "built"
+    },
+    {
+     "label": "Seed accounts from the newest test snapshot's Accounts",
+     "mark": ""
+    },
+    {
+     "label": "Make the owner account at start",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "Start fresh greyed",
+   "recommended": ""
+  },
+  "P108-D2": {
+   "status": "noted",
+   "reason": "reports the compose split"
+  },
+  "P108-D3": {
+   "status": "noted",
+   "reason": "reports live's code was greyed, per the overseer"
+  },
+  "P108-D4": {
+   "status": "noted",
+   "reason": "reports old facts were pinned true"
+  },
+  "P108-D5": {
+   "status": "noted",
+   "reason": "reports the status tile is grey"
+  },
+  "P108-D6": {
+   "status": "noted",
+   "reason": "reports a WinForms tooltip limit"
+  },
+  "P108-D7": {
+   "status": "noted",
+   "reason": "reports a warning that holds until a 1.0 service exists"
+  },
+  "P108-D8": {
+   "question": "The player launcher (`Play.ps1`, `Launch-Settings.ps1`, `Play-Lan.bat`, in the published player package) still points at 2593, where nothing runs now. Point it at the test shard (LAN only, 2594), or leave it until 1.0?",
+   "options": [
+    {
+     "label": "Point it at the test shard, 2594 (LAN only)",
+     "mark": ""
+    },
+    {
+     "label": "Leave 2593 until the 1.0 world",
+     "mark": "built"
+    }
+   ],
+   "built": true,
+   "default": "Play points at 2593",
+   "recommended": "",
+   "prompt": "P108",
+   "section": "For Chase",
+   "anchor": "for-chase"
+  },
+  "P110-D1": {
+   "question": "Where is the Sunflower dashboard with Spoolman and the graphing app, so its tiles and widgets can be wired?",
+   "options": [],
+   "built": true,
+   "default": "placeholder Spoolman and Graphing app tiles",
+   "recommended": "",
+   "status": "elsewhere",
+   "answer": "Spoolman, Prometheus and Grafana on Haven, from Chase's notes; in the inventory",
+   "source": "notes/cc-P133-haven-intranet-dashboard.md, Deviations item 4"
+  },
+  "P110-D2": {
+   "question": "The old dashboard had six ATM10 widgets reading the game PC; P110 cut them to one link tile (the server has been stopped for six weeks). Do you want the ATM10 widgets back?",
+   "options": [
+    {
+     "label": "Leave them out",
+     "mark": "built"
+    },
+    {
+     "label": "Bring the ATM10 widgets back",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "at most one ATM10 tile",
+   "recommended": ""
+  },
+  "P110-D3": {
+   "status": "noted",
+   "reason": "reports why there is no who's-online tile (live retired)"
+  },
+  "P110-D4": {
+   "question": "Should Kevin's Parts (a client's stack) show its up or down on the Haven dashboard?",
+   "options": [],
+   "built": false,
+   "default": "not shown in P110",
+   "recommended": "",
+   "status": "elsewhere",
+   "answer": "shown, up or down only, in Admin",
+   "source": "notes/cc-P133-haven-intranet-dashboard.md, docker/haven/services.json (kevins-parts-wp)"
+  },
+  "P110-D5": {
+   "question": "Homepage allows only LAN names; add Haven's Tailscale name to `DASH_ALLOWED_HOSTS` once Tailscale is on Haven?",
+   "options": [],
+   "built": true,
+   "default": "LAN names only",
+   "recommended": "",
+   "status": "moot",
+   "reason": "cc-P133 made the Haven intranet Tailscale only and rebuilt the dashboard for it"
+  },
+  "P110-D6": {
+   "question": "Should `dashboard.shatteredlegacyuo.com` (public DNS) still reach a Homepage?",
+   "options": [],
+   "built": true,
+   "default": "not allowed by the new Homepage",
+   "recommended": "",
+   "status": "moot",
+   "reason": "the Haven intranet is Tailscale only (cc-P133); no public dashboard name"
+  },
+  "P110-D7": {
+   "question": "Confirm the rule: no NPM host for Homepage, and never route it through NPM or Cloudflare?",
+   "options": [],
+   "built": true,
+   "default": "no NPM host",
+   "recommended": "",
+   "status": "elsewhere",
+   "answer": "Tailscale only, Tailscale Serve instead of Cloudflare",
+   "source": "notes/cc-P133-haven-intranet-dashboard.md, Headlines",
+   "prompt": "P110",
+   "section": "For Chase",
+   "anchor": "for-chase"
+  },
+  "P113-D1": {
+   "status": "noted",
+   "reason": "reports where the icon is loaded"
+  },
+  "P113-D2": {
+   "question": "The console window uses the website's `favicon.ico`, the same file the desktop shortcut uses. Keep sharing it, or copy it under `scripts\\` so a website favicon change cannot touch the console (the shortcut and window could then differ)?",
+   "options": [
+    {
+     "label": "Keep sharing favicon.ico",
+     "mark": "built"
+    },
+    {
+     "label": "Copy it under scripts\\",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "shares the website's favicon.ico",
+   "recommended": "keep sharing it"
+  },
+  "P113-D3": {
+   "status": "noted",
+   "reason": "reports -Action windows keep PowerShell's icon"
+  },
+  "P126-D1": {
+   "question": "Should the Golem start phrase also match loose variants such as \"golem work on shard tasks please\"?",
+   "options": [],
+   "built": true,
+   "default": "strict phrase",
+   "recommended": "",
+   "status": "elsewhere",
+   "answer": "the phrase takes its obvious variants now",
+   "source": "notes/cc-P131-wake-golem-from-console.md, Headlines (the two small fixes)"
+  },
+  "P126-D2": {
+   "status": "noted",
+   "reason": "reports no CHANGELOG change"
+  },
+  "P126-D3": {
+   "status": "noted",
+   "reason": "reports two labels rest on Kind lines"
+  },
+  "P126-D4": {
+   "status": "noted",
+   "reason": "lists unverified points"
+  },
+  "P126-D5": {
+   "status": "noted",
+   "reason": "a note for P131 and Draft B's order"
+  },
+  "P126-D6": {
+   "status": "noted",
+   "reason": "reports no Crystal Golem was proposed"
+  },
+  "P126-D7": {
+   "question": "Should the work PC (the Stone Golem) run Docker Desktop, so it can take port prompts, or stay on console, Haven-file and tools prompts only? Also send its facts: Windows edition, RAM and cores, whether Docker Desktop and Tailscale are allowed, and whether it has a real second volume for `D:`.",
+   "options": [
+    {
+     "label": "Docker Desktop on the work PC",
+     "mark": ""
+    },
+    {
+     "label": "No Docker: console, Haven-file and tools prompts only",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "",
+   "recommended": "",
+   "prompt": "P126",
+   "section": "For Chase",
+   "anchor": "for-chase"
+  },
+  "P136-D1": {
+   "status": "noted",
+   "reason": "reports no task-list tool"
+  },
+  "P136-D2": {
+   "status": "noted",
+   "reason": "reports two added rules"
+  },
+  "P136-D3": {
+   "status": "noted",
+   "reason": "reports how gates are marked"
+  },
+  "P136-D4": {
+   "status": "noted",
+   "reason": "reports how tasks name prompts"
+  },
+  "P136-D5": {
+   "status": "noted",
+   "reason": "reports C5's tier"
+  },
+  "P136-D6": {
+   "status": "noted",
+   "reason": "reports which port list is live"
+  },
+  "P136-D7": {
+   "status": "noted",
+   "reason": "reports the review date; the direction is the overseer's job"
+  },
+  "P136-D8": {
+   "status": "noted",
+   "reason": "reports machine output left as found"
+  },
+  "P137-D1": {
+   "question": "The ankh menu offers Resurrect and Tithe Gold only, as pinned and OSI do after AOS (no Lock Karma). Keep that, or add Lock and Unlock Karma at ankhs as our deviation?",
+   "options": [
+    {
+     "label": "Follow OSI: no Lock Karma",
+     "mark": "built"
+    },
+    {
+     "label": "Add Lock and Unlock Karma at ankhs",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "no Lock Karma",
+   "recommended": "follow OSI"
+  },
+  "P137-D2": {
+   "status": "noted",
+   "reason": "reports Essence Shards stay guild currency"
+  },
+  "P137-D3": {
+   "status": "noted",
+   "reason": "reports a test was dropped"
+  },
+  "P137-D4": {
+   "question": "P123 and P127 to P130 never reached the play-test page; run a small prompt to reconcile them (or make the importer treat a non-marker paragraph as no change of mode)?",
+   "options": [],
+   "built": false,
+   "default": "one placeholder each",
+   "recommended": "",
+   "status": "elsewhere",
+   "answer": "reconciled: their items are on the page",
+   "source": "testing/playtest-steps.json, P123-1 to P130-10 (and P127-0)"
+  },
+  "P137-D5": {
+   "question": "Eight working ankhs from ServUO's data (Felucca champion teleporters and Ter Mur's Stygian Abyss) are placed. Keep the Ter Mur ones, or hold them until the races open Ter Mur?",
+   "options": [
+    {
+     "label": "Keep all eight placed",
+     "mark": "built"
+    },
+    {
+     "label": "Hold the Ter Mur ankhs until the races",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "all eight placed",
+   "recommended": ""
+  },
+  "P137-D6": {
+   "status": "noted",
+   "reason": "reports an overnight build failure for P128's owner"
+  },
+  "P137-D7": {
+   "status": "noted",
+   "reason": "reports how the service reload works"
+  },
+  "P137-D8": {
+   "question": "The other 85 ankh statics are art on OSI too and stay decoration. Do you want any of them working?",
+   "options": [
+    {
+     "label": "Leave them as decoration",
+     "mark": "built"
+    },
+    {
+     "label": "Make some working (name which)",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "decoration",
+   "recommended": "",
+   "prompt": "P137",
+   "section": "For Chase",
+   "anchor": "for-chase"
+  },
+  "P138-D1": {
+   "question": "The kitsune ears and tail can now be worn by men (the rule is \"not gargoyles\", not \"women only\"). Keep it for both sexes, or make it female-only again?",
+   "options": [
+    {
+     "label": "Both sexes",
+     "mark": "built"
+    },
+    {
+     "label": "Female only",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "men and women can wear it",
+   "recommended": ""
+  },
+  "P138-D2": {
+   "status": "noted",
+   "reason": "reports gargoyles are refused"
+  },
+  "P138-D3": {
+   "question": "With a robe, the tail's root overlaps the robe's edge by up to 55 px in one walk frame. Leave it, or cut the tail at the robe too?",
+   "options": [
+    {
+     "label": "Leave the overlap",
+     "mark": "built"
+    },
+    {
+     "label": "Cut the tail at the robe",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "tail overlaps the robe edge",
+   "recommended": ""
+  },
+  "P138-D4": {
+   "status": "noted",
+   "reason": "reports the fact was seen green only"
+  },
+  "P138-D5": {
+   "status": "noted",
+   "reason": "reports the builder tag moved"
+  },
+  "P138-D6": {
+   "status": "noted",
+   "reason": "reports Read denials"
+  },
+  "P138-D7": {
+   "status": "noted",
+   "reason": "reports no task-list tool"
+  },
+  "P138-D8": {
+   "status": "noted",
+   "reason": "reports run frames are moved art; real ones can come later"
+  },
+  "P138-D9": {
+   "status": "noted",
+   "reason": "reports a fixed line-ending slip"
+  },
+  "P139-D1": {
+   "question": "Give the real Slinger the test creature's animating bow (or a shared `BodyActionBow`), or accept pinned's silent monster bow shot?",
+   "options": [],
+   "built": true,
+   "default": "bow animates on the test creature only",
+   "recommended": "",
+   "status": "elsewhere",
+   "answer": "P140's Slinger has P139's animating bow",
+   "source": "notes/cc-P140-rootdeep-burrows.md, the creature table (Burrow Scamp Slinger)"
+  },
+  "P139-D2": {
+   "status": "noted",
+   "reason": "reports which actions the .vd has"
+  },
+  "P139-D3": {
+   "status": "noted",
+   "reason": "reports duplicate blocks"
+  },
+  "P139-D4": {
+   "status": "noted",
+   "reason": "reports names and the test creature's placeholder stats (test only; P140's real creatures have their own)"
+  },
+  "P139-D5": {
+   "status": "noted",
+   "reason": "reports new client-side state"
+  },
+  "P139-D6": {
+   "question": "TheArt's rideable red dragon `.vd` is 5.7 MB, over the 5 MB repo rule. Leave it out, or store it outside the repo (a git-ignored source path with a stamp) and build its blocks from there?",
+   "options": [
+    {
+     "label": "Leave the red dragon out",
+     "mark": ""
+    },
+    {
+     "label": "Store the source outside the repo, build from a git-ignored path",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "not in the package",
+   "recommended": ""
+  },
+  "P139-D7": {
+   "status": "noted",
+   "reason": "reports the body test's rule"
+  },
+  "P139-D8": {
+   "status": "noted",
+   "reason": "reports a renderer fix; the Bestiary page needs a re-render"
+  },
+  "P139-D9": {
+   "status": "noted",
+   "reason": "reports hook denials"
+  },
+  "P139-D10": {
+   "status": "noted",
+   "reason": "reports a fixed quoting slip"
+  },
+  "P139-D11": {
+   "status": "noted",
+   "reason": "reports citation commits"
+  },
+  "P140-D1": {
+   "question": "The encoded creature animation files (sl-anim7.bin, 25 MB) are now git-ignored and built by the package build's encode gate. Keep that, or store them another way?",
+   "options": [
+    {
+     "label": "Keep: git-ignored, built on the first package build",
+     "mark": "built"
+    },
+    {
+     "label": "Git LFS for the two files",
+     "mark": ""
+    },
+    {
+     "label": "Exempt generated files from the 5 MB rule and commit them",
+     "mark": ""
+    },
+    {
+     "label": "Fewer bodies",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "git-ignored, built at package build",
+   "recommended": ""
+  },
+  "P140-D2": {
+   "question": "The Rootling: keep the hued stock bogling, or cut one Tree Fellow file down to a 1-tile size (about 0.5x, roughly 1.5 MB) and register it?",
+   "options": [
+    {
+     "label": "Keep the hued stock bogling",
+     "mark": "built"
+    },
+    {
+     "label": "Cut a Tree Fellow to 1-tile size and register it",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "hued stock bogling (body 779)",
+   "recommended": ""
+  },
+  "P140-D3": {
+   "question": "The Burrow Scamp Slinger's colour: keep hue 1258 as shipped (the bow turns rust too), or the frame recolour that keeps the bow brown (a new .vd to register)?",
+   "options": [
+    {
+     "label": "Hue 1258 as shipped",
+     "mark": "built"
+    },
+    {
+     "label": "The frame recolour, bow kept brown",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "hue 1258",
+   "recommended": ""
+  },
+  "P140-D4": {
+   "question": "The Overdraft's hue: keep 1740 brown, or 1901 iron?",
+   "options": [
+    {
+     "label": "1740 brown",
+     "mark": "built"
+    },
+    {
+     "label": "1901 iron",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "hue 1740 brown",
+   "recommended": ""
+  },
+  "P140-D5": {
+   "question": "The Burrows creatures' parts per kill (1 normal / 2 elite / 3 boss) and the tutorial drops' gold (3 to 40) are first numbers. Keep them, or change them?",
+   "options": [],
+   "built": true,
+   "default": "1 / 2 / 3 parts; 3 to 40 gold",
+   "recommended": ""
+  },
+  "P140-D6": {
+   "question": "The mini champ engine: queue it as its own prompt (P24's port, about 610 lines plus a test), or leave the Burrow Mother carrying her own brood as built?",
+   "options": [
+    {
+     "label": "Leave the Burrow Mother's brood as is",
+     "mark": "built"
+    },
+    {
+     "label": "Queue the mini champ engine as its own prompt",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "the Burrow Mother's own brood, no engine",
+   "recommended": ""
+  },
+  "P140-D7": {
+   "question": "The Ledger Bat is large (92 x 100 px at 1x) for a weak swarm creature. Keep it, give it a hue, or use a smaller body?",
+   "options": [
+    {
+     "label": "Fine as is",
+     "mark": "built"
+    },
+    {
+     "label": "A hue",
+     "mark": ""
+    },
+    {
+     "label": "A smaller body",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "the large vampire bat body",
+   "recommended": ""
+  },
+  "P140-D8": {
+   "question": "The humanoids, vrark, plant, elemental and underdark packs' SOURCE.txt flag lines were left in their own wording. Should they read \"Cleared by Chase 2026-10-15\" like the gnolls pack?",
+   "options": [
+    {
+     "label": "Leave their wording",
+     "mark": "built"
+    },
+    {
+     "label": "Make them read \"Cleared by Chase 2026-10-15\"",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "left as worded",
+   "recommended": ""
+  },
+  "P140-D9": {
+   "question": "Is the Overdraft's 1.5x walking crate boss-scale enough in the client, or should the AI art chat brief for a new boss body be written after all?",
+   "options": [
+    {
+     "label": "The 1.5x crate is enough",
+     "mark": "built"
+    },
+    {
+     "label": "Write the AI art chat brief",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "the 1.5x crate body",
+   "recommended": "",
+   "prompt": "P140",
+   "section": "7. Decisions for Chase",
+   "anchor": "7-decisions-for-chase",
+   "notesFile": "notes/cc-P140-rootdeep-burrows.md"
+  },
+  "P141-D1": {
+   "question": "Approve the Rootdeep Burrows layout as drawn in notes/art/rootdeep-mockup/index.html (zones, rooms, the Vault's four rooms, the crawlway at x 5160, the landing ankh), or say what to change (the map batch waits for this)?",
+   "options": [
+    {
+     "label": "Approve the layout as drawn",
+     "mark": ""
+    },
+    {
+     "label": "Change it (say what)",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "mockup only; nothing placed",
+   "recommended": ""
+  },
+  "P141-D2": {
+   "question": "A Young trainee who dies in the Vault: keep pinned's rule (the ghost wakes by New Haven's healer, about 57 tiles away, and walks back for the corpse), or a Vault rule that keeps the ghost in the Burrows to use the landing ankh (needs a pinned patch)?",
+   "options": [
+    {
+     "label": "Keep pinned's rule: the ghost wakes at New Haven's healer",
+     "mark": "built"
+    },
+    {
+     "label": "A Vault rule: the ghost stays and uses the landing ankh (pinned patch)",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "pinned's Young rule (New Haven's healer)",
+   "recommended": ""
+  },
+  "P141-D3": {
+   "question": "The Warren fillers: keep Rotworm and Grubber as rare Warren spawns and BloodWorm (374-422 hits) as a rare Gloom spawn, move any of them, or drop them?",
+   "options": [
+    {
+     "label": "Keep as placed",
+     "mark": "built"
+    },
+    {
+     "label": "Move some (say which)",
+     "mark": ""
+    },
+    {
+     "label": "Drop them",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "Rotworm, Grubber rare in the Warren; BloodWorm rare in the Gloom",
+   "recommended": ""
+  },
+  "P141-D4": {
+   "question": "Two trainees fighting the Overdraft together: the corpse follows pinned's looting rights, so the one who did less damage may not loot the fixed drop. Keep that, or give each credited trainee their own drop?",
+   "options": [
+    {
+     "label": "Keep pinned's looting rights",
+     "mark": "built"
+    },
+    {
+     "label": "Each credited trainee gets their own drop",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "pinned's looting rights",
+   "recommended": ""
+  },
+  "P141-D5": {
+   "question": "Third-party tile kits: DRC1K's packs (X-2 to X-5) forbid modifications and reposting. Should any of them be used or asked about, or stay with otimpyre's X-1 and X-6 (credit only) and stock tiles?",
+   "options": [
+    {
+     "label": "Do not use DRC1K's packs",
+     "mark": ""
+    },
+    {
+     "label": "Ask DRC1K about some (say which)",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "previews only, on the game PC",
+   "recommended": ""
+  },
+  "P141-D6": {
+   "question": "The staff [go location (GoLocation): move it to the arrival at 5193,1138 with the map batch, or leave it?",
+   "options": [
+    {
+     "label": "Move it to 5193,1138 with the map batch",
+     "mark": ""
+    },
+    {
+     "label": "Leave it",
+     "mark": "built"
+    }
+   ],
+   "built": true,
+   "default": "unchanged",
+   "recommended": ""
+  },
+  "P141-D7": {
+   "question": "The 2026-10-18 01:30 nightly bot run was broken by P141's manual boot check. Re-run it now (Run-OvernightPlaytests.ps1 -Force), or let tonight's run cover it?",
+   "options": [
+    {
+     "label": "Re-run now with -Force",
+     "mark": ""
+    },
+    {
+     "label": "Let tonight's nightly cover it",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "",
+   "recommended": ""
+  },
+  "P141-D8": {
+   "question": "The look per zone: which swatch set should each Burrows zone use (or a mix: say which floor, wall and door), from the mockup page's candidate tiles?",
+   "options": [],
+   "built": false,
+   "default": "",
+   "recommended": "",
+   "prompt": "P141",
+   "section": "8. Decisions for Chase",
+   "anchor": "8-decisions-for-chase",
+   "notesFile": "notes/cc-P141-rootdeep-burrows.md"
+  },
+  "P142-D1": {
+   "question": "The Thieves' Den monster-stealing ladder (Initiate: OSI's places and the Burrows; Journeyman: every facet's dungeons; Master: later dungeons and bosses) gives Grandmaster and Legendary nothing more. Keep that, or add +1 percent on the roll per rank above Master?",
+   "options": [
+    {
+     "label": "Keep: Grandmaster and Legendary open nothing more",
+     "mark": "built"
+    },
+    {
+     "label": "+1 percent per rank above Master",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "nothing past Master",
+   "recommended": ""
+  },
+  "P142-D2": {
+   "question": "The monster-stealing curve (5 / 11 / 23 / 35 percent at 100 / 120 / 160 / 200 skill, fame +1 to +5, the minor tier 2 to 5 percent from 60 to 100) is a first proposal. Keep it, or change it?",
+   "options": [],
+   "built": true,
+   "default": "the curve as built",
+   "recommended": ""
+  },
+  "P142-D3": {
+   "question": "The monster-stealing retry cooldown is 5 seconds per creature, for any thief, kept in memory. Keep it, or change it?",
+   "options": [],
+   "built": true,
+   "default": "5 s per creature",
+   "recommended": ""
+  },
+  "P142-D4": {
+   "question": "The monster-stealing loot tables (minor weights 35/25/15/15/10, special draw 1/4/15/80, family part 10%, Den share of recipe scrolls 75%, component ladder at fame 10/20/30) are first numbers. Keep them, or change them?",
+   "options": [],
+   "built": true,
+   "default": "the tables as built",
+   "recommended": ""
+  },
+  "P142-D5": {
+   "question": "Two more Den recipes are proposed: the Gilded Lockpick (needs a LockPick.cs hunk) and Shadow Cloak IV (needs a fourth mule tier). Build either, both, or neither?",
+   "options": [
+    {
+     "label": "Neither",
+     "mark": "built"
+    },
+    {
+     "label": "The Gilded Lockpick",
+     "mark": ""
+    },
+    {
+     "label": "Shadow Cloak IV",
+     "mark": ""
+    },
+    {
+     "label": "Both",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "three recipes built, these two not",
+   "recommended": ""
+  },
+  "P142-D6": {
+   "question": "For monster stealing a boss is a loot-box boss or the Den's own list (The Burrow Mother, The Gloom Queen), and paragons do not count. Should a paragon count as a boss (needing a Master)?",
+   "options": [
+    {
+     "label": "Paragons are not bosses",
+     "mark": "built"
+    },
+    {
+     "label": "Paragons count as bosses",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "paragons excluded",
+   "recommended": ""
+  },
+  "P142-D7": {
+   "question": "The stolen flag and the Gem of Salvation timer are kept in a side save file, not on the mobiles. Keep that, or use ServUO's shape (serialized fields on BaseCreature and PlayerMobile with migrations)?",
+   "options": [
+    {
+     "label": "Keep the side save file",
+     "mark": "built"
+    },
+    {
+     "label": "ServUO's shape: serialized fields and migrations",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "side save file (Saves/MonsterStealing)",
+   "recommended": ""
+  },
+  "P142-D8": {
+   "question": "The Balm of Protection applies but reduces nothing (its ServUO sites are not ported). Leave it inert, or add the one-hunk AOS.Damage hook (ours, far stronger than OSI's: 50 to 99 percent off every hit for 30 minutes)?",
+   "options": [
+    {
+     "label": "Leave it inert until the Grizzle or damaging regions are ported",
+     "mark": "built"
+    },
+    {
+     "label": "Add the AOS.Damage hook",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "applies, reduces nothing",
+   "recommended": "leave it inert"
+  },
+  "P142-D9": {
+   "status": "noted",
+   "reason": "a to-do: the register entries for Chase to add to docs/, no choice"
+  },
+  "P142-D10": {
+   "status": "noted",
+   "reason": "a correction to P127's note, for the record"
+  },
+  "P142-D11": {
+   "question": "The three built Den recipes (the cloak, the bomb, the charm) come from stolen scrolls and the general box recipe pool. Keep that, make them stolen-only, or sell them somewhere?",
+   "options": [
+    {
+     "label": "Keep: stolen scrolls and the box recipe pool",
+     "mark": "built"
+    },
+    {
+     "label": "Stolen-only",
+     "mark": ""
+    },
+    {
+     "label": "Also sold somewhere (say where)",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "stolen scrolls plus the box recipe pool",
+   "recommended": "",
+   "prompt": "P142",
+   "section": "Deviations and decisions for Chase",
+   "anchor": "deviations-and-decisions-for-chase",
+   "notesFile": "notes/cc-P142-monster-stealing-shard-rules.md"
+  },
+  "P142-D12": {
+   "question": "Should the Burrows' two bosses join the loot-box boss list instead of the Den's own list (that also gives them loot boxes and rare self-repair rolls)?",
+   "options": [
+    {
+     "label": "Keep them on the Den's own list",
+     "mark": "built"
+    },
+    {
+     "label": "Move them to the loot-box boss list",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "the Den's ShardBossTypes",
+   "recommended": "",
+   "prompt": "P142",
+   "section": "Deviations and decisions for Chase",
+   "anchor": "deviations-and-decisions-for-chase",
+   "notesFile": "notes/cc-P142-monster-stealing-shard-rules.md"
+  },
+  "P142-D13": {
+   "question": "The Life Shield Lotion works for the pet Life Drain; should its other OSI site, the Harrower's tentacles (a four-line hunk in pinned's HarrowerTentacles.cs), be added too?",
+   "options": [
+    {
+     "label": "Leave it",
+     "mark": "built"
+    },
+    {
+     "label": "Add the Harrower tentacles hunk",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "pet Life Drain only",
+   "recommended": "",
+   "prompt": "P142",
+   "section": "Deviations and decisions for Chase",
+   "anchor": "deviations-and-decisions-for-chase",
+   "notesFile": "notes/cc-P142-monster-stealing-shard-rules.md"
+  },
+  "P144-D1": {
+   "status": "noted",
+   "reason": "report: where the new scripts live"
+  },
+  "P144-D2": {
+   "question": "Your two PCs get Legion scripts from git, so the dev channel only serves a PC flagged dev with no repo. Keep the dev channel as the staging step Promote copies from, or have Promote publish straight from the clone?",
+   "options": [
+    {
+     "label": "Keep the dev channel as the staging step",
+     "mark": "built"
+    },
+    {
+     "label": "Promote straight from the clone",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "dev channel kept; Promote copies from dev",
+   "recommended": "keep the dev channel"
+  },
+  "P144-D3": {
+   "status": "noted",
+   "reason": "report: the git sync refusal replaces the time guard, as the overseer said"
+  },
+  "P144-D4": {
+   "status": "noted",
+   "reason": "report: .gitattributes keeps bytes identical on both PCs"
+  },
+  "P144-D5": {
+   "question": "When Set up scripts repo runs on the tower, the tazuo-sl-build client's older SL_Mining.py (152,611 bytes, 2026-10-05) lands in from-installs, and Publish to dev refuses until it is kept or deleted. Delete it (keep the repo's newer copy), or keep the older one?",
+   "options": [
+    {
+     "label": "Delete it; keep the repo's newer copy",
+     "mark": ""
+    },
+    {
+     "label": "Keep the older copy",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "",
+   "recommended": ""
+  },
+  "P144-D6": {
+   "status": "noted",
+   "reason": "report: the settings file; no console button for the dev flag"
+  },
+  "P144-D7": {
+   "status": "noted",
+   "reason": "report: setup links the newest install only, as the prompt said"
+  },
+  "P144-D8": {
+   "question": "Promote never removes an official Legion script: one deleted from the repo stays official until removed by hand on Haven. Keep that, or should Promote mirror removals?",
+   "options": [
+    {
+     "label": "Never remove; remove by hand on Haven",
+     "mark": "built"
+    },
+    {
+     "label": "Promote mirrors removals",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "never removes",
+   "recommended": ""
+  },
+  "P144-D9": {
+   "status": "noted",
+   "reason": "report: the official folder is found through docker inspect"
+  },
+  "P144-D10": {
+   "status": "noted",
+   "reason": "report: Check scripts makes an SSH login; Chase's button"
+  },
+  "P144-D11": {
+   "status": "noted",
+   "reason": "report: how the edits were made after a Read denial"
+  },
+  "P144-D12": {
+   "status": "noted",
+   "reason": "report: service and tile counts"
+  },
+  "P145-D1": {
+   "status": "noted",
+   "reason": "a deploy step (run Set up scripts repo, then commit), not a choice; it is in the For Chase steps"
+  },
+  "P145-D2": {
+   "question": "SL_Combat ships as eight top-level files (SL_Combat_*) because P144's publisher takes top-level *.py only. Keep that, or queue a P144 follow-up so the modules can sit in one subfolder?",
+   "options": [
+    {
+     "label": "Keep eight top-level files",
+     "mark": "built"
+    },
+    {
+     "label": "Queue the subfolder follow-up",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "eight top-level files",
+   "recommended": ""
+  },
+  "P145-D3": {
+   "status": "noted",
+   "reason": "report: the rank comes through the [artificerrank command"
+  },
+  "P145-D4": {
+   "status": "noted",
+   "reason": "report: a non-member still gets the free properties at Basic"
+  },
+  "P145-D5": {
+   "status": "noted",
+   "reason": "report: how companions are found"
+  },
+  "P145-D6": {
+   "status": "noted",
+   "reason": "report: attacking-the-player is a client-side guess"
+  },
+  "P145-D7": {
+   "question": "SL_Combat remembers whether it was enabled, so after a relog it starts in the state you left it. Keep that, or should it always start off?",
+   "options": [
+    {
+     "label": "Remember the last state",
+     "mark": "built"
+    },
+    {
+     "label": "Always start off",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "remembers the last state",
+   "recommended": ""
+  },
+  "P145-D8": {
+   "status": "noted",
+   "reason": "report: the installed client's API stub is the reference"
+  },
+  "P145-D9": {
+   "question": "SL_Combat's starter profile weights, thresholds and hotkeys are first guesses (design doc section 12). Keep them, or change them?",
+   "options": [],
+   "built": true,
+   "default": "the design doc's first guesses",
+   "recommended": ""
+  },
+  "P145-D10": {
+   "status": "noted",
+   "reason": "report: counts"
+  },
+  "P154-D1": {
+   "status": "noted",
+   "reason": "report: five facts outside the prompt still fail; the fix is named, no choice asked"
+  },
+  "P154-D2": {
+   "status": "noted",
+   "reason": "report: test forms keep the inline order"
+  },
+  "P154-D3": {
+   "status": "noted",
+   "reason": "report: package facts read at most every two minutes"
+  },
+  "P154-D4": {
+   "status": "noted",
+   "reason": "report: a second click is told to wait"
+  },
+  "P154-D5": {
+   "status": "noted",
+   "reason": "report: the question email moved to the refresh runspace"
+  },
+  "P154-D6": {
+   "status": "noted",
+   "reason": "report: what is still slow once"
+  },
+  "P154-D7": {
+   "status": "noted",
+   "reason": "report: a note for the web console rebuild"
+  },
+  "P154-D8": {
+   "status": "noted",
+   "reason": "report: WM_SETREDRAW by reflection"
+  },
+  "P155-D1": {
+   "status": "noted",
+   "reason": "report: the real page was not loaded; the auth key is a For Chase step"
+  },
+  "P155-D2": {
+   "status": "noted",
+   "reason": "report: the phase 1 trust model; phase 2 must close it"
+  },
+  "P155-D3": {
+   "status": "noted",
+   "reason": "report: the allowed login and how to add one"
+  },
+  "P155-D4": {
+   "status": "noted",
+   "reason": "report: tile freshness"
+  },
+  "P155-D5": {
+   "status": "noted",
+   "reason": "report: the collector runs with the web console"
+  },
+  "P155-D6": {
+   "status": "noted",
+   "reason": "report: Needs you can be a commit behind"
+  },
+  "P155-D7": {
+   "status": "noted",
+   "reason": "report: chores.md is new"
+  },
+  "P155-D8": {
+   "status": "noted",
+   "reason": "report: stand-in art until art is dropped in"
+  },
+  "P155-D9": {
+   "question": "Queue phase 2 of the web console (Golem controls: wake, poke, rest, wrap up, stopping point, long run, night shift, Run next, the away-mode switch, typed confirms, an action log and the hardened identity check) now, later, or not at all?",
+   "options": [
+    {
+     "label": "Queue it now",
+     "mark": ""
+    },
+    {
+     "label": "Later",
+     "mark": ""
+    },
+    {
+     "label": "Decline",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "phase 1, read-only",
+   "recommended": "",
+   "prompt": "P155",
+   "section": "For Chase",
+   "anchor": "for-chase",
+   "notesFile": "notes/cc-P155-web-console-phase1-status.md"
+  },
+  "P160-D1": {
+   "status": "noted",
+   "reason": "a note about how CC read two files; nothing for Chase to choose"
+  },
+  "P160-D2": {
+   "question": "Pace also gates the start phrase: ahead of pace the Golem rests, and pushing on means raising dayWeekAheadPct by hand. Want a one-off \"ignore pace\" button as a small follow-up?",
+   "options": [
+    {
+     "label": "No button; raise dayWeekAheadPct by hand",
+     "mark": "built"
+    },
+    {
+     "label": "Queue an ignore-pace button",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "raise dayWeekAheadPct by hand",
+   "recommended": ""
+  },
+  "P160-D3": {
+   "status": "noted",
+   "reason": "report: how the week reserve is read"
+  },
+  "P160-D4": {
+   "status": "noted",
+   "reason": "report: the 5-hour window now also holds a hand-off"
+  },
+  "P160-D5": {
+   "status": "noted",
+   "reason": "report: how 'the next Opus prompt' is read"
+  },
+  "P160-D6": {
+   "status": "noted",
+   "reason": "report: a warning about usage credits mid-run"
+  },
+  "P160-D7": {
+   "status": "noted",
+   "reason": "report: the wake accepts older figures after a pace rest"
+  },
+  "P160-D8": {
+   "status": "noted",
+   "reason": "report: how 'week would run out' is judged"
+  },
+  "P160-D9": {
+   "status": "noted",
+   "reason": "report: no tooltips added"
+  },
+  "P160-D10": {
+   "status": "noted",
+   "reason": "report: the web console's new usage fields"
+  },
+  "P160-D11": {
+   "status": "noted",
+   "reason": "report: Get-Usage reads the plan file alone"
+  },
+  "P161-D1": {
+   "status": "noted",
+   "reason": "report: the duplicate-wake guard was added"
+  },
+  "P161-D2": {
+   "question": "A queue-empty rest and a Golem stop also close the finished session after the delay. Keep that, or keep the last session open when the queue runs dry?",
+   "options": [
+    {
+     "label": "Close it after the delay",
+     "mark": "built"
+    },
+    {
+     "label": "Keep the last session open when the queue runs dry",
+     "mark": ""
+    }
+   ],
+   "built": true,
+   "default": "closes after the delay",
+   "recommended": ""
+  },
+  "P161-D3": {
+   "status": "noted",
+   "reason": "report: rests that do not close the session"
+  },
+  "P161-D4": {
+   "status": "noted",
+   "reason": "report: the delay is at the next watch"
+  },
+  "P161-D5": {
+   "status": "noted",
+   "reason": "report: a session with no hook is never closed"
+  },
+  "P161-D6": {
+   "status": "noted",
+   "reason": "report: reads Claude Code's sessions files"
+  },
+  "P161-D7": {
+   "status": "noted",
+   "reason": "report: tabs default on; a fallback setting if tabs pile up"
+  },
+  "P161-D8": {
+   "status": "noted",
+   "reason": "a chore: close one dead test tab"
+  },
+  "P161-D9": {
+   "status": "noted",
+   "reason": "report: a Grep denial"
+  },
+  "P161-D10": {
+   "status": "noted",
+   "reason": "report: no task-list tool"
+  },
+  "P162-D1": {
+   "status": "noted",
+   "reason": "report: the week cap inside the end-of-week window"
+  },
+  "P162-D2": {
+   "status": "noted",
+   "reason": "report: the night shift session check"
+  },
+  "P162-D3": {
+   "status": "noted",
+   "reason": "report: when the window email goes out"
+  },
+  "P162-D4": {
+   "status": "noted",
+   "reason": "report: the summary's figures are approximate"
+  },
+  "P162-D5": {
+   "status": "noted",
+   "reason": "report: the Fable window"
+  },
+  "P162-D6": {
+   "status": "noted",
+   "reason": "report: P156 batches wait for P156"
+  },
+  "P162-D7": {
+   "status": "noted",
+   "reason": "report: P157 style waits for P157"
+  },
+  "P162-D8": {
+   "status": "noted",
+   "reason": "report: no task-list tool"
+  },
+  "T-008-D1": {
+   "question": "Go to Eodon on the test shard (`[go 719 1863 40`, Ter Mur): is it reachable and does it have live spawns? If yes, write Q-064's forty-line Eodon recipe-drop hook for the seven garments; if empty, spawns come first.",
+   "options": [
+    {
+     "label": "Eodon is populated: write Q-064's forty lines",
+     "mark": ""
+    },
+    {
+     "label": "Eodon is empty: spawns first, hook waits",
+     "mark": ""
+    }
+   ],
+   "built": false,
+   "default": "no Eodon drop hook",
+   "recommended": "",
+   "prompt": "T-008",
+   "link": "",
+   "notesFile": "notes/codex-questions.md",
+   "section": "Q-064",
+   "anchor": "q-064-the-overseers-disposition-2026-09-28"
+  }
+ }
+}
