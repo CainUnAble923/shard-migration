@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.18.14. Golem on, 18 queued, latest done P173. Play tests: 333 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.18.15. Golem on, 17 queued, latest done P174. Play tests: 334 open, 4 failed, 43 passed.
 
 ### Needs overseer review (2)
 
@@ -229,7 +229,7 @@ Tasks          ███░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 106 prompts done, 3 more stopped early and not counted)
+### Queue (Golem on; 107 prompts done, 3 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -245,12 +245,12 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P168 hammer-t3-craft-order | queued |  |
 | P169 requirement-colors | queued |  |
 | P172 pet-gain-speed | queued |  |
-| P174 cont-session-closer-fix | queued |  |
 | P175 cont-clean-up-britannia-finish | queued |  |
 | P176 cont-artificers-unravel-container | queued |  |
 | P177 guild-menus-template-mockups | queued |  |
 | P179 league-design-pass | queued |  |
 | P180 cont-rootdeep-renders-round2 | queued |  |
+| P174 session-closer-fix | done | 2026-10-18 |
 | P173 imbue-all-slayers | done | 2026-10-18 |
 | P171 taming-anger-scales | done | 2026-10-18 |
 | P170 smith-teaching-orders-fix | done | 2026-10-18 |
@@ -260,7 +260,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P163 dashboard-fixes-portainer | done | 2026-10-18 |
 | P162 end-of-week-spend | done | 2026-10-17 |
 | P161 close-finished-sessions | done | 2026-10-17 |
-| P160 plan-usage-pacing | done | 2026-10-17 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 99 patches, 12 replacements
 
