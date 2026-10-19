@@ -3696,3 +3696,32 @@ estimated, and whether the two sets can be done independently. If the Eodon drop
 Q-064 anyway, the marginal cost here is the resources and the creature, which may be small.
 
 **Not blocking, and behind Q-064**, since Q-064 builds the drop hook both of them need.
+
+---
+
+## Q-067: the start phrase after a stopping-point rest does not start a new run when the run counter is already full (Golem)
+
+**Opened 2026-10-19 06:50 by Claude Code (Golem P181 session, Fable).** Not blocking. Golem defect, for the bug list.
+
+What happened, from `D:\UO\golem\golem.log`:
+
+- P180 ended on `P180 PAUSED` at 00:27 with `runDone` already 12 of `maxPerRun` 12. The Golem rested with reason
+  `stopping point` (README: ready now).
+- Chase pressed Wake on the console at 06:42; a Fable session for P181 opened and said the phrase.
+- The Prompt handler cleared the stopping-point rest but only resets `runDone` when the rest reason was `run cap`,
+  `night shift ended` or `long run ended` (`golem.ps1` about line 2115). `Hand-Off` then saw 12 of 12 and rested
+  again with reason `run cap`, handing nothing. Its self-wake was refused (usage unknown for 316 min), so the woken
+  session sat idle with no prompt.
+- The session re-ran the Prompt hook with the phrase (same session id, `-InputFile`). The second pass reset the run
+  (`start phrase: new run after the run cap`) and went on to the next rest, `model`: by then the overseer had
+  renamed P152 to `cc-P152-cont-...` (06:44), which sorts ahead of P181, and it wants Opus. The Golem now waits for
+  an Opus session for P152 (`wakePending`, retry 06:47).
+
+The defect: a rest reached with the counter full is advertised as "ready now", but the phrase needs saying twice.
+Suggested fix, one line: in the Prompt handler reset `runDone` whenever `runDone -ge maxPerRun` (or whenever any
+rest is cleared), not only for the three named reasons. Cover it in `tests\Golem.Tests.ps1` by resting on
+`stopping point` with a full counter and asserting one phrase hands a prompt.
+
+Assumption recorded: this session did not take P181 by hand. With `state.json` `current` empty, a DONE would not
+have been committed, and a self-woken Opus session for P152 could have swept P181 work into its commit
+(`Commit-ShardWork` stages with `git add -A`).
