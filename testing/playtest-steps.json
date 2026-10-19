@@ -2445,6 +2445,16 @@
    ],
    "pass": "The store shows the new rows by price (robes at 1,000 up to the charms at 300,000). Each bought item lands in the pack with its art and hue; the pigment dyes the artifact its hue and counts down from 5 uses.",
    "check": "Not built yet: the bot can buy a reward through the store gump and read the item in the pack; the art and the pigment's hue on screen are Chase's."
+  },
+  "P176-1": {
+   "where": "Test shard rebuilt with cc-P176, an Artificers' Order member at an Imbuing Table, with a bag in the backpack holding some magic loot (or `[add Longsword` and `[props` Hit Life Leech 30 on it, two or three times) and some plain items (a vendor dagger, a plain ring), plus one blessed magic item",
+   "do": [
+    "At the Imbuing Table, press Unravel Container - every magic item in a bag, and target the bag",
+    "Read the confirmation page (how many go, how many stay), then press Unravel",
+    "Read the summary lines in the journal and open the bag"
+   ],
+   "pass": "The confirmation counts the magic items to unravel and the rest to skip; after Unravel the journal shows \"Unraveled: N/M items\", \"Unraveled N item(s), skipped K.\" and \"Ingredients: X Essence Shard(s), ...\"; the magic items are gone, the plain and the blessed ones are still in the bag, and Essence Shards went up by X.",
+   "check": "Not built yet: a player in the Artificers' Order with a bag of 3 magic and 2 plain items presses Unravel Container, targets the bag and presses Unravel; the bot reads the three summary lines and the bag's contents; result in the nightly report once built."
   }
  }
 }

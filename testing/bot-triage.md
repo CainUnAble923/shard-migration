@@ -1032,3 +1032,11 @@ Added by cc-P175 (2026-10-18).
 | P175-1 | BOT | The two Appraise for Cleanup messages are server text; the bot can add the swords, set the properties and appraise them |
 | P175-2 | BOT | The "Corpse cleared ... +N Clean Up points" messages are server text; the bot can kill an Orc and a Dragon and clean up both |
 | P175-3 | BOT-PARTIAL | Buying through the store gump and the item in the pack are the bot's; how the new rewards look and the pigment's hue are Chase's |
+
+### P176
+
+Added by cc-P176 (2026-10-18).
+
+| id | bucket | reason |
+|---|---|---|
+| P176-1 | BOT | The confirmation page and the three summary lines are gump and server text, and the bag's contents are items; the bot can fill a bag, press Unravel Container and read them |
