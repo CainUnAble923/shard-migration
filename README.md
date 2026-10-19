@@ -63,12 +63,12 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.19.3. Golem on, 16 queued, latest done P183. Play tests: 341 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.19.4. Golem on, running P184 (cont-multi-golem), 16 queued, latest done P183. Play tests: 342 open, 4 failed, 43 passed.
 
 ### Needs overseer review (2)
 
 - **direction**: Confirmed 2026-10-13; notes/cc-P146-playtest-decisions-inbox.md (2026-10-18) is newer. Read it; if the direction moved, edit "direction" in tools/progress-state.json. `python tools/judge.py confirm direction`
-- **play tests not sorted**: 12 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0. Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
+- **play tests not sorted**: 13 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0. Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
 
 ## Port list: 3 of 16 systems in. 455 of 983 files (46%).
 
@@ -233,6 +233,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 
 | Prompt | State | When |
 |---|---|---|
+| P184 cont-multi-golem | running | 2026-10-19T11:29:55 |
 | P149 away-mode-and-email-controls | queued |  |
 | P150 requisitions-and-leads | queued |  |
 | P151 guild-halls-survey | queued |  |
@@ -246,9 +247,9 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P172 pet-gain-speed | queued |  |
 | P177 guild-menus-template-mockups | queued |  |
 | P179 league-design-pass | queued |  |
-| P184 cont-multi-golem | queued |  |
 | P185 cont-rootdeep-round4 | queued |  |
 | P186 cont-golem-join-kit | queued |  |
+| P187 cont-web-console-parity | queued |  |
 | P183 cont-golem-run-cap-and-stale-usage | done | 2026-10-19 |
 | P182 cont-web-console-phase2 | done | 2026-10-19 |
 | P176 cont-artificers-unravel-container | done | 2026-10-18 |
