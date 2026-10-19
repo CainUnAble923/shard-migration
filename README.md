@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.18.11. Golem on, 17 queued, latest done P166. Play tests: 329 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.18.11. Golem on, running P167 (cont-rootdeep-map-batch), 16 queued, latest done P166. Play tests: 331 open, 4 failed, 43 passed.
 
 ### Needs overseer review (2)
 
@@ -233,6 +233,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 
 | Prompt | State | When |
 |---|---|---|
+| P167 cont-rootdeep-map-batch | running | 2026-10-18T17:14:54 |
 | P149 away-mode-and-email-controls | queued |  |
 | P150 requisitions-and-leads | queued |  |
 | P151 guild-halls-survey | queued |  |
@@ -242,7 +243,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P157 plain-english-emails | queued |  |
 | P158 codex-second-agent | queued |  |
 | P159 codex-lane-second-pc | queued |  |
-| P167 cont-rootdeep-map-batch | queued |  |
 | P168 hammer-t3-craft-order | queued |  |
 | P169 requirement-colors | queued |  |
 | P170 cont-smith-teaching-orders-fix | queued |  |
