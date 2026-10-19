@@ -2455,6 +2455,53 @@
    ],
    "pass": "The confirmation counts the magic items to unravel and the rest to skip; after Unravel the journal shows \"Unraveled: N/M items\", \"Unraveled N item(s), skipped K.\" and \"Ingredients: X Essence Shard(s), ...\"; the magic items are gone, the plain and the blessed ones are still in the bag, and Essence Shards went up by X.",
    "check": "Not built yet: a player in the Artificers' Order with a bag of 3 magic and 2 plain items presses Unravel Container, targets the bag and presses Unravel; the bot reads the three summary lines and the bag's contents; result in the nightly report once built."
+  },
+  "P182-1": {
+   "where": "PowerShell on the game PC",
+   "do": [
+    "`D:\\ShatteredLegacy\\web-console\\Install-WebConsole.ps1 -Tailscale -DryRun` and read the plan",
+    "`D:\\ShatteredLegacy\\web-console\\Install-WebConsole.ps1 -Tailscale`"
+   ],
+   "pass": "No red docker lines; \"sidecar started\"; `docker ps` shows uoconsole-ts and uoconsole-proof; https://uoconsole.tail81098d.ts.net/ loads on your phone."
+  },
+  "P182-2": {
+   "where": "Your phone (Tailscale on): https://uoconsole.tail81098d.ts.net/#golem",
+   "do": [
+    "Wake: pick the model, type `wake the golem`, Run; read the output",
+    "Once a prompt runs: Find a stopping point, type `find a stopping point`, Run",
+    "Then Cancel stopping point, type `cancel`, Run",
+    "Open the Timeline: the three actions are there (web)"
+   ],
+   "pass": "A CC session opens on the game PC; each action ends with its console line (golem.resume: done., and so on); the Timeline lists them; one-handed is comfortable."
+  },
+  "P182-3": {
+   "where": "PowerShell on the game PC, after P182-1",
+   "do": [
+    "`curl.exe -s -o NUL -w \"%{http_code}\" -H \"Tailscale-User-Login: <your login>\" http://127.0.0.1:8096/api/health`",
+    "Open http://127.0.0.1:8095/#golem"
+   ],
+   "pass": "The curl prints 403 (no sidecar proof); the local page shows the buttons greyed with the uoconsole address."
+  },
+  "P182-4": {
+   "where": "The Shard Console, Golem tab, the next time a prompt says STOPPED",
+   "do": [
+    "Read why it stopped, then Retry stopped prompt (P<nn>), type the prompt number"
+   ],
+   "pass": "The prompt is back first in the queue, the Golem is no longer STOPPED, and a session opens on its model."
+  },
+  "P182-5": {
+   "where": "The Shard Console, Art tab: request web-console-golem-buttons",
+   "do": [
+    "Generate, approve and place the fifteen button icons"
+   ],
+   "pass": "Each Golem button on the web console shows its icon instead of the letter in a ring."
+  },
+  "P182-6": {
+   "where": "notes/cc-P182 notes, Deviations and decisions",
+   "do": [
+    "Decide whether to restrict tag:uoconsole to port 443 in the tailnet access controls"
+   ],
+   "pass": "Kept as is, or the ACL line added."
   }
  }
 }

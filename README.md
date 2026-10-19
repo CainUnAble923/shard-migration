@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.19. Golem on, running P181 (cont-rootdeep-round3), 16 queued, latest done P176. Play tests: 340 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.19.2. Golem on, 17 queued, latest done P182. Play tests: 340 open, 4 failed, 43 passed.
 
 ### Needs overseer review (2)
 
@@ -229,11 +229,10 @@ Tasks          ███░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 110 prompts done, 3 more stopped early and not counted)
+### Queue (Golem on; 111 prompts done, 3 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
-| P181 cont-rootdeep-round3 | running | 2026-10-19T08:42:08 |
 | P149 away-mode-and-email-controls | queued |  |
 | P150 requisitions-and-leads | queued |  |
 | P151 guild-halls-survey | queued |  |
@@ -247,9 +246,11 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P172 pet-gain-speed | queued |  |
 | P177 guild-menus-template-mockups | queued |  |
 | P179 league-design-pass | queued |  |
-| P182 cont-web-console-phase2 | queued |  |
 | P183 cont-golem-run-cap-and-stale-usage | queued |  |
 | P184 cont-multi-golem | queued |  |
+| P185 cont-rootdeep-round4 | queued |  |
+| P186 cont-golem-join-kit | queued |  |
+| P182 cont-web-console-phase2 | done | 2026-10-19 |
 | P176 cont-artificers-unravel-container | done | 2026-10-18 |
 | P175 cont-clean-up-britannia-finish | done | 2026-10-18 |
 | P174 session-closer-fix | done | 2026-10-18 |
@@ -259,7 +260,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P166 kitsune-fit-west-bald | done | 2026-10-18 |
 | P165 achievements-button-fix | done | 2026-10-18 |
 | P164 playtest-sessions | done | 2026-10-18 |
-| P163 dashboard-fixes-portainer | done | 2026-10-18 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 99 patches, 12 replacements
 

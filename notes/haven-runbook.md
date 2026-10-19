@@ -379,11 +379,16 @@ Its database. **A dump before any move** (`docker exec kevins-parts-db mysqldump
 and its queue, Needs you, the timeline, logs and links. A Python service on the **game PC** (`D:\ShatteredLegacy\web-console\server.py`,
 standard library only), started at Chase's logon by the scheduled task **SL web console** (`web-console\Install-WebConsole.ps1`;
 `-Uninstall` removes it). It listens on **127.0.0.1 only**: `:8095` for this PC's browser, `:8096` for the uoconsole sidecar,
-where a request is answered only if Tailscale Serve's `Tailscale-User-Login` is an allowed login (default: this PC's own
+where a request is answered only with the proof forwarder's `X-UOConsole-Proof` (cc-P182) and when Tailscale Serve's
+`Tailscale-User-Login` is an allowed login (default: this PC's own
 Tailscale login, Chase's; or `allowedLogins` in `D:\UO\web-console\settings.json`, kept out of git). It starts the status
 collector (`scripts\Write-ConsoleStatus.ps1 -Loop`), which writes `scripts\shard-console-cache\console-status.json`; the Shard
 Console writes the same file after its own refreshes. **Restart:** `Stop-ScheduledTask -TaskName 'SL web console'; Start-ScheduledTask -TaskName 'SL web console'`.
-**Data:** `D:\UO\web-console` (settings, the key file, `access.log`, `collector.log`); nothing to back up but `settings.json`.
+*cc-P182:* the Golem's buttons (`POST /api/action`, only on `:8096`), each run through `scripts\Invoke-WebConsoleAction.ps1`
+(the Shard Console's own plans), one at a time, logged to `actions.log`. The installer stops a running copy first, so an
+update is the install line again.
+**Data:** `D:\UO\web-console` (settings, the key file, `proof.key`, `access.log`, `actions.log`, `collector.log`); back up
+`settings.json` (`proof.key` is remade by the installer if lost; the sidecar is then recreated with it).
 **Move it:** it reads the game PC's Docker, files, Golem and repos, so it moves only with them; on another PC, run the
 installer there and point the sidecar at it. Up or down on Haven's dashboard from the game PC snapshot (the process).
 
@@ -396,6 +401,16 @@ gives `https://uoconsole.tail81098d.ts.net/` its certificate and proxies to `hos
 outside git; after the first login the node's state is in the volume `uoconsole_uoconsole-ts-state` and the key is not
 needed again. **Start:** `web-console\Install-WebConsole.ps1 -Tailscale`. **Remove:** `-Uninstall` (`-Purge` also drops the
 state; then remove the machine in the Tailscale admin console). **Never** `tailscale funnel`, never a published port.
+*cc-P182:* Serve now proxies to `http://127.0.0.2:8097`, the proof forwarder below, not to `host.docker.internal:8096`.
+
+### uoconsole proof forwarder `uoconsole-proof`
+
+*cc-P182.* A `python:3.12.7-alpine3.20` container in the same compose project, `network_mode: service:tailscale` (the
+node's own network namespace, **no port published**), running `web-console\tailscale\proof_proxy.py`: it listens on
+`127.0.0.2:8097` (never 127.0.0.1, where tailscaled hands direct tailnet connections), sets `X-UOConsole-Proof` from
+`D:\UO\web-console\proof.key` (mounted read only; any proof a caller sent is dropped) and passes each request on to
+`host.docker.internal:8096`. So a container on the game PC that reaches `:8096` directly cannot act as Chase (P155's
+Deviation 2). **Start/remove:** with the node (`Install-WebConsole.ps1 -Tailscale`, `-Uninstall`).
 
 ## Paths to add to Haven's backups
 
@@ -432,3 +447,6 @@ state; then remove the machine in the Tailscale admin console). **Never** `tails
   says "Stopped, started by hand"; Discover prints mounts and flags ports or images that differ; Portainer on Haven
   (`portainer-haven`, `~/sl-portainer`, volume `portainer_data`, Serve :9000) gets its deploy and roll back buttons.
   `services.json` 33 services (counted from the file).
+- 2026-10-19 cc-P182: the web console's Golem buttons; its tailnet listener demands the sidecar's proof; the proof
+  forwarder `uoconsole-proof` (in `uoconsole-ts`'s namespace, 127.0.0.2:8097) between Serve and `:8096`.
+  `services.json` 34 services.

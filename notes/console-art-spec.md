@@ -60,3 +60,33 @@ lightest and darkest pixel it draws text over).
    refused and why (wrong type, over budget, unreadable, a strip whose width is not frames x height); a refused slot
    keeps its drawn stand-in, and nothing pops up.
 4. P133 wires the spinning and glowing animations once the strips exist; until then the first frame of a strip is shown.
+
+## The web console's Golem buttons (cc-P182)
+
+The web console (`D:\ShatteredLegacy\web-console`) draws one icon on each Golem button, at 28 px on a phone (56 px for
+a sharp phone screen). Until a file lands, each button draws its stand-in (the label's first letter in a bronze ring).
+The slot names are in `web-console\golem-actions.json` (`art`); the page asks for `<slot>.png` in
+`D:\ShatteredLegacy\scripts\console-art\` like every slot above, so a file dropped in shows at the next refresh, with no
+code change. One request for all fifteen, `web-console-golem-buttons`, is filed with P152's helper (Art tab). This table
+lists the slot names without `.png` on purpose: P152's spec import reads the 20 rows above, one request each.
+
+All of them: 28 and 56 square, static PNG, 1 frame, 20 KB each, transparent, a 2 px margin. Each prompt: "A small round
+bronze sigil button face holding <the subject>, transparent background, clean at 28 px."
+
+| Slot (file is `<slot>.png`) | Button | The subject in the sigil |
+|---|---|---|
+| `btn-wake` | Wake | a golem's eye opening, a thin gold glow |
+| `btn-on` | Turn on | a rune lamp being lit |
+| `btn-poke` | Poke | a bronze finger tapping a rune stone, a small ripple |
+| `btn-rest` | Rest | a closed golem eye under a crescent moon |
+| `btn-wrapup` | Wrap up after this task | a scroll being rolled and tied |
+| `btn-cancel` | Cancel (wrap up, stopping point, Run next) | a broken rune ring, cool grey |
+| `btn-stoppoint` | Find a stopping point | a quill laid across an open book with a bookmark |
+| `btn-longrun` | Long run | an hourglass with a long road behind it |
+| `btn-longrun-end` | End long run | an hourglass laid on its side |
+| `btn-nightshift` | Night shift on | a lantern under a starry crescent |
+| `btn-nightshift-off` | Night shift off | an unlit lantern under a pale crescent |
+| `btn-runnext` | Run next | a scroll jumping to the front of a stack of scrolls |
+| `btn-retry` | Retry stopped prompt | a circular arrow around a scroll, warm amber |
+| `btn-away` | Away mode on | a traveler's boot beside a sealed letter |
+| `btn-away-off` | Away mode off | a boot by a hearth |

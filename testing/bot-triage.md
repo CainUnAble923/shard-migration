@@ -1040,3 +1040,16 @@ Added by cc-P176 (2026-10-18).
 | id | bucket | reason |
 |---|---|---|
 | P176-1 | BOT | The confirmation page and the three summary lines are gump and server text, and the bag's contents are items; the bot can fill a bag, press Unravel Container and read them |
+
+### P182
+
+Added by cc-P182 (2026-10-19).
+
+| id | bucket | reason |
+|---|---|---|
+| P182-1 | DEPLOY | Installing the web console and its sidecar on the game PC is a step on the PC, not in the game |
+| P182-2 | EYES | Pressing the Golem buttons on a phone over the tailnet and judging one-handed use are Chase's |
+| P182-3 | DEPLOY | The refusal checks run against the installed service on the game PC |
+| P182-4 | EYES | Needs a real STOPPED prompt and the Shard Console on the game PC |
+| P182-5 | DECISION | Generating and approving art is Chase's choice in the Art tab |
+| P182-6 | DECISION | A tailnet access-control change is Chase's |
