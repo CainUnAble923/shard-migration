@@ -1,0 +1,26 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rootdeep Burrows Build</title><style>
+:root { --bg:#f6f4ef; --fg:#1f1d1a; --muted:#6b6560; --card:#ffffff; --line:#ddd6cc; --accent:#8a5a1c; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#16151a; --fg:#ece8e1; --muted:#a39d95; --card:#211f26; --line:#3a3640; --accent:#e0a85a; } }
+:root[data-theme="dark"] { --bg:#16151a; --fg:#ece8e1; --muted:#a39d95; --card:#211f26; --line:#3a3640; --accent:#e0a85a; }
+body { background:var(--bg); color:var(--fg); font:15px/1.5 system-ui, sans-serif; margin:0 auto; max-width:1180px; padding:16px; }
+h1 { font-size:24px; margin:8px 0 4px; } h2 { font-size:19px; margin:28px 0 8px; border-bottom:1px solid var(--line); }
+.muted { color:var(--muted); } .ask { background:var(--card); border:2px solid var(--accent); border-radius:8px; padding:12px 16px; }
+img { max-width:100%; height:auto; border:1px solid var(--line); background:#000; } table { border-collapse:collapse; font-size:13px; }
+td, th { border-bottom:1px solid var(--line); padding:4px 8px; text-align:left; vertical-align:top; }
+</style></head><body>
+<h1>Rootdeep Burrows: the build, rendered from the scratch map</h1>
+<p class="muted">cc-P167, 2026-10-18. P141's approved layout built into a scratch copy of Trammel (outside both repos), drawn by vseUOAware from the real tiles: the top-down overview in radar colours and an isometric render of each zone (classic art, no hues, no texture-mapped land, so flat land shows its art diamond, as the client draws it; the client adds lighting and the land textures). Nothing has touched the real map files.</p>
+<div class="ask"><b>Approve these renders, or say what to change.</b><br>Built as the mockup page proposed (its first set per zone, all stock EA tiles: no third-party art, so nothing new is registered): Landing L-A dungeon stone cave, Vault V-A marble strongroom (counters for the shelving, marble-walled pillars), Warren W-A dirt burrows, Tangle T-A rooted cave, Dawnseam D-A crystal seam, Gloom G-A Terathan dark stone, lair Q-A, crawlway C-A. Cave zones use sloped cave-rock land for their walls as OSI's own caves do; every floor is flat at Z 0. Things you might want changed: a zone's look, more or fewer rocks, mushrooms, crystals and webs, the pillars as walled blocks, the counters as shelving.</div>
+<h2>Overview (top-down, radar colours, 4 px per tile; x 5120-5263, y 1112-1279)</h2><p><a href="overview.png"><img src="overview.png" alt="top-down overview"></a></p>
+<h2>Zones (isometric, real tiles)</h2>
+<h3>landing</h3><p class="muted">x 5174-5209, y 1128-1166 (36 x 39 tiles). The Landing (safe), the arrival, the ankh wall, the Vault doorway at x 5179, and the tunnel south to the Warren. 521 KB</p><p><a href="landing.png"><img src="landing.png" alt="landing"></a></p>
+<h3>vault</h3><p class="muted">x 5138-5182, y 1128-1164 (45 x 37 tiles). The Vault (tutorial only): Counting Room, the Stacks with its counter rows, Deposit Hall, the Strongroom with its two walled pillars, the crawlway in the south wall at x 5160. 602 KB</p><p><a href="vault.png"><img src="vault.png" alt="vault"></a></p>
+<h3>warren-west</h3><p class="muted">x 5140-5190, y 1158-1200 (51 x 43 tiles). The Warren, west: Crawl Den (the crawlway lands at 5160,1162) and the Great Burrow west half. 762 KB</p><p><a href="warren-west.png"><img src="warren-west.png" alt="warren-west"></a></p>
+<h3>warren-east</h3><p class="muted">x 5182-5244, y 1158-1198 (63 x 41 tiles). The Warren, east: Tunnel Foot (the landing tunnel lands here), the Great Burrow east half, and the Brood Pit through its mouth at x 5209-5211. 660 KB</p><p><a href="warren-east.png"><img src="warren-east.png" alt="warren-east"></a></p>
+<h3>tangle</h3><p class="muted">x 5138-5196, y 1194-1236 (59 x 43 tiles). The Tangle (tier 2): the root cavern with its five rock-and-log root masses, the Thicket behind its gap at x 5157, the passage east to the Dawnseam. 805 KB</p><p><a href="tangle.png"><img src="tangle.png" alt="tangle"></a></p>
+<h3>dawnseam</h3><p class="muted">x 5190-5246, y 1194-1236 (57 x 43 tiles). The Dawnseam (tier 2): the crystal seam with its five crystal clusters, the Seam Heart behind its gap at x 5227. 648 KB</p><p><a href="dawnseam.png"><img src="dawnseam.png" alt="dawnseam"></a></p>
+<h3>gloom-west</h3><p class="muted">x 5146-5201, y 1226-1264 (56 x 39 tiles). The Gloom, west half (tier 3): the descent from the Tangle, the ring tunnels, two web masses, the lair mouth at x 5183. 659 KB</p><p><a href="gloom-west.png"><img src="gloom-west.png" alt="gloom-west"></a></p>
+<h3>gloom-east</h3><p class="muted">x 5190-5240, y 1226-1264 (51 x 39 tiles). The Gloom, east half: the descent from the Dawnseam, the Queen&#x27;s lair with its two web pillars, the east and south runs. 621 KB</p><p><a href="gloom-east.png"><img src="gloom-east.png" alt="gloom-east"></a></p>
+<h2>What was placed</h2><p class="muted">Every static placed is in <code>notes/cc-P167-tools/statics-placed.csv</code>; land by id and Z in <code>land-summary.csv</code>; the builder is <code>build_burrows.py</code>, the renders <code>render_burrows.py</code>.</p>
+</body></html>

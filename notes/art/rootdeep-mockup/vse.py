@@ -11,11 +11,14 @@ MCP_JSON = r'D:\UO\shard-migration\.mcp.json'
 
 
 class Vse:
+    def __init__(self, exe=None):
+        self.exe = exe   # cc-P180: another build of the server (bin\P180 holds the render offset fix) instead of .mcp.json's
+
     def __enter__(self):
         cfg = json.load(open(MCP_JSON, encoding='utf-8'))['mcpServers']['vseUOAware']
         self.uo_dir = cfg['env']['VSEUOAWARE_UO_DIR']
         env = dict(os.environ, **cfg.get('env', {}))
-        self.p = subprocess.Popen([cfg['command']] + cfg.get('args', []), stdin=subprocess.PIPE,
+        self.p = subprocess.Popen([self.exe or cfg['command']] + cfg.get('args', []), stdin=subprocess.PIPE,
                                   stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, env=env, text=True,
                                   encoding='utf-8')
         self.i = 0
