@@ -12,7 +12,7 @@ def walls_against_test_room(wall_sets):
     bad = []
     for name, ws in wall_sets.items():
         fl = {(x, y) for x in range(1, 6) for y in range(1, 6)}
-        statics, ring = W.walls_for(fl, set(), ws)
+        statics, ring = W.walls_for(fl, set(), ws)   # the run rule: NW post, NE ew, SW ns, SE corner, as OSI's rooms
         by = collections.defaultdict(list)
         for (x, y, z, tid, role) in statics:
             by[(x, y)].append(role)
@@ -105,6 +105,89 @@ def gate(same):
 def frames_all(frame_report, openings_groups):
     framed = len(frame_report)
     return framed == openings_groups, '%d opening groups, %d framed or passages' % (openings_groups, framed)
+
+
+# ------------------------------------------------------------------------------------------------ cc-P185: junctions
+
+WALL_ROLES = ('ew', 'ns', 'corner', 'post')
+
+
+def junction_rule(statics, wall_tiles, wall_sets, frame_ids=()):
+    """Every wall tile carries the piece the run-topology rule gives it (walls.wall_role): no stub across a run's
+    end, no corner piece where OSI puts a post or a run piece. wall_tiles: {tile: wallSetName}; a tile whose run
+    piece a frame replaced (a pier or jamb in frame_ids) is allowed that instead. Returns the mismatches."""
+    by = collections.defaultdict(set)
+    for s in statics:
+        by[(s[0], s[1])].add(s[3])
+    Wt = lambda c: c in wall_tiles
+    bad = []
+    for c, st in sorted(wall_tiles.items()):
+        ws = wall_sets[st]
+        role = W.wall_role(Wt, c[0], c[1])
+        want = {W.hx(ws[role])} if (role != 'corner' or ws.get('corner')) else {W.hx(ws['ew']), W.hx(ws['ns'])}
+        have = {t for t in by.get(c, ()) if t in {W.hx(ws[r]) for r in WALL_ROLES if ws.get(r)}}
+        if have != want:
+            if not have and by.get(c, set()) & set(frame_ids):
+                continue
+            bad.append((c, st, role, sorted('0x%04X' % t for t in have)))
+    return not bad, bad[:12] if bad else '%d wall tiles carry the run-topology piece' % len(wall_tiles)
+
+
+TORCH_NORTH = {0x0A0A, 0x0A0B, 0x0A0C, 0x0A0D, 0x0A0E, 0x0A01}     # hang on a wall directly north of their floor tile
+TORCH_WEST = {0x0A05, 0x0A06, 0x0A07, 0x0A08, 0x0A09, 0x09FC}      # on a wall directly west
+
+
+def torches_mounted(statics, wall_tiles, floor_z=0, zrange=(13, 15)):
+    """Every wall torch stands on the floor tile in front of its wall, 13 to 15 above the floor (OSI: Deceit, Khaldun,
+    Covetous 13; the Keep, Hythloth 15), with a wall tile north of it (the north-facing ids) or west (the west ids)."""
+    bad = []
+    n = 0
+    for (x, y, z, tid, *rest) in statics:
+        if tid in TORCH_NORTH or tid in TORCH_WEST:
+            n += 1
+            side = (x, y - 1) if tid in TORCH_NORTH else (x - 1, y)
+            if (x, y) in wall_tiles:
+                bad.append(((x, y), '0x%04X' % tid, 'on a wall tile'))
+            elif side not in wall_tiles:
+                bad.append(((x, y), '0x%04X' % tid, 'no wall %s of it' % ('north' if tid in TORCH_NORTH else 'west')))
+            elif not (zrange[0] <= z - floor_z <= zrange[1]):
+                bad.append(((x, y), '0x%04X' % tid, 'z %d above the floor, want %d to %d' % (z - floor_z, zrange[0], zrange[1])))
+    return not bad, bad[:12] if bad else '%d wall torches on the floor tile before a north or west wall, %d-%d above it' % (n, zrange[0], zrange[1])
+
+
+def frames_touch(statics, groups, wall_set_of_group, wall_sets):
+    """For every framed opening in a marble or stone wall: the wall tile before the gap keeps its run piece (no pier
+    there: a pier on that tile leaves half a tile of nothing beside the run), the first open tile carries the arch
+    top, the wall tile after the gap carries the pier or jamb in place of its run piece. groups from
+    walls.opening_groups; wall_set_of_group: [wallSetName or None per group]."""
+    by = collections.defaultdict(set)
+    for s in statics:
+        by[(s[0], s[1])].add(s[3])
+    bad = []
+    n = 0
+    for g, st in zip(groups, wall_set_of_group):
+        if not st:
+            continue
+        ws = wall_sets[st]
+        rule = ws.get('frameNS' if g['axis'] == 'y' else 'frameEW')
+        if not rule:
+            continue
+        n += 1
+        runs = {W.hx(ws[r]) for r in WALL_ROLES if ws.get(r)}
+        first, after, before = g['tiles'][0], g['after'], g['before']
+        if rule.get('first') and W.hx(rule['first']) not in by.get(first, ()):
+            bad.append((first, 'no arch top %s on the first open tile' % rule['first']))
+        if rule.get('after') and g['after_solid']:
+            if W.hx(rule['after']) not in by.get(after, ()):
+                bad.append((after, 'no pier %s on the wall tile after the gap' % rule['after']))
+            elif rule.get('replaces', True) and by.get(after, set()) & runs:
+                bad.append((after, 'run piece left beside the pier'))
+        if g['before_solid'] and not rule.get('before'):
+            if not (by.get(before, set()) & runs):
+                bad.append((before, 'the wall tile before the gap has no run piece'))
+            if rule.get('after') and W.hx(rule['after']) in by.get(before, ()):
+                bad.append((before, 'a pier on the tile before the gap (half a tile of nothing beside the run)'))
+    return not bad, bad[:12] if bad else '%d framed gaps: run piece before, arch top on the first open tile, pier after' % n
 
 
 def table(results):

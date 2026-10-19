@@ -1,12 +1,14 @@
 # Map-building playbook
 
-Read this first before any map, dungeon, building or hole prompt. It turns cc-P167, P180 and P181 (the Rootdeep
-Burrows, three rounds of renders) into rules, so the next build gets them right the first time. Five minutes; the
+Read this first before any map, dungeon, building or hole prompt. It turns cc-P167, P180, P181 and P185 (the Rootdeep
+Burrows, four rounds of renders) into rules, so the next build gets them right the first time. Five minutes; the
 evidence is in the long notes it links. ASCII only, as everything in this repo.
 
-Long notes: `notes/uo-wall-orientation.md` (walls, measured on OSI), `notes/cc-P180-cont-rootdeep-renders-round2.md`
-(variety, the renderer bug), `notes/cc-P181-cont-rootdeep-round3.md` (rows, corners, frames, the OSI surveys),
-`notes/cc-P167-rootdeep-map-batch.md` (the map files, the write and verify path), `scripts/mapbuild/README.md` (the tools).
+Long notes: `notes/uo-wall-orientation.md` (walls, measured on OSI; sections 9-13 the run-topology rule, wall ends,
+Ts, rock, torches, arches, solid blocks), `notes/cc-P180-cont-rootdeep-renders-round2.md` (variety, the renderer bug),
+`notes/cc-P181-cont-rootdeep-round3.md` (rows, corners, frames, the OSI surveys), `notes/cc-P185-cont-rootdeep-round4.md`
+(junctions, the OSI pattern table, the junction sheet), `notes/cc-P167-rootdeep-map-batch.md` (the map files, the
+write and verify path), `scripts/mapbuild/README.md` (the tools).
 
 ## 1. Mistakes made, and the rule that prevents each
 
@@ -23,14 +25,24 @@ Long notes: `notes/uo-wall-orientation.md` (walls, measured on OSI), `notes/cc-P
 | Khaldun's cave edge tile copied onto a one-tile sloped ring | black teeth along the foot of every cave wall (tried in P181, dropped) | OSI keeps the edge tile flat and slopes the rock behind it; our ring slopes the foot tile itself, so the texture's black wedge stretches | copy an OSI pattern with its Z profile, not just its tile ids; test one room and render before applying it to a zone | `cave-foot-check.png` |
 | Impassable decor on floor tiles | nothing visible, but the walk changes | a stalagmite is a wall to the pathing | impassable pieces only where the tile has 3 open orthogonal sides in a room at least 6 wide, off spawner homes, openings and paths; corner decor on floor tiles is always passable; rubble and pillars go on wall or ring tiles | the builder's floor check (asserts) and the walkable gate |
 | Trusting a green build of the map | a verify step that compared the plan with itself | | write, re-read the files with a second code path, compare every tile; keep a SHA-256 of the pristine files and restore from them (`--fresh`) so a rebuild never stacks | `uofiles.verify`, `restore_scratch` |
+| Wall pieces chosen from the floor beside the tile (P180's rule) | a slab stub across every wall end (tunnel mouths, descent stubs), corner pieces with stubs at the lair's and the pillars' corners, pockets where the tunnel leaves the Landing (round 3, 23 tiles, every one under one of Chase's boxes) | the rule read the floor round a tile; OSI places by the runs through it | a wall tile's piece comes from which of its four neighbours are wall tiles: a free end takes the run's plain piece, the four L corners take post / ew / ns / corner, a T the through run's piece plus the branch's slab only for a branch from the west or north (`uo-wall-orientation.md` section 9; 98.0 percent of 9,744 OSI tiles) | `checklist.junction_rule`; the junction sheet (section 4) |
+| Wall torches at floor height | torches standing on the floor (round 3) | the torch rule set no Z | a wall torch sits on the floor tile in front of its north or west wall at Z floor + 13 (OSI: 150 of 150 face north or west; 16 measured at +13 to +15) | `checklist.torches_mounted`; `torch-check.png` beside OSI |
+| A pier on the wall tile before an arch gap | half a tile of nothing between the run and the pier at all four Vault gaps (round 3) | the pier's base is on the far half of its tile; OSI puts the pier only after the gap | marble and stone bays are `wall end, arch top on the first open tile, open, pier after` (Nujel'm row 1323, Magincia column 3716, the Keep column 5431); `frame*.before` is null | `checklist.frames_touch`; `arch-check.png` |
+| A solid block drawn as a ring of wall pieces | the Strongroom pillars read as open boxes: the floor inside showed between the far and near slabs (round 3) | the north and west slabs stand on the far edges of their tiles | a walled block gets its ring by the run rule and a floor at wall height (marble 0x0495-0x0498 at Z 20) on every tile, as a UO building reads from above; seven variants in `pillar-check.png` | the pillar's `top` rule; the junction sheet shows its corners |
 
 ## 2. Rules of thumb
 
 ### 2.1 Walls (full rules and evidence: `notes/uo-wall-orientation.md`)
 
-- Wall tiles are the 8-neighbour ring of non-floor tiles round the floor, on all four sides. Floor north or south of
-  a wall tile: the east-west piece (first id after the corner in every set). Floor east or west: the north-south
-  piece. Both: the corner piece. Only floor to the south-east: the post.
+- Wall tiles are the 8-neighbour ring of non-floor tiles round the floor, on all four sides. Which piece a wall tile
+  takes depends on which of its four orthogonal neighbours are wall tiles (P185, `uo-wall-orientation.md` section 9):
+  a run (two opposite, or one) takes the run's piece (ew along x, ns along y; first and second id after the corner in
+  every set); two adjacent take the corner they make: W+S ew, E+S post, N+E ns, N+W corner; a T takes the through
+  run's piece, plus the branch's slab (corner) when the branch comes from the west or north. Cave rock, void and
+  floor are not wall tiles, so a wall running into a cave ends with its plain piece. Never a slab across a free end.
+- Wall torches on the floor tile in front of a north or west wall at Z floor + 13; marble and stone arch bays are
+  `run piece, arch top on the first open tile, pier on the wall tile after`; a solid block gets a floor at wall
+  height on top (section 1, the last four rows).
 - The visible room is the walkable floor plus the south ring row and the east ring column (their slabs stand on the
   far edge). Size the floor for the walk, not the look; a pillar looks one tile smaller to the north and west.
 - Floor land under every wall tile. One wall-flagged piece per tile. A run's free end is the plain piece.
@@ -56,8 +68,8 @@ percent of 195). Our rule is stricter: every inner corner gets at least one thin
 
 | Set | Gap along y (north-south wall) | Gap along x (east-west wall) | Where seen |
 |---|---|---|---|
-| stone | 0x01D8 on the first open tile, 0x01D9 on the wall tile after the gap | 0x01D6, then 0x01D7 on the wall tile after | Terathan Keep column 5431 y 3132-3134, row 3131 x 5436-5438 |
-| marble | 0x0115 pier on the wall tile each side, 0x0116 on the first open tile | 0x0113 piers each side, 0x0114 on the first open tile | Magincia column 3716 y 2064-2070; Nujel'm row 1323 x 3737-3740 |
+| stone | 0x01D8 on the first open tile, 0x01D9 on the wall tile after the gap; the tile before keeps its run piece | 0x01D6, then 0x01D7 on the wall tile after | Terathan Keep column 5431 y 3132-3134, row 3131 x 5436-5438 |
+| marble | the tile before keeps its run piece, 0x0116 on the first open tile, 0x0115 pier on the wall tile after (P185; a pier before leaves half a tile of nothing) | run piece before, 0x0114 on the first open tile, 0x0113 pier after | Magincia column 3716 y 2061-2070; Nujel'm row 1323 x 3731-3740 |
 | dungeon | 0x0248 on the open tiles, 0x024A beside the run piece on the wall tile after | 0x0245, lintels 0x0247, 0x0249 on the wall tile after | Deceit column 5183 y 541-543, row 535 x 5209-5212 |
 | cave | a stalagmite or crystal on the rock tile either end of the gap | the same | our rule (OSI caves have no door lines) |
 
@@ -109,7 +121,8 @@ floors have no OSI edge tile to rock; cave floor has (0x024A-0x0259, Khaldun) bu
 | `scripts/mapbuild/isorender.py` | general (needs art.mul unpacked, `MAPBUILD_ART`) | `Scene.from_map`, `Scene.from_multi`, `render`, `tile_px`, `save`; `python -P isorender.py map <folder> 1 x1 y1 x2 y2 out.png` |
 | `scripts/mapbuild/survey.py` | general | `survey_corners` (OSI corner and density numbers, map plus ModernUO decoration cfg), `land_grid`, `decoration` |
 | `scripts/mapbuild/audit.py` | general | `slope_audit(land)` |
-| `scripts/mapbuild/checklist.py` | general | the checks of section 4 |
+| `scripts/mapbuild/checklist.py` | general | the checks of section 4 (`junction_rule`, `torches_mounted`, `frames_touch` since P185) |
+| `scripts/mapbuild/junctions.py` | general | `find_junctions(wall_tiles, rock_tiles, statics)`, `sheets(folder, junctions, out_prefix)`: the junction sheet |
 | `notes/cc-P167-tools/build_burrows.py` | Rootdeep | the driver: zones, rings, decor, corners, frames, the gate, `--fresh`, `--plan-only`; copy its shape for the next build, import the module |
 | `notes/cc-P167-tools/plan-sets.json` | Rootdeep (the shape is general) | seeds, wall sets with frames, floor and ring weights, decor rules, corner rules, obstacle fills, proposals |
 | `notes/cc-P167-tools/plan-cells.json` | Rootdeep | the walkable record the gate compares against; the first build of a new layout writes it, every later build must match it |
@@ -134,8 +147,16 @@ Run the checklist and paste its table in the notes (`python -P notes/cc-P167-too
 6. Transitions audited: slope audit clean, one vseUOAware diagnose on a ring corner.
 7. One wall piece per tile.
 8. The walkable gate green (floor, openings, walls equal the record), the written files verified by re-reading.
+9. Junctions by the run-topology rule: every wall tile carries the piece `walls.wall_role` gives it (`checklist.junction_rule`).
+10. Torches mounted: every wall torch on the floor tile before a north or west wall, Z floor + 13 to 15 (`checklist.torches_mounted`).
+11. Frames touch the wall: run piece before the gap, arch top on the first open tile, pier after (`checklist.frames_touch`).
+12. **The junction sheet** (`mapbuild.junctions`): every wall end, L, T, cross, mixed-set join, wall-to-rock join and
+    mounted wall item, cropped from the scratch map with its coordinates into `junctions-N.png`. The builder looks at
+    every crop before any render goes to Chase, and the notes say how many crops were checked and what was fixed.
+    (P185: 95 crops for the Burrows; a crop that looks wrong is a rule to fix, not a tile to patch.)
 
 The picture set Chase always gets, in `notes/art/<build>/index.html` with the previous round side by side: the
 top-down overview; every zone; the test rooms beside OSI (`walls-check.png`); close-ups of each kind of corner and
 each framed opening, before and after when there is a before; every piece of furniture in a row (the Stacks); the OSI
-rooms the rules came from; and the question at the top: approve, or say what to change.
+rooms the rules came from; the junction sheet; when Chase marked a screenshot, a before-and-after crop for every
+mark, numbered to match (`marks-<screenshot>.png`); and the question at the top: approve, or say what to change.

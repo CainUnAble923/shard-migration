@@ -19,6 +19,11 @@ listings, art footprints, renders of each building).
    the **east-west piece** on the north-east corner tile; the **north-south piece** on the south-west corner tile; the
    **corner piece** (both slabs) on the south-east corner tile. The same four pieces close T-junctions and L-shapes
    (section 3). Every OSI building and house design read here does exactly this, including the four corners.
+   **cc-P185: what decides the piece is which of a tile's four neighbours are wall tiles, not where the floor is**
+   (section 9: 98.0 percent of 9,744 OSI wall tiles, against 91.1 for the floor rule below). A free end takes its run's
+   plain piece; the four corners above are the four ways two runs can meet; a T takes the through run's piece, plus
+   the branch's slab when the branch comes from the west or north. Sections 10-13 cover wall ends, Ts, mixed sets,
+   walls meeting rock, torches, arches and solid blocks.
 3. **The visible room is the walkable floor plus the south ring row and the east ring column.** Those tiles carry the
    wall items (impassable) but their slabs stand on their far side, so the player sees floor there and cannot step on
    it. Every UO house has this strip along its south and east walls; a solid block (a pillar) comes out one tile
@@ -125,12 +130,14 @@ y1+1    |   #= #= #= #= #=  #=|             walkable:     x0 .. x1   by y0 .. y1
 | a run's free end | the plain piece, nothing added | Keep row 3120 ends at 5479 in the N-S column; Deceit rows end in posts or corners only where another line meets |
 | a doorway (a gap in a run) | the flanking tiles keep the plain run piece | Keep column 5431: 0x01D1, 0x01D1, [doorway], 0x01CF; Deceit row 543 around its arch |
 
-The general rule behind all of these, in terms of the two slabs: a solid tile needs its **south slab** when floor
+The general rule P180 drew from these, in terms of the two slabs: a solid tile needs its **south slab** when floor
 lies directly north or south of it, or at an outer corner diagonal (floor to the SW or NW with none west or on that
 side); it needs its **east slab** when floor lies directly east or west, or floor to the NE or NW with none north.
-Both slabs: corner piece. Neither, with floor to the SE: post. That is `wall_pieces()` in
-`notes\cc-P167-tools\build_burrows.py`, and the test rooms in `notes\art\rootdeep-build\walls-check.png` are built
-by it next to the OSI rooms.
+Both slabs: corner piece. Neither, with floor to the SE: post. **Superseded by section 9 (cc-P185)**: that sentence
+reproduces every row of the table above but adds a slab across a run's free end and a corner piece at an outline
+corner with floor on two sides, which OSI never does. The run rule is `wall_role()` in `scripts\mapbuild\walls.py`
+(the floor rule is kept as `wall_pieces_p180`), and the test rooms in `notes\art\rootdeep-build\walls-check.png` are
+built by it next to the OSI rooms.
 
 ### 2.4 Doorways and windows
 
@@ -232,6 +239,132 @@ the walls stayed.
 
 - No client was run this session; the rules rest on the art, the client's draw formula and OSI's own placement, all
   three agreeing. A walk through the test shard after the map lands will show the "visible strip" of item 3 directly.
-- The marble arch pieces (0x0113-0x0116) and the dungeon jambs (0x0249, 0x024A) were seen in use but their exact
-  doorway pattern was not reduced to a rule.
+- The marble arch pieces (0x0113-0x0116) were reduced to a rule in P185 (section 12); the dungeon jambs (0x0249,
+  0x024A) were seen in use (Deceit row 535, column 5183) but no dungeon doorway is built here yet.
 - The Keep's outer NW corners carry 0x01D0 rather than a post; both draw a closed corner, OSI itself is not uniform there.
+
+## 9. Which piece a wall tile takes: the run-topology rule (cc-P185, 2026-10-19)
+
+Chase's round 3 marks (stubs at wall ends, odd corners where a wall meets rock, pockets where the tunnel leaves the
+Landing, the lair's corners) all came from one thing: section 2.3's general rule decided a tile's slabs from the
+FLOOR round it. That is right along a run and at a room's four corners but wrong wherever a wall ends or turns with
+floor on more than one side. Measured on every wall tile of the dungeon, stone and marble sets in Deceit, Covetous,
+Khaldun, the Terathan Keep, Shame, Hythloth, Despise, Wrong, Nujel'm and Magincia (9,744 tiles whose piece is one of
+ew / ns / corner / post), the floor rule agrees with OSI on 8,881 (91.1 percent). What OSI actually does is decided
+by the RUNS through the tile: which of its four orthogonal neighbours are wall tiles (tiles carrying a wall piece).
+Floor, void and cave rock are all "not a wall tile". That rule agrees on 9,549 of 9,744 (98.0 percent; Shame and
+Despise 100, Wrong 99.8, Hythloth 99.1, Covetous 98.9, Nujel'm 98.7, Deceit 97.5, Khaldun 95.4, the Keep 88.3; the
+Keep's and Khaldun's misses are decorative posts and the pieces they fill thick walls with). It is
+`mapbuild.walls.wall_role`:
+
+| Wall neighbours (N E S W) | Piece | OSI tiles agreeing / seen | What it is |
+|---|---|---|---|
+| one of them | the run's piece: ns for N or S, ew for E or W | 292 / 305 | a free end: at a doorway, at a passage, at rock, in open floor. Nothing is added across the end |
+| N and S | ns | 3,986 / 4,004 | a run, a ring column, a wall between two floors |
+| E and W | ew | 4,064 / 4,067 | a run, a ring row |
+| W and S | ew | 175 / 182 | the outline's north-east corner: the east-west line reaches the corner point, the north-south line starts there |
+| E and S | post | 169 / 193 | the north-west corner: both lines start at the tile's south-east point |
+| N and E | ns | 156 / 161 | the south-west corner |
+| N and W | corner | 150 / 156 | the south-east corner: both lines reach the point |
+| N, S and E | ns | 216 / 235 | a T with the branch going east: the branch starts at the through line on its own |
+| N, S and W | corner | 97 / 140 | a T with the branch from the west: its line (on south edges) must run on to the through line, so the junction tile adds the south slab |
+| W, E and S | ew | 161 / 168 | a T with the branch going south |
+| W, E and N | corner | 53 / 88 | a T with the branch from the north: its line (on east edges) runs on to the through line |
+| all four | corner | 28 / 36 | a cross |
+| none | corner | 2 / 9 | a one-tile pillar (rare on OSI's map; the count is Khaldun's loose pieces) |
+
+The same four corner pieces whether the floor is inside or outside the L: a solid block standing in a room (the
+Strongroom pillars) takes post / ew / ns / corner at its corners exactly as a room does, and a corridor leaving a
+room through its south wall has an ew piece on the west stub (walls W and S) and a post on the east stub (walls E
+and S): Deceit 5215,535 and 5190,562. The two T rows at 69 and 60 percent: the misses are branches that run between
+solids (the inside of Deceit's and Khaldun's thick walls, where the branch's line is never seen) and Khaldun's
+decorative posts; a branch with floor beside it is a corner on both sides of the data. Our builds have no branch
+between solids.
+
+Where the floor rule went wrong, with Chase's marks: a run end with floor on three sides got a corner (a slab across
+the end: the tunnel mouths 5191,1161 and 5196,1161, the descent stubs 5165/5170/5213/5218 x 1229, the lair's SW
+corner 5183,1257); an outline corner with floor on two sides got a corner piece where OSI puts a post (the lair's NW
+corner 5183,1237, the Strongroom blocks' NW corners, the tunnel's east stub 5196,1145) or a run piece (the lair's NE
+corner 5227,1237, the blocks' NE and SW corners, the tunnel's west stub 5191,1145); 23 tiles in the Burrows, every
+one of them under one of Chase's boxes. The rule in section 2.3's table still reads correctly case by case; it is the
+general sentence under it (needS / needE from the floor) that is replaced. `wall_pieces_p180` keeps it for the
+junction check's "before".
+
+## 10. Wall ends
+
+A run's last tile carries the run's own piece and nothing else, whatever lies past it:
+
+- At a doorway or gap in a run: the tiles either side keep the plain run piece (the Keep column 5431: 0x01D1, 0x01D1,
+  gap, 0x01CF; our Vault doorway 5179,1136 keeps 0x00FA, and the pier goes after the gap, section 12).
+- At a passage into open floor (a wall jutting into a room, a corridor wall meeting a cave): the plain piece. Deceit
+  5150,578-604 (0x0242 with floor on three sides, 56 such tiles), Covetous 5511,1808 (51 of 0x0242 ending in floor).
+- At cave rock: the plain piece on floor-level land, the rock beginning on the next tile. Wrong 5686,560-564: a
+  column of 0x0242 at Z 0 with rock at Z 20-25 directly west and the run ending with 0x0242 at 5686,564, rock south
+  of it; Wrong 5694,563 the same; Khaldun 5440,1340-1343: 0x01D1 down to 1343 with rock (Z 7) east of it and rock
+  on the tile after; Despise 5384-5389 x 678: 0x0241 along the foot of a rock bank. 24 of 29 stone and dungeon runs
+  that end at rock or a cave edge in the surveyed blocks end with the plain piece; three end with a corner (Khaldun
+  5439,1319, where the wall turns along the rock), two with a post (Khaldun's arcade). So where our item walls meet a
+  cave ring, the last wall tile is a run end (the ring tile beside it is rock, not a wall tile) and takes its plain
+  piece; the land under it stays the zone's floor, as OSI's does.
+- An OSI marble wall has end-cap variants (0x0104-0x0107, 0x00FE-0x0101: `marble wall` with Unknown3; Nujel'm row
+  1323 ends its arcade wall with 0x0105 at 3731). Not used here; the plain piece is what the dungeon and stone sets
+  have and what OSI uses with them.
+
+## 11. T-junctions, crosses and mixed sets
+
+- The through run keeps its piece on the junction tile. A branch arriving from the east or the south needs nothing:
+  its first slab already starts at the junction tile's south-east point. A branch arriving from the west (its slabs
+  on south edges) or from the north (slabs on east edges) stops one tile short of the through line, so the junction
+  tile adds that slab: the corner piece. That is exactly section 2.3's four T cases (tower (-2,-7) ew, (-7,-2) ns,
+  (8,-2) corner, (-2,1) corner), now as one sentence.
+- Our Ts: the Vault's east wall meeting the north wall at 5179,1131 (walls W, E, S: ew, the north run continues);
+  the inner Vault walls meeting row 1143 from the north at 5155,1143 and 5169,1143 (walls W, E, N: corner); the
+  Landing's south wall leaving the Vault's east wall at 5179,1145 (walls N, S, E: ns); the Gloom corridor's walls.
+- A cross (four wall neighbours) is the corner piece; none in the Burrows.
+- Two wall sets meeting: the junction tile belongs to one zone and takes that set's piece by the same rule; the
+  neighbour of the other set counts as a wall tile. OSI's map has few true mixed joins (Deceit joins its brick
+  0x0241-0x0244 to the darker 0x02FA-0x0300 brick in runs, 50 adjacent pairs, always run piece to run piece; Khaldun's
+  stone meets jungle walls; the Keep and Nujel'm are one set each). Ours: marble to dungeon at 5179,1131 (the Vault's
+  north wall continues east as the Landing's: 0x00F9 at 5179, 0x0241 at 5180) and at 5179,1143-1145 (the Vault's
+  east wall 0x00FA, the Landing's south wall 0x0241 from 5180). The heights differ (20 and 22); the lines meet.
+
+## 12. Torches, arches and solid blocks (Chase's other round 3 marks)
+
+- **Wall torches and sconces** (0x09FB-0x0A0E): every one of the 150 in the surveyed blocks stands on the FLOOR tile
+  in front of its wall, never on the wall tile, facing a wall directly north (0x0A0A, 0x0A0B, 0x0A0C, 0x0A0D, 0x0A0E,
+  0x0A01) or directly west (0x0A05, 0x0A07, 0x0A08, 0x0A09, 0x09FC), and its Z is the floor's plus 13 (Deceit 5137,614
+  at -37 over -50; Khaldun 5456,1299 at 13 over 0; Covetous 5560,1847 at 13) or plus 15 (the Keep 5424,3119 at -45
+  over -60; Hythloth 5917,80 at 15; Deceit 5160,564 at 15). 16 measured: seven at 13, eight at 15, one at 14. Round
+  3 put ours at Z 0, which is why they read as standing on the floor. Now Z 13 (`corners.torch.z`), checked by
+  `checklist.torches_mounted`.
+- **Marble arches** (0x0112-0x0116). The art: 0x0113 is a pier standing on the east half of its tile's south edge,
+  0x0115 a pier on the south half of its tile's east edge (base rows 8-40 from the bottom: -11..3 and -4..9 against
+  the full slab's -22..3 and -4..21); 0x0114 and 0x0116 are the arch tops, nothing in their bottom 40 rows, passable.
+  OSI's bay is `wall end | arch top | open | pier`, repeated for an arcade: Nujel'm row 1323 reads 0x0105 (3731),
+  0x0114 (3732), open (3733), 0x0113 (3734), 0x0114, open, 0x0113, 0x0114, open, 0x0113 (3740); Magincia column
+  3716 reads 0x011B column (2061), 0x0116 (2062), open (2063), 0x0115 (2064), 0x0116, open, 0x0115 (2067), 0x0116,
+  open, 0x0115 (2070); 75 arch pieces in Trammel, all in that order. Round 3 also put a pier on the wall tile BEFORE
+  the gap, and because the pier's base is on the far half of its tile, half a tile of nothing showed between the run
+  and the pier: Chase's "spaces next to arch ways". Now the tile before keeps its run piece, the arch top goes on
+  the first open tile, the pier replaces the run piece on the tile after (`frameEW.before` and `frameNS.before`
+  null); checked by `checklist.frames_touch`.
+- **A solid block inside a room** (the Strongroom pillars, 3 x 6): the ring of wall pieces alone reads as an open box,
+  because the north and west slabs stand on the far edges of their tiles and the floor inside shows between them.
+  Seven ways were rendered (`notes/art/rootdeep-build/pillar-check.png`): the P180 ring; the ring plus corner pieces
+  inside (a crate); corner pieces on every tile (a lattice); marble columns 0x011B on every tile (a colonnade); the
+  ring with void land inside (a pit); the ring with a marble floor (0x0495-0x0498) at Z 20 on every tile of the
+  block; columns with the floor over them (a canopy). The sixth is the one where no floor shows and it is how every
+  UO building reads from above (walls with the next storey's floor on them; Nujel'm's hall has marble floors at Z 20
+  over its walls). Picked. OSI fills its thick walls with pieces on every tile (Nujel'm: 0x0158 and 0x0167 posts on
+  14 fully surrounded tiles; Khaldun: run pieces and posts on 20) and leaves dungeon wall interiors void; neither
+  reads as a solid block at this size.
+
+## 13. The junction sheet
+
+Before any render goes to Chase, `scripts/mapbuild/junctions.py` lists every wall end, L, T, cross, mixed-set
+join, wall-to-rock join and mounted wall item from the wall layer and crops each from the scratch map at full size
+with its coordinates and the piece it carries (`junctions-N.png`, 48 to a sheet); the builder looks at every crop
+and the notes say how many and what was fixed. The checklist's `junction_rule` recomputes every wall tile's piece
+from the run rule and fails on any tile that differs (it failed on 19 tiles of round 3's build before this round's
+fixes), `torches_mounted` on any torch off the floor tile or outside Z 13-15 (failed on all 8 of round 3's), and
+`frames_touch` on a pier before a gap (failed on round 3's four).

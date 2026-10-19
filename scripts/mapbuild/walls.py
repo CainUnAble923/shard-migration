@@ -1,12 +1,16 @@
-"""The wall rule, corners and doorway frames (cc-P180 research in notes/uo-wall-orientation.md; cc-P181 frames).
+"""The wall rule, corners and doorway frames (cc-P180 research in notes/uo-wall-orientation.md; cc-P181 frames;
+cc-P185 the run-topology rule, sections 9-12 of that note).
 
 A wall piece's art stands on its own tile's SOUTH edge (the "ew" piece, running along x) or EAST edge (the "ns"
 piece, running along y); the corner piece carries both slabs; the post marks the tile's south-east corner point.
-So for a solid tile T beside floor F:
-    needS = floor north or south of T, or a diagonal floor to the SW or NW with no floor west of T (an outer corner)
-    needE = floor east or west of T, or a diagonal floor to the NE or NW with no floor north of T
-    both -> corner; needS -> ew; needE -> ns; neither but floor to the SE -> post (the room's NW corner)
-Openings (doorways, gaps) are floor that demands no slab, as a door tile in a house does.
+Which piece a wall tile takes is decided by the runs through it, i.e. which of its four orthogonal neighbours are
+wall tiles (wall_role): a free end takes the run's piece, an L takes post / ew / ns / corner by which two runs meet,
+a T takes the through run's piece plus the branch's slab only when the branch comes from the west or the north.
+The wall tiles themselves are the 8-neighbour ring of non-floor tiles round the floor (ring_of). Openings
+(doorways, gaps) are floor: the run ends either side of them.
+Marble doorways (OSI Nujel'm and Magincia): the wall before the gap keeps its run piece, the arch top (0x0114 /
+0x0116, passable) goes on the first open tile, the pier (0x0113 / 0x0115) replaces the run piece on the wall tile
+after the gap. A pier on the tile before leaves half a tile of nothing between the run and the pier (P181's gap).
 
 A wall set is a dict such as plan-sets.json's:
     {"ew": "0x01D0", "ns": "0x01D1", "corner": "0x01CF", "post": "0x01D2",
@@ -29,9 +33,60 @@ def hx(v):
     return int(v, 16) if isinstance(v, str) else int(v)
 
 
-def wall_pieces(F, x, y, ws):
-    """Pieces for the solid tile (x, y). F(c) is true for a floor tile that demands a wall (openings excluded).
-    Returns [(tileId, role)], role in ew, ns, corner, post."""
+def wall_role(Wt, x, y):
+    """The role of the wall tile (x, y) by the RUN-TOPOLOGY rule (cc-P185, measured on 9,744 OSI wall tiles in nine
+    dungeons and two towns: 98.0 percent agreement, against 91.1 for P180's floor rule). Wt(c) is true for a tile that
+    carries a wall (a ring tile of a walled floor, a walled pillar); cave rock, void and floor are not wall tiles.
+    What decides the piece is which orthogonal neighbours are wall tiles (which runs pass through the tile), not where
+    the floor is:
+      one wall neighbour (a run's free end, at a doorway, a passage or rock): the run's own piece, nothing added
+      two opposite: the run's piece (a wall between two floors, a ring row or column)
+      two adjacent (an L, the outline turning): W+S -> ew (NE corner), E+S -> post (NW corner), N+E -> ns (SW corner),
+        N+W -> corner (SE corner); the same four whether the floor is inside the L or outside it (a solid block's
+        corner with floor on two sides takes the same piece as a room's corner)
+      three (a T): the through run's piece, plus the branch's slab when the branch comes from the west (its line must
+        reach the through line: corner) or from the north (corner); a branch from the east or south stops at the
+        junction tile's corner point on its own (ns, ew)
+      four (a cross) or none (a one-tile pillar): corner
+    Returns ew, ns, corner or post."""
+    wN, wE, wS, wW = Wt((x, y - 1)), Wt((x + 1, y)), Wt((x, y + 1)), Wt((x - 1, y))
+    n = wN + wE + wS + wW
+    if n == 1:
+        return "ns" if (wN or wS) else "ew"
+    if n == 2:
+        if wN and wS:
+            return "ns"
+        if wE and wW:
+            return "ew"
+        if wW and wS:
+            return "ew"
+        if wE and wS:
+            return "post"
+        if wN and wE:
+            return "ns"
+        return "corner"          # wN and wW
+    if n == 3:
+        if not wW:
+            return "ns"
+        if not wN:
+            return "ew"
+        return "corner"          # the branch comes from the west (no east) or from the north (no south)
+    return "corner"
+
+
+def wall_pieces(Wt, x, y, ws):
+    """Pieces for the wall tile (x, y) by wall_role: [(tileId, role)]. A set without a corner piece gets both runs."""
+    role = wall_role(Wt, x, y)
+    if role == "corner" and not ws.get("corner"):
+        return [(hx(ws["ew"]), "ew"), (hx(ws["ns"]), "ns")]
+    return [(hx(ws[role]), role)]
+
+
+def wall_pieces_p180(F, x, y, ws):
+    """P180's floor rule, kept so the junction check can show what it placed (cc-P181's build): a slab wherever floor
+    lies across the tile's north/south or east/west, plus diagonal corner terms. Right on 91.1 percent of OSI wall
+    tiles; wrong at run ends (a stub across the end), at outer corners with floor on two sides (a corner piece where
+    OSI uses a post or a run piece) and at a corridor leaving a room (stubs into the mouth)."""
     N, S, E, W = F((x, y - 1)), F((x, y + 1)), F((x + 1, y)), F((x - 1, y))
     NE, NW, SE, SW = F((x + 1, y - 1)), F((x - 1, y - 1)), F((x + 1, y + 1)), F((x - 1, y + 1))
     needS = N or S or (SW and not W and not S) or (NW and not W and not N)
@@ -61,12 +116,12 @@ def ring_of(floor):
 
 
 def walls_for(floor, openings, ws, z=0):
-    """Wall statics [(x, y, z, id, role)] for a floor set, plus the ring."""
-    F = lambda c: c in floor and c not in openings
+    """Wall statics [(x, y, z, id, role)] for a floor set, plus the ring (the wall tiles; openings are floor)."""
     ring = ring_of(floor)
+    Wt = lambda c: c in ring
     out = []
     for (x, y) in sorted(ring):
-        for tid, role in wall_pieces(F, x, y, ws):
+        for tid, role in wall_pieces(Wt, x, y, ws):
             out.append((x, y, z, tid, role))
     return out, ring
 

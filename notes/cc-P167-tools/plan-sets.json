@@ -1,12 +1,12 @@
 {
-  "_about": "cc-P180 / cc-P181: the look rules for build_burrows.py. One seed per zone (change it for a new layout, keep it for the same one); tile weights are relative (any scale); every id is a stock EA tile id as a hex string. Walls: ew = the piece whose slab sits on its tile's SOUTH edge (runs along x), ns = slab on the EAST edge (runs along y), corner = both slabs, post = the SE corner point only; see notes/uo-wall-orientation.md. frameNS / frameEW: how a gap through a north-south / east-west wall is framed (first = the first open tile, mid = the other open tiles, after / before = the wall tiles past and before the gap; replaces false keeps the run piece beside the jamb, as the dungeon set does on OSI's map). Decor rules: where = nearWall | open | any | wallFace (floor tiles just south or east of a wall tile); density = clusters per eligible tile; cluster = [min, max] pieces; radius = cluster spread (Chebyshev); spacing = least distance between cluster centres; z = offsets drawn at random. corners: per zone, what every inner corner gets (item zones: floor = passable pieces on the corner floor tile, torch = a wall torch on the north or west wall, strip = pieces on the visible wall tiles south and east of the corner, pillar = a column on the SE corner tile of rooms at least minRoom on both sides; cave zones: ring = a cluster on the rock ring round the corner, convex = one piece on the rock tip the floor wraps round). gapFrame: the pieces on the rock either end of a cave gap. ringEdge: the cave ring's floor-level tile is a cave edge tile (cave floor with a black wedge toward the rock, Khaldun's pattern) instead of rock; tried on the Tangle in P181 and turned off (on our one-tile sloped ring the wedge stretches into black teeth; Khaldun keeps that tile flat), kept as an option for a build with a two-tile foot. Impassable pieces are kept off narrow paths and spawner homes by the builder; corner pieces on floor tiles are always passable.",
+  "_about": "cc-P180 / cc-P181: the look rules for build_burrows.py. One seed per zone (change it for a new layout, keep it for the same one); tile weights are relative (any scale); every id is a stock EA tile id as a hex string. Walls: ew = the piece whose slab sits on its tile's SOUTH edge (runs along x), ns = slab on the EAST edge (runs along y), corner = both slabs, post = the SE corner point only; see notes/uo-wall-orientation.md. frameNS / frameEW: how a gap through a north-south / east-west wall is framed (first = the first open tile, mid = the other open tiles, after / before = the wall tiles past and before the gap; replaces false keeps the run piece beside the jamb, as the dungeon set does on OSI's map; before is null for marble and stone because OSI keeps the plain run piece on the tile before the gap and puts the pier only after it). Corner torches: z = the torch's Z above the floor (OSI mounts every wall torch on the floor tile in front of the wall at Z 13 to 15). Decor rules: where = nearWall | open | any | wallFace (floor tiles just south or east of a wall tile); density = clusters per eligible tile; cluster = [min, max] pieces; radius = cluster spread (Chebyshev); spacing = least distance between cluster centres; z = offsets drawn at random. corners: per zone, what every inner corner gets (item zones: floor = passable pieces on the corner floor tile, torch = a wall torch on the north or west wall, strip = pieces on the visible wall tiles south and east of the corner, pillar = a column on the SE corner tile of rooms at least minRoom on both sides; cave zones: ring = a cluster on the rock ring round the corner, convex = one piece on the rock tip the floor wraps round). gapFrame: the pieces on the rock either end of a cave gap. ringEdge: the cave ring's floor-level tile is a cave edge tile (cave floor with a black wedge toward the rock, Khaldun's pattern) instead of rock; tried on the Tangle in P181 and turned off (on our one-tile sloped ring the wedge stretches into black teeth; Khaldun keeps that tile flat), kept as an option for a build with a two-tile foot. Impassable pieces are kept off narrow paths and spawner homes by the builder; corner pieces on floor tiles are always passable.",
   "wallSets": {
     "dungeon": {"ew": "0x0241", "ns": "0x0242", "corner": "0x0243", "post": "0x0244",
                 "frameEW": {"first": "0x0245", "mid": "0x0247", "after": "0x0249", "before": null, "replaces": false},
                 "frameNS": {"first": "0x0248", "mid": "0x0248", "after": "0x024A", "before": null, "replaces": false}},
     "marble":  {"ew": "0x00F9", "ns": "0x00FA", "corner": "0x00F8", "post": "0x00FB", "windowEW": "0x00FC", "windowNS": "0x00FD",
-                "frameEW": {"first": "0x0114", "mid": null, "after": "0x0113", "before": "0x0113"},
-                "frameNS": {"first": "0x0116", "mid": null, "after": "0x0115", "before": "0x0115"}},
+                "frameEW": {"first": "0x0114", "mid": null, "after": "0x0113", "before": null},
+                "frameNS": {"first": "0x0116", "mid": null, "after": "0x0115", "before": null}},
     "stone":   {"ew": "0x01D0", "ns": "0x01D1", "corner": "0x01CF", "post": "0x01D2", "windowEW": "0x01D3", "windowNS": "0x01D4",
                 "frameEW": {"first": "0x01D6", "mid": null, "after": "0x01D7", "before": null},
                 "frameNS": {"first": "0x01D8", "mid": null, "after": "0x01D9", "before": null}}
@@ -22,7 +22,7 @@
           {"name": "bones", "ids": {"0x1B09": 1, "0x1B0B": 1, "0x1B0D": 1, "0x1B0F": 1, "0x1B19": 2, "0x1B1A": 2}, "p": 0.3},
           {"name": "stain", "ids": {"0x1E07": 1, "0x1E08": 1, "0x1E0A": 1, "0x1E0C": 1}, "p": 0.3}
         ],
-        "torch": {"p": 0.5, "north": {"0x0A0C": 1, "0x0A0D": 1}, "west": {"0x0A07": 1, "0x0A09": 1}},
+        "torch": {"p": 0.5, "z": 13, "north": {"0x0A0C": 1, "0x0A0D": 1}, "west": {"0x0A07": 1, "0x0A09": 1}},
         "strip": [{"name": "rubble", "ids": {"0x1363": 2, "0x1364": 2, "0x1365": 2, "0x1366": 2, "0x1368": 2, "0x1369": 2, "0x136B": 1, "0x136C": 1}, "p": 0.5}],
         "pillar": {"minRoom": 12, "ids": {"0x01DA": 1}}
       }
@@ -37,7 +37,7 @@
         "floor": [
           {"name": "cobweb", "ids": {"0x0EE3": 1, "0x0EE4": 1, "0x0EE5": 1, "0x0EE6": 1}, "p": 0.3}
         ],
-        "torch": {"p": 0.4, "north": {"0x0A0C": 1, "0x0A0D": 1}, "west": {"0x0A07": 1, "0x0A09": 1}},
+        "torch": {"p": 0.4, "z": 13, "north": {"0x0A0C": 1, "0x0A0D": 1}, "west": {"0x0A07": 1, "0x0A09": 1}},
         "strip": [{"name": "candelabra", "ids": {"0x0B26": 1}, "p": 0.3}],
         "pillar": {"minRoom": 12, "ids": {"0x011B": 1}}
       }
@@ -117,7 +117,7 @@
           {"name": "stain", "ids": {"0x1E07": 1, "0x1E09": 1, "0x1E0B": 1, "0x1E0D": 1}, "p": 0.3},
           {"name": "brazier", "ids": {"0x0E31": 1}, "p": 0.15}
         ],
-        "torch": {"p": 0.3, "north": {"0x0A0C": 1, "0x0A0D": 1}, "west": {"0x0A07": 1, "0x0A09": 1}},
+        "torch": {"p": 0.3, "z": 13, "north": {"0x0A0C": 1, "0x0A0D": 1}, "west": {"0x0A07": 1, "0x0A09": 1}},
         "strip": [
           {"name": "rubble", "ids": {"0x1363": 2, "0x1364": 2, "0x1365": 2, "0x1366": 2, "0x1368": 2, "0x1369": 2, "0x136B": 1, "0x136C": 1}, "p": 0.5},
           {"name": "skull", "ids": {"0x1AE0": 1, "0x1AE1": 1, "0x1AE2": 1, "0x1AE4": 1, "0x1ADA": 1}, "p": 0.3}
@@ -141,7 +141,7 @@
           {"name": "bones", "ids": {"0x1B09": 1, "0x1B0B": 1, "0x1B0D": 1, "0x1B13": 1, "0x1B15": 1, "0x1AE0": 1, "0x1AE1": 1}, "p": 0.5},
           {"name": "stain", "ids": {"0x1E07": 1, "0x1E09": 1, "0x1E0B": 1, "0x1E0D": 1}, "p": 0.3}
         ],
-        "torch": {"p": 0.25, "north": {"0x0A0C": 1, "0x0A0D": 1}, "west": {"0x0A07": 1, "0x0A09": 1}},
+        "torch": {"p": 0.25, "z": 13, "north": {"0x0A0C": 1, "0x0A0D": 1}, "west": {"0x0A07": 1, "0x0A09": 1}},
         "strip": [
           {"name": "rubble", "ids": {"0x1363": 2, "0x1364": 2, "0x1365": 2, "0x1366": 2, "0x1368": 2, "0x1369": 2}, "p": 0.5},
           {"name": "egg case", "ids": {"0x10D8": 1, "0x10D9": 1}, "p": 0.4},
@@ -154,7 +154,8 @@
   "obstacles": {
     "Stacks shelving":  {"kind": "items", "ids": {"0x0A97": 40, "0x0A98": 30, "0x0A9B": 30}, "ends": {"0x0B26": 1}, "z": [0], "why": "Stacks shelving (bookcase)",
                          "_about": "rows along x: the south-facing bookcases only (0x0A97, 0x0A98, 0x0A9B; the Lycaeum's rows at Moonglow 4288-4293 x 962-993 use exactly these three), never the east-facing 0x0A99/0x0A9A/0x0A9C that made round 2's rows wander; a candelabra stand (0x0B26, as the Lycaeum ends its rows) on both end tiles"},
-    "Strongroom pillar": {"kind": "walls"},
+    "Strongroom pillar": {"kind": "walls", "top": {"0x0495": 55, "0x0496": 20, "0x0497": 15, "0x0498": 10}, "topZ": 20, "why": "Strongroom pillar",
+                         "_about": "a walled block: the ring tiles take the run rule (post / ew / ns / corner at the four corners), and every tile of the block carries a marble floor at Z 20, the wall height, so the block reads as a solid plinth with a flat top instead of an open box (P185 pillar-check.png, variant f of seven; it is how every UO building reads from above: walls with the next storey's floor on them)"},
     "root mass":        {"kind": "mound", "rim": {"0x0266": 45, "0x0267": 20, "0x0268": 15, "0x0269": 8, "0x026A": 5, "0x026B": 3, "0x026C": 2, "0x026D": 2}, "inside": {"0x0266": 45, "0x0267": 20, "0x0268": 15, "0x0269": 10, "0x026A": 10}, "insideZ": 12,
                           "rimDecor": {"ids": {"0x0CF3": 3, "0x0CF4": 3, "0x0CF6": 3, "0x0CF7": 2}, "p": 0.4, "z": [0], "why": "root mass: fallen log"},
                           "insideDecor": {"ids": {"0x0D3F": 1, "0x0D40": 1, "0x0CEB": 1, "0x0CEE": 1, "0x0CF1": 1}, "p": 0.35, "z": [12], "why": "root mass: brambles and vines"}},

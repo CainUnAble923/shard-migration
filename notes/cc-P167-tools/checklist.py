@@ -9,7 +9,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(HERE)), 'scripts'))
 import build_burrows as bb  # noqa: E402
-from mapbuild import checklist as C, uofiles, walls as W  # noqa: E402
+from mapbuild import checklist as C, junctions as J, uofiles, walls as W  # noqa: E402
 
 SOUTH_FACING = {0x0A97, 0x0A98, 0x0A9B, 0x0A9D, 0x0B26}   # bookcases with the back on the north edge, plus the end candelabra
 EAST_FACING = {0x0A99, 0x0A9A, 0x0A9C, 0x0A9E}
@@ -24,16 +24,30 @@ def main():
     rows = [(o['name'], tuple(o['rect'])) for o in layout['obstacles'] if o['name'].startswith('Stacks')]
     solid = lambda c: c not in floor
     groups = W.opening_groups(opening, solid)
+    wall_tiles = report['wall tiles']
+    frame_ids = set()
+    for ws in rules['wallSets'].values():
+        for key in ('frameNS', 'frameEW'):
+            for k2 in ('first', 'mid', 'after', 'before'):
+                if ws.get(key, {}).get(k2):
+                    frame_ids.add(W.hx(ws[key][k2]))
+    rep = {tuple(t): ws for z, ax, t, ws in report['frames']}
+    wsg = [rep.get(tuple(g['tiles'])) if rep.get(tuple(g['tiles'])) in rules['wallSets'] else None for g in groups]
+    junctions = J.find_junctions(wall_tiles, report['rock tiles'], statics)
     results = [
         ('walls against a test room', ) + C.walls_against_test_room(rules['wallSets']),
         ('no diagonal wall runs', ) + C.no_diagonal_runs(walls),
         ('rows straight (the Stacks)', ) + C.rows_straight(statics, rows, {'south-facing': SOUTH_FACING, 'east-facing': EAST_FACING}),
         ('every inner corner dressed', ) + C.corners_dressed(report['corners']),
         ('every opening framed or a passage', ) + C.frames_all(report['frames'], len(groups)),
-        ('variety: no identical decor side by side', ) + C.variety(statics, skip_why=('wall', 'stone pillar', 'frame', 'end piece', 'crawlway')),
+        ('variety: no identical decor side by side', ) + C.variety(statics, skip_why=('wall', 'stone pillar', 'frame', 'end piece', 'crawlway', 'pillar top')),
         ('transitions audited (slope spread <= 12)', ) + C.transitions(report['slope audit']),
         ('one wall piece per tile', ) + (not report['doubled wall tiles'], report['doubled wall tiles'] or 'no doubled wall tiles'),
         ('walkable-floor gate', ) + C.gate(uofiles.same_cells(prev, floor, opening, walls)),
+        ('junctions by the run-topology rule', ) + C.junction_rule(statics, wall_tiles, rules['wallSets'], frame_ids),
+        ('torches mounted on the wall', ) + C.torches_mounted(statics, wall_tiles),
+        ('frames touch the wall (run piece before, pier after)', ) + C.frames_touch(statics, groups, wsg, rules['wallSets']),
+        ('junction sheet to review', True, '%d crops: %s (junctions-N.png from render_burrows.py)' % (len(junctions), J.summary(junctions))),
     ]
     print(C.table(results))
     print()

@@ -12,7 +12,8 @@ it says which rules these tools enforce and which checks to run before showing C
 | `isorender.py` | an isometric renderer with the client's tile layout and sloped land (`Scene.from_map`, `from_multi`, `render`, `tile_px`) | no (needs art.mul unpacked; `MAPBUILD_ART`) |
 | `survey.py` | study tools: ModernUO decoration files, the corner and density survey of an OSI room block, land grids | no |
 | `audit.py` | the land slope audit (ring steps and spikes, the way vseUOAware's diagnose_land_transitions reports corners) | no |
-| `checklist.py` | the pre-render checklist functions; a build's driver prints the table | no |
+| `checklist.py` | the pre-render checklist functions; a build's driver prints the table (P185 added the junction rule, mounted torches and frames checks) | no |
+| `junctions.py` | the junction sheet (P185): finds every wall end, L, T, cross, mixed-set join, wall-to-rock join and mounted wall item from the wall layer and crops each from a render into grids (`junctions-N.png`) for the builder to review before any render goes to Chase | no |
 
 Rootdeep's own files stay in `notes/cc-P167-tools/`: `build_burrows.py` (the driver: zones, rings, decor, corners,
 frames, the gate), `plan-sets.json` (the look: seeds, weights, rules), `plan-cells.json` (the walkable record the

@@ -181,22 +181,39 @@ def plan(layout, rules, spawners, pts, quiet=False):
         else:
             raise ValueError(rule['kind'])
 
-    # 3. walls (item zones) and cave rings (land zones)
+    # 3. walls (item zones) and cave rings (land zones). The piece on a wall tile comes from the run-topology rule
+    #    (mapbuild.walls.wall_role, P185): which of its orthogonal neighbours are wall tiles. Cave ring tiles are rock,
+    #    not wall tiles, so an item wall running into a cave ends with its plain run piece, as OSI's do.
     wall_zone = {c: zone_of_wall(c) for c in walls}
-    F = lambda c: c in floor and c not in opening
+    item_walls = {}   # wall tile -> wall set name (item zones and walled pillars)
+    for c in walls:
+        if c in obstacles and c not in wall_blocks:
+            continue
+        zone = wall_zone[c]
+        if zones[zone]['kind'] == 'item':
+            item_walls[c] = zones[zone]['wallSet']
+    Wt = lambda c: c in item_walls
     ring = {}
     for c in sorted(walls):
         if c in obstacles and c not in wall_blocks:
             continue   # the obstacle fill above stands
         x, y = c
-        zone = wall_zone[c] if c in wall_zone else obstacles[c][0]
+        zone = wall_zone[c]
         look = zones[zone]
         if look['kind'] == 'land':
             ring[c] = zone
             continue
         land[c] = (weighted(rngs[zone], look['floor']), FLOOR_Z)
-        for tid, role in W.wall_pieces(F, x, y, rules['wallSets'][look['wallSet']]):
+        for tid, role in W.wall_pieces(Wt, x, y, rules['wallSets'][look['wallSet']]):
             put(x, y, tid, '%s wall %s' % (zone, role))
+    report['wall tiles'] = item_walls
+    report['rock tiles'] = set(ring)
+    # a walled block (the Strongroom pillars) gets its top: a floor at wall height on every tile, so it reads solid
+    top_rng = {z: random.Random(zones[z]['seed'] * 7 + 185) for z in zones}   # its own sequence: the zone's dressing stays as rolled
+    for c, (zone, name, rect) in sorted(obstacles.items()):
+        key, rule = obstacle_rule(name)
+        if rule['kind'] == 'walls' and rule.get('top'):
+            put(c[0], c[1], weighted(top_rng[zone], rule['top']), rule.get('why', key) + ' top', z=rule.get('topZ', 20))
 
     # 4. cave rings: ring tile at floor level, the next ring +12, the one beyond +20 (void), unless near an item zone
     def dist_to(targets, cmax):
@@ -353,7 +370,9 @@ def plan(layout, rules, spawners, pts, quiet=False):
                 if torch and rng.random() < torch['p']:
                     side = 'north' if 'N' in nm else ('west' if 'W' in nm else None)
                     if side and torch.get(side):
-                        put(x, y, S.pick_unlike(rng, torch[side], c, by_tile), '%s corner torch' % zone)
+                        # on the floor tile in front of the wall, Z 13 above the floor (OSI: every wall torch in
+                        # Deceit, Khaldun and Covetous sits at floor + 13, the Keep's and Hythloth's at + 15)
+                        put(x, y, S.pick_unlike(rng, torch[side], c, by_tile), '%s corner torch' % zone, z=torch.get('z', 0))
                         placed.append('torch')
                 taken.add(c)
             # on the visible strip (the wall tiles south and east of the corner): rubble, bones, a candelabra
