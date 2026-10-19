@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.19.4. Golem on, running P184 (cont-multi-golem), 16 queued, latest done P183. Play tests: 342 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.19.4. Golem on, 16 queued, latest done P184. Play tests: 342 open, 4 failed, 43 passed.
 
 ### Needs overseer review (2)
 
@@ -229,11 +229,10 @@ Tasks          ███░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 112 prompts done, 3 more stopped early and not counted)
+### Queue (Golem on; 113 prompts done, 3 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
-| P184 cont-multi-golem | running | 2026-10-19T11:29:55 |
 | P149 away-mode-and-email-controls | queued |  |
 | P150 requisitions-and-leads | queued |  |
 | P151 guild-halls-survey | queued |  |
@@ -250,6 +249,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P185 cont-rootdeep-round4 | queued |  |
 | P186 cont-golem-join-kit | queued |  |
 | P187 cont-web-console-parity | queued |  |
+| P184 cont-multi-golem | done | 2026-10-19 |
 | P183 cont-golem-run-cap-and-stale-usage | done | 2026-10-19 |
 | P182 cont-web-console-phase2 | done | 2026-10-19 |
 | P176 cont-artificers-unravel-container | done | 2026-10-18 |
@@ -259,7 +259,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P171 taming-anger-scales | done | 2026-10-18 |
 | P170 smith-teaching-orders-fix | done | 2026-10-18 |
 | P166 kitsune-fit-west-bald | done | 2026-10-18 |
-| P165 achievements-button-fix | done | 2026-10-18 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 99 patches, 12 replacements
 
