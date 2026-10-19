@@ -1006,3 +1006,11 @@ Added by cc-P170 (2026-10-18).
 | id | bucket | reason |
 |---|---|---|
 | P170-1 | BOT | Each offer is the accept gump the server sends, with the item and its metal in its text; the bot can ask the Society for orders at 144 with the setting on and off and read them |
+
+### P171
+
+Added by cc-P171 (2026-10-18).
+
+| id | bucket | reason |
+|---|---|---|
+| P171-1 | BOT | The anger and start messages (502805, 1010597) are what the server sends; the bot can tame a Dread Warhorse at 200 and count them |
