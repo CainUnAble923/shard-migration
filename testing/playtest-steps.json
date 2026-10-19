@@ -2406,6 +2406,16 @@
    ],
    "pass": "Most tries start the taming; only about 1 in 7 (15%, so roughly 2 to 6 of 20) angers the beast, where before it was nearly every try.",
    "check": "Not built yet: a 200 tamer uses Animal Taming on a spawned Dread Warhorse 20 times and counts the 502805 (anger) and 1010597 (start) messages; result in the nightly report once built."
+  },
+  "P173-1": {
+   "where": "Test shard rebuilt with cc-P173, an Artificers' Order member at an Imbuing Table, with a War Axe that has Snow Elemental Slayer (`[add WarAxe`, then `[set Slayer SummerWind` on it) and a second plain weapon",
+   "do": [
+    "At the Imbuing Table, Disenchant and target the War Axe",
+    "Check the list of enchantments, then Extract Slayer: Summer Wind (Snow Elemental)",
+    "Imbue that slayer onto the second weapon (it uses the essence until you have mastered slayers)"
+   ],
+   "pass": "The War Axe's disenchant list shows Slayer: Summer Wind (Snow Elemental) [ON]; extracting it removes the slayer from the axe and gives an Essence of Slayer: Summer Wind (Snow Elemental); imbuing puts snow elemental slayer on the second weapon.",
+   "check": "Not built yet: a player in the Artificers' Order with a Summer Wind War Axe presses Disenchant, the slayer's Extract row and Apply, and the bot reads the gump text and the essence in the pack; result in the nightly report once built."
   }
  }
 }
