@@ -63,12 +63,12 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.19. Golem on, 16 queued, latest done P176. Play tests: 339 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.19. Golem on, running P181 (cont-rootdeep-round3), 16 queued, latest done P176. Play tests: 340 open, 4 failed, 43 passed.
 
 ### Needs overseer review (2)
 
 - **direction**: Confirmed 2026-10-13; notes/cc-P146-playtest-decisions-inbox.md (2026-10-18) is newer. Read it; if the direction moved, edit "direction" in tools/progress-state.json. `python tools/judge.py confirm direction`
-- **play tests not sorted**: 10 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0. Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
+- **play tests not sorted**: 11 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0. Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
 
 ## Port list: 3 of 16 systems in. 455 of 983 files (46%).
 
@@ -229,10 +229,11 @@ Tasks          ███░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 110 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 110 prompts done, 3 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
+| P181 cont-rootdeep-round3 | running | 2026-10-19T08:42:08 |
 | P149 away-mode-and-email-controls | queued |  |
 | P150 requisitions-and-leads | queued |  |
 | P151 guild-halls-survey | queued |  |
@@ -249,7 +250,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P182 cont-web-console-phase2 | queued |  |
 | P183 cont-golem-run-cap-and-stale-usage | queued |  |
 | P184 cont-multi-golem | queued |  |
-| P181 cont-rootdeep-round3 | stopped: Chase commits first (19 untracked console-art PNGs in D:\ShatteredLegacy, written 06:51 today) | 2026-10-19 |
 | P176 cont-artificers-unravel-container | done | 2026-10-18 |
 | P175 cont-clean-up-britannia-finish | done | 2026-10-18 |
 | P174 session-closer-fix | done | 2026-10-18 |
@@ -259,6 +259,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P166 kitsune-fit-west-bald | done | 2026-10-18 |
 | P165 achievements-button-fix | done | 2026-10-18 |
 | P164 playtest-sessions | done | 2026-10-18 |
+| P163 dashboard-fixes-portainer | done | 2026-10-18 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 99 patches, 12 replacements
 

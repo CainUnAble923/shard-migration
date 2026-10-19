@@ -107,8 +107,11 @@ def load_land(folder, fi):
     ids = (cells[:, :, 0].astype(np.uint16) | (cells[:, :, 1].astype(np.uint16) << 8))
     zs = cells[:, :, 2].view(np.int8)
     # block index = bx*bh + by ; cell index = cy*8 + cx
-    ids = ids.reshape(bw, bh, 8, 8).transpose(0, 2, 1, 3).reshape(w, h)
-    zs = zs.reshape(bw, bh, 8, 8).transpose(0, 2, 1, 3).reshape(w, h)
+    # cc-P181: cell index is cy * 8 + cx, so the 8 x 8 block reshapes to [bx][by][cy][cx]; the old transpose
+    # (0, 2, 1, 3) swapped x and y inside every block (checked against vseUOAware inspect_map_region at 5144-5155,
+    # 1159-1162 and against TileMatrix's reader). (0, 3, 1, 2) puts cx with bx and cy with by.
+    ids = ids.reshape(bw, bh, 8, 8).transpose(0, 3, 1, 2).reshape(w, h)
+    zs = zs.reshape(bw, bh, 8, 8).transpose(0, 3, 1, 2).reshape(w, h)
     return dict(ver=ver, nent=len(ents), nall=len(allents), hdr=hdr, ids=ids, z=zs, rawlen=len(raw))
 
 
