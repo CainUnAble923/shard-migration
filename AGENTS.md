@@ -388,6 +388,10 @@ and `docs/bug-list.md` holds defects. So:
   that makes something *broken* is fixed), or ModernUO's to report. Do not fix a ServUO bug without
   arguing it in the note first.
 
+## Art Chase must make
+
+When work needs art Chase must make, file an art request with the helper instead of only writing a brief in notes: `D:\ShatteredLegacy\scripts\art\New-ArtRequest.ps1` (cc-P152; its header has an example). The request lands in `D:\UO\art\requests\`, outside both repos, and Chase generates, approves and places it from the console's Art tab. Never generate art yourself: Generate is Chase's click.
+
 ## Haven and game PC services: one inventory
 
 Any change to a service on Haven or the game PC (added, moved, removed, a new port, volume or secret) updates
