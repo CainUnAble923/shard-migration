@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.18.11. Golem on, running P167 (cont-rootdeep-map-batch), 16 queued, latest done P166. Play tests: 331 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.18.12. Golem on, 20 queued, latest done P170. Play tests: 331 open, 4 failed, 43 passed.
 
 ### Needs overseer review (2)
 
@@ -229,11 +229,10 @@ Tasks          ███░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 103 prompts done, 3 more stopped early and not counted)
+### Queue (Golem on; 104 prompts done, 3 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
-| P167 cont-rootdeep-map-batch | running | 2026-10-18T17:14:54 |
 | P149 away-mode-and-email-controls | queued |  |
 | P150 requisitions-and-leads | queued |  |
 | P151 guild-halls-survey | queued |  |
@@ -245,11 +244,16 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P159 codex-lane-second-pc | queued |  |
 | P168 hammer-t3-craft-order | queued |  |
 | P169 requirement-colors | queued |  |
-| P170 cont-smith-teaching-orders-fix | queued |  |
 | P171 cont-taming-anger-scales | queued |  |
 | P172 pet-gain-speed | queued |  |
 | P173 cont-imbue-all-slayers | queued |  |
 | P174 cont-session-closer-fix | queued |  |
+| P175 cont-clean-up-britannia-finish | queued |  |
+| P176 cont-artificers-unravel-container | queued |  |
+| P177 guild-menus-template-mockups | queued |  |
+| P179 league-design-pass | queued |  |
+| P180 cont-rootdeep-renders-round2 | queued |  |
+| P170 smith-teaching-orders-fix | done | 2026-10-18 |
 | P166 kitsune-fit-west-bald | done | 2026-10-18 |
 | P165 achievements-button-fix | done | 2026-10-18 |
 | P164 playtest-sessions | done | 2026-10-18 |
@@ -259,7 +263,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P160 plan-usage-pacing | done | 2026-10-17 |
 | P155 web-console-phase1-status | done | 2026-10-17 |
 | P154 console-responsive | done | 2026-10-17 |
-| P147 achievements-button | done | 2026-10-18 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 98 patches, 12 replacements
 
@@ -296,7 +299,7 @@ What a MODERNUO_COMMIT bump must reconcile. Patches fail LOUDLY - apply-patches.
 - **S3 costed menu - declines upheld with their ratios recorded** — Measured 2026-09-07, notes/s3-decline-costs.md. Skill Masteries (45 files/8,542 lines, unblocks 14, patches 35 upstream files - fails the layering test). Vice vs Virtue (57/9,613, unblocks 5, patches 21). Exploring the Deep (70/10,292, unblocks 2 - structurally the safest build here and the worst ratio). Shadowguard (14/11,222, unblocks 8). City Loyalty (28/8,177, unblocks 15 - decline on ratio, not structure; revisit with Town Cryer). Instanced Peerless (13/1,543, unblocks 2, and BasePeerless and PeerlessAltar are both absent from ModernUO, so there is no base to instance - cost Services/Peerless first). ServUO's ML quest framework (22 files/6,269 lines, not the 21/5,625 the brief stated) - declined because ModernUO already ships the same OSI system. NOT declined and recommended instead: SAAbsorptionAttributes, the TribeType transformation, and a one-quest spike onto ModernUO's ML quest engine. Vendor Searching (4/2,545) is a player feature, not content; the unblock ratio is the wrong test and it is Chase's call.
 - **ServUO ML quest framework - decline REAFFIRMED by S5** — S5 translated one quest end to end and the objective mapping holds for 4 of 5 types, two of them pinned by tests. Porting ServUO's 22-file, 6,269-line framework would put a second engine in the tree to do a job the engine we already have does correctly. The decline was always on two-engines-for-one-job; it now rests on measurement rather than on principle alone. What is NOT declined: the 164 of 203 missing quests that use a single standard objective type. The 39 that hand-write a BaseObjective subclass (25 InternalObjective, 3 CollectionsObtain, 2 QuestionAndAnswer, ~9 one-offs) are per-quest work, not a framework port, and are the thing to cost before the next quest batch.
 
-Counted from the trees: 1089 customization files, 105 patch files, 985 tests in 167 files.
+Counted from the trees: 1089 customization files, 105 patch files, 989 tests in 168 files.
 Shard status: the test shard is the only one running (sl-modernuo:latest, 2026.10.10); there is no live shard until the fresh-world wipe; players get the 2026-10-05 package and TazUO; P65-P84 are committed, not deployed (confirmed 2026-10-13).
 <!-- PROGRESS:END -->
 

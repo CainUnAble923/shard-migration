@@ -2386,6 +2386,17 @@
   },
   "P146-4": {
    "check": "CC: http://192.168.1.61:8093/api/items has decisions (124 or so open) and service.codeLoadedAt after the P146 commit's pull, with no restart; result in a CC verification prompt's notes."
+  },
+  "P170-1": {
+   "where": "Test shard rebuilt with cc-P170, a Society of Smiths member at 144.0 Blacksmithy (set the skill with staff tools first if needed), at the Society guildmaster",
+   "do": [
+    "Open the Bulk Order window (Society guildmaster, or the Smithing Guild Book's order page) and make sure \"Orders that still teach me\" is checked",
+    "Ask for a Small order ten times (cancel each offer), then for a Large order a few times",
+    "Equip the Hammer of Hephaestus and ask for a few more Small orders",
+    "Uncheck \"Orders that still teach me\" and ask for a few more Small orders"
+   ],
+   "pass": "With the setting on, every offer (small and large, hammer or not) is armor in Blaze, never iron or a stock colored metal and never a weapon; large offers are the ringmail, chainmail or plate set in Blaze. With it off, offers are mixed again: weapons, iron and other metals.",
+   "check": "Not built yet: a player at 144.0 Blacksmithy in the Society asks for small and large orders with the setting on and off and reads each accept gump's item and material lines (on: Blaze armor only; off: mixed); result in the nightly report once built."
   }
  }
 }

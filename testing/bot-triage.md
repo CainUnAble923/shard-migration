@@ -998,3 +998,11 @@ Added by cc-P166 (2026-10-18).
 |---|---|---|
 | P166-1 | EYES | How the tail reads facing west and north (and that the other six directions did not change) is a look; the renders are in the notes |
 | P166-2 | EYES | Whether the ears sit right on a bald head and still rise out of hair is a look, side by side |
+
+### P170
+
+Added by cc-P170 (2026-10-18).
+
+| id | bucket | reason |
+|---|---|---|
+| P170-1 | BOT | Each offer is the accept gump the server sends, with the item and its metal in its text; the bot can ask the Society for orders at 144 with the setting on and off and read them |
