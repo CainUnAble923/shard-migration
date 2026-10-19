@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-18T22:29:28-05:00",
+  "generated": "2026-10-18T23:23:40-05:00",
   "direction": {
     "eyebrow": "Direction",
     "title": "Our own shard on ModernUO, OSI where OSI has an answer",
@@ -565,7 +565,7 @@
     "confirmed": "2026-09-19"
   },
   "counted": {
-    "customization_files": 1090,
+    "customization_files": 1094,
     "patch_files": 106,
     "stale_migrations_present": false,
     "upstream_patch_files": 99,
@@ -583,8 +583,8 @@
       "TreasureMap.cs",
       "TreasureMapChest.cs"
     ],
-    "test_files": 170,
-    "test_cases": 999
+    "test_files": 172,
+    "test_cases": 1008
   },
   "content_progress": [
     {
@@ -648,6 +648,12 @@
       "pct": 2.4
     },
     {
+      "area": "Services/CleanUpBritannia",
+      "total": 52,
+      "done": 4,
+      "pct": 7.7
+    },
+    {
       "area": "Items/Functional",
       "total": 49,
       "done": 4,
@@ -670,12 +676,6 @@
       "total": 84,
       "done": 3,
       "pct": 3.6
-    },
-    {
-      "area": "Services/CleanUpBritannia",
-      "total": 52,
-      "done": 3,
-      "pct": 5.8
     },
     {
       "area": "Services/New Magincia",
@@ -766,7 +766,7 @@
     {
       "kind": "play tests",
       "item": "not sorted",
-      "check": "9 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6. Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check.",
+      "check": "10 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0. Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check.",
       "cmd": [
         "python -m unittest tools/tests/test_play_who.py"
       ]
@@ -996,9 +996,9 @@
           "C5"
         ],
         "candidates": 717,
-        "done": 293,
+        "done": 294,
         "complete": false,
-        "pct": 40.9
+        "pct": 41.0
       },
       {
         "id": "src",
@@ -1092,7 +1092,7 @@
       "reward": {
         "systems": 1,
         "files": 717,
-        "done": 293,
+        "done": 294,
         "titles": [
           "Reward pool: addons, decorative, store items, artifact remainder, Clean Up rewards"
         ],
@@ -1297,16 +1297,16 @@
     "tasks-reviewed": "2026-10-17"
   },
   "derived": {
-    "version": "2026.10.18.15",
+    "version": "2026.10.18.16",
     "playtests": {
-      "open": 334,
+      "open": 335,
       "failed": 4,
       "passed": 43,
       "later": 8,
       "blocked": 1,
-      "total": 381,
+      "total": 382,
       "unloggedFails": 3,
-      "generatedAt": "2026-10-19T02:49:01Z"
+      "generatedAt": "2026-10-19T03:32:04Z"
     },
     "queue": {
       "autopilot": "on",
@@ -1373,11 +1373,6 @@
           "state": "queued"
         },
         {
-          "n": 175,
-          "slug": "cont-clean-up-britannia-finish",
-          "state": "queued"
-        },
-        {
           "n": 176,
           "slug": "cont-artificers-unravel-container",
           "state": "queued"
@@ -1399,6 +1394,14 @@
         }
       ],
       "finished": [
+        {
+          "n": 175,
+          "slug": "cont-clean-up-britannia-finish",
+          "state": "done",
+          "why": "",
+          "date": "2026-10-18",
+          "notes": "notes/cc-P175-cont-clean-up-britannia-finish.md"
+        },
         {
           "n": 174,
           "slug": "session-closer-fix",
@@ -1470,26 +1473,18 @@
           "why": "",
           "date": "2026-10-17",
           "notes": "notes/cc-P162-end-of-week-spend.md"
-        },
-        {
-          "n": 161,
-          "slug": "close-finished-sessions",
-          "state": "done",
-          "why": "",
-          "date": "2026-10-17",
-          "notes": "notes/cc-P161-close-finished-sessions.md"
         }
       ],
-      "finished_total": 110,
-      "done_total": 107,
+      "finished_total": 111,
+      "done_total": 108,
       "stopped_total": 3,
       "latest_done": {
-        "n": 174,
-        "slug": "session-closer-fix",
+        "n": 175,
+        "slug": "cont-clean-up-britannia-finish",
         "state": "done",
         "why": "",
         "date": "2026-10-18",
-        "notes": "notes/cc-P174-session-closer-fix.md"
+        "notes": "notes/cc-P175-cont-clean-up-britannia-finish.md"
       }
     },
     "reviewed": "2026-10-13",

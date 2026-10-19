@@ -1022,3 +1022,13 @@ Added by cc-P173 (2026-10-18).
 | id | bucket | reason |
 |---|---|---|
 | P173-1 | BOT | The disenchant list, the Extract row and the essence are gump text and an item the server sends; the bot can run the table's buttons on a Summer Wind War Axe |
+
+### P175
+
+Added by cc-P175 (2026-10-18).
+
+| id | bucket | reason |
+|---|---|---|
+| P175-1 | BOT | The two Appraise for Cleanup messages are server text; the bot can add the swords, set the properties and appraise them |
+| P175-2 | BOT | The "Corpse cleared ... +N Clean Up points" messages are server text; the bot can kill an Orc and a Dragon and clean up both |
+| P175-3 | BOT-PARTIAL | Buying through the store gump and the item in the pack are the bot's; how the new rewards look and the pigment's hue are Chase's |

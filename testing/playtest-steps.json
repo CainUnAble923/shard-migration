@@ -2416,6 +2416,35 @@
    ],
    "pass": "The War Axe's disenchant list shows Slayer: Summer Wind (Snow Elemental) [ON]; extracting it removes the slayer from the axe and gives an Essence of Slayer: Summer Wind (Snow Elemental); imbuing puts snow elemental slayer on the second weapon.",
    "check": "Not built yet: a player in the Artificers' Order with a Summer Wind War Axe presses Disenchant, the slayer's Extract row and Apply, and the bot reads the gump text and the essence in the pack; result in the nightly report once built."
+  },
+  "P175-1": {
+   "where": "Test shard rebuilt with cc-P175, SL TEST - Admin (Eve), with a trash bag or next to any trash barrel",
+   "do": [
+    "`[add Longsword` twice. On one, `[props`, then set Weapon Attributes > Hit Lightning 50 and Attributes > Weapon Speed 30",
+    "Right-click the barrel (or the Custodian trash bag), Appraise for Cleanup, and target each sword"
+   ],
+   "pass": "The plain longsword appraises at about 1 point; the magic one at about 6 (5 more: Hit Lightning 50 is 100 weight, Swing Speed 30 is 50, 150 / 30 = 5).",
+   "check": "Not built yet: admin adds two longswords, sets the properties on one, and reads the two Appraise for Cleanup messages; result in the nightly report once built."
+  },
+  "P175-2": {
+   "where": "Test shard rebuilt with cc-P175, a Custodian (joined at a Sanitation Warden) with staff powers to add creatures",
+   "do": [
+    "`[add Orc`, kill it yourself, then `[cleanup` and target its corpse",
+    "`[add Dragon`, kill it yourself, then `[cleanup` its corpse",
+    "Optional: let a pet or another character kill an orc, then `[cleanup` that corpse"
+   ],
+   "pass": "The orc's corpse pays about 1.5 points plus what is inside it; the dragon's about 15 plus what is inside. A corpse you did not earn pays only what is inside.",
+   "check": "Not built yet: a Custodian kills an Orc and a Dragon and reads the two \"Corpse cleared ... +N Clean Up points\" messages; result in the nightly report once built."
+  },
+  "P175-3": {
+   "where": "Test shard rebuilt with cc-P175, a character with a Custodian trash bag, at the Cleanup Officer or a Sanitation Warden",
+   "do": [
+    "Get the points: `[add RunicHammer Valorite 40`, put it in your trash bag and Dump Now (8,000 a use: 320,000 points)",
+    "Open the Clean Up Britannia store and page through it",
+    "Buy the Bamboo (15,000), one pigment (250,000) and the Lucky Charm (300,000) as far as your points go; double-click the pigment and dye an artifact in your pack"
+   ],
+   "pass": "The store shows the new rows by price (robes at 1,000 up to the charms at 300,000). Each bought item lands in the pack with its art and hue; the pigment dyes the artifact its hue and counts down from 5 uses.",
+   "check": "Not built yet: the bot can buy a reward through the store gump and read the item in the pack; the art and the pigment's hue on screen are Chase's."
   }
  }
 }
