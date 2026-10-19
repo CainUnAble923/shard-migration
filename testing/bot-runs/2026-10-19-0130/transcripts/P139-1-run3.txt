@@ -1,0 +1,24 @@
+    0.00 harness  == P139-1 run 3: The body-route test creature spawns on body 2048, fights back with its bow and dies to a player, leaving a corpse
+    0.00 harness  all pool accounts busy or resting; waiting 30 s
+    8.78 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+    8.78 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   29.27 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   29.27 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   30.00 harness  all pool accounts busy or resting; waiting 9 s
+   36.59 player   <- cliloc(0) System #1019067: A monster looks at you menacingly but does not attack.  You would be under attack now if not for your status as a new citizen of Britannia.
+   38.59 p139     -> 0xEF seed, client 7.0.117.0; 0x80 login as slbot-player4
+   38.60 p139     <- 0xA8 servers [(0, 'Shattered Legacy BOT')]
+   38.60 p139     <- 0x8C relay 127.0.0.1:2595 (checked: the scratch shard)
+   38.63 p139     <- 0xA9 characters ['Bot Human M Ad', 'Bot Human M Ag', 'Bot Gargoyle F A', 'Bot Gargoyle M A', 'Bot Human F Ap', 'Bot Human M As', 'Bot Human M Av']; 1 cities ['New Haven']
+   38.63 harness  Traceback (most recent call last):
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\run.py", line 148, in run_checks
+    ok, evidence = chk.fn(ctx)
+                   ^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\checks.py", line 631, in p139_1
+    p = ctx.fresh(label="p139")
+        ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\run.py", line 103, in fresh
+    raise LoginFailed("account %s has no free slot" % acct)
+uobot.client.LoginFailed: account slbot-player4 has no free slot
+
+   38.63 harness  == P139-1 run 3: ERROR (LoginFailed: account slbot-player4 has no free slot)

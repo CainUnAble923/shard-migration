@@ -1,0 +1,686 @@
+{
+ "checks": [
+  {
+   "id": "P64-1",
+   "title": "Fresh account login: bulletin with the current version, All patch notes, no wiki button",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "title 'Shattered Legacy 2026.10.18.17'; All patch notes button yes; wiki text none",
+     "seconds": 7.4,
+     "transcript": "transcripts/P64-1-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "title 'Shattered Legacy 2026.10.18.17'; All patch notes button yes; wiki text none",
+     "seconds": 7.2,
+     "transcript": "transcripts/P64-1-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "title 'Shattered Legacy 2026.10.18.17'; All patch notes button yes; wiki text none",
+     "seconds": 7.2,
+     "transcript": "transcripts/P64-1-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P64-2",
+   "title": "All patch notes opens the history; a relog shows no bulletin",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "history gump after All patch notes: yes; bulletin on relog: none (observed during the matching P64-1 run)",
+     "seconds": 0.0,
+     "transcript": "transcripts/P64-2-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "history gump after All patch notes: yes; bulletin on relog: none (observed during the matching P64-1 run)",
+     "seconds": 0.0,
+     "transcript": "transcripts/P64-2-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "history gump after All patch notes: yes; bulletin on relog: none (observed during the matching P64-1 run)",
+     "seconds": 0.0,
+     "transcript": "transcripts/P64-2-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P64-3",
+   "title": "[version: the current version first, with (you are here)",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "P64-3: the entry shows gold",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "first heading 'Shattered Legacy 2026.10.18.17'; (you are here) on page 1: True",
+     "seconds": 1.5,
+     "transcript": "transcripts/P64-3-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "first heading 'Shattered Legacy 2026.10.18.17'; (you are here) on page 1: True",
+     "seconds": 0.4,
+     "transcript": "transcripts/P64-3-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "first heading 'Shattered Legacy 2026.10.18.17'; (you are here) on page 1: True",
+     "seconds": 0.4,
+     "transcript": "transcripts/P64-3-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P64-4",
+   "title": "[version pages: Next to Page N of N, last version 2026.10.01, Previous goes back",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "FAIL",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "fail",
+     "evidence": "last page ['Page 41 of 51']; last version 2026.10.05; after Previous ['Page 40 of 51']",
+     "seconds": 0.4,
+     "transcript": "transcripts/P64-4-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "fail",
+     "evidence": "last page ['Page 41 of 51']; last version 2026.10.05; after Previous ['Page 40 of 51']",
+     "seconds": 0.4,
+     "transcript": "transcripts/P64-4-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "fail",
+     "evidence": "last page ['Page 41 of 51']; last version 2026.10.05; after Previous ['Page 40 of 51']",
+     "seconds": 0.4,
+     "transcript": "transcripts/P64-4-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P58-0",
+   "title": "[version as a player: 2026.10.02 to 2026.10.05 sections, no Staff lines",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "P58-0: the patch-note wording reads right",
+   "result": "FAIL",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "fail",
+     "evidence": "versions 10.02-10.05 shown: ['2026.10.05.3', '2026.10.05.2', '2026.10.05']; missing ['2026.10.02', '2026.10.03']; Staff list visible to a player: False",
+     "seconds": 0.4,
+     "transcript": "transcripts/P58-0-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "fail",
+     "evidence": "versions 10.02-10.05 shown: ['2026.10.05.3', '2026.10.05.2', '2026.10.05']; missing ['2026.10.02', '2026.10.03']; Staff list visible to a player: False",
+     "seconds": 0.4,
+     "transcript": "transcripts/P58-0-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "fail",
+     "evidence": "versions 10.02-10.05 shown: ['2026.10.05.3', '2026.10.05.2', '2026.10.05']; missing ['2026.10.02', '2026.10.03']; Staff list visible to a player: False",
+     "seconds": 0.4,
+     "transcript": "transcripts/P58-0-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P61-5",
+   "title": "[version history holds 2026.10.05.2 with its four lines",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "2026.10.05.2 present: True, 4 player lines (CHANGELOG at the code under test: 4)",
+     "seconds": 0.4,
+     "transcript": "transcripts/P61-5-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "2026.10.05.2 present: True, 4 player lines (CHANGELOG at the code under test: 4)",
+     "seconds": 0.4,
+     "transcript": "transcripts/P61-5-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "2026.10.05.2 present: True, 4 player lines (CHANGELOG at the code under test: 4)",
+     "seconds": 0.4,
+     "transcript": "transcripts/P61-5-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P64-5",
+   "title": "The 2026.10.05.2 line ends 'The chance to make the item is unchanged.'",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "P64-5: it wraps onto four rows",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "matching line: 'thril to 187.5, Adamantium and Celestial to 200. The chance to make the item is unchanged.'",
+     "seconds": 0.4,
+     "transcript": "transcripts/P64-5-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "matching line: 'thril to 187.5, Adamantium and Celestial to 200. The chance to make the item is unchanged.'",
+     "seconds": 0.4,
+     "transcript": "transcripts/P64-5-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "matching line: 'thril to 187.5, Adamantium and Celestial to 200. The chance to make the item is unchanged.'",
+     "seconds": 0.4,
+     "transcript": "transcripts/P64-5-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P71-7",
+   "title": "[version history holds 2026.10.10 with five lines",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "2026.10.10 present: True, 5 player lines (CHANGELOG at the code under test: 5)",
+     "seconds": 0.4,
+     "transcript": "transcripts/P71-7-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "2026.10.10 present: True, 5 player lines (CHANGELOG at the code under test: 5)",
+     "seconds": 0.4,
+     "transcript": "transcripts/P71-7-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "2026.10.10 present: True, 5 player lines (CHANGELOG at the code under test: 5)",
+     "seconds": 0.4,
+     "transcript": "transcripts/P71-7-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P64-6",
+   "title": "Staff list: shown to staff, hidden from players",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "P64-6: the staff list shows lavender",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "admin sees 'Staff (players do not see this list)': True; player sees it: False",
+     "seconds": 2.0,
+     "transcript": "transcripts/P64-6-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "admin sees 'Staff (players do not see this list)': True; player sees it: False",
+     "seconds": 0.8,
+     "transcript": "transcripts/P64-6-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "admin sees 'Staff (players do not see this list)': True; player sees it: False",
+     "seconds": 0.8,
+     "transcript": "transcripts/P64-6-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P66-7",
+   "title": "[ClusterFSkillGain reports the rate and 'past stock ceilings on'",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "reply: 'ClusterF skill gain: rate enabled, 3 chance attempt(s), 5x gain amount; past stock ceilings on.'",
+     "seconds": 1.0,
+     "transcript": "transcripts/P66-7-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "reply: 'ClusterF skill gain: rate enabled, 3 chance attempt(s), 5x gain amount; past stock ceilings on.'",
+     "seconds": 1.0,
+     "transcript": "transcripts/P66-7-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "reply: 'ClusterF skill gain: rate enabled, 3 chance attempt(s), 5x gain amount; past stock ceilings on.'",
+     "seconds": 1.0,
+     "transcript": "transcripts/P66-7-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P62-1",
+   "title": "A female character can wear the Kitsune Ears and Tail",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "worn: True (layer 18); messages []",
+     "seconds": 4.9,
+     "transcript": "transcripts/P62-1-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "worn: True (layer 18); messages []",
+     "seconds": 4.8,
+     "transcript": "transcripts/P62-1-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "worn: True (layer 18); messages []",
+     "seconds": 4.9,
+     "transcript": "transcripts/P62-1-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P62-7",
+   "title": "A male character cannot: 'Only females can wear this.', the item stays in the pack",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "FAIL",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "fail",
+     "evidence": "refusal False; worn True; back in pack False; messages ['Welcome to Shattered Legacy BOT.']",
+     "seconds": 295.5,
+     "transcript": "transcripts/P62-7-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "fail",
+     "evidence": "refusal False; worn True; back in pack False; messages ['Welcome to Shattered Legacy BOT.']",
+     "seconds": 9.2,
+     "transcript": "transcripts/P62-7-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "fail",
+     "evidence": "refusal False; worn True; back in pack False; messages ['Welcome to Shattered Legacy BOT.']",
+     "seconds": 9.3,
+     "transcript": "transcripts/P62-7-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "T-039",
+   "title": "A new character is pointed at the board",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "T-039: a new player can find the board by eye",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "human female at (3503, 2574, 14): message None; welcome gump says 'The Guild Board in the town square lists every guild, what it teaches, and where its guildmaster stands.'; the board is 1 tiles away",
+     "seconds": 324.6,
+     "transcript": "transcripts/T-039-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "elf male at (3503, 2574, 14): message None; welcome gump says 'The Guild Board in the town square lists every guild, what it teaches, and where its guildmaster stands.'; the board is 1 tiles away",
+     "seconds": 13.1,
+     "transcript": "transcripts/T-039-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "gargoyle female at (3503, 2574, 14): message None; welcome gump says 'The Guild Board in the town square lists every guild, what it teaches, and where its guildmaster stands.'; the board is 1 tiles away",
+     "seconds": 13.1,
+     "transcript": "transcripts/T-039-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "CREATE",
+   "title": "Character creation for every race and sex, through the real 0xF8 packet",
+   "kind": "HARNESS",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "human male: body 400 (want 400), status name 'Bot Human M Ak' (asked for 'Bot Human M Ak'), at (3503, 2574, 14)",
+     "seconds": 304.9,
+     "transcript": "transcripts/CREATE-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "elf female: body 606 (want 606), status name 'Bot Elf F Al' (asked for 'Bot Elf F Al'), at (3503, 2574, 14)",
+     "seconds": 13.1,
+     "transcript": "transcripts/CREATE-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "gargoyle male: body 666 (want 666), status name 'Bot Gargoyle M A' (asked for 'Bot Gargoyle M A'), at (3503, 2574, 14)",
+     "seconds": 13.1,
+     "transcript": "transcripts/CREATE-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "T-047",
+   "title": "Young by time played: the countdown, and 'I want to grow up!' brings the confirm gump",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "countdown 'You will enjoy the benefits and relatively safe status of a young player for another 13 days and 23 hours of play time. Say \"I want to grow up!\" to give it up sooner.' (days and hours: True); confirm gump: ['', \"Renouncing 'Young Player' Status\"]",
+     "seconds": 304.9,
+     "transcript": "transcripts/T-047-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "countdown 'You will enjoy the benefits and relatively safe status of a young player for another 13 days and 23 hours of play time. Say \"I want to grow up!\" to give it up sooner.' (days and hours: True); confirm gump: ['', \"Renouncing 'Young Player' Status\"]",
+     "seconds": 13.1,
+     "transcript": "transcripts/T-047-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "countdown 'You will enjoy the benefits and relatively safe status of a young player for another 13 days and 23 hours of play time. Say \"I want to grow up!\" to give it up sooner.' (days and hours: True); confirm gump: ['', \"Renouncing 'Young Player' Status\"]",
+     "seconds": 13.1,
+     "transcript": "transcripts/T-047-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "D41",
+   "title": "Regression: the Guild Directory lists each guild once",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "18 rows, header says 18 guilds, 18 way buttons; duplicates none; Artificers' Order 1 time(s)",
+     "seconds": 0.3,
+     "transcript": "transcripts/D41-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "18 rows, header says 18 guilds, 18 way buttons; duplicates none; Artificers' Order 1 time(s)",
+     "seconds": 0.3,
+     "transcript": "transcripts/D41-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "18 rows, header says 18 guilds, 18 way buttons; duplicates none; Artificers' Order 1 time(s)",
+     "seconds": 0.3,
+     "transcript": "transcripts/D41-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P56-6",
+   "title": "Valorite refused at Mining 98.9, smelts at 99",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "at 98.9: refused True ['You have no idea how to smelt this strange ore!'], ore left 10; at 99.0 over 6 tries: refused 0, smelted 2, burned 4",
+     "seconds": 19.1,
+     "transcript": "transcripts/P56-6-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "at 98.9: refused True ['You have no idea how to smelt this strange ore!'], ore left 10; at 99.0 over 6 tries: refused 0, smelted 3, burned 3",
+     "seconds": 19.1,
+     "transcript": "transcripts/P56-6-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "at 98.9: refused True ['You have no idea how to smelt this strange ore!'], ore left 10; at 99.0 over 6 tries: refused 0, smelted 3, burned 3",
+     "seconds": 19.1,
+     "transcript": "transcripts/P56-6-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P56-4",
+   "title": "Platinum refused at Mining 112.4; at 112.5 it smelts (about half the time)",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "at 112.4: refused True ['You have no idea how to smelt this strange ore!'], ore left 10; at 112.5 over 8 tries: refused 0, smelted 6, burned 2",
+     "seconds": 25.7,
+     "transcript": "transcripts/P56-4-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "at 112.4: refused True ['You have no idea how to smelt this strange ore!'], ore left 10; at 112.5 over 8 tries: refused 0, smelted 3, burned 5",
+     "seconds": 24.5,
+     "transcript": "transcripts/P56-4-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "at 112.4: refused True ['You have no idea how to smelt this strange ore!'], ore left 10; at 112.5 over 8 tries: refused 0, smelted 5, burned 3",
+     "seconds": 25.8,
+     "transcript": "transcripts/P56-4-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P61-3",
+   "title": "Achievements: 'Oh Look, It's Dead' shows its Earned line and no 'Progress: 9/1'; unearned ones show progress",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "rat killed by the player: True; row 'Oh Look, It\\'s Dead [5 AP / 5 R]\"You are, by definition, a killer now. Congratulations.\"(Earned: slew your first creature)'; other rows with progress: 2",
+     "seconds": 6.1,
+     "transcript": "transcripts/P61-3-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "rat killed by the player: True; row 'Oh Look, It\\'s Dead [5 AP / 5 R]\"You are, by definition, a killer now. Congratulations.\"(Earned: slew your first creature)'; other rows with progress: 2",
+     "seconds": 41.2,
+     "transcript": "transcripts/P61-3-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "rat killed by the player: True; row 'Oh Look, It\\'s Dead [5 AP / 5 R]\"You are, by definition, a killer now. Congratulations.\"(Earned: slew your first creature)'; other rows with progress: 2",
+     "seconds": 3.6,
+     "transcript": "transcripts/P61-3-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P119-1",
+   "title": "Five of cc-P119's ported creatures spawn, fight back and die to a player, leaving a corpse",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "FLAKY",
+   "passes": 2,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "IceHound: killed True, corpse True; OrcChopper: killed True, corpse True; Lifestealer: killed True, corpse True; EffeteUndeadGargoyle: killed True, corpse True; Wight: killed True, corpse True; player hits at the end 175/177",
+     "seconds": 157.7,
+     "transcript": "transcripts/P119-1-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "IceHound: killed True, corpse True; OrcChopper: killed True, corpse True; Lifestealer: killed True, corpse True; EffeteUndeadGargoyle: killed True, corpse True; Wight: killed True, corpse True; player hits at the end 138/178",
+     "seconds": 46.1,
+     "transcript": "transcripts/P119-1-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "fail",
+     "evidence": "IceHound: killed True, corpse True; OrcChopper: killed True, corpse True; Lifestealer: killed False, corpse False; EffeteUndeadGargoyle: killed True, corpse True; Wight: killed True, corpse True; player hits at the end 176/180",
+     "seconds": 98.5,
+     "transcript": "transcripts/P119-1-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P129-1",
+   "title": "Six of cc-P129's ported creatures spawn, fight back and die to a player, leaving a corpse",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "FLAKY",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "fail",
+     "evidence": "BloodFox: killed True, corpse True; OsseinRam: the fighter died (a test problem, not this creature's); LeatherWolfFellow: not fought: the fighter was dead; GargishOutcast: not fought: the fighter was dead; ParoxysmusSwampDragon: not fought: the fighter was dead; Drelgor: not fought: the fighter was dead; player hits at the end 0/176",
+     "seconds": 211.2,
+     "transcript": "transcripts/P129-1-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "BloodFox: killed True, corpse True; OsseinRam: killed True, corpse True; LeatherWolfFellow: killed True, corpse True; GargishOutcast: killed True, corpse True; ParoxysmusSwampDragon: killed True, corpse True; Drelgor: killed True, corpse True; player hits at the end 176/181",
+     "seconds": 99.0,
+     "transcript": "transcripts/P129-1-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "fail",
+     "evidence": "BloodFox: the fighter died (a test problem, not this creature's); OsseinRam: not fought: the fighter was dead; LeatherWolfFellow: not fought: the fighter was dead; GargishOutcast: not fought: the fighter was dead; ParoxysmusSwampDragon: not fought: the fighter was dead; Drelgor: not fought: the fighter was dead; player hits at the end 0/175",
+     "seconds": 38.6,
+     "transcript": "transcripts/P129-1-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P139-1",
+   "title": "The body-route test creature spawns on body 2048, fights back with its bow and dies to a player, leaving a corpse",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "ERROR",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "error",
+     "evidence": "LoginFailed: account slbot-player2 has no free slot",
+     "seconds": 192.5,
+     "transcript": "transcripts/P139-1-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "error",
+     "evidence": "LoginFailed: account slbot-player3 has no free slot",
+     "seconds": 98.9,
+     "transcript": "transcripts/P139-1-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "error",
+     "evidence": "LoginFailed: account slbot-player4 has no free slot",
+     "seconds": 38.6,
+     "transcript": "transcripts/P139-1-run3.txt"
+    }
+   ]
+  }
+ ]
+}
