@@ -1,18 +1,18 @@
 {
   "_comment": "The hand-written judgment behind dashboard.html and README.md's progress block (cc-P85 rewrite, 2026-10-13). Every item carries the date it was last confirmed; the page shows the newest as 'Judgment reviewed', amber after 7 days. Update one item with python tools/judge.py (tools/README.md). Counts, the prompt queue, play-test counts, the version and the latest DONE prompt are derived by progress.py and never written here.",
   "shard_status": {
-    "text": "the test shard is the only one running (sl-modernuo:latest, 2026.10.10); there is no live shard until the fresh-world wipe; players get the 2026-10-05 package and TazUO; P65-P84 are committed, not deployed",
-    "confirmed": "2026-10-13"
+    "text": "the test shard is the only shard: the live shard was retired and deleted on 2026-10-14 until the fresh 1.0 world; main is 2026.10.20.4 and Shadow Iron merges finished Golem branches into it every 10 minutes, each built green first; which build the test shard runs and which player package is published are not visible from the repos",
+    "confirmed": "2026-10-20"
   },
   "direction": {
     "eyebrow": "Direction",
     "title": "Our own shard on ModernUO, OSI where OSI has an answer",
     "body": [
-      "The shard stays on ModernUO (upstream <code>d4531cd94</code> since 2026-10-02). The work moved from porting ServUO content to building Shattered Legacy's own systems: levels and loops, the 200 skill cap (only items go above it), the League, 18 guilds with a starter path, recipe-gated crafting, the imbuing rework, the Compact Mule, evo pets, loot boxes and the New Haven tutorial.",
+      "The shard stays on ModernUO (upstream <code>d4531cd94</code> since 2026-10-02). Since 2026-10-13 the order is a faithful port first, our own systems after it: the port list is being worked through (bulk orders, pet training, treasure maps, monster stealing, the creature batches, consumables and crafting gaps are in or nearly in; Wrong and Covetous, Exodus, Blackthorn, the Underworld, the Eodon remainder and High Seas fishing are claimed or queued), while the shard's own systems already built are kept and finished (the 200 skill cap, the League, 18 guilds with a starter path, recipe-gated crafting, the imbuing rework, the Compact Mule, loot boxes, requisitions and the Appraiser, the New Haven tutorial). Several Golems work the prompt queue at once and Shadow Iron merges their finished branches into main.",
       "<strong>Fidelity principle:</strong> where OSI has an answer, match it, so the existing wikis document the shard. Every deliberate difference is recorded (<code>docs/fidelity-principle.md</code>, D-1 to D-122) and becomes the custom wiki's table of contents.",
       "<strong>A fresh world is planned:</strong> the old live save does not load on today's code; the test shard carries play until the wipe."
     ],
-    "confirmed": "2026-10-13"
+    "confirmed": "2026-10-20"
   },
   "playable_gates": {
     "note": "'Playable' is a judgement, so it is written down as gates rather than felt. Each one is a thing a player would actually hit, and cites what it rests on. Update one with python tools/judge.py gate.",
@@ -20,139 +20,136 @@
       {
         "name": "The shard runs and holds a world",
         "done": true,
-        "detail": "The test shard runs sl-modernuo:latest (built 2026-10-10, version 2026.10.10) and saves and reloads; 1,133 of 1,133 tests pass at P82. There is no live shard: the old live container stops at a deserialize error until the fresh-world wipe.",
+        "detail": "Main at 7049a69 (version 2026.10.20.4) builds green: the last merged branch ran 1,430 tests, 1,426 passed, 0 failed, 4 skipped (P208, 2026-10-20), and every Golem merge since P203 is built before it goes in. There is no live shard: it was retired on 2026-10-14 until the fresh 1.0 world and its container, images and world data were deleted. Which image the test shard is running cannot be seen from the repos.",
         "sources": [
-          "notes/cc-P82-artificers-imbuing.md section 7",
-          "notes/passdown-overseer-2026-10-05.md",
-          "docker ps and images, 2026-10-13"
+          "notes/cc-P208-cont-shadow-iron-merger.md (headlines)",
+          "ShatteredLegacy CHANGELOG.md 2026.10.14.14, 2026.10.20.4",
+          "notes/passdown-overseer-2026-10-14.md (live deleted)"
         ],
-        "confirmed": "2026-10-13"
+        "confirmed": "2026-10-20"
       },
       {
         "name": "The player package installs on a clean PC",
         "done": true,
-        "detail": "Passed on a clean Windows Sandbox (T-049), off the home network (T-020) and through the updater (T-021). The newer 2026.10.13.0118 zip passed gates 1 to 6 but is not uploaded; D61's sandbox graphics fallback was not rerun.",
+        "detail": "Still rests on T-049, T-020 and T-021 (passed 2026-10-05). Since then the package ships the shard's own TazUO build with the client patches (2026.10.15.9), the Legion scripts updater (2026.10.18.4) and the Achievements button (2026.10.18.7); none of those builds has a recorded clean-PC pass, and whether a newer zip is published cannot be seen from the repos.",
         "sources": [
           "testing/play-tests.json T-049, T-020, T-021",
-          "notes/passdown-overseer-2026-10-05.md",
-          "notes/cc-P81-paperdoll-sos.md",
-          "docs/bug-list.md D61"
+          "ShatteredLegacy CHANGELOG.md 2026.10.15.9, 2026.10.18.4, 2026.10.18.7"
         ],
-        "confirmed": "2026-10-13"
+        "confirmed": "2026-10-20",
+        "needs_confirm": "Chase: which package is published on get.shatteredlegacyuo.com, and has the package that ships our TazUO build passed a clean-PC install?"
       },
       {
         "name": "A new character can train without hitting a wall",
         "done": false,
-        "detail": "Largely built, not seen in a client. The old 5x wall moved: the guilds are now the starter path, and P66 (hook G, 17 skills), P67 (craft ceilings) and P71 (effects scaled to 200) gave the 41 stalled skills a path to 200. Still open: casting schools above about 120, and the content skills (Alchemy, Cooking, Tailoring, Fishing, Inscription) need designs. ClusterFSkillGain still runs 3 attempts and a 5x gain amount.",
+        "detail": "Built, not seen in a client. P191 (with the P202 and P204 fix-ups) set the base rate to 2 chance attempts and a 1x gain (ClusterFSkillGain.cs:39-40): every gain is 0.1 and a skill reaches 100 in about an hour of fighting or an hour and a half of crafting (cc-P191 section 6). Hook G gives 17 skills a path past their stock ceiling (ClusterFSkillGain.cs:322-403), the shard metals and woods carry the crafts to 200 (ClusterFMetalTiers.cs:70-81, ClusterFWoodTiers.cs:54-65), and Pet Training (P120, P130) gives Animal Lore its creatures. Still open: the casting schools above about 120 are excluded on purpose (ClusterFSkillGain.cs:24), and no play test of the new rate has a recorded pass (the last play-test result is dated 2026-10-18).",
         "sources": [
-          "notes/cc-P54-f12-xp-and-gain-paths.md",
-          "notes/cc-P66-clamps-and-hook-g.md",
-          "notes/cc-P67-craft-ceilings.md",
-          "notes/cc-P71-high-skill-effect-scaling.md",
-          "notes/f12-decisions-2026-10-05.md items 8b and 11",
-          "ClusterFSkillGain.cs:36-37"
+          "ShatteredLegacy server/customizations/ClusterFSkillGain.cs:24, :39-40, :322-403",
+          "ShatteredLegacy server/customizations/ClusterFMetalTiers.cs:70-81; ClusterFWoodTiers.cs:54-65",
+          "notes/cc-P191-cont-earned-skill-gain.md section 6",
+          "notes/cc-P204-cont-fixup-cont-fixup-cont-earned-skill-gain.md",
+          "ShatteredLegacy CHANGELOG.md 2026.10.19.5, 2026.10.16.4"
         ],
-        "confirmed": "2026-10-13"
+        "confirmed": "2026-10-20"
       },
       {
         "name": "A new character's first hour",
         "done": false,
-        "detail": "P80 built the New Haven tutorial framework (37 stations), but every trial but the loop vision is a TODO and 8 decisions wait on Chase. P79 loot boxes and fanfare are built. Neither is deployed. T-040 failed: nothing points a player to the League.",
+        "detail": "The tutorial framework is in main and enabled (Tutorial/ClusterFTutorial.cs:33), the recruiter Rook Hallowell stands on the New Haven plaza (TutorialRecruiter.cs:25), graduation pays the first loot box and a starter pet, and the 10-14 decisions settled the 8 open questions (hybrid trial order, melee and ranged, the Echo as the voice, every account wiped at the tutorial update). The stations are still placeholders that only say what they will teach (CHANGELOG 2026.10.13.3), and the Rootdeep Burrows' Vault the tutorial fights in has its rules and creatures but no map yet (2026.10.18, 2026.10.18.2). T-040's complaint is answered in code: the core has a League station and the Guild Directory shows the League at the top; not yet seen in a client.",
         "sources": [
-          "notes/cc-P80-new-player-tutorial.md",
-          "notes/cc-P79-loot-boxes-fanfare.md",
-          "testing/play-tests.json T-040 (D41)"
+          "ShatteredLegacy server/customizations/Tutorial/ClusterFTutorial.cs:1-15, :33; Tutorial/TutorialStations.cs:59-75; Tutorial/TutorialRecruiter.cs:25",
+          "notes/decisions-2026-10-14.md (Tutorial 1-10)",
+          "ShatteredLegacy CHANGELOG.md 2026.10.13.3, 2026.10.18, 2026.10.18.2",
+          "testing/play-tests.json T-040"
         ],
-        "confirmed": "2026-10-13"
+        "confirmed": "2026-10-20"
       },
       {
         "name": "Levels and loops work end to end",
         "done": false,
-        "detail": "F-12 is not built: ClusterFLoops.CompleteLoop is only a hook. The research is done (P54 XP curve and gain paths, P72 level items) and Chase answered its questions; no F-12 play tests exist.",
+        "detail": "F-12 is still not built: ClusterFLoops.CompleteLoop is the one hook (Tutorial/ClusterFLoops.cs:1-11) and the loot box code still says loops do not exist (LootBoxes/ClusterFLootBoxes.cs:12, :19). Parked until after the port (decisions-2026-10-14, Tutorial 7). The research is done (P54, P72) and Chase answered its questions.",
         "sources": [
-          "ShatteredLegacy server/customizations/Tutorial/ClusterFLoops.cs:1",
-          "notes/cc-P54-f12-xp-and-gain-paths.md",
-          "notes/cc-P72-level-items-research.md",
-          "notes/f12-decisions-2026-10-05.md"
+          "ShatteredLegacy server/customizations/Tutorial/ClusterFLoops.cs:1-11; LootBoxes/ClusterFLootBoxes.cs:12, :19",
+          "notes/decisions-2026-10-14.md (Tutorial 7)",
+          "notes/cc-P54-f12-xp-and-gain-paths.md; notes/cc-P72-level-items-research.md; notes/f12-decisions-2026-10-05.md"
         ],
-        "confirmed": "2026-10-13"
+        "confirmed": "2026-10-20"
       },
       {
         "name": "What is built is seen in a client, not only compiled",
         "done": false,
-        "detail": "Chase passed in-game checks for P46 to P57 on 10-04/05. P65 to P84 are committed but not on the deployed image, so none of them has been in a client; their play tests are open.",
+        "detail": "testing/play-tests.json holds 418 items: 362 open, 43 passed, 4 failed, 8 later, 1 blocked (counted 2026-10-20); the last result is dated 2026-10-18 and items were still being added on 2026-10-20. Nearly everything merged since 10-13 (bulk orders, pet training, the creature batches, requisitions, the skill-gain retune, the Burrows' creatures) has open play tests and no recorded client pass. Which image the test shard runs is not visible from the repos.",
         "sources": [
-          "notes/passdown-overseer-2026-10-05.md",
-          "testing/play-tests.json",
-          "notes/cc-P78 to cc-P80: latest unchanged 8863156884f8"
+          "testing/play-tests.json (counted 2026-10-20)",
+          "notes/cc-P208-cont-shadow-iron-merger.md (what merged on 2026-10-20)"
         ],
-        "confirmed": "2026-10-13"
+        "confirmed": "2026-10-20",
+        "needs_confirm": "Chase: is the test shard on a build that carries P203 and P204 (version 2026.10.20.x), and which play tests ran after 2026-10-18?"
       },
       {
         "name": "Somewhere to go",
         "done": false,
-        "detail": "Despise is client-verified (09-20, fixes D52 to D54 passed 10-03). Shame is ported but never seen in a client (T-007 open). The Burrows (P36) checks T-055 and T-056 are open. Extra facets (P76) are research only.",
+        "detail": "Despise is client-verified (10-03); Shame is ported and never seen (T-007 open). The Rootdeep Burrows: the region's rules, its 26 creatures and the Vault's rules are in main, but the map is not built and the seeder refuses until it is (CHANGELOG 2026.10.18.2); the map batch (P167, P180, P181, P185) is in progress. Wrong and Covetous (P194) are claimed by the Bronze Golem; Exodus, Blackthorn, the Underworld and the Eodon remainder (P195-P198) are queued. The page's port list counts 3 of 16 systems in.",
         "sources": [
-          "docs/client-check-backlog.md",
-          "notes/cc4-shame.md",
-          "notes/cc-P36-dungeon-build-1.md",
-          "notes/cc-P76-extra-facets.md",
-          "docs/bug-list.md D52-D54"
+          "ShatteredLegacy server/customizations/Regions/OldHavenBurrowsRegion.cs:1-11; Regions/RootdeepVault.cs",
+          "ShatteredLegacy CHANGELOG.md 2026.10.18, 2026.10.18.2",
+          "shattered-legacy-prompts claimed/Bronze/cc-P194-port-wrong-and-covetous-void.md; queue/cc-P195 to cc-P198 (2026-10-20)",
+          "docs/client-check-backlog.md; notes/cc4-shame.md"
         ],
-        "confirmed": "2026-10-13"
+        "confirmed": "2026-10-20"
       },
       {
         "name": "Things to fight",
         "done": false,
-        "detail": "No creature batch since CC6 batch 8 (2026-09-21); 19 names the spawn data places still spawn nothing. Only P50 (chest mimic) and P65 (evo pets) added creatures since. The old 27 of 137 figure was not recounted.",
+        "detail": "Creatures part 1 (29, P119) and part 2 (the tameables, four peerless bosses, Drelgor; P129) and the Burrows' 26 (P140) are in main, and the port list counts the Creatures row at 138 of 193. Only Drelgor is placed by those batches (CHANGELOG 2026.10.16.3); the 29 and the Burrows' creatures are on no spawner yet (2026.10.15.5, 2026.10.18). tools/spawn-orphans.txt was last regenerated 2026-09-21 and needs the pinned tree to rerun, so the 19 orphan names are unrecounted.",
         "sources": [
-          "tools/spawn-orphans.txt (2026-09-21)",
-          "notes/cc-P50-chest-mimic-monster.md",
-          "notes/cc-P65-evo-pets-framework.md"
+          "ShatteredLegacy CHANGELOG.md 2026.10.15.5, 2026.10.16.3, 2026.10.18",
+          "README.md port list row, Creatures 138 / 193 (2026-10-20)",
+          "tools/spawn-orphans.txt (2026-09-21)"
         ],
-        "confirmed": "2026-10-13"
+        "confirmed": "2026-10-20"
       },
       {
         "name": "Set mechanics actually fire",
         "done": false,
-        "detail": "Unchanged since 09-19: armor sets and absorption work; Bestial rage, Epiphany burst, the sculpture's luck and set self-repair are ported but inert until the set-mechanic hooks row is built.",
+        "detail": "Unchanged: EpiphanyHelper and BeastialSetHelper have no caller outside their own set files (grep of server/customizations at 7049a69, 2026-10-20), so Bestial rage, the Epiphany burst, the sculpture's luck and set self-repair are still ported but inert until the set-mechanic hooks row is built.",
         "sources": [
-          "docs/gap-register.md section A",
-          "docs/patch-backlog.md P3",
-          "a grep of server/customizations, 2026-10-13"
+          "ShatteredLegacy server/customizations/Items/Artifacts/Equipment/Armor/Sets/Epiphany/VillainousEpiphany.cs:8-9",
+          "docs/gap-register.md section A; docs/patch-backlog.md P3",
+          "a grep of server/customizations, 2026-10-20"
         ],
-        "confirmed": "2026-10-13"
+        "confirmed": "2026-10-20"
       },
       {
         "name": "No live gap a player would call a bug",
         "done": false,
-        "detail": "docs/bug-list.md section 1 has 60 rows, but 34 say fixed or built and at least 5 more were fixed later: the list itself needs a pass. Open ones a player would hit: D83-D85 (built in P61, awaiting a client), D88 (shard woods have no resource info), D32/D33 (recipes and items no player can reach), D14 (Fountain of Fortune, until Chase walks it).",
+        "detail": "docs/bug-list.md section 1 has 65 rows (counted 2026-10-20; it was 60 on 10-13), and 41 of them mention fixed or built somewhere in the row; the highest number is D95, and the 10-14 passdown still owes the D94, D50, D89 and D93 moves. The list needs its pass before this gate can be read from it.",
         "sources": [
-          "docs/bug-list.md",
+          "docs/bug-list.md section 1 (counted 2026-10-20)",
+          "notes/passdown-overseer-2026-10-14.md (Record-keeping owed)",
           "docs/gap-register.md section A"
         ],
-        "confirmed": "2026-10-13"
+        "confirmed": "2026-10-20"
       },
       {
         "name": "The fresh-world wipe is ready",
         "done": false,
-        "detail": "There is no single fresh-world plan; the items are scattered: D34 must be fixed first, D50 (live stop timeout) takes on recreate, T-006 and T-010 run on the new world, the tutorial would greet old characters until then, F-4 (one character per account) starts with it. P73's test-account wipe is built and proven on a copy, not deployed, and refuses live.",
+        "detail": "Still no single plan. What changed since 10-13: the live shard was deleted on 2026-10-14 (container, images, world data), so D50's live stop timeout is moot; the tutorial no longer needs to handle old characters, because every account is wiped at the tutorial update (decisions-2026-10-14, Tutorial 1); and Young now also ends at the first real loop. Still scattered: D34, T-006 and T-010, F-4 (one character per account), and P73's test-account wipe (Shard Console, Test shard > Wipe test accounts, CHANGELOG 2026.10.12), which refuses live.",
         "sources": [
-          "docs/bug-list.md D34, D50",
-          "docs/client-test-queue.md T-006, T-010",
-          "notes/cc-P80-new-player-tutorial.md",
-          "docs/feature-queue.md F-4",
-          "notes/cc-P73-test-account-wipe.md"
+          "notes/passdown-overseer-2026-10-14.md (live deleted)",
+          "notes/decisions-2026-10-14.md (Tutorial 1)",
+          "docs/bug-list.md D34; docs/client-test-queue.md T-006, T-010; docs/feature-queue.md F-4",
+          "ShatteredLegacy CHANGELOG.md 2026.10.12; ShatteredLegacy server/customizations/Tutorial/ClusterFLoops.cs:5-7"
         ],
-        "confirmed": "2026-10-13"
+        "confirmed": "2026-10-20"
       }
     ]
   },
   "sections": {
     "foundation": "2026-10-13",
-    "portlist": "2026-10-13",
+    "portlist": "2026-10-20",
     "corrections": "2026-09-19",
-    "tasks-reviewed": "2026-10-17"
+    "tasks-reviewed": "2026-10-20"
   },
   "setup_defects": {
     "CraftContext members (RepeatCount, RepeatItem, RepeatTypeRes) recovered": true,
@@ -172,52 +169,46 @@
   "tasks": [
     {
       "id": "DEPLOY",
-      "title": "Deploy P65-P84 to the test shard and check them in a client",
+      "title": "Deploy main to the test shard and run its play tests",
       "status": "todo",
-      "note": "The deployed image is 2026.10.10 (8863156884f8); VERSION is 2026.10.13.6. Console: Test shard > Deploy built image, then the play-test page.",
-      "confirmed": "2026-10-13"
+      "note": "Main is 2026.10.20.4; nothing in the repos says which image the test shard runs (the 10-13 note said 2026.10.10). Console: Test shard > Deploy built image, then the play-test page (362 open items on 2026-10-20).",
+      "confirmed": "2026-10-20",
+      "needs_confirm": "Chase: which build is on the test shard today?"
     },
     {
       "id": "TUTORIAL",
       "title": "New Haven tutorial trials",
       "status": "todo",
-      "note": "P80 framework built; every trial but the loop vision is a TODO; 8 decisions for Chase (cc-P80 notes).",
-      "confirmed": "2026-10-13"
+      "note": "The framework is in main and enabled; the 8 decisions were answered on 2026-10-14 (hybrid order, melee and ranged, the Echo, accounts wiped at the update); the stations are still placeholders (CHANGELOG 2026.10.13.3) and the Burrows' Vault has no map yet (2026.10.18.2).",
+      "confirmed": "2026-10-20"
     },
     {
       "id": "WIPE",
       "title": "Fresh-world wipe plan",
       "status": "todo",
-      "note": "No single plan document; gather D34, D50, T-006, T-010, F-4 and the tutorial's greeting into one.",
-      "confirmed": "2026-10-13"
+      "note": "No single plan document. Live was deleted 2026-10-14; every account is wiped at the tutorial update (decisions-2026-10-14); gather D34, T-006, T-010, F-4 and P73's console wipe into one.",
+      "confirmed": "2026-10-20"
     },
     {
       "id": "BUGS",
       "title": "Bug list pass",
       "status": "todo",
-      "note": "60 rows in section 1, 34 of them say fixed or built; at least D49, D56-D58 and D66 were fixed later. Close or move them.",
-      "confirmed": "2026-10-13"
-    },
-    {
-      "id": "P83-DEPLOY",
-      "title": "Deploy sl-play-tests (P83) on port 8093",
-      "status": "done",
-      "note": "Deployed by Chase 2026-10-13; 8093 answers sl-play-tests, page and /status load.",
-      "confirmed": "2026-10-13"
+      "note": "65 rows in section 1 (counted 2026-10-20), 41 of them mention fixed or built; the 10-14 passdown still owes the D94, D50, D89 and D93 moves. Close or move them.",
+      "confirmed": "2026-10-20"
     },
     {
       "id": "F-12",
       "title": "Levels and loops",
       "status": "todo",
-      "note": "After the port (Chase 2026-10-13: faithful port first, customizations after). Research done (P54, P72), decisions in notes/f12-decisions-2026-10-05.md; nothing built beyond the CompleteLoop hook.",
-      "confirmed": "2026-10-13"
+      "note": "After the port (Chase 2026-10-13; decisions-2026-10-14 Tutorial 7 parks the loop placeholders with it). Research done (P54, P72), decisions in notes/f12-decisions-2026-10-05.md; nothing built beyond the CompleteLoop hook (Tutorial/ClusterFLoops.cs).",
+      "confirmed": "2026-10-20"
     },
     {
       "id": "F-37",
       "title": "Commissions move to the League",
       "status": "todo",
-      "note": "After the port (Chase 2026-10-13: faithful port first, customizations after). Planned (docs/feature-queue.md F-37), with F-13 (League reward shop); nothing spends Renown yet (cc-P75 A.1).",
-      "confirmed": "2026-10-13"
+      "note": "After the port. Not built. F-47's requisitions board (P150, merged 2026-10-20) now pays Renown and guild standing for turned-in magic items, the first League economy in main; nothing spends Renown yet (cc-P75 A.1).",
+      "confirmed": "2026-10-20"
     }
   ],
   "tasks_retired": [
@@ -364,6 +355,12 @@
       "title": "Services/PointsSystems",
       "retired": "2026-10-17",
       "why": "covered by the port list (cc-P136, per P92): PointsSystems is Design source (P33 built ours); Vice vs Virtue and City Loyalty are Dropped"
+    },
+    {
+      "id": "P83-DEPLOY",
+      "title": "Deploy sl-play-tests (P83) on port 8093",
+      "retired": "2026-10-20",
+      "why": "done 2026-10-13 (8093 answered the play-test page); since then the Websites tab can move the page to Haven (CHANGELOG 2026.10.14.13), so the row no longer says anything"
     }
   ],
   "upstream_patches": {
