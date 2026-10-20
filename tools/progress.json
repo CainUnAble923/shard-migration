@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-20T15:42:18-05:00",
+  "generated": "2026-10-20T16:03:29-05:00",
   "direction": {
     "eyebrow": "Direction",
     "title": "Our own shard on ModernUO, OSI where OSI has an answer",
@@ -565,10 +565,10 @@
     "confirmed": "2026-09-19"
   },
   "counted": {
-    "customization_files": 1101,
-    "patch_files": 106,
+    "customization_files": 1158,
+    "patch_files": 107,
     "stale_migrations_present": false,
-    "upstream_patch_files": 99,
+    "upstream_patch_files": 100,
     "upstream_replacements": [
       "BaseGuildmaster.cs",
       "BulkMaterialType.cs",
@@ -583,8 +583,8 @@
       "TreasureMap.cs",
       "TreasureMapChest.cs"
     ],
-    "test_files": 174,
-    "test_cases": 1024
+    "test_files": 176,
+    "test_cases": 1034
   },
   "content_progress": [
     {
@@ -606,6 +606,12 @@
       "pct": 79.7
     },
     {
+      "area": "Services/Revamped Dungeons",
+      "total": 150,
+      "done": 62,
+      "pct": 41.3
+    },
+    {
       "area": "Items/Resource",
       "total": 61,
       "done": 40,
@@ -622,12 +628,6 @@
       "total": 28,
       "done": 22,
       "pct": 78.6
-    },
-    {
-      "area": "Services/Revamped Dungeons",
-      "total": 150,
-      "done": 16,
-      "pct": 10.7
     },
     {
       "area": "Services/Expansions",
@@ -758,7 +758,7 @@
     {
       "kind": "direction",
       "item": "direction",
-      "check": "Confirmed 2026-10-13; notes/cc-P146-playtest-decisions-inbox.md (2026-10-18) is newer. Read it; if the direction moved, edit \"direction\" in tools/progress-state.json.",
+      "check": "Confirmed 2026-10-13; notes/cc-P146-playtest-decisions-inbox.md (2026-10-19) is newer. Read it; if the direction moved, edit \"direction\" in tools/progress-state.json.",
       "cmd": [
         "python tools/judge.py confirm direction"
       ]
@@ -848,9 +848,9 @@
           "C2"
         ],
         "candidates": 29,
-        "done": 3,
+        "done": 25,
         "complete": false,
-        "pct": 10.3
+        "pct": 86.2
       },
       {
         "id": "wrong",
@@ -862,9 +862,9 @@
           "C2"
         ],
         "candidates": 26,
-        "done": 2,
-        "complete": false,
-        "pct": 7.7
+        "done": 26,
+        "complete": true,
+        "pct": 100.0
       },
       {
         "id": "exodus",
@@ -996,9 +996,9 @@
           "C5"
         ],
         "candidates": 717,
-        "done": 294,
+        "done": 295,
         "complete": false,
-        "pct": 41.0
+        "pct": 41.1
       },
       {
         "id": "src",
@@ -1010,9 +1010,9 @@
           "S7"
         ],
         "candidates": 178,
-        "done": 4,
+        "done": 5,
         "complete": false,
-        "pct": 2.2
+        "pct": 2.8
       },
       {
         "id": "later",
@@ -1048,16 +1048,16 @@
         "why": "ported with the system that uses them, never on their own; not counted",
         "covers": [],
         "candidates": 361,
-        "done": 15,
+        "done": 16,
         "complete": false,
-        "pct": 4.2
+        "pct": 4.4
       }
     ],
     "tiers": {
       "port": {
         "systems": 16,
         "files": 983,
-        "done": 455,
+        "done": 501,
         "titles": [
           "Bulk orders, all crafts",
           "Treasure maps revamp",
@@ -1082,7 +1082,7 @@
       "ride": {
         "systems": 1,
         "files": 361,
-        "done": 15,
+        "done": 16,
         "titles": [
           "Ride-along: NPCs, quest items, books, internals"
         ],
@@ -1092,7 +1092,7 @@
       "reward": {
         "systems": 1,
         "files": 717,
-        "done": 294,
+        "done": 295,
         "titles": [
           "Reward pool: addons, decorative, store items, artifact remainder, Clean Up rewards"
         ],
@@ -1102,7 +1102,7 @@
       "source": {
         "systems": 1,
         "files": 178,
-        "done": 4,
+        "done": 5,
         "titles": [
           "Design source only, ours replaces"
         ],
@@ -1135,10 +1135,10 @@
     "unassigned_first": [],
     "counted": {
       "systems": 16,
-      "in": 3,
-      "done": 455,
+      "in": 4,
+      "done": 501,
       "total": 983,
-      "pct": 46.3
+      "pct": 51.0
     },
     "next": "Bulk orders, all crafts",
     "decided": [
@@ -1297,7 +1297,7 @@
     "tasks-reviewed": "2026-10-17"
   },
   "derived": {
-    "version": "2026.10.20.3",
+    "version": "2026.10.20.4",
     "playtests": {
       "open": 366,
       "failed": 4,
@@ -1312,11 +1312,6 @@
       "autopilot": "on",
       "running": null,
       "queued": [
-        {
-          "n": 149,
-          "slug": "away-mode-and-email-controls",
-          "state": "queued"
-        },
         {
           "n": 153,
           "slug": "queue-notes-and-package-whats-new",
@@ -1373,11 +1368,6 @@
           "state": "queued"
         },
         {
-          "n": 194,
-          "slug": "port-wrong-and-covetous-void",
-          "state": "queued"
-        },
-        {
           "n": 195,
           "slug": "port-exodus-encounter",
           "state": "queued"
@@ -1398,11 +1388,6 @@
           "state": "queued"
         },
         {
-          "n": 199,
-          "slug": "port-base-items-remainder",
-          "state": "queued"
-        },
-        {
           "n": 207,
           "slug": "golem-card-glow",
           "state": "queued"
@@ -1413,18 +1398,8 @@
           "state": "queued"
         },
         {
-          "n": 211,
-          "slug": "svdungeon-070-assessment",
-          "state": "queued"
-        },
-        {
           "n": 212,
           "slug": "code-intake-batch-1",
-          "state": "queued"
-        },
-        {
-          "n": 213,
-          "slug": "cont-changelog-version-merges",
           "state": "queued"
         },
         {
@@ -1440,6 +1415,21 @@
         {
           "n": 216,
           "slug": "golem-questions-in-console",
+          "state": "queued"
+        },
+        {
+          "n": 218,
+          "slug": "crystal-mage-crafter-scripts",
+          "state": "queued"
+        },
+        {
+          "n": 219,
+          "slug": "tazuo-script-test-harness",
+          "state": "queued"
+        },
+        {
+          "n": 220,
+          "slug": "crystal-status-page-judgments",
           "state": "queued"
         }
       ],
@@ -1469,6 +1459,14 @@
           "notes": "notes/cc-P200-cont-marathon-mode.md"
         },
         {
+          "n": 194,
+          "slug": "port-wrong-and-covetous-void",
+          "state": "stopped",
+          "why": "the harness killed build cycle 7 for low system memory and the standing rule is not to restart it unasked; the port is complete in the tree and cycle 6 ran the suite (1,548 of 1,559 green, the six fixes for the rest applied), but the green gate, the red proof, the image and the headless boot are still to run (section 9).",
+          "date": "2026-10-20",
+          "notes": "notes/cc-P194-port-wrong-and-covetous-void.md"
+        },
+        {
           "n": 187,
           "slug": "cont-web-console-parity",
           "state": "done",
@@ -1481,7 +1479,7 @@
           "slug": "cont-golem-join-kit",
           "state": "done",
           "why": "",
-          "date": "2026-10-19",
+          "date": "2026-10-20",
           "notes": "notes/cc-P186-cont-golem-join-kit.md"
         },
         {
@@ -1513,21 +1511,13 @@
           "slug": "cont-artificers-unravel-container",
           "state": "done",
           "why": "",
-          "date": "2026-10-18",
+          "date": "2026-10-19",
           "notes": "notes/cc-P176-cont-artificers-unravel-container.md"
-        },
-        {
-          "n": 175,
-          "slug": "cont-clean-up-britannia-finish",
-          "state": "done",
-          "why": "",
-          "date": "2026-10-18",
-          "notes": "notes/cc-P175-cont-clean-up-britannia-finish.md"
         }
       ],
-      "finished_total": 123,
+      "finished_total": 124,
       "done_total": 120,
-      "stopped_total": 3,
+      "stopped_total": 4,
       "latest_done": {
         "n": 203,
         "slug": "cont-fixup-requisitions-and-leads",

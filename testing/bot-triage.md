@@ -1074,3 +1074,17 @@ Added by cc-P187 (2026-10-20).
 | P187-12 | EYES | Websites and art requests on a phone |
 | P187-13 | EYES | The Shard Console's window on the game PC |
 | P187-14 | DECISION | Which actions stay PC only or dangerous is Chase's |
+
+### P194
+
+Added by cc-P194 (2026-10-20).
+
+| id | bucket | reason |
+|---|---|---|
+| P194-1 | BOT-PARTIAL | The locked-door message, the relock and the cell teleport are server text and a position; whether the maze walls appear and vanish as you walk is Chase's |
+| P194-2 | BOT-PARTIAL | The bedroll messages, the tunnel move, the quest offer and the gold are server text and items; the trap effects are Chase's |
+| P194-3 | BOT | Hit points per tick, the two curse messages, the hue change, the cauldron and the maggots are all server-sent |
+| P194-4 | BOT | The context entry, the gump text, the battle messages, the points message and the corpse refusal are all server-sent |
+| P194-5 | EYES | Cora's cracks, teleport and breath are effects on screen |
+| P194-6 | BOT-PARTIAL | The gump rows, the ingot swap and the forge placement are the bot's; the artifacts' looks are Chase's |
+| P194-7 | CC | A headless boot of the image on a scratch world, done by the prompt |
