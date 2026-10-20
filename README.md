@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.20. Golem on, 24 queued, latest done P187. Play tests: 351 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.20. Golem on, 23 queued, latest done P201. Play tests: 351 open, 4 failed, 43 passed.
 
 ### Needs overseer review (2)
 
@@ -229,7 +229,7 @@ Tasks          ███░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 116 prompts done, 3 more stopped early and not counted)
+### Queue (Golem on; 117 prompts done, 3 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -255,8 +255,8 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P198 port-eodon-remainder | queued |  |
 | P199 port-base-items-remainder | queued |  |
 | P200 cont-marathon-mode | queued |  |
-| P201 deployable-traps-design | queued |  |
 | P207 golem-card-glow | queued |  |
+| P201 deployable-traps-design | done | 2026-10-20 |
 | P187 cont-web-console-parity | done | 2026-10-20 |
 | P186 cont-golem-join-kit | done | 2026-10-19 |
 | P184 cont-multi-golem | done | 2026-10-19 |
@@ -266,7 +266,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P175 cont-clean-up-britannia-finish | done | 2026-10-18 |
 | P174 session-closer-fix | done | 2026-10-18 |
 | P173 imbue-all-slayers | done | 2026-10-18 |
-| P171 taming-anger-scales | done | 2026-10-18 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 99 patches, 12 replacements
 
