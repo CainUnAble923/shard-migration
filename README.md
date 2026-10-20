@@ -229,7 +229,7 @@ Tasks          ███░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 127 prompts done, 3 more stopped early and not counted)
+### Queue (Golem on; 127 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -252,6 +252,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P219 tazuo-script-test-harness | queued |  |
 | P221 cont-fixup-port-wrong-and-covetous-void | queued |  |
 | P221 tinker-golem-watchdog | queued |  |
+| P218 crystal-mage-crafter-scripts | stopped: the four design docs (sl-mage-script.md, sl-crafter-script.md, new-legion-script-kickoff.md, legion-scripts-immortal-realms.md) are in the claude.ai Project, which the cloud session cannot reach, and in no repo or Drive folder it can; paste them into a repo and re-queue. | 2026-10-20 |
 | P217 crystal-wiki-catch-up | done | 2026-10-20 |
 | P213 cont-changelog-version-merges | done | 2026-10-20 |
 | P208 cont-shadow-iron-merger | done | 2026-10-20 |
@@ -261,7 +262,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P201 deployable-traps-design | done | 2026-10-20 |
 | P200 cont-marathon-mode | done | 2026-10-20 |
 | P191 cont-earned-skill-gain | done | 2026-10-20 |
-| P187 cont-web-console-parity | done | 2026-10-20 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 100 patches, 12 replacements
 
