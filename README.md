@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.20.2. Golem on, 22 queued, latest done P201. Play tests: 360 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.20.2. Golem on, 23 queued, latest done P201. Play tests: 360 open, 4 failed, 43 passed.
 
 ### Needs overseer review (2)
 
@@ -255,6 +255,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P199 port-base-items-remainder | queued |  |
 | P207 golem-card-glow | queued |  |
 | P208 cont-shadow-iron-merger | queued |  |
+| P209 cont-fixup-port-high-seas-fishing | queued |  |
 | P201 deployable-traps-design | done | 2026-10-20 |
 | P200 cont-marathon-mode | done | 2026-10-20 |
 | P187 cont-web-console-parity | done | 2026-10-20 |
