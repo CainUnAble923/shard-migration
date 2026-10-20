@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.19.4. Golem on, running P185 (cont-rootdeep-round4), 15 queued, latest done P184. Play tests: 350 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.19.5. Golem on, 26 queued, latest done P186. Play tests: 350 open, 4 failed, 43 passed.
 
 ### Needs overseer review (2)
 
@@ -229,13 +229,11 @@ Tasks          ███░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 113 prompts done, 3 more stopped early and not counted)
+### Queue (Golem on; 114 prompts done, 3 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
-| P185 cont-rootdeep-round4 | running | 2026-10-19T13:47:14 |
 | P149 away-mode-and-email-controls | queued |  |
-| P150 requisitions-and-leads | queued |  |
 | P151 guild-halls-survey | queued |  |
 | P153 queue-notes-and-package-whats-new | queued |  |
 | P156 night-shift-batches | queued |  |
@@ -247,8 +245,21 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P172 pet-gain-speed | queued |  |
 | P177 guild-menus-template-mockups | queued |  |
 | P179 league-design-pass | queued |  |
-| P186 cont-golem-join-kit | queued |  |
 | P187 cont-web-console-parity | queued |  |
+| P188 cont-rootdeep-goes-in | queued |  |
+| P189 cont-old-haven-new-player-safe | queued |  |
+| P190 cont-test-crystal | queued |  |
+| P192 cont-fountain-of-youth | queued |  |
+| P193 port-high-seas-fishing | queued |  |
+| P194 port-wrong-and-covetous-void | queued |  |
+| P195 port-exodus-encounter | queued |  |
+| P196 port-blackthorn-dungeon | queued |  |
+| P197 port-underworld-mini-champions | queued |  |
+| P198 port-eodon-remainder | queued |  |
+| P199 port-base-items-remainder | queued |  |
+| P200 cont-marathon-mode | queued |  |
+| P201 deployable-traps-design | queued |  |
+| P186 cont-golem-join-kit | done | 2026-10-19 |
 | P184 cont-multi-golem | done | 2026-10-19 |
 | P183 cont-golem-run-cap-and-stale-usage | done | 2026-10-19 |
 | P182 cont-web-console-phase2 | done | 2026-10-19 |
@@ -258,7 +269,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P173 imbue-all-slayers | done | 2026-10-18 |
 | P171 taming-anger-scales | done | 2026-10-18 |
 | P170 smith-teaching-orders-fix | done | 2026-10-18 |
-| P166 kitsune-fit-west-bald | done | 2026-10-18 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 99 patches, 12 replacements
 
