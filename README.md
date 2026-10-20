@@ -63,12 +63,12 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.20.2. Golem on, 23 queued, latest done P201. Play tests: 360 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.20.2. Golem on, 26 queued, latest done P201. Play tests: 366 open, 4 failed, 43 passed.
 
 ### Needs overseer review (2)
 
 - **direction**: Confirmed 2026-10-13; notes/cc-P146-playtest-decisions-inbox.md (2026-10-18) is newer. Read it; if the direction moved, edit "direction" in tools/progress-state.json. `python tools/judge.py confirm direction`
-- **play tests not sorted**: 27 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
+- **play tests not sorted**: 33 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
 
 ## Port list: 3 of 16 systems in. 455 of 983 files (46%).
 
@@ -239,14 +239,12 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P157 plain-english-emails | queued |  |
 | P158 codex-second-agent | queued |  |
 | P159 codex-lane-second-pc | queued |  |
-| P168 hammer-t3-craft-order | queued |  |
 | P169 requirement-colors | queued |  |
 | P172 pet-gain-speed | queued |  |
 | P177 guild-menus-template-mockups | queued |  |
 | P179 league-design-pass | queued |  |
 | P188 cont-rootdeep-goes-in | queued |  |
 | P189 cont-old-haven-new-player-safe | queued |  |
-| P190 cont-test-crystal | queued |  |
 | P192 cont-fountain-of-youth | queued |  |
 | P195 port-exodus-encounter | queued |  |
 | P196 port-blackthorn-dungeon | queued |  |
@@ -256,6 +254,11 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P207 golem-card-glow | queued |  |
 | P208 cont-shadow-iron-merger | queued |  |
 | P209 cont-fixup-port-high-seas-fishing | queued |  |
+| P211 svdungeon-070-assessment | queued |  |
+| P212 code-intake-batch-1 | queued |  |
+| P213 cont-changelog-version-merges | queued |  |
+| P214 tool-trials | queued |  |
+| P215 golem-test-accounts | queued |  |
 | P201 deployable-traps-design | done | 2026-10-20 |
 | P200 cont-marathon-mode | done | 2026-10-20 |
 | P187 cont-web-console-parity | done | 2026-10-20 |
