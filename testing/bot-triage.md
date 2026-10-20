@@ -1053,3 +1053,17 @@ Added by cc-P182 (2026-10-19).
 | P182-4 | EYES | Needs a real STOPPED prompt and the Shard Console on the game PC |
 | P182-5 | DECISION | Generating and approving art is Chase's choice in the Art tab |
 | P182-6 | DECISION | A tailnet access-control change is Chase's |
+
+### P193
+
+Added by cc-P193 (2026-10-20).
+
+| id | bucket | reason |
+|---|---|---|
+| P193-1 | BOT-PARTIAL | The catch clilocs (1043297 with a fish label) and the carve are server-sent; that the fish look right is Chase's eyes |
+| P193-2 | EYES | Deep water needs a boat and a dungeon needs a walk the bot does not make; the rare fish's tooltip is Chase's eyes |
+| P193-3 | BOT | The buoy's item id, the bob overhead message, the skill packets and the trap's contents are all server-sent |
+| P193-4 | BOT-PARTIAL | The deed, its clilocs and the addon's components are server-sent; the hung trophy's look is Chase's eyes |
+| P193-5 | EYES | Staff-placed champions on a boat; the fight is Chase's eyes |
+| P193-6 | BOT-PARTIAL | The set bonus packets are server-sent; the bait bonus has nothing to bite until baits land |
+| P193-7 | CC | The test world loads and saves on the new image: done by CC on a scratch copy |
