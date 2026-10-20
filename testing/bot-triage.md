@@ -1082,3 +1082,17 @@ Added by cc-P187 (2026-10-20).
 | P187-12 | EYES | Websites and art requests on a phone |
 | P187-13 | EYES | The Shard Console's window on the game PC |
 | P187-14 | DECISION | Which actions stay PC only or dangerous is Chase's |
+
+### P193
+
+Added by cc-P193 (2026-10-20).
+
+| id | bucket | reason |
+|---|---|---|
+| P193-1 | BOT-PARTIAL | The catch clilocs (1043297 with a fish label) and the carve are server-sent; that the fish look right is Chase's eyes |
+| P193-2 | EYES | Deep water needs a boat and a dungeon needs a walk the bot does not make; the rare fish's tooltip is Chase's eyes |
+| P193-3 | BOT | The buoy's item id, the bob overhead message, the skill packets and the trap's contents are all server-sent |
+| P193-4 | BOT-PARTIAL | The deed, its clilocs and the addon's components are server-sent; the hung trophy's look is Chase's eyes |
+| P193-5 | EYES | Staff-placed champions on a boat; the fight is Chase's eyes |
+| P193-6 | BOT-PARTIAL | The set bonus packets are server-sent; the bait bonus has nothing to bite until baits land |
+| P193-7 | CC | The test world loads and saves on the new image: done by CC on a scratch copy |

@@ -2622,6 +2622,70 @@
     "Read the PC only list and the dangerous list; say if any should move"
    ],
    "pass": "Kept as is, or a short list of changes for a follow-up."
+  },
+  "P193-1": {
+   "where": "Test shard, a fisher with Fishing 60 and a pole, on a dock or beach (Trammel, `[go 3450 2560 2` by the New Haven docks)",
+   "do": [
+    "Fish for a few minutes",
+    "Carve a named fish with a knife"
+   ],
+   "pass": "Beside the usual fish you pull up named shore fish (a yellow perch, a walleye, a brook trout) announced as \"You pull out an item: a brook trout\"; each is four stones and carves into four raw fish steaks.",
+   "check": "Not built yet: the bot would fish from the dock, read cliloc 1043297 with a High Seas label, and carve one."
+  },
+  "P193-2": {
+   "where": "Test shard, Fishing 85 on a boat at sea, then Fishing 106 in a dungeon's water; `[add BlueMarlin` and `[add VoidLobster`",
+   "do": [
+    "Fish deep water (25 tiles of deep water around) and dungeon water",
+    "Look at the added rare fish"
+   ],
+   "pass": "Deep water adds ocean fish (mahi mahi, amberjack, yellowfin tuna), dungeon water dungeon fish (demon trout, orc bass); the added rare fish is hued, one catch, weighed, with \"Caught by\" and a date on its tooltip.",
+   "check": "Chase's eyes: the bot has no boat."
+  },
+  "P193-3": {
+   "where": "Test shard, any water; `[add LobsterTrap`",
+   "do": [
+    "Double-click the trap and target water within six tiles",
+    "Wait a few minutes",
+    "Double-click the buoy",
+    "Double-click the trap in your pack"
+   ],
+   "pass": "The trap becomes a buoy that says **bob** once a minute and raises Fishing; double-clicking the buoy returns it with crabs and lobsters inside; double-clicking it in the pack dumps them; a trap left out is pulled under within about twenty minutes.",
+   "check": "Not built yet: the bot would deploy a trap, read the buoy id (17611), the bob message (1116364) and the skill packets, then pull it."
+  },
+  "P193-4": {
+   "where": "Test shard, Carpentry 90, in your house; `[add TaxidermyKit`, ten boards, `[add BlackMarlin` with Weight 150 set in `[props`",
+   "do": [
+    "Double-click the kit and target the marlin",
+    "Double-click the deed facing a wall",
+    "Chop the trophy"
+   ],
+   "pass": "A Black Marlin Trophy deed; hung, a three-piece marlin on the wall hued dark blue showing 150 stones and Caught by; chopping it gives the deed back.",
+   "check": "Not built yet: the bot would read the deed cliloc (1116133), the addon's three components and the chop."
+  },
+  "P193-5": {
+   "where": "Test shard, staff on a boat at sea; `[add Charydbis`, later `[add Osiredon`",
+   "do": [
+    "Fight each",
+    "`[kill` it and open the corpse"
+   ],
+   "pass": "Charybdis raises tentacles, hides and strikes the boat's crew with lightning every minute, and sends a wave that shoves the boat; Osiredon throws water balls that dismount, bursts fire and spawns eels when cast at; the corpse holds fish steaks, a message in a bottle, nets and a pole, and now and then an artifact goes to a damager.",
+   "check": "Chase's eyes: the bot has no boat and does not fight bosses."
+  },
+  "P193-6": {
+   "where": "Test shard; `[add FishermansHat`, `[add FishermansVest`, `[add FishermansEelskinGloves`, `[add FishermansTrousers`",
+   "do": [
+    "Wear all four"
+   ],
+   "pass": "The set bonus lights on each piece; the bait bonus has nothing to bite until baits land.",
+   "check": "Not built yet: the bot would wear the four and read the set packets."
+  },
+  "P193-7": {
+   "where": "CC, a scratch copy of the test world on the new image",
+   "do": [
+    "Boot, save, restart"
+   ],
+   "pass": "Loading world done twice, no new exceptions.",
+   "check": "Done by CC; see the notes."
   }
  }
 }

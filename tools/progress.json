@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-20T17:30:24-05:00",
+  "generated": "2026-10-20T17:33:50-05:00",
   "direction": {
     "eyebrow": "Direction",
     "title": "Our own shard on ModernUO, OSI where OSI has an answer",
@@ -565,10 +565,10 @@
     "confirmed": "2026-09-19"
   },
   "counted": {
-    "customization_files": 1103,
-    "patch_files": 107,
+    "customization_files": 1127,
+    "patch_files": 109,
     "stale_migrations_present": false,
-    "upstream_patch_files": 100,
+    "upstream_patch_files": 102,
     "upstream_replacements": [
       "BaseGuildmaster.cs",
       "BulkMaterialType.cs",
@@ -583,8 +583,8 @@
       "TreasureMap.cs",
       "TreasureMapChest.cs"
     ],
-    "test_files": 177,
-    "test_cases": 1045
+    "test_files": 178,
+    "test_cases": 1054
   },
   "content_progress": [
     {
@@ -612,6 +612,12 @@
       "pct": 65.6
     },
     {
+      "area": "Services/Expansions",
+      "total": 175,
+      "done": 36,
+      "pct": 20.6
+    },
+    {
       "area": "Items/Consumables",
       "total": 59,
       "done": 36,
@@ -628,12 +634,6 @@
       "total": 150,
       "done": 16,
       "pct": 10.7
-    },
-    {
-      "area": "Services/Expansions",
-      "total": 175,
-      "done": 13,
-      "pct": 7.4
     },
     {
       "area": "Items/Quest",
@@ -779,7 +779,7 @@
     {
       "kind": "play tests",
       "item": "not sorted",
-      "check": "44 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check.",
+      "check": "45 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check.",
       "cmd": [
         "python -m unittest tools/tests/test_play_who.py"
       ]
@@ -955,9 +955,9 @@
           "C3"
         ],
         "candidates": 59,
-        "done": 4,
+        "done": 27,
         "complete": false,
-        "pct": 6.8
+        "pct": 45.8
       },
       {
         "id": "crafting",
@@ -1070,7 +1070,7 @@
       "port": {
         "systems": 16,
         "files": 983,
-        "done": 455,
+        "done": 478,
         "titles": [
           "Bulk orders, all crafts",
           "Treasure maps revamp",
@@ -1149,9 +1149,9 @@
     "counted": {
       "systems": 16,
       "in": 3,
-      "done": 455,
+      "done": 478,
       "total": 983,
-      "pct": 46.3
+      "pct": 48.6
     },
     "next": "Bulk orders, all crafts",
     "decided": [
@@ -1307,16 +1307,16 @@
     "tasks-reviewed": "2026-10-20"
   },
   "derived": {
-    "version": "2026.10.20.8",
+    "version": "2026.10.20.9",
     "playtests": {
-      "open": 378,
+      "open": 379,
       "failed": 4,
       "passed": 43,
       "later": 8,
       "blocked": 1,
-      "total": 425,
+      "total": 426,
       "unloggedFails": 3,
-      "generatedAt": "2026-10-20T22:14:52Z"
+      "generatedAt": "2026-10-20T22:30:54Z"
     },
     "queue": {
       "autopilot": "on",
@@ -1431,6 +1431,11 @@
           "n": 225,
           "slug": "cont-fixup-cont-test-crystal",
           "state": "queued"
+        },
+        {
+          "n": 226,
+          "slug": "arms-lore-matters",
+          "state": "queued"
         }
       ],
       "finished": [
@@ -1465,6 +1470,14 @@
           "why": "",
           "date": "2026-10-20",
           "notes": "notes/cc-P213-cont-changelog-version-merges.md"
+        },
+        {
+          "n": 209,
+          "slug": "cont-fixup-port-high-seas-fishing",
+          "state": "done",
+          "why": "",
+          "date": "2026-10-20",
+          "notes": "notes/cc-P209-cont-fixup-port-high-seas-fishing.md"
         },
         {
           "n": 208,
@@ -1505,18 +1518,10 @@
           "why": "",
           "date": "2026-10-20",
           "notes": "notes/cc-P201-deployable-traps-design.md"
-        },
-        {
-          "n": 200,
-          "slug": "cont-marathon-mode",
-          "state": "done",
-          "why": "",
-          "date": "2026-10-20",
-          "notes": "notes/cc-P200-cont-marathon-mode.md"
         }
       ],
-      "finished_total": 135,
-      "done_total": 131,
+      "finished_total": 137,
+      "done_total": 133,
       "stopped_total": 4,
       "latest_done": {
         "n": 220,
