@@ -2407,6 +2407,16 @@
    "pass": "Most tries start the taming; only about 1 in 7 (15%, so roughly 2 to 6 of 20) angers the beast, where before it was nearly every try.",
    "check": "Not built yet: a 200 tamer uses Animal Taming on a spawned Dread Warhorse 20 times and counts the 502805 (anger) and 1010597 (start) messages; result in the nightly report once built."
   },
+  "P172-1": {
+   "where": "Test shard rebuilt with cc-P172, two characters side by side, each with a freshly tamed Grey Wolf: a fresh tamer (Animal Taming and Lore at 100 or less, not in the Rangers' League) and a master (200.0 Animal Taming and Lore, joined the Rangers' League, then `[GuildStanding rangers 150000` on them)",
+   "do": [
+    "Use Animal Lore on each wolf and turn to the Combat Ratings page",
+    "`[set` both wolves' Wrestling to 50, then let each fight the same weak creatures for 10 minutes",
+    "Use Animal Lore again and compare the two wolves' Wrestling"
+   ],
+   "pass": "The fresh tamer's wolf shows \"Learns x1.0\" and the master's \"Learns x2.4\" (x3.0 once loops exist); after the same fights the master's wolf has gained clearly more Wrestling, about two to three times as much.",
+   "check": "Not built yet: two bot characters lore their wolves (gump text \"Learns x\"), fight the same spawns for 10 minutes and compare the Wrestling values the server sends; result in the nightly report once built."
+  },
   "P173-1": {
    "where": "Test shard rebuilt with cc-P173, an Artificers' Order member at an Imbuing Table, with a War Axe that has Snow Elemental Slayer (`[add WarAxe`, then `[set Slayer SummerWind` on it) and a second plain weapon",
    "do": [
