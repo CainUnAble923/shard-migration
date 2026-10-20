@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.20.5. Golem on, 19 queued, latest done P213. Play tests: 373 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.20.6. Golem on, 19 queued, latest done P217. Play tests: 373 open, 4 failed, 43 passed.
 
 ### Needs overseer review (2)
 
@@ -229,7 +229,7 @@ Tasks          ███░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 126 prompts done, 3 more stopped early and not counted)
+### Queue (Golem on; 127 prompts done, 3 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -252,6 +252,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P219 tazuo-script-test-harness | queued |  |
 | P221 cont-fixup-port-wrong-and-covetous-void | queued |  |
 | P221 tinker-golem-watchdog | queued |  |
+| P217 crystal-wiki-catch-up | done | 2026-10-20 |
 | P213 cont-changelog-version-merges | done | 2026-10-20 |
 | P208 cont-shadow-iron-merger | done | 2026-10-20 |
 | P204 cont-fixup-cont-fixup-cont-earned-skill-gain | done | 2026-10-20 |
@@ -261,7 +262,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P200 cont-marathon-mode | done | 2026-10-20 |
 | P191 cont-earned-skill-gain | done | 2026-10-20 |
 | P187 cont-web-console-parity | done | 2026-10-20 |
-| P186 cont-golem-join-kit | done | 2026-10-19 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 100 patches, 12 replacements
 
