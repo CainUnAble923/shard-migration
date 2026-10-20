@@ -63,14 +63,14 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.20.9. Golem on, 23 queued, latest done P220. Play tests: 379 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.20.9. Golem on, 35 queued, latest done P220. Play tests: 381 open, 4 failed, 43 passed.
 
 ### Needs overseer review (4)
 
 - **gate The player package installs on a clean PC**: Waits on a confirmation: Chase: which package is published on get.shatteredlegacyuo.com, and has the package that ships our TazUO build passed a clean-PC install? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "The player package installs on a clean PC" --done no --detail "..."` or `python tools/judge.py confirm gate "The player package installs on a clean PC"`
 - **gate What is built is seen in a client, not only compiled**: Waits on a confirmation: Chase: is the test shard on a build that carries P203 and P204 (version 2026.10.20.x), and which play tests ran after 2026-10-18? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "What is built is seen in a client, not only compiled" --done yes --detail "..."` or `python tools/judge.py confirm gate "What is built is seen in a client, not only compiled"`
 - **task DEPLOY**: Deploy main to the test shard and run its play tests: waits on a confirmation: Chase: which build is on the test shard today? `python tools/judge.py task DEPLOY --status todo|in-progress|blocked|done --note "..."` or `python tools/judge.py confirm task DEPLOY`
-- **play tests not sorted**: 45 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
+- **play tests not sorted**: 47 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
 
 ## Port list: 3 of 16 systems in. 478 of 983 files (49%).
 
@@ -230,7 +230,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 133 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 134 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -238,35 +238,47 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P157 plain-english-emails | queued |  |
 | P158 codex-second-agent | queued |  |
 | P159 codex-lane-second-pc | queued |  |
-| P168 hammer-t3-craft-order | queued |  |
-| P169 requirement-colors | queued |  |
 | P177 guild-menus-template-mockups | queued |  |
 | P195 port-exodus-encounter | queued |  |
 | P196 port-blackthorn-dungeon | queued |  |
 | P197 port-underworld-mini-champions | queued |  |
 | P198 port-eodon-remainder | queued |  |
 | P207 golem-card-glow | queued |  |
-| P211 svdungeon-070-assessment | queued |  |
 | P212 code-intake-batch-1 | queued |  |
 | P215 golem-test-accounts | queued |  |
 | P216 golem-questions-in-console | queued |  |
 | P219 tazuo-script-test-harness | queued |  |
 | P221 cont-fixup-port-wrong-and-covetous-void | queued |  |
-| P222 tinker-golem-watchdog | queued |  |
 | P223 playtest-bot-checks-first | queued |  |
 | P224 playtest-bot-checks-second | queued |  |
 | P225 cont-fixup-cont-test-crystal | queued |  |
 | P226 arms-lore-matters | queued |  |
+| P227 extended-wood-bonuses | queued |  |
+| P228 exceptional-material-gap | queued |  |
+| P229 league-reward-shop | queued |  |
+| P230 staff-hub-events-tab | queued |  |
+| P231 osi-joke-achievements | queued |  |
+| P232 pkcs-pin-drop-audit-flag | queued |  |
+| P233 props-ability-profile | queued |  |
+| P234 dismount-sources-design | queued |  |
+| P235 work-order-numbers-pass | queued |  |
+| P236 satchel-icons-ship | queued |  |
+| P237 new-haven-community-art | queued |  |
+| P238 climbing-boots | queued |  |
+| P239 creature-levels-appraisal | queued |  |
+| P240 fog-of-war-client-half | queued |  |
+| P241 achievement-category-icons | queued |  |
+| P242 loot-box-flying-loot | queued |  |
 | P220 crystal-status-page-judgments | done | 2026-10-20 |
 | P218 crystal-mage-crafter-scripts | stopped: the four design docs (sl-mage-script.md, sl-crafter-script.md, new-legion-script-kickoff.md, legion-scripts-immortal-realms.md) are in the claude.ai Project, which the cloud session cannot reach, and in no repo or Drive folder it can; paste them into a repo and re-queue. | 2026-10-20 |
 | P217 crystal-wiki-catch-up | done | 2026-10-20 |
+| P214 tool-trials | done | 2026-10-20 |
 | P213 cont-changelog-version-merges | done | 2026-10-20 |
 | P209 cont-fixup-port-high-seas-fishing | done | 2026-10-20 |
 | P208 cont-shadow-iron-merger | done | 2026-10-20 |
 | P204 cont-fixup-cont-fixup-cont-earned-skill-gain | done | 2026-10-20 |
 | P203 cont-fixup-requisitions-and-leads | done | 2026-10-20 |
 | P202 cont-fixup-cont-earned-skill-gain | done | 2026-10-20 |
-| P201 deployable-traps-design | done | 2026-10-20 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 102 patches, 12 replacements
 
