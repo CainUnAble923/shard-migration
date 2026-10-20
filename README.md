@@ -240,25 +240,25 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P158 codex-second-agent | queued |  |
 | P159 codex-lane-second-pc | queued |  |
 | P169 requirement-colors | queued |  |
-| P172 pet-gain-speed | queued |  |
 | P177 guild-menus-template-mockups | queued |  |
 | P179 league-design-pass | queued |  |
 | P188 cont-rootdeep-goes-in | queued |  |
 | P189 cont-old-haven-new-player-safe | queued |  |
 | P192 cont-fountain-of-youth | queued |  |
+| P194 port-wrong-and-covetous-void | queued |  |
 | P195 port-exodus-encounter | queued |  |
 | P196 port-blackthorn-dungeon | queued |  |
 | P197 port-underworld-mini-champions | queued |  |
 | P198 port-eodon-remainder | queued |  |
 | P199 port-base-items-remainder | queued |  |
 | P207 golem-card-glow | queued |  |
-| P208 cont-shadow-iron-merger | queued |  |
 | P209 cont-fixup-port-high-seas-fishing | queued |  |
 | P211 svdungeon-070-assessment | queued |  |
 | P212 code-intake-batch-1 | queued |  |
 | P213 cont-changelog-version-merges | queued |  |
 | P214 tool-trials | queued |  |
 | P215 golem-test-accounts | queued |  |
+| P216 golem-questions-in-console | queued |  |
 | P201 deployable-traps-design | done | 2026-10-20 |
 | P200 cont-marathon-mode | done | 2026-10-20 |
 | P187 cont-web-console-parity | done | 2026-10-20 |
