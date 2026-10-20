@@ -1053,3 +1053,24 @@ Added by cc-P182 (2026-10-19).
 | P182-4 | EYES | Needs a real STOPPED prompt and the Shard Console on the game PC |
 | P182-5 | DECISION | Generating and approving art is Chase's choice in the Art tab |
 | P182-6 | DECISION | A tailnet access-control change is Chase's |
+
+### P187
+
+Added by cc-P187 (2026-10-20).
+
+| id | bucket | reason |
+|---|---|---|
+| P187-1 | DEPLOY | Restarting the web console is a step on the game PC, not in the game |
+| P187-2 | EYES | The test shard from a phone over the tailnet: Chase's phone and judgement |
+| P187-3 | EYES | A real restart of the test shard from the phone |
+| P187-4 | EYES | The question page on a phone |
+| P187-5 | EYES | Creating and deleting a snapshot from the phone through the second confirm |
+| P187-6 | EYES | The phone's clipboard |
+| P187-7 | EYES | The art checks from the phone |
+| P187-8 | EYES | Diagnostics from the phone |
+| P187-9 | DECISION | Committing is Chase's choice |
+| P187-10 | DECISION | Publishing a player package is Chase's choice |
+| P187-11 | EYES | The Golem picker and Assign on the real queue |
+| P187-12 | EYES | Websites and art requests on a phone |
+| P187-13 | EYES | The Shard Console's window on the game PC |
+| P187-14 | DECISION | Which actions stay PC only or dangerous is Chase's |

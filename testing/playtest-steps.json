@@ -2502,6 +2502,116 @@
     "Decide whether to restrict tag:uoconsole to port 443 in the tailnet access controls"
    ],
    "pass": "Kept as is, or the ACL line added."
+  },
+  "P187-1": {
+   "where": "PowerShell on the game PC",
+   "do": [
+    "`powershell -NoProfile -ExecutionPolicy Bypass -File D:\\ShatteredLegacy\\web-console\\Install-WebConsole.ps1 -Tailscale -DryRun`, then the same line without -DryRun"
+   ],
+   "pass": "It restarts the web console; https://uoconsole.tail81098d.ts.net/#console on your phone shows thirteen page tiles."
+  },
+  "P187-2": {
+   "where": "Your phone: https://uoconsole.tail81098d.ts.net/#console > Test shard",
+   "do": [
+    "Tap Deploy built image with no image picked: it says to pick one",
+    "Tap Start: read the plan, Run (the test shard starts); the job card shows each line and ends `test.start: done.`"
+   ],
+   "pass": "The plan is shown before Run; the output streams; Wipe test accounts and Open a client are greyed with PC only and the reason."
+  },
+  "P187-3": {
+   "where": "Your phone: Console > Fix test shard",
+   "do": [
+    "Tap Diagnose (it runs at once)",
+    "Tap Restart: read the plan, type `restart test`, Run"
+   ],
+   "pass": "Diagnose prints its findings; Restart asks the console's own phrase and ends `fix.restart: done.`; the Golem sign-up sheet shows test-shard held by Chase while it runs."
+  },
+  "P187-4": {
+   "where": "Your phone: Console > Shard question",
+   "do": [
+    "Pick Test shard, then LIVE shard",
+    "Tap Show the question"
+   ],
+   "pass": "The question text changes with the shard; answers it does not take are greyed; on LIVE everything is greyed (live is retired)."
+  },
+  "P187-5": {
+   "where": "Your phone: Console > Snapshots",
+   "do": [
+    "Type a name, tap Create named snapshot, Run",
+    "Tap the new snapshot in the list, tap Delete selected"
+   ],
+   "pass": "Create runs after its plan; Delete shows a second red screen naming the snapshot, and only Yes deletes it."
+  },
+  "P187-6": {
+   "where": "Your phone: Console > World setup",
+   "do": [
+    "Tap Copy on any command, paste it into a note"
+   ],
+   "pass": "Every group and command of the console's World setup tab is there; Copy puts the command on the phone's clipboard."
+  },
+  "P187-7": {
+   "where": "Your phone: Console > Map and Art",
+   "do": [
+    "Tap Check the art registry",
+    "Tap [Walkable"
+   ],
+   "pass": "The registry check prints validate-art.py's report; [Walkable prints the in-game command's syntax."
+  },
+  "P187-8": {
+   "where": "Your phone: Console > Diagnostics, then Logs",
+   "do": [
+    "Tap Check Docker",
+    "Logs > The newest diagnostic"
+   ],
+   "pass": "Check Docker streams; the newest diagnostic file shows under Logs."
+  },
+  "P187-9": {
+   "where": "Your phone: Console > Commit",
+   "do": [
+    "Tap Preview commit",
+    "Tap Commit and push only when you mean it: type `commit shard work`, Next, read the red screen, Yes"
+   ],
+   "pass": "Preview changes nothing; Commit asks the phrase and then the second confirm before anything runs."
+  },
+  "P187-10": {
+   "where": "Your phone: Console > Player package",
+   "do": [
+    "Tap a zip, tap Check selected",
+    "When a package should go out: tap it, Publish selected, type `publish player package`, Next, Yes"
+   ],
+   "pass": "Check prints the gates; Publish names the zip on the red screen, the publish script's own Type yes is answered by Yes, and the result is the console's line."
+  },
+  "P187-11": {
+   "where": "Your phone: https://uoconsole.tail81098d.ts.net/#golem",
+   "do": [
+    "Pick Bronze in Pick the Golem",
+    "Tap Wake: the model shows Fable; the word is `wake bronze`",
+    "Tap Assign: pick a queued prompt, Give it to Bronze, Run it next Yes, type `P<nn> on bronze`, Run"
+   ],
+   "pass": "Only the buttons any Golem has show for Bronze; the prompt gets `**Golem:** Bronze` (or the refusal says which lane, area or Touches stops it)."
+  },
+  "P187-12": {
+   "where": "Your phone: Console > Websites, then Art",
+   "do": [
+    "Websites: tap a site, open it from its row, tap Logs",
+    "Art: tap a request with a picture, tap Show the prompt for ChatGPT"
+   ],
+   "pass": "Sites open on the phone; the logs print; art requests show their pictures and the prompt text prints."
+  },
+  "P187-13": {
+   "where": "The Shard Console on the game PC, Golem tab",
+   "do": [
+    "Pick Bronze in the Golem box: Model switches to Fable",
+    "Pick a queued row, tick and run it next, Assign picked row to this Golem, type `P<nn> on bronze`"
+   ],
+   "pass": "The same picker and Assign as the web console; Poke for Bronze runs Poke-Golem.ps1 -Golem Bronze."
+  },
+  "P187-14": {
+   "where": "notes/cc-P187 notes, Deviations and decisions",
+   "do": [
+    "Read the PC only list and the dangerous list; say if any should move"
+   ],
+   "pass": "Kept as is, or a short list of changes for a follow-up."
   }
  }
 }
