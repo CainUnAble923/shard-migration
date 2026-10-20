@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-13. Shard version 2026.10.20. Golem on, 25 queued, latest done P187. Play tests: 351 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-13. Shard version 2026.10.20. Golem on, 24 queued, latest done P187. Play tests: 351 open, 4 failed, 43 passed.
 
 ### Needs overseer review (2)
 
@@ -229,12 +229,11 @@ Tasks          ███░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 115 prompts done, 3 more stopped early and not counted)
+### Queue (Golem on; 116 prompts done, 3 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
 | P149 away-mode-and-email-controls | queued |  |
-| P151 guild-halls-survey | queued |  |
 | P153 queue-notes-and-package-whats-new | queued |  |
 | P156 night-shift-batches | queued |  |
 | P157 plain-english-emails | queued |  |
