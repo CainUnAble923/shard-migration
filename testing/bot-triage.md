@@ -1015,6 +1015,14 @@ Added by cc-P171 (2026-10-18).
 |---|---|---|
 | P171-1 | BOT | The anger and start messages (502805, 1010597) are what the server sends; the bot can tame a Dread Warhorse at 200 and count them |
 
+### P172
+
+Added by cc-P172 (2026-10-20).
+
+| id | bucket | reason |
+|---|---|---|
+| P172-1 | BOT | The "Learns x..." line is gump text and the pets' Wrestling is a skill value the server sends; the bot can lore two pets and count their gains over the same fights |
+
 ### P173
 
 Added by cc-P173 (2026-10-18).
