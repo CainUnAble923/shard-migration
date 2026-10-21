@@ -63,21 +63,21 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.21.11. Golem on, 27 queued, latest done P357. Play tests: 464 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.21.11. Golem on, 25 queued, latest done P357. Play tests: 465 open, 4 failed, 43 passed.
 
 ### Needs overseer review (4)
 
 - **gate The player package installs on a clean PC**: Waits on a confirmation: Chase: which package is published on get.shatteredlegacyuo.com, and has the package that ships our TazUO build passed a clean-PC install? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "The player package installs on a clean PC" --done no --detail "..."` or `python tools/judge.py confirm gate "The player package installs on a clean PC"`
 - **gate What is built is seen in a client, not only compiled**: Waits on a confirmation: Chase: is the test shard on a build that carries P203 and P204 (version 2026.10.20.x), and which play tests ran after 2026-10-18? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "What is built is seen in a client, not only compiled" --done yes --detail "..."` or `python tools/judge.py confirm gate "What is built is seen in a client, not only compiled"`
 - **task DEPLOY**: Deploy main to the test shard and run its play tests: waits on a confirmation: Chase: which build is on the test shard today? `python tools/judge.py task DEPLOY --status todo|in-progress|blocked|done --note "..."` or `python tools/judge.py confirm task DEPLOY`
-- **play tests not sorted**: 117 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
+- **play tests not sorted**: 118 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
 
-## Port list: 5 of 16 systems in. 760 of 983 files (77%).
+## Port list: 6 of 16 systems in. 797 of 983 files (81%).
 
 **Next to land: Bulk orders, all crafts.** A faithful port comes first, our feature customizations after it; work already started or already requested is still finished (Chase, 2026-10-13).
 
 ```
-Port list █████████████████░░░░░  760/983   77.3%
+Port list ██████████████████░░░░  797/983   81.1%
 Setup     ██████████████████████  7/7     blocking defects resolved
 ```
 
@@ -90,7 +90,7 @@ Setup     ██████████████████████  7/
 | Blackthorn Dungeon (revamped) | 138 / 147 | `███████████░` | gate: somewhere to go; F-24, F-32 |
 | Covetous Void Spawn | 25 / 29 | `██████████░░` | gate: somewhere to go; F-24, F-32 |
 | Wrong (revamped) (in) | 26 / 26 | `████████████` | gate: somewhere to go; F-24, F-32 |
-| The Exodus Encounter | 1 / 38 | `█░░░░░░░░░░░` | gate: somewhere to go; F-40 boss boxes |
+| The Exodus Encounter (in) | 38 / 38 | `████████████` | gate: somewhere to go; F-40 boss boxes |
 | Underworld (Stygian Abyss) + mini champions (in) | 27 / 27 | `████████████` | gate: somewhere to go; F-24 culling |
 | Creatures: Mobiles/Normal remainder, bosses, Void creatures, AI | 138 / 193 | `█████████░░░` | gate: things to fight; F-24, F-40, F-42 |
 | Pet Training (OSI animal training) | 10 / 11 | `███████████░` | F-35 evo pets, companions, Animal Lore to 200 |
@@ -100,7 +100,7 @@ Setup     ██████████████████████  7/
 | Food, drink and potions | 36 / 44 | `██████████░░` | F-43; Alembic, Cooking designs |
 | Base items: resources, equipment, containers, tools, functional | 250 / 298 | `██████████░░` | everything above |
 
-Not counted: ride 361 files (18 in); reward 717 files (296 in); source 178 files (6 in); later 307 files (15 in); drop 304 files (8 in). Every candidate belongs to a system. _Counted by filename stem (not behavior) against `server/customizations`; the list itself is `tools/port-list.json`, kept by hand._
+Not counted: ride 361 files (18 in); reward 717 files (297 in); source 178 files (6 in); later 307 files (15 in); drop 304 files (8 in). Every candidate belongs to a system. _Counted by filename stem (not behavior) against `server/customizations`; the list itself is `tools/port-list.json`, kept by hand._
 
 ### Playable? **Not yet: 2 of 11 gates met.** The next one to fall is *A new character can train without hitting a wall*.
 
@@ -132,15 +132,15 @@ Not counted: ride 361 files (18 in); reward 717 files (296 in); source 178 files
 
 **Patches:** 16 total, **0 currently failing to apply**, 8 triaged, 3 found obsolete. `apply-patches.sh` fails the build on a failed patch, so a green build means every patch applied.
 
-### Every ServUO file ModernUO lacks, by area (not a target): 860 of 2,045 (42.1%)
+### Every ServUO file ModernUO lacks, by area (not a target): 898 of 2,045 (43.9%)
 
 ```
-TOTAL                          ████████░░░░░░░░░░  860/2045   42.1%
+TOTAL                          ████████░░░░░░░░░░  898/2045   43.9%
 
 Items/Artifacts                ████████████████░░  283/325    87.1%
+Services/Revamped Dungeons     █████████████████░  143/150    95.3%
 Items/Equipment                ███████████████░░░  127/148    85.8%
 Mobiles/Normal                 ██████████████░░░░  110/138    79.7%
-Services/Revamped Dungeons     █████████████░░░░░  106/150    70.7%
 Items/Resource                 ████████████████░░   55/61     90.2%
 Items/Functional               ██████████████░░░░   37/49     75.5%
 Services/Expansions            ████░░░░░░░░░░░░░░   36/175    20.6%
@@ -148,7 +148,7 @@ Items/Consumables              ███████████░░░░░�
 Services/BulkOrders            ██████████████░░░░   22/28     78.6%
 Items/Containers               ████████████░░░░░░   20/31     64.5%
 Items/Quest                    ██░░░░░░░░░░░░░░░░    9/78     11.5%
-Items/Addons                   █░░░░░░░░░░░░░░░░░    5/169     3.0%
+Items/Addons                   █░░░░░░░░░░░░░░░░░    6/169     3.6%
 Services/CleanUpBritannia      █░░░░░░░░░░░░░░░░░    4/52      7.7%
 Items/Decorative               █░░░░░░░░░░░░░░░░░    3/88      3.4%
 Quests                         █░░░░░░░░░░░░░░░░░    3/84      3.6%
@@ -230,16 +230,14 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 176 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 178 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
 | P157 plain-english-emails | queued |  |
 | P219 tazuo-script-test-harness | queued |  |
-| P241 achievement-category-icons | queued |  |
 | P242 loot-box-flying-loot | queued |  |
 | P243 league-hall-decor-rewards | queued |  |
-| P263 noted-by-the-system-achievements | queued |  |
 | P264 companions-b1-base-and-record | queued |  |
 | P265 guild-hall-decor-packs | queued |  |
 | P266 new-haven-winter-decor | queued |  |
@@ -266,13 +264,13 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P284 cont-fixup-satchel-icons-ship | done | 2026-10-21 |
 | P278 cont-fixup-climbing-boots | done | 2026-10-21 |
 | P272 cont-fixup-codex-second-agent | done | 2026-10-21 |
+| P271 cont-fixup-port-exodus-encounter | done | 2026-10-21 |
 | P267 halloween-bank-decor | done | 2026-10-20 |
 | P260 herbalism-research | done | 2026-10-20 |
 | P245 cont-fixup-port-base-items-remainder | done | 2026-10-20 |
 | P244 cont-fixup-tinker-golem-watchdog | done | 2026-10-20 |
-| P239 creature-levels-appraisal | done | 2026-10-21 |
 
-### Needs reconciling on a `MODERNUO_COMMIT` bump: 131 patches, 12 replacements
+### Needs reconciling on a `MODERNUO_COMMIT` bump: 132 patches, 12 replacements
 
 _Counted from `server/patches/` and `apply-patches.sh`. The table below is hand-kept in `progress-state.json` and lists 17 rows; it is a partial risk register, not the count._
 
@@ -307,7 +305,7 @@ What a MODERNUO_COMMIT bump must reconcile. Patches fail LOUDLY - apply-patches.
 - **S3 costed menu - declines upheld with their ratios recorded** — Measured 2026-09-07, notes/s3-decline-costs.md. Skill Masteries (45 files/8,542 lines, unblocks 14, patches 35 upstream files - fails the layering test). Vice vs Virtue (57/9,613, unblocks 5, patches 21). Exploring the Deep (70/10,292, unblocks 2 - structurally the safest build here and the worst ratio). Shadowguard (14/11,222, unblocks 8). City Loyalty (28/8,177, unblocks 15 - decline on ratio, not structure; revisit with Town Cryer). Instanced Peerless (13/1,543, unblocks 2, and BasePeerless and PeerlessAltar are both absent from ModernUO, so there is no base to instance - cost Services/Peerless first). ServUO's ML quest framework (22 files/6,269 lines, not the 21/5,625 the brief stated) - declined because ModernUO already ships the same OSI system. NOT declined and recommended instead: SAAbsorptionAttributes, the TribeType transformation, and a one-quest spike onto ModernUO's ML quest engine. Vendor Searching (4/2,545) is a player feature, not content; the unblock ratio is the wrong test and it is Chase's call.
 - **ServUO ML quest framework - decline REAFFIRMED by S5** — S5 translated one quest end to end and the objective mapping holds for 4 of 5 types, two of them pinned by tests. Porting ServUO's 22-file, 6,269-line framework would put a second engine in the tree to do a job the engine we already have does correctly. The decline was always on two-engines-for-one-job; it now rests on measurement rather than on principle alone. What is NOT declined: the 164 of 203 missing quests that use a single standard objective type. The 39 that hand-write a BaseObjective subclass (25 InternalObjective, 3 CollectionsObtain, 2 QuestionAndAnswer, ~9 one-offs) are per-quest work, not a framework port, and are the thing to cost before the next quest batch.
 
-Counted from the trees: 1478 customization files, 138 patch files, 1279 tests in 205 files.
+Counted from the trees: 1524 customization files, 139 patch files, 1289 tests in 206 files.
 Shard status: the test shard is the only shard: the live shard was retired and deleted on 2026-10-14 until the fresh 1.0 world; main is 2026.10.20.4 and Shadow Iron merges finished Golem branches into it every 10 minutes, each built green first; which build the test shard runs and which player package is published are not visible from the repos (confirmed 2026-10-20).
 <!-- PROGRESS:END -->
 
@@ -316,18 +314,18 @@ Shard status: the test shard is the only shard: the live shard was retired and d
 <!-- EXPANSION:START -->
 ### Content by expansion
 
-**4,151 of 6,144 ServUO files present** (68%), of which **1,112 ported by us**.
+**4,189 of 6,144 ServUO files present** (68%), of which **1,150 ported by us**.
 
 ```
-Pre-AoS (T2A/UOR/LBR)     ██████████████░░░░░░  3062/4294    71%   +839
-Age of Shadows            ████████████████░░░░   252/309     82%   +51
+Pre-AoS (T2A/UOR/LBR)     ██████████████░░░░░░  3093/4294    72%   +870
+Age of Shadows            █████████████████░░░   256/309     83%   +55
 Samurai Empire            █████████████████░░░    97/115     84%   +10
 Mondain's Legacy          ███████████░░░░░░░░░   260/471     55%   +19
-Stygian Abyss (Ter Mur)   ███████████░░░░░░░░░   252/444     57%   +127
+Stygian Abyss (Ter Mur)   ███████████░░░░░░░░░   255/444     57%   +130
 High Seas                 ████████░░░░░░░░░░░░   136/334     41%   +40
 Time of Legends (Eodon)   ██████████░░░░░░░░░░    75/157     48%   +22
 Endless Journey           █████████████████░░░    17/20      85%   +4
-TOTAL                     ██████████████░░░░░░  4151/6144    68%   +1112
+TOTAL                     ██████████████░░░░░░  4189/6144    68%   +1150
 ```
 
 _Filename-stem matching: a proxy for presence, not behaviour. Unclassified files fall into Pre-AoS, inflating it. Directional, not a completion percentage._
