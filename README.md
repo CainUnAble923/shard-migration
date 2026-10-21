@@ -63,14 +63,14 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.21.16. Golem on, 22 queued, latest done P367. Play tests: 502 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.21.16. Golem on, 21 queued, latest done P367. Play tests: 503 open, 4 failed, 43 passed.
 
 ### Needs overseer review (4)
 
 - **gate The player package installs on a clean PC**: Waits on a confirmation: Chase: which package is published on get.shatteredlegacyuo.com, and has the package that ships our TazUO build passed a clean-PC install? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "The player package installs on a clean PC" --done no --detail "..."` or `python tools/judge.py confirm gate "The player package installs on a clean PC"`
 - **gate What is built is seen in a client, not only compiled**: Waits on a confirmation: Chase: is the test shard on a build that carries P203 and P204 (version 2026.10.20.x), and which play tests ran after 2026-10-18? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "What is built is seen in a client, not only compiled" --done yes --detail "..."` or `python tools/judge.py confirm gate "What is built is seen in a client, not only compiled"`
 - **task DEPLOY**: Deploy main to the test shard and run its play tests: waits on a confirmation: Chase: which build is on the test shard today? `python tools/judge.py task DEPLOY --status todo|in-progress|blocked|done --note "..."` or `python tools/judge.py confirm task DEPLOY`
-- **play tests not sorted**: 152 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
+- **play tests not sorted**: 153 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
 
 ## Port list: 6 of 16 systems in. 797 of 983 files (81%).
 
@@ -230,18 +230,16 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 189 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 190 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
-| P265 guild-hall-decor-packs | queued |  |
 | P266 new-haven-winter-decor | queued |  |
 | P274 fable-week-tracking | queued |  |
 | P276 tutorial-farm-build | queued |  |
 | P277 rideable-red-dragon | queued |  |
 | P280 league-register-build | queued |  |
 | P281 guild-halls-placement | queued |  |
-| P283 skill-gain-paths-research | queued |  |
 | P287 golem-weekend-days-and-self-idle | queued |  |
 | P288 package-notes-autofill | queued |  |
 | P289 tutorial-core-trials-playable | queued |  |
@@ -256,6 +254,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P365 reward-mounts-and-evo-stages | queued |  |
 | P368 added-music-areas-monsters-bosses | queued |  |
 | P370 golem-fixes-flaky-builds-reclaims | queued |  |
+| P371 graduation-is-the-first-loop | queued |  |
 | P367 music-room-console-page | done | 2026-10-21 |
 | P366 cont-fixup-cont-loot-box-flying-loot | done | 2026-10-21 |
 | P358 cont-fixup-playtest-bot-checks-second | done | 2026-10-21 |
