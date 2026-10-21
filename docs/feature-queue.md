@@ -18,7 +18,7 @@ requested still gets finished (the P80 tutorial framework, for one). Anything no
 4. Chase commits with `Commit-ShardWork.ps1`.
 
 F-numbers are their own series, separate from deviations (D-n), bugs (Dn) and questions (Q-n).
-**Next free: F-51.**
+**Next free: F-52.**
 
 The fidelity test: could a player be misled by a difference they had no way to know about?
 Port a gated item when the gate is small and near; skip it when the gate is a subsystem.
@@ -3447,6 +3447,113 @@ Decided with Chase, 2026-10-16:
 - Fidelity: OSI drops unravel results in the backpack; log as a deviation.
 
 **Batched: cc-P137** section 6 (folded in, 2026-10-16; small, and P137 already touches the disenchant code).
+### F-51: Herbalism and reagent growing (added 2026-10-20)
+
+**Ours** (a new skill; the OSI plant system underneath it stays as OSI has it).
+Features chat, 2026-10-11 to 10-12. **Design settled 2026-10-12 13:54.** Design file: `D:\UO\cc-prompts\design\f-herbalism-reagents.md` (the prompts repo), copied here 2026-10-20 by cc-P260; the design file stays the master.
+
+#### Problem
+
+Reagents can only be bought from vendors. Players need a way to gather and grow their own, in bulk.
+
+#### Decided (Chase)
+
+- **Both** wild gardens and gardening, through a new custom **Herbalism** skill.
+- **Owning guild: the Order of the Alembic** (alongside Alchemy, Glassblowing, Taste ID).
+- **Fold in the OSI plant system and crossbreeding** (ModernUO's plant engine as the base), with a reagent lane on top. Stock decorative plants stay as OSI has them.
+- **Growth speed** comes from Herbalism plus nearby crafted items made with other skills (grow lights and similar).
+- **Kit upkeep: hybrid.** Structures permanent with slow wear, optional weekly consumables for the top half of the bonus.
+- **Beds can go outside houses**: public plots, plus a **yard tool** for houses that places **garden items and general decor**.
+- **Neglect**: plants are safe up to a time limit, extended by Herbalism and by items.
+- **No companion farm role.** A **garden familiar** house pet maintains the farm: mandrake sprout or garden gnome, **player picks at the end of the quest** (same stats, different look and lines). It **replants only after upgrades, within the limits below** (approved).
+- **Herbs have side uses**: some double as Cooking ingredients and Healing poultices (a small side market, not a new system).
+- **Seeds can come from loot boxes** (Scholar's theme slot), but **only player breeding reaches the top strain tiers**.
+- **Bowls keep OSI pace** (one stage per real day); beds and the garden kit carry the speed.
+- **Vendors keep selling reagents.**
+- **Bulk target:** a player can save up several days of harvest and then really grind (casting training) for a good while on it.
+
+#### Design detail (numbers are placeholders for playtest)
+
+**Sources by reagent type**
+- Grown or picked: Garlic, Ginseng, Mandrake Root, Nightshade, Blood Moss
+- Shoreline/fishing: Black Pearl. Mining (volcanic): Sulfurous Ash. Creature drops/webs: Spider's Silk
+- Necro and Mysticism regs: monster parts, graveyard digging, League monster hunts; high tier Herbalism plants for the plant-based ones
+
+**Herbalism skill**
+- Foraging wild patches (biome spawns that respawn on a timer; finds logged to a ledger like the grove ledger)
+- Cultivation in bowls and beds; breeding strains; processing herbs into reagent bundles
+- Tiers: 0-50 Garlic, Ginseng; 50-100 Mandrake, Nightshade, Blood Moss; 100-150 necro/mysticism plants and hybrids; 150-200 exotic herbs (custom spells, Imbuing, epic crafting), legendary strains
+- Gains from harvests, pollination and tier jumps, so no use ceiling stall; loop memory applies
+- New skill needs a client skills entry, so it ships in the player package
+
+**Bulk numbers**
+- Starter farm (a bowl or two, one bed): about 50 to 100 regs a day, enough to stop buying for light use
+- Mature yard farm (several beds, full kit, mid strains): about 300 to 500 of each grown reagent a day
+- Late farm (top strains, full kit, familiar): three or four days of saving covers a long casting grind (a few thousand of each)
+- Vendors stay the fallback and the early-game source
+
+**Plant system**
+- Bowls are the lab: full OSI loop (water, potions, pollinate, seeds) at OSI pace. Beds are the farm: OSI raised garden beds, many plants tended as one unit
+- Type ladder decides the reagent (crosses average along it, OSI style); hue becomes strain tier along the metal hue ladder to Celestial
+- Same-tier crosses can mutate up a tier; Herbalism raises the chance and the top tier a player can breed
+- Exotic types only by high-skill mutation or seeds from boxes, bosses, quests; boxed seeds never start at the top tiers
+- Fertile Dirt improves bed soil
+
+**Growth speed: garden kit**
+- Categories, best item per category counts: Light (Tinkering, Glassblowing), Water (Carpentry, Tinkering), Soil (Alchemy, Herbalism), Shelter (Glassblowing, Carpentry, Tailoring)
+- Item strength by material tier; exceptional widens the gap
+- Caps: Herbalism alone up to 2x at 200; full kit up to 4x total. Bowls stay OSI pace
+
+**Kit upkeep (hybrid)**
+- Structures are permanent once placed (troughs, trellises, greenhouse panes, lamp fixtures) and wear slowly; the skill that made them repairs them
+- Consumables add the top part of the bonus: fertilizer (Alchemy/Herbalism) for Soil, lamp oil or sun crystal charges (Alchemy/Glassblowing) for Light. Without consumables a structure still gives about half its bonus
+- One dose lasts about a real week per bed; doses sit in a garden supply bin
+- Skipping upkeep slows the farm, never kills it. Consumables give other crafters steady demand and act as a gold sink
+
+**Garden familiar**
+- Mandrake sprout or garden gnome, player's choice at the end of the Alembic quest line
+- One per house (larger houses maybe two); no follower slot; cannot leave the house and yard; does not fight
+- Tasks unlock by familiar tier: water and weed, then treat pests and disease, then apply consumables from the supply bin, then harvest ripe beds into a harvest bin, then replant (top tiers only)
+- While its bin is stocked, it keeps plants inside their grace window; if the bin runs dry it stops and says so
+- Grows in tier through care (fed potions or rare herbs)
+- Snarky personality lines; status gump on the bin
+- Does not work public plots (a plot could offer a hired farmhand for a fee instead)
+- AFK farming is allowed on the shard, so full automation is fine; the player still processes, hauls and breeds
+
+**Familiar replanting limits**
+- Replants only from seeds in the seed vault, never makes seeds itself
+- Replants only the same strain harvested from that slot (no choosing, crossing or pollinating): breeding and mutation stay with the player
+- Cannot plant a strain above the owner's Herbalism tier
+- Beds it can replant grow with familiar tier (2, 4, 8)
+- Stops and complains when the vault runs out of that strain
+
+**Neglect**
+- Base grace 2 days; Herbalism adds up to 5 more at 200; items cover specific needs (rain barrel for water, scarecrow for pests)
+- After grace: health loss first; a strain drops a tier only after a second window
+- Seed vault (Herbalism craftable, tiered): seeds in it never degrade
+
+**Yard tool**
+- Owner and co-owners place beds, kit items, fences, paths and general decor in a radius around the house; radius and count by house size; cannot block doors, roads or other plots
+- Look at community RunUO/ServUO yard systems as a starting point
+
+**Public plots**
+- Alembic farm in town with rentable plots paid weekly in guild currency; plot count by Alembic rank; warning before an expired plot's crops are lost
+
+**Side uses**
+- Some herbs double as Cooking ingredients and Healing poultice components; small side market only
+
+**Ties**
+- Recipe gating: strains and seed types unlock by Alembic rank; top strains from breeding, with seeds also from boxes (Scholar's slot), bosses, quests
+- BODs/commissions: harvest orders paying Renown
+- Imbuing gathering properties can add herb yield
+- Achievements (e.g. "Green Thumb" first harvest)
+
+#### Open questions
+
+None at design level. Numbers get tuned in playtest; the research prompt's "For Chase" section may raise code-forced decisions.
+
+**Research: cc-P260** (`notes\cc-P260-herbalism-research.md`): the survey, the phased plan and the phase 1 draft prompt.
+
 ## Batched
 
 | ID | Batch prompt | Notes |
