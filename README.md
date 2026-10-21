@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.21.10. Golem on, 32 queued, latest done P286. Play tests: 464 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.21.11. Golem on, 27 queued, latest done P357. Play tests: 464 open, 4 failed, 43 passed.
 
 ### Needs overseer review (4)
 
@@ -230,13 +230,12 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 175 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 176 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
 | P157 plain-english-emails | queued |  |
 | P219 tazuo-script-test-harness | queued |  |
-| P223 playtest-bot-checks-first | queued |  |
 | P241 achievement-category-icons | queued |  |
 | P242 loot-box-flying-loot | queued |  |
 | P243 league-hall-decor-rewards | queued |  |
@@ -246,7 +245,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P266 new-haven-winter-decor | queued |  |
 | P268 high-seas-ships-assessment | queued |  |
 | P269 high-seas-fishing-second-half | queued |  |
-| P271 cont-fixup-port-exodus-encounter | queued |  |
 | P273 status-page-refresh | queued |  |
 | P274 fable-week-tracking | queued |  |
 | P275 deployable-traps-build | queued |  |
@@ -261,11 +259,9 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P289 tutorial-core-trials-playable | queued |  |
 | P290 tutorial-wing-trials-combat-magic | queued |  |
 | P291 tutorial-wing-trials-trades-and-more | queued |  |
-| P353 cont-golem-questions-install-and-round | queued |  |
 | P354 cont-fixup-port-eodon-remainder | queued |  |
-| P355 cont-fixup-accessory-slots | queued |  |
 | P356 cont-fixup-golem-questions-in-console | queued |  |
-| P357 cont-fog-of-war-client-half | queued |  |
+| P357 cont-fog-of-war-client-half | done | 2026-10-21 |
 | P286 crystal-mage-crafter-docs-and-tests | done | 2026-10-21 |
 | P284 cont-fixup-satchel-icons-ship | done | 2026-10-21 |
 | P278 cont-fixup-climbing-boots | done | 2026-10-21 |
@@ -275,7 +271,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P245 cont-fixup-port-base-items-remainder | done | 2026-10-20 |
 | P244 cont-fixup-tinker-golem-watchdog | done | 2026-10-20 |
 | P239 creature-levels-appraisal | done | 2026-10-21 |
-| P238 climbing-boots | done | 2026-10-21 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 131 patches, 12 replacements
 
