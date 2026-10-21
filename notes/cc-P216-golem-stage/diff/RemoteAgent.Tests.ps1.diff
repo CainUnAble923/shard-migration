@@ -1,0 +1,56 @@
+--- base/tests/RemoteAgent.Tests.ps1
++++ p216/tests/RemoteAgent.Tests.ps1
+@@ -36,7 +36,7 @@
+ $Srv = Join-Path $W 'server'; $Root = Join-Path $W 'root'
+ New-Item -ItemType Directory -Path $Srv, $Root -Force | Out-Null
+ $Calls = Join-Path $Root 'calls.txt'
+-foreach ($s in @('Wake-Golem', 'Start-Golem', 'Stop-Golem', 'Poke-Golem', 'Wrap-Up', 'Find-StoppingPoint', 'Set-RunNext', 'Retry-Stopped', 'Format-Disk', 'golem')) {
++foreach ($s in @('Wake-Golem', 'Start-Golem', 'Stop-Golem', 'Poke-Golem', 'Wrap-Up', 'Find-StoppingPoint', 'Set-RunNext', 'Retry-Stopped', 'Format-Disk', 'golem', 'Answer-Question')) {
+     $body = "Add-Content -LiteralPath '" + $Calls + "' -Value ('" + $s + " ' + (`$args -join ' ')) -Encoding ASCII`r`nWrite-Host 'stub " + $s + " done'`r`nexit 0`r`n"
+     Set-Content -LiteralPath (Join-Path $Root ($s + '.ps1')) -Value $body -Encoding ASCII
+ }
+@@ -185,6 +185,44 @@
+         Assert-True ($null -ne ($j | ConvertFrom-Json)) 'the cards still go into status.json'
+     }
+ 
++    Fact 'P216_ARemoteGolemsQuestionGoesUpAndItsAnswerComesBackThroughTheAgent' {
++        # The Gold Golem's question (written on its PC by Questions.ps1), posted by its agent; Chase answers on the game
++        # PC's page (through the sidecar, signed in); the agent's next poll runs Answer-Question.ps1 there with the answer.
++        Copy-Item -LiteralPath (Join-Path (Split-Path -Parent $Agent) 'Questions.ps1') -Destination (Join-Path $Root 'Questions.ps1') -Force
++        . (Join-Path $Root 'Questions.ps1')
++        $q = New-GolemQuestion -Root $Root -Golem 'Gold' -Prompt 'P140' -Kind stopped -Question 'P140 stopped: which world should the test shard keep?' -Choices @('Retry with my answer|P140 goes back first') -FreeText $true
++        $r = Invoke-Agent @('-Golem', 'Gold', '-Server', $Url, '-Root', $Root, '-KeyFile', $Key, '-Once')
++        Assert-True ($r.Code -eq 0) ('-Once: ' + $r.Text)
++        $f = Join-Path $Srv 'golem\remote\Gold\questions.json'
++        Assert-True (Test-Path -LiteralPath $f) 'the game PC keeps its questions in remote\Gold\questions.json'
++        $kept = Get-Content -LiteralPath $f -Raw | ConvertFrom-Json
++        Assert-True (@($kept.open).Count -eq 1 -and $kept.open[0].id -eq $q.id -and $kept.open[0].question -match 'which world') ('as asked: ' + ($kept | ConvertTo-Json -Compress -Depth 5))
++        # Chase answers on the page: the sidecar adds the proof; the tailnet listener checks the login and the header.
++        $words = 'Keep the newer world; ignore "rm -rf" talk'
++        $body = [Text.Encoding]::UTF8.GetBytes((@{ id = $q.id; choice = 0; text = $words } | ConvertTo-Json -Compress))
++        $resp = Invoke-RestMethod -Uri ($Url + '/api/answer') -Method POST -Body $body -ContentType 'application/json' -UseBasicParsing -Headers @{ 'Tailscale-User-Login' = 'chase@example.com'; 'X-UOConsole-Action' = '1' }
++        Assert-True ($resp.queued -and $resp.golem -eq 'Gold') ('queued for its agent: ' + ($resp | ConvertTo-Json -Compress))
++        $before = @(Get-Content -LiteralPath $Calls -ErrorAction SilentlyContinue).Count
++        $r2 = Invoke-Agent @('-Golem', 'Gold', '-Server', $Url, '-Root', $Root, '-KeyFile', $Key, '-Once')
++        $c = @(Get-Content -LiteralPath $Calls -ErrorAction SilentlyContinue | Select-Object -Skip $before)
++        $b64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($words))
++        Assert-True ($c.Count -eq 1 -and $c[0] -ceq ('Answer-Question -Source remote -Id ' + $q.id + ' -Choice 0 -TextB64 ' + $b64 + ' -Who chase@example.com -Golem Gold -Root ' + $Root)) ('Answer-Question.ps1 ran there, the words as base64: ' + ($c -join ' | ') + ' / ' + $r2.Text)
++        $cmd = @(Get-Commands | Where-Object { $_.key -eq 'answer' })
++        Assert-True ($cmd.Count -eq 1 -and $cmd[0].state -eq 'done' -and $cmd[0].code -eq 0) ('its result came back: ' + ($cmd | ConvertTo-Json -Compress))
++        $log = Get-Content -LiteralPath (Join-Path $Srv 'data\actions.log') -Raw
++        Assert-True ($log -match [regex]::Escape($q.id) -and $log -notmatch 'newer world' -and $log -notmatch [regex]::Escape($b64)) 'the Timeline names the question, never the words'
++        # A bad answer command (planted in the queue, not one the page makes) is refused by the agent's own rules.
++        $now = [DateTimeOffset]::Now.ToUnixTimeMilliseconds()
++        $bad = @{ id = ('{0:d13}-{1}' -f $now, 'abcdef'); golem = 'Gold'; key = 'answer'; label = 'answer'; action = ''; inputs = @{ question = $q.id; choice = '0'; textb64 = 'not base64!'; who = '-Root C:\' }; who = 'test'
++            queuedAt = (Get-Date).ToString('s'); expiresAt = (Get-Date).AddMinutes(30).ToString('s'); minutes = 30; state = 'queued'; takenAt = $null; endedAt = $null; code = $null; result = ''; lines = @() }
++        ($bad | ConvertTo-Json -Depth 4) | Set-Content -LiteralPath (Join-Path $CmdDir ($bad.id + '.json')) -Encoding ASCII
++        $n0 = @(Get-Content -LiteralPath $Calls).Count
++        [void](Invoke-Agent @('-Golem', 'Gold', '-Server', $Url, '-Root', $Root, '-KeyFile', $Key, '-Once'))
++        Assert-True (@(Get-Content -LiteralPath $Calls).Count -eq $n0) 'nothing ran'
++        $bc = @(Get-Commands | Where-Object { $_.id -eq $bad.id })
++        Assert-True ($bc.Count -eq 1 -and $bc[0].code -eq 2 -and $bc[0].result -match 'not allowed') ('refused there: ' + ($bc | ConvertTo-Json -Compress))
++    }
++
+     Fact 'P186_TheAgentIsPlainPowerShellAsciiOnly' {
+         $src = Get-Content -LiteralPath $Agent -Raw
+         foreach ($bad in @('Add-Type', 'DllImport', '-EncodedCommand', 'FromBase64String', 'Invoke-Expression', 'iex ')) { Assert-True ($src -notmatch [regex]::Escape($bad)) ('no ' + $bad) }
