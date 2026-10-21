@@ -31,6 +31,23 @@ documentation debt only we can pay. Keep ServUO's default values unless there is
 reason. Prefer turning a system off over running it differently. Record any deliberate
 deviation in `docs/fidelity-principle.md`. Full reasoning there.
 
+## Standing rules for every agent run by the Golem
+
+These hold for Claude Code and for Codex alike (the Golem's Codex lane and its reviews read this file; cc-P158). Everything else is in the rest of this file and in the prompt itself. `CLAUDE.md` only points to this file, so the two never drift; keep rules here, not there.
+
+1. **Never connect to Haven** (the live server: no SSH, deploy, docker context or API call against it), unless the
+   prompt itself says to, and then only as it says, under the Golem's `haven` lock.
+2. **Never edit `docs\`** in `D:\UO\shard-migration`: findings and notes go in `notes\`.
+3. **No file over 5 MB** in either repo. Large scratch goes in a git-ignored folder, proven with `git check-ignore`.
+4. **Do not commit**, merge, push or switch branches: the Golem commits your work after your DONE line. Older sections
+   that say to commit, or to commit to `main`, date from before the Golem; its commit is that commit now.
+5. **The DONE and STOPPED lines.** When the prompt is finished, the last line of its notes file is `P<nn> DONE`, and
+   your final message ends with the same words. If you stop early for any reason, write `P<nn> STOPPED: <reason>` in
+   both places instead. Never write either before the work is finished: the Golem acts on the line at once.
+6. **Every new test is seen failing first** (against the code before the change), then passing.
+7. **Windows PowerShell 5.1** runs every PowerShell script and test (`powershell.exe`, not `pwsh`): no PowerShell 7
+   syntax (`&&`, `??`, ternaries).
+
 ## Ground rules
 
 1. **Decisions live in `docs/`.** If you make or change one, write it there in the same change.
