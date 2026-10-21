@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.21.20. Golem on, 19 queued, latest done P379. Play tests: 517 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.21.21. Golem on, 21 queued, latest done P379. Play tests: 517 open, 4 failed, 43 passed.
 
 ### Needs overseer review (5)
 
@@ -235,13 +235,11 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 
 | Prompt | State | When |
 |---|---|---|
-| P266 new-haven-winter-decor | queued |  |
 | P274 fable-week-tracking | queued |  |
 | P277 rideable-red-dragon | queued |  |
 | P281 guild-halls-placement | queued |  |
 | P287 golem-weekend-days-and-self-idle | queued |  |
 | P288 package-notes-autofill | queued |  |
-| P289 tutorial-core-trials-playable | queued |  |
 | P290 tutorial-wing-trials-combat-magic | queued |  |
 | P291 tutorial-wing-trials-trades-and-more | queued |  |
 | P354 cont-fixup-port-eodon-remainder | queued |  |
@@ -254,6 +252,10 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P372 cont-fixup-hammer-t3-craft-order | queued |  |
 | P373 codex-golems-finish-and-enable | queued |  |
 | P375 cont-fixup-playtest-bot-checks-first | queued |  |
+| P380 cont-fixup-chopped-tree-stumps | queued |  |
+| P382 guild-guide-order-of-the-alembic | queued |  |
+| P383 guild-guide-artificers-order | queued |  |
+| P384 guild-guide-thieves-den | queued |  |
 | P379 crystal-review-10-21-merges | done | 2026-10-21 |
 | P378 playtest-plans-10-21 | done | 2026-10-21 |
 | P377 crystal-wiki-catch-up-2 | done | 2026-10-21 |
@@ -265,7 +267,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P361 cont-fixup-noted-by-the-system-achievements | done | 2026-10-21 |
 | P358 cont-fixup-playtest-bot-checks-second | done | 2026-10-21 |
 
-### Needs reconciling on a `MODERNUO_COMMIT` bump: 143 patches, 12 replacements
+### Needs reconciling on a `MODERNUO_COMMIT` bump: 146 patches, 12 replacements
 
 _Counted from `server/patches/` and `apply-patches.sh`. The table below is hand-kept in `progress-state.json` and lists 17 rows; it is a partial risk register, not the count._
 
@@ -300,7 +302,7 @@ What a MODERNUO_COMMIT bump must reconcile. Patches fail LOUDLY - apply-patches.
 - **S3 costed menu - declines upheld with their ratios recorded** — Measured 2026-09-07, notes/s3-decline-costs.md. Skill Masteries (45 files/8,542 lines, unblocks 14, patches 35 upstream files - fails the layering test). Vice vs Virtue (57/9,613, unblocks 5, patches 21). Exploring the Deep (70/10,292, unblocks 2 - structurally the safest build here and the worst ratio). Shadowguard (14/11,222, unblocks 8). City Loyalty (28/8,177, unblocks 15 - decline on ratio, not structure; revisit with Town Cryer). Instanced Peerless (13/1,543, unblocks 2, and BasePeerless and PeerlessAltar are both absent from ModernUO, so there is no base to instance - cost Services/Peerless first). ServUO's ML quest framework (22 files/6,269 lines, not the 21/5,625 the brief stated) - declined because ModernUO already ships the same OSI system. NOT declined and recommended instead: SAAbsorptionAttributes, the TribeType transformation, and a one-quest spike onto ModernUO's ML quest engine. Vendor Searching (4/2,545) is a player feature, not content; the unblock ratio is the wrong test and it is Chase's call.
 - **ServUO ML quest framework - decline REAFFIRMED by S5** — S5 translated one quest end to end and the objective mapping holds for 4 of 5 types, two of them pinned by tests. Porting ServUO's 22-file, 6,269-line framework would put a second engine in the tree to do a job the engine we already have does correctly. The decline was always on two-engines-for-one-job; it now rests on measurement rather than on principle alone. What is NOT declined: the 164 of 203 missing quests that use a single standard objective type. The 39 that hand-write a BaseObjective subclass (25 InternalObjective, 3 CollectionsObtain, 2 QuestionAndAnswer, ~9 one-offs) are per-quest work, not a framework port, and are the thing to cost before the next quest batch.
 
-Counted from the trees: 1560 customization files, 150 patch files, 1369 tests in 219 files.
+Counted from the trees: 1561 customization files, 153 patch files, 1379 tests in 220 files.
 Shard status: the test shard is the only shard: the live shard was retired and deleted on 2026-10-14 until the fresh 1.0 world; main is 2026.10.20.4 and Shadow Iron merges finished Golem branches into it every 10 minutes, each built green first; which build the test shard runs and which player package is published are not visible from the repos (confirmed 2026-10-20).
 <!-- PROGRESS:END -->
 
