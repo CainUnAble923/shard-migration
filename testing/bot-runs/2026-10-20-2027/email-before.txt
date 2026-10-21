@@ -1,0 +1,34 @@
+Overnight play tests starting: 20 checks on f2e38f8
+
+The overnight play-test bot is starting on f2e38f8.
+
+Play-test items with work tonight (open, with a bot check that has not run on this code):
+  T-039: code changed since c509731 (run 2026-10-19-0130)
+  T-046: code changed since f057b97 (run 2026-10-16-0130)
+  T-047: code changed since c509731 (run 2026-10-19-0130)
+  P56-4: code changed since c509731 (run 2026-10-19-0130)
+  P56-6: code changed since c509731 (run 2026-10-19-0130)
+  P58-0: code changed since c509731 (run 2026-10-19-0130)
+  P61-3: code changed since c509731 (run 2026-10-19-0130)
+  P61-5: code changed since c509731 (run 2026-10-19-0130)
+  P62-1: code changed since c509731 (run 2026-10-19-0130)
+  P62-7: code changed since c509731 (run 2026-10-19-0130)
+  P64-1: code changed since c509731 (run 2026-10-19-0130)
+  P64-2: code changed since c509731 (run 2026-10-19-0130)
+  P64-3: code changed since c509731 (run 2026-10-19-0130)
+  P64-4: code changed since c509731 (run 2026-10-19-0130)
+  P64-5: code changed since c509731 (run 2026-10-19-0130)
+  P64-6: code changed since c509731 (run 2026-10-19-0130)
+  P66-7: code changed since c509731 (run 2026-10-19-0130)
+  P71-7: code changed since c509731 (run 2026-10-19-0130)
+  P119-1: code changed since c509731 (run 2026-10-19-0130)
+  P140-1: code changed since 73a0348 (run 2026-10-18-0140)
+
+It runs all 24 checks (some hand results to others), so the report covers more than the list above.
+Expected length: about 1 h 11 min (build, boot, checks, soak).
+
+To stop it:
+  schtasks /End /TN "SL overnight play tests"
+  docker compose -p sl-uo-bot down -t 60
+The first stops the script; the second stops the scratch shard (sl-modernuo-bot only, never live or test).
+A summary email follows when it finishes.
