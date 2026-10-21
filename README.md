@@ -63,14 +63,14 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.21.17. Golem on, 19 queued, latest done P369. Play tests: 507 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.21.17. Golem on, 21 queued, latest done P369. Play tests: 511 open, 4 failed, 43 passed.
 
 ### Needs overseer review (4)
 
 - **gate The player package installs on a clean PC**: Waits on a confirmation: Chase: which package is published on get.shatteredlegacyuo.com, and has the package that ships our TazUO build passed a clean-PC install? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "The player package installs on a clean PC" --done no --detail "..."` or `python tools/judge.py confirm gate "The player package installs on a clean PC"`
 - **gate What is built is seen in a client, not only compiled**: Waits on a confirmation: Chase: is the test shard on a build that carries P203 and P204 (version 2026.10.20.x), and which play tests ran after 2026-10-18? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "What is built is seen in a client, not only compiled" --done yes --detail "..."` or `python tools/judge.py confirm gate "What is built is seen in a client, not only compiled"`
 - **task DEPLOY**: Deploy main to the test shard and run its play tests: waits on a confirmation: Chase: which build is on the test shard today? `python tools/judge.py task DEPLOY --status todo|in-progress|blocked|done --note "..."` or `python tools/judge.py confirm task DEPLOY`
-- **play tests not sorted**: 157 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
+- **play tests not sorted**: 161 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
 
 ## Port list: 6 of 16 systems in. 797 of 983 files (81%).
 
@@ -230,14 +230,13 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 194 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 195 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
 | P266 new-haven-winter-decor | queued |  |
 | P274 fable-week-tracking | queued |  |
 | P277 rideable-red-dragon | queued |  |
-| P280 league-register-build | queued |  |
 | P281 guild-halls-placement | queued |  |
 | P287 golem-weekend-days-and-self-idle | queued |  |
 | P288 package-notes-autofill | queued |  |
@@ -253,16 +252,19 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P368 added-music-areas-monsters-bosses | queued |  |
 | P370 golem-fixes-flaky-builds-reclaims | queued |  |
 | P371 graduation-is-the-first-loop | queued |  |
+| P372 cont-fixup-hammer-t3-craft-order | queued |  |
+| P373 codex-golems-finish-and-enable | queued |  |
+| P374 cont-guild-hall-decor-proof | queued |  |
 | P369 cont-fixup-companions-b1-base-and-record | done | 2026-10-21 |
 | P367 music-room-console-page | done | 2026-10-21 |
 | P366 cont-fixup-cont-loot-box-flying-loot | done | 2026-10-21 |
 | P361 cont-fixup-noted-by-the-system-achievements | done | 2026-10-21 |
 | P358 cont-fixup-playtest-bot-checks-second | done | 2026-10-21 |
 | P357 cont-fog-of-war-client-half | done | 2026-10-21 |
+| P356 cont-fixup-golem-questions-in-console | done | 2026-10-21 |
 | P355 cont-fixup-accessory-slots | done | 2026-10-21 |
 | P353 cont-golem-questions-install-and-round | done | 2026-10-21 |
 | P286 crystal-mage-crafter-docs-and-tests | done | 2026-10-21 |
-| P284 cont-fixup-satchel-icons-ship | done | 2026-10-21 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 143 patches, 12 replacements
 

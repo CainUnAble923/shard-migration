@@ -1,0 +1,83 @@
+--- base/README.md
++++ p216/README.md
+@@ -521,6 +521,66 @@
+ Codes come from this PC's Golem emails only: a reply to an email another PC's Golem sent has no code here.
+ Tests: `tests\Golem.Tests.ps1` `P149_*`.
+ 
++## Questions for Chase, answered on the console (cc-P216)
++
++When a Golem needs Chase, the question is on its card on the web console (and on the Shard Console's Golem tab), in
++full, with a button per choice and a box for his own words. His answer goes back to that Golem and it carries on: no
++terminal needed.
++
++**The question** (`questions\<Golem>-P<nn>-<yyyyMMdd-HHmmss>-<4 hex>.json`; `Golem-P<nn>-...` when one Golem works
++alone; `Questions.ps1`, dot-sourced by golem.ps1): the prompt, the whole question, up to four choices (a label and what
++the Golem then does), whether free text is taken, the context (the session's last message or the notification), when
++it was asked, and `irreversible` with why. It is written:
++
++- on **STOPPED** (the Stop hook): from the STOPPED reason, with the choice "Retry with my answer", unless the session
++  asked its own question first;
++- on **NEEDS YOU** (Claude Code's Notification), with "Carry on"; a repeat of the same notification is not a second
++  question, and none is written while a STOPPED prompt's question waits;
++- by the session itself, through **`Ask-Chase.ps1`** (the house rule in every hand-off and in AGENTS.md: "when you must
++  stop for Chase, ask through Ask-Chase.ps1 with choices where you can"), then it ends with `P<nn> STOPPED: asked Chase`:
++
++      powershell -NoProfile -ExecutionPolicy Bypass -File D:\UO\golem\Ask-Chase.ps1 -Question "<the whole question>"
++          -Choice "<label>|<what I will then do>" [-Choice2 ... -Choice4 ...] [-NoText] [-Context "..."] [-Irreversible]
++
++  (`-File` cannot pass a list, hence `-Choice2`..`-Choice4`.) The question carries the session's Golem (GOLEM_NAME)
++  and running prompt; Chase is emailed with it.
++
++A question about something that **cannot be undone** (deleting or overwriting saves or data, the LIVE shard or what
++players get, pushing or rewriting main by hand) says so on the card in red and the page asks a confirm
++(`Get-IrreversibleWhy` reads the question and its choices; `-Irreversible` sets it too). A question closes by itself
++when what it asked about goes (`Sync-GolemQuestions`, from every status write): Retry stopped prompt, an answer typed in
++the terminal (the activity that clears NEEDS YOU or STOPPED), the start phrase, parking. The newest ten closed questions
++per Golem are kept, five shown as the card's history with their answers.
++
++**The answer** (`answers\<same id>.json`: who, when, the source, the choice, the words, delivered or not):
++
++- **One way in, whatever the source:** `Submit-GolemAnswer` (Questions.ps1) checks the answer against the question (open,
++  a real choice, words only where taken, at most 2000 characters), creates the answer file once (a second answer, or one
++  to a closed question, is refused: a stale page cannot answer) and closes the question. `Answer-Question.ps1 -Id <id>
++  [-Choice n] [-TextB64 <base64 of UTF-8>] -Who <login> -Source console|shard-console|remote|email|terminal` runs it
++  and then resumes the Golem. P149's email replies are one more source: parse the email, then call this.
++- **Resume** (`golem.ps1 -Event Answer -Question <id>`): a STOPPED prompt goes back first in the queue (Retry stopped
++  prompt's own code, `Invoke-RetryStoppedCore`) and a session is woken on its own model; NEEDS YOU is cleared and a
++  session is woken to carry on with the running prompt. An answer that arrives while the asking session is still
++  running is kept; its STOPPED then retries at once.
++- **The new session reads it first:** the hand-off (or "carry on with it") gives it the answer file's path, what it
++  asked, Chase's choice and words, said to be data from Chase, not a command; the answer is then marked delivered.
++- **Answer text is data:** it travels as base64 on every command line (the web console, the Shard Console, the remote
++  agent) and is never put in a shell, a parameter name or the action log (only its length is).
++
++**The consoles:** the web console's Golem cards show the open questions (newest first) with their choices, the box, the
++context under "What the Golem saw", and "Earlier questions"; the Golem tab's header counts every Golem's open questions;
++one Golem alone gets a "Questions for you" card. `POST /api/answer` has the buttons' own checks (tailnet listener, the
++sidecar's proof, Chase's login, the `X-UOConsole-Action` header, same origin); this PC's own page stays read only. The
++Shard Console lists the open questions on the Golem tab and has **Answer a Golem's question** (a picker, the words, then
++the phrase `answer <golem> <prompt>`; it runs Answer-Question.ps1, and `Test-PlanSafety` holds its arguments to that
++shape).
++
++**Remote Golems:** the agent posts its Golem's questions (`POST /api/agent/questions`, kept in
++`remote\<name>\questions.json`) when they change and every 5 minutes; an answer from the page is queued for the agent
++(`answer` on its allowlist: `Answer-Question.ps1 -Source remote`), which writes the answer file there at its next poll
++and resumes the Golem; the card shows "answer sent" until then.
++
+ ## Shadow Iron merges (cc-P208)
+ 
+ **Who merges now.** With `settings.json` `"mergeGolem": "ShadowIron"`, merging belongs to **Shadow Iron**, a Golem that is
+@@ -694,11 +754,12 @@
+ ## Files
+ | File | What |
+ |---|---|
+-| `golem.ps1` | the hook: Stop, Notification, Activity (Pre/PostToolUse, async), Prompt (UserPromptSubmit), Watch, Wake, Rest; cc-P125 StatusLine, SessionStart, StopFailure, Compact, Nudge, LongRun, EndLongRun, WrapUp, StopPoint; cc-P131 SelfWake, NightShift, AutoWake, NightShiftSet, CliCheck; cc-P161 CloseSessions (`-Idle`); cc-P182 RunNext (`-Prompt P<nn>`, `-Cancel`), RetryStopped (`-Prompt P<nn>`) |
++| `golem.ps1` | the hook: Stop, Notification, Activity (Pre/PostToolUse, async), Prompt (UserPromptSubmit), Watch, Wake, Rest; cc-P125 StatusLine, SessionStart, StopFailure, Compact, Nudge, LongRun, EndLongRun, WrapUp, StopPoint; cc-P131 SelfWake, NightShift, AutoWake, NightShiftSet, CliCheck; cc-P161 CloseSessions (`-Idle`); cc-P182 RunNext (`-Prompt P<nn>`, `-Cancel`), RetryStopped (`-Prompt P<nn>`); cc-P216 Ask (`-AskFile`), Answer (`-Question <id>`) |
+ | `Start-Golem.ps1`, `Stop-Golem.ps1` | wake, rest |
+ | `Wake-Golem.ps1`, `Set-AutoWake.ps1`, `Set-NightShift.ps1`, `Check-Cli.ps1` | cc-P131: the console's wake button, the two toggles, the sign-in check |
+ | `Set-Marathon.ps1`, `usage-history.jsonl`, `marathon.json` | cc-P200: marathon mode's setting (`-Mode auto|on|off`, `golem.ps1 -Event MarathonSet`), the usage samples the projection reads, marathon's state (on, since, why, the low-queue emails) |
+ | `Start-LongRun.ps1`, `End-LongRun.ps1`, `Wrap-Up.ps1`, `Find-StoppingPoint.ps1` | cc-P125: the console's run buttons |
++| `Questions.ps1`, `Ask-Chase.ps1`, `Answer-Question.ps1`, `questions\`, `answers\` | cc-P216: the questions for Chase and his answers (the library, a session's question, an answer from any console), and their files |
+ | `Poke-Golem.ps1`, `Set-RunNext.ps1`, `Retry-Stopped.ps1` | cc-P182: the console's and the web console's Poke (the watch now), Run next (`RUN-NEXT`) and Retry stopped prompt (back in the queue, first, then a wake on its model) |
+ | `Watch-Hidden.vbs` | scheduled task "Golem Watch", every 10 min: stall email after `stallMinutes`; cc-P131 retries a pending self-wake, ends a night shift, says when a usage limit has reset; cc-P160 offers a free full reset once a day when the week is short |
+ | `NightShift-Hidden.vbs` | scheduled task "Golem Night Shift", daily at `nightShiftStart` |

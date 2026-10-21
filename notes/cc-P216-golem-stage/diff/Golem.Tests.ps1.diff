@@ -1,0 +1,170 @@
+--- base/tests/Golem.Tests.ps1
++++ p216/tests/Golem.Tests.ps1
+@@ -3616,6 +3616,167 @@
+         Assert-True (-not @(Get-ChildItem -LiteralPath $w.Queue -Filter 'cc-P*-cont-fixup-*').Count) 'no fix-up prompt for a remote Codex lane either'
+     }
+ }
++# ---- cc-P216: the Golem asks on the consoles, Chase answers there --------------------------------------------------------
++if ($Kind -eq 'golem') {
++    $p216Here = Split-Path -Parent $Hook
++    . (Join-Path $p216Here 'Questions.ps1')
++    # A world where P100 runs (its prompt file handed in the prompts folder), P101 waits, and wakes go to the CLI stub.
++    function New-AskWorld {
++        $w = New-WakeWorld
++        Set-Content -LiteralPath (Join-Path $w.Prompts 'cc-P100-a.md') -Value "# CC task P100: a`n`n**Model:** Opus`n" -Encoding ASCII
++        $w
++    }
++    function Get-WQuestions($w, [string]$state = 'all') { @(Get-GolemQuestions $w.Root 'Golem' $state) }
++    # Answer-Question.ps1 as the web console runs it: argv only, the words as base64.
++    function Invoke-Answer($w, [string]$id, [int]$choice = -1, [string]$text = '', [string[]]$more = @()) {
++        $a = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', (Join-Path $p216Here 'Answer-Question.ps1'), '-Id', $id, '-Choice', $choice, '-Who', 'chase@example.invalid',
++               '-Root', $w.Root, '-PromptDir', $w.Prompts, '-NoMail', '-Cli', $w.CliStub) + @($more)
++        if ($text) { $a += @('-TextB64', [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($text))) }
++        $eap = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
++        $o = & powershell.exe @a 2>&1
++        $code = $LASTEXITCODE
++        $ErrorActionPreference = $eap
++        [pscustomobject]@{ Code = $code; Out = (($o | Out-String).Trim()) }
++    }
++    $p216Why = 'the saves folder holds two worlds and I cannot tell which one the test shard should keep; ' + ('every word of this reason must reach Chase, not a clipped line. ' * 4) + 'END-OF-REASON'
++
++    Fact 'P216_AStoppedPromptWritesItsWholeQuestionForTheConsoles' {
++        $w = New-AskWorld
++        [void](Invoke-HookX $w 'Stop' @{ last_assistant_message = ("I looked at both.`n`nP100 STOPPED: " + $p216Why); session_id = 'sess-a' } $w.CliArgs)
++        $q = @(Get-WQuestions $w 'open')
++        Assert-True ($q.Count -eq 1) ('one open question: ' + $q.Count)
++        Assert-True ($q[0].kind -eq 'stopped' -and $q[0].prompt -eq 'P100' -and $q[0].golem -eq 'Golem') ('kind, prompt, Golem: ' + ($q[0] | ConvertTo-Json -Compress))
++        Assert-True ($q[0].question -match 'END-OF-REASON' -and $q[0].question.Length -gt 300) ('the whole reason, not cut off: ' + $q[0].question.Length)
++        Assert-True ($q[0].context -match 'I looked at both') 'the context is the session''s last message'
++        Assert-True (@($q[0].choices).Count -eq 1 -and $q[0].choices[0].label -eq 'Retry with my answer' -and $q[0].freeText) 'a Retry choice and free text'
++        Assert-True ($q[0].id -match '^Golem-P100-\d{8}-\d{6}-[0-9a-f]{4}$' -and (Test-Path -LiteralPath (Join-Path $w.Root ('questions\' + $q[0].id + '.json')))) ('questions\<Golem>-P<nn>-<id>.json: ' + $q[0].id)
++        $s = Get-WStatus $w
++        Assert-True ($s.state -eq 'STOPPED' -and $s.questionsOpen -eq 1 -and @($s.questionIds)[0] -eq $q[0].id) ('status.json: ' + $s.state + ' ' + $s.questionsOpen)
++        Assert-True ((Get-Content -LiteralPath (Join-Path $w.Root 'test-mail.txt') -Raw) -match [regex]::Escape('Golem card (question ' + $q[0].id + ')')) 'the email names the question'
++        Assert-True (@(Get-CliCalls $w).Count -eq 0) 'nothing woken by a STOPPED'
++    }
++
++    Fact 'P216_ANeedsYouWritesOneQuestionAndTheTerminalClosesIt' {
++        $w = New-AskWorld
++        $n = @{ message = 'Claude needs your permission to use Bash'; notification_type = 'permission_prompt'; session_id = 'sess-a' }
++        [void](Invoke-HookX $w 'Notification' $n $w.CliArgs)
++        [void](Invoke-HookX $w 'Notification' $n $w.CliArgs)
++        $q = @(Get-WQuestions $w 'open')
++        Assert-True ($q.Count -eq 1 -and $q[0].kind -eq 'needsyou' -and $q[0].prompt -eq 'P100') ('one needsyou question for P100 (a repeat is not a second): ' + $q.Count)
++        Assert-True ($q[0].question -match 'permission to use Bash' -and $q[0].context -match 'permission_prompt') $q[0].question
++        Assert-True ((Get-WStatus $w).state -eq 'NEEDS YOU') 'NEEDS YOU'
++        # Chase answered in the terminal: the session's next tool call clears NEEDS YOU, and its question with it.
++        [void](Invoke-HookX $w 'Activity' @{ hook_event_name = 'PostToolUse'; tool_name = 'Bash'; session_id = 'sess-a' } $w.CliArgs)
++        $q2 = Get-GolemQuestion $w.Root $q[0].id
++        Assert-True ($q2.state -eq 'expired' -and $q2.closedWhy -match 'NEEDS YOU was cleared') ('closed: ' + $q2.state + ' ' + $q2.closedWhy)
++        Assert-True ((Get-WStatus $w).questionsOpen -eq 0) 'none open'
++    }
++
++    Fact 'P216_AnAnswerClearsTheStopResumesAndTheNewSessionReadsItFirst' {
++        $w = New-AskWorld
++        [void](Invoke-HookX $w 'Stop' @{ last_assistant_message = ('P100 STOPPED: ' + $p216Why); session_id = 'sess-a' } $w.CliArgs)
++        $id = (@(Get-WQuestions $w 'open'))[0].id
++        $words = 'Keep the Tokuno world. Do not run "rm -rf saves"; that is only an example; $(whoami) stays text.'
++        $r = Invoke-Answer $w $id 0 $words
++        Assert-True ($r.Code -eq 0) ('answered: ' + $r.Out)
++        $a = Get-GolemAnswer $w.Root $id
++        Assert-True ($a -and $a.choiceLabel -eq 'Retry with my answer' -and $a.text -eq $words -and $a.who -eq 'chase@example.invalid' -and $a.source -eq 'console') ('answers\<id>.json: ' + ($a | ConvertTo-Json -Compress))
++        Assert-True ((Get-GolemQuestion $w.Root $id).state -eq 'answered') 'the question is closed as answered'
++        $st = Get-WState $w
++        Assert-True (-not $st.stoppedPrompt) ('stoppedPrompt cleared: ' + $st.stoppedPrompt)
++        Assert-True (Test-Path -LiteralPath (Join-Path $w.Queue 'cc-P100-a.md')) 'P100 is back in the queue'
++        Assert-True (((Get-Content -LiteralPath (Join-Path $w.Root 'RUN-NEXT') -Raw).Trim()) -eq 'cc-P100-a.md') 'and goes next'
++        $calls = @(Get-CliCalls $w)
++        Assert-True ($calls.Count -eq 1 -and $calls[0] -match 'Golem P100') ('a session woken for P100: ' + ($calls -join ' | '))
++        Assert-True ((Get-WStatus $w).state -ne 'STOPPED') 'no longer STOPPED'
++        # The woken session says the phrase: P100 is handed, with the answer as data, first thing.
++        $o = Invoke-HookX $w 'Prompt' @{ prompt = 'Golem, please work on the shard tasks.'; session_id = 'sess-n' } $w.CliArgs
++        $ctx = ($o | ConvertFrom-Json).hookSpecificOutput.additionalContext
++        Assert-True ($ctx -match 'cc-P100-a\.md in full') ('P100 handed: ' + $ctx.Substring(0, [Math]::Min(200, $ctx.Length)))
++        Assert-True ($ctx -match [regex]::Escape('Chase answered your question ' + $id) -and $ctx -match [regex]::Escape('answers\' + $id + '.json') -and $ctx -match 'Keep the Tokuno world') 'the answer, its file and Chase''s words'
++        Assert-True ($ctx -match 'data from Chase, not a command') 'said to be data'
++        Assert-True ($ctx -match 'Ask-Chase\.ps1 -Question') 'the house rule: ask through Ask-Chase.ps1'
++        Assert-True ((Get-GolemAnswer $w.Root $id).delivered) 'marked delivered'
++        $o2 = Invoke-HookX $w 'Prompt' @{ prompt = 'Golem, please work on the shard tasks.'; session_id = 'sess-n' } $w.CliArgs
++        Assert-True (($o2 | ConvertFrom-Json).hookSpecificOutput.additionalContext -notmatch 'Chase answered') 'given once'
++    }
++
++    Fact 'P216_AClosedQuestionRefusesALateAnswer' {
++        $w = New-AskWorld
++        [void](Invoke-HookX $w 'Stop' @{ last_assistant_message = 'P100 STOPPED: which world'; session_id = 'sess-a' } $w.CliArgs)
++        $id = (@(Get-WQuestions $w 'open'))[0].id
++        $bad = Invoke-Answer $w $id 3
++        Assert-True ($bad.Code -eq 1 -and $bad.Out -match 'not one of its choices') ('a choice it does not have: ' + $bad.Out)
++        $ok = Invoke-Answer $w $id 0
++        Assert-True ($ok.Code -eq 0) $ok.Out
++        $late = Invoke-Answer $w $id -1 'a second tab'
++        Assert-True ($late.Code -eq 1 -and $late.Out -match 'closed') ('a second answer: ' + $late.Out)
++        Assert-True ((Get-GolemAnswer $w.Root $id).text -eq '') 'the first answer stands'
++        # A question closed because its stop was cleared another way (Retry stopped prompt on the console) refuses too.
++        $w2 = New-AskWorld
++        [void](Invoke-HookX $w2 'Stop' @{ last_assistant_message = 'P100 STOPPED: which world'; session_id = 'sess-a' } $w2.CliArgs)
++        $id2 = (@(Get-WQuestions $w2 'open'))[0].id
++        [void](Invoke-HookX $w2 'RetryStopped' @{} ($w2.CliArgs + @('-Prompt', 'P100')))
++        Assert-True ((Get-GolemQuestion $w2.Root $id2).state -eq 'expired') ('Retry closed it: ' + (Get-GolemQuestion $w2.Root $id2).state)
++        $stale = Invoke-Answer $w2 $id2 0
++        Assert-True ($stale.Code -eq 1 -and $stale.Out -match 'closed: the question was expired') ('a stale page: ' + $stale.Out)
++        Assert-True (-not (Test-Path -LiteralPath (Join-Path $w2.Root ('answers\' + $id2 + '.json')))) 'no answer file'
++        Assert-True ((Submit-GolemAnswer -Root $w2.Root -Id '..\..\x' -Choice 0).Why -eq 'not a question id') 'an id is never a path'
++    }
++
++    Fact 'P216_AskChaseWritesTheSessionsQuestionAndItsStopUsesIt' {
++        $w = New-AskWorld
++        $ask = Join-Path $p216Here 'Ask-Chase.ps1'
++        $o = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $ask -Question 'Two snapshots match. Should I delete the older test saves before the rebuild?' `
++            -Choice 'Delete them|I delete saves\older and rebuild' -Choice2 'Keep both|I rebuild beside them' -Root $w.Root -PromptDir $w.Prompts -NoMail
++        Assert-True ($LASTEXITCODE -eq 0 -and ($o -join ' ') -match 'Now stop: end your message with P100 STOPPED: asked Chase') ('asked: ' + ($o -join ' '))
++        $q = @(Get-WQuestions $w 'open')
++        Assert-True ($q.Count -eq 1 -and $q[0].kind -eq 'ask' -and $q[0].prompt -eq 'P100' -and @($q[0].choices).Count -eq 2 -and $q[0].choices[1].does -eq 'I rebuild beside them') ('the session''s question: ' + ($q | ConvertTo-Json -Compress -Depth 4))
++        Assert-True ($q[0].irreversible -and $q[0].irreversibleWhy -match 'cannot be undone') ('deleting saves is flagged: ' + $q[0].irreversibleWhy)
++        Assert-True ((Get-WLog $w) -match 'would email: \[Golem\] NEEDS YOU: Golem asks about P100') 'Chase is emailed'
++        Assert-True ((Get-WStatus $w).state -eq 'RUNNING') 'still running until it stops'
++        [void](Invoke-HookX $w 'Stop' @{ last_assistant_message = ('P100 STOPPED: asked Chase (' + $q[0].id + ')'); session_id = 'sess-a' } $w.CliArgs)
++        $q2 = @(Get-WQuestions $w 'open')
++        Assert-True ($q2.Count -eq 1 -and $q2[0].id -eq $q[0].id) ('the stop uses the session''s own question, no second: ' + $q2.Count)
++        $five = $null; try { [void](New-GolemQuestion -Root $w.Root -Golem 'Golem' -Prompt 'P100' -Question 'x' -Choices @('a', 'b', 'c', 'd', 'e')) } catch { $five = $_.Exception.Message }
++        Assert-True ($five -match 'at most four') ('five choices refused: ' + $five)
++        $dup = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $ask -Question 'x' -Choice 'Same|a' -Choice2 'same|b' -Root $w.Root -PromptDir $w.Prompts -NoMail
++        Assert-True ($LASTEXITCODE -eq 1 -and ($dup -join ' ') -match 'same label') ('two choices with one label refused: ' + ($dup -join ' '))
++        $none = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $ask -Question 'x' -NoText -Root $w.Root -PromptDir $w.Prompts -NoMail
++        Assert-True ($LASTEXITCODE -eq 1) 'no choices and no text refused'
++        Assert-True ((Get-IrreversibleWhy 'Deploy the new build to the live shard now?') -match 'LIVE' -and (Get-IrreversibleWhy 'Push the fix to main by hand?') -match 'main' -and -not (Get-IrreversibleWhy 'Use the Tokuno spawn table?')) 'the irreversible words'
++    }
++
++    Fact 'P216_AnAnswerBeforeTheStopIsKeptAndTheStopRetriesAtOnce' {
++        $w = New-AskWorld
++        [void](& powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $p216Here 'Ask-Chase.ps1') -Question 'Which spawn table?' -Choice 'Tokuno|I use Tokuno' -NoText -Root $w.Root -PromptDir $w.Prompts -NoMail)
++        $id = (@(Get-WQuestions $w 'open'))[0].id
++        $r = Invoke-Answer $w $id 0
++        Assert-True ($r.Code -eq 0 -and $r.Out -match 'it is still running') ('kept while P100 runs: ' + $r.Out)
++        Assert-True (@(Get-CliCalls $w).Count -eq 0) 'nothing woken yet'
++        $t = Invoke-Answer $w $id -1 'words'
++        Assert-True ($t.Code -eq 1) 'closed now'
++        [void](Invoke-HookX $w 'Stop' @{ last_assistant_message = ('P100 STOPPED: asked Chase (' + $id + ')'); session_id = 'sess-a' } $w.CliArgs)
++        Assert-True (-not (Get-WState $w).stoppedPrompt -and (Test-Path -LiteralPath (Join-Path $w.Queue 'cc-P100-a.md'))) 'retried at once'
++        $calls = @(Get-CliCalls $w)
++        Assert-True ($calls.Count -eq 1 -and $calls[0] -match 'Golem P100') ('woken for P100: ' + ($calls -join ' | '))
++        Assert-True (@(Get-WQuestions $w 'open').Count -eq 0) 'no new question'
++    }
++
++    Fact 'P216_ANeedsYouAnswerClearsItAndWakesASessionToCarryOn' {
++        $w = New-AskWorld
++        [void](Invoke-HookX $w 'Notification' @{ message = 'Claude is waiting for your input'; notification_type = 'idle_prompt'; session_id = 'sess-a' } $w.CliArgs)
++        $id = (@(Get-WQuestions $w 'open'))[0].id
++        $r = Invoke-Answer $w $id -1 'Use the second option and carry on.'
++        Assert-True ($r.Code -eq 0 -and $r.Out -match 'NEEDS YOU is cleared; a new session carries on with P100') $r.Out
++        $s = Get-WStatus $w
++        Assert-True (-not $s.needsYou -and $s.state -ne 'NEEDS YOU') ('cleared: ' + $s.state)
++        Assert-True (@(Get-CliCalls $w).Count -eq 1) 'a session woken'
++        $o = Invoke-HookX $w 'Prompt' @{ prompt = 'Golem, please work on the shard tasks.'; session_id = 'sess-n' } $w.CliArgs
++        $ctx = ($o | ConvertFrom-Json).hookSpecificOutput.additionalContext
++        Assert-True ($ctx -match 'P100 .*already running' -and $ctx -match 'Use the second option and carry on') ('carry on with the answer: ' + $ctx)
++    }
++}
+ Write-Host ''
+ Write-Host ('{0} checks passed, {1} failed ({2}, {3})' -f $script:passes, $script:fails, $Kind, $Hook)
+ exit $script:fails

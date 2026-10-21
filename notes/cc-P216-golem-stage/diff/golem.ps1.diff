@@ -1,0 +1,253 @@
+--- base/golem.ps1
++++ p216/golem.ps1
+@@ -164,7 +164,7 @@
+     [ValidateSet('Stop','Notification','Activity','Watch','Prompt','Wake','Rest',
+                  'StatusLine','SessionStart','StopFailure','Compact','Nudge','LongRun','EndLongRun','WrapUp','StopPoint',
+                  'SelfWake','NightShift','AutoWake','NightShiftSet','CliCheck','CloseSessions','RunNext','RetryStopped',
+-                 'Guard','Lock','Integrate','MarathonSet','MergeRound','MergePause','AwaySet','MailPoll','Step','Clear','LaneFinish')][string]$Event = 'Stop',   # cc-P149 AwaySet (-Until <when> | -Off), MailPoll (the email commands)   # cc-P184: the worktree guard, the sign-up sheet, the integrator's merge; cc-P200 MarathonSet; cc-P208 the merge Golem's round and pause (-On pause, -Off resume)
++                 'Guard','Lock','Integrate','MarathonSet','MergeRound','MergePause','AwaySet','MailPoll','Step','Clear','LaneFinish','Ask','Answer')][string]$Event = 'Stop',   # cc-P216 Ask (-AskFile), Answer (-Question <id>)   # cc-P149 AwaySet (-Until <when> | -Off), MailPoll (the email commands)   # cc-P184: the worktree guard, the sign-up sheet, the integrator's merge; cc-P200 MarathonSet; cc-P208 the merge Golem's round and pause (-On pause, -Off resume)
+     [string]$InputFile,      # testing: read the hook JSON from a file instead of stdin
+     [switch]$DryRun,         # testing: no commit, no email, no file moves; prints what it would do
+     [string]$CommitScript,   # testing: run this stub instead of the real commit (also under -DryRun)
+@@ -203,7 +203,9 @@
+     [int]$StepDone = -1,     # cc-P153, -Event Step (Set-Step.ps1): steps done, of
+     [int]$StepTotal = -1,    # cc-P153, -Event Step: steps in all
+     [string]$StepText,       # cc-P153, -Event Step: the step under way now
+-    [string]$MailFile    # cc-P149, -Event MailPoll, testing: handle this .eml file (or every .eml in this folder) instead of the Gmail inbox
++    [string]$MailFile,   # cc-P149, -Event MailPoll, testing: handle this .eml file (or every .eml in this folder) instead of the Gmail inbox
++    [string]$Question,   # cc-P216, -Event Answer: the answered question's id (answers\<id>.json already written by Submit-GolemAnswer)
++    [string]$AskFile     # cc-P216, -Event Ask: Ask-Chase.ps1's JSON (question, choices, freeText, context, irreversible)
+ )
+ 
+ $ErrorActionPreference = 'Continue'
+@@ -251,6 +253,7 @@
+ # D:\UO\shard-migration) and claims prompts into claimed\<name>\. Shared: the queue, locks\, merge-queue\, usage.
+ . (Join-Path $PSScriptRoot 'Golems.ps1')
+ . (Join-Path $PSScriptRoot 'Away.ps1')   # cc-P149: away mode and email controls
++. (Join-Path $PSScriptRoot 'Questions.ps1')   # cc-P216: questions for Chase on the consoles, and his answers
+ $LockDir   = Join-Path $Root 'locks'
+ $RegFile   = Join-Path $Root 'golems.json'
+ $HandedDir = $PromptDir   # where a handed prompt waits until its commit: the prompts root, or claimed\<name>\ (multi)
+@@ -262,6 +265,9 @@
+         if ($s0.PSObject.Properties.Name -contains 'queueMode' -and $s0.queueMode) { $script:QueueMode = [string]$s0.queueMode }
+     }
+ } catch {}
++# cc-P216: the name in this Golem's question files (questions\<name>-P<nn>-...): its registry name, or Golem when one
++# Golem works alone.
++function Get-QName { if ($Multi -and $script:Me) { [string]$script:Me.name } else { 'Golem' } }
+ function Set-GolemPaths($g) {
+     $script:Me = $g
+     $script:IsIntegrator = [bool](Get-GolemProp $g 'integrator' $false)
+@@ -2242,6 +2248,9 @@
+         # cc-P131: STOPPED is a prompt that needs Chase; RESTING is the Golem pausing on purpose (restReason says why).
+         $sp = [string](Get-Prop $st 'stoppedPrompt' '')
+         $rr = [string](Get-Prop $st 'restReason' '')
++        # cc-P216: a stop or NEEDS YOU cleared any way (Retry, the terminal, the phrase, parked) closes its question.
++        $qOpen = @()
++        if (-not $DryRun) { try { [void](Sync-GolemQuestions $Root (Get-QName) $sp $cur $ny $NowTime); $qOpen = @(Get-GolemQuestions $Root (Get-QName) 'open') } catch { Log ('questions: ' + $_.Exception.Message) } }
+         if (-not $isOn) { $word = 'OFF' } elseif ($sp) { $word = 'STOPPED' } elseif ($ny) { $word = 'NEEDS YOU' } elseif ($rr) { $word = 'RESTING' } elseif ($cur) { $word = 'RUNNING' } else { $word = 'IDLE' }
+         $ready = Get-ReadyInfo $st $set
+         $nst = Get-NightShiftTimes $set
+@@ -2337,6 +2346,9 @@
+             readyAt         = $(if ($ready.At) { $ready.At.ToString('s') } else { $null })
+             readyHow        = [string]$ready.How
+             stoppedPrompt   = $sp
++            # cc-P216: the open questions for Chase (questions\<id>.json; the consoles read the files themselves).
++            questionsOpen   = $qOpen.Count
++            questionIds     = [object[]]@($qOpen | ForEach-Object { [string]$_.id })
+             autoWake        = [bool]$set.autoWake
+             # cc-P149: away mode (until, the parked prompts) and the last email commands (accepted, rejected).
+             away            = $(try { $aw = Get-AwayState; [ordered]@{ on = (Test-AwayOn); until = [string]$aw.until; since = [string]$aw.since; parked = [object[]]@(Get-ParkedPrompts | ForEach-Object { [ordered]@{ prompt = $_.Prompt; file = $_.File; why = $_.Why; at = $_.At; by = $_.By; branch = $_.Branch } }) } } catch { $null })
+@@ -2548,13 +2560,26 @@
+ function Get-HandOffText([string]$why, [string]$file, [int]$num) {
+     return "Golem hand-off. $why The next task is a new, separate prompt: read $file in full and carry it out exactly as written, " +
+            "following its Finishing section (notes file last line, and end your final chat message with P$num DONE, or P$num STOPPED: <reason> if you stop early). " +
+-           "Do not commit; the Golem commits after P$num DONE. If you need a decision from Chase, ask it plainly and stop; he will be emailed. " +
++           "Do not commit; the Golem commits after P$num DONE. When you must stop for Chase, ask through Ask-Chase.ps1 with choices where you can: powershell -NoProfile -ExecutionPolicy Bypass -File $(Join-Path $Root 'Ask-Chase.ps1') -Question ""<the whole question>"" -Choice ""<label>|<what you will then do>"" (-Choice2, -Choice3, -Choice4 for more; add -Irreversible when an answer cannot be undone), then end with P$num STOPPED: <reason>. Chase answers on the console's Golem card or by email, and a new session gets the answer. " +
+            "Run subagents in the foreground (run_in_background: false) unless the prompt says otherwise. " +
+            "$($MachineOutput -join ' and ') in shard-migration are machine output from the play-test importer and the overnight bot: they are committed with each prompt and are not a reason to stop. " +
+            "Chase follows progress remotely through your task list: start by making one task per numbered part of the prompt, plus tests, notes and commit preflight, and keep each marked in progress and completed as you go. " +
+            "If this session has no task-list tool (TaskCreate, TaskUpdate or TodoWrite), instead run powershell -NoProfile -ExecutionPolicy Bypass -File $(Join-Path $Root 'Set-Step.ps1') -Done <steps done> -Total <steps in all> -Now ""<the step you start>"" at the start and at each step."
+ }
+ 
++# cc-P216: Chase's answers to this Golem's questions about P<nn> that no session has been given yet, for the hand-off
++# (a retried STOPPED prompt, or a running one a new session carries on); each is marked delivered. '' when none.
++function Get-AnswerContext([string]$p) {
++    if (-not $p) { return '' }
++    $t = ''
++    foreach ($a in @(Get-PendingAnswers $Root (Get-QName) $p)) {
++        $t += Format-AnswerForSession $Root $a
++        if (-not $DryRun) { Set-AnswerDelivered $Root ([string]$a.id) $NowTime }
++        Log ('answer ' + [string]$a.id + ' handed to the session for ' + $p)
++    }
++    $t
++}
++
+ # Stop answers with decision block (CC carries on with the reason); UserPromptSubmit adds it as context.
+ function Write-HookText([string]$text) {
+     if ($Event -eq 'Prompt') { $out = @{ hookSpecificOutput = @{ hookEventName = 'UserPromptSubmit'; additionalContext = $text } } | ConvertTo-Json -Compress -Depth 4 }
+@@ -3272,7 +3297,7 @@
+         Send-Mail $subj ("{4}{5}Now running: {0}`r`n{1}{3}`r`n`r`nStill queued:`r`n  {2}" -f $next.Name, $title, $rest, $modelNote, $(if ($script:DoneLine) { $script:DoneLine + "`r`n`r`n" } else { '' }), $(if ($script:CodexMail -and $finished -and -not ($Multi -and -not $script:IsIntegrator)) { $script:CodexMail + "`r`n`r`n" } else { '' }))   # cc-P158
+     }
+ 
+-    Write-HookText ((Get-HandOffText $why $dest $num) + (Get-MultiHandOffText $num $branch))
++    Write-HookText ((Get-HandOffText $why $dest $num) + (Get-MultiHandOffText $num $branch) + (Get-AnswerContext "P$num"))
+     return $true
+ }
+ # cc-P184: what a session of one Golem among several must know: its own work copies (the prompt still says
+@@ -3589,19 +3614,21 @@
+ # until its commit), stoppedPrompt is cleared, lastHandled steps back so its DONE is committed, and it is picked to go
+ # next (RUN-NEXT). Retry-Stopped.ps1 then wakes a session on the prompt's own model. The session kept open for the
+ # STOPPED (cc-P161) is released to the usual closing rules.
+-if ($Event -eq 'RetryStopped') {
++# cc-P216: the body of Retry stopped prompt, for the RetryStopped event and an answered question. { Ok, Text }.
++function Invoke-RetryStoppedCore([string]$want) {
++    $no = { param($t) [pscustomobject]@{ Ok = $false; Text = $t } }
+     $st = Get-State
+     $sp = [string](Get-Prop $st 'stoppedPrompt' '')
+-    if (-not $sp) { [Console]::Out.Write('Not changed: No prompt is STOPPED (state.json stoppedPrompt is empty).'); exit 1 }
+-    if ($Prompt -and ($Prompt.ToUpperInvariant() -replace '^(\d)', 'P$1') -ne $sp.ToUpperInvariant()) { [Console]::Out.Write(("Not changed: {0} is the stopped prompt, not {1}." -f $sp, $Prompt)); exit 1 }
++    if (-not $sp) { return (& $no 'Not changed: No prompt is STOPPED (state.json stoppedPrompt is empty).') }
++    if ($want -and ($want.ToUpperInvariant() -replace '^(\d)', 'P$1') -ne $sp.ToUpperInvariant()) { return (& $no ("Not changed: {0} is the stopped prompt, not {1}." -f $sp, $want)) }
+     $n = [int]($sp -replace '^(?i)P', '')
+     $pf = Find-PromptFile $HandedDir $sp
+     if (-not $pf) {
+         $q = Find-PromptFile $QueueDir $sp
+-        if (-not $q) { [Console]::Out.Write(("Not changed: {0}'s prompt file is neither in {1} nor in the queue." -f $sp, $HandedDir)); exit 1 }
++        if (-not $q) { return (& $no ("Not changed: {0}'s prompt file is neither in {1} nor in the queue." -f $sp, $HandedDir)) }
+         $pf = $q   # already put back by hand: only the state is left to clear
+     } elseif (-not $DryRun) {
+-        if (Test-Path -LiteralPath (Join-Path $QueueDir $pf.Name)) { [Console]::Out.Write(("Not changed: {0} is already in the queue as well; sort out the two copies first." -f $pf.Name)); exit 1 }
++        if (Test-Path -LiteralPath (Join-Path $QueueDir $pf.Name)) { return (& $no ("Not changed: {0} is already in the queue as well; sort out the two copies first." -f $pf.Name)) }
+         Move-Item -LiteralPath $pf.FullName -Destination (Join-Path $QueueDir $pf.Name)
+         Remove-Item -LiteralPath ($pf.FullName + '.claim.json') -Force -ErrorAction SilentlyContinue
+         if ($Multi) { Remove-ClaimToken $PromptDir $pf.Name }
+@@ -3624,9 +3651,63 @@
+     }
+     Log "retry: $sp ($($pf.Name)) back in the queue, picked to go next"
+     Write-Status ''
+-    [Console]::Out.Write(("{0} is back in the queue and goes next ({1}); stoppedPrompt is cleared." -f $sp, $pf.Name))
++    [pscustomobject]@{ Ok = $true; Text = ("{0} is back in the queue and goes next ({1}); stoppedPrompt is cleared." -f $sp, $pf.Name) }
++}
++if ($Event -eq 'RetryStopped') {
++    $r = Invoke-RetryStoppedCore $Prompt
++    [Console]::Out.Write($r.Text)
++    exit $(if ($r.Ok) { 0 } else { 1 })
++}
++# cc-P216: a session asks Chase (Ask-Chase.ps1 hands its JSON here, so the question carries this Golem's name and running
++# prompt). The question file is written, Chase is emailed, and the card shows it at once. The session then stops.
++if ($Event -eq 'Ask') {
++    $j = $null
++    try { $j = [IO.File]::ReadAllText($AskFile, [Text.Encoding]::UTF8) | ConvertFrom-Json } catch { [Console]::Out.Write('Not asked: the question file could not be read: ' + $_.Exception.Message); exit 1 }
++    $st = Get-State
++    $cur = [string](Get-Prop $st 'current' ''); if (-not $cur) { $cur = [string](Get-Prop $st 'stoppedPrompt' '') }
++    $pp = $(if ([string]$j.prompt) { [string]$j.prompt } else { $cur })
++    try {
++        $q = New-GolemQuestion -Root $Root -Golem (Get-QName) -Prompt $pp -Kind ask -Question ([string]$j.question) -Choices @($j.choices) -FreeText ([bool]$j.freeText) `
++            -Context ([string]$j.context) -Irreversible:([bool]$j.irreversible) -Source 'Ask-Chase.ps1' -Now $NowTime
++    } catch { [Console]::Out.Write('Not asked: ' + $_.Exception.Message); exit 1 }
++    Log ('asked Chase: ' + [string]$q.id + ': ' + (Clip ([string]$q.question) 120))
++    Write-Status
++    $chs = @($q.choices | ForEach-Object { '  - ' + [string]$_.label + $(if ([string]$_.does) { ': ' + [string]$_.does } else { '' }) }) -join "`r`n"
++    Send-Mail ("NEEDS YOU: " + (Get-QName) + " asks about " + [string]$q.prompt + ": " + (Clip ([string]$q.question) 60)) ("The " + (Get-QName) + " Golem asks, on " + [string]$q.prompt + ":`r`n`r`n" + [string]$q.question + "`r`n`r`n" +
++        $(if ($chs) { "Choices:`r`n" + $chs + "`r`n`r`n" } else { '' }) + $(if ([bool]$q.freeText) { "You may also answer in your own words.`r`n`r`n" } else { '' }) +
++        $(if ([bool]$q.irreversible) { "CANNOT BE UNDONE: " + [string]$q.irreversibleWhy + ".`r`n`r`n" } else { '' }) + "Answer it on the web console's Golem card (question " + [string]$q.id + ").")
++    [Console]::Out.Write(("Asked: question {0} is on the consoles and Chase was emailed. Now stop: end your message with {1} STOPPED: asked Chase ({0}). The answer comes back to a new session." -f [string]$q.id, [string]$q.prompt))
+     exit 0
+ }
++# cc-P216: Chase answered (Answer-Question.ps1 wrote answers\<id>.json through Submit-GolemAnswer). Clears what the
++# question held: a STOPPED prompt goes back first in the queue (as Retry stopped prompt), NEEDS YOU is cleared. Exit 0:
++# wake a session now (Answer-Question.ps1 does, as Retry-Stopped.ps1); 3: the answer is kept for the prompt's next
++# session, nothing to wake; 1: refused.
++if ($Event -eq 'Answer') {
++    $q = Get-GolemQuestion $Root $Question
++    if (-not $q) { [Console]::Out.Write('Not resumed: no such question: ' + $Question); exit 1 }
++    if ([string]$q.golem -ine (Get-QName)) { [Console]::Out.Write(('Not resumed: {0} is the {1} Golem''s question, not {2}''s.' -f $Question, [string]$q.golem, (Get-QName))); exit 1 }
++    $a = Get-GolemAnswer $Root $Question
++    if (-not $a) { [Console]::Out.Write('Not resumed: ' + $Question + ' has no answer yet.'); exit 1 }
++    Log ('answer to ' + $Question + ' from ' + [string]$a.source + $(if ([string]$a.who) { ' (' + [string]$a.who + ')' } else { '' }) + ': ' + $(if ([string]$a.choiceLabel) { '"' + [string]$a.choiceLabel + '" ' } else { '' }) + (Clip ([string]$a.text) 100))
++    $st = Get-State
++    $sp = [string](Get-Prop $st 'stoppedPrompt' '')
++    $cur = [string](Get-Prop $st 'current' '')
++    $p = [string]$q.prompt
++    if ($sp -and $sp -ieq $p) {
++        $r = Invoke-RetryStoppedCore $p
++        if (-not $r.Ok) { [Console]::Out.Write('Answer saved, but ' + $r.Text); exit 1 }
++        [Console]::Out.Write($r.Text + ' The new session is given the answer first.')
++        exit 0
++    }
++    if ([string]$q.kind -eq 'needsyou') {
++        Write-Status ''
++        if ($cur -and $cur -ieq $p) { [Console]::Out.Write(('NEEDS YOU is cleared; a new session carries on with {0} and is given the answer first.' -f $p)); exit 0 }
++        [Console]::Out.Write(('NEEDS YOU is cleared. {0} is not running now, so nothing is woken; its next session is given the answer.' -f $p)); exit 3
++    }
++    [Console]::Out.Write(('Answer saved. {0} is not STOPPED now{1}: nothing is woken; its next session is given the answer (if {0} is still running, it stops and is retried as soon as it says STOPPED).' -f $p, $(if ($cur -ieq $p) { ' (it is still running)' } else { '' })))
++    exit 3
++}
+ if ($Event -eq 'SelfWake') {
+     $st = Get-State
+     $set = Get-Settings
+@@ -4191,7 +4272,7 @@
+             $state | Add-Member -NotePropertyName currentSession -NotePropertyValue $SessionId -Force; Save-State $state
+         }
+         Write-HookText ("The Golem is awake. $($state.current) ($(Join-Path $HandedDir $state.currentFile)) is already running: carry on with it as written, following its Finishing section. " +
+-                        "If this is a new session (the one that was running $($state.current) was closed before it finished), nothing was skipped: read that prompt file in full and any notes file it had started in D:\UO\shard-migration\notes, then carry on from where it stopped.")
++                        "If this is a new session (the one that was running $($state.current) was closed before it finished), nothing was skipped: read that prompt file in full and any notes file it had started in D:\UO\shard-migration\notes, then carry on from where it stopped." + (Get-AnswerContext ([string]$state.current)))
+         exit 0
+     }
+     if (-not (Hand-Off $state "The Golem is starting the queue.")) {
+@@ -4330,7 +4411,19 @@
+     $m = [string]$h.message
+     Write-Status ("waiting on you: " + (Clip $m 80))
+     $kind = [string]$h.notification_type
+-    Send-Mail ("NEEDS YOU: {0}" -f (Clip $m 80)) ("Claude Code is waiting on you.`r`n`r`nTask: {0}`r`nType: {1}`r`nFolder: {2}`r`n`r`n{3}" -f $state.current, $kind, $cwd, $m)
++    # cc-P216: the question on the consoles (not while a STOPPED prompt's own question waits: that one is the question).
++    $qid = ''
++    if (-not $DryRun -and -not [string](Get-Prop $state 'stoppedPrompt' '')) {
++        try {
++            $last = Get-LastText $h
++            $qn = New-GolemQuestion -Root $Root -Golem (Get-QName) -Prompt ([string]$state.current) -Kind needsyou -Question ("Claude Code is waiting on you: " + $m) `
++                -Choices @(('Carry on|A new session carries on with ' + $(if ($state.current) { [string]$state.current } else { 'the queue' }) + ', reading your words first')) -FreeText $true `
++                -Context ("Type: " + $kind + "`nFolder: " + $cwd + $(if ($last) { "`n`nThe session's last message:`n" + (Clip $last 4000) } else { '' })) -Source 'notification' -Now $NowTime
++            $qid = [string]$qn.id
++            Write-Status
++        } catch { Log ('question not written: ' + $_.Exception.Message) }
++    }
++    Send-Mail ("NEEDS YOU: {0}" -f (Clip $m 80)) ("Claude Code is waiting on you.`r`n`r`nTask: {0}`r`nType: {1}`r`nFolder: {2}`r`n`r`n{3}{4}" -f $state.current, $kind, $cwd, $m, $(if ($qid) { "`r`n`r`nAnswer it on the web console's Golem card (question $qid), or in the terminal." } else { '' }))
+     exit 0
+ }
+ 
+@@ -4393,8 +4486,32 @@
+     Save-State $state
+     Set-SessionHeld "P$n STOPPED"   # cc-P161
+     Log "P$n STOPPED, no commit"
++    # cc-P216: Chase answered the session's own question before it stopped: retried at once, the answer handed on.
++    if (-not $DryRun -and @(Get-PendingAnswers $Root (Get-QName) "P$n").Count) {
++        $r = Invoke-RetryStoppedCore "P$n"
++        Log ("P$n STOPPED after Chase had answered its question: " + $r.Text)
++        if ($r.Ok) {
++            $w = Invoke-SelfWake (Get-State) 'answered before it stopped' "P$n" ''
++            if (-not $w.Ok) { Write-Status ("P$n was answered; the wake waits: " + (Clip $w.Why 60)) }
++            exit 0
++        }
++    }
++    # cc-P216: the question on the consoles: the session's own (Ask-Chase.ps1), or one made from the STOPPED reason.
++    $qid = ''
++    if (-not $DryRun) {
++        try {
++            $asked = @(Get-GolemQuestions $Root (Get-QName) 'open' | Where-Object { [string]$_.prompt -eq "P$n" -and [string]$_.kind -eq 'ask' })
++            if ($asked.Count) { $qid = [string]$asked[-1].id }
++            else {
++                $qn = New-GolemQuestion -Root $Root -Golem (Get-QName) -Prompt "P$n" -Kind stopped -Question ("P$n stopped: " + $why) `
++                    -Choices @(("Retry with my answer|P$n goes back first in the queue and a new session starts it again, reading your answer first")) -FreeText $true `
++                    -Context ("CC's last message:`n" + (Clip $text 6000)) -Source 'stopped' -Now $NowTime
++                $qid = [string]$qn.id
++            }
++        } catch { Log ('question not written: ' + $_.Exception.Message) }
++    }
+     Write-Status ("P$n stopped early: " + (Clip $why 70))
+-    Send-Mail "P$n STOPPED, needs you: $(Clip $why 60)" ("CC stopped P{0} early and needs a decision from you. Nothing was committed and the queue is paused until you reply to CC (the Golem does not wake a session after a STOPPED).`r`n`r`nReason: {2}`r`n`r`nCC's last message (end):`r`n`r`n{1}" -f $n, (Clip $text 3000), $why)
++    Send-Mail "P$n STOPPED, needs you: $(Clip $why 60)" ("CC stopped P{0} early and needs a decision from you. Nothing was committed and the queue is paused until you answer (the Golem does not wake a session after a STOPPED).{3}`r`n`r`nReason: {2}`r`n`r`nCC's last message (end):`r`n`r`n{1}" -f $n, (Clip $text 3000), $why, $(if ($qid) { "`r`n`r`nAnswer it on the web console's Golem card (question $qid): the answer goes back to the Golem and it carries on." } else { '' }))
+     Send-Notice "Golem: P$n STOPPED, needs you" (Clip $why 120)
+     exit 0
+ }

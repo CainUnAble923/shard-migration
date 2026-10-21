@@ -1,0 +1,91 @@
+--- base/Remote-Agent.ps1
++++ p216/Remote-Agent.ps1
+@@ -9,6 +9,8 @@
+                                  asleep; each command is handed out once
+       POST /api/agent/result     what each command printed, its last line and its exit code (onto the Timeline)
+       POST /api/agent/status     this Golem's status-<name>.json, when it changes and every minute
++      POST /api/agent/questions  cc-P216: this Golem's questions for Chase (questions\<name>-P*.json: the open ones in
++                                 full, the last five closed with their answers), when they change and every 5 minutes
+       GET  /api/agent/ping       -Ping: does the game PC know this Golem by name, with this secret? (exit 0 = yes)
+       POST /api/agent/ready      -Report <file> -Kind ready: Test-GolemReady.ps1's readiness file (exit 0 = taken)
+       GET  /api/agent/kit        cc-P222: the game PC's Golem kit manifest, every KitMinutes (10); what differs here is
+@@ -24,8 +26,10 @@
+   A command runs through this PC's own Golem scripts, exactly as the Shard Console runs them, and only these (the
+   allowlist; anything else is refused and said so): Wake-Golem.ps1 -Model, Start-Golem.ps1, Stop-Golem.ps1,
+   Poke-Golem.ps1, Wrap-Up.ps1 [-Cancel], Find-StoppingPoint.ps1 [-Cancel], Set-RunNext.ps1 -Prompt P<nn> | -Cancel,
+-  Retry-Stopped.ps1 -Prompt P<nn>, cc-P159's Lane-Now.ps1 [-Cancel] (Send to the second PC, for a Codex lane), each
+-  with -Golem <name> -Root <root>. Never golem.ps1 (the hook) itself.
++  Retry-Stopped.ps1 -Prompt P<nn>, cc-P159's Lane-Now.ps1 [-Cancel] (Send to the second PC, for a Codex lane),
++  cc-P216's Answer-Question.ps1 -Id <question> -Choice <n> [-TextB64 <Chase's words, base64>] -Who <login> -Source remote
++  (Chase's answer from the web console: written here by Submit-GolemAnswer, then the Golem resumes), each with
++  -Golem <name> -Root <root>. Never golem.ps1 (the hook) itself.
+ 
+       Remote-Agent.ps1 -Golem <name> [-Server <url>] [-Once] [-Ping] [-Report <file> -Kind ready|status]
+                        [-Root D:\UO\golem] [-KeyFile <file>] [-SaveKey]
+@@ -76,11 +80,18 @@
+     'retry'            = @{ Script = 'Retry-Stopped.ps1'; Inputs = @('prompt') }
+     'lanenow'          = @{ Script = 'Lane-Now.ps1' }                        # cc-P159: Send to the second PC (a Codex lane)
+     'lanenow-cancel'   = @{ Script = 'Lane-Now.ps1'; Fixed = @('-Cancel') }
++    'answer'           = @{ Script = 'Answer-Question.ps1'; Inputs = @('question', 'choice', 'textb64', 'who'); Fixed = @('-Source', 'remote') }   # cc-P216
+ }
+ # What each input may be, its switch, and how it is written (as the web console's server.py INPUT_RULES).
+ $script:InputRules = @{
+     model  = @{ Rx = '^(?i)(auto|fable|opus|sonnet)$'; Flag = '-Model'; Norm = { param($v) $v.Substring(0, 1).ToUpperInvariant() + $v.Substring(1).ToLowerInvariant() } }
+     prompt = @{ Rx = '^(?i)P\d{1,4}$'; Flag = '-Prompt'; Norm = { param($v) $v.ToUpperInvariant() } }
++    # cc-P216: an answer. The id is a question file's name; Chase's words travel as base64 (never a shell's or a
++    # parameter's to read); an empty optional input is left out.
++    question = @{ Rx = '^[A-Za-z][A-Za-z0-9]{0,23}-P\d{1,4}-\d{8}-\d{6}-[0-9a-f]{4}$'; Flag = '-Id'; Norm = { param($v) $v } }
++    choice   = @{ Rx = '^(-1|[0-3])$'; Flag = '-Choice'; Norm = { param($v) $v } }
++    textb64  = @{ Rx = '^([A-Za-z0-9+/]{4}){0,3000}([A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$'; Flag = '-TextB64'; Norm = { param($v) $v }; Optional = $true }
++    who      = @{ Rx = '^[A-Za-z0-9@._+][A-Za-z0-9@._+ -]{0,79}$'; Flag = '-Who'; Norm = { param($v) $v }; Optional = $true }
+ }
+ 
+ function Write-AgentLog([string]$m) {
+@@ -140,7 +151,8 @@
+         $v = ''
+         if ($cmd.inputs -and $cmd.inputs.PSObject.Properties.Name -contains $name) { $v = ([string]$cmd.inputs.$name).Trim() }
+         $rule = $script:InputRules[$name]
+-        if ($v -notmatch $rule.Rx) { return @{ Ok = $false; Why = ('refused: the ' + $name + ' is not allowed: ' + $v.Substring(0, [Math]::Min(24, $v.Length))) } }
++        if ($v -eq '' -and $rule.Optional) { continue }
++        if ($v -cnotmatch $rule.Rx) { return @{ Ok = $false; Why = ('refused: the ' + $name + ' is not allowed: ' + $v.Substring(0, [Math]::Min(24, $v.Length))) } }
+         $argv += @($rule.Flag, (& $rule.Norm $v))
+     }
+     $path = Join-Path $Root $a.Script
+@@ -172,6 +184,18 @@
+     $script:LastStatus = $t; $script:LastStatusAt = Get-Date
+ }
+ 
++function Send-AgentQuestions([switch]$Force) {
++    # cc-P216: this Golem's questions (Questions.ps1's card: the open ones in full, the last five closed with their
++    # answers), when they change or every 5 minutes, so the game PC's cards show them and can answer them.
++    $lib = Join-Path $Root 'Questions.ps1'
++    if (-not (Test-Path -LiteralPath $lib)) { return }
++    . $lib
++    $t = ([ordered]@{ golem = $Golem; questions = (Get-QuestionCard $Root $Golem) } | ConvertTo-Json -Depth 8 -Compress)
++    if (-not $Force -and $t -eq $script:LastQuestions -and ((Get-Date) - $script:LastQuestionsAt).TotalMinutes -lt 5) { return }
++    $null = Invoke-AgentApi 'POST' '/api/agent/questions' $t
++    $script:LastQuestions = $t; $script:LastQuestionsAt = Get-Date
++}
++
+ function Sync-AgentKit {
+     # cc-P222: the game PC's kit, compared and installed here. Returns a line for the log ('' when nothing to do).
+     $m = $null
+@@ -241,6 +265,7 @@
+ }
+ 
+ $script:LastStatus = ''; $script:LastStatusAt = [datetime]::MinValue
++$script:LastQuestions = ''; $script:LastQuestionsAt = [datetime]::MinValue
+ $script:KitAt = [datetime]::MinValue; $script:AgentRestart = $false
+ Write-AgentLog ('agent for the ' + $Golem + ' Golem started (' + $Server + ')' + $(if ($Once) { ', once' } else { '' }))
+ while ($true) {
+@@ -255,6 +280,10 @@
+             catch { Write-AgentLog ('result for ' + [string]$c.key + ' not posted: ' + (Get-AgentError $_)) }
+         }
+         Send-AgentStatus -Force:$Once
++        try { Send-AgentQuestions -Force:$Once } catch {
++            $code = $null; try { $code = [int]$_.Exception.Response.StatusCode } catch { }
++            if ($code -ne 404) { Write-AgentLog ('questions not posted: ' + (Get-AgentError $_)) }   # 404: a web console from before cc-P216
++        }
+         # cc-P222: the kit in step with the game PC's.
+         if ($KitMinutes -gt 0 -and ((Get-Date) - $script:KitAt).TotalMinutes -ge $KitMinutes) {
+             $script:KitAt = Get-Date
