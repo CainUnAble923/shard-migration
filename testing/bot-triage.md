@@ -1096,3 +1096,20 @@ Added by cc-P193 (2026-10-20).
 | P193-5 | EYES | Staff-placed champions on a boat; the fight is Chase's eyes |
 | P193-6 | BOT-PARTIAL | The set bonus packets are server-sent; the bait bonus has nothing to bite until baits land |
 | P193-7 | CC | The test world loads and saves on the new image: done by CC on a scratch copy |
+
+### P195
+
+Added by cc-P195 (2026-10-21).
+
+| id | bucket | reason |
+|---|---|---|
+| P195-1 | BOT-PARTIAL | The report, the controller's props and the placed items are server-sent; whether body 1248 reads as Exodus is Chase's eyes |
+| P195-2 | BOT-PARTIAL | Names, the two barrier messages and the bolt are server-sent; the gold plate is Chase's eyes |
+| P195-3 | BOT | The sense message, the chest's visibility, contents and deletion are all server-sent |
+| P195-4 | BOT-PARTIAL | The gump's clilocs, the card, the hue and the shock are server-sent; the circuit art is Chase's eyes |
+| P195-5 | BOT-PARTIAL | The two messages, the deed and the components are server-sent; the machine's look is Chase's eyes |
+| P195-6 | BOT-PARTIAL | Every refusal and success message, the tome, the move and the robes are server-sent; the particles are Chase's eyes |
+| P195-7 | EYES | A 50,000-hit boss and the gold rain are Chase's fight; the messages are the bot's |
+| P195-8 | BOT-PARTIAL | The gump's clilocs and the dagger swap are server-sent; the gump art is Chase's eyes |
+| P195-9 | BOT-PARTIAL | The craft entries and the dig message are server-sent once the recipe is known; the recipe's own source is the gate's |
+| P195-10 | CC | A headless boot of the image on a scratch world, done by the prompt |
