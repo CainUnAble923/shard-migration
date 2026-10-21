@@ -423,5 +423,8 @@ Finishing: notes in `notes\cc-P2xx-...md`, last line `P2xx DONE`.
   - how a pre-HS client copes with ServUO's unconditional 0xF6. That one is moot here: pinned filters on
     `ns.HighSeas`.
 - The clones live only in this session's scratchpad.
+- Commit refusal ("this copy is on 'main'"): both copies read `golem/Stone/P268` when I checked. The notes were already
+  committed there (`be5ac0d`), and `Commit-ShardWork.ps1 -DryRun` read clean for code, docs and scripts. Nothing was
+  changed to fix it, and no ignore entry was needed.
 
 P268 DONE
