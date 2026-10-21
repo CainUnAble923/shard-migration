@@ -1096,3 +1096,17 @@ Added by cc-P193 (2026-10-20).
 | P193-5 | EYES | Staff-placed champions on a boat; the fight is Chase's eyes |
 | P193-6 | BOT-PARTIAL | The set bonus packets are server-sent; the bait bonus has nothing to bite until baits land |
 | P193-7 | CC | The test world loads and saves on the new image: done by CC on a scratch copy |
+
+### P199
+
+Added by cc-P199 (2026-10-20).
+
+| id | bucket | reason |
+|---|---|---|
+| P199-1 | BOT-PARTIAL | The skill use, the three kits' gumps, their buttons and cliloc 1159009 are server-sent; whether the puzzles look right is Chase's eyes |
+| P199-2 | EYES | A staff placement command and a vendor's buy list |
+| P199-3 | BOT-PARTIAL | The craft entry and the coop in the pack are server-sent; stabling is a context-menu action the bot does not make |
+| P199-4 | BOT | The new mobile, its owner and the broken head after a kill are server-sent |
+| P199-5 | EYES | House items' gumps and art |
+| P199-6 | EYES | Art and tooltips of the small items |
+| P199-7 | CC | The test world loads and saves on the new image: done by CC on a scratch copy |
