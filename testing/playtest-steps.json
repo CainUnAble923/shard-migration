@@ -2879,6 +2879,59 @@
    ],
    "pass": "Both boots load and save clean with no new exceptions.",
    "check": "CC: done in the prompt (notes, Headless boot)."
+  },
+  "P198-1": {
+   "where": "Test shard, SL TEST - Admin (Eve); after `[GenEodon dryrun` then `[GenEodon` once (rebuild the test shard first)",
+   "do": [
+    "Use any public moongate (Britain: `[go 1336 1997 5`) with a character on the 7.0.117 client and pick Ter Mur, Valley of Eodon",
+    "Step back onto the gate you arrive beside and pick Ter Mur, Royal City"
+   ],
+   "pass": "You arrive at 719 1863 40 in the valley, on the ring of dirt, beside a blue moongate; that gate takes you on to Royal City.",
+   "check": "Bot: the moongate gump's Valley of Eodon entry and the arrival location; Chase: the gate on the dirt ring by eye."
+  },
+  "P198-2": {
+   "where": "Test shard, SL TEST - Admin (Eve); after `[GenEodon dryrun` then `[GenEodon` once (rebuild the test shard first)",
+   "do": [
+    "`[go 701 2106 40` (the Jukari camp) as a player character; walk among the tribesmen",
+    "Attack one warrior"
+   ],
+   "pass": "The tribesmen (names like \"X the Jukari warrior\", shamans and a chieftan) ignore you until you attack; then the others of that tribe nearby turn on you and one shouts Ahhhh-OOOO! Ahhh-OOOO!. Other tribes are elsewhere: Kurak `[go 362 1848 0`, Barrab `[go 150 1769 80`, Urali `[go 412 1595 40`, Sakkhra `[go 554 1467 40`.",
+   "check": "Bot: the names, staying unattacked, the rally and the 1156584 shout; Chase: the outfits and hues by eye."
+  },
+  "P198-3": {
+   "where": "Test shard, SL TEST - Admin (Eve); after `[GenEodon dryrun` then `[GenEodon` once (rebuild the test shard first)",
+   "do": [
+    "`[go 678 1760 40` and double-click the vines at 678 1759"
+   ],
+   "pass": "*The vines looks as though they may be strong enough to support climbing...* and you stand on the clifftop at 679 1757 100, in the Barako village, among Barako warriors and shamans.",
+   "check": "Bot: the 1156290 message, the position and the Barako tribesmen there; Chase: the clifftop by eye."
+  },
+  "P198-4": {
+   "where": "Test shard, SL TEST - Admin (Eve); after `[GenEodon dryrun` then `[GenEodon` once (rebuild the test shard first)",
+   "do": [
+    "`[go 425 1404 40` (the dinosaur valley and swamp)",
+    "`[go 506 1582 40` (wildlife), `[go 175 1861 0` (the desert)"
+   ],
+   "pass": "Allosaurus, anchisaur, archaeosaurus, dimetrosaur, gallusaurus, najasaurus and saurosaurus roam with alligators, frogs, toads and corpsers; tropical birds, gorillas, panthers, tigers, ostards and a wandering shaman in the jungle; giant black widows and desert scorpions in the desert. No Myrmidex.",
+   "check": "Bot: the mobiles at their places; Chase: that the dinosaurs animate on the 7.0.117 client."
+  },
+  "P198-5": {
+   "where": "Test shard, SL TEST - Admin (Eve), any field",
+   "do": [
+    "`[add Infernus` and let it fight a player character",
+    "`[add DragonTurtleHatchling`, kill it, carve the corpse",
+    "`[add CardOfSemidar` and double-click it"
+   ],
+   "pass": "Patches of fire appear round the infernus's target every 10-15 seconds and burn whoever steps on them (*The trail of fire scorches you, setting you ablaze!*); the hatchling's corpse gives four dragon turtle scutes; the card shows a legend card picture.",
+   "check": "Bot: the fire items, the 1156084 message and the damage, the scutes in the corpse, the card's gump id; Chase: the card picture by eye."
+  },
+  "P198-6": {
+   "where": "CC, test shard console",
+   "do": [
+    "Start the test shard on the P198 image; `eodon status`, `eodon dryrun`, `eodon generate`, save, restart, `eodon delete`"
+   ],
+   "pass": "Status MISSING, then 49 objects and the gate present; the world reloads with 345 more mobiles and no exception.",
+   "check": "CC: done by cc-P198 (notes, Test shard)."
   }
  }
 }

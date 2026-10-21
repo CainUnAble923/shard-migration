@@ -1125,6 +1125,19 @@ Added by cc-P196 (2026-10-20).
 | P196-6 | BOT-PARTIAL | The names, the property line, the aura message and the two captain drops are server-sent; the gear and the special's effects are Chase's |
 | P196-7 | CC | A headless boot of the image on a scratch world, done by the prompt |
 
+### P198
+
+Added by cc-P198 (2026-10-21).
+
+| id | bucket | reason |
+|---|---|---|
+| P198-1 | BOT-PARTIAL | The moongate gump's Valley of Eodon entry and where the player lands are server-sent; the gate on the dirt ring is Chase's eyes |
+| P198-2 | BOT-PARTIAL | The names, being left alone, the tribe's rally and the 1156584 shout are server-sent; the outfits and hues are Chase's |
+| P198-3 | BOT | The 1156290 message, the new position on the clifftop and the Barako tribesmen there are server-sent |
+| P198-4 | BOT-PARTIAL | The creatures at their places are server-sent; whether the dinosaurs animate on the client is Chase's eyes |
+| P198-5 | BOT-PARTIAL | The fire items, their message and damage, the scutes in the corpse and the card's gump id are server-sent; the card picture is Chase's |
+| P198-6 | CC | The test shard start, the console generation and the reload, done by the prompt |
+
 ### P199
 
 Added by cc-P199 (2026-10-20).
