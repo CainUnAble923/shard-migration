@@ -1,0 +1,51 @@
+Overnight play tests FAILED on 83b1f97: the checks wrote no results.json (exit 1)
+
+The overnight play-test run stopped before it finished.
+
+Reason: the checks wrote no results.json (exit 1)
+Run folder: D:\UO\shard-migration\testing\bot-runs\2026-10-20-2207
+
+Archive: nothing older than 14 days.
+
+The last 40 lines of run.log:
+
+#28 exporting attestation manifest sha256:740b66ba59fccde357a69900009bb457415a34505e9f3dc35ac449fea3b9a299 0.0s done
+#28 exporting manifest list sha256:4d4029336b890b2564925861064ffac17777475ab146a972517a27dd6f560b34 0.0s done
+#28 naming to docker.io/library/sl-modernuo:bot done
+#28 unpacking to docker.io/library/sl-modernuo:bot done
+#28 DONE 0.1s
+
+Built sl-modernuo:bot with patches applied and 1743 shard test(s) passing.
+22:07:38  == making the scratch world
+22:07:38    copied the test world backup 2026-10-21-03-05-00 (Backups\Automatic) into D:\UO\bot-shard\world\Saves
+22:07:38    setting serverListing.address = 127.0.0.1
+22:07:38    setting serverListing.serverName = Shattered Legacy BOT
+22:07:38    setting accountHandler.enableAutoAccountCreation = True
+22:07:38    setting testCenter.enable = True
+22:07:38    setting testCenter.skillGainMultiplier = 5.0
+22:07:38    setting clusterf.testShard.allowAccountWipe = True
+22:07:38    setting assistants.enableNegotiation = False
+22:07:38    setting clientVerification.minRequired = 7.0.117.0
+22:07:39    account wipe requested (bot-2026-10-20-2207-01e3e20c): keeps the world, leaves slbot-admin; the password is in secrets.local.json only
+22:07:39  == starting sl-modernuo-bot on 127.0.0.1:2595
+22:07:39     Network sl-uo-bot_default Creating 
+22:07:39     Network sl-uo-bot_default Creating 
+22:07:39     Network sl-uo-bot_default Created 
+22:07:39     Network sl-uo-bot_default Created 
+22:07:39     Container sl-modernuo-bot Creating 
+22:07:39     Container sl-modernuo-bot Created 
+22:07:39     Container sl-modernuo-bot Starting 
+22:07:39     Container sl-modernuo-bot Started 
+22:08:04    wipe: done | [AccountWipe] DONE: request bot-2026-10-20-2207-01e3e20c: deleted 7 accounts, 0 characters, 0 items, 0 houses, 0 pets, 0 boats, 0 vendors, 0 guilds; kept 0 houses with no owner; admin 'slbot-admin' made (Owner); world saved; request removed
+22:08:04  == running the checks
+22:08:05    Traceback (most recent call last):
+22:08:05      File "<frozen runpy>", line 198, in _run_module_as_main
+22:08:05      File "<frozen runpy>", line 88, in _run_code
+22:08:05      File "D:\ShatteredLegacy\tools\playtest-bot\uobot\run.py", line 17, in <module>
+22:08:05        from .client import Client, Cliloc, LoginFailed, Transcript
+22:08:05      File "D:\ShatteredLegacy\tools\playtest-bot\uobot\client.py", line 18, in <module>
+22:08:05        from . import packets as P
+22:08:05    SyntaxError: source code string cannot contain null bytes
+22:08:05  == FAILED: the checks wrote no results.json (exit 1)
+22:08:05    rule 1 held
+22:08:05    Archive: nothing older than 14 days.

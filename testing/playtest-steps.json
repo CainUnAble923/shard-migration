@@ -9,19 +9,19 @@
     "Look at the MAKE X button at the bottom of the craft menu"
    ],
    "pass": "The MAKE X label is readable text, not blank.",
-   "check": "Not built yet: admin adds tinker tools and a smith hammer, opens each craft gump and asserts a MAKE X entry is in the layout text; result in the nightly report once built."
+   "check": "Bot (cc-P223): the admin adds TinkerTools and a SmithHammer, opens each craft gump, opens the first item's page and asserts the MAKE X html line is in the layout. Chase: that the label draws in the client."
   },
   "T-002": {
    "check": "Not built yet: a fresh player takes a New Haven training quest, uses the skill, and the bot asserts skill-update packets raise it and the quest-complete message arrives; result in the nightly report once built."
   },
   "T-003": {
-   "check": "Not built yet: gargoyle player at Blacksmith/Tailoring 100 crafts gargish plate and gargish cloth, asserts the items in pack and the worn-item packet after equipping; result in the nightly report once built."
+   "check": "Bot (cc-P223): a fresh gargoyle at Blacksmithy and Tailoring 100 beside a forge and anvil crafts gargish platemail arms and gargish cloth arms (after [Recipes learnall when the recipe gate hides them) and equips each; asserts both made and worn on a layer."
   },
   "T-004": {
-   "check": "Not built yet: admin at 120 in all four skills walks every category of Blacksmithy, Tailoring, Tinkering, Carpentry and asserts no new entry needs 0 or 120; result in the nightly report once built."
+   "check": "Bot (cc-P223): the admin at 120 Blacksmithy, Tailoring, Tinkering and Carpentry walks every group and item page of the four systems and compares each entry our registrations add (server/customizations/Engines/Craft/*Registrations.cs) with the SKILLS line on its page: listed, and at the registered minimum, never 0 or 120."
   },
   "T-005": {
-   "check": "Not built yet: the same walk as T-004, asserting no entry text names WoodPulp or WorkableGlass; result in the nightly report once built."
+   "check": "Bot (cc-P223): the same walk as T-004, scanning every item name and every MATERIALS line for WoodPulp or WorkableGlass; asserts none."
   },
   "T-006": {
    "check": "Not built yet: admin runs `[GenerateSpawners` over the ten files on the scratch world, goes to Ter Mur, the Abyss and the Underworld and asserts mobiles in range at each; result in the nightly report once built."
@@ -65,22 +65,22 @@
     "`[add TreasureLevel1h` a few times (it picks one of three crate graphics)"
    ],
    "pass": "Each one draws as a proper crate/chest, not a placeholder or a wrong object.",
-   "check": "Not built yet: admin adds TreasureLevel1h, double-clicks it for the locked message, unlocks it and asserts the trap fires (HP drop or message); result in the nightly report once built."
+   "check": "Bot (cc-P223): the admin adds a TreasureLevel1h beside the player; the player's double-click gets 'It appears to be locked.'; the admin sets Locked false; the player's next double-click sets off the trap (hits drop or a trap message) and the one after opens it, with the gold and bolts inside. Chase: that each of the three crate graphics draws right."
   },
   "T-023": {
    "check": "Not built yet: admin goes to a LightInTheVoid spawn, a thief at Stealing 120 steals it; assert the item reaches the pack or record the refusal text; result in the nightly report once built."
   },
   "T-024": {
-   "check": "Not built yet: admin goes to the Labyrinth (Malas), asserts a mobile named Miasma near its spawner, kills it and asserts a corpse; result in the nightly report once built."
+   "check": "Bot (cc-P223): the admin runs [GenerateSpawners Data/Spawns/shared/malas/Labyrinth.json on the scratch world, goes to the Miasma spawner at 335 1920 0 on Malas, opens its gump (it names Miasma), presses Total Respawn until a Miasma stands there, pins it at 1 hit and kills it; asserts the spawner entry, the kill and the corpse."
   },
   "T-025": {
-   "check": "Not built yet: admin goes to Twisted Weald (Ilshenar), asserts Lady Lissith, kills her and asserts a corpse; result in the nightly report once built."
+   "check": "Bot (cc-P223): as T-024 for Data/Spawns/shared/ilshenar/TwistedWeald.json and the spawner at 2177 1210 -60 on Ilshenar (Lady Lissith shares it with Lady Sabrix, so up to ten respawns)."
   },
   "T-026": {
    "check": "Not built yet: admin runs `[GenStealArties`, waits 15 minutes, goes to TerMur 1134 1204 7, asserts the HalfEatenSupperArtifact item and a thief steals it into pack; result in the nightly report once built."
   },
   "T-027": {
-   "check": "Not built yet: admin adds TreasureMapChest 5 five times, lists contents, asserts about one orc or tribal mask per chest with random properties (OPL); result in the nightly report once built."
+   "check": "Bot (cc-P223): the admin adds five TreasureMapChest 5, disarms and unlocks each ([set TrapType None Locked false), opens it and counts orc (0x141B) and tribal (0x154B) masks among the contents, reading each mask's property list; asserts at least two masks over the five chests, each with properties beyond its name."
   },
   "T-028": {
    "where": "Shard Console, Test shard tab; then Test shard, SL TEST - Admin (Eve)",
@@ -107,16 +107,16 @@
    "check": "Built: new player's welcome gump names the Guild Board and the board is within range (passed 3/3 on 2026-10-15); result is the bot chip on the card and the nightly report."
   },
   "T-041": {
-   "check": "Not built yet: a player with ingots joins the Smiths; assert the creation tools for the guild skills arrive and the ingot count is unchanged; result in the nightly report once built."
+   "check": "Bot (cc-P223): the player with iron ingots is moved to the Society of Smiths' guildmaster (3469 2536 41), says 'I wish to join' and presses Join; asserts the 'hands you the tools of its trade' line, new items in the pack, and the ingot count not lower."
   },
   "T-042": {
-   "check": "Not built yet: a player takes the guild starter item twice; assert one item, the matching quest marked done, nothing on the second ask; result in the nightly report once built."
+   "check": "Bot (cc-P223): a fresh character joins the Healers at 3463 2558 36, opens the Starter items page and takes the first item; asserts one item arrived; takes it again from the re-sent page; asserts nothing more arrived."
   },
   "T-044": {
-   "check": "Not built yet: a gargoyle opens Tailoring; assert the 8 gargish cloth armor entries, one crafts, and robe/sash/half apron are absent; result in the nightly report once built."
+   "check": "Bot (cc-P223): a fresh gargoyle at Tailoring 100 with a SewingKit and cloth walks the Tailoring menu; records how many of the four gargish cloth entries show (two each expected) and the recipe gate's hint lines; if any is missing the admin grants every pattern ([Recipes learnall) and walks again; crafts gargish cloth arms once; asserts the eight entries, the craft, and no gargish robe, sash or half apron entry."
   },
   "T-045": {
-   "check": "Not built yet: an account with a joined character makes a second one; assert the guild gump says not a member and joining gives it its own items; result in the nightly report once built."
+   "check": "Bot (cc-P223): after the first character joined the Smiths, it logs out in the inn and a second character is made on the same account; at the guildmaster 'I wish to join' must offer Join (not a member), and joining must hand this character its own tools."
   },
   "T-046": {
    "where": "Test shard, a spare account you do not mind wiping (e.g. SL TEST - Elf); Admin (Eve) to `[add ResetStone`",
@@ -138,7 +138,7 @@
     "`[go 3498 2744 4` and look around"
    ],
    "pass": "Two tents west of the existing one, sitting on the ground; the Liaison and the Survey Archivist each stand at a tent opening.",
-   "check": "Not built yet: admin `[ClusterFSeedMineCamp status`, goes to the camp, asserts the Liaison at 3498,2744 and the Archivist at 3496,2754 and the tent components west of the old tent; result in the nightly report once built."
+   "check": "Bot (cc-P223): the admin runs [ClusterFSeedMineCamp status (and seeds and moves the NPCs first on a world that has no camp), goes to 3498 2744 4, names every mobile in view and asserts the Liaison within a tile of 3498,2744 and the Survey Archivist within a tile of 3496,2754, and at least 12 tent wall pieces in the camp box. Chase: that the tents look right."
   },
   "T-014": {
    "where": "Shard Console (live) and the homepage http://192.168.1.58:3000/",
@@ -183,7 +183,7 @@
     "Single-click each and try the entries"
    ],
    "pass": "Trash bag: Clean Up Britannia (opens the dump gump); mimic: Eat and Status; mule: Breed (P57 renamed P56's Use), all as words, not blank or numbers.",
-   "check": "Not built yet: bot single-clicks TrashBag, PetMimic and a tamed PackMule and asserts the entries' cliloc ids and their gumps / breeding target; result in the nightly report once built."
+   "check": "Bot (cc-P223): the player's context menu (0xBF 0x13/0x14) on a TrashBag (entry 1151316 'Clean Up Britannia' opens the dump gump), on a PetMimic made the player's pet (entries 6135 and 3000132, Status opens its gump) and on a tamed PackMule (entry 1900000 Breed gives a target). Chase: that the words draw in the client (1900000 is our own cliloc)."
   },
   "P57-1": {
    "check": "Not built yet: open the Seal catalog, assert 150, 1,800, 750 and 45,000 on the named rows, and a small iron 10 deed still banks +52; result in the nightly report once built."
@@ -210,7 +210,7 @@
     "Single-click the mule again"
    ],
    "pass": "In SL TEST - Admin: Breed, Smelt Ore, Metal Familiarity (opens the panel). In the stock TazUO.exe the breed row is blank.",
-   "check": "Not built yet: bot single-clicks a tamed mule, a Reinforced Ore Satchel and a Hammer of Hephaestus and asserts cliloc ids 1900000, 1900001, 1900002 and the panel gump; result in the nightly report once built."
+   "check": "Bot (cc-P223): the player's context menu on a tamed PackMule (1900000 Breed), a ReinforcedOreSatchel in the pack (1900001 Smelt Ore) and a HammerOfHephaestus in the pack (1900002 Metal Familiarity, and picking it opens the panel gump). Chase: the words in our client, and a blank row in a client started without the launcher."
   },
   "P57-6": {
    "where": "Test shard, SL TEST - Human (Ringo)",
@@ -254,7 +254,7 @@
    "check": "CC runs Shard-Console.Tests.ps1: P60_SystemRefusesCommitRunAndThePreviewSaysSo passes (one REFUSE with the 'running as NT AUTHORITY\\SYSTEM' line, no window) and greps Get-CommitFacts for WindowsIdentity IsSystem; result in a CC verification prompt's notes."
   },
   "P61-1": {
-   "check": "Not built yet: bot sets Blacksmith 150, crafts Frost plate in a loop and asserts occasional gains; at 162.5 none in Frost, gains in Obsidian; Valorite at 140 none; compares success counts; result in the nightly report once built."
+   "check": "Bot (cc-P223): the player by a forge and anvil crafts platemail tunics 16 times per phase: Frost ingots at Blacksmithy 150 (base rises), Frost at 162.5 (no rise), Obsidian at 162.5 (rises), Valorite at 140 (no rise); the skill packets decide."
   },
   "P61-2": {
    "check": "Not built yet: bot at Blacksmith 150 with 'Orders that still teach me' on asks for small orders until several Frost deeds, asserts their item names vary beyond plate tunic; result in the nightly report once built."
@@ -269,7 +269,7 @@
     "Open it and hover it"
    ],
    "pass": "The metal line is blank in the deed and the tooltip there (what an un-updated player sees); in an SL TEST shortcut it reads 'All items must be made with Frost ingots.'",
-   "check": "Not built yet: bot [add SmallSmithBOD / LargeSmithBOD until Platinum..Celestial, asserts the gump line and OPL cliloc 1900003-1900010 for the metal; result in the nightly report once built."
+   "check": "Bot (cc-P223): the admin gives the player a SmallSmithBOD and sets its Material to Platinum, then Frost, then Celestial; for each the deed's property list carries one of our clilocs 1900003-1900010 (the bot's EA table shows it as #19000xx; the package's words are 'All items must be made with <metal> ingots.') and no EA metal line, and the deed's gump shows the same cliloc. Chase: the blank line in a client started without the launcher."
   },
   "P61-5": {
    "check": "Built: bot opens [version and asserts 2026.10.05.2 with 4 player lines matching CHANGELOG; passed 3/3 on 2026-10-15; result is the bot chip on the card / the nightly report."
@@ -382,16 +382,16 @@
    "check": "Built: bot asserts admin sees 'Staff (players do not see this list)' and a player does not; passed 3/3 on 2026-10-15; result is the bot chip on the card / the nightly report."
   },
   "P66-1": {
-   "check": "Not built yet: bot `[SetSkill Hiding 150`, attacks a monster, steps 5 tiles and hides (asserts \"You can't seem to hide right now.\"), hides again at 9+ tiles, then hides repeatedly away from fights and asserts base Hiding passes 100; result in the nightly report once built."
+   "check": "Bot (cc-P223): the player at Hiding 150 attacks a pinned mongbat, is moved 5 tiles away and hides ('You can't seem to hide right now.'), then 10 tiles away and hides ('You have hidden yourself well.'); then at Hiding 99.5, away from the fight, hides up to 14 times and asserts the base passes 100."
   },
   "P66-2": {
-   "check": "Not built yet: Detect Hidden 150: search an empty spot (no gain), the second bot character hides nearby and is revealed, target a trapped chest (assert \"[trapped]\"), a hider 15 tiles away stays hidden; result in the nightly report once built."
+   "check": "Bot (cc-P223): the player at Detect Hidden 150 searches an empty spot five times (no base change), a second bot character at Hiding 120 hides two tiles away and the search there brings it back into view, a TreasureLevel1h targeted says [trapped], and the hider 15 tiles away stays hidden."
   },
   "P66-3": {
    "check": "Not built yet: thief at 127.5 with Shadow Dancer Leggings steals from a monster's pack about 50 times; assert caught about 1 in 5; result in the nightly report once built."
   },
   "P66-4": {
-   "check": "Not built yet: compare Peacemaking success on a hard creature at Musicianship 200 vs 120 (about equal); play an instrument repeatedly and assert base Musicianship passes 120; result in the nightly report once built."
+   "check": "Bot (cc-P223): the player at Musicianship 119.9 plays a Lute up to 40 times and asserts the base passes 120. The Peacemaking 200 against 120 comparison is not measured."
   },
   "P66-5": {
    "where": "Test shard, SL TEST - Admin (Eve)",
@@ -409,16 +409,16 @@
    "check": "Built: bot says `[ClusterFSkillGain` as admin and asserts the rate and \"past stock ceilings on\" (passed 3/3 on 2026-10-15); result is the bot chip on the card and the nightly report."
   },
   "P67-1": {
-   "check": "Not built yet: `[SetSkill Carpentry 150`, stools from Frostbark boards gain; at 155 no gain; Shadowbark gains; at 99.9 the Ironwood entry gives \"You cannot work this strange and unusual wood.\"; result in the nightly report once built."
+   "check": "Bot (cc-P223): the player with a Saw crafts stools 16 times per phase: Frostbark boards at Carpentry 150 (rises), at 155 (no rise), Shadowbark at 155 (rises); then at 99.9 with Ironwood boards one attempt must answer 'You cannot work this strange and unusual wood.'"
   },
   "P67-2": {
-   "check": "Not built yet: Fletching 150, Frostbark logs: assert bows raise Fletching and kindling never does; result in the nightly report once built."
+   "check": "Bot (cc-P223): the player at Fletching 150 with Frostbark logs crafts bows 16 times (base rises) and kindling 15 times (no rise)."
   },
   "P67-3": {
-   "check": "Not built yet: read the tinkering gump's material list (Platinum through Celestial); with Frost ingots, scissors gain at 150 and stop at 162.5; result in the nightly report once built."
+   "check": "Bot (cc-P223): the player at Tinkering 150 with Frost ingots opens the resource list and asserts Platinum, Frost, Obsidian, Mythril and Celestial are offered; picks Frost, crafts scissors up to 25 times and asserts the base rose; at 162.5 crafts 25 more and asserts no rise."
   },
   "P67-4": {
-   "check": "Not built yet: Blacksmithy 180, wear a +10 Blacksmithy item, craft Mythril plate; assert base skill stops at 187.5; result in the nightly report once built."
+   "check": "Bot (cc-P223): the player at Blacksmithy 187.0 wearing an AncientSmithyHammer +10 crafts Mythril platemail tunics 30 times; asserts the base rose and never passed 187.5."
   },
   "P67-5": {
    "check": "Not built yet: Blacksmithy 150, \"Orders that still teach me\" on: request orders from the Society guildmaster, post-Valorite ones all Frost; toggle off: Platinum, Toxic, Blaze appear; result in the nightly report once built."
@@ -456,10 +456,10 @@
    "check": "Not built yet: four bard skills 200, Fire Horn a dummy, compare damage with 120 (about a tenth more, not double); result in the nightly report once built."
   },
   "P71-4": {
-   "check": "Not built yet: hide, walk and count steps until revealed at Stealth 200 (about 34) and 120 (about 24); result in the nightly report once built."
+   "check": "Bot (cc-P223): the player at Hiding 100 and Stealth 200 hides, starts stealthing and paces one tile at a time until 'You have been revealed!', twice; then at Stealth 120 twice; asserts the means near 34 and 24 (26 to 44 and 16 to 32) and the first larger."
   },
   "P71-5": {
-   "check": "Not built yet: Healing and Anatomy 200, bandage a hurt character repeatedly; assert heals land in 54 to 90; result in the nightly report once built."
+   "check": "Bot (cc-P223): the player at Healing and Anatomy 200 (Str 250) is set to 10 hits and bandages itself five times; asserts the mean heal within 54 to 90 and no heal outside 45 to 99 (the old band was 69 to 117)."
   },
   "P71-6": {
    "check": "Not built yet: harness sets `clusterf.skillScaling.stealth.stepsAt200` to 30 in the scratch shard's config, restarts it, and counts about 30 steps at Stealth 200; result in the nightly report once built."
