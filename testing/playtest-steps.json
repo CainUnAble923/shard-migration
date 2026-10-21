@@ -2970,6 +2970,1010 @@
    ],
    "pass": "Loading world done twice, the encounter still standing, no new exceptions.",
    "check": "Done by CC; see the notes."
+  },
+  "P378-1": {
+   "where": "Account: Admin test account. Test shard, New Haven forge; use an Elf crafter for exact zero-Arms-Lore numbers",
+   "do": [
+    "Add PlateChest; set Resource Valorite and compare Normal with Exceptional quality",
+    "Repeat with Gold and Celestial weapons, Spined leather and red dragon-scale armor; read OPL and damage splits"
+   ],
+   "pass": "Valorite chest physical/cold/poison/energy changes 9/5/6/5 to 11/7/8/7, fire remains 3. Gold luck/LSR changes 40/50 to 60/75. Celestial damage becomes 8 physical plus 23 in each element; scale penalties are unchanged.",
+   "check": "Not built yet: yes. Proposed checker: OPL, props and damage-type values can be asserted; test cases in ExceptionalMaterialVerification provide the complete material matrix.",
+   "place": "bot"
+  },
+  "P378-2": {
+   "where": "Account: Elf. Test shard, New Haven forge and fletching work spot; Admin supplies skills and materials",
+   "do": [
+    "At Arms Lore 0 craft normal and exceptional Oak and Frostwood bows",
+    "Craft exceptional Ironwood; compare its own exceptional table; wear enough armor to exceed the normal resist cap"
+   ],
+   "pass": "Oak exceptional shows luck 60 and damage increase 43; Frostwood exceptional is 40 physical/60 cold. Ironwood keeps its separate table. Wearer resistance stays capped at the configured normal cap.",
+   "check": "Not built yet: yes. Proposed checker: Craft packets, OPL and status resists can check scaling, exclusions and caps; exact Elf numbers avoid the Human skill floor.",
+   "place": "bot"
+  },
+  "P378-3": {
+   "where": "Account: Admin test account. Disposable test world, New Haven bank; old saved gear fixture from before P228 required",
+   "do": [
+    "Compare a pre-P228 exceptional ore armor piece and bow against new crafts",
+    "Read runic properties and a cloth robe; compare old maximum durability before and after loading the merged build"
+   ],
+   "pass": "Old live-read ore bonuses update. Old maximum hit points and old OSI wood bow craft bonuses keep their historical values. Cloth and runic additions are not multiplied.",
+   "check": "No for the overnight UO checker. Local CC verification plan: No overnight protocol check: requires a preserved pre-change save and an isolated load comparison; CC can check serialized fixtures and OPL without touching a real save.",
+   "place": "cc"
+  },
+  "P378-4": {
+   "where": "Account: Admin test account. Offline browser, shard-migration/notes/art/guild-menus/index.html",
+   "do": [
+    "Open the survey and seven mockups; compare crests, headings, sections and requirement lines",
+    "Record approve or the concrete layout changes Chase wants"
+   ],
+   "pass": "Chase records a design decision. Existing game menus are not expected to use the mockup template; P178 is outside this merged scope.",
+   "check": "No for the automated checker. No: this is Chase's approval of a visual proposal, not an implemented menu conversion.",
+   "place": "questions"
+  },
+  "P378-5": {
+   "where": "Account: Admin test account. Game PC, existing Golem records and read-only console; no game location",
+   "do": [
+    "Inspect a completed prompt's review note and done-email artifact",
+    "In staged fixtures exercise a skipped review and a lane with overlapping Touches or no Codex OK marker"
+   ],
+   "pass": "Review findings or an explicit skipped reason are recorded; a review does not block commit. Ineligible or overlapping lane work is refused. Do not start, commit or merge a prompt for this check.",
+   "check": "No for the overnight UO checker. Local CC verification plan: No overnight game check: local Golem fixture/log verification is possible without starting agents or writing to external applications.",
+   "place": "cc"
+  },
+  "P378-6": {
+   "where": "Account: Human. Test shard, New Haven League Registrar Elara Voss; Admin prepares AP and spendable Renown via earned/granted achievements",
+   "do": [
+    "Open League Shop from the Registrar and from [achievements",
+    "Try a locked row and an unaffordable row; open an affordable row, cancel, then confirm once",
+    "Compare AP, Renown, lifetime Renown, League rank and received items"
+   ],
+   "pass": "Both entrances open the shop. AP locks rows; cancel spends nothing; confirmation pays exactly once. AP and rank do not fall when spendable Renown falls.",
+   "check": "Not built yet: yes. Proposed checker: Gump text/buttons, item delivery and account values are server-observable; never assume LeagueLifetimeRenown also grants spendable Renown.",
+   "place": "bot"
+  },
+  "P378-7": {
+   "where": "Account: Human. Test shard, New Haven bank and a house owned by the tester; updated client",
+   "do": [
+    "Buy tabard, cloak, regalia, banner, trophy, pigment, restyling deed, recall rune and a League box using prepared currency",
+    "Try dyeing the tabard; place banner/trophy at home; use pigment, restyling deed and rune; open the box in town"
+   ],
+   "pass": "Bound goods and one-use behavior work, trophy names buyer/AP, rune returns to the Registrar, dye restriction holds, and the hues/art look right.",
+   "check": "Not built yet: yes for mechanics; no for visual/audio half. Proposed checker: Yes for items, refusals, consumption and recall coordinates; no for appearance. A later checker must inspect every starter-shop product; Chase checks drawing.",
+   "place": "player",
+   "chars": [
+    "human"
+   ]
+  },
+  "P378-8": {
+   "where": "Account: Human. Test shard, New Haven Registrar; second character on the same test account",
+   "do": [
+    "At 100 AP choose the Noted; log out and back in",
+    "Buy an available shop title; choose a different owned title on the second character; clear one character's title"
+   ],
+   "pass": "Unlocked titles belong to the account permanently; each character keeps its own chosen display title; clearing it removes the suffix without losing ownership.",
+   "check": "Not built yet: yes. Proposed checker: Title picker gumps, name properties and relog state are visible; include persistence and independent per-character selections.",
+   "place": "bot"
+  },
+  "P378-9": {
+   "where": "Account: Admin test account. Test shard, empty Green Acres Trammel 5440,1150,0",
+   "do": [
+    "Open [SL then Events; inspect Orc raid, Undead rising and Ogre warband",
+    "Use Here and Target; set a small radius, two waves and short interval; Dry run",
+    "Create a throwaway template; repeat access attempt on a Player account"
+   ],
+   "pass": "Dry run describes the plan and creates nothing. Template edits are retained. Players cannot operate the staff Events tab.",
+   "check": "Not built yet: yes. Proposed checker: Gumps, plan text, creature counts and access refusal can be checked on a disposable test world.",
+   "place": "bot"
+  },
+  "P378-10": {
+   "where": "Account: Human. Test shard, Britain 1475,1645 and gate south of New Haven bank; destination set by Admin in empty Green Acres",
+   "do": [
+    "Admin starts a two-wave surge with Moongates enabled",
+    "Read announcement; walk through each gate to staging; observe second wave and Events progress",
+    "Admin ends the run and checks the staging area and both gate origins"
+   ],
+   "pass": "Announcement and gates point to the planned spot; waves follow the interval and counts update; End removes only that run's creatures and gates.",
+   "check": "Not built yet: yes. Proposed checker: Announcement, travel positions, timed mobile counts and deletion are protocol-observable; Admin setup must not overlap other trials.",
+   "place": "bot"
+  },
+  "P378-11": {
+   "where": "Account: Human. Disposable test world, surge radius in Green Acres; two combatants plus a noncombatant observer",
+   "do": [
+    "Admin enables No-loot zone, top and participation prizes plus extras",
+    "One tester deals most damage, one deals some, one stays at least half the run; die inside the zone with identifiable gear",
+    "Admin gives an extra then ends the surge; compare each backpack and reward messages"
+   ],
+   "pass": "Death inside preserves the carried gear. Top and share prizes follow eligibility without double-paying the top slot; targeted extra goes to its chosen tester.",
+   "check": "Not built yet: yes. Proposed checker: Death inventories, damage totals, timed presence and prize messages can be asserted using multiple test clients.",
+   "place": "bot"
+  },
+  "P378-12": {
+   "where": "Account: Admin test account. Disposable loopback-only world; Green Acres staging and both surge gate origins",
+   "do": [
+    "Start a surge, note its creature/gate serials, save, then stop/start only the disposable world",
+    "Read startup cleanup log and inspect serials plus player inventories"
+   ],
+   "pass": "Restart removes saved surge creatures and gates and gives no prizes. Unrelated items and mobiles remain.",
+   "check": "No for the overnight UO checker. Local CC verification plan: No ordinary overnight check: CC controls only a disposable restart fixture and can compare logs/serials; never restart a shared shard as part of this item.",
+   "place": "cc"
+  },
+  "P378-13": {
+   "where": "Account: Human. Test shard, New Haven bank and guarded square; fresh account with no Mischief earns",
+   "do": [
+    "Run while using scissors; eat past full; bandage a healthy friend; attempt Meditation in plate",
+    "Say I must consider my sins; as a ghost speak",
+    "Open [achievements before and after each earn; repeat the actions and relog"
+   ],
+   "pass": "Safety Third and each corresponding joke appear only after their real trigger with flavor and Earned text. Repeats cannot pay the same tier again; counters/tiered rewards persist per account.",
+   "check": "Not built yet: yes for mechanics; no for visual/audio half. Proposed checker: Yes for real trigger events, counters, messages and secrecy; no for popup readability. Do not award via grant and call it trigger coverage.",
+   "place": "player",
+   "chars": [
+    "human"
+   ]
+  },
+  "P378-14": {
+   "where": "Account: Admin test account. Disposable test world: safe craft/fishing spot and guarded square for death cases",
+   "do": [
+    "Use the 16 registered definitions in ClusterFJokeAchievements.cs as the checklist; exercise the remaining live hooks for trust refusal, intoxication, tool wear, fishing footwear, guard death and self-explosion",
+    "Drive scissors to 25/100, worn tools to 100 and footwear tiers by repeat real actions; use bounded setup fixtures for HP/materials"
+   ],
+   "pass": "Every implemented definition earns at its source threshold exactly once; no extra suggested-but-unbuilt jokes are expected. Self-explosion credit requires the player's own potion.",
+   "check": "Not built yet: yes. Proposed checker: Server event outcomes and saved achievement state are checkable; future checks should keep the definition key and real hook beside each result.",
+   "place": "bot"
+  },
+  "P378-15": {
+   "where": "Account: Human. Test shard, Miners' Compact Liaison then mountain outside town; Admin prepares rank, skills, blocks and costs",
+   "do": [
+    "Open Climbing Boots below and at Surveyor/Mining120/100 blocks, Master Delver/150/300 and Deepwarden/180/600",
+    "Buy in order using vouchers/gold/ingots; try another account's bound boots and lost-boot replacement",
+    "Mine a new 8x8 ore bank; open Prospector's Logbook"
+   ],
+   "pass": "Requirements and trade-in are enforced; first wear binds boots. Replacement follows ownership. New targeted bank increments Blocks mined once and records ore and first mined time.",
+   "check": "Not built yet: yes. Proposed checker: Shop gates, inventory, binding refusals and logbook text are server-observable; fixture must distinguish account block records from staff-created boots.",
+   "place": "bot"
+  },
+  "P378-16": {
+   "where": "Account: Human. Test shard, Trammel Kendall mountain near 2576,360; Admin first chooses a reachable mountain edge within hop range",
+   "do": [
+    "Wear each boot tier and use it on mountain tiles within 4/8/12 tiles; try beyond range and before cooldown ends",
+    "Mine beside the landing; relog on the ledge",
+    "With Deepwarden boots hop down, stay within 30 of the remembered ledge and target yourself"
+   ],
+   "pass": "Legal hops land at map height, spend tier-appropriate stamina and obey cooldown. Mining works; relog retains position; remembered return succeeds. Character looks grounded rather than sunk/floating.",
+   "check": "Not built yet: yes for mechanics; no for visual/audio half. Proposed checker: Yes for positions, stamina, mining, refusals and relog; no for slope rendering. Exact starting z is chosen from loaded map data, not guessed.",
+   "place": "player",
+   "chars": [
+    "human"
+   ]
+  },
+  "P378-17": {
+   "where": "Account: Human. Test shard, same mountain edge plus Britain, a dungeon region and a house boundary",
+   "do": [
+    "Bring a following pet; climb up then down",
+    "While climbed try attacking, a harmful spell, taming, Mark and house placement; allow a monster to harm you",
+    "Try hopping into town, dungeon, house and a blocked static"
+   ],
+   "pass": "Pet waits below and follows again on descent. Restricted actions and destinations refuse; hostile damage can still hit the climber; no pet is teleported or released.",
+   "check": "Not built yet: yes. Proposed checker: Position/control state, action refusals and incoming damage are checkable using controlled fixtures; keep town and combat trials separate.",
+   "place": "bot"
+  },
+  "P378-18": {
+   "where": "Account: Admin test account. Disposable test world, New Haven square; package updated before placement",
+   "do": [
+    "Run [ClusterFCommunityArt status and place dryrun, then place twice",
+    "Add an unrelated lookalike Static as a sentinel",
+    "Run clear dryrun and clear; restore placement only if the tester still needs the visual walk"
+   ],
+   "pass": "Fresh world reports 44 rows; dry run changes nothing, first place fills missing rows and second adds none. Clear deletes only CommunityArt and leaves the sentinel.",
+   "check": "Not built yet: yes. Proposed checker: Command text, item types/serials, counts and selective removal can be checked; never assume a nonfresh world's initial count is zero.",
+   "place": "bot"
+  },
+  "P378-19": {
+   "where": "Account: Human. Test shard, New Haven square, west meadow, road east toward Rootdeep, docks (3501-3511,2591 and x3519), office and Healer's Hall",
+   "do": [
+    "With updated client walk the carts, camp, lantern posts, boardwalk supports and railings",
+    "At night inspect lantern flame and campfire; walk against carts and railing",
+    "Visit north-wall paintings in inn, office quarters, Healer's Hall, Magery School, Bardic Guild and A Stitch In Time"
+   ],
+   "pass": "Art is visible and grounded, lantern flickers, supports align under boardwalk and paintings meet walls. Carts/rails block. Large tents block only their anchor tile, a recorded limitation.",
+   "check": "No for the automated checker. No: placement counts can be separate bot evidence, but this item's pass condition is alignment, flame drawing and scene readability.",
+   "place": "player",
+   "chars": [
+    "human"
+   ]
+  },
+  "P378-20": {
+   "where": "Account: Admin test account. Offline Golem policy fixtures and existing second-PC records; no in-game location",
+   "do": [
+    "Replay idle, recent-input, running-game and daytime-send states through the P159 fixture route",
+    "Inspect a previously captured safe-point pause/resume record and its console status; do not start a lane, wake or connect to another PC"
+   ],
+   "pass": "Recent use/game blocks new work; active run requests a stopping point, retains session and reports paused/in use. Daytime-send has its bounded window; per-login budget files remain separate.",
+   "check": "No for the overnight UO checker. Local CC verification plan: No overnight game check: PC presence, priority and scheduler rules require local fixtures/logs; real owner interaction remains Chase's separate trial.",
+   "place": "cc"
+  },
+  "P378-21": {
+   "where": "Account: Admin test account. Disposable test world, Green Acres Trammel x5440 plus 2 per Golem, admin y1150/player y1152,z0",
+   "do": [
+    "With a configured seed manifest run [SeedGolemAccounts dryrun then [SeedGolemAccounts twice",
+    "Inspect account roles and starter characters; log in one Golem's Admin and Player",
+    "Keep an unrelated account as sentinel and inspect an isolated testCenter=false refusal fixture"
+   ],
+   "pass": "Missing configured accounts alone are added; rerun does not overwrite users/passwords. Admin is Administrator, Player is Player, their named characters start on assigned Green Acres tiles; live-mode fixture refuses.",
+   "check": "Not built yet: yes. Proposed checker: Seed messages, privileges, positions and duplicate counts are checkable; credentials come from protected local storage and never enter reports. False-mode refusal uses a fixture, never live.",
+   "place": "bot"
+  },
+  "P378-22": {
+   "where": "Account: Admin test account. Own disposable loopback test shard, assigned Green Acres tiles; two locally available seeded Golem accounts",
+   "do": [
+    "Run golemcheck.py pair on that PC's explicit test host and port2594 with two configured local Golem identities",
+    "Read ok/status output and trade/meeting observations; also inspect refusal fixtures for port2593",
+    "Inspect console account labels without copying secrets"
+   ],
+   "pass": "Pair check reports both players and their meeting/trade successfully, admin/player roles remain distinct and live port is refused. Console displays correct account names.",
+   "check": "No for the overnight UO checker. Local CC verification plan: No normal nightly gameplay item: golemcheck can automate this as CC with DPAPI credentials. Do not use the old notes' remote SSH or shared-shard commands unattended.",
+   "place": "cc"
+  },
+  "P378-23": {
+   "where": "Account: Human. Test shard, New Haven bank then Admin-prepared rat/troll/dragon in Green Acres; second fighter with different combat skill",
+   "do": [
+    "Single-click each creature and invulnerable banker; show all names",
+    "Compare two players with different best combat skills",
+    "Check the name's original notoriety color and the separate difficulty word"
+   ],
+   "pass": "Difficulty band follows each viewer's best combat skill; invulnerable NPC is trivial. Seven bands have distinct words/hues, name notoriety is intact, and labels are readable.",
+   "check": "Not built yet: yes for mechanics; no for visual/audio half. Proposed checker: Yes for separate overhead packets, band words/hues and viewer differences; no for rendered contrast and all-names appearance.",
+   "place": "player",
+   "chars": [
+    "human"
+   ]
+  },
+  "P378-24": {
+   "where": "Account: Human. Test shard, Green Acres beside a prepared troll; updated client and Admin skill setup",
+   "do": [
+    "Use Appraisal on the same creature at 0,30,60,90; reopen each result",
+    "At90 inspect a dragon card; appraise a longsword and another player",
+    "At120 appraise near-level dragon and trivial rat repeatedly with Test Crystal Off"
+   ],
+   "pass": "0 gives vague line,30 adds level,60 stats/resists,90 card with damage/specials. Item identification/player name behavior remains. Near-level creatures can train past100, trivial rat does not; skill is named Appraisal.",
+   "check": "Not built yet: yes for mechanics; no for visual/audio half. Proposed checker: Yes for skill values, messages/card text and target fallback; no for client skill-name rendering. Gains need a bounded statistical run, not one click.",
+   "place": "player",
+   "chars": [
+    "human"
+   ]
+  },
+  "P378-25": {
+   "where": "Account: Admin test account. Disposable world and its temp directory; no particular standing location",
+   "do": [
+    "Run [CreatureLevels on the disposable world",
+    "Compare creature-levels.txt rows to concrete BaseCreature types in that build and inspect rat,dragon,ancient wyrm,champion,peerless and healer rows"
+   ],
+   "pass": "Report has one row per constructible candidate or a documented construction failure, levels within1-200 and explicit override reasons. Invulnerable healer1,champion200,peerless190 follow rules.",
+   "check": "No for the overnight UO checker. Local CC verification plan: No ordinary nightly game check: report/source comparison is local CC work; report command constructs and deletes creatures, so use a disposable world.",
+   "place": "cc"
+  },
+  "P378-26": {
+   "where": "Account: Human. Test shard, New Haven bank; updated client, Admin supplies all ore/lumber/hunter tiers and the three other bags",
+   "do": [
+    "Inspect ore,lumber,hunter,Artificers,Gemologist and Smith salvage icons and tier hues",
+    "Open each and use its existing collection/salvage operation",
+    "Compare with notes/cc-P236-art/in_game_hues.png"
+   ],
+   "pass": "Six new icons0x3380-0x3385 draw correctly, Artificers is purple0xDC, tier hues and existing container gumps/capacities/operations persist. Four future bags without classes are not expected.",
+   "check": "Not built yet: yes for mechanics; no for visual/audio half. Proposed checker: Yes for ItemID,hue,gump and mechanics; no for visual similarity and legibility of art.",
+   "place": "player",
+   "chars": [
+    "human"
+   ]
+  },
+  "P378-27": {
+   "where": "Account: Admin test account. Disposable saved-world fixture at New Haven bank; pre-P236 version0 bags required",
+   "do": [
+    "Load version0 standard and staff-customized satchels into the merged build",
+    "Save and reload the disposable world; inspect icons and Artificers hue",
+    "For a version1 bag set an intentional alternate graphic then reload"
+   ],
+   "pass": "Only version0 bags still on their default graphic/hue migrate. Staff overrides survive; version1 bags never migrate again. Contents remain intact.",
+   "check": "No for the overnight UO checker. Local CC verification plan: No nightly protocol-only check: serialization version fixtures are required. CC can inspect fixture load/OPL and compare contents; no new art generation is needed.",
+   "place": "cc"
+  },
+  "P378-28": {
+   "where": "Account: Admin test account. Offline source review, server/customizations/Services/Underworld and Services/MiniChampionSystem; no world placement",
+   "do": [
+    "Review P197's continuation list against the merged source: generator rerun safety, rooms, maze, experimental room, Navrey, mini-champion dependencies, race gates, League hooks and duplicate Fountain ownership",
+    "Record unresolved cases and the exact source files for the continuation"
+   ],
+   "pass": "The compiled partial port is identified accurately with outstanding runtime/behavior gaps. Do not run GenUnderworld or GenMiniChamp until the promised continuation review authorizes it; a compile is not a play-test pass.",
+   "check": "No for the overnight UO checker. Local CC verification plan: No gameplay checker yet: P197 explicitly deferred review/testing and forbids generator use. This checks only merged artifacts and records why gameplay remains unverified.",
+   "place": "cc"
+  },
+  "P378-29": {
+   "where": "Account: Admin test account. Offline wiki-seed files and notes/cc-P286-test-plans.md; no in-game location",
+   "do": [
+    "Read the Mage/Crafter draft pages and Test Crystal draft in docker/wiki seed",
+    "Confirm the drafts say scripts are unpublished and compare test-plan prerequisites to merged shard behavior"
+   ],
+   "pass": "Drafts remain discoverable as drafts, Crystal documents both uses, and the24 future script steps are not represented as executed checks. No absent SL_Mage/SL_Crafter script is treated as shipped.",
+   "check": "No for the overnight UO checker. Local CC verification plan: No game checker: local file assertions are possible. Script execution is deferred until actual scripts are in their own main branch and readable.",
+   "place": "cc"
+  },
+  "P378-30": {
+   "where": "Account: Human. Test shard, New Haven square then walk west to the Bardic Guild; client built with patch0004",
+   "do": [
+    "On a fresh character open world map and walk a small loop",
+    "Toggle Fog of war off and on in map right-click menu",
+    "Relog; compare a second fresh character and travel to another supported facet"
+   ],
+   "pass": "Fresh exploration starts dark and reveals8x8 chunks near movement. Toggle hides/shows fog without losing exploration; relog keeps explored area, separate characters/facets do not incorrectly share reveal.",
+   "check": "No for the automated checker. No for final rendering: headless bot can inspect exploration packets but cannot prove map overlay/toggle drawing. Updated patch0004 client is required.",
+   "place": "player",
+   "chars": [
+    "human"
+   ]
+  },
+  "P378-31": {
+   "where": "Account: Human. Test shard, New Haven shoreline and bank on updated client world map",
+   "do": [
+    "At shoreline compare known visible ground with fog edges at several zoom levels",
+    "Pan map and switch Flip map on/off; toggle fog; reopen map",
+    "Use a separate non-SL connection/profile only if available to check fog remains inactive without SL exploration packets"
+   ],
+   "pass": "Fog stays aligned with map tiles under zoom,pan,flip and reopening; unrelated shards without SL packets show no fog. Unavailable comparison stays unverified.",
+   "check": "No for the automated checker. No: GPU map drawing and profile controls require eyes; do not connect to another shard just to manufacture this comparison.",
+   "place": "player",
+   "chars": [
+    "human"
+   ]
+  },
+  "P378-32": {
+   "where": "Account: Admin test account. Disposable test world, Ilshenar1969,114,-28 then2011,67,-27 and1987,88,-28; boss area849,648,-40",
+   "do": [
+    "Run [GenExodusEncounter once; record counts and inspect halls,Nexus machines and Keypunch Reader",
+    "Visit Hunter at Ilshenar946,641,-79, exit gate/ankh761,641,0 and controller/boss854,642,-40",
+    "Repeat generator only in disposable world, then [DeleteExodusEncounter"
+   ],
+   "pass": "Encounter objects and spawns exist, rerun replaces its earlier placement without duplicates, and deletion removes its own setup. Native art/cliloc labels are readable and no unknown types occur.",
+   "check": "Not built yet: yes for mechanics; no for visual/audio half. Proposed checker: Yes for command counts,objects,positions,labels and selective deletion; no for art/cliloc rendering. P195-1..10 steps had only three imported queue IDs; these new IDs have real items.",
+   "place": "admin"
+  },
+  "P378-33": {
+   "where": "Account: Human. Test shard, seeded Exodus Dungeon Ilshenar1969,114,-28 and Nexus/reader spots; Admin supplies eligible skills/toolkit",
+   "do": [
+    "Fight zealots/drones and inspect component/key drops; with a thief steal a zealot key",
+    "Use Detect Hidden on supply caches, pick/disarm and loot one",
+    "Use Exotic Toolkit on a broken Nexus then punch/read cards"
+   ],
+   "pass": "Each supported fighting,stealing,cache and machine path yields its documented component/key or explicit skill refusal; Detect Hidden reveals caches through the new hook and toolkit/card consumption follows source.",
+   "check": "Not built yet: yes. Proposed checker: Drops,stealing,hidden-state changes,target messages and inventory are server-observable. Random paths need repeat samples and bounded failure reporting.",
+   "place": "bot"
+  },
+  "P378-34": {
+   "where": "Account: Human. Test shard, Trammel Shrine of Compassion1858,876,12; ritual transports party to Ilshenar Ver Lor Reg",
+   "do": [
+    "Prepare four valid ritual keys for each required participant following SummoningTome checks; form a party",
+    "Build/use the tome at the shrine; fight Clockwork Exodus, then use exit gate and ankh",
+    "Repeat invalid/incomplete/expired-key case on spare fixtures"
+   ],
+   "pass": "Valid ritual consumes its required keys and transports eligible party; invalid entry refuses without consuming unrelated gear. Boss,ten artifact replicas/loot paths and exit operate as merged; record any known loot-box hook gap as a failure rather than assuming a guaranteed box.",
+   "check": "Not built yet: yes. Proposed checker: Party gumps,consumption,travel,boss death,loot and exit positions can be checked. Read precise expiry/party gates from this build before setup.",
+   "place": "bot"
+  },
+  "P378-35": {
+   "where": "Account: Gargoyle. Test shard, New Haven forge and mining rock; Hunter Ilshenar946,641,-79",
+   "do": [
+    "Admin supplies the registered recipe scrolls and materials; inspect/craft each of the six Exodus recipes",
+    "With Mining100 mine repeatedly at ordinary rock for small blackrock; log sample size",
+    "Bring the relevant ritual dagger to Hunter and follow the gargoyle exchange"
+   ],
+   "pass": "Registered recipes work with recipe/material gates, rare blackrock has its configured1/1000 chance and Hunter accepts the gargoyle-specific dagger route. Unchosen Abyssal Cloth/recipe-scroll sources are not claimed to exist.",
+   "check": "Not built yet: yes. Proposed checker: Craft menus,consumption,drops and NPC trade are server-observable; rare blackrock needs statistical or deterministic fixture coverage, not a one-swing assertion.",
+   "place": "bot"
+  },
+  "P378-36": {
+   "where": "Account: Human. Test shard, New Haven bank; Admin prepares League ranks below and at Valorite Citizen",
+   "do": [
+    "Open [accessories below rank9, then at9; equip second bracelet and remove it",
+    "Try extra ring slots with default loopSlotsEnabled=false",
+    "Compare status bonuses with known base jewelry and caps; inspect paperdoll"
+   ],
+   "pass": "Second bracelet unlocks at configured rank and bonuses add once; extra rings stay locked pending loops. Invisible accessory container does not draw a phantom item; caps remain in force.",
+   "check": "Not built yet: yes for mechanics; no for visual/audio half. Proposed checker: Yes for slot gates,container items,status/caps; no for paperdoll invisibility and layout. Do not enable future loops just to claim present-day Ring Bearer.",
+   "place": "player",
+   "chars": [
+    "human"
+   ]
+  },
+  "P378-37": {
+   "where": "Account: Human. Test shard, clear Green Acres route; four armor pieces including chest/legs, no shoes or mount",
+   "do": [
+    "Run1000 actual tiles; check first toe slot",
+    "Continue to25000; check second slot and choose the Unshod title",
+    "Repeat mounted,walking,missing chest or wearing shoes as negative cases; use bounded counter fixture near thresholds for bot setup"
+   ],
+   "pass": "Only qualifying run steps count; Plate Bottoms Only opens first slot,Iron Soles opens second and grants title once per account. Walking/fire/snow achievements have independent counters.",
+   "check": "Not built yet: yes. Proposed checker: Movement flags,equipment,achievement counters,slots and title picker are checkable; do not confuse P263 walking tiles with this running requirement.",
+   "place": "bot"
+  },
+  "P378-38": {
+   "where": "Account: Human. Test shard, New Haven tinkering spot and bank; Admin supplies recipe and staff-only PlateSocks/SingedToeRing/MoodToeRing",
+   "do": [
+    "Craft a toe ring through its recipe gate; equip after unlocking a toe slot and note bonuses",
+    "Put boots on over it, remove boots, then wear Plate Socks; repeat footwear ten times",
+    "Observe Mood Toe Ring over real minutes and compare foot messages"
+   ],
+   "pass": "Bare feet and Plate Socks allow toe bonuses; ordinary footwear suppresses them and removing it restores them once. Smothered earns at10; mood/foot lines occur as source specifies. Staff-only items are not expected in shops.",
+   "check": "Not built yet: yes for mechanics; no for visual/audio half. Proposed checker: Yes for craft gates,bonuses,suppression and Smothered; no for timed message quality. Source timers and footwear conditions must be read by the future check.",
+   "place": "player",
+   "chars": [
+    "human"
+   ]
+  },
+  "P378-39": {
+   "where": "Account: Admin test account. Disposable test world, Green Acres and its scratch save; ordinary,blessed and insured jewelry fixtures",
+   "do": [
+    "Equip extra bracelet/toe jewelry; record stats and serials",
+    "Kill the test character; inspect each item's intended corpse/backpack destination",
+    "Save,restart only disposable world,relog and re-equip/remove accessories"
+   ],
+   "pass": "Death keeps or drops each item by its applicable loot/insurance rule; reload reapplies bonuses once without duplicates or lost items. Insurance is specifically unverified until exercised.",
+   "check": "No for the overnight UO checker. Local CC verification plan: No ordinary overnight check: requires controlled death plus a disposable restart and insurance setup. CC can automate fixture inventories and stats.",
+   "place": "cc"
+  },
+  "P378-40": {
+   "where": "Account: Admin test account. Offline throwaway web-console fixture and Shard Console Golem tab; no game location",
+   "do": [
+    "Load a fixture question with two choices,context and a destructive-choice flag",
+    "Inspect web card,Earlier questions and desktop Answer a Golem's question control",
+    "In the fixture choose then cancel destructive confirmation; test free-text answer and malformed/stale answer IDs"
+   ],
+   "pass": "Full question/context and choices appear in both consoles. Cancel sends nothing; valid fixture answer is accepted once; stale/malformed input refuses. Golem tab refresh works even when Answer button is absent.",
+   "check": "No for the overnight UO checker. Local CC verification plan: No overnight game check: UI/API fixtures can automate mechanics; Chase checks phone readability separately. Use fixture answer storage, never answer a real Golem question for testing.",
+   "place": "cc"
+  },
+  "P378-41": {
+   "where": "Account: Admin test account. Offline staged Golem question/answer fixture; local and remote-agent fixture paths",
+   "do": [
+    "Replay Ask-Chase -> stoppedPrompt -> fixture answer -> pickup using staged P216/P353 test data",
+    "Check answer file,closed-question history and next-session handoff; replay duplicate answer",
+    "Check remote fixture routes answer to the named agent only"
+   ],
+   "pass": "Question closes once,answer is preserved,stoppedPrompt clears and next handoff carries Chase's answer. Duplicate answer cannot resume another prompt; local/remote behavior agrees.",
+   "check": "No for the overnight UO checker. Local CC verification plan: No: workflow is outside UO protocol. CC can replay the existing staged tests without starting an agent,sending email or contacting another PC.",
+   "place": "cc"
+  },
+  "P378-42": {
+   "where": "Account: Human. Test shard, New Haven forge; Admin supplies [add SmithsSealDeed",
+   "do": [
+    "Craft weapon,armor,shield and jewel; use a seal on each while carried/worn",
+    "Try found,bought,staff-added,artifact,cloth and already-sealed items",
+    "Use [ItemLevel on sealed item and on an item another player carries"
+   ],
+   "pass": "Only supported player-crafted non-artifact gear becomes levelable; invalid targets do not consume seal. Targeting enforces ownership and level UI/tooltip identifies sealed items.",
+   "check": "Not built yet: yes for mechanics; no for visual/audio half. Proposed checker: Yes for consumption,eligibility,refusals and gump text; no for tooltip/layout readability. Smith's Seal has no player source in this phase.",
+   "place": "player",
+   "chars": [
+    "human"
+   ]
+  },
+  "P378-43": {
+   "where": "Account: Human. Disposable test world, Green Acres with two fighters and prepared monsters; each wears sealed gear",
+   "do": [
+    "Record XP,kill one monster solo then one shared at a known damage ratio",
+    "Repeat with pet,summon,spell and provoked-creature damage credited to owner; include helper-worn gear",
+    "Keep a sealed item in backpack as a negative case and kill a controlled creature as another"
+   ],
+   "pass": "Worn gear receives each owner's damage share; helper credit reaches its owner and helper-worn levelable gear as implemented. Backpack-only gear and controlled-creature deaths give no farmable XP.",
+   "check": "Not built yet: yes. Proposed checker: Damage records,XP OPL/state and ownership are server-observable. Future check must exercise each helper path instead of inferring all from pet coverage.",
+   "place": "bot"
+  },
+  "P378-44": {
+   "where": "Account: Admin test account. Test shard, New Haven bank; sealed player-crafted test gear",
+   "do": [
+    "Use [LevelGearSet with explicit points to prepare a levelable item; open [ItemLevel",
+    "Buy applicable properties/resists,then try wrong-item property,insufficient points,full property slots and ceiling excess",
+    "Equip/unequip and compare effective bonuses with original item fields and wearer caps"
+   ],
+   "pass": "Points deduct once and refusal spends nothing. Imbuing ceilings/slot limits hold; added bonuses affect wearer once without rewriting base Attributes. No future player-level or loop gate is expected.",
+   "check": "Not built yet: yes. Proposed checker: Gump actions,points,effective values and refusals are checkable. Use LevelGearAttribute and ImbuingTable for this build's exact prices/ceilings.",
+   "place": "bot"
+  },
+  "P378-45": {
+   "where": "Account: Admin test account. Disposable world and scratch save, Green Acres",
+   "do": [
+    "Set gear just before a normal level and tenth-level milestone; earn enough real kill XP",
+    "Check4 points per normal level and8 on each tenth; try level above200",
+    "Save,restart disposable world,inspect gear and a creature wearing it; delete another sealed item then save to verify pruning"
+   ],
+   "pass": "Milestone points and level200 cap hold. State and bought bonuses survive reload,creature-worn gear works and deleted-item rows are pruned. No unseen runtime result is assumed from compile.",
+   "check": "No for the overnight UO checker. Local CC verification plan: No ordinary nightly check: milestone/serialization/pruning inspection needs disposable save control; CC can automate fixture state checks.",
+   "place": "cc"
+  },
+  "P378-46": {
+   "where": "Account: Human. Test shard, New Haven bank; updated client; fresh account and account with earned achievements",
+   "do": [
+    "Open [achievements and walk All,each category,Earned,Not Yet and Retired pages",
+    "Earn one real joke and reopen; compare with untouched fresh account",
+    "Compare all ten icons22459-22468 and category names"
+   ],
+   "pass": "Lists group under the right icon/name without clipped rows. Mischief appears only after a hidden achievement is earned; secret unearned rows remain hidden.",
+   "check": "Not built yet: yes for mechanics; no for visual/audio half. Proposed checker: Yes for grouping,gump IDs,text and secrecy; no for crispness,alignment and drawing of icons.",
+   "place": "player",
+   "chars": [
+    "human"
+   ]
+  },
+  "P378-47": {
+   "where": "Account: Human. Test shard, New Haven bank; deliberately retained pre-icon client profile on test only",
+   "do": [
+    "Open same populated achievement pages using the older profile",
+    "Navigate tabs and pages; compare with updated profile"
+   ],
+   "pass": "Category names remain readable with blank icon space; missing art does not hide labels,break navigation or crash client. No new icons are expected until update.",
+   "check": "No for the automated checker. No: missing-texture fallback is client rendering. Use an existing retained client; do not roll back a real installation.",
+   "place": "player",
+   "chars": [
+    "human"
+   ]
+  },
+  "P378-48": {
+   "where": "Account: Human. Test shard, New Haven Registrar then tester-owned house; Admin prepares AP/Renown",
+   "do": [
+    "Open League Shop Hall; test AP-locked,unaffordable,cancel and successful purchase rows",
+    "Compare price,Renown and League rank; try trading deed to another test account",
+    "Try using deed in someone else's house"
+   ],
+   "pass": "Hall rows show gates and confirmation; successful buy deducts only price,rank stays. Deed is account-bound and refuses placement outside owned house.",
+   "check": "Not built yet: yes. Proposed checker: Shop gumps,currency,trade and house permission refusals are server-observable; use real earned/granted AP and verify spendable balance.",
+   "place": "bot"
+  },
+  "P378-49": {
+   "where": "Account: Human. Test shard, owned house with clear floor,north wall and west wall; updated package",
+   "do": [
+    "Place all four case types in available facings; dye shelf and glass/books separately",
+    "Place statues/heads and every trophy against its intended walls; try trophy on open floor",
+    "Walk against statues and inspect alignment,including skull,titan and troglodyte"
+   ],
+   "pass": "Case layers/facings line up and dye separately; partial hues tint intended pixels. Wall pieces sit flush and reject open floor. Statues block and art size fits room as intended.",
+   "check": "Not built yet: yes for mechanics; no for visual/audio half. Proposed checker: Yes for placement/refusal,hues and collision; no for alignment,partial-hue pixels and scale. Check source-supported facings rather than assuming every piece has both.",
+   "place": "player",
+   "chars": [
+    "human"
+   ]
+  },
+  "P378-50": {
+   "where": "Account: Human. Test shard, same owned house; axe in pack",
+   "do": [
+    "Place a Hall piece,chop it and check returned deed",
+    "Place returned deed in the other supported facing; repeat on another same-account character if house ownership permits",
+    "Try moving/trading the returned deed to a different account"
+   ],
+   "pass": "Chop returns exactly the bound deed and removes components; repeated placement neither duplicates nor leaks components. Binding persists after re-deed.",
+   "check": "Not built yet: yes. Proposed checker: Component serial deletion,deed count/owner and re-placement are protocol-observable.",
+   "place": "bot"
+  },
+  "P378-51": {
+   "where": "Account: Admin test account. Offline tools/playtest-bot tests and archived testing/bot-runs/2026-10-21-0601; no game location",
+   "do": [
+    "Run existing bot unit/safety tests from tools/playtest-bot",
+    "Inspect scratch/test/golemcheck target fixture outputs and documented P224 report failures",
+    "Compare registered check IDs to actual queue IDs; preserve existing play-test results"
+   ],
+   "pass": "Both target paths keep their own safety rules and never dial live2593. Unimplemented/orphan checks and recorded failures stay visible; a unit-test pass does not turn any play-test item green.",
+   "check": "No for the overnight UO checker. Local CC verification plan: No new overnight run here: local suite and archived report comparison suffice for merge coverage. Any later in-game run must use its own disposable local test target.",
+   "place": "cc"
+  },
+  "P378-52": {
+   "where": "Account: Admin test account. Offline staged GolemMail and saved email artifacts; no game location",
+   "do": [
+    "Render fixture messages for done,needs-you,skipped review,question and overnight summary",
+    "Compare subject,opening,What to do and Details ordering",
+    "Aggregate routine start/session/merge fixtures into the next mail; check one finished prompt generates one notification"
+   ],
+   "pass": "Main outcome leads,action is clear,technical detail is below. Needs you: appears only for action; routine events batch,done summary includes In plain words. No real message is sent.",
+   "check": "No for the overnight UO checker. Local CC verification plan: No UO bot check: mail rendering/aggregation is a local fixture assertion and never needs email-send access.",
+   "place": "cc"
+  },
+  "P378-53": {
+   "where": "Account: Human. Test shard, guarded New Haven bank; updated client plus nearby second tester; Admin prepares successful boxes with known contents",
+   "do": [
+    "Open boxes containing each of nine supported kinds:blade,bow,staff,armor,shield,jewelry,gem,potion,clothing",
+    "Compare sub-tier4 and tier4+ boxes from both clients",
+    "Inspect arc,landing,timing and selection when several item kinds are inside"
+   ],
+   "pass": "Best eligible item animates for about800ms before fanfare; sub-tier4 visible only to opener,tier4+ to nearby viewers. Arc/frames land cleanly; actual delivered contents stay correct.",
+   "check": "Not built yet: yes for mechanics; no for visual/audio half. Proposed checker: Yes for effect packets,art base IDs,duration,audience and contents; no for motion/landing. P242 note is absent in this docs snapshot; merged source and P366 are authority.",
+   "place": "player",
+   "chars": [
+    "human"
+   ]
+  },
+  "P378-54": {
+   "where": "Account: Human. Test shard, guarded New Haven bank; nearby second tester",
+   "do": [
+    "Toggle [FanfareMute on the opener and open a known visual tier4+ box; compare opener and observer recipients",
+    "Open box containing only unsupported resources/gold then a box in a fixture with flyingLoot=false",
+    "Compare delivered inventory with same prepared contents when enabled",
+    "Unmute opener,mute only observer and repeat major box; record current broadcast behavior"
+   ],
+   "pass": "Muted opener suppresses the effect for everyone. Unsupported contents fall back to fanfare only; disabled effect changes no rewards. With unmuted opener,major effect broadcasts to nearby clients even if an observer muted their own fanfare; this is the current source behavior.",
+   "check": "Not built yet: yes. Proposed checker: Effect-recipient packets and inventory comparison can prove opener suppression/fallback. Observer mute does not filter major broadcast in current Play; note that distinction. Setting-off test belongs in a disposable fixture.",
+   "place": "bot"
+  },
+  "P378-55": {
+   "where": "Account: Admin test account. Chase's already-authorized web console /music on game PC or phone; no game location",
+   "do": [
+    "Open Music Room and inspect loaded local catalogue,durations,album tags and stock-track comparisons",
+    "Play,pause and seek one track from each available pack; use Next unrated",
+    "Leave autoplay off then deliberately enable it in the test session"
+   ],
+   "pass": "Available tracks list accurately; audio and seeking work,non-Ultima album badges are visible,Next unrated skips rated tracks and autoplay changes only when chosen. Historical353 is a snapshot,not a fixed future count.",
+   "check": "No for the automated checker. No headless UO check: audio quality,playback and phone layout require Chase. This plan does not connect to the console or stream audio now.",
+   "place": "outside"
+  },
+  "P378-56": {
+   "where": "Account: Admin test account. Local throwaway MusicRoom fixture with notes_file redirected into scratch; never docs/music/music-notes.json",
+   "do": [
+    "Set Use,Maybe,Pass ratings,tags,target and notes on test tracks through fixture API",
+    "Reload fixture and inspect Summary Use grouping; simulate delayed autosave and unavailable files",
+    "Use a mocked commit callback to inspect Save to repo/hourly behavior without invoking git"
+   ],
+   "pass": "Latest rating/tags/notes survive and summary groups Use tracks correctly; bad keys/files refuse. Fixture commit selects only notes file and never pushes; no repository commit or docs write occurs.",
+   "check": "No for the overnight UO checker. Local CC verification plan: No game checker: local MusicRoom/API tests can verify persistence with scratch notes_file and mocked commit. Real music choices remain Chase's.",
+   "place": "cc"
+  },
+  "P378-57": {
+   "where": "Account: Admin test account. Disposable local test shard; player Trammel Minoc2553,479,8 next to rock2553,478; P219-capable PC",
+   "do": [
+    "After owner schedules the fixture run,invoke Test-LegionScript.ps1 with local SL_Mining plan and that Golem's identity",
+    "Inspect plan setup,target guard,lock,client lifecycle and report/screenshots",
+    "Use failure fixture to verify cleanup without opening a second real client"
+   ],
+   "pass": "Local player mines five times and has ore,or report states a concrete failure. Port2593/remote targets refuse; password is cleared,client closes and lock releases on every exit.",
+   "check": "No for the overnight UO checker. Local CC verification plan: No headless nightly protocol check: the existing P219 TazUO/Legion harness can automate it on an eligible PC. Do not start a GUI client or shard unattended under P378.",
+   "place": "cc"
+  },
+  "P378-58": {
+   "where": "Account: Human. Disposable test world, Green Acres combat area and safe recall destination",
+   "do": [
+    "Use ClusterFNotedBySystem definitions as per-key checklist for unreachable melee kills,low-HP retreat,provocation,last-hit,pets dying,release/retame and distant/hidden pet kills",
+    "Exercise recall-spree,arrival-death and full-runebook events; include one negative case for each predicate",
+    "Read Mischief earns and repeat actions on second character of same account"
+   ],
+   "pass": "Only real matching events advance each counter; thresholds/tier prerequisites hold and repeat earns never pay twice. Boss last-hit requires under1% damage; mere message text cannot award achievements.",
+   "check": "Not built yet: yes. Proposed checker: Damage,pet ownership,travel,runebook contents,counters and rewards are server-observable. Future check must retain exact per-key thresholds from source and not bypass events with grants.",
+   "place": "bot"
+  },
+  "P378-59": {
+   "where": "Account: Human. Test shard, New Haven forge then a drained mining bank; Test Crystal Off",
+   "do": [
+    "Craft/fail the same recipe then change recipe or succeed to test streak reset",
+    "Recycle own freshly crafted item within60s and exceptional item within10s; compare old/bought items",
+    "Swing at drained bank20 times,then continue to next registered tier threshold"
+   ],
+   "pass": "Failure and depletion streaks advance only on matching actual actions and reset correctly. Fresh recycle and Quality Control honor ownership/time/quality; old or bought items do not count.",
+   "check": "Not built yet: yes. Proposed checker: Craft results,created timestamps,resource/refusal events and achievement state are checkable; bounded fixtures may prepare near-threshold counters but final event must be real.",
+   "place": "bot"
+  },
+  "P378-60": {
+   "where": "Account: Human. Disposable test world, safe snow/fire tiles selected from loaded map and a tester-owned house",
+   "do": [
+    "Follow source definitions for overweight steps,mule train,armored barefoot lava/snow,pantsless walking and full storage",
+    "Die in own house and repeat for its tier while keeping a resurrection helper",
+    "Compare ordinary road steps and wrong equipment as negatives"
+   ],
+   "pass": "Only source-matching movement/death events count; snow/fire walking counters remain independent of P262 armored running. Home deaths require ownership/coownership and storage thresholds follow actual capacity.",
+   "check": "Not built yet: yes. Proposed checker: Movement tiles,equipment,weight,house membership and saved counters can be asserted; choose loaded-map terrain,never invent unsafe public test coordinates.",
+   "place": "bot"
+  },
+  "P378-61": {
+   "where": "Account: Human. Test shard, owned house fixed tile,guarded bank and an outside-town refusal spot; Admin supplies bound boxes",
+   "do": [
+    "Exercise same-tile opens,too-soon/invalid-place attempts,edge and audience conditions from source table",
+    "Earn at least one live Dented reward; open it in valid place and inspect keepsake",
+    "Inspect title picker before/after a live Larry or Brave title earn; attempt keepsake trade to another account"
+   ],
+   "pass": "Matching habits earn once; Dented reward replaces normal earn box and guarantees its configured keepsake,statless/blessed/account-bound. Hidden title appears only when held; flavor and Earned lines are readable.",
+   "check": "Not built yet: yes for mechanics; no for visual/audio half. Proposed checker: Yes for conditions,box contents,stats,binding and title visibility; no for keepsake/flavor presentation. Missing art/data rewards stay explicitly unverified.",
+   "place": "player",
+   "chars": [
+    "human"
+   ]
+  },
+  "P378-62": {
+   "where": "Account: Human. Test shard, New Haven blacksmith and Society of Smiths guildmaster",
+   "do": [
+    "Prepare bought/looted and genuinely player-crafted examples of same requested item; combine each with a BOD and commission",
+    "Abandon a commission then request another immediately,just before5min and after configured cooldown",
+    "Complete a valid fresh commission inside60s to exercise Pre-Crafted"
+   ],
+   "pass": "BOD and commission refuse uncrafted goods and consume matching crafted goods. Abandon cooldown blocks early requests then permits; valid quick turn-in earns once. Setting names/defaults remain source values.",
+   "check": "Not built yet: yes. Proposed checker: Deed/commission counts,refusals,bank rewards and server-time windows can be tested with controlled fixtures.",
+   "place": "bot"
+  },
+  "P378-63": {
+   "where": "Account: Admin test account. Offline registered definitions and test-shard fresh account achievements window",
+   "do": [
+    "Compare P263's45 definitions to live hook registry and P262'sfive separate accessory definitions",
+    "Inspect fresh account without grants for Middle Management,Deja Vu,Procrastinator,Cold Feet and Infamous",
+    "Read source to check none of those five gained a hook in this snapshot"
+   ],
+   "pass": "The five data-only definitions stay hidden/unearnable and are not passed as live features. Merged companion groundwork does not by itself implement Middle Management; no duplicate achievement/title names are introduced.",
+   "check": "No for the overnight UO checker. Local CC verification plan: No gameplay bot success path exists for those data-only events. CC can verify definitions/hook absence locally without granting a fake pass.",
+   "place": "cc"
+  },
+  "P378-64": {
+   "where": "Account: Admin test account. Test shard, clear Green Acres Trammel5440,1150,0",
+   "do": [
+    "Use [CompanionMake Blade Commoner male 0 0; inspect [props record,stats and caps",
+    "Create remaining paths on separate prepared owners to avoid party cap; inspect lineage uniqueness,sex/personality and default records",
+    "Set loop1 and level with [CompanionSet; compare MaxLevel and per-skill/total caps"
+   ],
+   "pass": "Companions have unique non-reused lineage IDs,correct path/personality/sex and loop-dependent player-style caps/stats. Level clamps to max; no hiring,breeding loop or advanced AI is expected in B1.",
+   "check": "Not built yet: yes. Proposed checker: Commands,props,skills and owner/control state are checkable. Original P264 notes are absent here; BaseCompanion,CompanionSettings and P369 provide authority.",
+   "place": "bot"
+  },
+  "P378-65": {
+   "where": "Account: Admin test account. Disposable test world, Green Acres; separate fresh owners for cap cases",
+   "do": [
+    "On loop0 owner with5 follower slots create companions until party limit; try one more and a case with all follower slots occupied",
+    "Change one companion rank0 through5 and back using [CompanionSet; read owner Followers each time",
+    "Equip a weapon and known stat/skill gear and compare player-style hits/stamina/mana and weapon damage split"
+   ],
+   "pass": "Party and follower limits independently refuse excess. Rank slot costs1/1/2/2/3/3 adjust owner count without drift; equipped weapon and gear drive supported stats/damage instead of fixed creature seeds.",
+   "check": "Not built yet: yes. Proposed checker: Follower counts,refusals,stat/skill changes and damage-type props can be asserted with known fixtures; owner-loop ladder beyond implemented provider stays a fixture-only case.",
+   "place": "bot"
+  },
+  "P378-66": {
+   "where": "Account: Admin test account. Disposable test world, Green Acres with a companion and ordinary pet; scratch save directory",
+   "do": [
+    "Record companion lineage and equipment; log owner out then back in while observer watches",
+    "Check companion is away with owner rather than in stable; ordinary pet follows its usual rule",
+    "Save/restart only disposable world and relog; create another companion under another owner"
+   ],
+   "pass": "Same companion and record/equipment return beside owner,slots count once and it is never auto-stabled. New lineage ID is greater/non-reused across saved allocator state. No live save or account is changed.",
+   "check": "No for the overnight UO checker. Local CC verification plan: No ordinary overnight run: owner logout can be protocol-tested,but persisted allocator/restart comparison needs a disposable fixture controlled by CC.",
+   "place": "cc"
+  },
+  "P378-67": {
+   "where": "Account: Human. Test shard, New Haven tinkering work spot; Admin supplies each recipe/material and Tinkering/Remove Trap skills",
+   "do": [
+    "Open Tinkering and craft snare,caltrops,gas,blast,dart,bear,alarm and shackle kits",
+    "Compare below/at each Tinkering and Remove Trap threshold from DeployableTraps.Defaults",
+    "Use Remove Trap on owned kit then legal floor within2 tiles; also target blocked/house-restricted/out-of-range spots"
+   ],
+   "pass": "Eight recipes exist with source thresholds/materials; legal set consumes kit into owned deployed trap after arming; invalid set refuses without loss. Skill use may gain through both set and disarm.",
+   "check": "Not built yet: yes. Proposed checker: Craft gumps,target responses,kit/trap state and skill packets are server-observable; exact threshold table is in merged source.",
+   "place": "bot"
+  },
+  "P378-68": {
+   "where": "Account: Human. Disposable test world, Green Acres with safe monster lanes; Admin prepares max skills and payloads",
+   "do": [
+    "Trigger each of eight trap types on eligible monsters at close range",
+    "Drop poison potion on gas,explosion potion on blast and fukiya darts on dart; compare Poisoning levels and load refusals",
+    "Spend all charges; wait and cross again; manually reset/reload then trigger"
+   ],
+   "pass": "Each type delivers its declared damage/hold/slow/alarm effect,charges decrement correctly and spent traps never automatically farm. Payload/Poisoning rules hold and manual reset restores operation.",
+   "check": "Not built yet: yes. Proposed checker: HP/poison/movement timing,messages,charges and payload inventory can be checked; compare formulas/settings rather than exact random damage from a single trigger.",
+   "place": "bot"
+  },
+  "P378-69": {
+   "where": "Account: Human. Disposable test world, Green Acres plus empty Felucca test area; second player,pet,summon,vendor and monster fixtures",
+   "do": [
+    "With default PvP off walk player,pet,summon,vendor and monster over traps on both facets",
+    "Compare owner at12 versus13 tiles,dead,logged out and other facet",
+    "Move same-map owner beyond12 and trigger alarm; record region/coordinates"
+   ],
+   "pass": "Only eligible monsters trigger normal traps while living logged-in owner is present within12. Default remains safe on Felucca. Alarm ignores distance but still needs online same-map owner and reports source location.",
+   "check": "Not built yet: yes. Proposed checker: Eligibility,presence,distance and alarm text can be proven by multiple clients and packet/state assertions; do not enable PvP on a shared shard.",
+   "place": "bot"
+  },
+  "P378-70": {
+   "where": "Account: Human. Disposable test world, Green Acres; prepared Thieves' Den nonmember,Journeyman and Master",
+   "do": [
+    "Set traps to owner/area caps; compare Journeyman extra allowance and refusals",
+    "Trigger against boss as non-Master then Master; compare half-effect rule",
+    "Let damaging trap help kill a monster and inspect owner looting rights and eligible loot-box credit path"
+   ],
+   "pass": "Caps hold,Journeyman adds one,Master permits boss effect at half strength. Damage belongs to trap owner; actual rights/credit are evidenced. If boss loot-box hook remains broken,record that failure separately rather than assuming a box.",
+   "check": "Not built yet: yes. Proposed checker: Counts,rank gates,boss effects,damage attribution and reward eligibility are observable; document existing loot hook defects instead of hiding them.",
+   "place": "bot"
+  },
+  "P378-71": {
+   "where": "Account: Human. Disposable test world, Green Acres; two skill-prepared players",
+   "do": [
+    "Hide,set a trap and inspect stealth state; reveal it with Detect Hidden then disarm via Remove Trap",
+    "Try wrong owner,failed skill and successful salvage paths",
+    "Leave set and spent traps for configured30min/2min,or use isolated accelerated-clock fixture"
+   ],
+   "pass": "Hidden set obeys stealth budget and first-hit rule; reveal/disarm/refusal/salvage follow source without duplicate kits. Set/spent traps decay on their respective timers.",
+   "check": "Not built yet: yes. Proposed checker: Hidden flags,skill outcomes,trap serials and item returns are observable; use bounded time/fixture control to avoid treating a waiting timeout as success.",
+   "place": "bot"
+  },
+  "P378-72": {
+   "where": "Account: Human. Test shard, Rootdeep Vault Stacks Trammel5156-5168,1132-1142; descent traps near5161,1195 and5201,1195",
+   "do": [
+    "Admin first dry-runs then runs [ClusterFSeedRootdeep on disposable world; inspect eight floor trap rows without duplicating unrelated setup",
+    "Enter Stacks as trainee,receive two practice nets,set one and lure Penny Rat or Hoarding Rat",
+    "Re-enter after completion; inspect Echo line,floor hazards and bear trap jaws0xB2C5/0xB2C3"
+   ],
+   "pass": "Practice rat is held about4s,Echo says Held. and lesson persists without repeat reward. Seed adds missing floor traps; mushroom/spike/saw effects and bear jaws actually draw; practice kit refuses use outside Burrows.",
+   "check": "Not built yet: yes for mechanics; no for visual/audio half. Proposed checker: Yes for lesson,net count,hold,restrictions and seeder serials; no for high-ID bear art and hazard appearance. Custom art requests remain pending,so placeholders are intentional.",
+   "place": "player",
+   "chars": [
+    "human"
+   ]
+  },
+  "P378-73": {
+   "where": "Account: Admin test account. Disposable test world, Trammel3400,2614,0 west of New Haven; merged build including P265 startup fix",
+   "do": [
+    "With matching server/client map patch run [ClusterFSeedTutorialFarm dryrun then seed twice",
+    "Inspect field,farmhouse,door,Farmhand,pest and pen spawners",
+    "In isolated unpatched-map and testCenter=false fixtures test refusals without setting allowLive"
+   ],
+   "pass": "Patched map permits missing-only placement and rerun adds none; two old trees are absent. Unpatched map and non-test mode refuse. Seed does not move/delete unrelated objects.",
+   "check": "Not built yet: yes. Proposed checker: Commands,positions,types,map statics and refusal text are checkable; use fixtures for false-mode guard,never touch live.",
+   "place": "bot"
+  },
+  "P378-74": {
+   "where": "Account: Human. Test shard, New Haven west past Bardic Guild to Farmhand3400,2614 and field fence3381-3399,2603-2619; updated map package",
+   "do": [
+    "Take tutorial animal station directions; follow arrow to Wren Tallow",
+    "Walk farmhouse porch,door,crop rows and pen; inspect former trees3388,2607 and3396,2616",
+    "Observe whether stock wildlife from3403,2572 intrudes on field's north edge"
+   ],
+   "pass": "Directions reach gate;house,crops,fences and pen draw at sensible height and routes are walkable. No trees intersect fence. Record wildlife overlap as existing untrimmed risk,not a new fix promised by farm.",
+   "check": "No for the automated checker. No: path clarity,map/server alignment and scene placement need client walk/screenshot; bot can separately prove arrow endpoints and statics.",
+   "place": "player",
+   "chars": [
+    "human"
+   ]
+  },
+  "P378-75": {
+   "where": "Account: Human. Test shard, Farmhand3400,2614 then pests around3388,2614; fresh League tutorial participant",
+   "do": [
+    "Double-click Farmhand,choose dog; on separate trainee choose cat; test non-trainee and no-free-follower-slot refusals",
+    "Kill three farm pests with damage from self or pet; compare untouched kill by helper as negative",
+    "Return for10 bandages and successfully heal self or pet; try a failed heal first"
+   ],
+   "pass": "One bonded controlled evo pet is given;only credited pests count. Successful Healing/Veterinary completes lesson,failed heal does not; Echo/station progress advances. Repeating talk does not give a second pet.",
+   "check": "Not built yet: yes. Proposed checker: NPC gumps,control flags,damage attribution,bandages and tutorial station keys are server-observable; no special guest/real account is needed.",
+   "place": "bot"
+  },
+  "P378-76": {
+   "where": "Account: Admin test account. Disposable test world, farm gate and tutorial graduation NPC; dog/cat stage fixtures in Green Acres",
+   "do": [
+    "Complete farm pet step then graduate; compare trainee who skipped farm pet",
+    "Compare dog/cat stage bodies and loop gates to merged ClusterFTutorial Evo definitions and TutorialFarmVerification",
+    "Save/relog stage/lesson fixture and inspect stage visuals in updated client"
+   ],
+   "pass": "Farm graduate gets no second pet;skipper retains original graduation choice. Approved dog/cat stages and gates0/0/0/1/5 match source,records persist;no unmerged first-loop graduation behavior is expected.",
+   "check": "Not built yet: yes for mechanics; no for visual/audio half. Proposed checker: Yes for no-duplicate pet,body IDs,gates and records; no for stage animation/appearance. Future loop progression is fixture setup,not a claim the loop system shipped.",
+   "place": "admin"
+  },
+  "P378-77": {
+   "where": "Account: Admin test account. Disposable test world, open Trammel Green Acres flat floor; keep four anchors at least60 tiles apart",
+   "do": [
+    "For each [DecorAlembicHall,[DecorSmithsHall,[DecorArtificersHall,[DecorHallStructure use status then place here dryrun at its anchor",
+    "Place each once,repeat and try one named group from status",
+    "Place unrelated lookalike sentinel,then clear dryrun and clear only that set near its anchor"
+   ],
+   "pass": "Nothing places at boot;dry run creates none,repeat does not duplicate rows and named groups work. Clear within24 tiles deletes only its own set/anchor objects;unrelated sentinels survive.",
+   "check": "Not built yet: yes. Proposed checker: Seed reports,types,set/group/anchor keys and serial counts are server-observable;hall locations/F49 are not decided by this plan.",
+   "place": "bot"
+  },
+  "P378-78": {
+   "where": "Account: Human. Test shard, four isolated hall-template anchors prepared in Green Acres; updated player package with art28016-28294",
+   "do": [
+    "Walk Alembic vat,tanks,crystal ball and flasks;Smith worker/firepit;Artificer crystals/orbs;shared towers,rails and ladder",
+    "Inspect animation,partial hues,facings,overlap,collision and apparent height from several directions",
+    "Compare against design/guild-hall-decor/templates.json;record screenshots per set"
+   ],
+   "pass": "All template pieces draw without UNUSED/missing high-ID art;animations and stacked tower/railing alignment read correctly. Untemplated spare pieces are registered assets,not promised world placements.",
+   "check": "No for the automated checker. No: sprites above0x4000,animation and perspective require rendered client evidence. P374 screenshots are future work,not a passed result here.",
+   "place": "player",
+   "chars": [
+    "human"
+   ]
+  },
+  "P378-79": {
+   "where": "Account: Admin test account. Isolated loopback-only boot fixtures with scratch saves;no shared shard or Haven connection",
+   "do": [
+    "Boot merged image including VirtualCheckActivatorFirst with default virtual-check configuration",
+    "In separate testCenter=false fixture try each decor place/clear and inspect world serials",
+    "Inspect startup log and guard messages"
+   ],
+   "pass": "Startup passes VirtualCheck configuration rather than null-activator crash. Every decor place/clear refuses outside test mode and changes nothing;no live-world test is needed.",
+   "check": "No for the overnight UO checker. Local CC verification plan: No overnight normal game check: boot-order/control-mode comparison belongs to isolated fixture. Source and P265 report support plan,but P378 runs no server.",
+   "place": "cc"
+  },
+  "P378-80": {
+   "where": "Account: Human. Test shard, New Haven League Registrar;Admin prepares DullCopper rank and Smiths/mining memberships",
+   "do": [
+    "Ask League Register below and at DullCopper;ask again after receiving one",
+    "Bind Society with empty Smith Guild Book and mining with Dispatch Ledger,then unbind",
+    "Try book containing deeds,nonmembership and missing required book;bind a guild that currently has no book"
+   ],
+   "pass": "Issue gate holds,reissue removes prior copy. Bind consumes required empty book;unbind returns fresh book free. Refusals preserve contents;guilds without books bind by membership.",
+   "check": "Not built yet: yes. Proposed checker: NPC/gump,rank gates,book inventories and binding list are server-observable;P178 books/actions not yet in main are excluded.",
+   "place": "bot"
+  },
+  "P378-81": {
+   "where": "Account: Human. Test shard, New Haven bank;Admin prepares actual guild memberships and successive League rank fixtures",
+   "do": [
+    "Bind to capacity at DullCopper2,Bronze4,Verite6,Blaze9,Mythril12,Celestial18;try one extra where possible",
+    "Inspect Guild Ledger rank,standing and currency against each guild's own page",
+    "Remove one membership with supported [ResetGuild key fixture then open Register twice"
+   ],
+   "pass": "Capacity follows rank and excess refuses;ledger matches real guild data. Departed guild is greyed as dropped once,slot freed immediately and absent next open;no book/refund is fabricated.",
+   "check": "Not built yet: yes. Proposed checker: Bound counts,rank/currency text,membership and two-open behavior are checkable;use real membership records rather than only changing a displayed rank.",
+   "place": "bot"
+  },
+  "P378-82": {
+   "where": "Account: Human. Test shard, Green Acres far from Registrar;bound Society plus another guild with ready work",
+   "do": [
+    "Compare League actions at DullCopper,Bronze and Verite",
+    "At Bronze open a bound guild's Contracts remotely",
+    "At Verite press Turn in every ready order with two completed smith deeds and ready bound-guild work;repeat empty and with incomplete orders"
+   ],
+   "pass": "Rank gates hold;remote Contracts opens only at allowed rank. All eligible complete work pays once through its guild rules;incomplete/unbound work remains and repeat cannot pay again.",
+   "check": "Not built yet: yes. Proposed checker: Gumps,order/deed counts and guild reward balances are checkable;set Society payout mode explicitly because ask mode banks.",
+   "place": "bot"
+  },
+  "P378-83": {
+   "where": "Account: Human. Test shard, New Haven bank then Green Acres out of bank range;Admin supplies damaged worn,pack,bank and nested gear",
+   "do": [
+    "At belowBlaze attempt League repair then atBlaze use it",
+    "Repeat same damaged fixture using RemoteRepairDeed on lower-rank character",
+    "Include already-whole gear and guild tool with remaining uses rather than durability"
+   ],
+   "pass": "Eligible damaged worn,carried and banked gear repairs to full once,without maximum-durability loss. Rank gate holds;remote deed is consumed for its repair;uses-based guild tool charges are unchanged.",
+   "check": "Not built yet: yes. Proposed checker: Durability,banks,nested containers and deed consumption can be inspected with Admin test fixtures;do not assume replenishing guild tool uses is part of repair.",
+   "place": "bot"
+  },
+  "P378-84": {
+   "where": "Account: Human. Test shard, New Haven bank;Admin prepares ranks,Renown,gold and light filler stacks",
+   "do": [
+    "Buy steps in order at Bronze,Verite,Blaze,Mythril;try next step below its rank and without each currency",
+    "Fill to150/175/200/250 item limit and try one more;compare weight capacity and lifetime Renown",
+    "Relog and recheck capacity;repeat purchase cannot buy same step twice"
+   ],
+   "pass": "Each step charges configured price and expands only item count;weight and League rank remain. Next-tier gating and insufficient-currency refusal are atomic;capacity persists.",
+   "check": "Not built yet: yes. Proposed checker: Pack MaxItems,actual drop refusal,currency and relog state can be checked;use harmless lightweight fixtures so weight does not mask item cap.",
+   "place": "bot"
+  },
+  "P378-85": {
+   "where": "Account: Human. Test shard, New Haven bank;Bronze citizen with Renown/gold and ore,lumber,hunter,essence satchels",
+   "do": [
+    "Buy League Field Satchel for default5000Renown/500gold;try inserting each eligible family with and without50 of its guild currency",
+    "Insert all four;try second of same family and unrelated bag",
+    "Collect matching resources,open nested bag and remove/reinsert one"
+   ],
+   "pass": "One accepted family each,fee paid per insertion in that guild currency,no fee to remove. Contents remain functional recursively and whole Field Satchel counts as one top-level item;duplicates/unrelated bags refuse.",
+   "check": "Not built yet: yes. Proposed checker: Nested contents,fees,collection and total item accounting can be asserted;use original family types rather than icon lookalikes.",
+   "place": "bot"
+  },
+  "P378-86": {
+   "where": "Account: Human. Test shard, New Haven bank;DullCopper citizen with both logbooks and known ore/wood exploration records",
+   "do": [
+    "Buy Combined Logbook with default500Renown/50gold;inspect old books and both record pages",
+    "Put known gold,bank check,ingots and boards into bank including nested bags;open Register Bank page",
+    "Relog and compare account records without old logbooks"
+   ],
+   "pass": "Old books are consumed only for successful purchase;mining/forestry records remain. Bank page totals count supported materials and bank-check worth accurately without moving inventory;relog loses no records.",
+   "check": "Not built yet: yes. Proposed checker: Inventory,record text and known bank sums are server-observable;Bank page is a report,not an implemented unlimited remote bank.",
+   "place": "bot"
+  },
+  "P378-87": {
+   "where": "Account: Human. Test shard, New Haven forge then Green Acres;Admin supplies high Blacksmithy and adjustable Arms Lore",
+   "do": [
+    "Inspect Repair Items and craft at ArmsLore89.9/90,109.9/110,119.9/120 with smith skills60/80/90 plus materials",
+    "Use FieldRepairDeed on damaged and invalid items;use10-charge FieldRepairKit on damaged then whole gear",
+    "Use RemoteRepairDeed on damaged worn,pack and bank gear"
+   ],
+   "pass": "Arms Lore gates and costs are enforced by craft table. Deed repairs one eligible item and consumes once;kit spends one charge per actual repair and none on whole gear;remote repairs all supported gear once.",
+   "check": "Not built yet: yes. Proposed checker: Craft gates,consumption,UsesRemaining and durability are checkable;craft thresholds are startup-read so fixture server must load desired settings before crafting.",
+   "place": "bot"
   }
  }
 }
