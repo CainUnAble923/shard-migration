@@ -260,6 +260,48 @@ def write_statics(folder, fi, statics):
     return len(by_block), kept
 
 
+def remove_statics(folder, fi, statics):
+    """Remove [(x, y, z, id, ...)] from the facet's statics: each touched block is rewritten at the end of
+    statics{N}.mul without one matching row per entry (id, cell, z; hue ignored), and the index repointed.
+    Returns (rows removed, [(x, y, z, id) not found]). cc-P188: the way in through Old Haven's ruined bank."""
+    name, w, h = FACETS[fi]
+    bh = h >> 3
+    idx_path, sta_path = os.path.join(folder, "staidx%d.mul" % fi), os.path.join(folder, "statics%d.mul" % fi)
+    idx = bytearray(open(idx_path, "rb").read())
+    sta = bytearray(open(sta_path, "rb").read())
+    by_block = collections.defaultdict(list)
+    for s in statics:
+        x, y, z, tid = s[0], s[1], s[2], s[3]
+        by_block[(x >> 3) * bh + (y >> 3)].append((tid, x & 7, y & 7, z))
+    removed, missing = 0, []
+    for b, wanted in sorted(by_block.items()):
+        look, ln, extra = struct.unpack_from("<iii", idx, b * 12)
+        rows = []
+        if look >= 0 and ln > 0:
+            for p in range(look, look + (ln // 7) * 7, 7):
+                rows.append(struct.unpack_from("<HBBbh", sta, p))
+        for (tid, cx, cy, z) in wanted:
+            hit = next((i for i, r in enumerate(rows) if r[0] == tid and r[1] == cx and r[2] == cy and r[3] == z), None)
+            if hit is None:
+                bx, by = divmod(b, bh)
+                missing.append((bx * 8 + cx, by * 8 + cy, z, tid))
+                continue
+            del rows[hit]
+            removed += 1
+        if rows:
+            newlook = len(sta)
+            for r in rows:
+                sta += struct.pack("<HBBbh", *r)
+            struct.pack_into("<iii", idx, b * 12, newlook, len(rows) * 7, extra)
+        else:
+            struct.pack_into("<iii", idx, b * 12, -1, -1, extra)
+    with open(idx_path, "wb") as f:
+        f.write(idx)
+    with open(sta_path, "wb") as f:
+        f.write(sta)
+    return removed, missing
+
+
 def verify(folder, fi, land, statics):
     """Re-read the files and compare every planned tile. Returns (land mismatches, statics match, statics read)."""
     mf = MapFile(folder, fi)

@@ -406,6 +406,8 @@ def page(made, junction_files):
          '(4) <b>The Strongroom pillars</b> are solid plinths: the walled ring with a marble floor at wall height on top (seven variants below; f picked). '
          'The walkable floor, the 18 openings, the crawlway and all 1,614 wall tiles are exactly round 3\'s (the builder refuses to write otherwise).</div>',
          '<h2>Your marks, before and after (numbered as on your screenshots)</h2>']
+    if os.path.exists(os.path.join(OUT, 'way-in.html')):   # cc-P188: the way in from Old Haven, its own page
+        o.insert(len(o) - 1, "<p class='ask'><b>cc-P188, 2026-10-20: the way in from Old Haven.</b> The opening in the Second Bank's south wall, the hole, the rope ladder up, and the walk from New Haven: <a href='way-in.html'>way-in.html</a>.</p>")
     for shot in SCREENSHOTS:
         marks = [(n, wrong, fix) for s, n, rect, wrong, fix in MARKS if s == shot]
         o.append('<h3>%s.png</h3><table><tr><th>Mark</th><th>What was wrong</th><th>The fix</th></tr>' % E(shot))
