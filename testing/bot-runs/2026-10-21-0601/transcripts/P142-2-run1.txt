@@ -1,0 +1,218 @@
+    0.00 harness  == P142-2 run 1: A champion spawn: an Initiate works it, the special-item message comes, no refusal
+    0.00 admin    -> say '[go 0x33B'
+    1.01 admin    -> say '[add ThiefGuildmaster'
+    1.01 admin    <- 0x6C target cursor 1461 (type 1)
+    1.22 admin    -> 0x6C target ground 5502,570,59
+    1.22 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+    1.74 player   -> 0xBF 0x13 context menu request 0x00000408
+    1.74 player   <- 0xBF 0x14 context menu 0x00000408: [(0, 3006123, 'Open Paperdoll', 0), (1, 3006146, 'Talk', 0), (2, 3006014, 'Train Detect Hidden', 0), (3, 3006021, 'Train Hiding', 0), (4, 3006024, 'Train Lockpicking', 0), (5, 3006028, 'Train Snooping', 0), (6, 3006030, 'Train Poisoning', 0), (7, 3006033, 'Train Stealing', 1), (8, 3006042, 'Train Fencing', 0)]
+    1.74 player   -> 0xBF 0x15 context pick 1 (Talk) on 0x00000408
+    1.74 player   <- 0xDD gump 0x00000876 type -810631593: Thieves' Den | <BASEFONT COLOR=#DDDDDD><I>We see all. Can we trust you? Show us your light fingers.</I></BASEFONT> | <BASEFONT COLOR=#AAAAAA>Teaches: Hiding, Stealth, Stealing, Snooping, Lockpicking, Poisoning, Detecting Hidden, Remove Trap</BASEFONT> | Separate from the stock trade guild (say "join", 500 gold). One does not join the other. | Member. Rank: Initiate. | Starter items (2) | Mule module schematics | Apprentice task: | <BASEFONT COLOR=#DDDDDD>Demonstrate Stealing of at least 20.0.</BASEFONT> | Complete it: +25 reputation, +10 scrip | Guild services | Guild Directory | Requisitions | Close
+    1.74 player      layout: { resizepic 0 0 9270 520 400 }{ checkertrans 10 10 500 380 }{ text 20 14 1154 0 }{ gumppictiled 10 36 500 2 9304 }{ htmlgump 20 44 480 36 1 0 0 }{ htmlgump 20 82 480 36 2 0 0 }{ text 20 118 999 3 }{ gumppictiled 10 140 500 2 9304 }{ text 20 150 68 4 }{ button 20 172 4005 4007 1 0 3 }{ text 55 174 999 5 }{ button 20 200 4005 4007 1 0 7 }{ text 55 202 999 6 }{ gumppictiled 10 232 500 2 9304 }{ text 20 240 999 7 }{ htmlgump 20 260 480 36 8 0 0 }{ button 20 298 4023 4025 1 0 4 }{ text 55 300 1154 9 }{ gumppictiled 10 350 500 2 9304 }{ button 20 362 4011 4012 1 0 5 }{ text 45 364 999 10 }{ button 180 362 4011 4012 1 0 6 }{ text 205 364 999 11 }{ button 300 362 4011 4012 1 0 9 }{ text 325 364 999 12 }{ button 420 362 4017 4019 1 0 0 }{ text 455 364 999 13 }
+    1.74 player   -> 0xB1 gump 0x00000876 type -810631593 button 0 switches [] texts []
+    1.74 admin    -> say '[go 0x33B'
+    2.75 admin    -> say '[SetSkill Stealing 120'
+    2.75 admin    <- 0x6C target cursor 1462 (type 0)
+    2.95 admin    -> 0x6C target object 0x0000033B
+    2.95 admin    <- unicode(0) System: Stealing : 120 (Base: 120)
+    2.95 player   <- 0x3A skill 33 now 120.0 (cap 200.0)
+    3.57 admin    -> say '[go 0x33B'
+    4.58 admin    -> say '[set Blessed true'
+    4.58 admin    <- 0x6C target cursor 1463 (type 0)
+    4.79 admin    -> 0x6C target object 0x0000033B
+    4.79 admin    <- unicode(0) System: Property has been set.
+    5.30 admin    -> say '[go 0x33B'
+    6.31 admin    -> say '[set Map Felucca X 5511 Y 2360 Z 42'
+    6.31 admin    <- 0x6C target cursor 1464 (type 0)
+    6.52 admin    -> 0x6C target object 0x0000033B
+    6.52 admin    <- unicode(0) System: Property has been set. (4)
+    6.53 player   <- 0xDD gump 0x00000877 type -908281109:  | Warning: monsters may attack you on sight down here in the dungeons!
+    6.53 player      layout: { resizepic 0 0 302 250 170 }{ resizepic 10 10 5120 230 150 }{ xmfhtmlgumpcolor 20 25 210 70 1018030 0 0 32767 }{ button 163 125 248 249 1 0 0 }
+    6.53 player   <- 0x25 item 0x40010F70 graphic 0xFF1 x1 into 0x400110A2
+    6.53 player   <- 0x25 item 0x40010F72 graphic 0xF52 x1 into 0x400110A2
+    6.53 player   <- 0x25 item 0x40010F73 graphic 0xA28 x1 into 0x400110A2
+    6.53 player   <- 0x25 item 0x40010F76 graphic 0xF0E x4 into 0x400110A2
+    6.53 player   <- 0x25 item 0x40010F77 graphic 0xE9B x1 into 0x400110A2
+    6.53 player   <- 0x25 item 0x40010F79 graphic 0xE21 x3 into 0x400110A2
+    6.53 player   <- 0x25 item 0x40010F7A graphic 0x1F03 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x400110A5 graphic 0x9AA x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x400110A8 graphic 0x9AA x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x400110AB graphic 0x9AA x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x400110AE graphic 0x9AA x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x400110DD graphic 0x3C3C x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x400110DE graphic 0x3C3C x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x400110DF graphic 0x3C3C x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40011F55 graphic 0x1BF2 x87 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40011F5D graphic 0x19B9 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40011F62 graphic 0x19B9 x5 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40011F64 graphic 0x19B9 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40011F65 graphic 0x19BA x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40011F68 graphic 0x1BF2 x80 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40011F71 graphic 0x19B9 x5 into 0x400110A2
+    6.54 player   <- 0x25 item 0x4001395B graphic 0xE86 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x4001395C graphic 0xA272 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x4001395D graphic 0x1C11 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x4001395E graphic 0xFBD x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x4001396D graphic 0x1EB8 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013975 graphic 0x1EB8 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x4001397A graphic 0x1EB8 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013984 graphic 0x1BD7 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013985 graphic 0x1BD7 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013986 graphic 0x1BD7 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013987 graphic 0x1EB8 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x4001398D graphic 0x1EB8 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x4001398F graphic 0x1BF2 x30 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013990 graphic 0x1053 x4 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013991 graphic 0xF80 x5 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013993 graphic 0x1EB8 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013995 graphic 0x1BF2 x60 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013996 graphic 0x1053 x8 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013997 graphic 0xF80 x10 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013999 graphic 0x1079 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x4001399A graphic 0x1079 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x4001399B graphic 0x1079 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x4001399C graphic 0x1079 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x4001399D graphic 0x1079 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x400139A4 graphic 0xE21 x4 into 0x400110A2
+    6.54 player   <- 0x25 item 0x400139A1 graphic 0x1F14 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x400139A8 graphic 0xE21 x4 into 0x400110A2
+    6.54 player   <- 0x25 item 0x400139A5 graphic 0x1F14 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x400139AC graphic 0xE21 x4 into 0x400110A2
+    6.54 player   <- 0x25 item 0x400139AE graphic 0x19B9 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x400139B1 graphic 0x19B9 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x4001399E graphic 0x1079 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x400139B7 graphic 0x14EB x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x400139B8 graphic 0x14EB x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x400139DD graphic 0x14EB x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x400139DE graphic 0x14EB x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013A02 graphic 0x14EB x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013A03 graphic 0x14EB x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013A2B graphic 0xFEF x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013A33 graphic 0xFEF x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013A51 graphic 0x26B4 x1 into 0x40013A4B
+    6.54 player   <- 0x25 item 0x40013A52 graphic 0x26B4 x1 into 0x40013A4B
+    6.54 player   <- 0x25 item 0x40013A53 graphic 0x26B4 x1 into 0x40013A4B
+    6.54 player   <- 0x25 item 0x40013A55 graphic 0x26B4 x1 into 0x40013A4B
+    6.54 player   <- 0x25 item 0x40013A56 graphic 0x26B4 x1 into 0x40013A4B
+    6.54 player   <- 0x25 item 0x40013A86 graphic 0x26B4 x1 into 0x40013A4B
+    6.54 player   <- 0x25 item 0x40013A87 graphic 0x26B4 x1 into 0x40013A4B
+    6.54 player   <- 0x25 item 0x40013A90 graphic 0x26B4 x1 into 0x40013A4B
+    6.54 player   <- 0x25 item 0x40013A9F graphic 0x26B4 x1 into 0x40013A4B
+    6.54 player   <- 0x25 item 0x40013A4B graphic 0xA272 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013A4C graphic 0x1EB8 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013A57 graphic 0x13CC x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013A64 graphic 0x13CC x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013A71 graphic 0x13CC x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013A7A graphic 0x13B0 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013A7B graphic 0xF61 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013A7E graphic 0x13B0 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013A7F graphic 0xF61 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013A82 graphic 0x13B0 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013A83 graphic 0xF61 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013A84 graphic 0xEED x1500 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013A8E graphic 0xF52 x1 into 0x40013A89
+    6.54 player   <- 0x25 item 0x40013A8F graphic 0x108A x1 into 0x40013A89
+    6.54 player   <- 0x25 item 0x40013A8D graphic 0xF61 x1 into 0x40013A89
+    6.54 player   <- 0x25 item 0x40013A89 graphic 0xE76 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013A96 graphic 0xF52 x1 into 0x40013A91
+    6.54 player   <- 0x25 item 0x40013A97 graphic 0x108A x1 into 0x40013A91
+    6.54 player   <- 0x25 item 0x40013A95 graphic 0xF61 x1 into 0x40013A91
+    6.54 player   <- 0x25 item 0x40013A91 graphic 0xE76 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40013A9D graphic 0xF52 x1 into 0x40013A98
+    6.54 player   <- 0x25 item 0x40013A9E graphic 0x108A x1 into 0x40013A98
+    6.54 player   <- 0x25 item 0x40013A9C graphic 0xF61 x1 into 0x40013A98
+    6.54 player   <- 0x25 item 0x40013A98 graphic 0xE76 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40014DEC graphic 0x14FC x20 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40014DEF graphic 0xF0A x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40014DF0 graphic 0xF0A x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40014E0D graphic 0x1876 x2 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40014E13 graphic 0xFFB x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40014E19 graphic 0x1848 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40014E1F graphic 0x1848 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40014E26 graphic 0xEFD x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40014E2D graphic 0xEFC x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40014E34 graphic 0x1727 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40014E3A graphic 0xEFC x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40014E40 graphic 0xFFB x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40014E47 graphic 0xEFC x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40014E4D graphic 0xEFB x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40014E54 graphic 0x1F13 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40014E5A graphic 0xFFB x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40014E60 graphic 0x1847 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40014FC9 graphic 0xFFB x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40014FD0 graphic 0xEFC x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40014FD7 graphic 0xF8C x2 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40014FDD graphic 0xEFC x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40014FE4 graphic 0x1848 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40014FEB graphic 0xEFC x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40014FF1 graphic 0x1F13 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40014FF7 graphic 0x1F13 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40014FFE graphic 0x1F13 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40015005 graphic 0xEFC x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40015012 graphic 0xFFB x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40015019 graphic 0xEFC x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x4001501F graphic 0x1F13 x1 into 0x400110A2
+    6.54 player   <- 0x25 item 0x40015025 graphic 0xF88 x1 into 0x400110A2
+    7.02 admin    -> say '[go 0x33B'
+    7.03 admin    <- 0x25 item 0x400110B0 graphic 0xFF1 x1 into 0x400110B5
+    7.03 admin    <- 0x25 item 0x400110B1 graphic 0xEED x1000 into 0x400110B5
+    7.03 admin    <- 0x25 item 0x400110B2 graphic 0xF52 x1 into 0x400110B5
+    7.03 admin    <- 0x25 item 0x400110B3 graphic 0xA28 x1 into 0x400110B5
+    7.03 admin    <- 0x25 item 0x400110B8 graphic 0x9AA x1 into 0x400110B5
+    7.03 admin    <- 0x25 item 0x400110BB graphic 0x9AA x1 into 0x400110B5
+    7.03 admin    <- 0x25 item 0x400110BF graphic 0x9AA x1 into 0x400110B5
+    7.03 admin    <- 0x25 item 0x400110C3 graphic 0x9AA x1 into 0x400110B5
+    7.03 admin    <- 0x25 item 0x400110C7 graphic 0x9AA x1 into 0x400110B5
+    7.03 admin    <- 0x25 item 0x400110CB graphic 0x9AA x1 into 0x400110B5
+    7.03 admin    <- 0x25 item 0x400110CF graphic 0x9AA x1 into 0x400110B5
+    7.03 admin    <- 0x25 item 0x400110D3 graphic 0x9AA x1 into 0x400110B5
+    7.03 admin    <- 0x25 item 0x400110D7 graphic 0x9AA x1 into 0x400110B5
+    7.03 admin    <- 0x25 item 0x400110DB graphic 0x9AA x1 into 0x400110B5
+    8.53 admin    -> say '[where'
+    8.53 admin    <- unicode(0) System: You are at 5511 2360 42 in Felucca.
+   12.13 admin    -> say '[go 0x33B'
+   13.14 admin    -> say '[set Map Felucca X 6038 Y 2401 Z 47'
+   13.14 admin    <- 0x6C target cursor 1465 (type 0)
+   13.34 admin    -> 0x6C target object 0x0000033B
+   13.34 admin    <- unicode(0) System: Property has been set. (4)
+   13.85 admin    -> say '[go 0x33B'
+   15.37 admin    -> say '[where'
+   15.37 admin    <- unicode(0) System: You are at 6038 2401 47 in Felucca.
+   18.98 admin    -> say '[go 0x33B'
+   19.99 admin    -> say '[set Map Felucca X 5549 Y 2640 Z 16'
+   19.99 admin    <- 0x6C target cursor 1466 (type 0)
+   20.20 admin    -> 0x6C target object 0x0000033B
+   20.20 admin    <- unicode(0) System: Property has been set. (4)
+   20.71 admin    -> say '[go 0x33B'
+   22.22 admin    -> say '[where'
+   22.22 admin    <- unicode(0) System: You are at 5549 2640 16 in Felucca.
+   25.85 admin    -> say '[go 0x33B'
+   26.87 admin    -> say '[set Map Felucca X 5557 Y 827 Z 65'
+   26.87 admin    <- 0x6C target cursor 1467 (type 0)
+   27.07 admin    -> 0x6C target object 0x0000033B
+   27.08 admin    <- unicode(0) System: Property has been set. (4)
+   27.08 player   <- 0xDD gump 0x00000878 type -908281109:  | Warning: monsters may attack you on sight down here in the dungeons!
+   27.08 player      layout: { resizepic 0 0 302 250 170 }{ resizepic 10 10 5120 230 150 }{ xmfhtmlgumpcolor 20 25 210 70 1018030 0 0 32767 }{ button 163 125 248 249 1 0 0 }
+   27.58 admin    -> say '[go 0x33B'
+   29.10 admin    -> say '[where'
+   29.10 admin    <- unicode(0) System: You are at 5557 827 65 in Felucca.
+   29.10 admin    <- unicode(0) System: Your region is Despise.
+   29.71 admin    -> say '[go 0x33B'
+   30.73 admin    -> say '[GuildStanding thieves 0'
+   30.73 admin    <- 0x6C target cursor 1468 (type 0)
+   30.93 admin    -> 0x6C target object 0x0000033B
+   30.93 admin    <- unicode(0) System: Set Bot Human F Aa's Thieves' Den standing to 0 (Initiate).
+   31.55 admin    -> say '[go 0x33B'
+   32.56 admin    -> say '[set Blessed false'
+   32.56 admin    <- 0x6C target cursor 1469 (type 0)
+   32.77 admin    -> 0x6C target object 0x0000033B
+   32.77 admin    <- unicode(0) System: Property has been set.
+   33.28 harness  Traceback (most recent call last):
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\run.py", line 180, in run_checks
+    ok, evidence = chk.fn(ctx)
+                   ^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\checks_p224_thieves.py", line 352, in p142_2
+    raise RuntimeError("no ChampionSpawnRegion at any of [GenChamps' spots (%s): the world has no champion spawn, "
+RuntimeError: no ChampionSpawnRegion at any of [GenChamps' spots ([((5511, 2360, 42), 'no region'), ((6038, 2401, 47), 'no region'), ((5549, 2640, 16), 'no region'), ((5557, 827, 65), 'Your region is Despise.')]): the world has no champion spawn, the bot cannot work one; [GenChamps (Developer) would place them
+
+   33.28 harness  == P142-2 run 1: ERROR (RuntimeError: no ChampionSpawnRegion at any of [GenChamps' spots ([((5511, 2360, 42), 'no region'), ((6038, 2401, 47), 'no region'), ((5549, 2640, 16), 'no region'), ((5557, 827, 65), 'Your region is Despise.')]): the world has no champion spawn, the bot cannot work one; [GenChamps (Developer) would place them)

@@ -579,40 +579,40 @@
    "check": "Not built yet: trade the deed to the second bot character, who uses it; assert the mule's owner is them and its genes match the foal's ([props); result in the nightly report once built."
   },
   "P69-6": {
-   "check": "Not built yet: [props an existing mule; assert Shadowhide, 1 control slot, and the owner's follower count; result in the nightly report once built."
+   "check": "Bot (p69_6): makes the player a new tier-3 mule (there are no old mules on a fresh world; the evidence says so) and asserts its property list reads 'Tier 3: Shadowhide Mule' and 'Module slots: 0 / 3' and the owner's follower count rose by one. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P70-1": {
-   "check": "Not built yet: join the Tinkers' Union, set Apprentice, 20 Tinkers' scrip and 5 Mining Vouchers; hall page, \"Mule module schematics\", buy Clockwork Load Harness I; assert it is learned; result in the nightly report once built."
+   "check": "Bot (p70_1, Bot then you): no staff command grants Tinkers' scrip, so the bot runs the same schematics shop at the Miners' Compact: joins, [CompactStanding and [CompactVouchers, hall page > 'Mule module schematics', buys Ore Hopper I, asserts 'You learn the Ore Hopper I schematic' and the recipe in [Recipes. The Tinkers' Union buy itself is yours. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P70-2": {
-   "check": "Not built yet: tinker tools, \"Mule Modules\" group: with 15 ingots, 2 gears, 10 bone the harness is made; without them assert the refusal; result in the nightly report once built."
+   "check": "Bot (p70_2): grants recipe 9041, Tinkering 100 and tinker tools; asserts the Mule Modules craft refuses without the components (1044253) and, with 15 ingots, 2 gears and 10 bone, makes a module whose property list reads 'Mule module: Tinkers' Union, tier I'. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P70-3": {
-   "check": "Not built yet: drop the module on the mule; its property list shows it; Options > Remove; assert it is back in the pack, tier I; result in the nightly report once built."
+   "check": "Bot (p70_3): drops the module on the player's mule and asserts 'You fit the ... to the mule.', the mule's 'Module: ...' and 'Module slots: 1 / 1' lines, then Options > Remove and asserts 'You take the ... off the mule.' and the module back in the pack still tier I. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P70-4": {
-   "check": "Not built yet: `[add MuleModule TimberRack 3`, drop on a tier 1 mule; assert refusal and the module still in the pack; result in the nightly report once built."
+   "check": "Bot (p70_4): [add MuleModule TimberRack 3, drops it on a tier 1 mule, asserts 'A tier III module needs a tier 3 mule or better; yours is tier 1.' and the module still in the pack. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P70-5": {
-   "check": "Not built yet: learn tier II, craft it with a tier I in the pack; assert the tier I is gone only after a success; result in the nightly report once built."
+   "check": "Bot (p70_5): grants recipe 9042 and crafts the tier II harness with a tier I in the pack; asserts the tier I is gone and a tier II appeared, and a second craft with no tier I left is refused 'You need a Clockwork Load Harness I in your backpack to build on.' Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P70-6": {
-   "check": "Not built yet: fit Trailwise Tack III on a tier 3 mule; assert followers drop by one and return when removed; result in the nightly report once built."
+   "check": "Bot (p70_6): fits Trailwise Tack III on a tier 3 mule and asserts the owner's follower count drops by one, then Options > Remove and asserts it comes back. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P70-7": {
-   "check": "Not built yet: with Trailwise II, gate away without the mule; assert it is beside the bot within seconds on the same map; say \"all come\" from far away; result in the nightly report once built."
+   "check": "Bot (p70_7): with Trailwise II the owner is moved 25 tiles away by staff and the bot asserts the mule is beside it within 12 s; then 'all stay', moved again, the mule stays, and 'all come' (keyword speech) brings it. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P70-8": {
-   "check": "Not built yet: Soul Tether II; kill the mule with a full pack; assert the corpse is empty and the pack is on the ghost; resurrect it; result in the nightly report once built."
+   "check": "Bot (p70_8): Soul Tether II on a bonded mule with 100 ingots in its pack, [kill; asserts hits 0 and the ghost in view, the corpse empty, the pack still holding the ingots, then a bandage at Veterinary 100 brings it back (hits above 0). Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P70-9": {
-   "check": "Not built yet: 100 iron ingots in the mule's pack, fit an Ore Hopper; assert the pack's weight drops; result in the nightly report once built."
+   "check": "Bot (p70_9): reads the mule pack's stones from its property list alone, with 100 ingots, after fitting an Ore Hopper and with 200 ingots; asserts the second hundred weighs less than the first (the hopper's discount). Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P70-10": {
-   "check": "Not built yet: decoded map in the mule's pack; with Survey II, Options lists it and a quest-arrow packet points at it; with III at the spot, \"Dig here\" spawns the chest and guardians; result in the nightly report once built."
+   "check": "Bot (p70_10): a staff-decoded treasure map in the mule's pack; with Survey II asserts Options lists it and 'Track map' sends a quest arrow (0xBA) at the chest's spot; with Survey III at the spot, 'Dig here' and asserts a chest item and guardian mobiles appear. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P70-11": {
-   "check": "Not built yet: Trader's Ledger III, Options > \"Open your bank box\": opens in town; refused in a dungeon, while criminal, and right after a fight; result in the nightly report once built."
+   "check": "Bot (p70_11): Trader's Ledger III, Options > 'Open your bank box': asserts the bank box opens in town (0x24), is refused while criminal, right after a fight and in Despise, with the ledger's three refusal lines. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P75-0": {
    "where": "notes\\cc-P75-league-rewards-rethink.md, section \"B.5 Open questions for Chase\"",
@@ -668,7 +668,7 @@
    "pass": "Bodies match the renders and skin hues tint them; icons and our art look right; the open paperdoll changes with each body choice and SFW returns."
   },
   "P82-0": {
-   "check": "Not built yet: as staff, [add ArtificersSoulForge and an ImbueFormulaBook, [ImbueKnowledge a bot player, read the book, imbue a property at Full and Overcharged by the forge and away from it, and assert the gump rows, hint line, refusal and the '[Bountiful 15%]'-style tooltip line; result in the nightly report once built."
+   "check": "Bot (p82_0): joins the Artificers' Order, [ImbueKnowledge grants Bountiful to Overcharged, reads a formula book ('You study the ...'); at the toolkit's table away from a forge asserts 'Here: up to Full', the hint line, the ingredient line, 'Overcharged (22): needs a soul forge' and the refusal; beside an [add ArtificersSoulForge asserts 'Here: up to Overcharged', an Overcharged imbue at 22 and the '[Bountiful 22%]' tooltip line. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P83-1": {
    "check": "CC fetches http://192.168.1.58:8093/ and /api/summary from another LAN address and gets 200 with the page and counts (2026-10-15: 242 items); result in a CC verification prompt's notes."
@@ -859,7 +859,7 @@
    "check": "CC: D:\\UO\\golem\\ACTIVE and ENABLED exist, golem.log shows P100-P114 handed and committed, and the console's Golem tab reads D:\\UO\\golem; result in a CC verification prompt's notes."
   },
   "P100-1": {
-   "check": "Not built yet: bot as admin says `[VBuild` in New Haven and asserts a gump titled 'Visual Builder' with Paint, Fill box (20), Wipe box (50) and Undo; result in the nightly report once built."
+   "check": "Bot (p100_1): the admin says [VBuild in New Haven and asserts the gump titled 'Visual Builder (after Kamras's Architect Edition)' with Paint, Fill box (20), Wipe box (50) and Undo (n), and their buttons. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P100-2": {
    "where": "Test shard, SL TEST - Admin (Eve), a corner of New Haven",
@@ -868,19 +868,19 @@
     "Fill box a 3 x 3 floor, then Nudge it one tile"
    ],
    "pass": "The pieces appear where you targeted, in the hue you set, and move together one tile on Nudge.",
-   "check": "Not built yet: bot paints a bench, fills 3x3 ('Filled 9 item(s)'), tries 21x21 ('Refused: ...'), nudges, and reads the items' hue and location; result in the nightly report once built."
+   "check": "Bot (p100_2, Bot then you): searches 'bench' (N found), paints two benches in hue 1157, fills a 3 x 3 box of pavers ('Filled 9 item(s)'), tries 21 x 21 ('Refused: the box is 21 x 21 tiles; the most a fill takes is 20 x 20.'), nudges X+ ('Moved 9 item(s).') and asserts the nine items' hue and that they moved one tile; then undoes everything. How it looks on screen is yours. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P100-3": {
-   "check": "Not built yet: bot places items, wipes a box over them and compares world items in the box before and after ('Wiped N item(s)'; town decoration unchanged); result in the nightly report once built."
+   "check": "Bot (p100_3): paints and fills, wipes a box over the corner, asserts 'Wiped 11 item(s). Undo puts back them.', all placed items gone and the town's own items in the box the same set before and after. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P100-4": {
-   "check": "Not built yet: after the P100-3 wipe the bot presses Undo repeatedly ('Undone: N item(s)') and checks the box's items match the snapshot taken before it started; result in the nightly report once built."
+   "check": "Bot (p100_4): after the wipe, [VBuild undo: asserts 'Undone: 11 item(s). 3 step(s) left.' and the corner equals the placed picture, then undoes the rest until 'Nothing of yours to undo.' and the corner equals its start. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P100-5": {
-   "check": "Not built yet: bot (Administrator) says `[VBuild world on`, wipes a box with loose decoration, undoes, `[VBuild world off`, and compares the box's items before and after; result in the nightly report once built."
+   "check": "Bot (p100_5): [add Static as loose decoration; a protected wipe says 'Wiped 0 item(s)' and leaves it; [VBuild world on, the wipe takes it ('Wiped 1 item(s)'), undo puts it back, [VBuild world off says so. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P100-6": {
-   "check": "Not built yet: bot wipes, says `[save`, the harness restarts the scratch shard, the bot logs back in and says `[VBuild undo`, and the items return; result in the nightly report once built."
+   "check": "Bot (p100_6, test-shard runs only): paints, fills and wipes, [save, restarts sl-modernuo-test (docker restart -t 60), logs back in and asserts [VBuild undo says 'Undone: 11 item(s). 3 step(s) left.' and the eleven pieces are back; anything the history could not take back afterwards is counted and deleted by hand. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P101-1": {
    "where": "Your phone on mobile data (Wi-Fi off)",
@@ -1129,7 +1129,7 @@
     "Tell it to attack the player character and let it bite a few times"
    ],
    "pass": "Within a few bites the player is poisoned with lethal poison (the strongest message), and each poisoning hit shows a green flash on the player.",
-   "check": "Not built yet: a bot check would tame the spider through admin commands, set Poisoning 100, let it attack the player and read the poison level from the status packet."
+   "check": "Bot (p121_2, Bot then you): the admin's Giant Spider at Poisoning 100 is told 'all kill' on a fresh character and the bot asserts the lethal-poison line (cliloc 1042865) reaches the victim within 45 s; the green flash is yours. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P121-3": {
    "check": "Done by CC (cc-P121): sl-modernuo:cc-p121 booted twice on a copy of the test world's 2026-10-15-16-50-00 backup; it loaded, saved PetAbilityProfiles.bin and loaded it again with no error."
@@ -1855,7 +1855,7 @@
     "`[add KitsuneEarsTail`, drag it onto his paperdoll"
    ],
    "pass": "It goes on (no \"Only females\" refusal any more); on his paperdoll the ears sit on the crown and the tail leaves the lower back (notes/cc-P138-scratch/proof/fit-54783-on-12-hair-sfw.png).",
-   "check": "Not built yet: the bot creates a male human, admin adds a KitsuneEarsTail to his pack, the bot equips it and asserts the worn-item packet puts 0x3C3C on layer 0x12; the paperdoll look is Chase's half."
+   "check": "Bot (p138_3, Bot then you): a fresh male human equips a KitsuneEarsTail; asserts it is worn on layer 0x12 with graphic 0x3C3C and no 'Only ...' refusal; the paperdoll look is yours. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P138-4": {
    "where": "Test shard, an elf of each sex",
@@ -1870,7 +1870,7 @@
     "`[add KitsuneEarsTail` and try to equip it"
    ],
    "pass": "\"Only humans and elves can wear this.\" and the item stays in the backpack.",
-   "check": "Not built yet: the bot creates a gargoyle, admin adds the item, the bot tries to equip and asserts the message text and that the item is still in the pack (no worn-item packet for layer 0x12)."
+   "check": "Bot (p138_5): a fresh gargoyle tries to equip it; asserts 'Only humans and elves can wear this.' and the item back in the pack. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P138-6": {
    "where": "Test shard, the female character with the ears and tail on, hands empty, out of war mode",
@@ -2007,7 +2007,7 @@
     "A graduated character and a character that skipped the tutorial try the same"
    ],
    "pass": "The trainee and the pet walk in; the graduate is stopped with \"System: You graduated. The Vault does not do reunions.\" and the other with \"System: The Vault is for the League's trainees...\".",
-   "check": "Not built yet (the floor is void land): admin makes a trainee, a graduate and a skipper on the landing; each walks west into 5178,1137; the bot asserts the trainee's position moves and the others get the Echo line and stay at 5179. Pinned by RootdeepVaultVerification V2 (the shard fact)."
+   "check": "Bot (p141_2): one fresh character on the landing at 5179,1137 in three tutorial states ([Tutorial reset/enter/skip, graduate) walks west; asserts the skipper and the graduate stay at 5179 with the Echo's two lines and the trainee and its dog reach 5178. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P141-3": {
    "where": "Test shard, after the map batch and [ClusterFSeedRootdeep, a fresh tutorial character in the Strongroom",
@@ -2016,7 +2016,7 @@
     "Walk to the rocks in the south wall at 5160,1159 and step on them"
    ],
    "pass": "On its death the Echo says a crawlway opened, the rocks become a hole with a puff of dust, and stepping on it puts you (and your pet) in the Warren at 5160,1163; walking back to the landing, the Vault doorway now refuses you. Two minutes later the hole is rocks again.",
-   "check": "Not built yet: the bot kills a [add TheOverdraft as a trainee, asserts the item at 5160,1159 changes from 0x1367 to 0x1B71 and the player's position after the step is 5160,1163. Pinned by RootdeepVaultVerification V3 and V4."
+   "check": "Bot (p141_3, Bot then you): a trainee kills an [add TheOverdraft in the Strongroom; asserts the crawlway at 5160,1159 goes 0x1367 to 0x1B71 and a step south lands the player at 5160,1163 (a RootdeepCrawlway is placed by staff when the unseeded world has none). The cave-in and dust are yours. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P141-4": {
    "where": "Test shard, after the map batch and [ClusterFSeedRootdeep",
@@ -2055,7 +2055,7 @@
     "Set standing 5000 (Journeyman) and steal from fresh monsters, ten or more"
    ],
    "pass": "The Initiate is told the Den does not trust an Initiate to work the dungeons beyond Felucca and to come back a Journeyman (nothing special is ever stolen). The Journeyman gets the special-item message now and then (about one try in six at 120 against a famous creature), and a non-member standing in the same dungeon is told only a hand sworn to the Den knows where a monster keeps its treasures.",
-   "check": "Not built yet: the bot would use Stealing on monsters in a Trammel dungeon at standing 0 and 5000 and read the system message (the refusal lines) and cliloc 1094947."
+   "check": "Bot (p142_1): a Den member with Stealing 120 in Trammel Despise at standing 0 hears the Initiate refusal and never cliloc 1094947; at standing 5000 gets 1094947 within 40 tries on fresh Red Deaths; a fresh non-member hears the 'sworn to the Den' line. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P142-2": {
    "where": "Test shard, a champion spawn on any facet (Trammel Despise's spawn or an Ilshenar one; `[go` to the altar), the same thief at standing 0 (Initiate)",
@@ -2063,7 +2063,7 @@
     "Steal from the spawn's monsters, ten or more"
    ],
    "pass": "An Initiate works a champion spawn on any facet: the special-item message comes now and then, no refusal line.",
-   "check": "Not built yet: the bot would steal inside a ChampionSpawnRegion at standing 0 and read cliloc 1094947 or the pack."
+   "check": "Bot (p142_2): at a champion spawn altar whose region is ChampionSpawnRegion, an Initiate's steals bring cliloc 1094947 with no refusal (ERROR, not FAIL, when the fresh world has no champion region: [GenChamps is never run by the bot). Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P142-3": {
    "where": "Test shard, the Rootdeep Burrows (`[go 5200 1200 0` on Trammel; the region exists before the map batch), a Den member at standing 0 (Initiate) with Stealing 120; `[add Skeleton` beside you for a mark, then `[add TheBurrowMother`",
@@ -2073,7 +2073,7 @@
     "Set standing 15000 (Master) and steal from The Burrow Mother again"
    ],
    "pass": "An Initiate works the Burrows like Felucca's dungeons (it is the tutorial dungeon): the special-item message comes now and then, no refusal line; a non-member there is told only a hand sworn to the Den knows where a monster keeps its treasures. The Burrow Mother tells the Initiate the Den does not trust an Initiate to work a creature of that renown and to come back a Master; the Master steals from her.",
-   "check": "Not built yet: the bot would steal inside OldHavenBurrowsRegion at standing 0 (cliloc 1094947, no refusal), then from The Burrow Mother at standing 0 (the refusal line naming Master) and 15000 (cliloc 1094947)."
+   "check": "Bot (p142_3): in the Burrows (5200 1200 0 Trammel) an Initiate rolls against skeletons with no refusal and a non-member hears the sworn line; The Burrow Mother refuses the Initiate ('Come back a Master.') and rolls at standing 15000. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P142-4": {
    "where": "Test shard, Felucca Shame, a Den member (standing 0) with Stealing 80 (`[SetSkill Stealing 80`)",
@@ -2082,7 +2082,7 @@
     "Open the Guild Directory (`[guild`) and look at the Thieves' Den scrip"
    ],
    "pass": "Now and then (about one try in thirty at 80) a minor haul: a little gold, lockpicks, a small potion, bandages, or Thieves' Den scrip (the scrip line names the amount and the purse rises). Never a balm, lotion, seed, draught or gem below 100. Stealing rises on the way.",
-   "check": "Not built yet: the bot would read the pack, the scrip message and the skill update packets."
+   "check": "Bot (p142_4): Felucca Shame, standing 0, Stealing 80: up to 50 tries on fresh Red Deaths; asserts at least one minor-haul line, no 1094947, and Stealing rose. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P142-5": {
    "where": "Test shard, Felucca Shame, a Den member with Stealing 60, hidden",
@@ -2091,7 +2091,7 @@
     "Steal from the same monster at once, then again after six seconds"
    ],
    "pass": "On the miss you are revealed, the creature turns on you and attacks, and the line says it caught your hand. The at-once retry says the creature is wary; the retry after a few seconds rolls again. Once a steal succeeds the creature says there is nothing left to steal from then on.",
-   "check": "Not built yet: the bot would read the caught, wary and already-stolen lines and the creature's combatant (it attacks the bot)."
+   "check": "Bot (p142_5): Stealing 60, hidden: the miss gives the caught line and reveals the thief, the skeleton's Combatant is the thief, the at-once retry says wary, the retry after 6 s rolls, and after a success (Stealing 200) the creature says nothing is left (1094948). Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P142-6": {
    "where": "Test shard, a Den member with Stealing 120 in Felucca Shame, then a tailor with Tailoring 100 and a sewing kit",
@@ -2396,7 +2396,7 @@
     "Uncheck \"Orders that still teach me\" and ask for a few more Small orders"
    ],
    "pass": "With the setting on, every offer (small and large, hammer or not) is armor in Blaze, never iron or a stock colored metal and never a weapon; large offers are the ringmail, chainmail or plate set in Blaze. With it off, offers are mixed again: weapons, iron and other metals.",
-   "check": "Not built yet: a player at 144.0 Blacksmithy in the Society asks for small and large orders with the setting on and off and reads each accept gump's item and material lines (on: Blaze armor only; off: mixed); result in the nightly report once built."
+   "check": "Bot (p170_1): a Society member at Blacksmithy 144 asks the Society guildmaster for 10 Small, 3 Large and 3 Small with the Hammer of Hephaestus worn with 'Orders that still teach me' on, then 10 Small with it off; asserts every 'on' offer is armor in Blaze (large: the ring, chain or plate set) and the 'off' offers include something else. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P171-1": {
    "where": "Test shard rebuilt with cc-P171, a character at 200.0 Animal Taming with a free follower slot of 3, next to a wild Dread Warhorse",
@@ -2405,7 +2405,7 @@
     "Count how many tries say \"You seem to anger the beast!\" and how many start the taming"
    ],
    "pass": "Most tries start the taming; only about 1 in 7 (15%, so roughly 2 to 6 of 20) angers the beast, where before it was nearly every try.",
-   "check": "Not built yet: a 200 tamer uses Animal Taming on a spawned Dread Warhorse 20 times and counts the 502805 (anger) and 1010597 (start) messages; result in the nightly report once built."
+   "check": "Bot (p171_1): Animal Taming and Lore 200 on a Dread Warhorse, 20 tries; counts 'You seem to anger the beast!' (502805) and '*You start to tame the creature.*' (1010597); passes with at most 7 angers and at least 13 starts. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P172-1": {
    "where": "Test shard rebuilt with cc-P172, two characters side by side, each with a freshly tamed Grey Wolf: a fresh tamer (Animal Taming and Lore at 100 or less, not in the Rangers' League) and a master (200.0 Animal Taming and Lore, joined the Rangers' League, then `[GuildStanding rangers 150000` on them)",
@@ -2415,7 +2415,7 @@
     "Use Animal Lore again and compare the two wolves' Wrestling"
    ],
    "pass": "The fresh tamer's wolf shows \"Learns x1.0\" and the master's \"Learns x2.4\" (x3.0 once loops exist); after the same fights the master's wolf has gained clearly more Wrestling, about two to three times as much.",
-   "check": "Not built yet: two bot characters lore their wolves (gump text \"Learns x\"), fight the same spawns for 10 minutes and compare the Wrestling values the server sends; result in the nightly report once built."
+   "check": "Bot (p172_1): a fresh tamer (Taming/Lore 100) and a Legendary Outrider (200/200, [GuildStanding rangers 150000) each lore a Grey Wolf; asserts the 'Learns x1.0' and 'Learns x2.4' lines as computed from their skills; the two wolves' Wrestling gains over a 3-minute fight are reported only (the roll saturates at Wrestling 80), your 10-minute comparison stands. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P173-1": {
    "where": "Test shard rebuilt with cc-P173, an Artificers' Order member at an Imbuing Table, with a War Axe that has Snow Elemental Slayer (`[add WarAxe`, then `[set Slayer SummerWind` on it) and a second plain weapon",
@@ -2425,7 +2425,7 @@
     "Imbue that slayer onto the second weapon (it uses the essence until you have mastered slayers)"
    ],
    "pass": "The War Axe's disenchant list shows Slayer: Summer Wind (Snow Elemental) [ON]; extracting it removes the slayer from the axe and gives an Essence of Slayer: Summer Wind (Snow Elemental); imbuing puts snow elemental slayer on the second weapon.",
-   "check": "Not built yet: a player in the Artificers' Order with a Summer Wind War Axe presses Disenchant, the slayer's Extract row and Apply, and the bot reads the gump text and the essence in the pack; result in the nightly report once built."
+   "check": "Bot (p173_1): an Order member with a War Axe set to Slayer SummerWind: Disenchant lists 'Slayer: Summer Wind (Snow Elemental) [ON]'; Extract removes it and gives an 'Essence of Slayer: Summer Wind (Snow Elemental)' and 3 shards; imbuing it onto a Longsword makes its tooltip say snow elemental slayer. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P175-1": {
    "where": "Test shard rebuilt with cc-P175, SL TEST - Admin (Eve), with a trash bag or next to any trash barrel",
@@ -2434,7 +2434,7 @@
     "Right-click the barrel (or the Custodian trash bag), Appraise for Cleanup, and target each sword"
    ],
    "pass": "The plain longsword appraises at about 1 point; the magic one at about 6 (5 more: Hit Lightning 50 is 100 weight, Swing Speed 30 is 50, 150 / 30 = 5).",
-   "check": "Not built yet: admin adds two longswords, sets the properties on one, and reads the two Appraise for Cleanup messages; result in the nightly report once built."
+   "check": "Bot (p175_1): [add TrashBarrel, Appraise for Cleanup on a plain Longsword (1 point) and on one with Hit Lightning 50 and Weapon Speed 30 (5 to 7 points). Note: the Custodian trash bag has no Appraise entry (TrashBag.cs), only Dump. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P175-2": {
    "where": "Test shard rebuilt with cc-P175, a Custodian (joined at a Sanitation Warden) with staff powers to add creatures",
@@ -2444,7 +2444,7 @@
     "Optional: let a pet or another character kill an orc, then `[cleanup` that corpse"
    ],
    "pass": "The orc's corpse pays about 1.5 points plus what is inside it; the dragon's about 15 plus what is inside. A corpse you did not earn pays only what is inside.",
-   "check": "Not built yet: a Custodian kills an Orc and a Dragon and reads the two \"Corpse cleared ... +N Clean Up points\" messages; result in the nightly report once built."
+   "check": "Bot (p175_2): a Custodian fair-kills an Orc and a Dragon, empties each corpse and says [cleanup on it: 'Empty corpse cleared. +1.5 Clean Up points.' and '+15'; an Orc killed by staff pays 0. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P175-3": {
    "where": "Test shard rebuilt with cc-P175, a character with a Custodian trash bag, at the Cleanup Officer or a Sanitation Warden",
@@ -2454,7 +2454,7 @@
     "Buy the Bamboo (15,000), one pigment (250,000) and the Lucky Charm (300,000) as far as your points go; double-click the pigment and dye an artifact in your pack"
    ],
    "pass": "The store shows the new rows by price (robes at 1,000 up to the charms at 300,000). Each bought item lands in the pack with its art and hue; the pigment dyes the artifact its hue and counts down from 5 uses.",
-   "check": "Not built yet: the bot can buy a reward through the store gump and read the item in the pack; the art and the pigment's hue on screen are Chase's."
+   "check": "Bot (p175_3, Bot then you): two [add RunicHammer Valorite 40 dumped from a trash bag (+640,000), the store opened at a Sanitation Warden, rows Bamboo 15,000, a pigment 250,000, Lucky Charm 300,000; buys each and asserts the item in the pack, the pigment's 'uses remaining: 5', a dyed Helm of Insight at the row's hue and 'uses remaining: 4'. The art and the hue on screen are yours. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P176-1": {
    "where": "Test shard rebuilt with cc-P176, an Artificers' Order member at an Imbuing Table, with a bag in the backpack holding some magic loot (or `[add Longsword` and `[props` Hit Life Leech 30 on it, two or three times) and some plain items (a vendor dagger, a plain ring), plus one blessed magic item",
@@ -2464,7 +2464,7 @@
     "Read the summary lines in the journal and open the bag"
    ],
    "pass": "The confirmation counts the magic items to unravel and the rest to skip; after Unravel the journal shows \"Unraveled: N/M items\", \"Unraveled N item(s), skipped K.\" and \"Ingredients: X Essence Shard(s), ...\"; the magic items are gone, the plain and the blessed ones are still in the bag, and Essence Shards went up by X.",
-   "check": "Not built yet: a player in the Artificers' Order with a bag of 3 magic and 2 plain items presses Unravel Container, targets the bag and presses Unravel; the bot reads the three summary lines and the bag's contents; result in the nightly report once built."
+   "check": "Bot (p176_1): an Order member's bag with 3 magic swords, a dagger, a ring and a blessed magic sword; Unravel Container: asserts the confirmation counts (3 go, 3 stay), 'Unraveled: 3/6 items', 'Unraveled 3 item(s), skipped 3.', the 'Ingredients: X Essence Shard(s)' line, the shard header up by X, and the bag holding only the dagger, ring and blessed sword. Result in the nightly report (tools/playtest-bot, cc-P224)."
   },
   "P182-1": {
    "where": "PowerShell on the game PC",
