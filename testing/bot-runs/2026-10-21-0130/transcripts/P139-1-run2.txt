@@ -1,0 +1,37 @@
+    0.00 harness  == P139-1 run 2: The body-route test creature spawns on body 2048, fights back with its bow and dies to a player, leaving a corpse
+    0.00 harness  all pool accounts busy or resting; waiting 30 s
+    2.10 admin    <- unicode(0) Sanitation Warden: Join The Custodians and earn your keep keeping the peace — of the streets.
+    2.10 player   <- unicode(0) Sanitation Warden: Join The Custodians and earn your keep keeping the peace — of the streets.
+   21.48 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   21.48 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   30.00 harness  all pool accounts busy or resting; waiting 30 s
+   42.67 player   <- cliloc(0) System #1019067: A monster looks at you menacingly but does not attack.  You would be under attack now if not for your status as a new citizen of Britannia.
+   43.08 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   43.08 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   44.91 player   <- ascii(0) System: The world is saving, please wait.
+   44.91 player   <- ascii(0) System: World save completed in 0.02 seconds.
+   44.91 admin    <- ascii(0) System: The world is saving, please wait.
+   44.91 admin    <- ascii(0) System: World save completed in 0.02 seconds.
+   60.00 harness  all pool accounts busy or resting; waiting 30 s
+   63.37 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   63.37 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   65.10 player   <- unicode(0) Sanitation Warden: A tidy town is a safe town.
+   65.10 admin    <- unicode(0) Sanitation Warden: A tidy town is a safe town.
+   83.96 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   83.96 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   89.81 p139     -> 0xEF seed, client 7.0.117.0; 0x80 login as slbot-player3
+   89.82 p139     <- 0xA8 servers [(0, 'Shattered Legacy BOT')]
+   89.82 p139     <- 0x8C relay 127.0.0.1:2595 (checked: the scratch shard)
+   89.82 p139     <- 0xA9 characters ['Bot Human M Ac', 'Bot Human M Af', 'Bot Elf M Ai', 'Bot Elf F Al', 'Bot Human F Ao', 'Bot Human M Ar', 'Bot Human M Au']; 1 cities ['New Haven']
+   89.82 harness  Traceback (most recent call last):
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\run.py", line 148, in run_checks
+    ok, evidence = chk.fn(ctx)
+                   ^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\checks.py", line 631, in p139_1
+    p = ctx.fresh(label="p139")
+        ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\run.py", line 103, in fresh
+    raise LoginFailed("account %s has no free slot" % acct)
+uobot.client.LoginFailed: account slbot-player3 has no free slot
+
+   89.82 harness  == P139-1 run 2: ERROR (LoginFailed: account slbot-player3 has no free slot)

@@ -1,0 +1,26 @@
+    0.00 harness  == P139-1 run 3: The body-route test creature spawns on body 2048, fights back with its bow and dies to a player, leaving a corpse
+    0.00 harness  all pool accounts busy or resting; waiting 30 s
+   14.86 player   <- cliloc(0) System #1019067: A monster looks at you menacingly but does not attack.  You would be under attack now if not for your status as a new citizen of Britannia.
+   15.76 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   15.76 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   30.00 harness  all pool accounts busy or resting; waiting 22 s
+   36.04 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   36.04 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   39.41 player   <- unicode(0) Sanitation Warden: Join The Custodians and earn your keep keeping the peace — of the streets.
+   39.41 admin    <- unicode(0) Sanitation Warden: Join The Custodians and earn your keep keeping the peace — of the streets.
+   52.09 p139     -> 0xEF seed, client 7.0.117.0; 0x80 login as slbot-player4
+   52.09 p139     <- 0xA8 servers [(0, 'Shattered Legacy BOT')]
+   52.09 p139     <- 0x8C relay 127.0.0.1:2595 (checked: the scratch shard)
+   52.12 p139     <- 0xA9 characters ['Bot Human M Ad', 'Bot Human M Ag', 'Bot Gargoyle F A', 'Bot Gargoyle M A', 'Bot Human F Ap', 'Bot Human M As', 'Bot Human M Av']; 1 cities ['New Haven']
+   52.12 harness  Traceback (most recent call last):
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\run.py", line 148, in run_checks
+    ok, evidence = chk.fn(ctx)
+                   ^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\checks.py", line 631, in p139_1
+    p = ctx.fresh(label="p139")
+        ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\run.py", line 103, in fresh
+    raise LoginFailed("account %s has no free slot" % acct)
+uobot.client.LoginFailed: account slbot-player4 has no free slot
+
+   52.12 harness  == P139-1 run 3: ERROR (LoginFailed: account slbot-player4 has no free slot)
