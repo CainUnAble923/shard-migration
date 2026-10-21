@@ -63,14 +63,14 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.20.14. Golem on, 31 queued, latest done P234. Play tests: 391 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.20.15. Golem on, 36 queued, latest done P235. Play tests: 392 open, 4 failed, 43 passed.
 
 ### Needs overseer review (4)
 
 - **gate The player package installs on a clean PC**: Waits on a confirmation: Chase: which package is published on get.shatteredlegacyuo.com, and has the package that ships our TazUO build passed a clean-PC install? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "The player package installs on a clean PC" --done no --detail "..."` or `python tools/judge.py confirm gate "The player package installs on a clean PC"`
 - **gate What is built is seen in a client, not only compiled**: Waits on a confirmation: Chase: is the test shard on a build that carries P203 and P204 (version 2026.10.20.x), and which play tests ran after 2026-10-18? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "What is built is seen in a client, not only compiled" --done yes --detail "..."` or `python tools/judge.py confirm gate "What is built is seen in a client, not only compiled"`
 - **task DEPLOY**: Deploy main to the test shard and run its play tests: waits on a confirmation: Chase: which build is on the test shard today? `python tools/judge.py task DEPLOY --status todo|in-progress|blocked|done --note "..."` or `python tools/judge.py confirm task DEPLOY`
-- **play tests not sorted**: 57 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
+- **play tests not sorted**: 58 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
 
 ## Port list: 3 of 16 systems in. 478 of 983 files (49%).
 
@@ -230,13 +230,14 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 141 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 142 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
 | P157 plain-english-emails | queued |  |
 | P158 codex-second-agent | queued |  |
 | P159 codex-lane-second-pc | queued |  |
+| P169 requirement-colors | queued |  |
 | P177 guild-menus-template-mockups | queued |  |
 | P195 port-exodus-encounter | queued |  |
 | P196 port-blackthorn-dungeon | queued |  |
@@ -265,6 +266,11 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P242 loot-box-flying-loot | queued |  |
 | P244 cont-fixup-tinker-golem-watchdog | queued |  |
 | P245 cont-fixup-port-base-items-remainder | queued |  |
+| P261 levelable-gear-build | queued |  |
+| P262 accessory-slots | queued |  |
+| P263 noted-by-the-system-achievements | queued |  |
+| P264 companions-b1-base-and-record | queued |  |
+| P235 work-order-numbers-pass | done | 2026-10-20 |
 | P234 dismount-sources-design | done | 2026-10-20 |
 | P233 props-ability-profile | done | 2026-10-20 |
 | P232 pkcs-pin-drop-audit-flag | done | 2026-10-20 |
@@ -274,7 +280,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P214 tool-trials | done | 2026-10-20 |
 | P213 cont-changelog-version-merges | done | 2026-10-20 |
 | P212 code-intake-batch-1 | done | 2026-10-20 |
-| P211 svdungeon-070-assessment | done | 2026-10-20 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 103 patches, 12 replacements
 
