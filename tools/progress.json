@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-20T22:52:40-05:00",
+  "generated": "2026-10-20T23:42:32-05:00",
   "direction": {
     "eyebrow": "Direction",
     "title": "Our own shard on ModernUO, OSI where OSI has an answer",
@@ -565,7 +565,7 @@
     "confirmed": "2026-09-19"
   },
   "counted": {
-    "customization_files": 1277,
+    "customization_files": 1433,
     "patch_files": 122,
     "stale_migrations_present": false,
     "upstream_patch_files": 115,
@@ -583,8 +583,8 @@
       "TreasureMap.cs",
       "TreasureMapChest.cs"
     ],
-    "test_files": 194,
-    "test_cases": 1191
+    "test_files": 195,
+    "test_cases": 1197
   },
   "content_progress": [
     {
@@ -608,8 +608,8 @@
     {
       "area": "Services/Revamped Dungeons",
       "total": 150,
-      "done": 62,
-      "pct": 41.3
+      "done": 106,
+      "pct": 70.7
     },
     {
       "area": "Items/Resource",
@@ -656,8 +656,8 @@
     {
       "area": "Items/Addons",
       "total": 169,
-      "done": 4,
-      "pct": 2.4
+      "done": 5,
+      "pct": 3.0
     },
     {
       "area": "Services/CleanUpBritannia",
@@ -678,16 +678,16 @@
       "pct": 3.6
     },
     {
+      "area": "Mobiles/NPCs",
+      "total": 222,
+      "done": 2,
+      "pct": 0.9
+    },
+    {
       "area": "Services/New Magincia",
       "total": 40,
       "done": 2,
       "pct": 5.0
-    },
-    {
-      "area": "Mobiles/NPCs",
-      "total": 222,
-      "done": 1,
-      "pct": 0.5
     },
     {
       "area": "Services/XmlSpawner",
@@ -779,7 +779,7 @@
     {
       "kind": "play tests",
       "item": "not sorted",
-      "check": "86 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check.",
+      "check": "87 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check.",
       "cmd": [
         "python -m unittest tools/tests/test_play_who.py"
       ]
@@ -847,9 +847,9 @@
           "C2"
         ],
         "candidates": 147,
-        "done": 4,
+        "done": 138,
         "complete": false,
-        "pct": 2.7
+        "pct": 93.9
       },
       {
         "id": "covetous",
@@ -1009,9 +1009,9 @@
           "C5"
         ],
         "candidates": 717,
-        "done": 295,
+        "done": 296,
         "complete": false,
-        "pct": 41.1
+        "pct": 41.3
       },
       {
         "id": "src",
@@ -1023,9 +1023,9 @@
           "S7"
         ],
         "candidates": 178,
-        "done": 5,
+        "done": 6,
         "complete": false,
-        "pct": 2.8
+        "pct": 3.4
       },
       {
         "id": "later",
@@ -1061,16 +1061,16 @@
         "why": "ported with the system that uses them, never on their own; not counted",
         "covers": [],
         "candidates": 361,
-        "done": 16,
+        "done": 17,
         "complete": false,
-        "pct": 4.4
+        "pct": 4.7
       }
     ],
     "tiers": {
       "port": {
         "systems": 16,
         "files": 983,
-        "done": 602,
+        "done": 736,
         "titles": [
           "Bulk orders, all crafts",
           "Treasure maps revamp",
@@ -1095,7 +1095,7 @@
       "ride": {
         "systems": 1,
         "files": 361,
-        "done": 16,
+        "done": 17,
         "titles": [
           "Ride-along: NPCs, quest items, books, internals"
         ],
@@ -1105,7 +1105,7 @@
       "reward": {
         "systems": 1,
         "files": 717,
-        "done": 295,
+        "done": 296,
         "titles": [
           "Reward pool: addons, decorative, store items, artifact remainder, Clean Up rewards"
         ],
@@ -1115,7 +1115,7 @@
       "source": {
         "systems": 1,
         "files": 178,
-        "done": 5,
+        "done": 6,
         "titles": [
           "Design source only, ours replaces"
         ],
@@ -1149,9 +1149,9 @@
     "counted": {
       "systems": 16,
       "in": 4,
-      "done": 602,
+      "done": 736,
       "total": 983,
-      "pct": 61.2
+      "pct": 74.9
     },
     "next": "Bulk orders, all crafts",
     "decided": [
@@ -1307,16 +1307,16 @@
     "tasks-reviewed": "2026-10-20"
   },
   "derived": {
-    "version": "2026.10.20.22",
+    "version": "2026.10.20.23",
     "playtests": {
-      "open": 427,
+      "open": 428,
       "failed": 4,
       "passed": 43,
       "later": 8,
       "blocked": 1,
-      "total": 474,
+      "total": 475,
       "unloggedFails": 3,
-      "generatedAt": "2026-10-21T03:14:25Z"
+      "generatedAt": "2026-10-21T03:55:30Z"
     },
     "queue": {
       "autopilot": "on",
@@ -1456,6 +1456,11 @@
           "n": 271,
           "slug": "cont-fixup-port-exodus-encounter",
           "state": "queued"
+        },
+        {
+          "n": 272,
+          "slug": "cont-fixup-codex-second-agent",
+          "state": "queued"
         }
       ],
       "finished": [
@@ -1540,8 +1545,8 @@
           "notes": "notes/cc-P226-arms-lore-matters.md"
         }
       ],
-      "finished_total": 162,
-      "done_total": 158,
+      "finished_total": 163,
+      "done_total": 159,
       "stopped_total": 4,
       "latest_done": {
         "n": 267,

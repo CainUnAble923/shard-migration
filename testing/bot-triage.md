@@ -1111,6 +1111,20 @@ Added by cc-P194 (2026-10-20).
 | P194-6 | BOT-PARTIAL | The gump rows, the ingot swap and the forge placement are the bot's; the artifacts' looks are Chase's |
 | P194-7 | CC | A headless boot of the image on a scratch world, done by the prompt |
 
+### P196
+
+Added by cc-P196 (2026-10-20).
+
+| id | bucket | reason |
+|---|---|---|
+| P196-1 | BOT-PARTIAL | The stable and claim lines, the pet leaving and returning and the recall refusal are server text; the rooms and their spawn are Chase's eyes |
+| P196-2 | BOT | The reveal, the position change, the gas-cloud message and the poison are all server-sent |
+| P196-3 | BOT-PARTIAL | The dismount, the three messages and the pet leaving are server-sent; the castle is Chase's eyes |
+| P196-4 | BOT-PARTIAL | The context entries, the turn-in and reward gump rows, the two purchases and the points message are server-sent; the item art and the name lines are Chase's |
+| P196-5 | EYES | House placement of the shard shield, the paintings and the worn epaulette are art on screen |
+| P196-6 | BOT-PARTIAL | The names, the property line, the aura message and the two captain drops are server-sent; the gear and the special's effects are Chase's |
+| P196-7 | CC | A headless boot of the image on a scratch world, done by the prompt |
+
 ### P199
 
 Added by cc-P199 (2026-10-20).

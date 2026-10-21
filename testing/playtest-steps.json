@@ -2816,6 +2816,69 @@
    ],
    "pass": "Loading world done each time, no exceptions.",
    "check": "Done by CC; see the notes."
+  },
+  "P196-1": {
+   "where": "Test shard, SL TEST - Admin (Eve); after `[GenBlackthorn` once (rebuild the test shard first)",
+   "do": [
+    "`[go 6430 2678 0` (the Blackthorn Dungeon landing, Trammel); walk the ruined city rooms to the south and east",
+    "Say `stable` beside the hitching post at 6428 2677 with a pet and 30 gold; say `claim` after",
+    "Cast Recall or Mark inside the dungeon; cast Teleport"
+   ],
+   "pass": "Brigands, liches, dragons, golems, hell hounds and the rest stand in their rooms; the post asks which animal to stable (I charge 30 gold per pet...) and takes the pet, claim returns it; Recall and Mark are refused, Teleport works.",
+   "check": "Bot: the stable and claim lines and the pet leaving and returning, the recall refusal; Chase: the rooms and their spawn by eye."
+  },
+  "P196-2": {
+   "where": "Test shard, SL TEST - Admin (Eve); after `[GenBlackthorn`",
+   "do": [
+    "`[go 6405 2750 0` (the dragon room, Trammel) as a player character; hide; stand still for two minutes and a half"
+   ],
+   "pass": "Within five seconds of hiding you are revealed; after two minutes idle you are thrown to another spot in the dungeon in a green cloud with You are enveloped by a noxious gas cloud!, lethally poisoned, and the creatures near the new spot come for you.",
+   "check": "Bot: the reveal, the position change, the 500855 message and the poison; Chase: the cloud and smoke."
+  },
+  "P196-3": {
+   "where": "Test shard, SL TEST - Admin (Eve)",
+   "do": [
+    "`[go 1529 1520 0` (south of Castle Blackthorn, Trammel); mount a horse and bring a pet; walk north into the castle court (1529 1477)",
+    "Cast Magic Arrow and a Chivalry spell inside; claim your pet from a stablemaster after"
+   ],
+   "pass": "At the gate you are set down (Mounts and flying are not permitted in this area) and cannot remount for 30 seconds; the horse and the pet are sent to the stables (Pets are not permitted in this location. Your pet named X has been sent to the stables.) or, with full stables, outside the castle; every spell says You cannot cast that spell here (Chivalry: You cannot use a Paladin ability here).",
+   "check": "Bot: the dismount, the three messages, the pet gone; Chase: the castle itself."
+  },
+  "P196-4": {
+   "where": "Test shard, SL TEST - Admin (Eve); after `[GenBlackthorn`",
+   "do": [
+    "`[MinaxArtifact` twelve times (as staff), then `[go 1488 1473 1` (the Agent of the Crown in the Trammel castle)",
+    "Open his context menu: Turn In Minax Artifacts, click each artifact; then Claim Blackthorn Artifacts and buy a painting (10) and a Chainmail Tunic Bearing The Crest Of Blackthorn (25)",
+    "Look at the tunic's name line and at a Minax artifact's"
+   ],
+   "pass": "The Minax items are purple (hue 1157), named ... of Minax, and the turn-in gump lists only them; each turn-in says You have turned in N artifacts bearing the crest of Minax; the reward gump shows your points and 132 rewards with real properties under each; the painting and tunic land in your pack and the points fall by 10 and 25; the tunic reads Chainmail Tunic bearing the crest of Blackthorn with mana 10, mana regen 3, lower mana cost 15, mage armor and lower requirements 100.",
+   "check": "Bot: the context entries, the gump rows and the two purchases, the points message; Chase: the item art and the name lines in the tooltip."
+  },
+  "P196-5": {
+   "where": "Test shard, SL TEST - Admin (Eve), in a house you own",
+   "do": [
+    "`[add DecorativeShardShieldDeed`, double-click it, pick a shard, target a wall tile; double-click the placed shield",
+    "`[add BlackthornPainting1` and `[add EpauletteBearingTheCrestOfBlackthorn6`; wear the epaulette"
+   ],
+   "pass": "The picker shows 27 shields with shard names on hover; a wall placement asks east or south when both walls are there; the shield hangs and re-deeds from its own menu; the painting flips with [flip; the epaulette wears on the shoulders and reads Epaulette bearing the crest of Blackthorn.",
+   "check": "Chase: house placement and the art are his eyes; the bot can add the items."
+  },
+  "P196-6": {
+   "where": "Test shard, SL TEST - Admin (Eve), an empty field",
+   "do": [
+    "`[add Invader Dragons` a few times and `[add InvaderCaptain Undead`; fight them as a player",
+    "Kill the captain with a second player helping"
+   ],
+   "pass": "Each invader is a named human or elf with a style title (the swordsman, the wizard, the sampire) and the line Dragon Invasion; a caster's special blasts rings of black explosions for 80-90 damage; their aura of energy stings within five tiles every half minute (The creature's aura of energy is damaging you!); the captain's death gives the two top damagers a Minax artifact each (You notice the crest of Minax on your fallen foe's equipment...).",
+   "check": "Bot: the names, the property line, the aura message, the two drops; Chase: the gear and the special's effects."
+  },
+  "P196-7": {
+   "where": "CC, a scratch copy of the test world",
+   "do": [
+    "Boot sl-modernuo:cc-P196 on a copy of the bot world, save, boot again on the save"
+   ],
+   "pass": "Both boots load and save clean with no new exceptions.",
+   "check": "CC: done in the prompt (notes, Headless boot)."
   }
  }
 }
