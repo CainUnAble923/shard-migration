@@ -79,11 +79,11 @@ program.**
   - Murder (`PlayerMobile.OnKillsChange`) and renouncing also call it.
 - **The loop system (F-12) is not built.** No document defines a loop event. The F-12 notes put a per-character record
   in `ClusterFAccountData` with `ClusterFSkillCaps.Apply` as the chokepoint (`notes/f12-levels-loops-caps.md:167-170`).
-- **The placeholders disagree:** `ClusterFLootBoxes.LoopProvider` defaults to 1, `EvoPet.OwnerLoopsSource` to 0.
-  F-12 must reconcile them.
-- **Built here:** `ClusterFLoops.CompleteLoop(pm, loop)` is the one call the F-12 reset makes. It ends Young (no patch
-  needed; Young is per account, so it ends for every character on it), then plays the loop's fanfare and box. The
-  vision never calls it.
+- **P371 update, Chase 2026-10-21:** `ClusterFLootBoxes.LoopProvider` now reads the per-character loop count (0 before
+  graduation, 1 after). `EvoPet.OwnerLoopsSource` remains a placeholder for F-12 to wire.
+- **Built here, revised by P371:** `ClusterFLoops.CompleteLoop(pm, loop)` records a real loop and plays its fanfare
+  and box. Graduation is loop 1. It preserves Young until the hours limit; it no longer removes Young from the
+  account. The vision never calls it.
 
 ### A.3 Achievements, fanfare, System voice
 
@@ -187,7 +187,7 @@ Pinned's hooks:
 | 2 | Entry: `[OnEvent(PlayerLoginEvent)]`. The first login of a character whose account has never started puts it in the core, with System lines and a quest arrow to the recruiter. The recruiter (**"Rook Hallowell, the League recruiter"**) opens the station page | `ClusterFTutorial.cs`, `TutorialRecruiter.cs`, `TutorialGumps.cs` |
 | 2 | **Recruiter spot 3500,2572,14:** open plaza floor two tiles from the arrival point, clear of Sir Helper (3503,2574), the board (3502,2573) and the fountain (3504-3508, 2574-2578). Checked with the cc-P15 `Map.CanFit` port (`notes/cc-P80-tools/probe.py`: z14 all around). **Placed only by `[ClusterFSeedTutorial [dryrun]`** (or `tutorial.seedOnWorldLoad`, default false) | `TutorialRecruiter.cs` |
 | 3 | **Skip:** two System-voice confirmations (`TutorialSkipGump` step 1, then step 2), then `Skip`, which grants "Didn't Read the Manual". **Remedial:** the recruiter offers it to a skipper; graduating from it grants "Read the Manual Eventually" and the normal rewards | `ClusterFTutorial.cs`, `TutorialGumps.cs` |
-| 4 | **Young ends at the first real loop:** `ClusterFLoops.CompleteLoop` (F-12's call) runs `RemoveYoungStatus`, then the loop fanfare and box. **The vision** (`TutorialVision.RunLoopDemo`, the `core.loop` station) only sends lines and an effect; it never touches level, skills, loop count or Young | `ClusterFLoops.cs` |
+| 4 | **Chase 2026-10-21, P371:** New Haven island is loop 0 (max level 50); graduation records loop 1 (max level 100), plays the loop fanfare and box, and opens the island. Young lasts to its hours limit; loops do not remove it. **The vision** (`TutorialVision.RunLoopDemo`, the `core.loop` station) only sends lines and an effect; it never touches level, skills, loop count or Young | `ClusterFLoops.cs`, `TutorialIslandGate.cs` |
 | 5 | **Station framework:** 37 stations as data (9 core, 28 wing), each with its hands-on, covered and explained skills, TazUO features, tool and place. A trial is registered by key in `TutorialStations.Handlers`; a station without one runs the stub (a plan gump, then counted done). **Every trial is a TODO** except the loop vision | `TutorialStations.cs` |
 | 6 | **Graduation** (core done): the first loot box (`ClusterFLootBoxes.Award`, source `tutorial:graduation`, an Explorer's tier 1; the System says to open it in town, which teaches the guard-zone rule), then the evo pet pick (dog, cat, fox, bird; `EvoPet.GivePet`; refused with no follower slot). `GraduationRewards` is a replaceable hook. The squire is not built; it comes from a League quest later | `ClusterFTutorial.cs`, `TutorialGumps.cs` |
 | 7 | **Tutorial-only engagement:** `TutorialCreature`, plus the first stub `TutorialEcho` ("an echo of a rat", stock rat body 0xEE, hue 0x482) | `TutorialCreature.cs` |
@@ -292,12 +292,12 @@ New: `server/tests/Misc/TutorialVerification.cs`, 6 facts.
 3. **Once per account:** a second character on the account is never entered and is not a participant; after
    graduation nobody on the account enters.
 4. **The loop vision** leaves every skill, the level stand-in, the loop number and Young (account and character)
-   unchanged. `ClusterFLoops.CompleteLoop` ends Young for both.
+   unchanged. **P371 supersedes this expectation:** `ClusterFLoops.CompleteLoop` now keeps Young for both.
 5. **Engagement:** an echo is an enemy to the tutorial player and not to a graduated veteran; it cannot harm the
    veteran; the veteran's damage does nothing while the participant's lands; no kill awards; Young protection
    ignored.
 6. **The framework:** all 37 station keys registered (9 core); graduating early is refused; walking the core opens
-   the wings; a wing station runs; graduation gives exactly one loot box and, without a skip, no remedial
+   the wings; a wing station runs; graduation now gives the Explorer box plus its first-loop box (P371) and, without a skip, no remedial
    achievement.
 
 **Changed:**
@@ -327,7 +327,7 @@ New: `server/tests/Misc/TutorialVerification.cs`, 6 facts.
 5. **Graduation box:** an Explorer's tier 1 (Common). Pick another theme or tier?
 6. **TazUO:** server-driven hints only for now. Want the about-30-line client patch (0xCE ClientCommand with a
    whitelist) so station buttons can open the World Map, Journal or options?
-7. **The loop placeholders disagree** (loot boxes say loop 1, evo pets say 0). F-12 must reconcile them.
+7. **P371 resolves the loot-box loop placeholder:** it now uses the character loop record (0 until graduation, then 1). Evo-pet owner-loop integration still belongs to F-12.
 8. **Order of trials:** the F-35 story order (gather, craft, tame, fight, heal, spell, dungeon, travel, echo) versus
    this brief's core and wings. The framework takes either; the trial prompts decide.
 
