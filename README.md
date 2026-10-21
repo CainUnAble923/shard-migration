@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.21.20. Golem on, 22 queued, latest done P376. Play tests: 513 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.21.20. Golem on, 21 queued, latest done P377. Play tests: 513 open, 4 failed, 43 passed.
 
 ### Needs overseer review (5)
 
@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 197 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 198 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -255,8 +255,8 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P372 cont-fixup-hammer-t3-craft-order | queued |  |
 | P373 codex-golems-finish-and-enable | queued |  |
 | P375 cont-fixup-playtest-bot-checks-first | queued |  |
-| P377 crystal-wiki-catch-up-2 | queued |  |
 | P379 crystal-review-10-21-merges | queued |  |
+| P377 crystal-wiki-catch-up-2 | done | 2026-10-21 |
 | P376 league-decisions | done | 2026-10-21 |
 | P374 league-player-guide-draft | done | 2026-10-21 |
 | P369 cont-fixup-companions-b1-base-and-record | done | 2026-10-21 |
@@ -266,7 +266,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P358 cont-fixup-playtest-bot-checks-second | done | 2026-10-21 |
 | P357 cont-fog-of-war-client-half | done | 2026-10-21 |
 | P356 cont-fixup-golem-questions-in-console | done | 2026-10-21 |
-| P355 cont-fixup-accessory-slots | done | 2026-10-21 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 143 patches, 12 replacements
 
