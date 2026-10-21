@@ -2879,6 +2879,97 @@
    ],
    "pass": "Both boots load and save clean with no new exceptions.",
    "check": "CC: done in the prompt (notes, Headless boot)."
+  },
+  "P195-1": {
+   "where": "Test shard, SL TEST - Admin (Eve); run [GenExodusEncounter once",
+   "do": [
+    "Read the command's report line",
+    "`[go 849 648 -40` on Ilshenar and look about; `[go 761 641 0`; `[go 946 641 -79`"
+   ],
+   "pass": "The report counts the controller and Clockwork Exodus, the moongate and ankh, 39 Nexus machines and the Keypunch Reader, 16 spawners and the Arch Zealot. Clockwork Exodus (body 1248, hued 2500) stands by 854,642; a public moongate and an Ankh of Sacrifice stand at 761,641 and 757,641; Hunter the Arch Zealot stands at 946,641 in a hooded shroud and cannot be attacked.",
+   "check": "Bot: the report, the controller item ([props at 849,648,-40: IsRunning true, Exodus set), the gate, ankh and Hunter at their tiles; Chase: that the body and hue read as Exodus."
+  },
+  "P195-2": {
+   "where": "Test shard, SL TEST - Admin (Eve); after [GenExodusEncounter",
+   "do": [
+    "`[go 1969 114 -28` (the Exodus Dungeon, Ilshenar) and walk the halls",
+    "Hit a drone with a weapon while it is whole, then cast at it; shoot one with a bow"
+   ],
+   "pass": "Zealots in hooded shrouds with spellbooks, drones, sentinels, Dupre's champion in gold plate, his knight and squires (blue) are about; a whole drone's barrier turns the blow (Your weapon cannot penetrate the creature's magical barrier) and it answers casters and archers with an energy bolt; below 90 percent spells do nothing and weapons bite.",
+   "check": "Bot: the creature names and the two barrier messages (1114360, 1114359) and the bolt; Chase: the gold plate and purple sash."
+  },
+  "P195-3": {
+   "where": "Test shard, SL TEST - Admin (Eve), Detect Hidden 98 and Lockpicking 90; after [GenExodusEncounter",
+   "do": [
+    "`[go 1985 116 -28` and walk the 100x100 block around it until Your keen senses detect something hidden in the area",
+    "Use Detect Hidden on the spot within three tiles",
+    "Pick the chest and open it; wait five minutes"
+   ],
+   "pass": "A hued ornate chest appears, trapped (poison) and locked; it holds 1,500 to 3,000 gold, one to five of every gem and sometimes smoke bombs, potions, an essence or a peerless ingredient, and one chest in five a ritual key; it vanishes five minutes after it appeared.",
+   "check": "Bot: the 1153493 message, the chest appearing (visible), its contents, its deletion; Chase: nothing."
+  },
+  "P195-4": {
+   "where": "Test shard, SL TEST - Admin (Eve), Tinkering 80 and Lockpicking 65; `[add MechanicalComponent`",
+   "do": [
+    "Double-click the component",
+    "`[go 2011 67 -27` and use the Exotic Toolkit on the Nexus machine",
+    "Press the arrows along the circuit (Attempt to Decipher the Circuit Path shows the next node); on another machine press a wrong arrow"
+   ],
+   "pass": "The component becomes an Exotic Toolkit (You successfully convert the component into an exotic tool kit); the Nexus opens the GENERATOR CONTROL nexus gump; the right path repairs it (You repair the mysterious Nexus! As it whirs to life it spits out a punch card!), a punch card lands in your pack and the machine loses its hue for ten minutes; a wrong arrow shocks you for 60 and freezes you through three more shocks.",
+   "check": "Bot: the toolkit, the gump's clilocs (1153747-1153750), the card, the hue change, the shock damage and the frozen flag; Chase: the circuit art."
+  },
+  "P195-5": {
+   "where": "Test shard, SL TEST - Admin (Eve); fifty punch cards (`[add PunchCard` fifty times, or the bot) and an Exotic Toolkit",
+   "do": [
+    "`[go 1987 88 -28` and drop the cards and the toolkit into the Keypunch Reader",
+    "Double-click the Nexus Deed somewhere you may place an addon"
+   ],
+   "pass": "Each card says You feed the punch card into the machine but nothing happens until the fiftieth with a toolkit inside: As you feed the punch card into the machine it turns on!, the cards are gone, the toolkit stays and a Nexus Deed lies in the reader; the deed places a thirteen-piece Nexus.",
+   "check": "Bot: the two messages, the deed, the cards gone, the addon's components; Chase: the machine's look."
+  },
+  "P195-6": {
+   "where": "Test shard, two staff characters in a party, each with `[add RobeofRite` worn, `[add ExodusSacrificalDagger` in hand and `[add ExodusSummoningRite`; one with `[add ExodusSummoningAlter`; at the Shrine of Compassion (Trammel, `[go 1858 876 12`); after [GenExodusEncounter with Clockwork Exodus whole",
+   "do": [
+    "Double-click the Summoning Altar deed and target the shrine floor",
+    "Each: double-click the rite and target the tome, then the dagger and target the tome",
+    "The owner: context menu on the tome, Begin the Ritual"
+   ],
+   "pass": "The Exodus Summoning Tome rises on four hued steps at 1858,875; the rite is read (You place the rite within the tome and begin to meditate...), the dagger is used (*You thrust the dagger into your flesh as tribute to Exodus!*, 10,000 karma, the dagger gone); Begin the Ritual carries both to Ilshenar 764,640 with their pets, burns the robes, and the tome vanishes two seconds later. Without the party, the robe, the rite first, or a member more than five tiles away, the matching message refuses.",
+   "check": "Bot: every message (1153596, 1153591, 1153603, 1153597, 1153605, 1153609, 1153611), the tome and steps, the move and the robes; Chase: the particle effects."
+  },
+  "P195-7": {
+   "where": "Test shard, SL TEST - Admin (Eve), after the ritual or `[go 854 642 -40` on Ilshenar",
+   "do": [
+    "Fight Clockwork Exodus; stand near him; `[kill` him; wait ten minutes"
+   ],
+   "pass": "Every hit given or taken and every spell casts three death vortices about you (The power of the Void surges around you!), which drain mana or stamina; his aura burns for energy every five seconds (The creature's aura of energy is damaging you!); his death rains gold on every tile within eight, one kill in five gifts an artifact replica (A special gift has been placed in your backpack.) and a loot box rolls for the slayers; eight minutes later You will be teleported out of this area in 2 minutes, two minutes after that you stand at one of eight spots on Ilshenar and a new Clockwork Exodus waits in Ver Lor Reg.",
+   "check": "Bot: the vortex items (0x3789), the aura message and damage, the gold, the 1010589 warning, the move and the new boss; Chase: the vortex and aura effects and the gold rain."
+  },
+  "P195-8": {
+   "where": "Test shard, SL TEST - Admin (Eve), as a gargoyle with an Exodus Sacrificial Dagger; `[go 946 641 -79` on Ilshenar",
+   "do": [
+    "Context menu on Hunter the Arch Zealot: Talk, and page through",
+    "Drop the dagger on him"
+   ],
+   "pass": "Ten pages of his lore (Ritual, Summoning Altar, Robe of Rite, Summoning Rite, Sacrificial Dagger, the Keys, the Warrior, the Rogue, the Craftsman); the human dagger becomes a gargish one in your pack.",
+   "check": "Bot: the gump's clilocs (1153670-1153689) and the dagger swap; Chase: the gump art."
+  },
+  "P195-9": {
+   "where": "Test shard, SL TEST - Admin (Eve), Alchemy 90, Blacksmithy 95, Tinkering 80; a thousand gold, twelve iron ingots, the gems and ten blackrock (`[add SmallPieceofBlackrock 10`)",
+   "do": [
+    "Open the alchemy menu and make Gold Dust; the smithy menu and make the Exodus Sacrificial Dagger",
+    "Mine at 100 Mining for a while"
+   ],
+   "pass": "Gold Dust (1,000 gold) and the dagger (12 iron, 2 blue diamonds, 2 fire rubies, 10 blackrock) are in the menus once their recipe is known (the shard's recipe gate hides them until then); a small piece of blackrock turns up about one dig in a thousand.",
+   "check": "Bot: the craft entries (1153504, 1153500) once the recipe is known and the blackrock dig message (1077180); Chase: nothing."
+  },
+  "P195-10": {
+   "where": "CC, a scratch copy of the test world on the new image",
+   "do": [
+    "Boot, generate, save, restart"
+   ],
+   "pass": "Loading world done twice, the encounter still standing, no new exceptions.",
+   "check": "Done by CC; see the notes."
   }
  }
 }
