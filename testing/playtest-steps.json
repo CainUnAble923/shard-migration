@@ -2686,6 +2686,67 @@
    ],
    "pass": "Loading world done twice, no new exceptions.",
    "check": "Done by CC; see the notes."
+  },
+  "P194-1": {
+   "where": "Test shard, SL TEST - Admin (Eve); after [GenWrongRevamp once",
+   "do": [
+    "`[go 5703 639 0` (the Wrong level-3 cell, Trammel) and walk the corridors",
+    "Stand beside a corridor wall, step away; double-click a barred door, then pick it (set Lockpicking 100) or cast Telekinesis at Magery 100 and wait ten seconds",
+    "Let the Demonic Jailor hit you; `[kill` yourself in level 3 outside the jail"
+   ],
+   "pass": "Walls appear beside you and vanish behind you; the door says It appears to be locked until picked or telekinesed, then locks again after ten seconds; the jailor's hit and a death both put you in the cell (You are captured by the jailor and returned to your cell), the first death alive again.",
+   "check": "Bot: the door's locked message and relock, the cell teleport after a jailor hit; Chase: the walls appearing and vanishing as you walk."
+  },
+  "P194-2": {
+   "where": "Test shard, SL TEST - Admin (Eve); after [GenWrongRevamp once",
+   "do": [
+    "`[go 5651 555 20` (the upper cell block) and double-click a dozen bedrolls",
+    "Walk onto a hole in the floor outside the blocks (`[go 5670 550 22`)",
+    "Double-click a prisoner in a cell, accept the quest, walk him to `[go 2042 226 0`"
+   ],
+   "pass": "Bedrolls tear (You tear the bedroll to pieces but find nothing), some trap you for 40 fire (You set off a trap!), a few open a mysterious tunnel; the hole moves you into a cell block; the prisoner offers We Who Are About To Die and pays 500 gold at the entrance.",
+   "check": "Bot: the bedroll messages, the tunnel move, the quest offer and the gold; Chase: the trap effects and that the tunnel graphic reads as a hole."
+  },
+  "P194-3": {
+   "where": "Test shard, SL TEST - Admin (Eve); after [GenWrongRevamp once",
+   "do": [
+    "`[go 5707 662 0`, set Lockpicking 100, pick a chest, take a hued piece into your pack, wait ten seconds, then walk out of the dungeon (`[go 2042 226 0`)",
+    "`[go 5690 534 0`, hit Fezzik a few times and wait ten seconds"
+   ],
+   "pass": "The stolen piece burns 10-13 every three seconds in Wrong (Ouch! These stolen items are hot! now and then) and the curse lifts outside (The curse is removed from the item you stole!, the hue goes); Fezzik drops a stinking cauldron that bursts into Gooey Maggots whose slime slows you to a walk.",
+   "check": "Bot: the hit-point loss per tick, the two messages, the hue change, the cauldron and the maggots appearing."
+  },
+  "P194-4": {
+   "where": "Test shard, SL TEST - Admin (Eve); after [SetupNewCovetous once",
+   "do": [
+    "`[go 5500 1998 5` (the Void Pool, Trammel); open your own context menu and pick The Void Pool",
+    "Wait fifteen minutes in the region; fight the waves; let one reach the pool walls",
+    "Read the end-of-battle message and your points; open the scoreboards again"
+   ],
+   "pass": "The gump shows the facet, the minutes to the next battle and the rules; the battle starts (The battle for the Void Pool is beginning now!), waves arrive at the gates, the walls fall (Cora's forces have destroyed the Void Pool walls), you are told your waves and score and receive reward points; a void corpse says There is no loot on the corpse.",
+   "check": "Bot: the context entry, the gump text, the battle messages, the points message, the corpse refusal."
+  },
+  "P194-5": {
+   "where": "Test shard, SL TEST - Admin (Eve); after [SetupNewCovetous once",
+   "do": [
+    "`[go 5574 1859 0` (Covetous level 3) and look at the rooms",
+    "`[go 5457 1808 0`, stand near Cora for a minute"
+   ],
+   "pass": "Each room holds one kind of leveled void creature with Rich loot; Cora breathes fire, drains mana in an aura (Cora drains N points of your mana!), pulls you to her side, and sends cracks across the floor that empty your mana.",
+   "check": "Chase: whether the cracks, the teleport and the fire breath look right; the mana numbers are the bot's."
+  },
+  "P194-6": {
+   "where": "Test shard, SL TEST - Admin (Eve); after [SetupNewCovetous once",
+   "do": [
+    "`[go 2254 1207 0` (Cove) and double-click Vela",
+    "`[add CauldronOfTransmutationDeed bronze`, place it in a house, target three bronze ingots; `[add TemporaryForgeDeed`, use it outside a house",
+    "`[add BraceletOfProtection`, `[add Hephaestus`, `[add BlightOfTheTundra`, `[add Brightblade`, `[add PrismaticLenses`"
+   ],
+   "pass": "Vela opens the reward list with your points and prices; the cauldron makes one gold ingot of three bronze; the forge builds outside a house and chops away; the five artifacts show their properties.",
+   "check": "Bot: the gump rows and prices, the ingot swap, the forge placement; Chase: the artifacts' looks and hues."
+  },
+  "P194-7": {
+   "check": "Done 2026-10-20 (cc-P194, second sitting): sl-modernuo:cc-P194 booted twice on a copy of the bot scratch world (fresh, then on the first boot's save), loaded 210,942 then 212,779 items, saved and shut down; zero Exception lines in both logs (P194 notes, section 7)."
   }
  }
 }
