@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.21.9. Golem on, 25 queued, latest done P284. Play tests: 463 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.21.10. Golem on, 27 queued, latest done P286. Play tests: 463 open, 4 failed, 43 passed.
 
 ### Needs overseer review (4)
 
@@ -230,7 +230,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 174 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 175 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -257,8 +257,11 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P282 f12-numbers-and-level-gates | queued |  |
 | P283 skill-gain-paths-research | queued |  |
 | P287 golem-weekend-days-and-self-idle | queued |  |
-| P352 cont-fog-of-war-client-half | queued |  |
+| P288 package-notes-autofill | queued |  |
 | P353 cont-golem-questions-install-and-round | queued |  |
+| P354 cont-fixup-port-eodon-remainder | queued |  |
+| P355 cont-fixup-accessory-slots | queued |  |
+| P286 crystal-mage-crafter-docs-and-tests | done | 2026-10-21 |
 | P284 cont-fixup-satchel-icons-ship | done | 2026-10-21 |
 | P278 cont-fixup-climbing-boots | done | 2026-10-21 |
 | P272 cont-fixup-codex-second-agent | done | 2026-10-21 |
@@ -268,7 +271,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P244 cont-fixup-tinker-golem-watchdog | done | 2026-10-20 |
 | P239 creature-levels-appraisal | done | 2026-10-21 |
 | P238 climbing-boots | done | 2026-10-21 |
-| P237 new-haven-community-art | done | 2026-10-21 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 131 patches, 12 replacements
 
