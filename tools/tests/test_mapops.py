@@ -11,8 +11,9 @@ Facts, on a synthetic facet (the real layout, one chunk, no EA bytes):
      byte for byte as the Python one, and its stamp makes the second run a skip.
   4. The shipped patch (player-package/vendor/shattered-legacy-map/trammel.mapops) parses, lists its touched blocks,
      and every line lies inside the Burrows rectangle (x 5136-5247, y 1128-1263) or the way in (the Second Bank of
-     Haven, 3614-3626 x 2608-2624); when the pristine client data and the scratch build are on this PC, it rebuilds
-     the scratch build exactly.
+     Haven, 3614-3626 x 2608-2624), but for cc-P276's four removals in the tutorial farm (the two trees inside its
+     fence, x 3381-3399, y 2603-2619, and nothing else there); when the pristine client data and P167's scratch build
+     are on this PC, the patch without the farm's lines rebuilds the scratch build exactly (the farm was never in it).
 ASCII only. Temporary folders only.
 """
 import os
@@ -35,10 +36,20 @@ FACET = 1
 
 BURROWS = (5136, 1128, 5247, 1263)
 WAY_IN = (3614, 2608, 3626, 2624)
+FARM = (3381, 2603, 3399, 2619)
+# cc-P276: the two trees inside the tutorial farm's fence, trunk and foliage (design/tutorial-farm/west_v3_layout.json).
+FARM_REMOVALS = ["S- 3388 2607 19 3302 0", "S- 3388 2607 19 3303 0", "S- 3396 2616 38 3296 0", "S- 3396 2616 38 3297 0"]
 
 
 def inside(x, y, r):
     return r[0] <= x <= r[2] and r[1] <= y <= r[3]
+
+
+def without_farm(text):
+    """The patch as P167's scratch build knows it: the farm's removals and their two block fingerprints dropped."""
+    farm_blocks = {(int(l.split()[1]) >> 3) * 512 + (int(l.split()[2]) >> 3) for l in FARM_REMOVALS}
+    keep = [l for l in text.splitlines() if l not in FARM_REMOVALS and not (l.startswith("B ") and int(l.split()[1]) in farm_blocks)]
+    return "\n".join(keep) + "\n"
 
 
 def read(folder, name):
@@ -140,16 +151,18 @@ class Shipped(unittest.TestCase):
                 bx, by = divmod(b, 512)
                 for tid, cx, cy, z, hue in rows:
                     x, y = bx * 8 + cx, by * 8 + cy
-                    self.assertTrue(inside(x, y, BURROWS) or inside(x, y, WAY_IN), (x, y, hex(tid)))
+                    self.assertTrue(inside(x, y, BURROWS) or inside(x, y, WAY_IN) or inside(x, y, FARM), (x, y, hex(tid)))
                     self.assertEqual(0, hue)
-        self.assertEqual(3, sum(len(r) for r in removes.values()))
+        self.assertEqual(3 + len(FARM_REMOVALS), sum(len(r) for r in removes.values()))
+        farm = [l for l in text.splitlines() if l.startswith(("L ", "S+ ", "S- ")) and inside(int(l.split()[1]), int(l.split()[2]), FARM)]
+        self.assertEqual(FARM_REMOVALS, farm)
         self.assertTrue(all(b in fps for b in set(adds) | set(removes)))
 
     @unittest.skipUnless(SHIPPED.exists() and SCRATCH.exists() and Path(uofiles.CLIENT).exists(), "needs the scratch build and the pristine client data")
     def test_5_the_shipped_patch_rebuilds_the_scratch_build_exactly(self):
         tmp = tempfile.mkdtemp(prefix="p188-mapops-real-")
         try:
-            drifted, missing, land_equal, bad = mapops.check(SHIPPED.read_text(), uofiles.CLIENT, str(SCRATCH), FACET, scratch=tmp)
+            drifted, missing, land_equal, bad = mapops.check(without_farm(SHIPPED.read_text()), uofiles.CLIENT, str(SCRATCH), FACET, scratch=tmp)
             self.assertEqual(([], [], True, []), (drifted, missing, land_equal, bad))
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
