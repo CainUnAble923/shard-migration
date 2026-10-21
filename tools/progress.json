@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-20T20:32:50-05:00",
+  "generated": "2026-10-20T21:02:53-05:00",
   "direction": {
     "eyebrow": "Direction",
     "title": "Our own shard on ModernUO, OSI where OSI has an answer",
@@ -565,10 +565,10 @@
     "confirmed": "2026-09-19"
   },
   "counted": {
-    "customization_files": 1188,
-    "patch_files": 111,
+    "customization_files": 1270,
+    "patch_files": 114,
     "stale_migrations_present": false,
-    "upstream_patch_files": 104,
+    "upstream_patch_files": 107,
     "upstream_replacements": [
       "BaseGuildmaster.cs",
       "BulkMaterialType.cs",
@@ -583,8 +583,8 @@
       "TreasureMap.cs",
       "TreasureMapChest.cs"
     ],
-    "test_files": 183,
-    "test_cases": 1082
+    "test_files": 189,
+    "test_cases": 1155
   },
   "content_progress": [
     {
@@ -596,8 +596,8 @@
     {
       "area": "Items/Equipment",
       "total": 148,
-      "done": 124,
-      "pct": 83.8
+      "done": 127,
+      "pct": 85.8
     },
     {
       "area": "Mobiles/Normal",
@@ -614,8 +614,14 @@
     {
       "area": "Items/Resource",
       "total": 61,
-      "done": 40,
-      "pct": 65.6
+      "done": 55,
+      "pct": 90.2
+    },
+    {
+      "area": "Items/Functional",
+      "total": 49,
+      "done": 37,
+      "pct": 75.5
     },
     {
       "area": "Services/Expansions",
@@ -636,6 +642,12 @@
       "pct": 78.6
     },
     {
+      "area": "Items/Containers",
+      "total": 31,
+      "done": 20,
+      "pct": 64.5
+    },
+    {
       "area": "Items/Quest",
       "total": 78,
       "done": 9,
@@ -652,18 +664,6 @@
       "total": 52,
       "done": 4,
       "pct": 7.7
-    },
-    {
-      "area": "Items/Functional",
-      "total": 49,
-      "done": 4,
-      "pct": 8.2
-    },
-    {
-      "area": "Items/Containers",
-      "total": 31,
-      "done": 4,
-      "pct": 12.9
     },
     {
       "area": "Items/Decorative",
@@ -779,7 +779,7 @@
     {
       "kind": "play tests",
       "item": "not sorted",
-      "check": "64 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check.",
+      "check": "65 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check.",
       "cmd": [
         "python -m unittest tools/tests/test_play_who.py"
       ]
@@ -995,9 +995,9 @@
           "C5"
         ],
         "candidates": 298,
-        "done": 172,
+        "done": 250,
         "complete": false,
-        "pct": 57.7
+        "pct": 83.9
       },
       {
         "id": "rewardpool",
@@ -1037,9 +1037,9 @@
           "C7"
         ],
         "candidates": 307,
-        "done": 14,
+        "done": 15,
         "complete": false,
-        "pct": 4.6
+        "pct": 4.9
       },
       {
         "id": "drop",
@@ -1070,7 +1070,7 @@
       "port": {
         "systems": 16,
         "files": 983,
-        "done": 524,
+        "done": 602,
         "titles": [
           "Bulk orders, all crafts",
           "Treasure maps revamp",
@@ -1125,7 +1125,7 @@
       "later": {
         "systems": 1,
         "files": 307,
-        "done": 14,
+        "done": 15,
         "titles": [
           "Later, deliberately"
         ],
@@ -1149,9 +1149,9 @@
     "counted": {
       "systems": 16,
       "in": 4,
-      "done": 524,
+      "done": 602,
       "total": 983,
-      "pct": 53.3
+      "pct": 61.2
     },
     "next": "Bulk orders, all crafts",
     "decided": [
@@ -1309,14 +1309,14 @@
   "derived": {
     "version": "2026.10.20.16",
     "playtests": {
-      "open": 398,
+      "open": 406,
       "failed": 4,
       "passed": 43,
       "later": 8,
       "blocked": 1,
-      "total": 445,
+      "total": 453,
       "unloggedFails": 3,
-      "generatedAt": "2026-10-21T01:25:12Z"
+      "generatedAt": "2026-10-21T01:35:13Z"
     },
     "queue": {
       "autopilot": "on",
@@ -1358,11 +1358,6 @@
           "state": "queued"
         },
         {
-          "n": 207,
-          "slug": "golem-card-glow",
-          "state": "queued"
-        },
-        {
           "n": 215,
           "slug": "golem-test-accounts",
           "state": "queued"
@@ -1385,11 +1380,6 @@
         {
           "n": 224,
           "slug": "playtest-bot-checks-second",
-          "state": "queued"
-        },
-        {
-          "n": 226,
-          "slug": "arms-lore-matters",
           "state": "queued"
         },
         {
@@ -1458,11 +1448,6 @@
           "state": "queued"
         },
         {
-          "n": 245,
-          "slug": "cont-fixup-port-base-items-remainder",
-          "state": "queued"
-        },
-        {
           "n": 261,
           "slug": "levelable-gear-build",
           "state": "queued"
@@ -1481,6 +1466,31 @@
           "n": 264,
           "slug": "companions-b1-base-and-record",
           "state": "queued"
+        },
+        {
+          "n": 265,
+          "slug": "guild-hall-decor-packs",
+          "state": "queued"
+        },
+        {
+          "n": 266,
+          "slug": "new-haven-winter-decor",
+          "state": "queued"
+        },
+        {
+          "n": 267,
+          "slug": "halloween-bank-decor",
+          "state": "queued"
+        },
+        {
+          "n": 268,
+          "slug": "high-seas-ships-assessment",
+          "state": "queued"
+        },
+        {
+          "n": 269,
+          "slug": "high-seas-fishing-second-half",
+          "state": "queued"
         }
       ],
       "finished": [
@@ -1491,6 +1501,14 @@
           "why": "",
           "date": "2026-10-20",
           "notes": "notes/cc-P260-herbalism-research.md"
+        },
+        {
+          "n": 245,
+          "slug": "cont-fixup-port-base-items-remainder",
+          "state": "done",
+          "why": "",
+          "date": "2026-10-20",
+          "notes": "notes/cc-P245-cont-fixup-port-base-items-remainder.md"
         },
         {
           "n": 235,
@@ -1555,18 +1573,10 @@
           "why": "",
           "date": "2026-10-20",
           "notes": "notes/cc-P217-crystal-wiki-catch-up.md"
-        },
-        {
-          "n": 214,
-          "slug": "tool-trials",
-          "state": "done",
-          "why": "",
-          "date": "2026-10-20",
-          "notes": "notes/cc-P214-tool-trials.md"
         }
       ],
-      "finished_total": 150,
-      "done_total": 146,
+      "finished_total": 152,
+      "done_total": 148,
       "stopped_total": 4,
       "latest_done": {
         "n": 260,
