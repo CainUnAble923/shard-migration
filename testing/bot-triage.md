@@ -52,6 +52,7 @@ through shows on the status page's **Needs overseer review** box ("play-test ite
 
 Ids with a check: P56-4, P56-6, P58-0, P61-3, P61-5, P62-1, P62-7, P64-1, P64-2, P64-3, P64-4, P64-5, P64-6, P66-7, P71-7, T-039, T-046, T-047.
 cc-P119 added one more: P119-1 (`p119_1` in `uobot/checks.py`).
+cc-P223 added 57 (the first half of the "Not built yet" items: `uobot/checks_p223.py` to `checks_p223h.py`): T-001 to T-007, T-010, T-013, T-023 to T-027, T-041, T-042, T-044, T-045, T-048, P56-1 to P56-3, P56-5, P56-7, P57-1 to P57-5, P57-7, P61-1, P61-2, P61-4, P62-8, P65-0, P66-1 to P66-6, P67-1 to P67-7, P69-1 to P69-3, P71-1 to P71-6. Not built there: T-031, P69-4, P69-5 (the reasons are in `notes/cc-P223-playtest-bot-checks-first.md`).
 The other BOT and BOT-PARTIAL items are the backlog for the next nights: the sketches at the end say how each could be
 checked.
 
@@ -207,7 +208,7 @@ checked.
 | P67-4 | BOT | Blacksmithy 180 plus a +10 item: base caps at 187.5 |
 | P67-5 | BOT | Orders at 150 with the toggle on are all Frost post-Valorite; off: Platinum, Toxic, Blaze reappear |
 | P67-6 | BOT | Explosion trap HP loss at Tinkering 200 vs 120; Remove Trap failure rate |
-| P67-7 | BOT | Axe damage at Lumberjacking 148 vs 100 (target HP via [props), statistical |
+| P67-7 | BOT-PARTIAL | Bot: axe damage at Lumberjacking 148 vs 100 (target HP via [get), rules out a large bonus; Chase: the few percent between ours and pinned's is inside the bot's noise |
 
 ### P68
 

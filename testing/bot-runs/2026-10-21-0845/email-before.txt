@@ -1,0 +1,59 @@
+Overnight play tests starting: 45 checks on 62c675d
+
+The overnight play-test bot is starting on 62c675d.
+
+Play-test items with work tonight (open, with a bot check that has not run on this code):
+  T-001: no bot run yet
+  T-004: no bot run yet
+  T-005: no bot run yet
+  T-013: no bot run yet
+  T-024: no bot run yet
+  T-025: no bot run yet
+  T-027: no bot run yet
+  T-039: code changed since c509731 (run 2026-10-19-0130)
+  T-041: no bot run yet
+  T-042: no bot run yet
+  T-044: no bot run yet
+  T-045: no bot run yet
+  T-046: code changed since f057b97 (run 2026-10-16-0130)
+  T-047: code changed since c509731 (run 2026-10-19-0130)
+  T-048: no bot run yet
+  P56-4: code changed since c509731 (run 2026-10-19-0130)
+  P56-6: code changed since c509731 (run 2026-10-19-0130)
+  P56-7: no bot run yet
+  P57-5: no bot run yet
+  P58-0: code changed since c509731 (run 2026-10-19-0130)
+  P61-1: no bot run yet
+  P61-3: code changed since c509731 (run 2026-10-19-0130)
+  P61-4: no bot run yet
+  P61-5: code changed since c509731 (run 2026-10-19-0130)
+  P62-1: code changed since c509731 (run 2026-10-19-0130)
+  P62-7: code changed since c509731 (run 2026-10-19-0130)
+  P64-1: code changed since c509731 (run 2026-10-19-0130)
+  P64-2: code changed since c509731 (run 2026-10-19-0130)
+  P64-3: code changed since c509731 (run 2026-10-19-0130)
+  P64-4: code changed since c509731 (run 2026-10-19-0130)
+  P64-5: code changed since c509731 (run 2026-10-19-0130)
+  P64-6: code changed since c509731 (run 2026-10-19-0130)
+  P66-1: no bot run yet
+  P66-2: no bot run yet
+  P66-4: no bot run yet
+  P66-7: code changed since c509731 (run 2026-10-19-0130)
+  P67-1: no bot run yet
+  P67-2: no bot run yet
+  P67-3: no bot run yet
+  P67-4: no bot run yet
+  P71-4: no bot run yet
+  P71-5: no bot run yet
+  P71-7: code changed since c509731 (run 2026-10-19-0130)
+  P119-1: code changed since c509731 (run 2026-10-19-0130)
+  P140-1: code changed since 73a0348 (run 2026-10-18-0140)
+
+It runs all 50 checks (some hand results to others), so the report covers more than the list above.
+Expected length: about 1 h 5 min (build, boot, checks, soak).
+
+To stop it:
+  schtasks /End /TN "SL overnight play tests"
+  docker compose -p sl-uo-bot down -t 60
+The first stops the script; the second stops the scratch shard (sl-modernuo-bot only, never live or test).
+A summary email follows when it finishes.
