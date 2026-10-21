@@ -1,0 +1,25 @@
+    0.00 harness  == P69-6 run 3: A tier-3 mule shows 'Tier 3: Shadowhide Mule', lists its module slots, and costs its owner 1 follower slot
+    0.00 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 64, 'hitsMax': 64, 'version': 6, 'female': 1, 'str': 28, 'dex': 18, 'int': 13, 'stam': 18, 'stamMax': 18, 'mana': 13, 'manaMax': 13, 'gold': 1000, 'ar': 0, 'weight': 222, 'maxWeight': 198, 'race': 1, 'statCap': 1500, 'followers': 2, 'followersMax': 5}
+    0.81 admin    -> say '[go 0x33B'
+    1.82 admin    -> say '[add PackMule 3'
+    1.82 admin    <- 0x6C target cursor 415 (type 1)
+    2.03 admin    -> 0x6C target ground 3504,2574,14
+    2.03 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+    2.03 admin    -> say '[go 0x33B'
+    3.04 admin    -> say '[set Controlled true ControlMaster 0x33B'
+    3.04 admin    <- 0x6C target cursor 416 (type 0)
+    3.24 admin    -> 0x6C target object 0x00000391
+    3.24 admin    <- unicode(0) System: Property has been set. (2)
+    3.24 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 64, 'hitsMax': 64, 'version': 6, 'female': 1, 'str': 28, 'dex': 18, 'int': 13, 'stam': 18, 'stamMax': 18, 'mana': 13, 'manaMax': 13, 'gold': 1000, 'ar': 0, 'weight': 222, 'maxWeight': 198, 'race': 1, 'statCap': 1500, 'followers': 3, 'followersMax': 5}
+    3.75 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 64, 'hitsMax': 64, 'version': 6, 'female': 1, 'str': 28, 'dex': 18, 'int': 13, 'stam': 18, 'stamMax': 18, 'mana': 13, 'manaMax': 13, 'gold': 1000, 'ar': 0, 'weight': 222, 'maxWeight': 198, 'race': 1, 'statCap': 1500, 'followers': 3, 'followersMax': 5}
+    4.56 admin    -> say '[go 0x33B'
+    5.57 admin    -> say '[set CantWalk true'
+    5.57 admin    <- 0x6C target cursor 417 (type 0)
+    5.78 admin    -> 0x6C target object 0x00000391
+    5.78 admin    <- unicode(0) System: Property has been set.
+    6.29 player   -> say 'all follow me' keywords ['0x16c']
+    6.29 player   <- unicode(0) Bot Human F Aa: all follow me
+    6.29 admin    <- unicode(0) Bot Human F Aa: all follow me
+    6.80 player   <- 0xD6 properties 0x00000391:  a Shadowhide mule  | (tame) | Tier 3: Shadowhide Mule (male) | Quality: hits 1%, strength 10%, stamina 66%, resists 79%, pack 93% | Bloodline: none | Module slots: 0 / 3
+    6.80 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 64, 'hitsMax': 64, 'version': 6, 'female': 1, 'str': 28, 'dex': 18, 'int': 13, 'stam': 18, 'stamMax': 18, 'mana': 13, 'manaMax': 13, 'gold': 1000, 'ar': 0, 'weight': 222, 'maxWeight': 198, 'race': 1, 'statCap': 1500, 'followers': 3, 'followersMax': 5}
+    7.60 harness  == P69-6 run 3: PASS (a NEW tier-3 mule (no old mules exist here; the play test's 'existing mules' are the same code path): 'Tier 3: Shadowhide Mule (male)'; 'Module slots: 0 / 3'; owner's followers 2 -> 3 (1 slot); other lines [' a Shadowhide mule ', '(tame)', 'Quality: hits 1%, strength 10%, stamina 66%, resists 79%, pack 93%', 'Bloodline: none'])

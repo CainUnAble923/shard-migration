@@ -1,0 +1,20 @@
+Overnight play tests: 48 pass, 10 fail, 2 flaky, 1 could not run
+
+Overnight play tests: 48 pass, 10 fail, 2 flaky, 1 could not run.
+Code under test: 9ccce19 (current main, 2026-10-20; shard version 2026.10.20.18), built through the gates by Start-TestShard.ps1 -Fresh on the Silver Golem's PC; image sl-modernuo:cc-P224.
+
+FAIL P62-7 (0/3): refusal False; worn True; back in pack False; messages ['Welcome to Shattered Legacy TEST.']
+FAIL P119-1 (0/3): IceHound: killed True, corpse True; OrcChopper: killed True, corpse True; Lifestealer: the fighter died (a test problem, not this creature's); EffeteUndeadGargoyle: not fought: the fighter was dead; Wight: not fought: the fighter was dead; player hits at the end 0/176
+FAIL P70-2 (0/3): refusal without materials: True (pack had ingots 167, gears 0, bone 0); with them: made True, new tier-I harness []; notice ['You create the item.']
+FAIL P70-3 (0/3): fitted True (['You fit the Clockwork Load Harness I to the mule.']); mule lists it True, 'Module slots: 1 / 1'; Remove row True -> None; back in the pack False as None
+FAIL P70-5 (0/3): tier-I 0x40013994 used (pack cleared of modules first, then one tier I added); craft: made True after 0 failed roll(s) (tier I kept through each failure: True), the tier I gone True, new tier II []; second try with no tier I: refused True
+FAIL P171-1 (0/3): 1 tries: 1 started the taming, 0 angered the beast (0%; 15% expected, 95% before cc-P171); busy 0, unanswered 31 (last: ['Tame which animal?', 'That is not accessible.']); S???????????????????????????????
+ERROR P142-2 (0/3): RuntimeError: no ChampionSpawnRegion at any of [GenChamps' spots ([((5511, 2360, 42), 'no region'), ((6038, 2401, 47), 'no region'), ((5549, 2640, 16), 'no region'), ((5557, 827, 65), 'Your region is Despise.')]): the world has no champion spawn, the bot cannot work one; [GenChamps (Developer) would
+FAIL P142-4 (0/3): Den: already a member (Member. Rank: Initiate.); Felucca Shame at (5395, 126, 0), standing 0; 50 tries: {'caught': 43, 'minor': 7, 're-set': 12}; hauls ['lockpicks', 'scrip', 'gold', 'gold', 'scrip', 'gold', 'scrip']; haul lines ['You lift 4 lockpicks from the creature.', "You pocket 1 Thieves' Den 
+FAIL P142-5 (0/3): Den: already a member (Member. Rank: Initiate.); hidden before False; first steal caught (attempt 1); hidden after the miss False (pinned Stealing.cs:64 reveals at the cursor already); creature's Combatant None (the thief: False); at once wary; after 6 s caught; at Stealing 200.0: special then alrea
+FAIL P175-2 (0/3): warden found at the post (player moved there: True); already a member (Member. Rank: Volunteer.); Orc: no corpse (Orc: fighter died); Dragon: no corpse (Dragon: fighter died); Orc (body 17) by the admin's [kill: lifted 0 out, 0 left; 'Corpse cleared (4 items inside). +1.65 Clean Up points.' -> 1.65 
+FAIL P175-3 (0/3): warden found at the post (player moved there: True); already a member (Member. Rank: Volunteer.); bag 'You receive a new trash bag. Your old one has been collected.'; None -> None; store: 125 rows on 25 pages, points label '3'; Bamboo (row page 11, tooltip 1029324, 15,000): NOT in pack, 'no buy butt
+FLAKY P141-3 (2/3): trainee (reset True, enter True); crawlway 0x40000759 already there; rocks before 0x1367, after the kill 0x1B71; Overdraft: killed; Echo on the kill 'System: Something gave way in the south wall. A crawlway. One way, I am told. Do not get sentimental about the Vault.'; after the step south at (5160,
+FLAKY P100-6 (2/3): placed 11, wipe said 'Wiped 11 item(s). Undo puts back them.', [save said ['The world is saving, please wait.', 'World save completed in 0.11 seconds.'], shard back in 23.7 s; after the restart [VBuild undo said 'Undone: 11 item(s). 3 step(s) left.' and 11 of the 11 pieces are back; then ['Undone: 9
+
+Report: D:/UO/shard-migration/testing/bot-runs/2026-10-21-0601\report.md

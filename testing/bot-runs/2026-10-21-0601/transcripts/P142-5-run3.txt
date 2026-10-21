@@ -1,0 +1,935 @@
+    0.00 harness  == P142-5 run 3: Felucca Shame at Stealing 60, hidden: a miss reveals and is caught, the creature turns, wary at once, a roll after 6 s, then nothing left
+    0.00 admin    -> say '[go 0x33B'
+    0.38 player   <- 0x3A skill 43 now 63.6 (cap 200.0)
+    0.38 player   <- 0x3A skill 43 now 63.7 (cap 200.0)
+    0.38 player   <- 0x3A skill 43 now 63.8 (cap 200.0)
+    0.38 player   <- 0x3A skill 43 now 63.9 (cap 200.0)
+    0.38 player   <- 0x3A skill 43 now 64.0 (cap 200.0)
+    0.38 player   <- 0x3A skill 43 now 64.1 (cap 200.0)
+    0.38 player   <- 0x3A skill 43 now 64.2 (cap 200.0)
+    0.38 player   <- 0x3A skill 43 now 64.3 (cap 200.0)
+    0.38 player   <- 0x3A skill 43 now 64.4 (cap 200.0)
+    0.38 player   <- 0x3A skill 43 now 64.5 (cap 200.0)
+    0.38 player   <- 0x3A skill 43 now 64.6 (cap 200.0)
+    0.38 player   <- 0x3A skill 43 now 64.7 (cap 200.0)
+    0.38 player   <- 0x3A skill 43 now 64.8 (cap 200.0)
+    0.38 player   <- 0x3A skill 43 now 64.9 (cap 200.0)
+    0.38 player   <- 0x3A skill 43 now 65.0 (cap 200.0)
+    1.01 admin    -> say '[add ThiefGuildmaster'
+    1.01 admin    <- 0x6C target cursor 2187 (type 1)
+    1.22 admin    -> 0x6C target ground 5396,126,0
+    1.23 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+    1.73 player   -> 0xBF 0x13 context menu request 0x00000446
+    1.73 player   <- 0xBF 0x14 context menu 0x00000446: [(0, 3006123, 'Open Paperdoll', 0), (1, 3006146, 'Talk', 0), (2, 3006014, 'Train Detect Hidden', 0), (3, 3006021, 'Train Hiding', 1), (4, 3006024, 'Train Lockpicking', 0), (5, 3006028, 'Train Snooping', 0), (6, 3006030, 'Train Poisoning', 0), (7, 3006033, 'Train Stealing', 1), (8, 3006042, 'Train Fencing', 0), (9, 3006047, 'Train Stealth', 0)]
+    1.73 player   -> 0xBF 0x15 context pick 1 (Talk) on 0x00000446
+    1.73 player   <- 0xDD gump 0x0000088F type -810631593: Thieves' Den | <BASEFONT COLOR=#DDDDDD><I>We see all. Can we trust you? Show us your light fingers.</I></BASEFONT> | <BASEFONT COLOR=#AAAAAA>Teaches: Hiding, Stealth, Stealing, Snooping, Lockpicking, Poisoning, Detecting Hidden, Remove Trap</BASEFONT> | Separate from the stock trade guild (say "join", 500 gold). One does not join the other. | Member. Rank: Initiate. | Starter items (2) | Mule module schematics | Apprentice task: | <BASEFONT COLOR=#DDDDDD>Demonstrate Stealing of at least 20.0.</BASEFONT> | Complete it: +25 reputation, +10 scrip | Guild services | Guild Directory | Requisitions | Close
+    1.73 player      layout: { resizepic 0 0 9270 520 400 }{ checkertrans 10 10 500 380 }{ text 20 14 1154 0 }{ gumppictiled 10 36 500 2 9304 }{ htmlgump 20 44 480 36 1 0 0 }{ htmlgump 20 82 480 36 2 0 0 }{ text 20 118 999 3 }{ gumppictiled 10 140 500 2 9304 }{ text 20 150 68 4 }{ button 20 172 4005 4007 1 0 3 }{ text 55 174 999 5 }{ button 20 200 4005 4007 1 0 7 }{ text 55 202 999 6 }{ gumppictiled 10 232 500 2 9304 }{ text 20 240 999 7 }{ htmlgump 20 260 480 36 8 0 0 }{ button 20 298 4023 4025 1 0 4 }{ text 55 300 1154 9 }{ gumppictiled 10 350 500 2 9304 }{ button 20 362 4011 4012 1 0 5 }{ text 45 364 999 10 }{ button 180 362 4011 4012 1 0 6 }{ text 205 364 999 11 }{ button 300 362 4011 4012 1 0 9 }{ text 325 364 999 12 }{ button 420 362 4017 4019 1 0 0 }{ text 455 364 999 13 }
+    1.73 player   -> 0xB1 gump 0x0000088F type -810631593 button 0 switches [] texts []
+    1.73 admin    -> say '[go 0x33B'
+    1.97 player   <- 0xF3 world item 0x40015973 graphic 0x122A x1 at 5395,126,0 hue 0
+    1.97 admin    <- 0xF3 world item 0x40015973 graphic 0x122A x1 at 5395,126,0 hue 0
+    1.97 player   <- 0xF3 world item 0x40015974 graphic 0x122D x1 at 5394,125,0 hue 0
+    1.97 admin    <- 0xF3 world item 0x40015974 graphic 0x122D x1 at 5394,125,0 hue 0
+    1.97 player   <- 0xF3 world item 0x40015975 graphic 0x122C x1 at 5394,126,0 hue 0
+    1.97 admin    <- 0xF3 world item 0x40015975 graphic 0x122C x1 at 5394,126,0 hue 0
+    1.97 player   <- 0xF3 world item 0x40015976 graphic 0x122B x1 at 5396,127,0 hue 0
+    1.97 admin    <- 0xF3 world item 0x40015976 graphic 0x122B x1 at 5396,127,0 hue 0
+    2.14 admin    <- 0xF3 world item 0x40015977 graphic 0x122E x1 at 5396,126,0 hue 0
+    2.14 player   <- 0x3A skill 43 now 65.1 (cap 200.0)
+    2.14 admin    <- 0xF3 world item 0x40015978 graphic 0x1645 x1 at 5395,126,0 hue 0
+    2.14 player   <- 0x3A skill 43 now 65.2 (cap 200.0)
+    2.14 admin    <- 0xF3 world item 0x40015979 graphic 0x122E x1 at 5397,126,0 hue 0
+    2.14 player   <- 0x3A skill 43 now 65.3 (cap 200.0)
+    2.14 admin    <- 0xF3 world item 0x4001597A graphic 0x1645 x1 at 5395,127,0 hue 0
+    2.14 player   <- 0x3A skill 43 now 65.4 (cap 200.0)
+    2.14 player   <- 0x3A skill 43 now 65.5 (cap 200.0)
+    2.14 player   <- 0x3A skill 43 now 65.6 (cap 200.0)
+    2.14 player   <- 0x3A skill 43 now 65.7 (cap 200.0)
+    2.14 player   <- 0x3A skill 43 now 65.8 (cap 200.0)
+    2.14 player   <- 0x3A skill 43 now 65.9 (cap 200.0)
+    2.14 player   <- 0x3A skill 43 now 66.0 (cap 200.0)
+    2.14 player   <- 0x3A skill 43 now 66.1 (cap 200.0)
+    2.14 player   <- 0x3A skill 43 now 66.2 (cap 200.0)
+    2.14 player   <- 0x3A skill 43 now 66.3 (cap 200.0)
+    2.14 player   <- 0x3A skill 43 now 66.4 (cap 200.0)
+    2.14 player   <- 0x3A skill 43 now 66.5 (cap 200.0)
+    2.14 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 157, 'hitsMax': 177, 'version': 6, 'female': 1, 'str': 255, 'dex': 100, 'int': 59, 'stam': 99, 'stamMax': 100, 'mana': 59, 'manaMax': 59, 'gold': 1500, 'ar': 0, 'weight': 554, 'maxWeight': 992, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+    2.14 player   <- 0x3A skill 27 now 42.0 (cap 200.0)
+    2.14 player   <- 0x3A skill 27 now 42.1 (cap 200.0)
+    2.14 player   <- 0x3A skill 27 now 42.2 (cap 200.0)
+    2.14 player   <- 0x3A skill 27 now 42.3 (cap 200.0)
+    2.14 player   <- 0x3A skill 27 now 42.4 (cap 200.0)
+    2.14 player   <- 0x3A skill 27 now 42.5 (cap 200.0)
+    2.14 player   <- 0x3A skill 27 now 42.6 (cap 200.0)
+    2.14 player   <- 0x3A skill 27 now 42.7 (cap 200.0)
+    2.14 player   <- 0x3A skill 27 now 42.8 (cap 200.0)
+    2.14 player   <- 0x3A skill 27 now 42.9 (cap 200.0)
+    2.14 player   <- 0x3A skill 27 now 43.0 (cap 200.0)
+    2.14 player   <- 0x3A skill 27 now 43.1 (cap 200.0)
+    2.14 player   <- 0x3A skill 27 now 43.2 (cap 200.0)
+    2.14 player   <- 0x3A skill 27 now 43.3 (cap 200.0)
+    2.14 player   <- 0x3A skill 27 now 43.4 (cap 200.0)
+    2.14 player   <- 0x3A skill 1 now 86.1 (cap 200.0)
+    2.14 player   <- 0x3A skill 1 now 86.2 (cap 200.0)
+    2.14 player   <- 0x3A skill 1 now 86.3 (cap 200.0)
+    2.14 player   <- 0x3A skill 1 now 86.4 (cap 200.0)
+    2.14 player   <- 0x3A skill 1 now 86.5 (cap 200.0)
+    2.14 player   <- 0x3A skill 1 now 86.6 (cap 200.0)
+    2.14 player   <- 0x3A skill 1 now 86.7 (cap 200.0)
+    2.14 player   <- 0x3A skill 1 now 86.8 (cap 200.0)
+    2.14 player   <- 0x3A skill 1 now 86.9 (cap 200.0)
+    2.14 player   <- 0x3A skill 1 now 87.0 (cap 200.0)
+    2.14 player   <- 0x3A skill 1 now 87.1 (cap 200.0)
+    2.14 player   <- 0x3A skill 1 now 87.2 (cap 200.0)
+    2.14 player   <- 0x3A skill 1 now 87.3 (cap 200.0)
+    2.14 player   <- 0x3A skill 1 now 87.4 (cap 200.0)
+    2.14 player   <- 0x3A skill 1 now 87.5 (cap 200.0)
+    2.14 player   <- 0xF3 world item 0x40015977 graphic 0x122E x1 at 5396,126,0 hue 0
+    2.14 player   <- 0xF3 world item 0x40015978 graphic 0x1645 x1 at 5395,126,0 hue 0
+    2.14 player   <- 0xF3 world item 0x40015979 graphic 0x122E x1 at 5397,126,0 hue 0
+    2.14 player   <- 0xF3 world item 0x4001597A graphic 0x1645 x1 at 5395,127,0 hue 0
+    2.74 admin    -> say '[SetSkill Stealing 60'
+    2.74 admin    <- 0x6C target cursor 2188 (type 0)
+    2.77 admin    <- 0xF3 world item 0x4001597B graphic 0x122A x1 at 5395,126,0 hue 0
+    2.77 player   <- 0xF3 world item 0x4001597B graphic 0x122A x1 at 5395,126,0 hue 0
+    2.77 admin    <- 0xF3 world item 0x4001597C graphic 0x122A x1 at 5394,126,0 hue 0
+    2.77 player   <- 0xF3 world item 0x4001597C graphic 0x122A x1 at 5394,126,0 hue 0
+    2.77 admin    <- 0xF3 world item 0x4001597D graphic 0x122B x1 at 5395,127,0 hue 0
+    2.77 player   <- 0xF3 world item 0x4001597D graphic 0x122B x1 at 5395,127,0 hue 0
+    2.77 admin    <- 0xF3 world item 0x4001597E graphic 0x122B x1 at 5395,125,0 hue 0
+    2.77 player   <- 0xF3 world item 0x4001597E graphic 0x122B x1 at 5395,125,0 hue 0
+    2.95 admin    -> 0x6C target object 0x0000033B
+    2.95 admin    <- unicode(0) System: Stealing : 60 (Base: 60)
+    2.95 player   <- 0x3A skill 33 now 60.0 (cap 200.0)
+    3.55 admin    -> say '[go 0x33B'
+    3.90 player   <- 0x3A skill 43 now 66.6 (cap 200.0)
+    3.90 player   <- 0x3A skill 43 now 66.7 (cap 200.0)
+    3.90 player   <- 0x3A skill 43 now 66.8 (cap 200.0)
+    3.90 player   <- 0x3A skill 43 now 66.9 (cap 200.0)
+    3.90 player   <- 0x3A skill 43 now 67.0 (cap 200.0)
+    3.90 player   <- 0x3A skill 43 now 67.1 (cap 200.0)
+    3.90 player   <- 0x3A skill 43 now 67.2 (cap 200.0)
+    3.90 player   <- 0x3A skill 43 now 67.3 (cap 200.0)
+    3.90 player   <- 0x3A skill 43 now 67.4 (cap 200.0)
+    3.90 player   <- 0x3A skill 43 now 67.5 (cap 200.0)
+    3.90 player   <- 0x3A skill 43 now 67.6 (cap 200.0)
+    3.90 player   <- 0x3A skill 43 now 67.7 (cap 200.0)
+    3.90 player   <- 0x3A skill 43 now 67.8 (cap 200.0)
+    3.90 player   <- 0x3A skill 43 now 67.9 (cap 200.0)
+    3.90 player   <- 0x3A skill 43 now 68.0 (cap 200.0)
+    3.97 player   <- 0xF3 world item 0x4001597F graphic 0x1645 x1 at 5395,126,0 hue 0
+    3.98 admin    <- 0xF3 world item 0x4001597F graphic 0x1645 x1 at 5395,126,0 hue 0
+    3.98 player   <- 0xF3 world item 0x40015980 graphic 0x122E x1 at 5394,127,0 hue 0
+    3.98 admin    <- 0xF3 world item 0x40015980 graphic 0x122E x1 at 5394,127,0 hue 0
+    3.98 player   <- 0xF3 world item 0x40015981 graphic 0x122C x1 at 5394,127,0 hue 0
+    3.98 admin    <- 0xF3 world item 0x40015981 graphic 0x122C x1 at 5394,127,0 hue 0
+    3.98 player   <- 0xF3 world item 0x40015982 graphic 0x122F x1 at 5394,127,0 hue 0
+    3.98 admin    <- 0xF3 world item 0x40015982 graphic 0x122F x1 at 5394,127,0 hue 0
+    3.98 player   <- 0xF3 world item 0x40015983 graphic 0x122F x1 at 5395,125,0 hue 0
+    3.98 admin    <- 0xF3 world item 0x40015983 graphic 0x122F x1 at 5395,125,0 hue 0
+    4.25 player   <- 0xF3 world item 0x40015984 graphic 0x122C x1 at 5395,126,0 hue 0
+    4.25 admin    <- 0xF3 world item 0x40015984 graphic 0x122C x1 at 5395,126,0 hue 0
+    4.25 player   <- 0xF3 world item 0x40015985 graphic 0x1645 x1 at 5395,126,0 hue 0
+    4.25 admin    <- 0xF3 world item 0x40015985 graphic 0x1645 x1 at 5395,126,0 hue 0
+    4.25 player   <- 0xF3 world item 0x40015986 graphic 0x122F x1 at 5395,126,0 hue 0
+    4.25 admin    <- 0xF3 world item 0x40015986 graphic 0x122F x1 at 5395,126,0 hue 0
+    4.25 player   <- 0xF3 world item 0x40015987 graphic 0x122D x1 at 5394,126,0 hue 0
+    4.25 admin    <- 0xF3 world item 0x40015987 graphic 0x122D x1 at 5394,126,0 hue 0
+    4.25 player   <- 0xF3 world item 0x40015988 graphic 0x122C x1 at 5395,126,0 hue 0
+    4.25 admin    <- 0xF3 world item 0x40015988 graphic 0x122C x1 at 5395,126,0 hue 0
+    4.25 player   <- 0xF3 world item 0x40015989 graphic 0x122F x1 at 5395,125,0 hue 0
+    4.25 admin    <- 0xF3 world item 0x40015989 graphic 0x122F x1 at 5395,125,0 hue 0
+    4.25 player   <- 0xF3 world item 0x4001598A graphic 0x122F x1 at 5395,125,0 hue 0
+    4.25 admin    <- 0xF3 world item 0x4001598A graphic 0x122F x1 at 5395,125,0 hue 0
+    4.25 player   <- 0xF3 world item 0x4001598B graphic 0x122D x1 at 5394,126,0 hue 0
+    4.25 admin    <- 0xF3 world item 0x4001598B graphic 0x122D x1 at 5394,126,0 hue 0
+    4.30 player   <- 0xF3 world item 0x4001598C graphic 0x122C x1 at 5395,126,0 hue 0
+    4.30 admin    <- 0xF3 world item 0x4001598C graphic 0x122C x1 at 5395,126,0 hue 0
+    4.30 player   <- 0xF3 world item 0x4001598D graphic 0x122C x1 at 5396,126,0 hue 0
+    4.30 admin    <- 0xF3 world item 0x4001598D graphic 0x122C x1 at 5396,126,0 hue 0
+    4.30 player   <- 0xF3 world item 0x4001598E graphic 0x122C x1 at 5394,126,0 hue 0
+    4.30 admin    <- 0xF3 world item 0x4001598E graphic 0x122C x1 at 5394,126,0 hue 0
+    4.30 player   <- 0xF3 world item 0x4001598F graphic 0x122B x1 at 5396,126,0 hue 0
+    4.30 admin    <- 0xF3 world item 0x4001598F graphic 0x122B x1 at 5396,126,0 hue 0
+    4.30 player   <- 0xF3 world item 0x40015990 graphic 0x122D x1 at 5395,126,0 hue 0
+    4.30 admin    <- 0xF3 world item 0x40015990 graphic 0x122D x1 at 5395,126,0 hue 0
+    4.57 admin    -> say '[SetSkill Hiding 100'
+    4.57 admin    <- 0x6C target cursor 2189 (type 0)
+    4.77 admin    -> 0x6C target object 0x0000033B
+    4.77 admin    <- unicode(0) System: Hiding : 100 (Base: 100)
+    5.27 admin    <- 0xF3 world item 0x40015991 graphic 0x122B x1 at 5395,126,0 hue 0
+    5.28 player   <- 0xF3 world item 0x40015991 graphic 0x122B x1 at 5395,126,0 hue 0
+    5.28 admin    <- 0xF3 world item 0x40015992 graphic 0x122F x1 at 5394,125,0 hue 0
+    5.28 player   <- 0xF3 world item 0x40015992 graphic 0x122F x1 at 5394,125,0 hue 0
+    5.28 admin    <- 0xF3 world item 0x40015993 graphic 0x122D x1 at 5396,126,0 hue 0
+    5.28 player   <- 0xF3 world item 0x40015993 graphic 0x122D x1 at 5396,126,0 hue 0
+    5.28 admin    <- 0xF3 world item 0x40015994 graphic 0x122A x1 at 5395,125,0 hue 0
+    5.28 player   <- 0xF3 world item 0x40015994 graphic 0x122A x1 at 5395,125,0 hue 0
+    5.37 admin    -> say '[go 0x33B'
+    5.67 player   <- 0x3A skill 43 now 68.1 (cap 200.0)
+    5.67 admin    <- 0xF3 world item 0x40015995 graphic 0x122E x1 at 5396,126,0 hue 0
+    5.67 player   <- 0x3A skill 43 now 68.2 (cap 200.0)
+    5.67 admin    <- 0xF3 world item 0x40015996 graphic 0x1645 x1 at 5397,127,0 hue 0
+    5.67 player   <- 0x3A skill 43 now 68.3 (cap 200.0)
+    5.67 admin    <- 0xF3 world item 0x40015997 graphic 0x1645 x1 at 5395,125,0 hue 0
+    5.67 player   <- 0x3A skill 43 now 68.4 (cap 200.0)
+    5.67 admin    <- 0xF3 world item 0x40015998 graphic 0x122C x1 at 5396,127,0 hue 0
+    5.67 player   <- 0x3A skill 43 now 68.5 (cap 200.0)
+    5.67 player   <- 0x3A skill 43 now 68.6 (cap 200.0)
+    5.67 player   <- 0x3A skill 43 now 68.7 (cap 200.0)
+    5.67 player   <- 0x3A skill 43 now 68.8 (cap 200.0)
+    5.67 player   <- 0x3A skill 43 now 68.9 (cap 200.0)
+    5.67 player   <- 0x3A skill 43 now 69.0 (cap 200.0)
+    5.67 player   <- 0x3A skill 43 now 69.1 (cap 200.0)
+    5.67 player   <- 0x3A skill 43 now 69.2 (cap 200.0)
+    5.67 player   <- 0x3A skill 43 now 69.3 (cap 200.0)
+    5.67 player   <- 0x3A skill 43 now 69.4 (cap 200.0)
+    5.67 player   <- 0x3A skill 43 now 69.5 (cap 200.0)
+    5.67 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 152, 'hitsMax': 178, 'version': 6, 'female': 1, 'str': 256, 'dex': 100, 'int': 59, 'stam': 100, 'stamMax': 100, 'mana': 59, 'manaMax': 59, 'gold': 1500, 'ar': 0, 'weight': 554, 'maxWeight': 996, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+    5.67 player   <- 0x3A skill 27 now 43.5 (cap 200.0)
+    5.67 player   <- 0x3A skill 27 now 43.6 (cap 200.0)
+    5.67 player   <- 0x3A skill 27 now 43.7 (cap 200.0)
+    5.67 player   <- 0x3A skill 27 now 43.8 (cap 200.0)
+    5.67 player   <- 0x3A skill 27 now 43.9 (cap 200.0)
+    5.67 player   <- 0x3A skill 27 now 44.0 (cap 200.0)
+    5.67 player   <- 0x3A skill 27 now 44.1 (cap 200.0)
+    5.67 player   <- 0x3A skill 27 now 44.2 (cap 200.0)
+    5.67 player   <- 0x3A skill 27 now 44.3 (cap 200.0)
+    5.67 player   <- 0x3A skill 27 now 44.4 (cap 200.0)
+    5.67 player   <- 0x3A skill 27 now 44.5 (cap 200.0)
+    5.67 player   <- 0x3A skill 27 now 44.6 (cap 200.0)
+    5.67 player   <- 0x3A skill 27 now 44.7 (cap 200.0)
+    5.67 player   <- 0x3A skill 27 now 44.8 (cap 200.0)
+    5.67 player   <- 0x3A skill 27 now 44.9 (cap 200.0)
+    5.67 player   <- 0x3A skill 1 now 87.6 (cap 200.0)
+    5.67 player   <- 0x3A skill 1 now 87.7 (cap 200.0)
+    5.67 player   <- 0x3A skill 1 now 87.8 (cap 200.0)
+    5.67 player   <- 0x3A skill 1 now 87.9 (cap 200.0)
+    5.67 player   <- 0x3A skill 1 now 88.0 (cap 200.0)
+    5.67 player   <- 0x3A skill 1 now 88.1 (cap 200.0)
+    5.67 player   <- 0x3A skill 1 now 88.2 (cap 200.0)
+    5.67 player   <- 0x3A skill 1 now 88.3 (cap 200.0)
+    5.67 player   <- 0x3A skill 1 now 88.4 (cap 200.0)
+    5.67 player   <- 0x3A skill 1 now 88.5 (cap 200.0)
+    5.67 player   <- 0x3A skill 1 now 88.6 (cap 200.0)
+    5.67 player   <- 0x3A skill 1 now 88.7 (cap 200.0)
+    5.67 player   <- 0x3A skill 1 now 88.8 (cap 200.0)
+    5.67 player   <- 0x3A skill 1 now 88.9 (cap 200.0)
+    5.67 player   <- 0x3A skill 1 now 89.0 (cap 200.0)
+    5.67 player   <- 0xF3 world item 0x40015995 graphic 0x122E x1 at 5396,126,0 hue 0
+    5.67 player   <- 0xF3 world item 0x40015996 graphic 0x1645 x1 at 5397,127,0 hue 0
+    5.67 player   <- 0xF3 world item 0x40015997 graphic 0x1645 x1 at 5395,125,0 hue 0
+    5.67 player   <- 0xF3 world item 0x40015998 graphic 0x122C x1 at 5396,127,0 hue 0
+    5.97 player   <- 0xF3 world item 0x40015999 graphic 0x122E x1 at 5395,126,0 hue 0
+    5.97 admin    <- 0xF3 world item 0x40015999 graphic 0x122E x1 at 5395,126,0 hue 0
+    5.97 player   <- 0xF3 world item 0x4001599A graphic 0x122B x1 at 5394,125,0 hue 0
+    5.97 admin    <- 0xF3 world item 0x4001599A graphic 0x122B x1 at 5394,125,0 hue 0
+    5.97 player   <- 0xF3 world item 0x4001599B graphic 0x122D x1 at 5396,127,0 hue 0
+    5.97 admin    <- 0xF3 world item 0x4001599B graphic 0x122D x1 at 5396,127,0 hue 0
+    5.97 player   <- 0xF3 world item 0x4001599C graphic 0x122C x1 at 5394,125,0 hue 0
+    5.97 admin    <- 0xF3 world item 0x4001599C graphic 0x122C x1 at 5394,125,0 hue 0
+    6.24 player   <- 0xF3 world item 0x4001599D graphic 0x122A x1 at 5395,126,0 hue 0
+    6.24 admin    <- 0xF3 world item 0x4001599D graphic 0x122A x1 at 5395,126,0 hue 0
+    6.24 player   <- 0xF3 world item 0x4001599E graphic 0x122D x1 at 5394,127,0 hue 0
+    6.25 admin    <- 0xF3 world item 0x4001599E graphic 0x122D x1 at 5394,127,0 hue 0
+    6.25 player   <- 0xF3 world item 0x4001599F graphic 0x1645 x1 at 5394,127,0 hue 0
+    6.25 admin    <- 0xF3 world item 0x4001599F graphic 0x1645 x1 at 5394,127,0 hue 0
+    6.25 player   <- 0xF3 world item 0x400159A0 graphic 0x122E x1 at 5394,127,0 hue 0
+    6.25 admin    <- 0xF3 world item 0x400159A0 graphic 0x122E x1 at 5394,127,0 hue 0
+    6.39 admin    -> say '[set RawStr 250 Hits 175'
+    6.39 admin    <- 0x6C target cursor 2190 (type 0)
+    6.60 admin    -> 0x6C target object 0x0000033B
+    6.60 admin    <- unicode(0) System: Property has been set. (2)
+    6.60 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 175, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 250, 'dex': 100, 'int': 59, 'stam': 100, 'stamMax': 100, 'mana': 59, 'manaMax': 59, 'gold': 1500, 'ar': 0, 'weight': 554, 'maxWeight': 975, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+    6.83 admin    <- 0xF3 world item 0x400159A1 graphic 0x122C x1 at 5395,126,0 hue 0
+    6.83 player   <- 0xF3 world item 0x400159A1 graphic 0x122C x1 at 5395,126,0 hue 0
+    6.83 admin    <- 0xF3 world item 0x400159A2 graphic 0x122F x1 at 5395,125,0 hue 0
+    6.83 player   <- 0xF3 world item 0x400159A2 graphic 0x122F x1 at 5395,125,0 hue 0
+    6.83 admin    <- 0xF3 world item 0x400159A3 graphic 0x122B x1 at 5396,126,0 hue 0
+    6.83 player   <- 0xF3 world item 0x400159A3 graphic 0x122B x1 at 5396,126,0 hue 0
+    6.83 admin    <- 0xF3 world item 0x400159A4 graphic 0x122B x1 at 5395,126,0 hue 0
+    6.83 player   <- 0xF3 world item 0x400159A4 graphic 0x122B x1 at 5395,126,0 hue 0
+    6.83 admin    <- 0xF3 world item 0x400159A5 graphic 0x122F x1 at 5394,127,0 hue 0
+    6.83 player   <- 0xF3 world item 0x400159A5 graphic 0x122F x1 at 5394,127,0 hue 0
+    7.21 admin    -> say '[go 0x33B'
+    7.42 player   <- 0x3A skill 43 now 69.6 (cap 200.0)
+    7.42 player   <- 0x3A skill 43 now 69.7 (cap 200.0)
+    7.42 player   <- 0x3A skill 43 now 69.8 (cap 200.0)
+    7.42 player   <- 0x3A skill 43 now 69.9 (cap 200.0)
+    7.42 player   <- 0x3A skill 43 now 70.0 (cap 200.0)
+    7.42 player   <- 0x3A skill 43 now 70.1 (cap 200.0)
+    7.42 player   <- 0x3A skill 43 now 70.2 (cap 200.0)
+    7.42 player   <- 0x3A skill 43 now 70.3 (cap 200.0)
+    7.42 player   <- 0x3A skill 43 now 70.4 (cap 200.0)
+    7.42 player   <- 0x3A skill 43 now 70.5 (cap 200.0)
+    7.42 player   <- 0x3A skill 43 now 70.6 (cap 200.0)
+    7.42 player   <- 0x3A skill 43 now 70.7 (cap 200.0)
+    7.42 player   <- 0x3A skill 43 now 70.8 (cap 200.0)
+    7.42 player   <- 0x3A skill 43 now 70.9 (cap 200.0)
+    7.42 player   <- 0x3A skill 43 now 71.0 (cap 200.0)
+    7.42 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 174, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 250, 'dex': 101, 'int': 59, 'stam': 100, 'stamMax': 101, 'mana': 59, 'manaMax': 59, 'gold': 1500, 'ar': 0, 'weight': 554, 'maxWeight': 975, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+    7.93 admin    <- 0xF3 world item 0x400159A6 graphic 0x1645 x1 at 5395,126,0 hue 0
+    7.93 player   <- 0xF3 world item 0x400159A6 graphic 0x1645 x1 at 5395,126,0 hue 0
+    7.93 admin    <- 0xF3 world item 0x400159A7 graphic 0x122D x1 at 5396,126,0 hue 0
+    7.93 player   <- 0xF3 world item 0x400159A7 graphic 0x122D x1 at 5396,126,0 hue 0
+    7.93 admin    <- 0xF3 world item 0x400159A8 graphic 0x122A x1 at 5394,127,0 hue 0
+    7.93 player   <- 0xF3 world item 0x400159A8 graphic 0x122A x1 at 5394,127,0 hue 0
+    7.93 admin    <- 0xF3 world item 0x400159A9 graphic 0x122D x1 at 5394,125,0 hue 0
+    7.93 player   <- 0xF3 world item 0x400159A9 graphic 0x122D x1 at 5394,125,0 hue 0
+    7.99 admin    <- 0xF3 world item 0x400159AA graphic 0x122E x1 at 5395,126,0 hue 0
+    7.99 player   <- 0xF3 world item 0x400159AA graphic 0x122E x1 at 5395,126,0 hue 0
+    7.99 admin    <- 0xF3 world item 0x400159AB graphic 0x1645 x1 at 5395,125,0 hue 0
+    7.99 player   <- 0xF3 world item 0x400159AB graphic 0x1645 x1 at 5395,125,0 hue 0
+    7.99 admin    <- 0xF3 world item 0x400159AC graphic 0x122E x1 at 5395,127,0 hue 0
+    7.99 player   <- 0xF3 world item 0x400159AC graphic 0x122E x1 at 5395,127,0 hue 0
+    7.99 admin    <- 0xF3 world item 0x400159AD graphic 0x122B x1 at 5396,127,0 hue 0
+    7.99 player   <- 0xF3 world item 0x400159AD graphic 0x122B x1 at 5396,127,0 hue 0
+    8.22 admin    -> say '[set Map Felucca X 5395 Y 126 Z 0'
+    8.22 admin    <- 0x6C target cursor 2191 (type 0)
+    8.25 player   <- 0xF3 world item 0x400159AE graphic 0x122E x1 at 5395,126,0 hue 0
+    8.25 admin    <- 0xF3 world item 0x400159AE graphic 0x122E x1 at 5395,126,0 hue 0
+    8.25 player   <- 0xF3 world item 0x400159AF graphic 0x1645 x1 at 5395,127,0 hue 0
+    8.25 admin    <- 0xF3 world item 0x400159AF graphic 0x1645 x1 at 5395,127,0 hue 0
+    8.25 player   <- 0xF3 world item 0x400159B0 graphic 0x122C x1 at 5394,126,0 hue 0
+    8.25 admin    <- 0xF3 world item 0x400159B0 graphic 0x122C x1 at 5394,126,0 hue 0
+    8.25 player   <- 0xF3 world item 0x400159B1 graphic 0x122D x1 at 5395,125,0 hue 0
+    8.25 admin    <- 0xF3 world item 0x400159B1 graphic 0x122D x1 at 5395,125,0 hue 0
+    8.43 admin    -> 0x6C target object 0x0000033B
+    8.43 admin    <- unicode(0) System: Property has been set. (4)
+    8.94 admin    -> say '[go 0x33B'
+    9.08 player   <- 0xF3 world item 0x400159B2 graphic 0x122B x1 at 5395,126,0 hue 0
+    9.09 admin    <- 0xF3 world item 0x400159B2 graphic 0x122B x1 at 5395,126,0 hue 0
+    9.09 player   <- 0xF3 world item 0x400159B3 graphic 0x122D x1 at 5396,126,0 hue 0
+    9.09 admin    <- 0xF3 world item 0x400159B3 graphic 0x122D x1 at 5396,126,0 hue 0
+    9.09 player   <- 0xF3 world item 0x400159B4 graphic 0x122B x1 at 5394,127,0 hue 0
+    9.09 admin    <- 0xF3 world item 0x400159B4 graphic 0x122B x1 at 5394,127,0 hue 0
+    9.09 player   <- 0xF3 world item 0x400159B5 graphic 0x122C x1 at 5394,127,0 hue 0
+    9.09 admin    <- 0xF3 world item 0x400159B5 graphic 0x122C x1 at 5394,127,0 hue 0
+    9.18 player   <- 0x3A skill 43 now 71.1 (cap 200.0)
+    9.18 player   <- 0x3A skill 43 now 71.2 (cap 200.0)
+    9.18 player   <- 0x3A skill 43 now 71.3 (cap 200.0)
+    9.18 player   <- 0x3A skill 43 now 71.4 (cap 200.0)
+    9.18 player   <- 0x3A skill 43 now 71.5 (cap 200.0)
+    9.18 player   <- 0x3A skill 43 now 71.6 (cap 200.0)
+    9.18 player   <- 0x3A skill 43 now 71.7 (cap 200.0)
+    9.18 player   <- 0x3A skill 43 now 71.8 (cap 200.0)
+    9.18 player   <- 0x3A skill 43 now 71.9 (cap 200.0)
+    9.18 player   <- 0x3A skill 43 now 72.0 (cap 200.0)
+    9.18 player   <- 0x3A skill 43 now 72.1 (cap 200.0)
+    9.18 player   <- 0x3A skill 43 now 72.2 (cap 200.0)
+    9.18 player   <- 0x3A skill 43 now 72.3 (cap 200.0)
+    9.18 player   <- 0x3A skill 43 now 72.4 (cap 200.0)
+    9.18 player   <- 0x3A skill 43 now 72.5 (cap 200.0)
+    9.18 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 170, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 101, 'int': 59, 'stam': 100, 'stamMax': 101, 'mana': 59, 'manaMax': 59, 'gold': 1500, 'ar': 0, 'weight': 554, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+    9.93 player   <- 0xF3 world item 0x400159B6 graphic 0x122F x1 at 5395,126,0 hue 0
+    9.93 player   <- 0xF3 world item 0x400159B7 graphic 0x1645 x1 at 5394,127,0 hue 0
+    9.93 admin    <- 0xF3 world item 0x400159B6 graphic 0x122F x1 at 5395,126,0 hue 0
+    9.93 player   <- 0xF3 world item 0x400159B8 graphic 0x122E x1 at 5396,125,0 hue 0
+    9.93 admin    <- 0xF3 world item 0x400159B7 graphic 0x1645 x1 at 5394,127,0 hue 0
+    9.93 player   <- 0xF3 world item 0x400159B9 graphic 0x122B x1 at 5396,127,0 hue 0
+    9.93 admin    <- 0xF3 world item 0x400159B8 graphic 0x122E x1 at 5396,125,0 hue 0
+    9.93 admin    <- 0xF3 world item 0x400159B9 graphic 0x122B x1 at 5396,127,0 hue 0
+   10.25 player   <- 0xF3 world item 0x400159BA graphic 0x122C x1 at 5395,126,0 hue 0
+   10.25 admin    <- 0xF3 world item 0x400159BA graphic 0x122C x1 at 5395,126,0 hue 0
+   10.25 player   <- 0xF3 world item 0x400159BB graphic 0x122D x1 at 5396,127,0 hue 0
+   10.25 admin    <- 0xF3 world item 0x400159BB graphic 0x122D x1 at 5396,127,0 hue 0
+   10.25 player   <- 0xF3 world item 0x400159BC graphic 0x122A x1 at 5395,127,0 hue 0
+   10.25 admin    <- 0xF3 world item 0x400159BC graphic 0x122A x1 at 5395,127,0 hue 0
+   10.25 player   <- 0xF3 world item 0x400159BD graphic 0x122E x1 at 5394,125,0 hue 0
+   10.25 admin    <- 0xF3 world item 0x400159BD graphic 0x122E x1 at 5394,125,0 hue 0
+   10.25 player   <- 0xF3 world item 0x400159BE graphic 0x122F x1 at 5396,126,0 hue 0
+   10.25 admin    <- 0xF3 world item 0x400159BE graphic 0x122F x1 at 5396,126,0 hue 0
+   10.30 admin    <- 0xF3 world item 0x400159BF graphic 0x122E x1 at 5395,126,0 hue 0
+   10.30 player   <- 0xF3 world item 0x400159BF graphic 0x122E x1 at 5395,126,0 hue 0
+   10.30 admin    <- 0xF3 world item 0x400159C0 graphic 0x122A x1 at 5396,125,0 hue 0
+   10.30 player   <- 0xF3 world item 0x400159C0 graphic 0x122A x1 at 5396,125,0 hue 0
+   10.30 admin    <- 0xF3 world item 0x400159C1 graphic 0x122D x1 at 5396,126,0 hue 0
+   10.30 player   <- 0xF3 world item 0x400159C1 graphic 0x122D x1 at 5396,126,0 hue 0
+   10.30 admin    <- 0xF3 world item 0x400159C2 graphic 0x122B x1 at 5396,125,0 hue 0
+   10.30 player   <- 0xF3 world item 0x400159C2 graphic 0x122B x1 at 5396,125,0 hue 0
+   10.31 player   <- 0xF3 world item 0x400159C3 graphic 0x122D x1 at 5395,126,0 hue 0
+   10.31 admin    <- 0xF3 world item 0x400159C3 graphic 0x122D x1 at 5395,126,0 hue 0
+   10.31 player   <- 0xF3 world item 0x400159C4 graphic 0x122E x1 at 5394,125,0 hue 0
+   10.31 admin    <- 0xF3 world item 0x400159C4 graphic 0x122E x1 at 5394,125,0 hue 0
+   10.31 player   <- 0xF3 world item 0x400159C5 graphic 0x122F x1 at 5396,126,0 hue 0
+   10.31 admin    <- 0xF3 world item 0x400159C5 graphic 0x122F x1 at 5396,126,0 hue 0
+   10.31 player   <- 0xF3 world item 0x400159C6 graphic 0x122B x1 at 5395,127,0 hue 0
+   10.31 admin    <- 0xF3 world item 0x400159C6 graphic 0x122B x1 at 5395,127,0 hue 0
+   10.31 player   <- 0xF3 world item 0x400159C7 graphic 0x1645 x1 at 5396,125,0 hue 0
+   10.31 admin    <- 0xF3 world item 0x400159C7 graphic 0x1645 x1 at 5396,125,0 hue 0
+   10.47 admin    -> say '[go 0x33B'
+   10.95 admin    <- 0xF3 world item 0x400159C8 graphic 0x122B x1 at 5396,126,0 hue 0
+   10.95 player   <- 0x3A skill 43 now 72.6 (cap 200.0)
+   10.95 admin    <- 0xF3 world item 0x400159C9 graphic 0x122F x1 at 5395,126,0 hue 0
+   10.95 player   <- 0x3A skill 43 now 72.7 (cap 200.0)
+   10.95 admin    <- 0xF3 world item 0x400159CA graphic 0x122C x1 at 5395,126,0 hue 0
+   10.95 player   <- 0x3A skill 43 now 72.8 (cap 200.0)
+   10.95 admin    <- 0xF3 world item 0x400159CB graphic 0x1645 x1 at 5395,127,0 hue 0
+   10.95 player   <- 0x3A skill 43 now 72.9 (cap 200.0)
+   10.95 admin    <- 0xF3 world item 0x400159CC graphic 0x122C x1 at 5395,126,0 hue 0
+   10.95 player   <- 0x3A skill 43 now 73.0 (cap 200.0)
+   10.95 player   <- 0x3A skill 43 now 73.1 (cap 200.0)
+   10.95 player   <- 0x3A skill 43 now 73.2 (cap 200.0)
+   10.95 player   <- 0x3A skill 43 now 73.3 (cap 200.0)
+   10.95 player   <- 0x3A skill 43 now 73.4 (cap 200.0)
+   10.95 player   <- 0x3A skill 43 now 73.5 (cap 200.0)
+   10.95 player   <- 0x3A skill 43 now 73.6 (cap 200.0)
+   10.95 player   <- 0x3A skill 43 now 73.7 (cap 200.0)
+   10.95 player   <- 0x3A skill 43 now 73.8 (cap 200.0)
+   10.95 player   <- 0x3A skill 43 now 73.9 (cap 200.0)
+   10.95 player   <- 0x3A skill 43 now 74.0 (cap 200.0)
+   10.95 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 167, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 102, 'int': 59, 'stam': 101, 'stamMax': 102, 'mana': 59, 'manaMax': 59, 'gold': 1500, 'ar': 0, 'weight': 554, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   10.95 player   <- 0x3A skill 27 now 45.0 (cap 200.0)
+   10.95 player   <- 0x3A skill 27 now 45.1 (cap 200.0)
+   10.95 player   <- 0x3A skill 27 now 45.2 (cap 200.0)
+   10.95 player   <- 0x3A skill 27 now 45.3 (cap 200.0)
+   10.95 player   <- 0x3A skill 27 now 45.4 (cap 200.0)
+   10.95 player   <- 0x3A skill 27 now 45.5 (cap 200.0)
+   10.95 player   <- 0x3A skill 27 now 45.6 (cap 200.0)
+   10.95 player   <- 0x3A skill 27 now 45.7 (cap 200.0)
+   10.95 player   <- 0x3A skill 27 now 45.8 (cap 200.0)
+   10.95 player   <- 0x3A skill 27 now 45.9 (cap 200.0)
+   10.95 player   <- 0x3A skill 27 now 46.0 (cap 200.0)
+   10.95 player   <- 0x3A skill 27 now 46.1 (cap 200.0)
+   10.95 player   <- 0x3A skill 27 now 46.2 (cap 200.0)
+   10.95 player   <- 0x3A skill 27 now 46.3 (cap 200.0)
+   10.95 player   <- 0x3A skill 27 now 46.4 (cap 200.0)
+   10.95 player   <- 0x3A skill 1 now 89.1 (cap 200.0)
+   10.95 player   <- 0x3A skill 1 now 89.2 (cap 200.0)
+   10.95 player   <- 0x3A skill 1 now 89.3 (cap 200.0)
+   10.95 player   <- 0x3A skill 1 now 89.4 (cap 200.0)
+   10.95 player   <- 0x3A skill 1 now 89.5 (cap 200.0)
+   10.95 player   <- 0x3A skill 1 now 89.6 (cap 200.0)
+   10.95 player   <- 0x3A skill 1 now 89.7 (cap 200.0)
+   10.95 player   <- 0x3A skill 1 now 89.8 (cap 200.0)
+   10.95 player   <- 0x3A skill 1 now 89.9 (cap 200.0)
+   10.95 player   <- 0x3A skill 1 now 90.0 (cap 200.0)
+   10.95 player   <- 0x3A skill 1 now 90.1 (cap 200.0)
+   10.95 player   <- 0x3A skill 1 now 90.2 (cap 200.0)
+   10.95 player   <- 0x3A skill 1 now 90.3 (cap 200.0)
+   10.95 player   <- 0x3A skill 1 now 90.4 (cap 200.0)
+   10.95 player   <- 0x3A skill 1 now 90.5 (cap 200.0)
+   10.95 player   <- 0xF3 world item 0x400159C8 graphic 0x122B x1 at 5396,126,0 hue 0
+   10.95 player   <- 0xF3 world item 0x400159C9 graphic 0x122F x1 at 5395,126,0 hue 0
+   10.95 player   <- 0xF3 world item 0x400159CA graphic 0x122C x1 at 5395,126,0 hue 0
+   10.95 player   <- 0xF3 world item 0x400159CB graphic 0x1645 x1 at 5395,127,0 hue 0
+   10.95 player   <- 0xF3 world item 0x400159CC graphic 0x122C x1 at 5395,126,0 hue 0
+   11.48 admin    -> say '[GuildStanding thieves 0'
+   11.48 admin    <- 0x6C target cursor 2192 (type 0)
+   11.69 admin    -> 0x6C target object 0x0000033B
+   11.69 admin    <- unicode(0) System: Set Bot Human F Aa's Thieves' Den standing to 0 (Initiate).
+   11.93 admin    <- 0xF3 world item 0x400159CD graphic 0x122D x1 at 5395,126,0 hue 0
+   11.93 player   <- 0xF3 world item 0x400159CD graphic 0x122D x1 at 5395,126,0 hue 0
+   11.93 admin    <- 0xF3 world item 0x400159CE graphic 0x122A x1 at 5395,126,0 hue 0
+   11.93 player   <- 0xF3 world item 0x400159CE graphic 0x122A x1 at 5395,126,0 hue 0
+   11.93 admin    <- 0xF3 world item 0x400159CF graphic 0x1645 x1 at 5394,125,0 hue 0
+   11.93 player   <- 0xF3 world item 0x400159CF graphic 0x1645 x1 at 5394,125,0 hue 0
+   11.94 admin    <- 0xF3 world item 0x400159D0 graphic 0x122A x1 at 5394,126,0 hue 0
+   11.94 player   <- 0xF3 world item 0x400159D0 graphic 0x122A x1 at 5394,126,0 hue 0
+   11.94 admin    <- 0xF3 world item 0x400159D1 graphic 0x122A x1 at 5395,125,0 hue 0
+   11.94 player   <- 0xF3 world item 0x400159D1 graphic 0x122A x1 at 5395,125,0 hue 0
+   11.99 player   <- 0xF3 world item 0x400159D2 graphic 0x122B x1 at 5395,126,0 hue 0
+   11.99 admin    <- 0xF3 world item 0x400159D2 graphic 0x122B x1 at 5395,126,0 hue 0
+   11.99 player   <- 0xF3 world item 0x400159D3 graphic 0x122E x1 at 5394,125,0 hue 0
+   11.99 admin    <- 0xF3 world item 0x400159D3 graphic 0x122E x1 at 5394,125,0 hue 0
+   11.99 player   <- 0xF3 world item 0x400159D4 graphic 0x1645 x1 at 5396,127,0 hue 0
+   11.99 admin    <- 0xF3 world item 0x400159D4 graphic 0x1645 x1 at 5396,127,0 hue 0
+   11.99 player   <- 0xF3 world item 0x400159D5 graphic 0x1645 x1 at 5396,127,0 hue 0
+   11.99 admin    <- 0xF3 world item 0x400159D5 graphic 0x1645 x1 at 5396,127,0 hue 0
+   11.99 player   <- 0xF3 world item 0x400159D6 graphic 0x122D x1 at 5394,127,0 hue 0
+   11.99 admin    <- 0xF3 world item 0x400159D6 graphic 0x122D x1 at 5394,127,0 hue 0
+   12.30 admin    -> say '[set NextSkillTime 0'
+   12.30 admin    <- 0x6C target cursor 2193 (type 0)
+   12.50 admin    -> 0x6C target object 0x0000033B
+   12.50 admin    <- unicode(0) System: Property has been set.
+   12.70 admin    <- 0xF3 world item 0x400159D7 graphic 0x122E x1 at 5396,126,0 hue 0
+   12.71 player   <- 0x3A skill 43 now 74.1 (cap 200.0)
+   12.71 admin    <- 0xF3 world item 0x400159D8 graphic 0x1645 x1 at 5396,127,0 hue 0
+   12.71 player   <- 0x3A skill 43 now 74.2 (cap 200.0)
+   12.71 admin    <- 0xF3 world item 0x400159D9 graphic 0x122E x1 at 5396,125,0 hue 0
+   12.71 player   <- 0x3A skill 43 now 74.3 (cap 200.0)
+   12.71 admin    <- 0xF3 world item 0x400159DA graphic 0x122D x1 at 5397,127,0 hue 0
+   12.71 player   <- 0x3A skill 43 now 74.4 (cap 200.0)
+   12.71 admin    <- 0xF3 world item 0x400159DB graphic 0x1645 x1 at 5397,125,0 hue 0
+   12.71 player   <- 0x3A skill 43 now 74.5 (cap 200.0)
+   12.71 player   <- 0x3A skill 43 now 74.6 (cap 200.0)
+   12.71 player   <- 0x3A skill 43 now 74.7 (cap 200.0)
+   12.71 player   <- 0x3A skill 43 now 74.8 (cap 200.0)
+   12.71 player   <- 0x3A skill 43 now 74.9 (cap 200.0)
+   12.71 player   <- 0x3A skill 43 now 75.0 (cap 200.0)
+   12.71 player   <- 0x3A skill 43 now 75.1 (cap 200.0)
+   12.71 player   <- 0x3A skill 43 now 75.2 (cap 200.0)
+   12.71 player   <- 0x3A skill 43 now 75.3 (cap 200.0)
+   12.71 player   <- 0x3A skill 43 now 75.4 (cap 200.0)
+   12.71 player   <- 0x3A skill 43 now 75.5 (cap 200.0)
+   12.71 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 165, 'hitsMax': 176, 'version': 6, 'female': 1, 'str': 252, 'dex': 102, 'int': 59, 'stam': 101, 'stamMax': 102, 'mana': 59, 'manaMax': 59, 'gold': 1500, 'ar': 0, 'weight': 554, 'maxWeight': 982, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   12.71 player   <- 0x3A skill 27 now 46.5 (cap 200.0)
+   12.71 player   <- 0x3A skill 27 now 46.6 (cap 200.0)
+   12.71 player   <- 0x3A skill 27 now 46.7 (cap 200.0)
+   12.71 player   <- 0x3A skill 27 now 46.8 (cap 200.0)
+   12.71 player   <- 0x3A skill 27 now 46.9 (cap 200.0)
+   12.71 player   <- 0x3A skill 27 now 47.0 (cap 200.0)
+   12.71 player   <- 0x3A skill 27 now 47.1 (cap 200.0)
+   12.71 player   <- 0x3A skill 27 now 47.2 (cap 200.0)
+   12.71 player   <- 0x3A skill 27 now 47.3 (cap 200.0)
+   12.71 player   <- 0x3A skill 27 now 47.4 (cap 200.0)
+   12.71 player   <- 0x3A skill 27 now 47.5 (cap 200.0)
+   12.71 player   <- 0x3A skill 27 now 47.6 (cap 200.0)
+   12.71 player   <- 0x3A skill 27 now 47.7 (cap 200.0)
+   12.71 player   <- 0x3A skill 27 now 47.8 (cap 200.0)
+   12.71 player   <- 0x3A skill 27 now 47.9 (cap 200.0)
+   12.71 player   <- 0x3A skill 1 now 90.6 (cap 200.0)
+   12.71 player   <- 0x3A skill 1 now 90.7 (cap 200.0)
+   12.71 player   <- 0x3A skill 1 now 90.8 (cap 200.0)
+   12.71 player   <- 0x3A skill 1 now 90.9 (cap 200.0)
+   12.71 player   <- 0x3A skill 1 now 91.0 (cap 200.0)
+   12.71 player   <- 0x3A skill 1 now 91.1 (cap 200.0)
+   12.71 player   <- 0x3A skill 1 now 91.2 (cap 200.0)
+   12.71 player   <- 0x3A skill 1 now 91.3 (cap 200.0)
+   12.71 player   <- 0x3A skill 1 now 91.4 (cap 200.0)
+   12.71 player   <- 0x3A skill 1 now 91.5 (cap 200.0)
+   12.71 player   <- 0x3A skill 1 now 91.6 (cap 200.0)
+   12.71 player   <- 0x3A skill 1 now 91.7 (cap 200.0)
+   12.71 player   <- 0x3A skill 1 now 91.8 (cap 200.0)
+   12.71 player   <- 0x3A skill 1 now 91.9 (cap 200.0)
+   12.71 player   <- 0x3A skill 1 now 92.0 (cap 200.0)
+   12.71 player   <- 0xF3 world item 0x400159D7 graphic 0x122E x1 at 5396,126,0 hue 0
+   12.71 player   <- 0xF3 world item 0x400159D8 graphic 0x1645 x1 at 5396,127,0 hue 0
+   12.71 player   <- 0xF3 world item 0x400159D9 graphic 0x122E x1 at 5396,125,0 hue 0
+   12.71 player   <- 0xF3 world item 0x400159DA graphic 0x122D x1 at 5397,127,0 hue 0
+   12.71 player   <- 0xF3 world item 0x400159DB graphic 0x1645 x1 at 5397,125,0 hue 0
+   12.71 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 165, 'hitsMax': 176, 'version': 6, 'female': 1, 'str': 252, 'dex': 102, 'int': 60, 'stam': 101, 'stamMax': 102, 'mana': 59, 'manaMax': 60, 'gold': 1500, 'ar': 0, 'weight': 554, 'maxWeight': 982, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   12.81 admin    <- 0xF3 world item 0x400159DC graphic 0x122F x1 at 5395,126,0 hue 0
+   12.82 player   <- 0xF3 world item 0x400159DC graphic 0x122F x1 at 5395,126,0 hue 0
+   12.82 player   <- 0xF3 world item 0x400159DD graphic 0x122E x1 at 5394,127,0 hue 0
+   12.82 admin    <- 0xF3 world item 0x400159DD graphic 0x122E x1 at 5394,127,0 hue 0
+   12.82 player   <- 0xF3 world item 0x400159DE graphic 0x1645 x1 at 5394,126,0 hue 0
+   12.82 admin    <- 0xF3 world item 0x400159DE graphic 0x1645 x1 at 5394,126,0 hue 0
+   12.82 player   <- 0xF3 world item 0x400159DF graphic 0x122E x1 at 5395,126,0 hue 0
+   12.82 admin    <- 0xF3 world item 0x400159DF graphic 0x122E x1 at 5395,126,0 hue 0
+   13.00 player   <- cliloc(0) Bot Human F Aa #501237: You can't seem to hide right now.
+   13.00 admin    -> say '[get Hidden'
+   13.00 admin    <- 0x6C target cursor 2194 (type 1)
+   13.06 player   <- ascii(0) System: The world is saving, please wait.
+   13.06 admin    <- ascii(0) System: The world is saving, please wait.
+   13.06 player   <- ascii(0) System: World save completed in 0.01 seconds.
+   13.06 admin    <- ascii(0) System: World save completed in 0.01 seconds.
+   13.22 admin    -> 0x6C target object 0x0000033B
+   13.22 admin    <- unicode(0) System: Hidden = False
+   13.22 admin    -> say '[set NextSkillTime 0'
+   13.22 admin    <- 0x6C target cursor 2195 (type 0)
+   13.43 admin    -> 0x6C target object 0x0000033B
+   13.43 admin    <- unicode(0) System: Property has been set.
+   13.93 player   <- cliloc(0) Bot Human F Aa #501237: You can't seem to hide right now.
+   13.93 admin    -> say '[get Hidden'
+   13.93 admin    <- 0x6C target cursor 2196 (type 1)
+   14.14 admin    -> 0x6C target object 0x0000033B
+   14.14 admin    <- unicode(0) System: Hidden = False
+   14.14 admin    -> say '[set NextSkillTime 0'
+   14.14 admin    <- 0x6C target cursor 2197 (type 0)
+   14.26 player   <- 0xF3 world item 0x400159E0 graphic 0x1645 x1 at 5395,126,0 hue 0
+   14.26 admin    <- 0xF3 world item 0x400159E0 graphic 0x1645 x1 at 5395,126,0 hue 0
+   14.26 player   <- 0xF3 world item 0x400159E1 graphic 0x122C x1 at 5396,125,0 hue 0
+   14.26 admin    <- 0xF3 world item 0x400159E1 graphic 0x122C x1 at 5396,125,0 hue 0
+   14.26 player   <- 0xF3 world item 0x400159E2 graphic 0x122B x1 at 5394,126,0 hue 0
+   14.26 admin    <- 0xF3 world item 0x400159E2 graphic 0x122B x1 at 5394,126,0 hue 0
+   14.26 player   <- 0xF3 world item 0x400159E3 graphic 0x1645 x1 at 5396,127,0 hue 0
+   14.26 admin    <- 0xF3 world item 0x400159E3 graphic 0x1645 x1 at 5396,127,0 hue 0
+   14.26 player   <- 0xF3 world item 0x400159E4 graphic 0x1645 x1 at 5395,125,0 hue 0
+   14.26 admin    <- 0xF3 world item 0x400159E4 graphic 0x1645 x1 at 5395,125,0 hue 0
+   14.34 admin    -> 0x6C target object 0x0000033B
+   14.34 admin    <- unicode(0) System: Property has been set.
+   14.47 player   <- 0x3A skill 43 now 75.6 (cap 200.0)
+   14.47 admin    <- 0xF3 world item 0x400159E5 graphic 0x122A x1 at 5396,126,0 hue 0
+   14.47 player   <- 0x3A skill 43 now 75.7 (cap 200.0)
+   14.47 admin    <- 0xF3 world item 0x400159E6 graphic 0x122C x1 at 5397,127,0 hue 0
+   14.47 player   <- 0x3A skill 43 now 75.8 (cap 200.0)
+   14.47 admin    <- 0xF3 world item 0x400159E7 graphic 0x122A x1 at 5395,126,0 hue 0
+   14.47 player   <- 0x3A skill 43 now 75.9 (cap 200.0)
+   14.47 admin    <- 0xF3 world item 0x400159E8 graphic 0x122D x1 at 5396,126,0 hue 0
+   14.47 player   <- 0x3A skill 43 now 76.0 (cap 200.0)
+   14.47 admin    <- 0xF3 world item 0x400159E9 graphic 0x2006 x56 at 5396,126,0 hue 0
+   14.47 player   <- 0x3A skill 43 now 76.1 (cap 200.0)
+   14.47 player   <- 0x3A skill 43 now 76.2 (cap 200.0)
+   14.47 player   <- 0x3A skill 43 now 76.3 (cap 200.0)
+   14.47 player   <- 0x3A skill 43 now 76.4 (cap 200.0)
+   14.47 player   <- 0x3A skill 43 now 76.5 (cap 200.0)
+   14.47 player   <- 0x3A skill 43 now 76.6 (cap 200.0)
+   14.47 player   <- 0x3A skill 43 now 76.7 (cap 200.0)
+   14.47 player   <- 0x3A skill 43 now 76.8 (cap 200.0)
+   14.47 player   <- 0x3A skill 43 now 76.9 (cap 200.0)
+   14.47 player   <- 0x3A skill 43 now 77.0 (cap 200.0)
+   14.47 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 164, 'hitsMax': 176, 'version': 6, 'female': 1, 'str': 252, 'dex': 103, 'int': 60, 'stam': 102, 'stamMax': 103, 'mana': 59, 'manaMax': 60, 'gold': 1500, 'ar': 0, 'weight': 554, 'maxWeight': 982, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   14.47 player   <- 0x3A skill 27 now 48.0 (cap 200.0)
+   14.47 player   <- 0x3A skill 27 now 48.1 (cap 200.0)
+   14.47 player   <- 0x3A skill 27 now 48.2 (cap 200.0)
+   14.47 player   <- 0x3A skill 27 now 48.3 (cap 200.0)
+   14.47 player   <- 0x3A skill 27 now 48.4 (cap 200.0)
+   14.47 player   <- 0x3A skill 27 now 48.5 (cap 200.0)
+   14.47 player   <- 0x3A skill 27 now 48.6 (cap 200.0)
+   14.47 player   <- 0x3A skill 27 now 48.7 (cap 200.0)
+   14.47 player   <- 0x3A skill 27 now 48.8 (cap 200.0)
+   14.47 player   <- 0x3A skill 27 now 48.9 (cap 200.0)
+   14.47 player   <- 0x3A skill 27 now 49.0 (cap 200.0)
+   14.47 player   <- 0x3A skill 27 now 49.1 (cap 200.0)
+   14.47 player   <- 0x3A skill 27 now 49.2 (cap 200.0)
+   14.47 player   <- 0x3A skill 27 now 49.3 (cap 200.0)
+   14.47 player   <- 0x3A skill 27 now 49.4 (cap 200.0)
+   14.47 player   <- 0x3A skill 1 now 92.1 (cap 200.0)
+   14.47 player   <- 0x3A skill 1 now 92.2 (cap 200.0)
+   14.47 player   <- 0x3A skill 1 now 92.3 (cap 200.0)
+   14.47 player   <- 0x3A skill 1 now 92.4 (cap 200.0)
+   14.47 player   <- 0x3A skill 1 now 92.5 (cap 200.0)
+   14.47 player   <- 0x3A skill 1 now 92.6 (cap 200.0)
+   14.47 player   <- 0x3A skill 1 now 92.7 (cap 200.0)
+   14.47 player   <- 0x3A skill 1 now 92.8 (cap 200.0)
+   14.47 player   <- 0x3A skill 1 now 92.9 (cap 200.0)
+   14.47 player   <- 0x3A skill 1 now 93.0 (cap 200.0)
+   14.47 player   <- 0x3A skill 1 now 93.1 (cap 200.0)
+   14.47 player   <- 0x3A skill 1 now 93.2 (cap 200.0)
+   14.47 player   <- 0x3A skill 1 now 93.3 (cap 200.0)
+   14.47 player   <- 0x3A skill 1 now 93.4 (cap 200.0)
+   14.47 player   <- 0x3A skill 1 now 93.5 (cap 200.0)
+   14.47 player   <- 0xF3 world item 0x400159E5 graphic 0x122A x1 at 5396,126,0 hue 0
+   14.47 player   <- 0xF3 world item 0x400159E6 graphic 0x122C x1 at 5397,127,0 hue 0
+   14.47 player   <- 0xF3 world item 0x400159E7 graphic 0x122A x1 at 5395,126,0 hue 0
+   14.47 player   <- 0xF3 world item 0x400159E8 graphic 0x122D x1 at 5396,126,0 hue 0
+   14.47 player   <- 0xF3 world item 0x400159E9 graphic 0x2006 x56 at 5396,126,0 hue 0
+   14.47 player   <- cliloc(0) System #1019051: You have gained a little fame.
+   14.47 player   <- cliloc(0) System #1019062: You have gained a lot of karma.
+   14.85 player   <- cliloc(0) Bot Human F Aa #501237: You can't seem to hide right now.
+   14.85 admin    -> say '[get Hidden'
+   14.85 admin    <- 0x6C target cursor 2198 (type 1)
+   15.06 admin    -> 0x6C target object 0x0000033B
+   15.06 admin    <- unicode(0) System: Hidden = False
+   15.06 admin    -> say '[go 0x33B'
+   15.85 player   <- 0xF3 world item 0x400159EA graphic 0x122E x1 at 5395,126,0 hue 0
+   15.85 admin    <- 0xF3 world item 0x400159EA graphic 0x122E x1 at 5395,126,0 hue 0
+   15.85 player   <- 0xF3 world item 0x400159EB graphic 0x1645 x1 at 5396,125,0 hue 0
+   15.85 admin    <- 0xF3 world item 0x400159EB graphic 0x1645 x1 at 5396,125,0 hue 0
+   15.86 player   <- 0xF3 world item 0x400159EC graphic 0x1645 x1 at 5396,127,0 hue 0
+   15.86 admin    <- 0xF3 world item 0x400159EC graphic 0x1645 x1 at 5396,127,0 hue 0
+   15.86 player   <- 0xF3 world item 0x400159ED graphic 0x122B x1 at 5396,125,0 hue 0
+   15.86 admin    <- 0xF3 world item 0x400159ED graphic 0x122B x1 at 5396,125,0 hue 0
+   15.93 player   <- 0xF3 world item 0x400159EE graphic 0x122A x1 at 5395,126,0 hue 0
+   15.94 admin    <- 0xF3 world item 0x400159EE graphic 0x122A x1 at 5395,126,0 hue 0
+   15.94 player   <- 0xF3 world item 0x400159EF graphic 0x1645 x1 at 5394,125,0 hue 0
+   15.94 admin    <- 0xF3 world item 0x400159EF graphic 0x1645 x1 at 5394,125,0 hue 0
+   15.94 player   <- 0xF3 world item 0x400159F0 graphic 0x122D x1 at 5395,127,0 hue 0
+   15.94 admin    <- 0xF3 world item 0x400159F0 graphic 0x122D x1 at 5395,127,0 hue 0
+   15.94 player   <- 0xF3 world item 0x400159F1 graphic 0x122C x1 at 5395,127,0 hue 0
+   15.94 admin    <- 0xF3 world item 0x400159F1 graphic 0x122C x1 at 5395,127,0 hue 0
+   15.94 player   <- 0xF3 world item 0x400159F2 graphic 0x122A x1 at 5394,127,0 hue 0
+   15.94 admin    <- 0xF3 world item 0x400159F2 graphic 0x122A x1 at 5394,127,0 hue 0
+   16.07 admin    -> say '[add Skeleton'
+   16.07 admin    <- 0x6C target cursor 2199 (type 1)
+   16.26 player   <- 0xF3 world item 0x400159F3 graphic 0x122A x1 at 5395,126,0 hue 0
+   16.26 admin    <- 0xF3 world item 0x400159F3 graphic 0x122A x1 at 5395,126,0 hue 0
+   16.26 player   <- 0xF3 world item 0x400159F4 graphic 0x122F x1 at 5396,127,0 hue 0
+   16.26 admin    <- 0xF3 world item 0x400159F4 graphic 0x122F x1 at 5396,127,0 hue 0
+   16.26 player   <- 0xF3 world item 0x400159F5 graphic 0x122D x1 at 5395,127,0 hue 0
+   16.26 admin    <- 0xF3 world item 0x400159F5 graphic 0x122D x1 at 5395,127,0 hue 0
+   16.26 player   <- 0xF3 world item 0x400159F6 graphic 0x122B x1 at 5396,126,0 hue 0
+   16.26 admin    <- 0xF3 world item 0x400159F6 graphic 0x122B x1 at 5396,126,0 hue 0
+   16.27 player   <- 0xF3 world item 0x400159F7 graphic 0x122B x1 at 5395,127,0 hue 0
+   16.27 admin    <- 0xF3 world item 0x400159F7 graphic 0x122B x1 at 5395,127,0 hue 0
+   16.27 admin    -> 0x6C target ground 5396,126,0
+   16.28 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   16.28 admin    -> say '[set FightMode None CantWalk true'
+   16.28 admin    <- 0x6C target cursor 2200 (type 0)
+   16.32 player   <- 0xF3 world item 0x400159FB graphic 0x1645 x1 at 5395,126,0 hue 0
+   16.32 admin    <- 0xF3 world item 0x400159FB graphic 0x1645 x1 at 5395,126,0 hue 0
+   16.32 player   <- 0xF3 world item 0x400159FC graphic 0x122D x1 at 5396,127,0 hue 0
+   16.32 player   <- 0xF3 world item 0x400159FD graphic 0x122E x1 at 5395,125,0 hue 0
+   16.32 admin    <- 0xF3 world item 0x400159FC graphic 0x122D x1 at 5396,127,0 hue 0
+   16.32 player   <- 0xF3 world item 0x400159FE graphic 0x1645 x1 at 5394,125,0 hue 0
+   16.32 admin    <- 0xF3 world item 0x400159FD graphic 0x122E x1 at 5395,125,0 hue 0
+   16.32 admin    <- 0xF3 world item 0x400159FE graphic 0x1645 x1 at 5394,125,0 hue 0
+   16.48 admin    -> 0x6C target object 0x00000447
+   16.49 admin    <- unicode(0) System: Property has been set. (2)
+   16.99 admin    -> say '[set DamageMin 1 DamageMax 1 FightMode Closest'
+   16.99 admin    <- 0x6C target cursor 2201 (type 0)
+   17.21 admin    -> 0x6C target object 0x00000447
+   17.21 admin    <- unicode(0) System: Property has been set. (3)
+   17.72 admin    -> say '[set NextSkillTime 0'
+   17.72 admin    <- 0x6C target cursor 2202 (type 0)
+   17.93 admin    -> 0x6C target object 0x0000033B
+   17.93 admin    <- unicode(0) System: Property has been set.
+   17.95 player   <- 0xF3 world item 0x400159FF graphic 0x122D x1 at 5395,126,0 hue 0
+   17.95 admin    <- 0xF3 world item 0x400159FF graphic 0x122D x1 at 5395,126,0 hue 0
+   17.95 player   <- 0xF3 world item 0x40015A00 graphic 0x122C x1 at 5394,125,0 hue 0
+   17.95 admin    <- 0xF3 world item 0x40015A00 graphic 0x122C x1 at 5394,125,0 hue 0
+   17.95 player   <- 0xF3 world item 0x40015A01 graphic 0x122C x1 at 5394,127,0 hue 0
+   17.95 admin    <- 0xF3 world item 0x40015A01 graphic 0x122C x1 at 5394,127,0 hue 0
+   17.95 player   <- 0xF3 world item 0x40015A02 graphic 0x122D x1 at 5394,125,0 hue 0
+   17.95 admin    <- 0xF3 world item 0x40015A02 graphic 0x122D x1 at 5394,125,0 hue 0
+   17.95 player   <- 0xF3 world item 0x40015A03 graphic 0x122E x1 at 5395,125,0 hue 0
+   17.95 admin    <- 0xF3 world item 0x40015A03 graphic 0x122E x1 at 5395,125,0 hue 0
+   18.01 player   <- 0xF3 world item 0x40015A04 graphic 0x122B x1 at 5395,126,0 hue 0
+   18.01 admin    <- 0xF3 world item 0x40015A04 graphic 0x122B x1 at 5395,126,0 hue 0
+   18.01 player   <- 0xF3 world item 0x40015A05 graphic 0x1645 x1 at 5395,127,0 hue 0
+   18.01 admin    <- 0xF3 world item 0x40015A05 graphic 0x1645 x1 at 5395,127,0 hue 0
+   18.01 player   <- 0xF3 world item 0x40015A06 graphic 0x122A x1 at 5394,126,0 hue 0
+   18.01 admin    <- 0xF3 world item 0x40015A06 graphic 0x122A x1 at 5394,126,0 hue 0
+   18.01 player   <- 0xF3 world item 0x40015A07 graphic 0x1645 x1 at 5395,127,0 hue 0
+   18.01 admin    <- 0xF3 world item 0x40015A07 graphic 0x1645 x1 at 5395,127,0 hue 0
+   18.01 player   <- 0xF3 world item 0x40015A08 graphic 0x122B x1 at 5396,126,0 hue 0
+   18.01 admin    <- 0xF3 world item 0x40015A08 graphic 0x122B x1 at 5396,126,0 hue 0
+   18.45 player   <- 0x6C target cursor 2203 (type 0)
+   18.45 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   18.45 player   -> 0x6C target object 0x00000447
+   18.46 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   18.46 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   18.46 player   <- 0x3A skill 33 now 60.1 (cap 200.0)
+   18.46 player   <- 0x3A skill 33 now 60.2 (cap 200.0)
+   18.46 player   <- 0x3A skill 33 now 60.3 (cap 200.0)
+   18.46 player   <- 0x3A skill 33 now 60.4 (cap 200.0)
+   18.46 player   <- 0x3A skill 33 now 60.5 (cap 200.0)
+   18.46 player   <- 0x3A skill 33 now 60.6 (cap 200.0)
+   18.46 admin    -> say '[set NextSkillTime 0'
+   18.46 player   <- 0x3A skill 33 now 60.7 (cap 200.0)
+   18.46 player   <- 0x3A skill 33 now 60.8 (cap 200.0)
+   18.46 player   <- 0x3A skill 33 now 60.9 (cap 200.0)
+   18.46 player   <- 0x3A skill 33 now 61.0 (cap 200.0)
+   18.46 player   <- 0x3A skill 33 now 61.1 (cap 200.0)
+   18.46 player   <- 0x3A skill 33 now 61.2 (cap 200.0)
+   18.46 player   <- 0x3A skill 33 now 61.3 (cap 200.0)
+   18.46 player   <- 0x3A skill 33 now 61.4 (cap 200.0)
+   18.46 player   <- 0x3A skill 33 now 61.5 (cap 200.0)
+   18.46 player   <- cliloc(0) System #1019063: You have lost a little karma.
+   18.46 admin    <- 0x6C target cursor 2204 (type 0)
+   18.46 player   <- 0xF3 world item 0x40015A09 graphic 0x122B x1 at 5395,126,0 hue 0
+   18.46 admin    <- 0xF3 world item 0x40015A09 graphic 0x122B x1 at 5395,126,0 hue 0
+   18.46 player   <- 0xF3 world item 0x40015A0A graphic 0x122E x1 at 5396,126,0 hue 0
+   18.46 admin    <- 0xF3 world item 0x40015A0A graphic 0x122E x1 at 5396,126,0 hue 0
+   18.46 player   <- 0xF3 world item 0x40015A0B graphic 0x122E x1 at 5395,126,0 hue 0
+   18.46 admin    <- 0xF3 world item 0x40015A0B graphic 0x122E x1 at 5395,126,0 hue 0
+   18.46 player   <- 0xF3 world item 0x40015A0C graphic 0x122E x1 at 5395,127,0 hue 0
+   18.46 admin    <- 0xF3 world item 0x40015A0C graphic 0x122E x1 at 5395,127,0 hue 0
+   18.46 player   <- 0xF3 world item 0x40015A0D graphic 0x122F x1 at 5396,126,0 hue 0
+   18.46 admin    <- 0xF3 world item 0x40015A0D graphic 0x122F x1 at 5396,126,0 hue 0
+   18.68 admin    -> 0x6C target object 0x0000033B
+   18.68 admin    <- unicode(0) System: Property has been set.
+   19.19 player   <- 0x6C target cursor 2205 (type 0)
+   19.19 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   19.19 player   -> 0x6C target object 0x00000447
+   19.19 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   19.19 player   <- unicode(0) System: The creature is wary of your hands. Give it a moment.
+   19.19 admin    -> say '[get Hidden'
+   19.19 player   <- cliloc(0) System #1019063: You have lost a little karma.
+   19.19 admin    <- 0x6C target cursor 2206 (type 1)
+   19.41 admin    -> 0x6C target object 0x0000033B
+   19.41 admin    <- unicode(0) System: Hidden = False
+   19.41 admin    -> say '[get Combatant'
+   19.41 admin    <- 0x6C target cursor 2207 (type 1)
+   19.62 admin    -> 0x6C target object 0x00000447
+   19.62 admin    <- unicode(0) System: Property 'Combatant' not found.
+   20.00 player   <- 0xF3 world item 0x40015A0E graphic 0x122A x1 at 5395,126,0 hue 0
+   20.00 admin    <- 0xF3 world item 0x40015A0E graphic 0x122A x1 at 5395,126,0 hue 0
+   20.00 player   <- 0xF3 world item 0x40015A0F graphic 0x122D x1 at 5394,125,0 hue 0
+   20.00 admin    <- 0xF3 world item 0x40015A0F graphic 0x122D x1 at 5394,125,0 hue 0
+   20.00 player   <- 0xF3 world item 0x40015A10 graphic 0x122F x1 at 5394,126,0 hue 0
+   20.00 admin    <- 0xF3 world item 0x40015A10 graphic 0x122F x1 at 5394,126,0 hue 0
+   20.01 player   <- 0xF3 world item 0x40015A11 graphic 0x122C x1 at 5394,127,0 hue 0
+   20.01 admin    <- 0xF3 world item 0x40015A11 graphic 0x122C x1 at 5394,127,0 hue 0
+   20.26 player   <- 0xF3 world item 0x40015A12 graphic 0x122F x1 at 5395,126,0 hue 0
+   20.26 admin    <- 0xF3 world item 0x40015A12 graphic 0x122F x1 at 5395,126,0 hue 0
+   20.26 player   <- 0xF3 world item 0x40015A13 graphic 0x122B x1 at 5394,125,0 hue 0
+   20.26 admin    <- 0xF3 world item 0x40015A13 graphic 0x122B x1 at 5394,125,0 hue 0
+   20.26 player   <- 0xF3 world item 0x40015A14 graphic 0x1645 x1 at 5394,125,0 hue 0
+   20.26 admin    <- 0xF3 world item 0x40015A14 graphic 0x1645 x1 at 5394,125,0 hue 0
+   20.26 player   <- 0xF3 world item 0x40015A15 graphic 0x122C x1 at 5396,127,0 hue 0
+   20.26 admin    <- 0xF3 world item 0x40015A15 graphic 0x122C x1 at 5396,127,0 hue 0
+   21.95 player   <- 0xF3 world item 0x40015A16 graphic 0x122C x1 at 5395,126,0 hue 0
+   21.95 admin    <- 0xF3 world item 0x40015A16 graphic 0x122C x1 at 5395,126,0 hue 0
+   21.95 player   <- 0xF3 world item 0x40015A17 graphic 0x122D x1 at 5394,125,0 hue 0
+   21.95 player   <- 0xF3 world item 0x40015A18 graphic 0x1645 x1 at 5394,125,0 hue 0
+   21.95 admin    <- 0xF3 world item 0x40015A17 graphic 0x122D x1 at 5394,125,0 hue 0
+   21.95 player   <- 0xF3 world item 0x40015A19 graphic 0x122B x1 at 5395,126,0 hue 0
+   21.95 admin    <- 0xF3 world item 0x40015A18 graphic 0x1645 x1 at 5394,125,0 hue 0
+   21.95 admin    <- 0xF3 world item 0x40015A19 graphic 0x122B x1 at 5395,126,0 hue 0
+   22.28 player   <- 0xF3 world item 0x40015A1A graphic 0x122C x1 at 5395,126,0 hue 0
+   22.28 admin    <- 0xF3 world item 0x40015A1A graphic 0x122C x1 at 5395,126,0 hue 0
+   22.28 player   <- 0xF3 world item 0x40015A1B graphic 0x122B x1 at 5395,127,0 hue 0
+   22.28 admin    <- 0xF3 world item 0x40015A1B graphic 0x122B x1 at 5395,127,0 hue 0
+   22.28 player   <- 0xF3 world item 0x40015A1C graphic 0x122B x1 at 5396,125,0 hue 0
+   22.28 admin    <- 0xF3 world item 0x40015A1C graphic 0x122B x1 at 5396,125,0 hue 0
+   22.28 player   <- 0xF3 world item 0x40015A1D graphic 0x122B x1 at 5395,127,0 hue 0
+   22.28 admin    <- 0xF3 world item 0x40015A1D graphic 0x122B x1 at 5395,127,0 hue 0
+   22.28 player   <- 0xF3 world item 0x40015A1E graphic 0x122D x1 at 5395,126,0 hue 0
+   22.28 admin    <- 0xF3 world item 0x40015A1E graphic 0x122D x1 at 5395,126,0 hue 0
+   22.28 player   <- 0xF3 world item 0x40015A1F graphic 0x122C x1 at 5396,125,0 hue 0
+   22.28 admin    <- 0xF3 world item 0x40015A1F graphic 0x122C x1 at 5396,125,0 hue 0
+   22.28 player   <- 0xF3 world item 0x40015A20 graphic 0x122F x1 at 5394,125,0 hue 0
+   22.28 admin    <- 0xF3 world item 0x40015A20 graphic 0x122F x1 at 5394,125,0 hue 0
+   22.28 player   <- 0xF3 world item 0x40015A21 graphic 0x122D x1 at 5395,125,0 hue 0
+   22.28 admin    <- 0xF3 world item 0x40015A21 graphic 0x122D x1 at 5395,125,0 hue 0
+   22.28 player   <- 0xF3 world item 0x40015A22 graphic 0x122D x1 at 5396,125,0 hue 0
+   22.28 admin    <- 0xF3 world item 0x40015A22 graphic 0x122D x1 at 5396,125,0 hue 0
+   22.32 player   <- 0xF3 world item 0x40015A23 graphic 0x122A x1 at 5395,126,0 hue 0
+   22.32 admin    <- 0xF3 world item 0x40015A23 graphic 0x122A x1 at 5395,126,0 hue 0
+   22.32 player   <- 0xF3 world item 0x40015A24 graphic 0x122C x1 at 5394,126,0 hue 0
+   22.32 admin    <- 0xF3 world item 0x40015A24 graphic 0x122C x1 at 5394,126,0 hue 0
+   22.32 player   <- 0xF3 world item 0x40015A25 graphic 0x1645 x1 at 5396,126,0 hue 0
+   22.32 admin    <- 0xF3 world item 0x40015A25 graphic 0x1645 x1 at 5396,126,0 hue 0
+   22.32 player   <- 0xF3 world item 0x40015A26 graphic 0x122D x1 at 5394,126,0 hue 0
+   22.32 admin    <- 0xF3 world item 0x40015A26 graphic 0x122D x1 at 5394,126,0 hue 0
+   22.32 player   <- 0xF3 world item 0x40015A27 graphic 0x122E x1 at 5395,126,0 hue 0
+   22.32 admin    <- 0xF3 world item 0x40015A27 graphic 0x122E x1 at 5395,126,0 hue 0
+   22.46 player   <- 0xF3 world item 0x40015A28 graphic 0x122B x1 at 5395,126,0 hue 0
+   22.46 admin    <- 0xF3 world item 0x40015A28 graphic 0x122B x1 at 5395,126,0 hue 0
+   22.46 player   <- 0xF3 world item 0x40015A29 graphic 0x122D x1 at 5395,126,0 hue 0
+   22.46 admin    <- 0xF3 world item 0x40015A29 graphic 0x122D x1 at 5395,126,0 hue 0
+   22.46 player   <- 0xF3 world item 0x40015A2A graphic 0x122B x1 at 5396,125,0 hue 0
+   22.46 admin    <- 0xF3 world item 0x40015A2A graphic 0x122B x1 at 5396,125,0 hue 0
+   22.46 player   <- 0xF3 world item 0x40015A2B graphic 0x122A x1 at 5395,127,0 hue 0
+   22.46 admin    <- 0xF3 world item 0x40015A2B graphic 0x122A x1 at 5395,127,0 hue 0
+   22.46 player   <- 0xF3 world item 0x40015A2C graphic 0x1645 x1 at 5395,127,0 hue 0
+   22.46 admin    <- 0xF3 world item 0x40015A2C graphic 0x1645 x1 at 5395,127,0 hue 0
+   22.62 player   <- 0xF3 world item 0x40015A2D graphic 0x122C x1 at 5395,126,0 hue 0
+   22.62 admin    <- 0xF3 world item 0x40015A2D graphic 0x122C x1 at 5395,126,0 hue 0
+   22.62 player   <- 0xF3 world item 0x40015A2E graphic 0x122D x1 at 5396,126,0 hue 0
+   22.63 admin    <- 0xF3 world item 0x40015A2E graphic 0x122D x1 at 5396,126,0 hue 0
+   22.63 player   <- 0xF3 world item 0x40015A2F graphic 0x122F x1 at 5395,126,0 hue 0
+   22.63 admin    <- 0xF3 world item 0x40015A2F graphic 0x122F x1 at 5395,126,0 hue 0
+   22.63 player   <- 0xF3 world item 0x40015A30 graphic 0x122E x1 at 5394,127,0 hue 0
+   22.63 admin    <- 0xF3 world item 0x40015A30 graphic 0x122E x1 at 5394,127,0 hue 0
+   22.63 player   <- 0xF3 world item 0x40015A31 graphic 0x122B x1 at 5394,127,0 hue 0
+   22.63 admin    <- 0xF3 world item 0x40015A31 graphic 0x122B x1 at 5394,127,0 hue 0
+   24.00 player   <- 0xF3 world item 0x40015A32 graphic 0x122A x1 at 5395,126,0 hue 0
+   24.01 admin    <- 0xF3 world item 0x40015A32 graphic 0x122A x1 at 5395,126,0 hue 0
+   24.01 player   <- 0xF3 world item 0x40015A33 graphic 0x122F x1 at 5395,125,0 hue 0
+   24.01 admin    <- 0xF3 world item 0x40015A33 graphic 0x122F x1 at 5395,125,0 hue 0
+   24.01 player   <- 0xF3 world item 0x40015A34 graphic 0x122A x1 at 5396,126,0 hue 0
+   24.01 admin    <- 0xF3 world item 0x40015A34 graphic 0x122A x1 at 5396,126,0 hue 0
+   24.01 player   <- 0xF3 world item 0x40015A35 graphic 0x122A x1 at 5395,126,0 hue 0
+   24.01 admin    <- 0xF3 world item 0x40015A35 graphic 0x122A x1 at 5395,126,0 hue 0
+   24.01 player   <- 0xF3 world item 0x40015A36 graphic 0x122A x1 at 5395,127,0 hue 0
+   24.01 admin    <- 0xF3 world item 0x40015A36 graphic 0x122A x1 at 5395,127,0 hue 0
+   24.46 admin    <- 0xF3 world item 0x40015A37 graphic 0x122F x1 at 5395,126,0 hue 0
+   24.46 player   <- 0xF3 world item 0x40015A37 graphic 0x122F x1 at 5395,126,0 hue 0
+   24.46 admin    <- 0xF3 world item 0x40015A38 graphic 0x1645 x1 at 5394,125,0 hue 0
+   24.46 player   <- 0xF3 world item 0x40015A38 graphic 0x1645 x1 at 5394,125,0 hue 0
+   24.46 admin    <- 0xF3 world item 0x40015A39 graphic 0x122D x1 at 5395,127,0 hue 0
+   24.46 player   <- 0xF3 world item 0x40015A39 graphic 0x122D x1 at 5395,127,0 hue 0
+   24.46 admin    <- 0xF3 world item 0x40015A3A graphic 0x122D x1 at 5394,126,0 hue 0
+   24.46 player   <- 0xF3 world item 0x40015A3A graphic 0x122D x1 at 5394,126,0 hue 0
+   24.62 admin    -> say '[set Blessed true'
+   24.62 admin    <- 0x6C target cursor 2208 (type 0)
+   24.82 admin    -> 0x6C target object 0x0000033B
+   24.82 admin    <- unicode(0) System: Property has been set.
+   25.32 admin    -> say '[set NextSkillTime 0'
+   25.32 admin    <- 0x6C target cursor 2209 (type 0)
+   25.54 admin    -> 0x6C target object 0x0000033B
+   25.54 admin    <- unicode(0) System: Property has been set.
+   26.04 player   <- 0x6C target cursor 2210 (type 0)
+   26.04 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   26.04 player   -> 0x6C target object 0x00000447
+   26.05 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   26.05 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   26.05 player   <- 0x3A skill 33 now 61.6 (cap 200.0)
+   26.05 player   <- 0x3A skill 33 now 61.7 (cap 200.0)
+   26.05 player   <- 0x3A skill 33 now 61.8 (cap 200.0)
+   26.05 player   <- 0x3A skill 33 now 61.9 (cap 200.0)
+   26.05 player   <- 0x3A skill 33 now 62.0 (cap 200.0)
+   26.05 player   <- 0x3A skill 33 now 62.1 (cap 200.0)
+   26.05 admin    -> say '[go 0x33B'
+   26.05 player   <- 0x3A skill 33 now 62.2 (cap 200.0)
+   26.05 player   <- 0x3A skill 33 now 62.3 (cap 200.0)
+   26.05 player   <- 0x3A skill 33 now 62.4 (cap 200.0)
+   26.05 player   <- 0x3A skill 33 now 62.5 (cap 200.0)
+   26.05 player   <- 0x3A skill 33 now 62.6 (cap 200.0)
+   26.05 player   <- 0x3A skill 33 now 62.7 (cap 200.0)
+   26.05 player   <- 0x3A skill 33 now 62.8 (cap 200.0)
+   26.05 player   <- 0x3A skill 33 now 62.9 (cap 200.0)
+   26.05 player   <- 0x3A skill 33 now 63.0 (cap 200.0)
+   26.05 player   <- cliloc(0) System #1019063: You have lost a little karma.
+   26.05 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 150, 'hitsMax': 176, 'version': 6, 'female': 1, 'str': 252, 'dex': 104, 'int': 60, 'stam': 103, 'stamMax': 104, 'mana': 60, 'manaMax': 60, 'gold': 1500, 'ar': 0, 'weight': 554, 'maxWeight': 982, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   27.06 admin    -> say '[SetSkill Stealing 200'
+   27.06 admin    <- 0x6C target cursor 2211 (type 0)
+   27.26 admin    -> 0x6C target object 0x0000033B
+   27.26 admin    <- unicode(0) System: Stealing : 200 (Base: 200)
+   27.26 player   <- 0x3A skill 33 now 200.0 (cap 200.0)
+   27.87 admin    -> say '[set NextSkillTime 0'
+   27.87 admin    <- 0x6C target cursor 2212 (type 0)
+   28.08 admin    -> 0x6C target object 0x0000033B
+   28.08 admin    <- unicode(0) System: Property has been set.
+   28.59 player   <- 0x6C target cursor 2213 (type 0)
+   28.59 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   28.59 player   -> 0x6C target object 0x00000447
+   28.59 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   28.59 player   <- unicode(0) System: The creature is wary of your hands. Give it a moment.
+   28.59 player   <- cliloc(0) System #1019063: You have lost a little karma.
+   28.59 admin    -> say '[set NextSkillTime 0'
+   28.59 admin    <- 0x6C target cursor 2214 (type 0)
+   28.79 admin    -> 0x6C target object 0x0000033B
+   28.79 admin    <- unicode(0) System: Property has been set.
+   29.30 player   <- 0x6C target cursor 2215 (type 0)
+   29.30 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   29.30 player   -> 0x6C target object 0x00000447
+   29.30 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   29.30 player   <- unicode(0) System: The creature is wary of your hands. Give it a moment.
+   29.30 player   <- cliloc(0) System #1019063: You have lost a little karma.
+   29.30 admin    -> say '[set NextSkillTime 0'
+   29.30 admin    <- 0x6C target cursor 2216 (type 0)
+   29.50 admin    -> 0x6C target object 0x0000033B
+   29.50 admin    <- unicode(0) System: Property has been set.
+   30.03 player   <- 0x6C target cursor 2217 (type 0)
+   30.03 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   30.03 player   -> 0x6C target object 0x00000447
+   30.03 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   30.03 player   <- unicode(0) System: The creature is wary of your hands. Give it a moment.
+   30.03 player   <- cliloc(0) System #1019063: You have lost a little karma.
+   30.03 admin    -> say '[set NextSkillTime 0'
+   30.03 admin    <- 0x6C target cursor 2218 (type 0)
+   30.23 admin    -> 0x6C target object 0x0000033B
+   30.23 admin    <- unicode(0) System: Property has been set.
+   30.74 player   <- 0x6C target cursor 2219 (type 0)
+   30.74 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   30.74 player   -> 0x6C target object 0x00000447
+   30.74 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   30.74 player   <- unicode(0) System: The creature is wary of your hands. Give it a moment.
+   30.74 player   <- cliloc(0) System #1019063: You have lost a little karma.
+   30.74 admin    -> say '[set NextSkillTime 0'
+   30.74 admin    <- 0x6C target cursor 2220 (type 0)
+   30.95 admin    -> 0x6C target object 0x0000033B
+   30.95 admin    <- unicode(0) System: Property has been set.
+   31.47 player   <- 0x6C target cursor 2221 (type 0)
+   31.47 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   31.47 player   -> 0x6C target object 0x00000447
+   31.47 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   31.47 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   31.47 player   <- cliloc(0) System #1019063: You have lost a little karma.
+   36.97 admin    -> say '[set NextSkillTime 0'
+   36.97 admin    <- 0x6C target cursor 2222 (type 0)
+   37.18 admin    -> 0x6C target object 0x0000033B
+   37.18 admin    <- unicode(0) System: Property has been set.
+   37.68 player   <- 0x6C target cursor 2223 (type 0)
+   37.68 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   37.68 player   -> 0x6C target object 0x00000447
+   37.68 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   37.69 admin    <- 0xF3 world item 0x40015A3B graphic 0x1848 x1 at 5395,126,0 hue 0
+   37.69 player   <- cliloc(0) System #1094947: You successfully steal a special item from the creature!
+   37.69 player   <- 0xF3 world item 0x40015A3B graphic 0x1848 x1 at 5395,126,0 hue 0
+   37.69 admin    -> say '[set NextSkillTime 0'
+   37.69 player   <- cliloc(0) System #1019063: You have lost a little karma.
+   37.69 admin    <- 0x6C target cursor 2224 (type 0)
+   37.89 admin    -> 0x6C target object 0x0000033B
+   37.89 admin    <- unicode(0) System: Property has been set.
+   38.40 player   <- 0x6C target cursor 2225 (type 0)
+   38.40 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   38.40 player   -> 0x6C target object 0x00000447
+   38.40 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   38.40 player   <- cliloc(0) System #1094948: That creature has already been stolen from.  There is nothing left to steal.
+   38.40 player   <- cliloc(0) System #1019063: You have lost a little karma.
+   38.40 admin    -> say '[go 0x33B'
+   39.41 admin    -> say '[GuildStanding thieves 0'
+   39.41 admin    <- 0x6C target cursor 2226 (type 0)
+   39.61 admin    -> 0x6C target object 0x0000033B
+   39.61 admin    <- unicode(0) System: Set Bot Human F Aa's Thieves' Den standing to 0 (Initiate).
+   40.23 admin    -> say '[go 0x33B'
+   41.24 admin    -> say '[set Blessed false'
+   41.24 admin    <- 0x6C target cursor 2227 (type 0)
+   41.45 admin    -> 0x6C target object 0x0000033B
+   41.45 admin    <- unicode(0) System: Property has been set.
+   41.96 harness  == P142-5 run 3: FAIL (Den: already a member (Member. Rank: Initiate.); hidden before False; first steal caught (attempt 1); hidden after the miss False (pinned Stealing.cs:64 reveals at the cursor already); creature's Combatant None (the thief: False); at once wary; after 6 s caught; at Stealing 200.0: special then already; thief hits 150/176)

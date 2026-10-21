@@ -1,0 +1,76 @@
+    0.00 harness  == P142-2 run 2: A champion spawn: an Initiate works it, the special-item message comes, no refusal
+    0.00 admin    -> say '[go 0x33B'
+    1.01 admin    -> say '[add ThiefGuildmaster'
+    1.01 admin    <- 0x6C target cursor 1470 (type 1)
+    1.22 admin    -> 0x6C target ground 5558,827,65
+    1.22 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+    1.73 player   -> 0xBF 0x13 context menu request 0x00000409
+    1.73 player   <- 0xBF 0x14 context menu 0x00000409: [(0, 3006123, 'Open Paperdoll', 0), (1, 3006146, 'Talk', 0), (2, 3006014, 'Train Detect Hidden', 0), (3, 3006021, 'Train Hiding', 0), (4, 3006024, 'Train Lockpicking', 0), (5, 3006028, 'Train Snooping', 0), (6, 3006030, 'Train Poisoning', 0), (7, 3006033, 'Train Stealing', 1), (8, 3006042, 'Train Fencing', 0)]
+    1.73 player   -> 0xBF 0x15 context pick 1 (Talk) on 0x00000409
+    1.73 player   <- 0xDD gump 0x00000879 type -810631593: Thieves' Den | <BASEFONT COLOR=#DDDDDD><I>We see all. Can we trust you? Show us your light fingers.</I></BASEFONT> | <BASEFONT COLOR=#AAAAAA>Teaches: Hiding, Stealth, Stealing, Snooping, Lockpicking, Poisoning, Detecting Hidden, Remove Trap</BASEFONT> | Separate from the stock trade guild (say "join", 500 gold). One does not join the other. | Member. Rank: Initiate. | Starter items (2) | Mule module schematics | Apprentice task: | <BASEFONT COLOR=#DDDDDD>Demonstrate Stealing of at least 20.0.</BASEFONT> | Complete it: +25 reputation, +10 scrip | Guild services | Guild Directory | Requisitions | Close
+    1.73 player      layout: { resizepic 0 0 9270 520 400 }{ checkertrans 10 10 500 380 }{ text 20 14 1154 0 }{ gumppictiled 10 36 500 2 9304 }{ htmlgump 20 44 480 36 1 0 0 }{ htmlgump 20 82 480 36 2 0 0 }{ text 20 118 999 3 }{ gumppictiled 10 140 500 2 9304 }{ text 20 150 68 4 }{ button 20 172 4005 4007 1 0 3 }{ text 55 174 999 5 }{ button 20 200 4005 4007 1 0 7 }{ text 55 202 999 6 }{ gumppictiled 10 232 500 2 9304 }{ text 20 240 999 7 }{ htmlgump 20 260 480 36 8 0 0 }{ button 20 298 4023 4025 1 0 4 }{ text 55 300 1154 9 }{ gumppictiled 10 350 500 2 9304 }{ button 20 362 4011 4012 1 0 5 }{ text 45 364 999 10 }{ button 180 362 4011 4012 1 0 6 }{ text 205 364 999 11 }{ button 300 362 4011 4012 1 0 9 }{ text 325 364 999 12 }{ button 420 362 4017 4019 1 0 0 }{ text 455 364 999 13 }
+    1.73 player   -> 0xB1 gump 0x00000879 type -810631593 button 0 switches [] texts []
+    1.73 admin    -> say '[go 0x33B'
+    2.75 admin    -> say '[SetSkill Stealing 120'
+    2.75 admin    <- 0x6C target cursor 1471 (type 0)
+    2.95 admin    -> 0x6C target object 0x0000033B
+    2.95 admin    <- unicode(0) System: Stealing : 120 (Base: 120)
+    3.55 admin    -> say '[go 0x33B'
+    4.57 admin    -> say '[set Blessed true'
+    4.57 admin    <- 0x6C target cursor 1472 (type 0)
+    4.77 admin    -> 0x6C target object 0x0000033B
+    4.77 admin    <- unicode(0) System: Property has been set.
+    5.28 admin    -> say '[go 0x33B'
+    6.29 admin    -> say '[set Map Felucca X 5511 Y 2360 Z 42'
+    6.29 admin    <- 0x6C target cursor 1473 (type 0)
+    6.50 admin    -> 0x6C target object 0x0000033B
+    6.50 admin    <- unicode(0) System: Property has been set. (4)
+    7.00 admin    -> say '[go 0x33B'
+    8.52 admin    -> say '[where'
+    8.52 admin    <- unicode(0) System: You are at 5511 2360 42 in Felucca.
+   12.14 admin    -> say '[go 0x33B'
+   13.15 admin    -> say '[set Map Felucca X 6038 Y 2401 Z 47'
+   13.15 admin    <- 0x6C target cursor 1474 (type 0)
+   13.35 admin    -> 0x6C target object 0x0000033B
+   13.35 admin    <- unicode(0) System: Property has been set. (4)
+   13.86 admin    -> say '[go 0x33B'
+   15.38 admin    -> say '[where'
+   15.38 admin    <- unicode(0) System: You are at 6038 2401 47 in Felucca.
+   18.99 admin    -> say '[go 0x33B'
+   20.01 admin    -> say '[set Map Felucca X 5549 Y 2640 Z 16'
+   20.01 admin    <- 0x6C target cursor 1475 (type 0)
+   20.21 admin    -> 0x6C target object 0x0000033B
+   20.21 admin    <- unicode(0) System: Property has been set. (4)
+   20.72 admin    -> say '[go 0x33B'
+   22.24 admin    -> say '[where'
+   22.24 admin    <- unicode(0) System: You are at 5549 2640 16 in Felucca.
+   25.85 admin    -> say '[go 0x33B'
+   26.87 admin    -> say '[set Map Felucca X 5557 Y 827 Z 65'
+   26.87 admin    <- 0x6C target cursor 1476 (type 0)
+   27.07 admin    -> 0x6C target object 0x0000033B
+   27.08 player   <- 0xDD gump 0x0000087A type -908281109:  | Warning: monsters may attack you on sight down here in the dungeons!
+   27.08 player      layout: { resizepic 0 0 302 250 170 }{ resizepic 10 10 5120 230 150 }{ xmfhtmlgumpcolor 20 25 210 70 1018030 0 0 32767 }{ button 163 125 248 249 1 0 0 }
+   27.08 admin    <- unicode(0) System: Property has been set. (4)
+   27.58 admin    -> say '[go 0x33B'
+   29.10 admin    -> say '[where'
+   29.10 admin    <- unicode(0) System: You are at 5557 827 65 in Felucca.
+   29.10 admin    <- unicode(0) System: Your region is Despise.
+   29.70 admin    -> say '[go 0x33B'
+   30.72 admin    -> say '[GuildStanding thieves 0'
+   30.72 admin    <- 0x6C target cursor 1477 (type 0)
+   30.92 admin    -> 0x6C target object 0x0000033B
+   30.92 admin    <- unicode(0) System: Set Bot Human F Aa's Thieves' Den standing to 0 (Initiate).
+   31.53 admin    -> say '[go 0x33B'
+   32.54 admin    -> say '[set Blessed false'
+   32.54 admin    <- 0x6C target cursor 1478 (type 0)
+   32.75 admin    -> 0x6C target object 0x0000033B
+   32.75 admin    <- unicode(0) System: Property has been set.
+   33.25 harness  Traceback (most recent call last):
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\run.py", line 180, in run_checks
+    ok, evidence = chk.fn(ctx)
+                   ^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\checks_p224_thieves.py", line 352, in p142_2
+    raise RuntimeError("no ChampionSpawnRegion at any of [GenChamps' spots (%s): the world has no champion spawn, "
+RuntimeError: no ChampionSpawnRegion at any of [GenChamps' spots ([((5511, 2360, 42), 'no region'), ((6038, 2401, 47), 'no region'), ((5549, 2640, 16), 'no region'), ((5557, 827, 65), 'Your region is Despise.')]): the world has no champion spawn, the bot cannot work one; [GenChamps (Developer) would place them
+
+   33.25 harness  == P142-2 run 2: ERROR (RuntimeError: no ChampionSpawnRegion at any of [GenChamps' spots ([((5511, 2360, 42), 'no region'), ((6038, 2401, 47), 'no region'), ((5549, 2640, 16), 'no region'), ((5557, 827, 65), 'Your region is Despise.')]): the world has no champion spawn, the bot cannot work one; [GenChamps (Developer) would place them)
