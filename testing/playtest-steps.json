@@ -2747,6 +2747,75 @@
   },
   "P194-7": {
    "check": "Done 2026-10-20 (cc-P194, second sitting): sl-modernuo:cc-P194 booted twice on a copy of the bot scratch world (fresh, then on the first boot's save), loaded 210,942 then 212,779 items, saved and shut down; zero Exception lines in both logs (P194 notes, section 7)."
+  },
+  "P199-1": {
+   "where": "Test shard, Trammel, a character with Remove Trap 0, Lockpicking 0 and Detect Hidden 0; `[add CircuitTrapTrainingKit`, `[add CylinderTrapTrainingKit`, `[add SliderTrapTrainingKit` into your pack",
+   "do": [
+    "Use the Remove Trap skill and target the circuit kit; move along the lit path with the arrows to the last square",
+    "Use Remove Trap on the cylinder kit; set five cylinders and submit, wrong then right",
+    "Use Remove Trap on the slider kit; slide the tiles until the picture is whole"
+   ],
+   "pass": "Remove Trap gives a target with no Lockpicking or Detect Hidden. The circuit opens a 3x3 grid (4x4 from 80 skill, 5x5 from 100); a wrong step says you fail and reset it; the last square says \"You successfully disarm the trap!\" and Remove Trap can rise. A wrong cylinder guess shows the status gump and does not hurt you; the right one disarms. The finished picture disarms and shuffles a new one.",
+   "check": "Not built yet: the bot would use Remove Trap (skill packet), target each kit, read the 0xDD gumps and press their buttons, and read cliloc 1159009 and the skill update."
+  },
+  "P199-2": {
+   "where": "Test shard, as Administrator, Moonglow: `[go 4305 1003 0` in Trammel",
+   "do": [
+    "[ClusterFPlaceCollectorOfOddities dryrun",
+    "[ClusterFPlaceCollectorOfOddities",
+    "Say \"vendor buy\" to the Collector of Oddities"
+   ],
+   "pass": "The dry run says it would place at (4305, 1003, 0); the real run places one Collector of Oddities (a second run says he is already there). His shop lists the three trap training kits at 99,375 gold each.",
+   "check": "Chase's eyes: a staff command and a vendor list."
+  },
+  "P199-3": {
+   "where": "Test shard, a house you own, a carpenter with Carpentry 100 and 150 boards; a chicken (`[add Chicken`, then tame it)",
+   "do": [
+    "Carpentry menu, Other: make a chicken coop",
+    "Lock it down in your house",
+    "Use its context menu to stable the chicken, then claim it"
+   ],
+   "pass": "The coop is in the Other group (90-115 Carpentry, 150 boards); locked down it stables up to three chickens and gives them back.",
+   "check": "Not built yet: the craft is server-sent (craft gump and the item in the pack); the coop's context entries are a client action."
+  },
+  "P199-4": {
+   "where": "Test shard, a character with Tinkering 100; `[add BlackrockAutomatonHead`",
+   "do": [
+    "Double-click the head in your pack and wait three seconds",
+    "Command the automaton; let it die",
+    "Look in your pack"
+   ],
+   "pass": "After three seconds the head becomes a bonded Blackrock automaton that follows only you (a non-grandmaster tinker cannot command it); when it dies a broken automaton head is in your pack.",
+   "check": "Not built yet: the bot would read the new mobile (body and owner) and the broken head after a kill."
+  },
+  "P199-5": {
+   "where": "Test shard, in your own house; `[add JewelryBox`, `[add SeedBox`, `[add CoralTheOwl`, `[add Grinder`",
+   "do": [
+    "Lock each down",
+    "Drop rings and bracelets in the jewelry box and use its filter",
+    "Drop seeds in the seed box and take one back",
+    "Say \"news\" near Coral",
+    "Grind coffee pods with the grinder"
+   ],
+   "pass": "Each looks and behaves as on UOGuide: the jewelry box takes only jewelry and filters by kind; the seed box stacks seeds by kind and colour in slots; Coral tells the town crier's news; the grinder turns pods into coffee grounds.",
+   "check": "Chase's eyes: the gumps and the art."
+  },
+  "P199-6": {
+   "where": "Test shard, staff; `[add` each of: Skeletonkey (ServUO's spelling), MasterSkeletonKey, MetallicDyeTub, PenOfWisdom, ChestOfSending, GreaterBraceletOfBinding, ForgedMetalOfArtifacts, SnakeCharmerFlute, ScaleCollar, ManaPhasingOrb, AbyssalCloth, Blackrock, PolishedMeteorite",
+   "do": [
+    "Look at each item and its tooltip",
+    "Try one use of each tool"
+   ],
+   "pass": "Each has its own art, name and tooltip (no blank or wrong art); the keys pick locks, the dye tub dyes metal armour only, the flute charms a snake to a spot, the collar freezes a battle chicken lizard.",
+   "check": "Chase's eyes: art and tooltips."
+  },
+  "P199-7": {
+   "where": "CC, a scratch copy of the test world on the new image",
+   "do": [
+    "Boot, save, restart"
+   ],
+   "pass": "Loading world done each time, no exceptions.",
+   "check": "Done by CC; see the notes."
   }
  }
 }
