@@ -230,7 +230,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 152 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 154 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -266,14 +266,14 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P269 high-seas-fishing-second-half | queued |  |
 | P260 herbalism-research | done | 2026-10-20 |
 | P245 cont-fixup-port-base-items-remainder | done | 2026-10-20 |
+| P244 cont-fixup-tinker-golem-watchdog | done | 2026-10-20 |
 | P235 work-order-numbers-pass | done | 2026-10-20 |
 | P234 dismount-sources-design | done | 2026-10-20 |
 | P233 props-ability-profile | done | 2026-10-20 |
 | P232 pkcs-pin-drop-audit-flag | done | 2026-10-20 |
 | P226 arms-lore-matters | done | 2026-10-20 |
+| P222 tinker-golem-watchdog | done | 2026-10-20 |
 | P221 cont-fixup-port-wrong-and-covetous-void | done | 2026-10-20 |
-| P220 crystal-status-page-judgments | done | 2026-10-20 |
-| P218 crystal-mage-crafter-scripts | stopped: the four design docs (sl-mage-script.md, sl-crafter-script.md, new-legion-script-kickoff.md, legion-scripts-immortal-realms.md) are in the claude.ai Project, which the cloud session cannot reach, and in no repo or Drive folder it can; paste them into a repo and re-queue. | 2026-10-20 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 112 patches, 12 replacements
 
