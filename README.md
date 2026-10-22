@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.21.23. Golem on, 20 queued, latest done P382. Play tests: 618 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.21.23. Golem on, 21 queued, latest done P383. Play tests: 620 open, 4 failed, 43 passed.
 
 ### Needs overseer review (5)
 
@@ -71,7 +71,7 @@ Judgment reviewed 2026-10-20. Shard version 2026.10.21.23. Golem on, 20 queued, 
 - **gate What is built is seen in a client, not only compiled**: Waits on a confirmation: Chase: is the test shard on a build that carries P203 and P204 (version 2026.10.20.x), and which play tests ran after 2026-10-18? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "What is built is seen in a client, not only compiled" --done yes --detail "..."` or `python tools/judge.py confirm gate "What is built is seen in a client, not only compiled"`
 - **task DEPLOY**: Deploy main to the test shard and run its play tests: waits on a confirmation: Chase: which build is on the test shard today? `python tools/judge.py task DEPLOY --status todo|in-progress|blocked|done --note "..."` or `python tools/judge.py confirm task DEPLOY`
 - **direction**: Confirmed 2026-10-20; notes/cc-P376-league-decisions.md (2026-10-21) is newer. Read it; if the direction moved, edit "direction" in tools/progress-state.json. `python tools/judge.py confirm direction`
-- **play tests not sorted**: 181 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
+- **play tests not sorted**: 183 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
 
 ## Port list: 6 of 16 systems in. 797 of 983 files (81%).
 
@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 207 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 208 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -247,14 +247,16 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P362 ui-skins-player-options | queued |  |
 | P363 quest-markers-keys-gates | queued |  |
 | P365 reward-mounts-and-evo-stages | queued |  |
-| P368 added-music-areas-monsters-bosses | queued |  |
 | P370 golem-fixes-flaky-builds-reclaims | queued |  |
 | P372 cont-fixup-hammer-t3-craft-order | queued |  |
 | P373 codex-golems-finish-and-enable | queued |  |
 | P375 cont-fixup-playtest-bot-checks-first | queued |  |
 | P380 cont-fixup-chopped-tree-stumps | queued |  |
-| P383 guild-guide-artificers-order | queued |  |
-| P384 guild-guide-thieves-den | queued |  |
+| P385 guide-gathering-guilds | queued |  |
+| P386 guide-rangers-custodians-healers | queued |  |
+| P387 guide-achievements-and-loot-boxes | queued |  |
+| P388 guide-levels-loops-and-scrolls | queued |  |
+| P383 guild-guide-artificers-order | done | 2026-10-21 |
 | P382 guild-guide-order-of-the-alembic | done | 2026-10-21 |
 | P381 guild-guide-society-of-smiths | done | 2026-10-21 |
 | P379 crystal-review-10-21-merges | done | 2026-10-21 |
@@ -264,7 +266,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P374 league-player-guide-draft | done | 2026-10-21 |
 | P371 graduation-is-the-first-loop | done | 2026-10-21 |
 | P369 cont-fixup-companions-b1-base-and-record | done | 2026-10-21 |
-| P367 music-room-console-page | done | 2026-10-21 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 146 patches, 12 replacements
 
