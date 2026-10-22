@@ -1,0 +1,88 @@
+    0.00 harness  == P70-9 run 2: Ore Hopper: 100 iron ingots in the mule's pack weigh less once the hopper is fitted
+    0.00 admin    -> say '[go 0x22D7E'
+    1.01 admin    -> say '[go 0x22D7E'
+    2.02 admin    -> say '[set X 3504 Y 2574 Z 14 CantWalk true'
+    2.02 admin    <- 0x6C target cursor 552 (type 0)
+    2.11 admin    <- 0xF3 world item 0x4032DC38 graphic 0x1645 x1 at 3503,2574,14 hue 0
+    2.11 admin    <- 0xF3 world item 0x4032DC39 graphic 0x122E x1 at 3502,2574,14 hue 0
+    2.11 player   <- 0xF3 world item 0x4032DC38 graphic 0x1645 x1 at 3503,2574,14 hue 0
+    2.11 admin    <- 0xF3 world item 0x4032DC3A graphic 0x1645 x1 at 3502,2575,14 hue 0
+    2.11 player   <- 0xF3 world item 0x4032DC39 graphic 0x122E x1 at 3502,2574,14 hue 0
+    2.11 admin    <- 0xF3 world item 0x4032DC3B graphic 0x1645 x1 at 3502,2574,14 hue 0
+    2.11 player   <- 0xF3 world item 0x4032DC3A graphic 0x1645 x1 at 3502,2575,14 hue 0
+    2.11 player   <- 0xF3 world item 0x4032DC3B graphic 0x1645 x1 at 3502,2574,14 hue 0
+    2.24 admin    -> 0x6C target object 0x00022EF6
+    2.24 admin    <- unicode(0) System: Property has been set. (4)
+    3.56 player   -> 0xBF 0x13 context menu request 0x00022EF6
+    3.56 player   <- 0xBF 0x14 context menu 0x00022EF6: [(0, 3006111, 'Command: Kill', 0), (1, 3006108, 'Command: Follow', 0), (2, 3006107, 'Command: Guard', 0), (3, 3006112, 'Command: Stop', 0), (4, 3006114, 'Command: Stay', 0), (5, 3006098, '', 0), (6, 3006110, 'Add Friend', 0), (7, 3006099, 'Remove Friend', 0), (8, 3006113, 'Transfer', 0), (9, 3006118, 'Release', 0), (10, 3006145, 'Open Backpack', 0), (11, 1900000, '#1900000', 0), (12, 3000127, 'Options', 0)]
+    3.56 player   -> 0xBF 0x15 context pick 12 (Options) on 0x00022EF6
+    3.56 player   <- 0xDD gump 0x000009C9 type 1831174852: a Compact mule: modules 1 / 1 | Remove Ore Hopper I
+    3.56 player      layout: { page 0 }{ resizepic 0 0 9270 460 520 }{ checkertrans 6 6 448 508 }{ text 20 14 1154 0 }{ button 20 40 4017 4019 1 0 100 }{ text 55 42 999 1 }{ gumppictiled 10 68 440 2 9304 }
+    3.56 player   -> 0xB1 gump 0x000009C9 type 1831174852 button 100 switches [] texts []
+    3.56 player   <- unicode(0) System: You take the Ore Hopper I off the mule.
+    3.56 player   <- 0xDD gump 0x000009CA type 1831174852: a Compact mule: modules 0 / 1 | Drop a module on the mule to fit it.
+    3.56 player      layout: { page 0 }{ resizepic 0 0 9270 460 520 }{ checkertrans 6 6 448 508 }{ text 20 14 1154 0 }{ text 20 40 946 1 }{ gumppictiled 10 68 440 2 9304 }
+    3.56 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 10, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 15, 'int': 17, 'stam': 15, 'stamMax': 15, 'mana': 17, 'manaMax': 17, 'gold': 1000, 'ar': 0, 'weight': 284, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+    3.56 player   <- 0x25 item 0x4032DC31 graphic 0x19B9 x1 into 0x40328938
+    4.77 player   -> 0xBF 0x13 context menu request 0x00022EF6
+    4.77 player   <- 0xBF 0x14 context menu 0x00022EF6: [(0, 3006111, 'Command: Kill', 0), (1, 3006108, 'Command: Follow', 0), (2, 3006107, 'Command: Guard', 0), (3, 3006112, 'Command: Stop', 0), (4, 3006114, 'Command: Stay', 0), (5, 3006098, '', 0), (6, 3006110, 'Add Friend', 0), (7, 3006099, 'Remove Friend', 0), (8, 3006113, 'Transfer', 0), (9, 3006118, 'Release', 0), (10, 3006145, 'Open Backpack', 0), (11, 1900000, '#1900000', 0), (12, 3000127, 'Options', 0)]
+    4.77 player   -> 0xBF 0x15 context pick 12 (Options) on 0x00022EF6
+    4.77 player   <- 0xDD gump 0x000009CB type 1831174852: a Compact mule: modules 0 / 1 | Drop a module on the mule to fit it.
+    4.77 player      layout: { page 0 }{ resizepic 0 0 9270 460 520 }{ checkertrans 6 6 448 508 }{ text 20 14 1154 0 }{ text 20 40 946 1 }{ gumppictiled 10 68 440 2 9304 }
+    4.77 player   -> 0xB1 gump 0x000009CB type 1831174852 button 0 switches [] texts []
+    4.77 player   <- 0xD6 properties 0x4032D6D3: backpack | Weight: 18 stones | Contents: 1/142 items, 15/1520 stones
+    4.77 admin    -> say '[go 0x22D7E'
+    5.73 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+    5.73 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+    5.77 admin    -> say '[AddToPack IronIngot 100'
+    5.78 admin    <- 0x6C target cursor 553 (type 0)
+    5.99 admin    -> 0x6C target object 0x00022D7E
+    5.99 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+    5.99 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 11, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 15, 'int': 17, 'stam': 15, 'stamMax': 15, 'mana': 17, 'manaMax': 17, 'gold': 1000, 'ar': 0, 'weight': 294, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+    5.99 player   <- 0x25 item 0x4032DC49 graphic 0x1BF2 x100 into 0x40328938
+    5.99 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 11, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 15, 'int': 17, 'stam': 15, 'stamMax': 15, 'mana': 17, 'manaMax': 17, 'gold': 1000, 'ar': 0, 'weight': 294, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+    6.41 player   <- cliloc(0) a Compact mule #1043257: The animal shies away.
+    6.41 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 11, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 15, 'int': 17, 'stam': 15, 'stamMax': 15, 'mana': 17, 'manaMax': 17, 'gold': 1000, 'ar': 0, 'weight': 284, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+    6.62 admin    <- 0xF3 world item 0x4032DC4A graphic 0x122D x1 at 3503,2574,14 hue 0
+    6.62 player   <- 0xF3 world item 0x4032DC4A graphic 0x122D x1 at 3503,2574,14 hue 0
+    6.62 admin    <- 0xF3 world item 0x4032DC4B graphic 0x1645 x1 at 3502,2575,14 hue 0
+    6.62 player   <- 0xF3 world item 0x4032DC4B graphic 0x1645 x1 at 3502,2575,14 hue 0
+    6.62 admin    <- 0xF3 world item 0x4032DC4C graphic 0x122E x1 at 3504,2574,14 hue 0
+    6.62 player   <- 0xF3 world item 0x4032DC4C graphic 0x122E x1 at 3504,2574,14 hue 0
+    6.62 admin    <- 0xF3 world item 0x4032DC4D graphic 0x1645 x1 at 3503,2575,14 hue 0
+    6.62 player   <- 0xF3 world item 0x4032DC4D graphic 0x1645 x1 at 3503,2575,14 hue 0
+    6.62 admin    <- 0xF3 world item 0x4032DC4E graphic 0x122A x1 at 3502,2573,14 hue 0
+    6.62 player   <- 0xF3 world item 0x4032DC4E graphic 0x122A x1 at 3502,2573,14 hue 0
+    7.62 player   <- 0xD6 properties 0x4032D6D3: backpack | Weight: 33 stones | Contents: 1/142 items, 30/1520 stones
+    7.62 admin    -> say '[go 0x22D7E'
+    8.62 admin    -> say '[AddToPack MuleModule OreHopper 1'
+    8.62 admin    <- 0x6C target cursor 554 (type 0)
+    8.82 admin    -> 0x6C target object 0x00022D7E
+    8.83 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 10, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 15, 'int': 17, 'stam': 15, 'stamMax': 15, 'mana': 17, 'manaMax': 17, 'gold': 1000, 'ar': 0, 'weight': 289, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+    8.83 player   <- 0x25 item 0x4032DC4F graphic 0x19B9 x1 into 0x40328938
+    8.83 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+    8.83 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 10, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 15, 'int': 17, 'stam': 15, 'stamMax': 15, 'mana': 17, 'manaMax': 17, 'gold': 1000, 'ar': 0, 'weight': 289, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+    8.88 player   <- 0xF3 world item 0x4032DC50 graphic 0x122F x1 at 3503,2574,14 hue 0
+    8.88 player   <- 0xF3 world item 0x4032DC51 graphic 0x122F x1 at 3502,2575,14 hue 0
+    8.88 admin    <- 0xF3 world item 0x4032DC50 graphic 0x122F x1 at 3503,2574,14 hue 0
+    8.88 admin    <- 0xF3 world item 0x4032DC51 graphic 0x122F x1 at 3502,2575,14 hue 0
+    8.88 player   <- 0xF3 world item 0x4032DC52 graphic 0x1645 x1 at 3502,2575,14 hue 0
+    8.88 player   <- 0xF3 world item 0x4032DC53 graphic 0x122F x1 at 3503,2575,14 hue 0
+    8.88 admin    <- 0xF3 world item 0x4032DC52 graphic 0x1645 x1 at 3502,2575,14 hue 0
+    8.88 admin    <- 0xF3 world item 0x4032DC53 graphic 0x122F x1 at 3503,2575,14 hue 0
+    9.23 player   <- cliloc(0) a Compact mule #1043257: The animal shies away.
+    9.23 player   <- unicode(0) System: You fit the Ore Hopper I to the mule.
+    9.23 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 9, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 15, 'int': 17, 'stam': 15, 'stamMax': 15, 'mana': 17, 'manaMax': 17, 'gold': 1000, 'ar': 0, 'weight': 284, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+    9.23 player   <- 0xD6 properties 0x4032D6D3: backpack | Weight: 33 stones | Contents: 1/142 items, 30/1520 stones
+    9.23 admin    -> say '[go 0x22D7E'
+   10.25 admin    -> say '[AddToPack IronIngot 100'
+   10.25 admin    <- 0x6C target cursor 555 (type 0)
+   10.45 admin    -> 0x6C target object 0x00022D7E
+   10.45 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 9, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 15, 'int': 17, 'stam': 15, 'stamMax': 15, 'mana': 17, 'manaMax': 17, 'gold': 1000, 'ar': 0, 'weight': 294, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   10.45 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   10.45 player   <- 0x25 item 0x4032DC59 graphic 0x1BF2 x100 into 0x40328938
+   10.45 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 9, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 15, 'int': 17, 'stam': 15, 'stamMax': 15, 'mana': 17, 'manaMax': 17, 'gold': 1000, 'ar': 0, 'weight': 294, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   10.85 player   <- cliloc(0) a Compact mule #1043257: The animal shies away.
+   10.85 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 9, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 15, 'int': 17, 'stam': 15, 'stamMax': 15, 'mana': 17, 'manaMax': 17, 'gold': 1000, 'ar': 0, 'weight': 284, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   12.07 player   <- 0xD6 properties 0x4032D6D3: backpack | Weight: 33 stones | Contents: 1/142 items, 30/1520 stones
+   12.07 harness  == P70-9 run 2: PASS (fitted True; stones: pack alone 15, with 100 ingots 30 (+15), right after fitting 30, with 200 ingots 30 (undiscounted would be +30, a 25% hopper gives about +22))

@@ -929,6 +929,316 @@
      "transcript": "transcripts/P138-3-run3.txt"
     }
    ]
+  },
+  {
+   "id": "P138-5",
+   "title": "A gargoyle is refused: 'Only humans and elves can wear this.' and the item stays in the pack",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "gargoyle: refusal True; worn False; back in pack True; messages ['Only humans and elves can wear this.', 'Double Click On Me For Help!', 'Welcome to Shattered Legacy BOT.']",
+     "seconds": 174.3,
+     "transcript": "transcripts/P138-5-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "gargoyle: refusal True; worn False; back in pack True; messages ['Only humans and elves can wear this.', 'Welcome to Shattered Legacy BOT.']",
+     "seconds": 112.8,
+     "transcript": "transcripts/P138-5-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "gargoyle: refusal True; worn False; back in pack True; messages ['Only humans and elves can wear this.', 'Welcome to Shattered Legacy BOT.']",
+     "seconds": 48.2,
+     "transcript": "transcripts/P138-5-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P69-6",
+   "title": "A tier-3 mule shows 'Tier 3: Shadowhide Mule', lists its module slots, and costs its owner 1 follower slot",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "a NEW tier-3 mule (no old mules exist here; the play test's 'existing mules' are the same code path): 'Tier 3: Shadowhide Mule (female)'; 'Module slots: 0 / 3'; owner's followers 0 -> 1 (1 slot); other lines [' a Shadowhide mule ', '(tame)', 'Quality: hits 60%, strength 52%, stamina 80%, resists 61%, pack 41%', 'Bloodline: none']",
+     "seconds": 7.6,
+     "transcript": "transcripts/P69-6-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "a NEW tier-3 mule (no old mules exist here; the play test's 'existing mules' are the same code path): 'Tier 3: Shadowhide Mule (female)'; 'Module slots: 0 / 3'; owner's followers 1 -> 2 (1 slot); other lines [' a Shadowhide mule ', '(tame)', 'Quality: hits 43%, strength 27%, stamina 84%, resists 49%, pack 37%', 'Bloodline: none']",
+     "seconds": 7.6,
+     "transcript": "transcripts/P69-6-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "a NEW tier-3 mule (no old mules exist here; the play test's 'existing mules' are the same code path): 'Tier 3: Shadowhide Mule (female)'; 'Module slots: 0 / 3'; owner's followers 2 -> 3 (1 slot); other lines [' a Shadowhide mule ', '(tame)', 'Quality: hits 47%, strength 71%, stamina 9%, resists 53%, pack 7%', 'Bloodline: none']",
+     "seconds": 7.6,
+     "transcript": "transcripts/P69-6-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P70-1",
+   "title": "A member at the guildmaster buys a mule module schematic from 'Mule module schematics' and the account learns it (Miners' Compact, Ore Hopper I: priced in Mining Vouchers, which staff can set)",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "P70-1: the Tinkers' Union half as written (20 Tinkers' scrip, Clockwork Load Harness I): no staff command grants a guild's scrip, only [CompactVouchers (mining) and [GuildStanding (standing); the Apprentice task pays 10",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "Miners' Compact in place of the Tinkers' Union (no staff scrip grant); joined now: \"You have joined the Miners' Compact as Apprentice. Joining is free.\"; 'Member. Rank: Apprentice.'; buy said 'You learn the Ore Hopper I schematic (Blacksmithy).'; page then says 'Mule module schematics'; [Recipes list shows recipe:9011: True",
+     "seconds": 9.4,
+     "transcript": "transcripts/P70-1-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "Miners' Compact in place of the Tinkers' Union (no staff scrip grant); joined now: None; 'Member. Rank: Apprentice.'; buy said 'Your account already knows that schematic.'; page then says 'Mule module schematics'; [Recipes list shows recipe:9011: True",
+     "seconds": 14.4,
+     "transcript": "transcripts/P70-1-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "Miners' Compact in place of the Tinkers' Union (no staff scrip grant); joined now: None; 'Member. Rank: Apprentice.'; buy said 'Your account already knows that schematic.'; page then says 'Mule module schematics'; [Recipes list shows recipe:9011: True",
+     "seconds": 14.4,
+     "transcript": "transcripts/P70-1-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P70-2",
+   "title": "Tinker tools, 'Mule Modules': the Clockwork Load Harness I is refused without 15 ingots, 2 gears and 10 bone, and made with them",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "refusal without materials: True (pack had ingots 312, gears 0, bone 0); with them: made True, new tier-I harness ['0x4032D65E']; notice ['You create the item.']",
+     "seconds": 9.9,
+     "transcript": "transcripts/P70-2-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "refusal without materials: True (pack had ingots 312, gears 0, bone 0); with them: made True, new tier-I harness ['0x4032D6A3']; notice ['You create the item.']",
+     "seconds": 10.0,
+     "transcript": "transcripts/P70-2-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "refusal without materials: True (pack had ingots 312, gears 0, bone 0); with them: made True, new tier-I harness ['0x4032D6CC']; notice ['You create the item.']",
+     "seconds": 10.1,
+     "transcript": "transcripts/P70-2-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P70-3",
+   "title": "A module dropped on the mule is fitted and listed; Options > Remove puts it back in the pack, still tier I",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "fitted True (['You fit the Clockwork Load Harness I to the mule.']); mule lists it True, 'Module slots: 1 / 1'; Remove row True -> 'You take the Clockwork Load Harness I off the mule.'; back in the pack True as \"Mule module: Tinkers' Union, tier I\"",
+     "seconds": 9.8,
+     "transcript": "transcripts/P70-3-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "fitted True (['You fit the Clockwork Load Harness I to the mule.']); mule lists it True, 'Module slots: 1 / 1'; Remove row True -> 'You take the Clockwork Load Harness I off the mule.'; back in the pack True as \"Mule module: Tinkers' Union, tier I\"",
+     "seconds": 6.4,
+     "transcript": "transcripts/P70-3-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "fitted True (['You fit the Clockwork Load Harness I to the mule.']); mule lists it True, 'Module slots: 1 / 1'; Remove row True -> 'You take the Clockwork Load Harness I off the mule.'; back in the pack True as \"Mule module: Tinkers' Union, tier I\"",
+     "seconds": 6.4,
+     "transcript": "transcripts/P70-3-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P70-4",
+   "title": "A tier III module is refused on a tier 1 mule and stays in the pack",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "refusal 'A tier III module needs a tier 3 mule or better; yours is tier 1.'; module back in the pack True; mule's module lines ['Module slots: 0 / 1']",
+     "seconds": 5.2,
+     "transcript": "transcripts/P70-4-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "refusal 'A tier III module needs a tier 3 mule or better; yours is tier 1.'; module back in the pack True; mule's module lines ['Module slots: 0 / 1']",
+     "seconds": 5.2,
+     "transcript": "transcripts/P70-4-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "refusal 'A tier III module needs a tier 3 mule or better; yours is tier 1.'; module back in the pack True; mule's module lines ['Module slots: 0 / 1']",
+     "seconds": 5.2,
+     "transcript": "transcripts/P70-4-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P70-5",
+   "title": "Tier II is crafted from a tier I in the pack; the tier I is gone after the success, and a second try is refused",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "FAIL",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "fail",
+     "evidence": "tier-I 0x4032D7B6 used (pack cleared of modules first, then one tier I added); craft: made True after 0 failed roll(s) (tier I kept through each failure: True), the tier I gone True, new tier II []; second try with no tier I: refused True",
+     "seconds": 12.3,
+     "transcript": "transcripts/P70-5-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "fail",
+     "evidence": "tier-I 0x4032D7E9 used (pack cleared of modules first, then one tier I added); craft: made True after 2 failed roll(s) (tier I kept through each failure: True), the tier I gone True, new tier II []; second try with no tier I: refused True",
+     "seconds": 21.9,
+     "transcript": "transcripts/P70-5-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "fail",
+     "evidence": "tier-I 0x4032D892 used (pack cleared of modules first, then one tier I added); craft: made True after 0 failed roll(s) (tier I kept through each failure: True), the tier I gone True, new tier II []; second try with no tier I: refused True",
+     "seconds": 11.0,
+     "transcript": "transcripts/P70-5-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P70-6",
+   "title": "Trailwise Tack III on a tier-3 mule: the owner's followers drop by one, and come back when it is removed",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "fitted True; followers 4 -> 3 with the tack -> 4 without; module back in the pack True; ['You fit the Trailwise Tack III to the mule.']",
+     "seconds": 10.5,
+     "transcript": "transcripts/P70-6-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "fitted True; followers 4 -> 3 with the tack -> 4 without; module back in the pack True; ['You fit the Trailwise Tack III to the mule.']",
+     "seconds": 10.5,
+     "transcript": "transcripts/P70-6-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "fitted True; followers 4 -> 3 with the tack -> 4 without; module back in the pack True; ['You fit the Trailwise Tack III to the mule.']",
+     "seconds": 10.5,
+     "transcript": "transcripts/P70-6-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P70-7",
+   "title": "Trailwise Tack II: left behind on the same map, the mule is beside its owner within seconds; 'all come' reaches it from far away",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "fitted True; owner moved 25 tiles True: mule beside within 3.7s (True); told to stay and owner moved again True: stayed away True; 'all come' brought it within 0.0s (True)",
+     "seconds": 21.6,
+     "transcript": "transcripts/P70-7-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "fitted True; owner moved 25 tiles True: mule beside within 4.9s (True); told to stay and owner moved again True: stayed away True; 'all come' brought it within 0.0s (True)",
+     "seconds": 24.0,
+     "transcript": "transcripts/P70-7-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "fitted True; owner moved 25 tiles True: mule beside within 4.9s (True); told to stay and owner moved again True: stayed away True; 'all come' brought it within 0.0s (True)",
+     "seconds": 24.0,
+     "transcript": "transcripts/P70-7-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P70-8",
+   "title": "Soul Tether II: the killed mule's corpse is empty, its pack stays on the ghost, and it is resurrected",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "fitted True; pack before 'Contents: 1/203 items, 10/2179 stones'; killed (hits 0) True, ghost still in view True; corpse 0x4032DA2D with 0 items; pack tooltip after 'Contents: 1/203 items, 10/2179 stones'; admin opening the pack sees graphics [7154]; resurrected by staff [Resurrect after the bandage's 501042: True (['Target cannot be resurrected at that location.', 'Double Click On Me For Help!'])",
+     "seconds": 40.4,
+     "transcript": "transcripts/P70-8-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "fitted True; pack before 'Contents: 1/203 items, 20/2179 stones'; killed (hits 0) True, ghost still in view True; corpse 0x4032DB0E with 0 items; pack tooltip after 'Contents: 1/203 items, 20/2179 stones'; admin opening the pack sees graphics [7154]; resurrected by staff [Resurrect after the bandage's 501042: True (['World save completed in 0.02 seconds.', 'Double Click On Me For Help!'])",
+     "seconds": 38.1,
+     "transcript": "transcripts/P70-8-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "fitted True; pack before 'Contents: 1/203 items, 30/2179 stones'; killed (hits 0) True, ghost still in view True; corpse 0x4032DBAB with 0 items; pack tooltip after 'Contents: 1/203 items, 30/2179 stones'; admin opening the pack sees graphics [7154]; resurrected by staff [Resurrect after the bandage's 501042: True (['Target cannot be resurrected at that location.', 'Double Click On Me For Help!'])",
+     "seconds": 38.1,
+     "transcript": "transcripts/P70-8-run3.txt"
+    }
+   ]
   }
  ]
 }
