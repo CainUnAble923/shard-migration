@@ -1239,6 +1239,223 @@
      "transcript": "transcripts/P70-8-run3.txt"
     }
    ]
+  },
+  {
+   "id": "P70-9",
+   "title": "Ore Hopper: 100 iron ingots in the mule's pack weigh less once the hopper is fitted",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "fitted True; stones: pack alone 0, with 100 ingots 10 (+10), right after fitting 10, with 200 ingots 15 (undiscounted would be +20, a 25% hopper gives about +15)",
+     "seconds": 10.8,
+     "transcript": "transcripts/P70-9-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "fitted True; stones: pack alone 15, with 100 ingots 30 (+15), right after fitting 30, with 200 ingots 30 (undiscounted would be +30, a 25% hopper gives about +22)",
+     "seconds": 12.1,
+     "transcript": "transcripts/P70-9-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "fitted True; stones: pack alone 30, with 100 ingots 50 (+20), right after fitting 50, with 200 ingots 45 (undiscounted would be +40, a 25% hopper gives about +30)",
+     "seconds": 12.1,
+     "transcript": "transcripts/P70-9-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P70-10",
+   "title": "Survey Saddle Roll: Options lists a decoded map in the pack and tracks it with a quest arrow; at the spot with III, 'Dig here' raises the chest and its guardians",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "ERROR",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "error",
+     "evidence": "AssertionError: the mule 0x22EF2 gave no context menu",
+     "seconds": 32.9,
+     "transcript": "transcripts/P70-10-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "error",
+     "evidence": "AssertionError: the mule 0x22EF2 gave no context menu",
+     "seconds": 32.9,
+     "transcript": "transcripts/P70-10-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "error",
+     "evidence": "AssertionError: the mule 0x22EF2 gave no context menu",
+     "seconds": 32.9,
+     "transcript": "transcripts/P70-10-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P70-11",
+   "title": "Trader's Ledger III: 'Open your bank box' opens it in town, and is refused while criminal, in a fight, and in a dungeon",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "ERROR",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "error",
+     "evidence": "AssertionError: the mule 0x22EF2 gave no context menu",
+     "seconds": 66.5,
+     "transcript": "transcripts/P70-11-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "error",
+     "evidence": "AssertionError: the mule 0x22EF2 gave no context menu",
+     "seconds": 66.5,
+     "transcript": "transcripts/P70-11-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "error",
+     "evidence": "AssertionError: the mule 0x22EF2 gave no context menu",
+     "seconds": 66.5,
+     "transcript": "transcripts/P70-11-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P82-0",
+   "title": "Artificers' imbuing rework: a formula book read, staff-granted Bountiful imbued at Full anywhere and at Overcharged only by a hall soul forge, the hint line, the refusal and the tooltip",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "order: joined now [\"You have joined the Artificers' Order as Apprentice. Joining is free.\", \"You have been issued an Artificers' Essence Satchel and an Artificers' Toolkit.\"]; Imbuing 140.0; book apprentice-formulary: tooltip \"[Artificers' rank Journeyman: 36 imbue formulae]\"; 'You study the Apprentice Formulary. Your account now knows: Balanced: Basic; Bonus Dexterity: Refined; Bonus Intelligence: Refined; Bonus Strength: Refined; Cold Resist Bonus: Refined; Crafter Skill Bonus: Basic; Durability (Armor): Refined; Durability (Weapon): Refined; Elemental Damage: Basic; Energy Resist Bonus: Refined; Enhance Potions: Refined; Fire Resist Bonus: Refined; Hit Life Leech: Basic; Hit Lower Attack: Basic; Hit Lower Defense: Basic; Hit Mana Leech: Basic; Hit Point Increase: Refined; Hit Points Regen: Refined; Hit Stamina Leech: Basic; Jewelry Skill Bonus: Basic; Lower Reagent Cost: Refined; Lower Stat Req (Armor): Refined; Lower Stat Req (Weapon): Refined; Luck: Refined; Mage Armor: Basic; Mana Increase: Refined; Mana Regen: Refined; Night Sight: Refined; Physical Resist Bonus: Refined; Poison Resist Bonus: Refined; Self Repair: Refined; Self Repair (Armor): Refined; Spell Channeling: Basic; Stamina Increase: Refined; Stamina Regen: Refined; Velocity: Basic.'; consumed True; [ImbueKnowledge Bountiful: ['None'] then ['None', 'Basic', 'Refined', 'Full', 'Overcharged']; shards 70 (farm: ['You disenchant the Longsword, recovering 35 Essence Shard(s)!', 'You disenchant the Longsword, recovering 35 Essence Shard(s)!']); away from forges True: 'Properties: 0/5  |  Here: up to Full'; hint []; row ['0 / 15']; select ['Ingredient: 5 SpiderCarapace'] ['Full: set to 15 - 15 Shard(s) + 8,000 gold'] ['Overcharged (22): needs a soul forge']; Full -> \"You successfully imbue LeatherChest with Bountiful = 15! (+7 Artificers' Standing)\" (falters 0); now ['15 (Full)']; Overcharged away from a forge (not pressable, the row is greyed) -> \"button 132 opened no 'Imbue: Bountiful' page\"; forge placed [\"an Artificers' hall soul forge\", '[Imbue here to reach Overcharged]']: 'Properties: 1/5  |  Here: up to Overcharged, +2% success'; row ['15 / 22']; select ['Overcharged: set to 22 - 22 Shard(s) + 11,733 gold']; Overcharged -> \"You successfully imbue LeatherChest with Bountiful = 22! (+11 Artificers' Standing)\" (falters 0); now ['22 (Overcharged)']; tooltip ['[Bountiful 22%]']",
+     "seconds": 30.6,
+     "transcript": "transcripts/P82-0-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "order: already a member ['Member. Rank: Apprentice.']; Imbuing 140.0; book journeyman-formulary: tooltip \"[Artificers' rank Artificer: 44 imbue formulae]\"; 'You study the Journeyman Formulary. Your account now knows: Balanced: Refined; Bonus Dexterity: Full; Bonus Intelligence: Full; Bonus Strength: Full; Cold Resist Bonus: Full; Crafter Skill Bonus: Refined; Damage Increase: Basic; Durability (Armor): Full; Durability (Weapon): Full; Elemental Damage: Refined; Energy Resist Bonus: Full; Enhance Potions: Full; Fire Resist Bonus: Full; Hit Dispel: Basic; Hit Fireball: Basic; Hit Harm: Basic; Hit Life Leech: Refined; Hit Lightning: Basic; Hit Lower Attack: Refined; Hit Lower Defense: Refined; Hit Magic Arrow: Basic; Hit Mana Leech: Refined; Hit Point Increase: Full; Hit Points Regen: Full; Hit Stamina Leech: Refined; Jewelry Skill Bonus: Refined; Lower Reagent Cost: Full; Lower Stat Req (Armor): Full; Lower Stat Req (Weapon): Full; Luck: Full; Mage Armor: Refined; Mage Weapon: Basic; Mana Increase: Full; Mana Regen: Full; Night Sight: Full; Physical Resist Bonus: Full; Poison Resist Bonus: Full; Reflect Physical Damage: Basic; Self Repair: Full; Self Repair (Armor): Full; Spell Channeling: Refined; Stamina Increase: Full; Stamina Regen: Full; Velocity: Refined.'; consumed True; [ImbueKnowledge Bountiful: ['Overcharged', 'Full', 'Refined', 'Basic', 'None'] then ['None', 'Basic', 'Refined', 'Full', 'Overcharged']; shards 68 (farm: ['You disenchant the Longsword, recovering 35 Essence Shard(s) and 3 PropertyEssence(s)!']); away from forges True: 'Properties: 0/5  |  Here: up to Full'; hint []; row ['0 / 15']; select ['Ingredient: 5 SpiderCarapace'] ['Full: set to 15 - 15 Shard(s) + 8,000 gold'] ['Overcharged (22): needs a soul forge']; Full -> \"You successfully imbue LeatherChest with Bountiful = 15! (+7 Artificers' Standing)\" (falters 0); now ['15 (Full)']; Overcharged away from a forge (not pressable, the row is greyed) -> \"button 132 opened no 'Imbue: Bountiful' page\"; forge placed [\"an Artificers' hall soul forge\", '[Imbue here to reach Overcharged]']: 'Properties: 1/5  |  Here: up to Overcharged, +2% success'; row ['15 / 22']; select ['Overcharged: set to 22 - 22 Shard(s) + 11,733 gold']; Overcharged -> \"You successfully imbue LeatherChest with Bountiful = 22! (+11 Artificers' Standing)\" (falters 0); now ['22 (Overcharged)']; tooltip ['[Bountiful 22%]']",
+     "seconds": 37.8,
+     "transcript": "transcripts/P82-0-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "order: already a member ['Member. Rank: Apprentice.']; Imbuing 140.0; book artificers-formulary: tooltip \"[Artificers' rank Master Artificer: 34 imbue formulae]\"; \"You study the Artificer's Formulary. Your account now knows: Balanced: Full; Butcher's Eye: Basic; Crafter Skill Bonus: Full; Damage Increase: Refined; Defense Chance Increase: Basic; Elemental Damage: Full; Hit Chance Increase: Basic; Hit Cold Area: Basic; Hit Dispel: Refined; Hit Energy Area: Basic; Hit Fire Area: Basic; Hit Fireball: Refined; Hit Harm: Refined; Hit Life Leech: Full; Hit Lightning: Refined; Hit Lower Attack: Full; Hit Lower Defense: Full; Hit Magic Arrow: Refined; Hit Mana Leech: Full; Hit Physical Area: Basic; Hit Poison Area: Basic; Hit Stamina Leech: Full; Jewelry Skill Bonus: Full; Lower Mana Cost: Basic; Mage Armor: Full; Mage Weapon: Refined; Mastercraft: Basic; Prospector: Basic; Reflect Physical Damage: Refined; Slayer: Basic; Spell Channeling: Full; Spell Damage Increase: Basic; Velocity: Full.\"; consumed True; [ImbueKnowledge Bountiful: ['Overcharged', 'Full', 'Refined', 'Basic', 'None'] then ['None', 'Basic', 'Refined', 'Full', 'Overcharged']; shards 66 (farm: ['You disenchant the Longsword, recovering 35 Essence Shard(s) and 2 PropertyEssence(s)!']); away from forges True: 'Properties: 0/5  |  Here: up to Full'; hint []; row ['0 / 15']; select ['Ingredient: 5 SpiderCarapace'] ['Full: set to 15 - 15 Shard(s) + 8,000 gold'] ['Overcharged (22): needs a soul forge']; Full -> \"You successfully imbue LeatherChest with Bountiful = 15! (+7 Artificers' Standing)\" (falters 0); now ['15 (Full)']; Overcharged away from a forge (not pressable, the row is greyed) -> \"button 132 opened no 'Imbue: Bountiful' page\"; forge placed [\"an Artificers' hall soul forge\", '[Imbue here to reach Overcharged]']: 'Properties: 1/5  |  Here: up to Overcharged, +2% success'; row ['15 / 22']; select ['Overcharged: set to 22 - 22 Shard(s) + 11,733 gold']; Overcharged -> \"You successfully imbue LeatherChest with Bountiful = 22! (+11 Artificers' Standing)\" (falters 0); now ['22 (Overcharged)']; tooltip ['[Bountiful 22%]']",
+     "seconds": 40.5,
+     "transcript": "transcripts/P82-0-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P173-1",
+   "title": "A Snow Elemental slayer war axe: listed as [ON], extracted to its essence, imbued onto a second weapon",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "order: already a member; Slayer family known: ['Basic']; axe tooltip has the slayer: True; shards 29 ; disenchant list ['Slayer: Summer Wind (Snow Elemental)  [ON]']; extract row Extract: Slayer: Summer Wind (Snow Elemental)  -> 1 Essence + 3 shards; extract -> 'You extract Slayer: Summer Wind (Snow Elemental) from WarAxe, receiving an Essence of Slayer: Summer Wind (Snow Elemental) and 3 Essence Shard(s).'; essence seen (None) ['Essence of Slayer: Summer Wind (Snow Elemental)', '[Slayer: Summer Wind (Snow Elemental)]']; axe still says slayer: False; imbue -> \"You successfully imbue Longsword with Slayer: Summer Wind (Snow Elemental) = 1! (+7 Artificers' Standing)\" (falters 0); confirm said ['Property: Slayer: Summer Wind (Snow Elemental)Current value: 0  ->  Target: 1 (Basic)Requires: 1 Essence of Slayer: Summ']; enable line ['Enable Slayer: Summer Wind (Snow Elemental)']; Longsword tooltip says snow elemental slayer: True",
+     "seconds": 34.9,
+     "transcript": "transcripts/P173-1-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "order: already a member; Slayer family known: ['Basic']; axe tooltip has the slayer: True; shards 17 ; disenchant list ['Slayer: Summer Wind (Snow Elemental)  [ON]']; extract row Extract: Slayer: Summer Wind (Snow Elemental)  -> 1 Essence + 3 shards; extract -> 'You extract Slayer: Summer Wind (Snow Elemental) from WarAxe, receiving an Essence of Slayer: Summer Wind (Snow Elemental) and 3 Essence Shard(s).'; essence seen (None) ['Essence of Slayer: Summer Wind (Snow Elemental)', '[Slayer: Summer Wind (Snow Elemental)]']; axe still says slayer: False; imbue -> \"You successfully imbue Longsword with Slayer: Summer Wind (Snow Elemental) = 1! (+7 Artificers' Standing)\" (falters 0); confirm said ['Property: Slayer: Summer Wind (Snow Elemental)Current value: 0  ->  Target: 1 (Basic)Requires: 1 Essence of Slayer: Summ']; enable line ['Enable Slayer: Summer Wind (Snow Elemental)']; Longsword tooltip says snow elemental slayer: True",
+     "seconds": 32.0,
+     "transcript": "transcripts/P173-1-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "order: already a member; Slayer family known: ['Basic']; axe tooltip has the slayer: True; shards 40 ['You disenchant the Longsword, recovering 35 Essence Shard(s)!']; disenchant list ['Slayer: Summer Wind (Snow Elemental)  [ON]']; extract row Extract: Slayer: Summer Wind (Snow Elemental)  -> 1 Essence + 3 shards; extract -> 'You extract Slayer: Summer Wind (Snow Elemental) from WarAxe, receiving an Essence of Slayer: Summer Wind (Snow Elemental) and 3 Essence Shard(s).'; essence seen (None) ['Essence of Slayer: Summer Wind (Snow Elemental)', '[Slayer: Summer Wind (Snow Elemental)]']; axe still says slayer: False; imbue -> \"You successfully imbue Longsword with Slayer: Summer Wind (Snow Elemental) = 1! (+7 Artificers' Standing)\" (falters 0); confirm said ['Property: Slayer: Summer Wind (Snow Elemental)Current value: 0  ->  Target: 1 (Basic)Requires: 1 Essence of Slayer: Summ']; enable line ['Enable Slayer: Summer Wind (Snow Elemental)']; Longsword tooltip says snow elemental slayer: True",
+     "seconds": 47.7,
+     "transcript": "transcripts/P173-1-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P176-1",
+   "title": "Unravel Container: a bag of 3 magic, 2 plain and 1 blessed item; the confirmation counts, the three summary lines, the bag keeps the plain and blessed ones, the shards rise by the Ingredients line",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "order: already a member; bag holds 6 of 6 (moved [True, True, True, True, True, True]); blessed tooltip ['Blessed']; prompt 'Target a container in your backpack to unravel the magic items in it.'; confirmation: go 3, stay 3, button 'Unravel 3 Item(s)'; summary 'You magically unravel the items!' / 'Unraveled: 3/6 items' / 'Unraveled 3 item(s), skipped 3.' / 'Ingredients: 9 Essence Shard(s), 1 Essence of Hit Life Leech.'; shards 28 -> 37; magic gone [True, True, True]; plain+blessed still in the bag [True, True, True]",
+     "seconds": 40.1,
+     "transcript": "transcripts/P176-1-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "order: already a member; bag holds 6 of 6 (moved [True, True, True, True, True, True]); blessed tooltip ['Blessed']; prompt 'Target a container in your backpack to unravel the magic items in it.'; confirmation: go 3, stay 3, button 'Unravel 3 Item(s)'; summary 'You magically unravel the items!' / 'Unraveled: 3/6 items' / 'Unraveled 3 item(s), skipped 3.' / 'Ingredients: 9 Essence Shard(s), 1 Essence of Hit Life Leech.'; shards 37 -> 46; magic gone [True, True, True]; plain+blessed still in the bag [True, True, True]",
+     "seconds": 40.2,
+     "transcript": "transcripts/P176-1-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "order: already a member; bag holds 6 of 6 (moved [True, True, True, True, True, True]); blessed tooltip ['Blessed']; prompt 'Target a container in your backpack to unravel the magic items in it.'; confirmation: go 3, stay 3, button 'Unravel 3 Item(s)'; summary 'You magically unravel the items!' / 'Unraveled: 3/6 items' / 'Unraveled 3 item(s), skipped 3.' / 'Ingredients: 9 Essence Shard(s).'; shards 46 -> 55; magic gone [True, True, True]; plain+blessed still in the bag [True, True, True]",
+     "seconds": 40.1,
+     "transcript": "transcripts/P176-1-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P121-2",
+   "title": "A tamed Giant Spider at Poisoning 100 gives a player Lethal poison within a few bites",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "P121-2: the green flash on each poisoning hit",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "poison messages to the victim within 1 s: ['Lethal']; Lethal (1042865) yes after 1 s; the victim is alive (Str 250 / 175 hits, left to the poison); wording from Cliloc.enu",
+     "seconds": 7.9,
+     "transcript": "transcripts/P121-2-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "poison messages to the victim within 30 s: ['Lethal']; Lethal (1042865) yes after 30 s; the victim is alive (Str 250 / 175 hits, left to the poison); wording from Cliloc.enu",
+     "seconds": 39.1,
+     "transcript": "transcripts/P121-2-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "poison messages to the victim within 6 s: ['Lethal']; Lethal (1042865) yes after 6 s; the victim is alive (Str 250 / 175 hits, left to the poison); wording from Cliloc.enu",
+     "seconds": 13.2,
+     "transcript": "transcripts/P121-2-run3.txt"
+    }
+   ]
   }
  ]
 }
