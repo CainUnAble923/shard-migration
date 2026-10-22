@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.21.20. Golem on, 19 queued, latest done P379. Play tests: 517 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.21.20. Golem on, 21 queued, latest done P379. Play tests: 517 open, 4 failed, 43 passed.
 
 ### Needs overseer review (5)
 
@@ -235,7 +235,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 
 | Prompt | State | When |
 |---|---|---|
-| P266 new-haven-winter-decor | queued |  |
 | P274 fable-week-tracking | queued |  |
 | P277 rideable-red-dragon | queued |  |
 | P281 guild-halls-placement | queued |  |
@@ -247,13 +246,16 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P354 cont-fixup-port-eodon-remainder | queued |  |
 | P362 ui-skins-player-options | queued |  |
 | P363 quest-markers-keys-gates | queued |  |
-| P364 league-bestiary-batch-2 | queued |  |
 | P365 reward-mounts-and-evo-stages | queued |  |
 | P368 added-music-areas-monsters-bosses | queued |  |
 | P370 golem-fixes-flaky-builds-reclaims | queued |  |
 | P372 cont-fixup-hammer-t3-craft-order | queued |  |
 | P373 codex-golems-finish-and-enable | queued |  |
 | P375 cont-fixup-playtest-bot-checks-first | queued |  |
+| P380 cont-fixup-chopped-tree-stumps | queued |  |
+| P382 guild-guide-order-of-the-alembic | queued |  |
+| P383 guild-guide-artificers-order | queued |  |
+| P384 guild-guide-thieves-den | queued |  |
 | P379 crystal-review-10-21-merges | done | 2026-10-21 |
 | P378 playtest-plans-10-21 | done | 2026-10-21 |
 | P377 crystal-wiki-catch-up-2 | done | 2026-10-21 |
