@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.21.23. Golem on, 21 queued, latest done P383. Play tests: 620 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.21.23. Golem on, 21 queued, latest done P384. Play tests: 620 open, 4 failed, 43 passed.
 
 ### Needs overseer review (5)
 
@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 208 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 209 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -256,6 +256,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P386 guide-rangers-custodians-healers | queued |  |
 | P387 guide-achievements-and-loot-boxes | queued |  |
 | P388 guide-levels-loops-and-scrolls | queued |  |
+| P384 guild-guide-thieves-den | done | 2026-10-21 |
 | P383 guild-guide-artificers-order | done | 2026-10-21 |
 | P382 guild-guide-order-of-the-alembic | done | 2026-10-21 |
 | P381 guild-guide-society-of-smiths | done | 2026-10-21 |
@@ -265,7 +266,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P376 league-decisions | done | 2026-10-21 |
 | P374 league-player-guide-draft | done | 2026-10-21 |
 | P371 graduation-is-the-first-loop | done | 2026-10-21 |
-| P369 cont-fixup-companions-b1-base-and-record | done | 2026-10-21 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 146 patches, 12 replacements
 
