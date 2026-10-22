@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.22. Golem on, 51 queued, latest done P432. Play tests: 671 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.22. Golem on, 50 queued, latest done P433. Play tests: 672 open, 4 failed, 43 passed.
 
 ### Needs overseer review (5)
 
@@ -71,7 +71,7 @@ Judgment reviewed 2026-10-20. Shard version 2026.10.22. Golem on, 51 queued, lat
 - **gate What is built is seen in a client, not only compiled**: Waits on a confirmation: Chase: is the test shard on a build that carries P203 and P204 (version 2026.10.20.x), and which play tests ran after 2026-10-18? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "What is built is seen in a client, not only compiled" --done yes --detail "..."` or `python tools/judge.py confirm gate "What is built is seen in a client, not only compiled"`
 - **task DEPLOY**: Deploy main to the test shard and run its play tests: waits on a confirmation: Chase: which build is on the test shard today? `python tools/judge.py task DEPLOY --status todo|in-progress|blocked|done --note "..."` or `python tools/judge.py confirm task DEPLOY`
 - **direction**: Confirmed 2026-10-20; notes/cc-P376-league-decisions.md (2026-10-21) is newer. Read it; if the direction moved, edit "direction" in tools/progress-state.json. `python tools/judge.py confirm direction`
-- **play tests not sorted**: 228 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
+- **play tests not sorted**: 229 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
 
 ## Port list: 6 of 16 systems in. 807 of 983 files (82%).
 
@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 254 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 255 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -259,7 +259,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P415 trash-bag-corpse-claim | queued |  |
 | P416 stone-mining-gate | queued |  |
 | P427 fixes-from-crystal-p379 | queued |  |
-| P434 review-recipe-gating | queued |  |
 | P435 review-smith-orders-2 | queued |  |
 | P436 guild-league-gump-look | queued |  |
 | P437 review-league-reward-shop | queued |  |
@@ -286,6 +285,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P458 fix-eodon-fix-up-xmlspawner-weights-the | queued |  |
 | P459 fix-guild-hall-decor-seeder-refuse-overlapping | queued |  |
 | P460 fix-artificers-guildmaster-and-join-text-match | queued |  |
+| P433 review-dungeon-build-1 | done | 2026-10-22 |
 | P432 review-clean-up-britannia | done | 2026-10-22 |
 | P431 review-guild-starter-path | done | 2026-10-22 |
 | P430 review-rootdeep-burrows-build | done | 2026-10-22 |
@@ -295,7 +295,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P425 review-rootdeep-way-in | done | 2026-10-22 |
 | P424 review-fog-of-war-client | done | 2026-10-22 |
 | P423 review-bulk-orders-port | done | 2026-10-22 |
-| P422 review-requisitions-and-leads | done | 2026-10-22 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 147 patches, 12 replacements
 
