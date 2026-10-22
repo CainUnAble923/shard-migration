@@ -433,6 +433,161 @@
      "transcript": "transcripts/CREATE-run3.txt"
     }
    ]
+  },
+  {
+   "id": "T-047",
+   "title": "Young by time played: the countdown, and 'I want to grow up!' brings the confirm gump",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "countdown 'You will enjoy the benefits and relatively safe status of a young player for another 13 days and 23 hours of play time. Say \"I want to grow up!\" to give it up sooner.' (days and hours: True); confirm gump: ['', \"Renouncing 'Young Player' Status\"]",
+     "seconds": 304.9,
+     "transcript": "transcripts/T-047-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "countdown 'You will enjoy the benefits and relatively safe status of a young player for another 13 days and 23 hours of play time. Say \"I want to grow up!\" to give it up sooner.' (days and hours: True); confirm gump: ['', \"Renouncing 'Young Player' Status\"]",
+     "seconds": 13.1,
+     "transcript": "transcripts/T-047-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "countdown 'You will enjoy the benefits and relatively safe status of a young player for another 13 days and 23 hours of play time. Say \"I want to grow up!\" to give it up sooner.' (days and hours: True); confirm gump: ['', \"Renouncing 'Young Player' Status\"]",
+     "seconds": 13.1,
+     "transcript": "transcripts/T-047-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "D41",
+   "title": "Regression: the Guild Directory lists each guild once",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "18 rows, header says 18 guilds, 18 way buttons; duplicates none; Artificers' Order 1 time(s)",
+     "seconds": 0.3,
+     "transcript": "transcripts/D41-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "18 rows, header says 18 guilds, 18 way buttons; duplicates none; Artificers' Order 1 time(s)",
+     "seconds": 0.3,
+     "transcript": "transcripts/D41-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "18 rows, header says 18 guilds, 18 way buttons; duplicates none; Artificers' Order 1 time(s)",
+     "seconds": 0.3,
+     "transcript": "transcripts/D41-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P56-6",
+   "title": "Valorite refused at Mining 98.9, smelts at 99",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "at 98.9: refused True ['You have no idea how to smelt this strange ore!'], ore left 10; at 99.0 over 6 tries: refused 0, smelted 3, burned 3",
+     "seconds": 19.1,
+     "transcript": "transcripts/P56-6-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "at 98.9: refused True ['Double Click On Me For Help!'], ore left 10; at 99.0 over 6 tries: refused 0, smelted 5, burned 1",
+     "seconds": 21.5,
+     "transcript": "transcripts/P56-6-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "at 98.9: refused True ['You have no idea how to smelt this strange ore!'], ore left 10; at 99.0 over 6 tries: refused 0, smelted 3, burned 3",
+     "seconds": 19.1,
+     "transcript": "transcripts/P56-6-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P56-4",
+   "title": "Platinum refused at Mining 112.4; at 112.5 it smelts (about half the time)",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "at 112.4: refused True ['Double Click On Me For Help!'], ore left 10; at 112.5 over 8 tries: refused 0, smelted 3, burned 5",
+     "seconds": 23.3,
+     "transcript": "transcripts/P56-4-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "at 112.4: refused True ['You have no idea how to smelt this strange ore!'], ore left 10; at 112.5 over 8 tries: refused 0, smelted 5, burned 3",
+     "seconds": 24.6,
+     "transcript": "transcripts/P56-4-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "at 112.4: refused True ['You have no idea how to smelt this strange ore!'], ore left 10; at 112.5 over 8 tries: refused 0, smelted 5, burned 3",
+     "seconds": 25.7,
+     "transcript": "transcripts/P56-4-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P61-3",
+   "title": "Achievements: 'Oh Look, It's Dead' shows its Earned line and no 'Progress: 9/1'; unearned ones show progress",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "FLAKY",
+   "passes": 2,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "fail",
+     "evidence": "rat killed by the player: False; row ''; other rows with progress: 1",
+     "seconds": 63.6,
+     "transcript": "transcripts/P61-3-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "rat killed by the player: True; row 'Oh Look, It\\'s Dead [5 AP / 5 R]\"You are, by definition, a killer now. Congratulations.\"(Earned: slew your first creature)'; other rows with progress: 1",
+     "seconds": 6.1,
+     "transcript": "transcripts/P61-3-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "rat killed by the player: True; row 'Oh Look, It\\'s Dead [5 AP / 5 R]\"You are, by definition, a killer now. Congratulations.\"(Earned: slew your first creature)'; other rows with progress: 1",
+     "seconds": 3.6,
+     "transcript": "transcripts/P61-3-run3.txt"
+    }
+   ]
   }
  ]
 }
