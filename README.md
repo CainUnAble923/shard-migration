@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 233 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 234 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -251,6 +251,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P375 cont-fixup-playtest-bot-checks-first | queued |  |
 | P405 servuo-batch-1022 | done | 2026-10-22 |
 | P403 review-music-room-and-area-music | done | 2026-10-22 |
+| P402 review-noted-achievements-code | done | 2026-10-22 |
 | P401 review-p282-loop-scrolls-code | done | 2026-10-22 |
 | P400 review-p380-stumps-code | done | 2026-10-22 |
 | P399 guild-index-page | done | 2026-10-22 |
@@ -258,7 +259,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P397 new-player-faq | done | 2026-10-22 |
 | P396 guide-dungeons | done | 2026-10-22 |
 | P395 wiki-drafts-cross-check | done | 2026-10-22 |
-| P394 shard-glossary | done | 2026-10-22 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 147 patches, 12 replacements
 
