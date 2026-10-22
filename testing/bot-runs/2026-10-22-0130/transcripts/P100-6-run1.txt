@@ -1,0 +1,10 @@
+    0.00 harness  == P100-6 run 1: After [save and a restart, [VBuild undo still puts a wiped corner back
+    0.09 harness  Traceback (most recent call last):
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\run.py", line 180, in run_checks
+    ok, evidence = chk.fn(ctx)
+                   ^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\checks_p224_restart.py", line 41, in p100_6
+    raise RuntimeError("not run: this check restarts the test shard (sl-modernuo-test) and the run targets %s" % safety.describe())
+RuntimeError: not run: this check restarts the test shard (sl-modernuo-test) and the run targets the scratch shard 127.0.0.1:2595
+
+    0.09 harness  == P100-6 run 1: ERROR (RuntimeError: not run: this check restarts the test shard (sl-modernuo-test) and the run targets the scratch shard 127.0.0.1:2595)
