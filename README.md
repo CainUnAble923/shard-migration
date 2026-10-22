@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.21.24. Golem on, 50 queued, latest done P422. Play tests: 661 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.21.24. Golem on, 49 queued, latest done P428. Play tests: 661 open, 4 failed, 43 passed.
 
 ### Needs overseer review (5)
 
@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 244 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 245 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -262,7 +262,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P425 review-rootdeep-way-in | queued |  |
 | P426 review-high-seas-fishing | queued |  |
 | P427 fixes-from-crystal-p379 | queued |  |
-| P428 crystal-review-10-22-merges | queued |  |
 | P429 crystal-codex-findings-to-fixes | queued |  |
 | P430 review-rootdeep-burrows-build | queued |  |
 | P431 review-guild-starter-path | queued |  |
@@ -285,6 +284,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P448 review-pet-gain-speed | queued |  |
 | P449 review-graduation-is-the-first-loop | queued |  |
 | P450 review-monster-stealing-shard-rules | queued |  |
+| P428 crystal-review-10-22-merges | done | 2026-10-22 |
 | P422 review-requisitions-and-leads | done | 2026-10-22 |
 | P421 review-tutorial-farm | done | 2026-10-22 |
 | P420 review-tutorial-framework | done | 2026-10-22 |
@@ -294,7 +294,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P407 review-eodon-port-code | done | 2026-10-22 |
 | P406 patch-notes-2026-10-22 | done | 2026-10-22 |
 | P405 servuo-batch-1022 | done | 2026-10-22 |
-| P404 review-bestiary-batch-2 | done | 2026-10-22 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 147 patches, 12 replacements
 
