@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-21T23:00:56-05:00",
+  "generated": "2026-10-22T00:13:55-05:00",
   "direction": {
     "eyebrow": "Direction",
     "title": "Our own shard on ModernUO, OSI where OSI has an answer",
@@ -565,7 +565,7 @@
     "confirmed": "2026-09-19"
   },
   "counted": {
-    "customization_files": 1570,
+    "customization_files": 1584,
     "patch_files": 153,
     "stale_migrations_present": false,
     "upstream_patch_files": 146,
@@ -583,8 +583,8 @@
       "TreasureMap.cs",
       "TreasureMapChest.cs"
     ],
-    "test_files": 222,
-    "test_cases": 1393
+    "test_files": 223,
+    "test_cases": 1414
   },
   "content_progress": [
     {
@@ -618,16 +618,16 @@
       "pct": 90.2
     },
     {
+      "area": "Services/Expansions",
+      "total": 175,
+      "done": 46,
+      "pct": 26.3
+    },
+    {
       "area": "Items/Functional",
       "total": 49,
       "done": 37,
       "pct": 75.5
-    },
-    {
-      "area": "Services/Expansions",
-      "total": 175,
-      "done": 36,
-      "pct": 20.6
     },
     {
       "area": "Items/Consumables",
@@ -666,6 +666,12 @@
       "pct": 7.7
     },
     {
+      "area": "Mobiles/NPCs",
+      "total": 222,
+      "done": 3,
+      "pct": 1.4
+    },
+    {
       "area": "Items/Decorative",
       "total": 88,
       "done": 3,
@@ -676,12 +682,6 @@
       "total": 84,
       "done": 3,
       "pct": 3.6
-    },
-    {
-      "area": "Mobiles/NPCs",
-      "total": 222,
-      "done": 2,
-      "pct": 0.9
     },
     {
       "area": "Services/New Magincia",
@@ -787,7 +787,7 @@
     {
       "kind": "play tests",
       "item": "not sorted",
-      "check": "189 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check.",
+      "check": "190 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check.",
       "cmd": [
         "python -m unittest tools/tests/test_play_who.py"
       ]
@@ -949,9 +949,9 @@
         "why": "a whole facet of places and dinosaurs, half already ported (CC3)",
         "covers": [],
         "candidates": 19,
-        "done": 6,
+        "done": 16,
         "complete": false,
-        "pct": 31.6
+        "pct": 84.2
       },
       {
         "id": "hsfishing",
@@ -1069,16 +1069,16 @@
         "why": "ported with the system that uses them, never on their own; not counted",
         "covers": [],
         "candidates": 361,
-        "done": 18,
+        "done": 19,
         "complete": false,
-        "pct": 5.0
+        "pct": 5.3
       }
     ],
     "tiers": {
       "port": {
         "systems": 16,
         "files": 983,
-        "done": 797,
+        "done": 807,
         "titles": [
           "Bulk orders, all crafts",
           "Treasure maps revamp",
@@ -1103,7 +1103,7 @@
       "ride": {
         "systems": 1,
         "files": 361,
-        "done": 18,
+        "done": 19,
         "titles": [
           "Ride-along: NPCs, quest items, books, internals"
         ],
@@ -1157,9 +1157,9 @@
     "counted": {
       "systems": 16,
       "in": 6,
-      "done": 797,
+      "done": 807,
       "total": 983,
-      "pct": 81.1
+      "pct": 82.1
     },
     "next": "Bulk orders, all crafts",
     "decided": [
@@ -1317,14 +1317,14 @@
   "derived": {
     "version": "2026.10.21.24",
     "playtests": {
-      "open": 626,
+      "open": 627,
       "failed": 4,
       "passed": 43,
       "later": 8,
       "blocked": 1,
-      "total": 673,
+      "total": 674,
       "unloggedFails": 3,
-      "generatedAt": "2026-10-22T03:22:49Z"
+      "generatedAt": "2026-10-22T04:02:56Z"
     },
     "queue": {
       "autopilot": "on",
@@ -1371,11 +1371,6 @@
           "state": "queued"
         },
         {
-          "n": 354,
-          "slug": "cont-fixup-port-eodon-remainder",
-          "state": "queued"
-        },
-        {
           "n": 362,
           "slug": "ui-skins-player-options",
           "state": "queued"
@@ -1413,11 +1408,6 @@
         {
           "n": 380,
           "slug": "cont-fixup-chopped-tree-stumps",
-          "state": "queued"
-        },
-        {
-          "n": 390,
-          "slug": "guide-crafting-changes",
           "state": "queued"
         },
         {
@@ -1513,8 +1503,8 @@
           "notes": "notes/cc-P378-playtest-plans-10-21.md"
         }
       ],
-      "finished_total": 218,
-      "done_total": 214,
+      "finished_total": 220,
+      "done_total": 216,
       "stopped_total": 4,
       "latest_done": {
         "n": 388,
