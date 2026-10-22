@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.21.24. Golem on, 17 queued, latest done P398. Play tests: 645 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.21.24. Golem on, 17 queued, latest done P399. Play tests: 645 open, 4 failed, 43 passed.
 
 ### Needs overseer review (5)
 
@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 228 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 229 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -252,6 +252,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P375 cont-fixup-playtest-bot-checks-first | queued |  |
 | P400 review-p380-stumps-code | queued |  |
 | P401 review-p282-loop-scrolls-code | queued |  |
+| P399 guild-index-page | done | 2026-10-22 |
 | P398 feature-queue-audit | done | 2026-10-22 |
 | P397 new-player-faq | done | 2026-10-22 |
 | P396 guide-dungeons | done | 2026-10-22 |
@@ -261,7 +262,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P392 open-design-questions | done | 2026-10-22 |
 | P391 guide-new-haven-start | done | 2026-10-22 |
 | P390 guide-crafting-changes | done | 2026-10-22 |
-| P389 guide-companions-and-evo-pets | done | 2026-10-22 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 147 patches, 12 replacements
 
