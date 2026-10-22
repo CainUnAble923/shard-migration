@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.21.24. Golem on, 48 queued, latest done P428. Play tests: 663 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.21.24. Golem on, 47 queued, latest done P429. Play tests: 663 open, 4 failed, 43 passed.
 
 ### Needs overseer review (5)
 
@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 246 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 247 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -261,7 +261,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P425 review-rootdeep-way-in | queued |  |
 | P426 review-high-seas-fishing | queued |  |
 | P427 fixes-from-crystal-p379 | queued |  |
-| P429 crystal-codex-findings-to-fixes | queued |  |
 | P430 review-rootdeep-burrows-build | queued |  |
 | P431 review-guild-starter-path | queued |  |
 | P432 review-clean-up-britannia | queued |  |
@@ -283,6 +282,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P448 review-pet-gain-speed | queued |  |
 | P449 review-graduation-is-the-first-loop | queued |  |
 | P450 review-monster-stealing-shard-rules | queued |  |
+| P429 crystal-codex-findings-to-fixes | done | 2026-10-22 |
 | P428 crystal-review-10-22-merges | done | 2026-10-22 |
 | P423 review-bulk-orders-port | done | 2026-10-22 |
 | P422 review-requisitions-and-leads | done | 2026-10-22 |
@@ -292,7 +292,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P418 review-league-register-code | done | 2026-10-22 |
 | P417 gathering-orders-design | done | 2026-10-22 |
 | P407 review-eodon-port-code | done | 2026-10-22 |
-| P406 patch-notes-2026-10-22 | done | 2026-10-22 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 147 patches, 12 replacements
 
