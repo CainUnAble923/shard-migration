@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.23.3. Golem on, 41 queued, latest done P482. Play tests: 715 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.23.3. Golem on, 41 queued, latest done P483. Play tests: 715 open, 4 failed, 43 passed.
 
 ### Needs overseer review (5)
 
@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 296 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 297 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -276,6 +276,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P491 review-underworld-mini-champions-2 | queued |  |
 | P492 review-tinker-golem-watchdog | queued |  |
 | P493 review-golem-test-accounts | queued |  |
+| P483 review-flying-loot | done | 2026-10-23 |
 | P482 review-levelable-gear-build | done | 2026-10-23 |
 | P478 wiki-catch-up-3 | done | 2026-10-23 |
 | P477 crystal-review-10-23-merges | done | 2026-10-23 |
@@ -285,7 +286,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P473 review-halloween-bank-decor | done | 2026-10-23 |
 | P472 review-away-mode-and-email-controls | done | 2026-10-23 |
 | P471 review-requirement-colors | done | 2026-10-23 |
-| P470 review-work-order-numbers-pass | done | 2026-10-23 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 147 patches, 12 replacements
 
