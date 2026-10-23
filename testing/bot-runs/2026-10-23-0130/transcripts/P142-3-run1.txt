@@ -1,0 +1,597 @@
+    0.00 harness  == P142-3 run 1: The Burrows: an Initiate steals, a non-member is refused, The Burrow Mother needs a Master
+    0.00 admin    -> say '[go 0x247E2'
+    1.00 admin    -> say '[add ThiefGuildmaster'
+    1.01 admin    <- 0x6C target cursor 1371 (type 1)
+    1.21 admin    -> 0x6C target ground 5512,2360,42
+    1.21 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+    1.71 player   -> 0xBF 0x13 context menu request 0x00024B50
+    1.71 player   <- 0xBF 0x14 context menu 0x00024B50: [(0, 3006123, 'Open Paperdoll', 0), (1, 3006146, 'Talk', 0), (2, 3006014, 'Train Detect Hidden', 0), (3, 3006021, 'Train Hiding', 0), (4, 3006024, 'Train Lockpicking', 0), (5, 3006028, 'Train Snooping', 0), (6, 3006030, 'Train Poisoning', 0), (7, 3006033, 'Train Stealing', 1), (8, 3006042, 'Train Fencing', 0)]
+    1.72 player   -> 0xBF 0x15 context pick 1 (Talk) on 0x00024B50
+    1.72 player   <- 0xDD gump 0x00000AD3 type -810631593: Thieves' Den | <BASEFONT COLOR=#DDDDDD><I>We see all. Can we trust you? Show us your light fingers.</I></BASEFONT> | <BASEFONT COLOR=#AAAAAA>Teaches: Hiding, Stealth, Stealing, Snooping, Lockpicking, Poisoning, Detecting Hidden, Remove Trap</BASEFONT> | Separate from the stock trade guild (say "join", 500 gold). One does not join the other. | Member. Rank: Initiate. | Starter items (2) | Mule module schematics | Apprentice task: | <BASEFONT COLOR=#DDDDDD>Demonstrate Stealing of at least 20.0.</BASEFONT> | Complete it: +25 reputation, +10 scrip | Guild services | Guild Directory | Requisitions | Close
+    1.72 player      layout: { resizepic 0 0 9270 520 400 }{ checkertrans 10 10 500 380 }{ text 20 14 1154 0 }{ gumppictiled 10 36 500 2 9304 }{ htmlgump 20 44 480 36 1 0 0 }{ htmlgump 20 82 480 36 2 0 0 }{ text 20 118 999 3 }{ gumppictiled 10 140 500 2 9304 }{ text 20 150 68 4 }{ button 20 172 4005 4007 1 0 3 }{ text 55 174 999 5 }{ button 20 200 4005 4007 1 0 7 }{ text 55 202 999 6 }{ gumppictiled 10 232 500 2 9304 }{ text 20 240 999 7 }{ htmlgump 20 260 480 36 8 0 0 }{ button 20 298 4023 4025 1 0 4 }{ text 55 300 1154 9 }{ gumppictiled 10 350 500 2 9304 }{ button 20 362 4011 4012 1 0 5 }{ text 45 364 999 10 }{ button 180 362 4011 4012 1 0 6 }{ text 205 364 999 11 }{ button 300 362 4011 4012 1 0 9 }{ text 325 364 999 12 }{ button 420 362 4017 4019 1 0 0 }{ text 455 364 999 13 }
+    1.72 player   -> 0xB1 gump 0x00000AD3 type -810631593 button 0 switches [] texts []
+    1.72 admin    -> say '[go 0x247E2'
+    2.73 admin    -> say '[SetSkill Stealing 120'
+    2.73 admin    <- 0x6C target cursor 1372 (type 0)
+    2.94 admin    -> 0x6C target object 0x000247E2
+    2.94 player   <- 0x3A skill 33 now 120.0 (cap 200.0)
+    2.94 admin    <- unicode(0) System: Stealing : 120 (Base: 120)
+    3.56 admin    -> say '[go 0x247E2'
+    3.62 admin    <- 0xF3 world item 0x403644BF graphic 0x122F x1 at 5511,2360,42 hue 0
+    3.62 admin    <- 0xF3 world item 0x403644C0 graphic 0x122F x1 at 5510,2359,42 hue 0
+    3.62 admin    <- 0xF3 world item 0x403644C1 graphic 0x122A x1 at 5512,2361,42 hue 0
+    3.62 player   <- 0xF3 world item 0x403644BF graphic 0x122F x1 at 5511,2360,42 hue 0
+    3.62 player   <- 0xF3 world item 0x403644C0 graphic 0x122F x1 at 5510,2359,42 hue 0
+    3.62 admin    <- 0xF3 world item 0x403644C2 graphic 0x122A x1 at 5511,2359,42 hue 0
+    3.62 player   <- 0xF3 world item 0x403644C1 graphic 0x122A x1 at 5512,2361,42 hue 0
+    3.62 player   <- 0xF3 world item 0x403644C2 graphic 0x122A x1 at 5511,2359,42 hue 0
+    3.62 player   <- 0xF3 world item 0x403644C3 graphic 0x122D x1 at 5512,2360,42 hue 0
+    3.62 admin    <- 0xF3 world item 0x403644C3 graphic 0x122D x1 at 5512,2360,42 hue 0
+    4.56 admin    -> say '[set Blessed true'
+    4.56 admin    <- 0x6C target cursor 1373 (type 0)
+    4.77 admin    -> 0x6C target object 0x000247E2
+    4.77 admin    <- unicode(0) System: Property has been set.
+    5.27 admin    -> say '[go 0x247E2'
+    6.27 admin    -> say '[set Map Trammel X 5200 Y 1200 Z 0'
+    6.28 admin    <- 0x6C target cursor 1374 (type 0)
+    6.47 admin    -> 0x6C target object 0x000247E2
+    6.48 admin    <- unicode(0) System: Property has been set. (4)
+    6.49 player   <- 0xF3 world item 0x40011B96 graphic 0xF8D x1 at 5498,2349,22 hue 0
+    6.49 player   <- 0xF3 world item 0x40011C12 graphic 0xF88 x1 at 5517,2343,17 hue 0
+    6.49 player   <- 0xF3 world item 0x40011BAF graphic 0xF7A x1 at 5503,2377,17 hue 0
+    6.49 player   <- 0xF3 world item 0x40011BBC graphic 0xF8D x1 at 5198,2343,30 hue 0
+    6.49 player   <- 0xF3 world item 0x40011BC9 graphic 0xF88 x1 at 5182,2360,32 hue 0
+    6.49 player   <- 0xF3 world item 0x40011BA1 graphic 0xF8C x1 at 5185,2359,30 hue 0
+    6.49 player   <- 0xF3 world item 0x40011BED graphic 0xF8C x1 at 5204,2360,2 hue 0
+    6.49 player   <- 0xF3 world item 0x40011C11 graphic 0xF8D x1 at 5186,2370,22 hue 0
+    6.49 player   <- 0xF3 world item 0x40011BA5 graphic 0xF85 x1 at 5191,2371,18 hue 0
+    6.49 player   <- 0xF3 world item 0x40011B8B graphic 0xF7A x1 at 5206,2374,-15 hue 0
+    6.49 player   <- 0xDD gump 0x00000AD4 type -908281109:  | Warning: monsters may attack you on sight down here in the dungeons!
+    6.49 player      layout: { resizepic 0 0 302 250 170 }{ resizepic 10 10 5120 230 150 }{ xmfhtmlgumpcolor 20 25 210 70 1018030 0 0 32767 }{ button 163 125 248 249 1 0 0 }
+    6.49 player   <- 0x25 item 0x4035CE09 graphic 0xFF1 x1 into 0x4035CF3C
+    6.49 player   <- 0x25 item 0x4035CE0B graphic 0xF52 x1 into 0x4035CF3C
+    6.49 player   <- 0x25 item 0x4035CE0C graphic 0xA28 x1 into 0x4035CF3C
+    6.49 player   <- 0x25 item 0x4035CE0F graphic 0xF0E x4 into 0x4035CF3C
+    6.49 player   <- 0x25 item 0x4035CE10 graphic 0xE9B x1 into 0x4035CF3C
+    6.49 player   <- 0x25 item 0x4035CE12 graphic 0xE21 x3 into 0x4035CF3C
+    6.49 player   <- 0x25 item 0x4035CE13 graphic 0x1F03 x1 into 0x4035CF3C
+    6.49 player   <- 0x25 item 0x4035CF3F graphic 0x9AA x1 into 0x4035CF3C
+    6.49 player   <- 0x25 item 0x4035CF42 graphic 0x9AA x1 into 0x4035CF3C
+    6.49 player   <- 0x25 item 0x4035CF45 graphic 0x9AA x1 into 0x4035CF3C
+    6.49 player   <- 0x25 item 0x4035CF48 graphic 0x9AA x1 into 0x4035CF3C
+    6.49 player   <- 0x25 item 0x4035CF77 graphic 0x3C3C x1 into 0x4035CF3C
+    6.49 player   <- 0x25 item 0x4035CF78 graphic 0x3C3C x1 into 0x4035CF3C
+    6.49 player   <- 0x25 item 0x4035CF79 graphic 0x3C3C x1 into 0x4035CF3C
+    6.49 player   <- 0x25 item 0x4035E695 graphic 0x1BF2 x80 into 0x4035CF3C
+    6.49 player   <- 0x25 item 0x4035E696 graphic 0x19B9 x1 into 0x4035CF3C
+    6.49 player   <- 0x25 item 0x4035E71C graphic 0x19B7 x1 into 0x4035CF3C
+    6.49 player   <- 0x25 item 0x4035E71E graphic 0x1BF2 x145 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x4035E72F graphic 0x19B9 x2 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x4035E757 graphic 0x19B7 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x4035E7A3 graphic 0x9AA x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x4035E7A6 graphic 0x9AA x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x403613A7 graphic 0xE86 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x403613A8 graphic 0x3380 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x403613A9 graphic 0x1C11 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x403613AA graphic 0xFBD x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361402 graphic 0x1EB8 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361452 graphic 0x9AA x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361458 graphic 0x1EB8 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x4036147C graphic 0x1EB8 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x403614D5 graphic 0x1BD7 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x403614D6 graphic 0x1BD7 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x403614EB graphic 0x1BD7 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x403614F9 graphic 0x1EB8 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361511 graphic 0x1EB8 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361516 graphic 0x1BF2 x30 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361517 graphic 0x1053 x4 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361518 graphic 0xF80 x5 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x4036151A graphic 0x1EB8 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361529 graphic 0x1BF2 x60 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x4036152A graphic 0x1053 x8 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x4036152B graphic 0xF80 x10 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x4036154F graphic 0x1079 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x4036159F graphic 0x1079 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x403615EE graphic 0x1079 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x4036160A graphic 0x1079 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361610 graphic 0x1079 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361714 graphic 0xE21 x4 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361706 graphic 0x1F14 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x4036176E graphic 0xE21 x4 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361757 graphic 0x1F14 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361813 graphic 0xE21 x4 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x4036182B graphic 0x19B9 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361840 graphic 0x19B9 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361695 graphic 0x1079 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361873 graphic 0x14EB x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x4036187C graphic 0x14EB x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x403618D0 graphic 0x14EB x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x403618D7 graphic 0x14EB x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x4036193F graphic 0x14EB x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x4036194B graphic 0x14EB x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x403619E9 graphic 0xFEF x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361A85 graphic 0xFEF x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361C61 graphic 0x26B4 x1 into 0x40361BCD
+    6.50 player   <- 0x25 item 0x40361C62 graphic 0x26B4 x1 into 0x40361BCD
+    6.50 player   <- 0x25 item 0x40361C69 graphic 0x26B4 x1 into 0x40361BCD
+    6.50 player   <- 0x25 item 0x40361C6A graphic 0x26B4 x1 into 0x40361BCD
+    6.50 player   <- 0x25 item 0x40361C85 graphic 0x26B4 x1 into 0x40361BCD
+    6.50 player   <- 0x25 item 0x40361D3F graphic 0x26B4 x1 into 0x40361BCD
+    6.50 player   <- 0x25 item 0x40361D40 graphic 0x26B4 x1 into 0x40361BCD
+    6.50 player   <- 0x25 item 0x40361EAB graphic 0x26B4 x1 into 0x40361BCD
+    6.50 player   <- 0x25 item 0x40361EF0 graphic 0x26B4 x1 into 0x40361BCD
+    6.50 player   <- 0x25 item 0x40361F57 graphic 0x26B4 x1 into 0x40361BCD
+    6.50 player   <- 0x25 item 0x40361BCD graphic 0x3383 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361BCE graphic 0x1EB8 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361BCF graphic 0x1EB8 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361C6B graphic 0x13CC x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361C82 graphic 0x5720 x10 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361C92 graphic 0x13CC x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361CC9 graphic 0x13B0 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361CCA graphic 0xF61 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361CD8 graphic 0x13B0 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361CD9 graphic 0xF61 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361D31 graphic 0x13B0 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361D32 graphic 0xF61 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361D3D graphic 0xEED x1500 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361E2F graphic 0xF52 x1 into 0x40361DB6
+    6.50 player   <- 0x25 item 0x40361E3D graphic 0x108A x1 into 0x40361DB6
+    6.50 player   <- 0x25 item 0x40361E21 graphic 0xF61 x1 into 0x40361DB6
+    6.50 player   <- 0x25 item 0x40361DB6 graphic 0xE76 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361EC3 graphic 0xF52 x1 into 0x40361EAC
+    6.50 player   <- 0x25 item 0x40361EC4 graphic 0x108A x1 into 0x40361EAC
+    6.50 player   <- 0x25 item 0x40361EC2 graphic 0xF61 x1 into 0x40361EAC
+    6.50 player   <- 0x25 item 0x40361EAC graphic 0xE76 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40361F29 graphic 0xF52 x1 into 0x40361EF1
+    6.50 player   <- 0x25 item 0x40361F2F graphic 0x108A x1 into 0x40361EF1
+    6.50 player   <- 0x25 item 0x40361F06 graphic 0xF61 x1 into 0x40361EF1
+    6.50 player   <- 0x25 item 0x40361EF1 graphic 0xE76 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40362FF6 graphic 0x9AA x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40363EAA graphic 0x14FC x20 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40363EAD graphic 0xF0A x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40363EAE graphic 0xF0A x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40364251 graphic 0x1C18 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x4036425B graphic 0xF88 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40364261 graphic 0x1F13 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x4036427C graphic 0xF8C x2 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x4036428B graphic 0x2831 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40364291 graphic 0x1C18 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40364327 graphic 0x1C18 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x4036432D graphic 0xFFB x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x403643BE graphic 0x1847 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x403643C4 graphic 0xFFB x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x403643E1 graphic 0xEFC x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x403643E7 graphic 0x1F13 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x4036440D graphic 0xEFC x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40364422 graphic 0xFFB x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x4036443B graphic 0x2831 x1 into 0x4035CF3C
+    6.50 player   <- 0x25 item 0x40364482 graphic 0x1C18 x1 into 0x4035CF3C
+    6.98 admin    -> say '[go 0x247E2'
+    6.98 admin    <- 0xF3 world item 0x402F49A5 graphic 0x1F13 x1 at 5190,1188,0 hue 0
+    6.98 admin    <- 0xF3 world item 0x402F499E graphic 0x1F13 x1 at 5200,1186,0 hue 0
+    6.98 admin    <- 0xF3 world item 0x402F49D8 graphic 0x1F13 x1 at 5209,1201,0 hue 0
+    6.98 admin    <- 0xF3 world item 0x402F49CA graphic 0x1F13 x1 at 5184,1216,0 hue 0
+    6.98 admin    <- 0x25 item 0x4035CF4A graphic 0xFF1 x1 into 0x4035CF4F
+    6.98 admin    <- 0x25 item 0x4035CF4B graphic 0xEED x1000 into 0x4035CF4F
+    6.98 admin    <- 0x25 item 0x4035CF4C graphic 0xF52 x1 into 0x4035CF4F
+    6.98 admin    <- 0x25 item 0x4035CF4D graphic 0xA28 x1 into 0x4035CF4F
+    6.98 admin    <- 0x25 item 0x4035CF52 graphic 0x9AA x1 into 0x4035CF4F
+    6.98 admin    <- 0x25 item 0x4035CF55 graphic 0x9AA x1 into 0x4035CF4F
+    6.98 admin    <- 0x25 item 0x4035CF59 graphic 0x9AA x1 into 0x4035CF4F
+    6.98 admin    <- 0x25 item 0x4035CF5D graphic 0x9AA x1 into 0x4035CF4F
+    6.98 admin    <- 0x25 item 0x4035CF61 graphic 0x9AA x1 into 0x4035CF4F
+    6.98 admin    <- 0x25 item 0x4035CF65 graphic 0x9AA x1 into 0x4035CF4F
+    6.98 admin    <- 0x25 item 0x4035CF69 graphic 0x9AA x1 into 0x4035CF4F
+    6.98 admin    <- 0x25 item 0x4035CF6D graphic 0x9AA x1 into 0x4035CF4F
+    6.98 admin    <- 0x25 item 0x4035CF71 graphic 0x9AA x1 into 0x4035CF4F
+    6.98 admin    <- 0x25 item 0x4035CF75 graphic 0x9AA x1 into 0x4035CF4F
+    6.98 admin    <- 0x25 item 0x403620D8 graphic 0x9AA x1 into 0x4035CF4F
+    6.98 admin    <- 0x25 item 0x403620DC graphic 0x9AA x1 into 0x4035CF4F
+    6.98 admin    <- 0x25 item 0x403620DF graphic 0x9AA x1 into 0x4035CF4F
+    8.49 admin    -> say '[go 0x247E2'
+    9.50 admin    -> say '[GuildStanding thieves 0'
+    9.50 admin    <- 0x6C target cursor 1375 (type 0)
+    9.70 admin    -> 0x6C target object 0x000247E2
+    9.70 admin    <- unicode(0) System: Set Bot Human F Aa's Thieves' Den standing to 0 (Initiate).
+   10.32 admin    -> say '[go 0x247E2'
+   11.32 admin    -> say '[add Skeleton'
+   11.32 admin    <- 0x6C target cursor 1376 (type 1)
+   11.52 admin    -> 0x6C target ground 5201,1200,0
+   11.52 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   11.52 admin    -> say '[set FightMode None CantWalk true'
+   11.52 admin    <- 0x6C target cursor 1377 (type 0)
+   11.73 admin    -> 0x6C target object 0x00024B56
+   11.74 admin    <- unicode(0) System: Property has been set. (2)
+   12.24 admin    -> say '[go 0x247E2'
+   13.25 admin    -> say '[add Skeleton'
+   13.25 admin    <- 0x6C target cursor 1378 (type 1)
+   13.45 admin    -> 0x6C target ground 5199,1200,0
+   13.45 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   13.45 admin    -> say '[set FightMode None CantWalk true'
+   13.45 admin    <- 0x6C target cursor 1379 (type 0)
+   13.67 admin    -> 0x6C target object 0x00024B57
+   13.67 admin    <- unicode(0) System: Property has been set. (2)
+   14.18 admin    -> say '[go 0x247E2'
+   15.19 admin    -> say '[add Skeleton'
+   15.19 admin    <- 0x6C target cursor 1380 (type 1)
+   15.39 admin    -> 0x6C target ground 5200,1201,0
+   15.39 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   15.39 admin    -> say '[set FightMode None CantWalk true'
+   15.39 admin    <- 0x6C target cursor 1381 (type 0)
+   15.61 admin    -> 0x6C target object 0x00024B58
+   15.61 admin    <- unicode(0) System: Property has been set. (2)
+   16.11 admin    -> say '[go 0x247E2'
+   17.12 admin    -> say '[add Skeleton'
+   17.12 admin    <- 0x6C target cursor 1382 (type 1)
+   17.33 admin    -> 0x6C target ground 5200,1199,0
+   17.34 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   17.34 admin    -> say '[set FightMode None CantWalk true'
+   17.34 admin    <- 0x6C target cursor 1383 (type 0)
+   17.55 admin    -> 0x6C target object 0x00024B59
+   17.55 admin    <- unicode(0) System: Property has been set. (2)
+   18.06 admin    -> say '[set NextSkillTime 0'
+   18.06 admin    <- 0x6C target cursor 1384 (type 0)
+   18.27 admin    -> 0x6C target object 0x000247E2
+   18.27 admin    <- unicode(0) System: Property has been set.
+   18.78 player   <- 0x6C target cursor 1385 (type 0)
+   18.78 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   18.78 player   -> 0x6C target object 0x00024B56
+   18.78 player   <- cliloc(0) System #500237: Target cannot be seen.
+   21.29 admin    -> say '[set NextSkillTime 0'
+   21.29 admin    <- 0x6C target cursor 1386 (type 0)
+   21.51 admin    -> 0x6C target object 0x000247E2
+   21.51 admin    <- unicode(0) System: Property has been set.
+   22.02 player   <- 0x6C target cursor 1387 (type 0)
+   22.02 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   22.02 player   -> 0x6C target object 0x00024B57
+   22.02 player   <- cliloc(0) System #500237: Target cannot be seen.
+   24.53 admin    -> say '[set NextSkillTime 0'
+   24.53 admin    <- 0x6C target cursor 1388 (type 0)
+   24.75 admin    -> 0x6C target object 0x000247E2
+   24.75 admin    <- unicode(0) System: Property has been set.
+   25.26 player   <- 0x6C target cursor 1389 (type 0)
+   25.26 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   25.26 player   -> 0x6C target object 0x00024B58
+   25.26 player   <- cliloc(0) System #500237: Target cannot be seen.
+   27.77 admin    -> say '[set NextSkillTime 0'
+   27.77 admin    <- 0x6C target cursor 1390 (type 0)
+   27.98 admin    -> 0x6C target object 0x000247E2
+   27.98 admin    <- unicode(0) System: Property has been set.
+   28.49 player   <- 0x6C target cursor 1391 (type 0)
+   28.49 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   28.49 player   -> 0x6C target object 0x00024B59
+   28.49 player   <- cliloc(0) System #500237: Target cannot be seen.
+   30.99 admin    -> say '[set NextSkillTime 0'
+   31.00 admin    <- 0x6C target cursor 1392 (type 0)
+   31.20 admin    -> 0x6C target object 0x000247E2
+   31.20 admin    <- unicode(0) System: Property has been set.
+   31.71 player   <- 0x6C target cursor 1393 (type 0)
+   31.71 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   31.71 player   -> 0x6C target object 0x00024B56
+   31.71 player   <- cliloc(0) System #500237: Target cannot be seen.
+   34.22 admin    -> say '[set NextSkillTime 0'
+   34.22 admin    <- 0x6C target cursor 1394 (type 0)
+   34.42 admin    -> 0x6C target object 0x000247E2
+   34.42 admin    <- unicode(0) System: Property has been set.
+   34.93 player   <- 0x6C target cursor 1395 (type 0)
+   34.93 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   34.93 player   -> 0x6C target object 0x00024B57
+   34.94 player   <- cliloc(0) System #500237: Target cannot be seen.
+   37.44 admin    -> say '[set NextSkillTime 0'
+   37.44 admin    <- 0x6C target cursor 1396 (type 0)
+   37.64 admin    -> 0x6C target object 0x000247E2
+   37.64 admin    <- unicode(0) System: Property has been set.
+   38.15 player   <- 0x6C target cursor 1397 (type 0)
+   38.15 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   38.15 player   -> 0x6C target object 0x00024B58
+   38.15 player   <- cliloc(0) System #500237: Target cannot be seen.
+   40.66 admin    -> say '[set NextSkillTime 0'
+   40.66 admin    <- 0x6C target cursor 1398 (type 0)
+   40.86 admin    -> 0x6C target object 0x000247E2
+   40.87 admin    <- unicode(0) System: Property has been set.
+   41.37 player   <- 0x6C target cursor 1399 (type 0)
+   41.37 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   41.37 player   -> 0x6C target object 0x00024B59
+   41.37 player   <- cliloc(0) System #500237: Target cannot be seen.
+   43.88 admin    -> say '[set NextSkillTime 0'
+   43.88 admin    <- 0x6C target cursor 1400 (type 0)
+   44.08 admin    -> 0x6C target object 0x000247E2
+   44.09 admin    <- unicode(0) System: Property has been set.
+   44.60 player   <- 0x6C target cursor 1401 (type 0)
+   44.60 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   44.60 player   -> 0x6C target object 0x00024B56
+   44.60 player   <- cliloc(0) System #500237: Target cannot be seen.
+   47.11 admin    -> say '[set NextSkillTime 0'
+   47.11 admin    <- 0x6C target cursor 1402 (type 0)
+   47.31 admin    -> 0x6C target object 0x000247E2
+   47.32 admin    <- unicode(0) System: Property has been set.
+   47.83 player   <- 0x6C target cursor 1403 (type 0)
+   47.83 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   47.83 player   -> 0x6C target object 0x00024B57
+   47.83 player   <- cliloc(0) System #500237: Target cannot be seen.
+   50.34 admin    -> say '[set NextSkillTime 0'
+   50.34 admin    <- 0x6C target cursor 1404 (type 0)
+   50.54 admin    -> 0x6C target object 0x000247E2
+   50.54 admin    <- unicode(0) System: Property has been set.
+   51.05 player   <- 0x6C target cursor 1405 (type 0)
+   51.05 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   51.05 player   -> 0x6C target object 0x00024B58
+   51.06 player   <- cliloc(0) System #500237: Target cannot be seen.
+   52.51 admin    <- ascii(0) System: The world is saving, please wait.
+   52.51 admin    <- ascii(0) System: World save completed in 0.03 seconds.
+   52.51 player   <- ascii(0) System: The world is saving, please wait.
+   52.51 player   <- ascii(0) System: World save completed in 0.03 seconds.
+   53.56 admin    -> say '[set NextSkillTime 0'
+   53.57 admin    <- 0x6C target cursor 1406 (type 0)
+   53.78 admin    -> 0x6C target object 0x000247E2
+   53.78 admin    <- unicode(0) System: Property has been set.
+   54.29 player   <- 0x6C target cursor 1407 (type 0)
+   54.29 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   54.29 player   -> 0x6C target object 0x00024B59
+   54.29 player   <- cliloc(0) System #500237: Target cannot be seen.
+   56.80 admin    -> say '[set NextSkillTime 0'
+   56.80 admin    <- 0x6C target cursor 1408 (type 0)
+   57.01 admin    -> 0x6C target object 0x000247E2
+   57.01 admin    <- unicode(0) System: Property has been set.
+   57.52 player   <- 0x6C target cursor 1409 (type 0)
+   57.52 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   57.52 player   -> 0x6C target object 0x00024B56
+   57.52 player   <- cliloc(0) System #500237: Target cannot be seen.
+   60.03 p142-nonmember -> 0xEF seed, client 7.0.117.0; 0x80 login as slbot-player2
+   60.04 p142-nonmember <- 0xA8 servers [(0, 'Shattered Legacy BOT')]
+   60.04 p142-nonmember <- 0x8C relay 127.0.0.1:2595 (checked: the scratch shard 127.0.0.1:2595; reconnecting to 127.0.0.1:2595)
+   60.04 p142-nonmember <- 0xA9 characters ['Bot Human F Bl', 'Bot Human M Ae', 'Bot Human F Ah', 'Bot Human M Ak', 'Bot Human F An', 'Bot Human M Aq', 'Bot Human M At']; 1 cities ['New Haven']
+   60.04 harness  account slbot-player2 full (7 characters); deleting slot 0 ('Bot Human F Bl') to reuse it
+   60.04 p142-nonmember <- 0x86 characters now ['', 'Bot Human M Ae', 'Bot Human F Ah', 'Bot Human M Ak', 'Bot Human F An', 'Bot Human M Aq', 'Bot Human M At']
+   60.04 p142-nonmember -> 0xF8 create 'Bot Human M Bo' human male city 0
+   60.11 p142-nonmember <- 0x1B login confirm serial 0x00024B5F body 0x190 at (3503, 2574, 14)
+   60.11 p142-nonmember <- 0x11 status {'name': 'Bot Human M Bo', 'hits': 55, 'hitsMax': 55, 'version': 6, 'female': 0, 'str': 10, 'dex': 10, 'int': 10, 'stam': 10, 'stamMax': 10, 'mana': 10, 'manaMax': 10, 'gold': 1000, 'ar': 0, 'weight': 43, 'maxWeight': 135, 'race': 1, 'statCap': 250, 'followers': 0, 'followersMax': 5}
+   60.11 p142-nonmember <- 0xF3 world item 0x4000416F graphic 0x6A5 x1 at 3497,2556,20 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x40067DED graphic 0xBA6 x1 at 3498,2557,24 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x40067DE5 graphic 0xB9E x1 at 3498,2557,24 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x40067DF7 graphic 0xBC2 x1 at 3510,2557,22 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x40067DE8 graphic 0xB9E x1 at 3510,2557,22 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x40004183 graphic 0x6A5 x1 at 3508,2556,20 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x40000284 graphic 0xA0C5 x1 at 3502,2573,14 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x40069F16 graphic 0x3C10 x1 at 3501,2575,14 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x40067E01 graphic 0xBA1 x1 at 3494,2569,23 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x40067DB5 graphic 0x67D x1 at 3491,2573,21 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x40067DB4 graphic 0x67F x1 at 3491,2571,21 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x40067DEE graphic 0xC0B x1 at 3494,2569,23 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x4036152C graphic 0x1053 x1 at 3503,2574,14 hue 2418
+   60.11 p142-nonmember <- 0xF3 world item 0x40361C98 graphic 0x4277 x1 at 3499,2574,14 hue 1175
+   60.11 p142-nonmember <- 0xF3 world item 0x40363659 graphic 0xED0 x401 at 3503,2574,14 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x40363E97 graphic 0x2006 x25 at 3500,2574,14 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x40363E98 graphic 0x2006 x238 at 3499,2575,14 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x40363E99 graphic 0x2006 x27 at 3503,2575,16 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x4035E693 graphic 0xFB1 x1 at 3504,2574,14 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x4035E6B5 graphic 0xFB1 x1 at 3504,2574,14 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x4035E6CE graphic 0xFB1 x1 at 3504,2574,14 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x4035E71B graphic 0xFB1 x1 at 3504,2574,14 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x4035E730 graphic 0xFB1 x1 at 3504,2574,14 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x4035E742 graphic 0xFB1 x1 at 3504,2574,14 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x403604A3 graphic 0x3C10 x1 at 3504,2574,14 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x403604A4 graphic 0x3C10 x1 at 3504,2574,14 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x403604A5 graphic 0x3C10 x1 at 3504,2574,14 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x40361C7B graphic 0x4277 x1 at 3504,2574,14 hue 1175
+   60.11 p142-nonmember <- 0xF3 world item 0x40363EA0 graphic 0x2006 x238 at 3504,2575,14 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x400117E8 graphic 0xF86 x1 at 3498,2587,16 hue 0
+   60.11 p142-nonmember <- 0xF3 world item 0x40067DC1 graphic 0x6B3 x1 at 3496,2589,35 hue 0
+   60.11 p142-nonmember <- 0x11 status {'name': 'Bot Human M Bo', 'hits': 55, 'hitsMax': 55, 'version': 6, 'female': 0, 'str': 10, 'dex': 10, 'int': 10, 'stam': 10, 'stamMax': 10, 'mana': 10, 'manaMax': 10, 'gold': 1000, 'ar': 0, 'weight': 43, 'maxWeight': 135, 'race': 1, 'statCap': 250, 'followers': 0, 'followersMax': 5}
+   60.11 p142-nonmember <- 0x55 login complete
+   60.11 p142-nonmember <- ascii(0) System: You will enjoy the benefits and relatively safe status of a young player for another 13 days and 23 hours of play time. Say "I want to grow up!" to give it up sooner.
+   60.11 p142-nonmember <- 0xDD gump 0x00000AD5 type 375066539: Welcome to New Haven | <BASEFONT COLOR=#DDDDDD>Every skill has a guild in New Haven. Joining one is free, and it hands you the tools of its trade and the starter items the trainers give.<BR><BR>The Guild Board in the town square lists every guild, what it teaches, and where its guildmaster stands.<BR>The League of Extraordinary Citizens ties every guild together. Find its Registrar in New Haven.</BASEFONT> | Show me the Guild Board | Close
+   60.11 p142-nonmember    layout: { resizepic 0 0 9270 420 260 }{ checkertrans 10 10 400 240 }{ text 20 16 1154 0 }{ gumppictiled 10 38 400 2 9304 }{ htmlgump 20 48 380 140 1 0 0 }{ gumppictiled 10 198 400 2 9304 }{ button 20 212 4005 4007 1 0 1 }{ text 55 214 1154 2 }{ button 310 212 4017 4019 1 0 0 }{ text 345 214 999 3 }
+   60.11 p142-nonmember <- 0x3A skill 0 now 50.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 1 now 50.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 2 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 3 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 4 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 5 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 6 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 7 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 8 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 9 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 10 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 11 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 12 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 13 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 14 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 15 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 16 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 17 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 18 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 19 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 20 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 21 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 22 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 23 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 24 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 25 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 26 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 27 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 28 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 29 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 30 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 31 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 32 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 33 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 34 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 35 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 36 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 37 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 38 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 39 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 40 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 41 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 42 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 43 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 44 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 45 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 46 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 47 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 48 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 49 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 50 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 51 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 52 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 53 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 54 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 55 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 56 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x3A skill 57 now 0.0 (cap 200.0)
+   60.11 p142-nonmember <- 0x11 status {'name': 'Bot Human M Bo', 'hits': 55, 'hitsMax': 55, 'version': 6, 'female': 0, 'str': 10, 'dex': 10, 'int': 10, 'stam': 10, 'stamMax': 10, 'mana': 10, 'manaMax': 10, 'gold': 1000, 'ar': 0, 'weight': 43, 'maxWeight': 135, 'race': 1, 'statCap': 1500, 'followers': 0, 'followersMax': 5}
+   60.11 p142-nonmember <- 0x11 status {'name': 'Bot Human M Bo', 'hits': 55, 'hitsMax': 55, 'version': 6, 'female': 0, 'str': 10, 'dex': 10, 'int': 10, 'stam': 10, 'stamMax': 10, 'mana': 10, 'manaMax': 10, 'gold': 1000, 'ar': 0, 'weight': 43, 'maxWeight': 135, 'race': 1, 'statCap': 1500, 'followers': 0, 'followersMax': 5}
+   60.11 p142-nonmember <- 0x3A 58 skills
+   60.28 p142-nonmember <- unicode(0) Sanitation Warden: You there, seen any litter about? Every scrap counts toward Clean Up Britannia.
+   61.12 admin    -> say '[go 0x24B5F'
+   61.12 admin    <- 0xF3 world item 0x4000416F graphic 0x6A5 x1 at 3497,2556,20 hue 0
+   61.12 admin    <- 0xF3 world item 0x40067DED graphic 0xBA6 x1 at 3498,2557,24 hue 0
+   61.12 admin    <- 0xF3 world item 0x40067DE5 graphic 0xB9E x1 at 3498,2557,24 hue 0
+   61.12 admin    <- 0xF3 world item 0x40067DF7 graphic 0xBC2 x1 at 3510,2557,22 hue 0
+   61.12 admin    <- 0xF3 world item 0x40067DE8 graphic 0xB9E x1 at 3510,2557,22 hue 0
+   61.12 admin    <- 0xF3 world item 0x40004183 graphic 0x6A5 x1 at 3508,2556,20 hue 0
+   61.12 admin    <- 0xF3 world item 0x40000284 graphic 0xA0C5 x1 at 3502,2573,14 hue 0
+   61.12 admin    <- 0xF3 world item 0x40069F16 graphic 0x3C10 x1 at 3501,2575,14 hue 0
+   61.12 admin    <- 0xF3 world item 0x40067E01 graphic 0xBA1 x1 at 3494,2569,23 hue 0
+   61.12 admin    <- 0xF3 world item 0x40067DB5 graphic 0x67D x1 at 3491,2573,21 hue 0
+   61.12 admin    <- 0xF3 world item 0x40067DB4 graphic 0x67F x1 at 3491,2571,21 hue 0
+   61.12 admin    <- 0xF3 world item 0x40067DEE graphic 0xC0B x1 at 3494,2569,23 hue 0
+   61.12 admin    <- 0xF3 world item 0x4036152C graphic 0x1053 x1 at 3503,2574,14 hue 2418
+   61.12 admin    <- 0xF3 world item 0x40361C98 graphic 0x4277 x1 at 3499,2574,14 hue 1175
+   61.12 admin    <- 0xF3 world item 0x40363659 graphic 0xED0 x401 at 3503,2574,14 hue 0
+   61.12 admin    <- 0xF3 world item 0x40363E97 graphic 0x2006 x25 at 3500,2574,14 hue 0
+   61.12 admin    <- 0xF3 world item 0x40363E98 graphic 0x2006 x238 at 3499,2575,14 hue 0
+   61.12 admin    <- 0xF3 world item 0x40363E99 graphic 0x2006 x27 at 3503,2575,16 hue 0
+   61.12 admin    <- 0xF3 world item 0x4035E693 graphic 0xFB1 x1 at 3504,2574,14 hue 0
+   61.12 admin    <- 0xF3 world item 0x4035E6B5 graphic 0xFB1 x1 at 3504,2574,14 hue 0
+   61.12 admin    <- 0xF3 world item 0x4035E6CE graphic 0xFB1 x1 at 3504,2574,14 hue 0
+   61.12 admin    <- 0xF3 world item 0x4035E71B graphic 0xFB1 x1 at 3504,2574,14 hue 0
+   61.12 admin    <- 0xF3 world item 0x4035E730 graphic 0xFB1 x1 at 3504,2574,14 hue 0
+   61.12 admin    <- 0xF3 world item 0x4035E742 graphic 0xFB1 x1 at 3504,2574,14 hue 0
+   61.12 admin    <- 0xF3 world item 0x403604A3 graphic 0x3C10 x1 at 3504,2574,14 hue 0
+   61.12 admin    <- 0xF3 world item 0x403604A4 graphic 0x3C10 x1 at 3504,2574,14 hue 0
+   61.12 admin    <- 0xF3 world item 0x403604A5 graphic 0x3C10 x1 at 3504,2574,14 hue 0
+   61.12 admin    <- 0xF3 world item 0x40361C7B graphic 0x4277 x1 at 3504,2574,14 hue 1175
+   61.12 admin    <- 0xF3 world item 0x40363EA0 graphic 0x2006 x238 at 3504,2575,14 hue 0
+   61.12 admin    <- 0xF3 world item 0x4000ADA1 graphic 0x1F13 x1 at 3495,2590,35 hue 0
+   61.12 admin    <- 0xF3 world item 0x400117E8 graphic 0xF86 x1 at 3498,2587,16 hue 0
+   61.12 admin    <- 0xF3 world item 0x40067DC1 graphic 0x6B3 x1 at 3496,2589,35 hue 0
+   61.12 admin    <- cliloc(0) System #500112: You are now under the protection of the town guards.
+   62.13 admin    -> say '[SetSkill Stealing 120'
+   62.13 admin    <- 0x6C target cursor 1410 (type 0)
+   62.33 admin    -> 0x6C target object 0x00024B5F
+   62.34 admin    <- unicode(0) System: Stealing : 120 (Base: 120)
+   62.34 p142-nonmember <- 0x3A skill 33 now 120.0 (cap 200.0)
+   62.94 admin    -> say '[go 0x24B5F'
+   63.94 admin    -> say '[set Map Trammel X 5200 Y 1200 Z 0'
+   63.94 admin    <- 0x6C target cursor 1411 (type 0)
+   64.16 admin    -> 0x6C target object 0x00024B5F
+   64.16 admin    <- unicode(0) System: Property has been set. (4)
+   64.16 p142-nonmember <- unicode(0) System: System: Graduate with the League recruiter in New Haven before leaving the island.
+   64.16 p142-nonmember <- unicode(0) System: System: Graduate with the League recruiter in New Haven before leaving the island.
+   65.04 p142-nonmember <- unicode(0) System: Welcome to Shattered Legacy BOT.
+   72.67 admin    -> say '[go 0x24B5F'
+   74.19 admin    -> say '[go 0x24B5F'
+   75.04 p142-nonmember <- unicode(0) System: You are able to customize your character's stats and skills at anytime to anything you wish.
+   75.20 admin    -> say '[add Skeleton'
+   75.20 admin    <- 0x6C target cursor 1412 (type 1)
+   75.40 admin    -> 0x6C target ground 3504,2574,0
+   75.40 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   75.40 admin    -> say '[set FightMode None CantWalk true'
+   75.40 admin    <- 0x6C target cursor 1413 (type 0)
+   75.62 admin    -> 0x6C target object 0x00024B60
+   75.62 admin    <- unicode(0) System: Property has been set. (2)
+   76.13 admin    -> say '[set NextSkillTime 0'
+   76.13 admin    <- 0x6C target cursor 1414 (type 0)
+   76.33 admin    -> 0x6C target object 0x00024B5F
+   76.33 admin    <- unicode(0) System: Property has been set.
+   76.84 p142-nonmember <- 0x6C target cursor 1415 (type 0)
+   76.84 p142-nonmember <- cliloc(0) System #502698: Which item will you attempt to steal?
+   76.84 p142-nonmember -> 0x6C target object 0x00024B60
+   76.84 p142-nonmember <- cliloc(0) System #500237: Target cannot be seen.
+   79.34 admin    -> say '[go 0x247E2'
+   79.35 admin    <- 0xF3 world item 0x402F49A5 graphic 0x1F13 x1 at 5190,1188,0 hue 0
+   79.35 admin    <- 0xF3 world item 0x402F499E graphic 0x1F13 x1 at 5200,1186,0 hue 0
+   79.35 admin    <- 0xF3 world item 0x402F49D8 graphic 0x1F13 x1 at 5209,1201,0 hue 0
+   79.35 admin    <- 0xF3 world item 0x402F49CA graphic 0x1F13 x1 at 5184,1216,0 hue 0
+   79.35 admin    <- cliloc(0) System #500113: You have left the protection of the town guards.
+   80.36 admin    -> say '[add TheBurrowMother'
+   80.36 admin    <- 0x6C target cursor 1416 (type 1)
+   80.56 admin    -> 0x6C target ground 5199,1200,0
+   80.56 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   80.56 admin    -> say '[set FightMode None CantWalk true'
+   80.56 admin    <- 0x6C target cursor 1417 (type 0)
+   80.77 admin    -> 0x6C target object 0x00024B61
+   80.78 admin    <- unicode(0) System: Property has been set. (2)
+   81.28 admin    -> say '[set NextSkillTime 0'
+   81.28 admin    <- 0x6C target cursor 1418 (type 0)
+   81.49 admin    -> 0x6C target object 0x000247E2
+   81.50 admin    <- unicode(0) System: Property has been set.
+   82.01 player   <- 0x6C target cursor 1419 (type 0)
+   82.01 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   82.01 player   -> 0x6C target object 0x00024B61
+   82.01 player   <- cliloc(0) System #500237: Target cannot be seen.
+   84.52 admin    -> say '[go 0x247E2'
+   85.04 p142-nonmember <- unicode(0) System: To see the commands to do this just say 'help'.
+   85.52 admin    -> say '[GuildStanding thieves 15000'
+   85.52 admin    <- 0x6C target cursor 1420 (type 0)
+   85.74 admin    -> 0x6C target object 0x000247E2
+   85.74 admin    <- unicode(0) System: Set Bot Human F Aa's Thieves' Den standing to 15,000 (Master).
+   86.34 admin    -> say '[set NextSkillTime 0'
+   86.34 admin    <- 0x6C target cursor 1421 (type 0)
+   86.55 admin    -> 0x6C target object 0x000247E2
+   86.56 admin    <- unicode(0) System: Property has been set.
+   87.07 player   <- 0x6C target cursor 1422 (type 0)
+   87.07 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   87.07 player   -> 0x6C target object 0x00024B61
+   87.07 player   <- cliloc(0) System #500237: Target cannot be seen.
+   94.56 p142-nonmember <- 0xF3 world item 0x40067DB4 graphic 0x680 x1 at 3492,2570,21 hue 0
+   95.04 p142-nonmember <- unicode(0) System: You will find a bank check worth 1,000,000 gold in your bank!
+   95.07 admin    -> say '[set NextSkillTime 0'
+   95.07 admin    <- 0x6C target cursor 1423 (type 0)
+   95.27 admin    -> 0x6C target object 0x000247E2
+   95.27 admin    <- unicode(0) System: Property has been set.
+   95.78 player   <- 0x6C target cursor 1424 (type 0)
+   95.78 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   95.78 player   -> 0x6C target object 0x00024B61
+   95.78 player   <- cliloc(0) System #500237: Target cannot be seen.
+  103.80 admin    -> say '[set NextSkillTime 0'
+  103.80 admin    <- 0x6C target cursor 1425 (type 0)
+  104.01 admin    -> 0x6C target object 0x000247E2
+  104.02 admin    <- unicode(0) System: Property has been set.
+  104.52 player   <- 0x6C target cursor 1426 (type 0)
+  104.52 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+  104.52 player   -> 0x6C target object 0x00024B61
+  104.52 player   <- cliloc(0) System #500237: Target cannot be seen.
+  105.04 p142-nonmember <- unicode(0) System: A spellbook and a bag of reagents has been placed into your bank box.
+  112.54 admin    -> say '[set NextSkillTime 0'
+  112.54 admin    <- 0x6C target cursor 1427 (type 0)
+  112.74 admin    -> 0x6C target object 0x000247E2
+  112.74 admin    <- unicode(0) System: Property has been set.
+  113.24 player   <- 0x6C target cursor 1428 (type 0)
+  113.24 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+  113.24 player   -> 0x6C target object 0x00024B61
+  113.24 player   <- cliloc(0) System #500237: Target cannot be seen.
+  114.56 p142-nonmember <- 0xF3 world item 0x40067DB4 graphic 0x67F x1 at 3491,2571,21 hue 0
+  115.04 p142-nonmember <- unicode(0) System: Various tools have been placed into your bank.
+  121.25 admin    -> say '[set NextSkillTime 0'
+  121.25 admin    <- 0x6C target cursor 1429 (type 0)
+  121.45 admin    -> 0x6C target object 0x000247E2
+  121.45 admin    <- unicode(0) System: Property has been set.
+  121.96 player   <- 0x6C target cursor 1430 (type 0)
+  121.96 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+  121.96 player   -> 0x6C target object 0x00024B61
+  121.96 player   <- cliloc(0) System #500237: Target cannot be seen.
+  125.04 p142-nonmember <- unicode(0) System: Various raw materials like ingots, logs, feathers, hides, bottles, etc, have been placed into your bank.
+  129.97 admin    -> say '[go 0x247E2'
+  130.98 admin    -> say '[GuildStanding thieves 0'
+  130.98 admin    <- 0x6C target cursor 1431 (type 0)
+  131.18 admin    -> 0x6C target object 0x000247E2
+  131.18 admin    <- unicode(0) System: Set Bot Human F Aa's Thieves' Den standing to 0 (Initiate).
+  131.78 admin    -> say '[go 0x247E2'
+  132.79 admin    -> say '[set Blessed false'
+  132.79 admin    <- 0x6C target cursor 1432 (type 0)
+  132.99 admin    -> 0x6C target object 0x000247E2
+  132.99 admin    <- unicode(0) System: Property has been set.
+  133.50 harness  == P142-3 run 1: FAIL (Den: already a member (Member. Rank: Initiate.); Initiate at (5200, 1200, 0) over 13 tries: {'nothing': 13} (rolled 0); non-member: 'nothing'; Mother at standing 0: 'nothing'; Set Bot Human F Aa's Thieves' Den standing to 15,000 (Master).; Mother at 15000: nothing)

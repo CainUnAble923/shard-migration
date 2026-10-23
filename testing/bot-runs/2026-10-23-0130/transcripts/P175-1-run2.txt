@@ -1,0 +1,40 @@
+    0.00 harness  == P175-1 run 2: Appraise for Cleanup: a plain longsword about 1 point, one with Hit Lightning 50 and Swing Speed 30 about 6
+    0.00 admin    -> say '[go 0x247E2'
+    1.01 admin    -> say '[add TrashBarrel'
+    1.01 admin    <- 0x6C target cursor 2089 (type 1)
+    1.21 admin    -> 0x6C target ground 3473,2543,33
+    1.21 admin    <- 0xF3 world item 0x4036542A graphic 0xE77 x1 at 3473,2543,33 hue 946
+    1.22 player   <- 0xF3 world item 0x4036542A graphic 0xE77 x1 at 3473,2543,33 hue 946
+    1.22 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+    1.22 admin    -> say '[go 0x247E2'
+    2.22 admin    -> say '[AddToPack Longsword'
+    2.22 admin    <- 0x6C target cursor 2090 (type 0)
+    2.42 admin    -> 0x6C target object 0x000247E2
+    2.42 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+    2.42 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 64, 'hitsMax': 176, 'version': 6, 'female': 1, 'str': 253, 'dex': 58, 'int': 41, 'stam': 58, 'stamMax': 58, 'mana': 41, 'manaMax': 41, 'gold': 3553, 'ar': 0, 'weight': 566, 'maxWeight': 985, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+    2.42 player   <- 0x25 item 0x4036542B graphic 0xF61 x1 into 0x4035CF3C
+    2.42 admin    -> say '[go 0x247E2'
+    3.43 admin    -> say '[AddToPack Longsword'
+    3.43 admin    <- 0x6C target cursor 2091 (type 0)
+    3.63 admin    -> 0x6C target object 0x000247E2
+    3.64 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+    3.64 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 64, 'hitsMax': 176, 'version': 6, 'female': 1, 'str': 253, 'dex': 58, 'int': 41, 'stam': 58, 'stamMax': 58, 'mana': 41, 'manaMax': 41, 'gold': 3553, 'ar': 0, 'weight': 573, 'maxWeight': 985, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+    3.64 player   <- 0x25 item 0x4036542C graphic 0xF61 x1 into 0x4035CF3C
+    3.64 admin    -> say '[go 0x247E2'
+    4.64 admin    -> say '[set WeaponAttributes.HitLightning 50 Attributes.WeaponSpeed 30'
+    4.65 admin    <- 0x6C target cursor 2092 (type 0)
+    4.85 admin    -> 0x6C target object 0x4036542C
+    4.85 admin    <- unicode(0) System: Property has been set. (2)
+    5.36 player   <- 0xD6 properties 0x4036542C: longsword | Weight: 7 stones | hit lightning 50% | swing speed increase 30% | physical damage 100% | weapon damage 15 - 16 | weapon speed 3.5s | strength requirement 35 | one-handed weapon | skill required: swordsmanship | durability 59 / 59
+    5.36 player   -> 0xBF 0x13 context menu request 0x4036542A
+    5.36 player   <- 0xBF 0x14 context menu 0x4036542A: [(0, 1151298, 'Appraise for Cleanup', 0)]
+    5.36 player   -> 0xBF 0x15 context pick 0 (Appraise for Cleanup) on 0x4036542A
+    5.36 player   <- 0x6C target cursor 2093 (type 1)
+    5.36 player   <- cliloc(0) System #1151299: Target items to see how many Clean Up Britannia points you will receive for throwing them away. Continue targeting items until done, then press the ESC key to cancel the targeting cursor.
+    5.36 player   -> 0x6C target object 0x4036542B
+    5.36 player   <- cliloc(0) System #1151273: This item is worth approximately one point for Clean Up Britannia.
+    5.36 player   <- 0x6C target cursor 2094 (type 1)
+    5.36 player   -> 0x6C target object 0x4036542C
+    5.36 player   <- cliloc(0) System #1151274: This item is worth approximately 6 points for Clean Up Britannia.
+    5.36 player   <- 0x6C target cursor 2095 (type 1)
+    5.36 harness  == P175-1 run 2: PASS (plain: 'This item is worth approximately one point for Clean Up Britannia.' (1.0); magic: 'This item is worth approximately 6 points for Clean Up Britannia.' (6.0); the magic sword's tooltip: ['hit lightning 50%', 'swing speed increase 30%'])

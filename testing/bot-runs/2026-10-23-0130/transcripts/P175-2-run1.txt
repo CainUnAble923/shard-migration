@@ -1,0 +1,768 @@
+    0.00 harness  == P175-2 run 1: [cleanup: a Custodian's own orc corpse pays 1.5 + contents, a dragon 15 + contents; one the admin killed pays contents only
+    0.00 admin    -> say '[go 0x247E2'
+    1.01 admin    -> say '[set X 3507 Y 2560 Z 21'
+    1.01 admin    <- 0x6C target cursor 2103 (type 0)
+    1.21 admin    -> 0x6C target object 0x000247E2
+    1.21 admin    <- unicode(0) System: Property has been set. (3)
+    1.21 player   <- 0xF3 world item 0x4001D3C9 graphic 0xF88 x1 at 3515,2555,18 hue 0
+    1.71 admin    -> say '[go 0x247E2'
+    1.72 admin    <- 0xF3 world item 0x4001D3C9 graphic 0xF88 x1 at 3515,2555,18 hue 0
+   18.79 admin    -> say '[go 0x247E2'
+   19.80 admin    -> say '[add SanitationWarden'
+   19.80 admin    <- 0x6C target cursor 2104 (type 1)
+   20.01 admin    -> 0x6C target ground 3508,2560,21
+   20.02 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   20.02 player   -> 0xBF 0x13 context menu request 0x00024BE6
+   20.02 player   <- 0xBF 0x14 context menu 0x00024BE6: [(0, 3006123, 'Open Paperdoll', 0), (1, 3006146, 'Talk', 0), (2, 3006040, 'Train Swordsmanship', 0), (3, 3006041, 'Train Mace Fighting', 0)]
+   20.02 player   -> 0xBF 0x15 context pick 1 (Talk) on 0x00024BE6
+   20.02 player   <- 0xDD gump 0x00000B8C type -810631593: The Custodians | <BASEFONT COLOR=#DDDDDD><I>Britannia's streets do not clean themselves. We are its invisible backbone.</I></BASEFONT> | <BASEFONT COLOR=#AAAAAA>Teaches: no skill of its own</BASEFONT> | Separate from the stock trade guild (say "join", 500 gold). One does not join the other. | Joining is free and takes one click. You start as an Initiate. | Join the guild | Apprentice task: | <BASEFONT COLOR=#DDDDDD>Open to all citizens - simply speak with a Sanitation Warden and pledge your service.</BASEFONT> | Open to members. | Guild Directory | Close
+   20.02 player      layout: { resizepic 0 0 9270 520 400 }{ checkertrans 10 10 500 380 }{ text 20 14 1154 0 }{ gumppictiled 10 36 500 2 9304 }{ htmlgump 20 44 480 36 1 0 0 }{ htmlgump 20 82 480 36 2 0 0 }{ text 20 118 999 3 }{ gumppictiled 10 140 500 2 9304 }{ text 20 150 999 4 }{ button 20 172 4023 4025 1 0 1 }{ text 55 174 1154 5 }{ gumppictiled 10 206 500 2 9304 }{ text 20 214 999 6 }{ htmlgump 20 234 480 36 7 0 0 }{ text 20 272 999 8 }{ gumppictiled 10 350 500 2 9304 }{ button 180 362 4011 4012 1 0 6 }{ text 205 364 999 9 }{ button 420 362 4017 4019 1 0 0 }{ text 455 364 999 10 }
+   20.02 player   -> 0xB1 gump 0x00000B8C type -810631593 button 1 switches [] texts []
+   20.02 player   <- unicode(0) System: You have joined the The Custodians as Volunteer. Joining is free.
+   20.02 player   <- unicode(0) System: Its Apprentice task is waiting when you are ready: Open to all citizens - simply speak with a Sanitation Warden and pledge your service.
+   20.02 player   <- unicode(0) System: You have been issued a Trash Bag. Drag litter into it, then right-click it to dump for Clean Up Britannia points.
+   20.02 player   <- unicode(0) System: The The Custodians has no trade tools to hand you, but you are welcome all the same.
+   20.02 player   <- 0xDD gump 0x00000B8D type -810631593: The Custodians | <BASEFONT COLOR=#DDDDDD><I>Britannia's streets do not clean themselves. We are its invisible backbone.</I></BASEFONT> | <BASEFONT COLOR=#AAAAAA>Teaches: no skill of its own</BASEFONT> | Separate from the stock trade guild (say "join", 500 gold). One does not join the other. | Member. Rank: Volunteer. | Mule module schematics | Apprentice task: | <BASEFONT COLOR=#DDDDDD>Open to all citizens - simply speak with a Sanitation Warden and pledge your service.</BASEFONT> | Complete it: +0 reputation, +0 scrip | Guild services | Guild Directory | Close
+   20.02 player      layout: { resizepic 0 0 9270 520 400 }{ checkertrans 10 10 500 380 }{ text 20 14 1154 0 }{ gumppictiled 10 36 500 2 9304 }{ htmlgump 20 44 480 36 1 0 0 }{ htmlgump 20 82 480 36 2 0 0 }{ text 20 118 999 3 }{ gumppictiled 10 140 500 2 9304 }{ text 20 150 68 4 }{ button 20 172 4005 4007 1 0 7 }{ text 55 174 999 5 }{ gumppictiled 10 204 500 2 9304 }{ text 20 212 999 6 }{ htmlgump 20 232 480 36 7 0 0 }{ button 20 270 4023 4025 1 0 4 }{ text 55 272 1154 8 }{ gumppictiled 10 350 500 2 9304 }{ button 20 362 4011 4012 1 0 5 }{ text 45 364 999 9 }{ button 180 362 4011 4012 1 0 6 }{ text 205 364 999 10 }{ button 420 362 4017 4019 1 0 0 }{ text 455 364 999 11 }
+   20.02 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 72, 'hitsMax': 176, 'version': 6, 'female': 1, 'str': 253, 'dex': 58, 'int': 41, 'stam': 58, 'stamMax': 58, 'mana': 41, 'manaMax': 41, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 985, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   20.02 player   <- 0x25 item 0x4036549C graphic 0xE75 x1 into 0x4035CF3C
+   20.03 player   <- unicode(0) Sanitation Warden: Britannia's streets won't clean themselves!
+   20.03 admin    <- unicode(0) Sanitation Warden: Britannia's streets won't clean themselves!
+   21.04 admin    -> say '[go 0x247E2'
+   22.05 admin    -> say '[SetSkill Wrestling 100'
+   22.05 admin    <- 0x6C target cursor 2105 (type 0)
+   22.25 admin    -> 0x6C target object 0x000247E2
+   22.25 admin    <- unicode(0) System: Wrestling : 100 (Base: 100)
+   22.25 player   <- 0x3A skill 43 now 100.0 (cap 200.0)
+   22.86 admin    -> say '[go 0x247E2'
+   23.86 admin    -> say '[SetSkill Tactics 100'
+   23.87 admin    <- 0x6C target cursor 2106 (type 0)
+   24.08 admin    -> 0x6C target object 0x000247E2
+   24.08 admin    <- unicode(0) System: Tactics : 100 (Base: 100)
+   24.08 player   <- 0x3A skill 27 now 100.0 (cap 200.0)
+   24.68 admin    -> say '[go 0x247E2'
+   25.69 admin    -> say '[set RawStr 250 RawDex 100 Hits 175'
+   25.70 admin    <- 0x6C target cursor 2107 (type 0)
+   25.90 admin    -> 0x6C target object 0x000247E2
+   25.90 admin    <- unicode(0) System: Property has been set. (3)
+   25.90 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 175, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 250, 'dex': 100, 'int': 41, 'stam': 58, 'stamMax': 100, 'mana': 41, 'manaMax': 41, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 975, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   26.50 admin    -> say '[go 0x247E2'
+   27.51 admin    -> say '[set X 3512 Y 2581 Z 14'
+   27.51 admin    <- 0x6C target cursor 2108 (type 0)
+   27.71 admin    -> 0x6C target object 0x000247E2
+   27.72 admin    <- unicode(0) System: Property has been set. (3)
+   27.72 player   <- 0xF3 world item 0x4001D3CA graphic 0xF86 x1 at 3527,2550,15 hue 0
+   28.23 admin    -> say '[go 0x247E2'
+   29.24 admin    -> say '[set Hits 175 Stam 100'
+   29.24 admin    <- 0x6C target cursor 2109 (type 0)
+   29.44 admin    -> 0x6C target object 0x000247E2
+   29.44 admin    <- unicode(0) System: Property has been set. (2)
+   30.06 admin    -> say '[go 0x247E2'
+   31.06 admin    -> say '[add Orc'
+   31.07 admin    <- 0x6C target cursor 2110 (type 1)
+   31.26 admin    -> 0x6C target ground 3513,2581,14
+   31.27 admin    -> say '[go 0x247E2'
+   31.27 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   32.28 admin    -> say '[set CantWalk true Hits 1 DamageMin 1 DamageMax 1'
+   32.28 admin    <- 0x6C target cursor 2111 (type 0)
+   32.48 admin    -> 0x6C target object 0x00024BE7
+   32.48 admin    <- unicode(0) System: Property has been set. (4)
+   33.72 admin    <- 0xF3 world item 0x403654AA graphic 0x122D x1 at 3512,2581,14 hue 0
+   33.72 player   <- 0xF3 world item 0x403654AA graphic 0x122D x1 at 3512,2581,14 hue 0
+   33.72 admin    <- 0xF3 world item 0x403654AB graphic 0x122C x1 at 3511,2582,14 hue 0
+   33.72 player   <- 0xF3 world item 0x403654AB graphic 0x122C x1 at 3511,2582,14 hue 0
+   33.72 admin    <- 0xF3 world item 0x403654AC graphic 0x122D x1 at 3511,2581,14 hue 0
+   33.72 player   <- 0xF3 world item 0x403654AC graphic 0x122D x1 at 3511,2581,14 hue 0
+   33.72 admin    <- 0xF3 world item 0x403654AD graphic 0x122C x1 at 3513,2582,14 hue 0
+   33.72 player   <- 0xF3 world item 0x403654AD graphic 0x122C x1 at 3513,2582,14 hue 0
+   33.72 admin    <- 0xF3 world item 0x403654AE graphic 0x122D x1 at 3512,2580,14 hue 0
+   33.72 player   <- 0xF3 world item 0x403654AE graphic 0x122D x1 at 3512,2580,14 hue 0
+   35.48 player   <- 0x3A skill 40 now 18.5 (cap 200.0)
+   35.48 player   <- 0x3A skill 40 now 18.6 (cap 200.0)
+   35.48 player   <- 0x3A skill 40 now 18.7 (cap 200.0)
+   35.48 player   <- 0x3A skill 40 now 18.8 (cap 200.0)
+   35.48 player   <- 0x3A skill 40 now 18.9 (cap 200.0)
+   35.48 player   <- 0x3A skill 40 now 19.0 (cap 200.0)
+   35.48 player   <- 0x3A skill 40 now 19.1 (cap 200.0)
+   35.48 player   <- 0x3A skill 40 now 19.2 (cap 200.0)
+   35.48 player   <- 0x3A skill 40 now 19.3 (cap 200.0)
+   35.48 player   <- 0x3A skill 40 now 19.4 (cap 200.0)
+   35.48 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 174, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 100, 'int': 41, 'stam': 100, 'stamMax': 100, 'mana': 41, 'manaMax': 41, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   35.72 player   <- 0xF3 world item 0x403654AF graphic 0x122F x1 at 3512,2581,14 hue 0
+   35.72 player   <- 0xF3 world item 0x403654B0 graphic 0x1645 x1 at 3512,2581,14 hue 0
+   35.72 admin    <- 0xF3 world item 0x403654AF graphic 0x122F x1 at 3512,2581,14 hue 0
+   35.72 admin    <- 0xF3 world item 0x403654B0 graphic 0x1645 x1 at 3512,2581,14 hue 0
+   35.72 admin    <- 0xF3 world item 0x403654B1 graphic 0x122E x1 at 3511,2581,14 hue 0
+   35.72 admin    <- 0xF3 world item 0x403654B2 graphic 0x122E x1 at 3513,2581,14 hue 0
+   35.72 player   <- 0xF3 world item 0x403654B1 graphic 0x122E x1 at 3511,2581,14 hue 0
+   35.72 admin    <- 0xF3 world item 0x403654B3 graphic 0x122A x1 at 3512,2581,14 hue 0
+   35.72 player   <- 0xF3 world item 0x403654B2 graphic 0x122E x1 at 3513,2581,14 hue 0
+   35.72 player   <- 0xF3 world item 0x403654B3 graphic 0x122A x1 at 3512,2581,14 hue 0
+   35.84 admin    <- ascii(0) System: The world is saving, please wait.
+   35.84 player   <- ascii(0) System: The world is saving, please wait.
+   35.84 admin    <- ascii(0) System: World save completed in 0.01 seconds.
+   35.84 player   <- ascii(0) System: World save completed in 0.01 seconds.
+   37.24 player   <- 0x3A skill 40 now 19.5 (cap 200.0)
+   37.24 admin    <- 0xF3 world item 0x403654B9 graphic 0x1645 x1 at 3513,2581,8 hue 0
+   37.24 player   <- 0x3A skill 40 now 19.6 (cap 200.0)
+   37.24 admin    <- 0xF3 world item 0x403654BA graphic 0x1645 x1 at 3513,2581,8 hue 0
+   37.24 player   <- 0x3A skill 40 now 19.7 (cap 200.0)
+   37.24 admin    <- 0xF3 world item 0x403654BB graphic 0x122A x1 at 3514,2580,8 hue 0
+   37.24 player   <- 0x3A skill 40 now 19.8 (cap 200.0)
+   37.24 admin    <- 0xF3 world item 0x403654BC graphic 0x1645 x1 at 3512,2582,8 hue 0
+   37.24 player   <- 0x3A skill 40 now 19.9 (cap 200.0)
+   37.24 admin    <- 0xF3 world item 0x403654BE graphic 0x2006 x17 at 3513,2581,8 hue 0
+   37.24 player   <- 0x3A skill 40 now 20.0 (cap 200.0)
+   37.24 player   <- 0x3A skill 40 now 20.1 (cap 200.0)
+   37.24 player   <- 0x3A skill 40 now 20.2 (cap 200.0)
+   37.24 player   <- 0x3A skill 40 now 20.3 (cap 200.0)
+   37.24 player   <- 0x3A skill 40 now 20.4 (cap 200.0)
+   37.24 player   <- 0x3A skill 1 now 57.1 (cap 200.0)
+   37.24 player   <- 0x3A skill 1 now 57.2 (cap 200.0)
+   37.24 player   <- 0x3A skill 1 now 57.3 (cap 200.0)
+   37.24 player   <- 0x3A skill 1 now 57.4 (cap 200.0)
+   37.24 player   <- 0x3A skill 1 now 57.5 (cap 200.0)
+   37.24 player   <- 0xF3 world item 0x403654B9 graphic 0x1645 x1 at 3513,2581,8 hue 0
+   37.24 player   <- 0xF3 world item 0x403654BA graphic 0x1645 x1 at 3513,2581,8 hue 0
+   37.24 player   <- 0xF3 world item 0x403654BB graphic 0x122A x1 at 3514,2580,8 hue 0
+   37.24 player   <- 0xF3 world item 0x403654BC graphic 0x1645 x1 at 3512,2582,8 hue 0
+   37.24 player   <- 0xF3 world item 0x403654BE graphic 0x2006 x17 at 3513,2581,8 hue 0
+   37.24 player   <- cliloc(0) System #1019052: You have gained some fame.
+   37.24 player   <- cliloc(0) System #1019062: You have gained a lot of karma.
+   37.74 player   -> 0x06 double click 0x403654BE
+   37.74 player   <- 0x24 open container 0x403654BE gump 0x9
+   37.74 player   <- 0x3C 5 items into containers
+   37.74 player   <- cliloc(0) System #500119: You must wait to perform another action.
+   37.74 player   <- 0x25 item 0x403654A6 graphic 0xEED x59 into 0x403654BE
+   40.61 player   <- 0xF3 world item 0x403654BF graphic 0x122D x1 at 3512,2581,14 hue 0
+   40.61 player   <- 0xF3 world item 0x403654C0 graphic 0x122F x1 at 3513,2580,14 hue 0
+   40.61 player   <- 0xF3 world item 0x403654C1 graphic 0x122D x1 at 3513,2582,14 hue 0
+   40.61 admin    <- 0xF3 world item 0x403654BF graphic 0x122D x1 at 3512,2581,14 hue 0
+   40.61 admin    <- 0xF3 world item 0x403654C0 graphic 0x122F x1 at 3513,2580,14 hue 0
+   40.61 admin    <- 0xF3 world item 0x403654C1 graphic 0x122D x1 at 3513,2582,14 hue 0
+   40.61 admin    <- 0xF3 world item 0x403654C2 graphic 0x1645 x1 at 3511,2580,14 hue 0
+   40.61 player   <- 0xF3 world item 0x403654C2 graphic 0x1645 x1 at 3511,2580,14 hue 0
+   42.36 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 165, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 100, 'int': 41, 'stam': 100, 'stamMax': 100, 'mana': 41, 'manaMax': 41, 'gold': 3553, 'ar': 0, 'weight': 591, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   42.37 admin    <- 0xF3 world item 0x403654D2 graphic 0x122B x1 at 3512,2581,14 hue 0
+   42.37 admin    <- 0xF3 world item 0x403654D3 graphic 0x122D x1 at 3511,2580,14 hue 0
+   42.37 admin    <- 0xF3 world item 0x403654D4 graphic 0x1645 x1 at 3511,2581,14 hue 0
+   42.37 admin    <- 0xF3 world item 0x403654D5 graphic 0x1645 x1 at 3513,2580,14 hue 0
+   42.37 player   <- 0xF3 world item 0x403654D2 graphic 0x122B x1 at 3512,2581,14 hue 0
+   42.37 player   <- 0xF3 world item 0x403654D3 graphic 0x122D x1 at 3511,2580,14 hue 0
+   42.37 player   <- 0xF3 world item 0x403654D4 graphic 0x1645 x1 at 3511,2581,14 hue 0
+   42.37 player   <- 0xF3 world item 0x403654D5 graphic 0x1645 x1 at 3513,2580,14 hue 0
+   42.76 player   <- cliloc(0) System #1080017: That container cannot hold more items.
+   42.77 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 156, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 100, 'int': 41, 'stam': 100, 'stamMax': 100, 'mana': 41, 'manaMax': 41, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   42.77 player   <- 0x25 item 0x403654A6 graphic 0xEED x59 into 0x403654BE
+   43.68 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 156, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 100, 'int': 41, 'stam': 100, 'stamMax': 100, 'mana': 41, 'manaMax': 41, 'gold': 3553, 'ar': 0, 'weight': 594, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   44.08 player   <- cliloc(0) System #1080017: That container cannot hold more items.
+   44.08 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 157, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 100, 'int': 41, 'stam': 100, 'stamMax': 100, 'mana': 41, 'manaMax': 41, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   44.08 player   <- 0x25 item 0x403654A7 graphic 0x1711 x1 into 0x403654BE
+   44.13 player   <- 0xF3 world item 0x403654E4 graphic 0x122F x1 at 3512,2581,14 hue 0
+   44.13 admin    <- 0xF3 world item 0x403654E4 graphic 0x122F x1 at 3512,2581,14 hue 0
+   44.13 player   <- 0xF3 world item 0x403654E5 graphic 0x122A x1 at 3512,2581,14 hue 0
+   44.13 admin    <- 0xF3 world item 0x403654E5 graphic 0x122A x1 at 3512,2581,14 hue 0
+   44.13 player   <- 0xF3 world item 0x403654E6 graphic 0x122F x1 at 3512,2582,14 hue 0
+   44.13 admin    <- 0xF3 world item 0x403654E6 graphic 0x122F x1 at 3512,2582,14 hue 0
+   44.13 player   <- 0xF3 world item 0x403654E7 graphic 0x122E x1 at 3513,2582,14 hue 0
+   44.13 admin    <- 0xF3 world item 0x403654E7 graphic 0x122E x1 at 3513,2582,14 hue 0
+   44.13 player   <- 0xF3 world item 0x403654E8 graphic 0x122D x1 at 3513,2580,14 hue 0
+   44.14 admin    <- 0xF3 world item 0x403654E8 graphic 0x122D x1 at 3513,2580,14 hue 0
+   44.99 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 147, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 100, 'int': 41, 'stam': 99, 'stamMax': 100, 'mana': 41, 'manaMax': 41, 'gold': 3553, 'ar': 0, 'weight': 591, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   45.39 player   <- cliloc(0) System #1080017: That container cannot hold more items.
+   45.39 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 147, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 100, 'int': 41, 'stam': 99, 'stamMax': 100, 'mana': 41, 'manaMax': 41, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   45.39 player   <- 0x25 item 0x403654A8 graphic 0x1BD4 x1 into 0x403654BE
+   45.89 admin    <- 0xF3 world item 0x403654E9 graphic 0x122A x1 at 3512,2581,14 hue 0
+   45.89 player   <- 0xF3 world item 0x403654E9 graphic 0x122A x1 at 3512,2581,14 hue 0
+   45.89 admin    <- 0xF3 world item 0x403654EA graphic 0x122C x1 at 3512,2580,14 hue 0
+   45.89 player   <- 0xF3 world item 0x403654EA graphic 0x122C x1 at 3512,2580,14 hue 0
+   45.89 admin    <- 0xF3 world item 0x403654EB graphic 0x122A x1 at 3513,2582,14 hue 0
+   45.89 player   <- 0xF3 world item 0x403654EB graphic 0x122A x1 at 3513,2582,14 hue 0
+   45.89 admin    <- 0xF3 world item 0x403654EC graphic 0x122C x1 at 3512,2582,14 hue 0
+   45.89 player   <- 0xF3 world item 0x403654EC graphic 0x122C x1 at 3512,2582,14 hue 0
+   45.89 admin    <- 0xF3 world item 0x403654ED graphic 0x122B x1 at 3511,2582,14 hue 0
+   45.89 player   <- 0xF3 world item 0x403654ED graphic 0x122B x1 at 3511,2582,14 hue 0
+   46.31 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 138, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 100, 'int': 41, 'stam': 98, 'stamMax': 100, 'mana': 41, 'manaMax': 41, 'gold': 3553, 'ar': 0, 'weight': 594, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   46.72 player   <- cliloc(0) System #1080017: That container cannot hold more items.
+   46.72 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 138, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 100, 'int': 41, 'stam': 99, 'stamMax': 100, 'mana': 41, 'manaMax': 41, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   46.72 player   <- 0x25 item 0x403654A9 graphic 0xE73 x1 into 0x403654BE
+   47.63 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 139, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 100, 'int': 41, 'stam': 99, 'stamMax': 100, 'mana': 41, 'manaMax': 41, 'gold': 3553, 'ar': 0, 'weight': 591, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   47.65 player   <- 0xF3 world item 0x403654EE graphic 0x122A x1 at 3512,2581,14 hue 0
+   47.65 admin    <- 0xF3 world item 0x403654EE graphic 0x122A x1 at 3512,2581,14 hue 0
+   47.65 player   <- 0xF3 world item 0x403654EF graphic 0x122E x1 at 3512,2581,14 hue 0
+   47.65 admin    <- 0xF3 world item 0x403654EF graphic 0x122E x1 at 3512,2581,14 hue 0
+   47.65 admin    <- 0xF3 world item 0x403654F0 graphic 0x1645 x1 at 3513,2580,14 hue 0
+   47.65 admin    <- 0xF3 world item 0x403654F1 graphic 0x122D x1 at 3512,2582,14 hue 0
+   47.65 player   <- 0xF3 world item 0x403654F0 graphic 0x1645 x1 at 3513,2580,14 hue 0
+   47.65 player   <- 0xF3 world item 0x403654F1 graphic 0x122D x1 at 3512,2582,14 hue 0
+   48.03 player   <- cliloc(0) System #1080017: That container cannot hold more items.
+   48.03 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 127, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 100, 'int': 41, 'stam': 96, 'stamMax': 100, 'mana': 41, 'manaMax': 41, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   48.03 player   <- 0x25 item 0x403654BD graphic 0x1718 x1 into 0x403654BE
+   49.14 player   <- 0x3A skill 50 now 15.9 (cap 200.0)
+   49.14 player   <- 0x3A skill 50 now 16.0 (cap 200.0)
+   49.14 player   <- 0x3A skill 50 now 16.1 (cap 200.0)
+   49.14 player   <- 0x3A skill 50 now 16.2 (cap 200.0)
+   49.14 player   <- 0x3A skill 50 now 16.3 (cap 200.0)
+   49.41 admin    <- 0xF3 world item 0x403654F2 graphic 0x122E x1 at 3512,2581,14 hue 0
+   49.41 admin    <- 0xF3 world item 0x403654F3 graphic 0x1645 x1 at 3511,2581,14 hue 0
+   49.41 admin    <- 0xF3 world item 0x403654F4 graphic 0x1645 x1 at 3511,2582,14 hue 0
+   49.41 admin    <- 0xF3 world item 0x403654F5 graphic 0x122E x1 at 3511,2581,14 hue 0
+   49.41 admin    <- 0xF3 world item 0x403654F6 graphic 0x122C x1 at 3512,2582,14 hue 0
+   49.41 player   <- 0xF3 world item 0x403654F2 graphic 0x122E x1 at 3512,2581,14 hue 0
+   49.41 player   <- 0xF3 world item 0x403654F3 graphic 0x1645 x1 at 3511,2581,14 hue 0
+   49.41 player   <- 0xF3 world item 0x403654F4 graphic 0x1645 x1 at 3511,2582,14 hue 0
+   49.41 player   <- 0xF3 world item 0x403654F5 graphic 0x122E x1 at 3511,2581,14 hue 0
+   49.41 player   <- 0xF3 world item 0x403654F6 graphic 0x122C x1 at 3512,2582,14 hue 0
+   49.54 player   -> say '[cleanup'
+   49.55 player   <- unicode(0) System: Target an item to clean up.
+   49.55 player   <- 0x6C target cursor 2112 (type 0)
+   49.85 player   -> 0x6C target object 0x403654BE
+   49.85 player   <- unicode(0) System: Corpse cleared (5 items inside). +4.09 Clean Up points.
+   50.36 admin    -> say '[go 0x247E2'
+   51.17 player   <- 0xF3 world item 0x403654F7 graphic 0x122E x1 at 3512,2581,14 hue 0
+   51.17 player   <- 0xF3 world item 0x403654F8 graphic 0x122E x1 at 3512,2582,14 hue 0
+   51.17 player   <- 0xF3 world item 0x403654F9 graphic 0x1645 x1 at 3512,2580,14 hue 0
+   51.17 player   <- 0xF3 world item 0x403654FA graphic 0x122E x1 at 3512,2582,14 hue 0
+   51.17 admin    <- 0xF3 world item 0x403654F7 graphic 0x122E x1 at 3512,2581,14 hue 0
+   51.17 admin    <- 0xF3 world item 0x403654F8 graphic 0x122E x1 at 3512,2582,14 hue 0
+   51.17 admin    <- 0xF3 world item 0x403654F9 graphic 0x1645 x1 at 3512,2580,14 hue 0
+   51.17 admin    <- 0xF3 world item 0x403654FA graphic 0x122E x1 at 3512,2582,14 hue 0
+   51.37 admin    -> say '[set X 3512 Y 2581 Z 14'
+   51.37 admin    <- 0x6C target cursor 2113 (type 0)
+   51.57 admin    -> 0x6C target object 0x000247E2
+   51.57 admin    <- unicode(0) System: Property has been set. (3)
+   51.65 player   <- 0x3A skill 50 now 16.4 (cap 200.0)
+   51.65 player   <- 0x3A skill 50 now 16.5 (cap 200.0)
+   51.65 player   <- 0x3A skill 50 now 16.6 (cap 200.0)
+   51.65 player   <- 0x3A skill 50 now 16.7 (cap 200.0)
+   51.65 player   <- 0x3A skill 50 now 16.8 (cap 200.0)
+   51.65 player   <- 0x3A skill 50 now 16.9 (cap 200.0)
+   51.65 player   <- 0x3A skill 50 now 17.0 (cap 200.0)
+   51.65 player   <- 0x3A skill 50 now 17.1 (cap 200.0)
+   51.65 player   <- 0x3A skill 50 now 17.2 (cap 200.0)
+   51.65 player   <- 0x3A skill 50 now 17.3 (cap 200.0)
+   52.08 admin    -> say '[go 0x247E2'
+   52.93 admin    <- 0xF3 world item 0x403654FB graphic 0x1645 x1 at 3512,2581,14 hue 0
+   52.93 player   <- 0xF3 world item 0x403654FB graphic 0x1645 x1 at 3512,2581,14 hue 0
+   52.93 admin    <- 0xF3 world item 0x403654FC graphic 0x122C x1 at 3512,2582,14 hue 0
+   52.93 player   <- 0xF3 world item 0x403654FC graphic 0x122C x1 at 3512,2582,14 hue 0
+   52.93 admin    <- 0xF3 world item 0x403654FD graphic 0x122C x1 at 3513,2580,14 hue 0
+   52.93 player   <- 0xF3 world item 0x403654FD graphic 0x122C x1 at 3513,2580,14 hue 0
+   52.93 player   <- 0xF3 world item 0x403654FE graphic 0x1645 x1 at 3511,2582,14 hue 0
+   52.93 player   <- 0xF3 world item 0x403654FF graphic 0x122E x1 at 3512,2582,14 hue 0
+   52.93 admin    <- 0xF3 world item 0x403654FE graphic 0x1645 x1 at 3511,2582,14 hue 0
+   52.93 admin    <- 0xF3 world item 0x403654FF graphic 0x122E x1 at 3512,2582,14 hue 0
+   53.09 admin    -> say '[set Hits 175 Stam 100'
+   53.09 admin    <- 0x6C target cursor 2114 (type 0)
+   53.31 admin    -> 0x6C target object 0x000247E2
+   53.31 admin    <- unicode(0) System: Property has been set. (2)
+   53.91 admin    -> say '[go 0x247E2'
+   54.69 player   <- 0xF3 world item 0x40365500 graphic 0x1645 x1 at 3512,2581,14 hue 0
+   54.69 admin    <- 0xF3 world item 0x40365500 graphic 0x1645 x1 at 3512,2581,14 hue 0
+   54.69 player   <- 0xF3 world item 0x40365501 graphic 0x122A x1 at 3512,2580,14 hue 0
+   54.69 admin    <- 0xF3 world item 0x40365501 graphic 0x122A x1 at 3512,2580,14 hue 0
+   54.69 player   <- 0xF3 world item 0x40365502 graphic 0x122B x1 at 3512,2581,14 hue 0
+   54.69 admin    <- 0xF3 world item 0x40365502 graphic 0x122B x1 at 3512,2581,14 hue 0
+   54.69 player   <- 0xF3 world item 0x40365503 graphic 0x122D x1 at 3513,2580,14 hue 0
+   54.69 admin    <- 0xF3 world item 0x40365503 graphic 0x122D x1 at 3513,2580,14 hue 0
+   54.69 player   <- 0xF3 world item 0x40365504 graphic 0x122A x1 at 3512,2581,14 hue 0
+   54.69 admin    <- 0xF3 world item 0x40365504 graphic 0x122A x1 at 3512,2581,14 hue 0
+   54.91 admin    -> say '[add Dragon'
+   54.91 admin    <- 0x6C target cursor 2115 (type 1)
+   55.12 admin    -> 0x6C target ground 3513,2581,14
+   55.12 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   55.12 admin    -> say '[go 0x247E2'
+   56.13 admin    -> say '[set CantWalk true Hits 1 DamageMin 1 DamageMax 1'
+   56.13 admin    <- 0x6C target cursor 2116 (type 0)
+   56.33 admin    -> 0x6C target object 0x00024BE8
+   56.33 admin    <- unicode(0) System: Property has been set. (4)
+   57.57 admin    <- 0xF3 world item 0x40365519 graphic 0x122D x1 at 3512,2581,14 hue 0
+   57.57 admin    <- 0xF3 world item 0x4036551A graphic 0x122B x1 at 3511,2580,14 hue 0
+   57.57 player   <- 0xF3 world item 0x40365519 graphic 0x122D x1 at 3512,2581,14 hue 0
+   57.57 admin    <- 0xF3 world item 0x4036551B graphic 0x1645 x1 at 3511,2580,14 hue 0
+   57.57 player   <- 0xF3 world item 0x4036551A graphic 0x122B x1 at 3511,2580,14 hue 0
+   57.57 admin    <- 0xF3 world item 0x4036551C graphic 0x122D x1 at 3513,2580,14 hue 0
+   57.57 player   <- 0xF3 world item 0x4036551B graphic 0x1645 x1 at 3511,2580,14 hue 0
+   57.57 admin    <- 0xF3 world item 0x4036551D graphic 0x122B x1 at 3511,2580,14 hue 0
+   57.57 player   <- 0xF3 world item 0x4036551C graphic 0x122D x1 at 3513,2580,14 hue 0
+   57.57 admin    <- 0xF3 world item 0x4036551E graphic 0x122A x1 at 3513,2581,8 hue 0
+   57.57 player   <- 0xF3 world item 0x4036551D graphic 0x122B x1 at 3511,2580,14 hue 0
+   57.57 admin    <- 0xF3 world item 0x4036551F graphic 0x122D x1 at 3513,2582,8 hue 0
+   57.57 player   <- 0x3A skill 40 now 20.5 (cap 200.0)
+   57.57 admin    <- 0xF3 world item 0x40365520 graphic 0x1645 x1 at 3513,2580,8 hue 0
+   57.57 player   <- 0x3A skill 40 now 20.6 (cap 200.0)
+   57.57 admin    <- 0xF3 world item 0x40365521 graphic 0x122C x1 at 3514,2581,8 hue 0
+   57.57 player   <- 0x3A skill 40 now 20.7 (cap 200.0)
+   57.57 admin    <- 0xF3 world item 0x40365530 graphic 0x2006 x12 at 3513,2581,8 hue 0
+   57.57 player   <- 0x3A skill 40 now 20.8 (cap 200.0)
+   57.57 player   <- 0x3A skill 40 now 20.9 (cap 200.0)
+   57.57 player   <- 0x3A skill 40 now 21.0 (cap 200.0)
+   57.57 player   <- 0x3A skill 40 now 21.1 (cap 200.0)
+   57.57 player   <- 0x3A skill 40 now 21.2 (cap 200.0)
+   57.57 player   <- 0x3A skill 40 now 21.3 (cap 200.0)
+   57.57 player   <- 0x3A skill 40 now 21.4 (cap 200.0)
+   57.57 player   <- 0x3A skill 40 now 21.5 (cap 200.0)
+   57.57 player   <- 0x3A skill 40 now 21.6 (cap 200.0)
+   57.57 player   <- 0x3A skill 40 now 21.7 (cap 200.0)
+   57.57 player   <- 0x3A skill 40 now 21.8 (cap 200.0)
+   57.57 player   <- 0x3A skill 40 now 21.9 (cap 200.0)
+   57.57 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 162, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 101, 'int': 41, 'stam': 100, 'stamMax': 101, 'mana': 41, 'manaMax': 41, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   57.57 player   <- 0x3A skill 27 now 100.1 (cap 200.0)
+   57.57 player   <- 0x3A skill 27 now 100.2 (cap 200.0)
+   57.57 player   <- 0x3A skill 27 now 100.3 (cap 200.0)
+   57.57 player   <- 0x3A skill 27 now 100.4 (cap 200.0)
+   57.57 player   <- 0x3A skill 27 now 100.5 (cap 200.0)
+   57.57 player   <- 0x3A skill 1 now 57.6 (cap 200.0)
+   57.57 player   <- 0x3A skill 1 now 57.7 (cap 200.0)
+   57.57 player   <- 0x3A skill 1 now 57.8 (cap 200.0)
+   57.57 player   <- 0x3A skill 1 now 57.9 (cap 200.0)
+   57.57 player   <- 0x3A skill 1 now 58.0 (cap 200.0)
+   57.57 player   <- 0x3A skill 1 now 58.1 (cap 200.0)
+   57.57 player   <- 0x3A skill 1 now 58.2 (cap 200.0)
+   57.57 player   <- 0x3A skill 1 now 58.3 (cap 200.0)
+   57.57 player   <- 0x3A skill 1 now 58.4 (cap 200.0)
+   57.57 player   <- 0x3A skill 1 now 58.5 (cap 200.0)
+   57.57 player   <- 0xF3 world item 0x4036551E graphic 0x122A x1 at 3513,2581,8 hue 0
+   57.57 player   <- 0xF3 world item 0x4036551F graphic 0x122D x1 at 3513,2582,8 hue 0
+   57.57 player   <- 0xF3 world item 0x40365520 graphic 0x1645 x1 at 3513,2580,8 hue 0
+   57.57 player   <- 0xF3 world item 0x40365521 graphic 0x122C x1 at 3514,2581,8 hue 0
+   57.57 player   <- 0xF3 world item 0x40365530 graphic 0x2006 x12 at 3513,2581,8 hue 0
+   57.58 player   <- cliloc(0) System #1019054: You have gained a lot of fame.
+   57.58 player   <- cliloc(0) System #1019062: You have gained a lot of karma.
+   58.21 player   <- 0xF3 world item 0x40365531 graphic 0x1645 x1 at 3512,2581,14 hue 0
+   58.21 admin    <- 0xF3 world item 0x40365531 graphic 0x1645 x1 at 3512,2581,14 hue 0
+   58.21 player   <- 0xF3 world item 0x40365532 graphic 0x122B x1 at 3512,2580,14 hue 0
+   58.21 admin    <- 0xF3 world item 0x40365532 graphic 0x122B x1 at 3512,2580,14 hue 0
+   58.21 admin    <- 0xF3 world item 0x40365533 graphic 0x122B x1 at 3511,2581,14 hue 0
+   58.21 player   <- 0xF3 world item 0x40365533 graphic 0x122B x1 at 3511,2581,14 hue 0
+   58.21 admin    <- 0xF3 world item 0x40365534 graphic 0x122F x1 at 3512,2581,14 hue 0
+   58.21 player   <- 0xF3 world item 0x40365534 graphic 0x122F x1 at 3512,2581,14 hue 0
+   58.56 player   -> 0x06 double click 0x40365530
+   58.57 player   <- 0x24 open container 0x40365530 gump 0x9
+   58.57 player   <- 0x3C 13 items into containers
+   58.57 player   <- cliloc(0) System #500119: You must wait to perform another action.
+   58.57 player   <- 0x25 item 0x40365506 graphic 0xEED x1095 into 0x40365530
+   59.97 admin    <- 0xF3 world item 0x40365535 graphic 0x122A x1 at 3512,2581,14 hue 0
+   59.97 player   <- 0xF3 world item 0x40365535 graphic 0x122A x1 at 3512,2581,14 hue 0
+   59.97 admin    <- 0xF3 world item 0x40365536 graphic 0x122E x1 at 3513,2580,14 hue 0
+   59.97 player   <- 0xF3 world item 0x40365536 graphic 0x122E x1 at 3513,2580,14 hue 0
+   59.97 admin    <- 0xF3 world item 0x40365537 graphic 0x122E x1 at 3513,2582,14 hue 0
+   59.97 admin    <- 0xF3 world item 0x40365538 graphic 0x122E x1 at 3511,2581,14 hue 0
+   59.97 admin    <- 0xF3 world item 0x40365539 graphic 0x1645 x1 at 3511,2580,14 hue 0
+   59.97 player   <- 0xF3 world item 0x40365537 graphic 0x122E x1 at 3513,2582,14 hue 0
+   59.97 player   <- 0xF3 world item 0x40365538 graphic 0x122E x1 at 3511,2581,14 hue 0
+   59.97 player   <- 0xF3 world item 0x40365539 graphic 0x1645 x1 at 3511,2580,14 hue 0
+   60.07 player   <- 0x3A skill 50 now 17.4 (cap 200.0)
+   60.07 player   <- 0x3A skill 50 now 17.5 (cap 200.0)
+   60.07 player   <- 0x3A skill 50 now 17.6 (cap 200.0)
+   60.07 player   <- 0x3A skill 50 now 17.7 (cap 200.0)
+   60.07 player   <- 0x3A skill 50 now 17.8 (cap 200.0)
+   60.07 player   <- 0x3A skill 50 now 17.9 (cap 200.0)
+   60.07 player   <- 0x3A skill 50 now 18.0 (cap 200.0)
+   60.07 player   <- 0x3A skill 50 now 18.1 (cap 200.0)
+   60.07 player   <- 0x3A skill 50 now 18.2 (cap 200.0)
+   60.07 player   <- 0x3A skill 50 now 18.3 (cap 200.0)
+   60.07 player   <- 0x3A skill 50 now 18.4 (cap 200.0)
+   60.07 player   <- 0x3A skill 50 now 18.5 (cap 200.0)
+   60.07 player   <- 0x3A skill 50 now 18.6 (cap 200.0)
+   60.07 player   <- 0x3A skill 50 now 18.7 (cap 200.0)
+   60.07 player   <- 0x3A skill 50 now 18.8 (cap 200.0)
+   60.07 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 142, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 101, 'int': 42, 'stam': 99, 'stamMax': 101, 'mana': 41, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   61.73 admin    <- 0xF3 world item 0x4036553A graphic 0x122F x1 at 3512,2581,14 hue 0
+   61.73 admin    <- 0xF3 world item 0x4036553B graphic 0x122F x1 at 3511,2580,14 hue 0
+   61.73 admin    <- 0xF3 world item 0x4036553C graphic 0x122A x1 at 3513,2582,14 hue 0
+   61.73 admin    <- 0xF3 world item 0x4036553D graphic 0x122A x1 at 3512,2582,14 hue 0
+   61.73 player   <- 0xF3 world item 0x4036553A graphic 0x122F x1 at 3512,2581,14 hue 0
+   61.73 player   <- 0xF3 world item 0x4036553B graphic 0x122F x1 at 3511,2580,14 hue 0
+   61.73 player   <- 0xF3 world item 0x4036553C graphic 0x122A x1 at 3513,2582,14 hue 0
+   61.73 player   <- 0xF3 world item 0x4036553D graphic 0x122A x1 at 3512,2582,14 hue 0
+   62.57 player   <- 0x3A skill 50 now 18.9 (cap 200.0)
+   62.57 player   <- 0x3A skill 50 now 19.0 (cap 200.0)
+   62.57 player   <- 0x3A skill 50 now 19.1 (cap 200.0)
+   62.57 player   <- 0x3A skill 50 now 19.2 (cap 200.0)
+   62.57 player   <- 0x3A skill 50 now 19.3 (cap 200.0)
+   62.57 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 132, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 102, 'int': 42, 'stam': 98, 'stamMax': 102, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   63.19 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 132, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 102, 'int': 42, 'stam': 98, 'stamMax': 102, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 598, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   63.49 player   <- 0xF3 world item 0x4036557C graphic 0x122A x1 at 3512,2581,14 hue 0
+   63.49 admin    <- 0xF3 world item 0x4036557C graphic 0x122A x1 at 3512,2581,14 hue 0
+   63.49 player   <- 0xF3 world item 0x4036557D graphic 0x122B x1 at 3511,2582,14 hue 0
+   63.49 admin    <- 0xF3 world item 0x4036557D graphic 0x122B x1 at 3511,2582,14 hue 0
+   63.49 player   <- 0xF3 world item 0x4036557E graphic 0x122A x1 at 3511,2581,14 hue 0
+   63.49 admin    <- 0xF3 world item 0x4036557E graphic 0x122A x1 at 3511,2581,14 hue 0
+   63.49 player   <- 0xF3 world item 0x4036557F graphic 0x122E x1 at 3513,2582,14 hue 0
+   63.49 admin    <- 0xF3 world item 0x4036557F graphic 0x122E x1 at 3513,2582,14 hue 0
+   63.59 player   <- cliloc(0) System #1080017: That container cannot hold more items.
+   63.59 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 123, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 102, 'int': 42, 'stam': 97, 'stamMax': 102, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   63.59 player   <- 0x25 item 0x40365506 graphic 0xEED x1095 into 0x40365530
+   64.51 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 123, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 102, 'int': 42, 'stam': 97, 'stamMax': 102, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 591, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   64.91 player   <- cliloc(0) System #1080017: That container cannot hold more items.
+   64.91 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 124, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 102, 'int': 42, 'stam': 97, 'stamMax': 102, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   64.91 player   <- 0x25 item 0x40365522 graphic 0x14EC x1 into 0x40365530
+   65.08 player   <- 0x3A skill 50 now 19.4 (cap 200.0)
+   65.08 player   <- 0x3A skill 50 now 19.5 (cap 200.0)
+   65.08 player   <- 0x3A skill 50 now 19.6 (cap 200.0)
+   65.08 player   <- 0x3A skill 50 now 19.7 (cap 200.0)
+   65.08 player   <- 0x3A skill 50 now 19.8 (cap 200.0)
+   65.08 player   <- 0x3A skill 50 now 19.9 (cap 200.0)
+   65.08 player   <- 0x3A skill 50 now 20.0 (cap 200.0)
+   65.08 player   <- 0x3A skill 50 now 20.1 (cap 200.0)
+   65.08 player   <- 0x3A skill 50 now 20.2 (cap 200.0)
+   65.08 player   <- 0x3A skill 50 now 20.3 (cap 200.0)
+   65.25 player   <- 0xF3 world item 0x40365580 graphic 0x122A x1 at 3512,2581,14 hue 0
+   65.25 admin    <- 0xF3 world item 0x40365580 graphic 0x122A x1 at 3512,2581,14 hue 0
+   65.25 player   <- 0xF3 world item 0x40365581 graphic 0x122E x1 at 3511,2582,14 hue 0
+   65.25 admin    <- 0xF3 world item 0x40365581 graphic 0x122E x1 at 3511,2582,14 hue 0
+   65.25 player   <- 0xF3 world item 0x40365582 graphic 0x122F x1 at 3512,2582,14 hue 0
+   65.25 admin    <- 0xF3 world item 0x40365582 graphic 0x122F x1 at 3512,2582,14 hue 0
+   65.25 player   <- 0xF3 world item 0x40365583 graphic 0x122D x1 at 3511,2582,14 hue 0
+   65.25 admin    <- 0xF3 world item 0x40365583 graphic 0x122D x1 at 3511,2582,14 hue 0
+   65.82 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 115, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 102, 'int': 42, 'stam': 96, 'stamMax': 102, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 593, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   66.23 player   <- cliloc(0) System #1080017: That container cannot hold more items.
+   66.23 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 115, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 102, 'int': 42, 'stam': 96, 'stamMax': 102, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   66.23 player   <- 0x25 item 0x40365523 graphic 0x1C00 x1 into 0x40365530
+   67.01 admin    <- 0xF3 world item 0x40365584 graphic 0x122F x1 at 3512,2581,14 hue 0
+   67.01 player   <- 0xF3 world item 0x40365584 graphic 0x122F x1 at 3512,2581,14 hue 0
+   67.01 admin    <- 0xF3 world item 0x40365585 graphic 0x122E x1 at 3513,2582,14 hue 0
+   67.01 player   <- 0xF3 world item 0x40365585 graphic 0x122E x1 at 3513,2582,14 hue 0
+   67.01 admin    <- 0xF3 world item 0x40365586 graphic 0x122D x1 at 3512,2580,14 hue 0
+   67.01 player   <- 0xF3 world item 0x40365586 graphic 0x122D x1 at 3512,2580,14 hue 0
+   67.01 admin    <- 0xF3 world item 0x40365587 graphic 0x122B x1 at 3513,2582,14 hue 0
+   67.01 player   <- 0xF3 world item 0x40365587 graphic 0x122B x1 at 3513,2582,14 hue 0
+   67.14 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 106, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 102, 'int': 42, 'stam': 94, 'stamMax': 102, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 593, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   67.27 admin    <- cliloc(2) Kegigoth #1008086: *rummages through a corpse and takes an item*
+   67.27 player   <- cliloc(2) Kegigoth #1008086: *rummages through a corpse and takes an item*
+   67.54 player   <- cliloc(0) System #1080017: That container cannot hold more items.
+   67.54 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 106, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 102, 'int': 42, 'stam': 94, 'stamMax': 102, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   67.54 player   <- 0x25 item 0x40365524 graphic 0x1451 x1 into 0x40365530
+   68.45 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 107, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 102, 'int': 42, 'stam': 95, 'stamMax': 102, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 601, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   68.77 player   <- 0xF3 world item 0x40365588 graphic 0x122A x1 at 3512,2581,14 hue 0
+   68.77 admin    <- 0xF3 world item 0x40365588 graphic 0x122A x1 at 3512,2581,14 hue 0
+   68.77 player   <- 0xF3 world item 0x40365589 graphic 0x122B x1 at 3512,2581,14 hue 0
+   68.77 admin    <- 0xF3 world item 0x40365589 graphic 0x122B x1 at 3512,2581,14 hue 0
+   68.77 admin    <- 0xF3 world item 0x4036558A graphic 0x122A x1 at 3511,2581,14 hue 0
+   68.77 admin    <- 0xF3 world item 0x4036558B graphic 0x122E x1 at 3511,2582,14 hue 0
+   68.77 player   <- 0xF3 world item 0x4036558A graphic 0x122A x1 at 3511,2581,14 hue 0
+   68.77 admin    <- 0xF3 world item 0x4036558C graphic 0x122E x1 at 3512,2582,14 hue 0
+   68.77 player   <- 0xF3 world item 0x4036558B graphic 0x122E x1 at 3511,2582,14 hue 0
+   68.77 player   <- 0xF3 world item 0x4036558C graphic 0x122E x1 at 3512,2582,14 hue 0
+   68.85 player   <- cliloc(0) System #1080017: That container cannot hold more items.
+   68.85 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 98, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 102, 'int': 42, 'stam': 93, 'stamMax': 102, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   68.85 player   <- 0x25 item 0x40365525 graphic 0xE86 x1 into 0x40365530
+   69.76 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 98, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 102, 'int': 42, 'stam': 93, 'stamMax': 102, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 591, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   70.08 player   <- 0x3A skill 50 now 20.4 (cap 200.0)
+   70.08 player   <- 0x3A skill 50 now 20.5 (cap 200.0)
+   70.08 player   <- 0x3A skill 50 now 20.6 (cap 200.0)
+   70.08 player   <- 0x3A skill 50 now 20.7 (cap 200.0)
+   70.08 player   <- 0x3A skill 50 now 20.8 (cap 200.0)
+   70.16 player   <- cliloc(0) System #1080017: That container cannot hold more items.
+   70.16 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 98, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 102, 'int': 42, 'stam': 94, 'stamMax': 102, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   70.16 player   <- 0x25 item 0x40365526 graphic 0x1C06 x1 into 0x40365530
+   70.53 player   <- 0xF3 world item 0x4036558D graphic 0x122A x1 at 3512,2581,14 hue 0
+   70.53 admin    <- 0xF3 world item 0x4036558D graphic 0x122A x1 at 3512,2581,14 hue 0
+   70.53 player   <- 0xF3 world item 0x4036558E graphic 0x122D x1 at 3511,2580,14 hue 0
+   70.53 admin    <- 0xF3 world item 0x4036558E graphic 0x122D x1 at 3511,2580,14 hue 0
+   70.53 player   <- 0xF3 world item 0x4036558F graphic 0x122C x1 at 3512,2580,14 hue 0
+   70.53 admin    <- 0xF3 world item 0x4036558F graphic 0x122C x1 at 3512,2580,14 hue 0
+   70.53 player   <- 0xF3 world item 0x40365590 graphic 0x122C x1 at 3511,2580,14 hue 0
+   70.53 admin    <- 0xF3 world item 0x40365590 graphic 0x122C x1 at 3511,2580,14 hue 0
+   70.53 admin    <- 0xF3 world item 0x40365591 graphic 0x122E x1 at 3512,2581,14 hue 0
+   70.53 player   <- 0xF3 world item 0x40365591 graphic 0x122E x1 at 3512,2581,14 hue 0
+   71.07 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 89, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 102, 'int': 42, 'stam': 91, 'stamMax': 102, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 596, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   71.48 player   <- cliloc(0) System #1080017: That container cannot hold more items.
+   71.48 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 90, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 102, 'int': 42, 'stam': 91, 'stamMax': 102, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   71.48 player   <- 0x25 item 0x40365527 graphic 0xDF0 x1 into 0x40365530
+   72.29 player   <- 0xF3 world item 0x40365592 graphic 0x122D x1 at 3512,2581,14 hue 0
+   72.29 admin    <- 0xF3 world item 0x40365592 graphic 0x122D x1 at 3512,2581,14 hue 0
+   72.29 player   <- 0xF3 world item 0x40365593 graphic 0x122A x1 at 3511,2581,14 hue 0
+   72.29 admin    <- 0xF3 world item 0x40365593 graphic 0x122A x1 at 3511,2581,14 hue 0
+   72.29 player   <- 0xF3 world item 0x40365594 graphic 0x122C x1 at 3512,2580,14 hue 0
+   72.29 admin    <- 0xF3 world item 0x40365594 graphic 0x122C x1 at 3512,2580,14 hue 0
+   72.29 player   <- 0xF3 world item 0x40365595 graphic 0x122F x1 at 3511,2581,14 hue 0
+   72.29 admin    <- 0xF3 world item 0x40365595 graphic 0x122F x1 at 3511,2581,14 hue 0
+   72.29 player   <- 0xF3 world item 0x40365596 graphic 0x122A x1 at 3513,2581,14 hue 0
+   72.29 admin    <- 0xF3 world item 0x40365596 graphic 0x122A x1 at 3513,2581,14 hue 0
+   72.39 player   <- 0x25 item 0x40365528 graphic 0xF25 x2 into 0x400209D6
+   72.59 player   <- 0x3A skill 50 now 20.9 (cap 200.0)
+   72.59 player   <- 0x3A skill 50 now 21.0 (cap 200.0)
+   72.59 player   <- 0x3A skill 50 now 21.1 (cap 200.0)
+   72.59 player   <- 0x3A skill 50 now 21.2 (cap 200.0)
+   72.59 player   <- 0x3A skill 50 now 21.3 (cap 200.0)
+   73.70 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 79, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 102, 'int': 42, 'stam': 86, 'stamMax': 102, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 591, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   74.05 player   <- 0xF3 world item 0x403655A3 graphic 0x122F x1 at 3512,2581,14 hue 0
+   74.05 admin    <- 0xF3 world item 0x403655A3 graphic 0x122F x1 at 3512,2581,14 hue 0
+   74.05 admin    <- 0xF3 world item 0x403655A4 graphic 0x1645 x1 at 3513,2580,14 hue 0
+   74.05 player   <- 0xF3 world item 0x403655A4 graphic 0x1645 x1 at 3513,2580,14 hue 0
+   74.05 admin    <- 0xF3 world item 0x403655A5 graphic 0x122C x1 at 3512,2580,14 hue 0
+   74.05 player   <- 0xF3 world item 0x403655A5 graphic 0x122C x1 at 3512,2580,14 hue 0
+   74.05 admin    <- 0xF3 world item 0x403655A6 graphic 0x122C x1 at 3512,2581,14 hue 0
+   74.05 player   <- 0xF3 world item 0x403655A6 graphic 0x122C x1 at 3512,2581,14 hue 0
+   74.10 player   <- cliloc(0) System #1080017: That container cannot hold more items.
+   74.10 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 67, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 102, 'int': 42, 'stam': 78, 'stamMax': 102, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   74.10 player   <- 0x25 item 0x40365529 graphic 0xF15 x1 into 0x40365530
+   75.02 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 68, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 102, 'int': 42, 'stam': 78, 'stamMax': 102, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 591, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   75.09 player   <- 0x3A skill 50 now 21.4 (cap 200.0)
+   75.09 player   <- 0x3A skill 50 now 21.5 (cap 200.0)
+   75.09 player   <- 0x3A skill 50 now 21.6 (cap 200.0)
+   75.09 player   <- 0x3A skill 50 now 21.7 (cap 200.0)
+   75.09 player   <- 0x3A skill 50 now 21.8 (cap 200.0)
+   75.43 player   <- cliloc(0) System #1080017: That container cannot hold more items.
+   75.43 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 68, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 102, 'int': 42, 'stam': 79, 'stamMax': 102, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   75.43 player   <- 0x25 item 0x4036552A graphic 0xF19 x2 into 0x40365530
+   75.81 player   <- 0xF3 world item 0x403655A7 graphic 0x1645 x1 at 3512,2581,14 hue 0
+   75.81 admin    <- 0xF3 world item 0x403655A7 graphic 0x1645 x1 at 3512,2581,14 hue 0
+   75.81 player   <- 0xF3 world item 0x403655A8 graphic 0x122F x1 at 3513,2582,14 hue 0
+   75.81 admin    <- 0xF3 world item 0x403655A8 graphic 0x122F x1 at 3513,2582,14 hue 0
+   75.81 admin    <- 0xF3 world item 0x403655A9 graphic 0x122A x1 at 3513,2580,14 hue 0
+   75.81 admin    <- 0xF3 world item 0x403655AA graphic 0x122E x1 at 3513,2582,14 hue 0
+   75.81 player   <- 0xF3 world item 0x403655A9 graphic 0x122A x1 at 3513,2580,14 hue 0
+   75.81 player   <- 0xF3 world item 0x403655AA graphic 0x122E x1 at 3513,2582,14 hue 0
+   76.33 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 56, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 102, 'int': 42, 'stam': 71, 'stamMax': 102, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 591, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   76.74 player   <- cliloc(0) System #1080017: That container cannot hold more items.
+   76.74 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 56, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 102, 'int': 42, 'stam': 71, 'stamMax': 102, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   76.74 player   <- 0x25 item 0x4036552C graphic 0xF2D x1 into 0x40365530
+   77.57 player   <- 0xF3 world item 0x403655AB graphic 0x122F x1 at 3512,2581,14 hue 0
+   77.57 admin    <- 0xF3 world item 0x403655AB graphic 0x122F x1 at 3512,2581,14 hue 0
+   77.57 player   <- 0xF3 world item 0x403655AC graphic 0x122B x1 at 3513,2582,14 hue 0
+   77.57 admin    <- 0xF3 world item 0x403655AC graphic 0x122B x1 at 3513,2582,14 hue 0
+   77.57 player   <- 0xF3 world item 0x403655AD graphic 0x1645 x1 at 3512,2582,14 hue 0
+   77.57 admin    <- 0xF3 world item 0x403655AD graphic 0x1645 x1 at 3512,2582,14 hue 0
+   77.57 player   <- 0xF3 world item 0x403655AE graphic 0x122E x1 at 3511,2580,14 hue 0
+   77.57 admin    <- 0xF3 world item 0x403655AE graphic 0x122E x1 at 3511,2580,14 hue 0
+   77.57 admin    <- 0xF3 world item 0x403655AF graphic 0x122D x1 at 3511,2581,14 hue 0
+   77.57 player   <- 0xF3 world item 0x403655AF graphic 0x122D x1 at 3511,2581,14 hue 0
+   77.60 player   <- 0x3A skill 50 now 21.9 (cap 200.0)
+   77.60 player   <- 0x3A skill 50 now 22.0 (cap 200.0)
+   77.60 player   <- 0x3A skill 50 now 22.1 (cap 200.0)
+   77.60 player   <- 0x3A skill 50 now 22.2 (cap 200.0)
+   77.60 player   <- 0x3A skill 50 now 22.3 (cap 200.0)
+   77.60 player   <- 0x3A skill 50 now 22.4 (cap 200.0)
+   77.60 player   <- 0x3A skill 50 now 22.5 (cap 200.0)
+   77.60 player   <- 0x3A skill 50 now 22.6 (cap 200.0)
+   77.60 player   <- 0x3A skill 50 now 22.7 (cap 200.0)
+   77.60 player   <- 0x3A skill 50 now 22.8 (cap 200.0)
+   77.60 player   <- 0x3A skill 50 now 22.9 (cap 200.0)
+   77.60 player   <- 0x3A skill 50 now 23.0 (cap 200.0)
+   77.60 player   <- 0x3A skill 50 now 23.1 (cap 200.0)
+   77.60 player   <- 0x3A skill 50 now 23.2 (cap 200.0)
+   77.60 player   <- 0x3A skill 50 now 23.3 (cap 200.0)
+   77.65 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 44, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 102, 'int': 42, 'stam': 62, 'stamMax': 102, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 591, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   78.05 player   <- cliloc(0) System #1080017: That container cannot hold more items.
+   78.05 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 45, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 102, 'int': 42, 'stam': 62, 'stamMax': 102, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   78.05 player   <- 0x25 item 0x4036552E graphic 0xF10 x1 into 0x40365530
+   78.95 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 45, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 102, 'int': 42, 'stam': 62, 'stamMax': 102, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 591, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   79.33 admin    <- 0xF3 world item 0x403655B0 graphic 0x122D x1 at 3512,2581,14 hue 0
+   79.33 player   <- 0xF3 world item 0x403655B0 graphic 0x122D x1 at 3512,2581,14 hue 0
+   79.33 admin    <- 0xF3 world item 0x403655B1 graphic 0x122F x1 at 3513,2580,14 hue 0
+   79.33 player   <- 0xF3 world item 0x403655B1 graphic 0x122F x1 at 3513,2580,14 hue 0
+   79.33 admin    <- 0xF3 world item 0x403655B2 graphic 0x122C x1 at 3513,2581,14 hue 0
+   79.33 player   <- 0xF3 world item 0x403655B2 graphic 0x122C x1 at 3513,2581,14 hue 0
+   79.33 admin    <- 0xF3 world item 0x403655B3 graphic 0x122A x1 at 3513,2580,14 hue 0
+   79.33 player   <- 0xF3 world item 0x403655B3 graphic 0x122A x1 at 3513,2580,14 hue 0
+   79.33 admin    <- 0xF3 world item 0x403655B4 graphic 0x122F x1 at 3512,2582,14 hue 0
+   79.33 player   <- 0xF3 world item 0x403655B4 graphic 0x122F x1 at 3512,2582,14 hue 0
+   79.37 player   <- cliloc(0) System #1080017: That container cannot hold more items.
+   79.37 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 34, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 102, 'int': 42, 'stam': 52, 'stamMax': 102, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   79.37 player   <- 0x25 item 0x4036552F graphic 0xF26 x1 into 0x40365530
+   80.89 player   -> say '[cleanup'
+   80.89 player   <- unicode(0) System: Target an item to clean up.
+   80.89 player   <- 0x6C target cursor 2117 (type 0)
+   81.09 admin    <- 0xF3 world item 0x403655C4 graphic 0x122B x1 at 3512,2581,14 hue 0
+   81.09 player   <- 0xF3 world item 0x403655C4 graphic 0x122B x1 at 3512,2581,14 hue 0
+   81.09 admin    <- 0xF3 world item 0x403655C5 graphic 0x122F x1 at 3511,2582,14 hue 0
+   81.09 player   <- 0xF3 world item 0x403655C5 graphic 0x122F x1 at 3511,2582,14 hue 0
+   81.09 admin    <- 0xF3 world item 0x403655C6 graphic 0x122D x1 at 3512,2581,14 hue 0
+   81.09 player   <- 0xF3 world item 0x403655C6 graphic 0x122D x1 at 3512,2581,14 hue 0
+   81.09 admin    <- 0xF3 world item 0x403655C7 graphic 0x122E x1 at 3511,2582,14 hue 0
+   81.09 player   <- 0xF3 world item 0x403655C7 graphic 0x122E x1 at 3511,2582,14 hue 0
+   81.20 player   -> 0x6C target object 0x40365530
+   81.20 player   <- unicode(0) System: Corpse cleared (12 items inside). +279.75 Clean Up points.
+   81.71 admin    -> say '[go 0x247E2'
+   82.60 player   <- 0x3A skill 50 now 23.4 (cap 200.0)
+   82.60 player   <- 0x3A skill 50 now 23.5 (cap 200.0)
+   82.60 player   <- 0x3A skill 50 now 23.6 (cap 200.0)
+   82.60 player   <- 0x3A skill 50 now 23.7 (cap 200.0)
+   82.60 player   <- 0x3A skill 50 now 23.8 (cap 200.0)
+   82.72 admin    -> say '[set X 3512 Y 2581 Z 14'
+   82.72 admin    <- 0x6C target cursor 2118 (type 0)
+   82.85 player   <- 0xF3 world item 0x403655C8 graphic 0x122A x1 at 3512,2581,14 hue 0
+   82.85 player   <- 0xF3 world item 0x403655C9 graphic 0x122A x1 at 3513,2580,14 hue 0
+   82.85 player   <- 0xF3 world item 0x403655CA graphic 0x122C x1 at 3513,2582,14 hue 0
+   82.85 player   <- 0xF3 world item 0x403655CB graphic 0x122D x1 at 3511,2582,14 hue 0
+   82.85 admin    <- 0xF3 world item 0x403655C8 graphic 0x122A x1 at 3512,2581,14 hue 0
+   82.85 admin    <- 0xF3 world item 0x403655C9 graphic 0x122A x1 at 3513,2580,14 hue 0
+   82.85 admin    <- 0xF3 world item 0x403655CA graphic 0x122C x1 at 3513,2582,14 hue 0
+   82.85 admin    <- 0xF3 world item 0x403655CB graphic 0x122D x1 at 3511,2582,14 hue 0
+   82.92 admin    -> 0x6C target object 0x000247E2
+   82.93 admin    <- unicode(0) System: Property has been set. (3)
+   83.44 admin    -> say '[go 0x247E2'
+   84.44 admin    -> say '[set Hits 175 Stam 100'
+   84.44 admin    <- 0x6C target cursor 2119 (type 0)
+   84.61 admin    <- 0xF3 world item 0x403655D4 graphic 0x122C x1 at 3512,2581,14 hue 0
+   84.61 player   <- 0xF3 world item 0x403655D4 graphic 0x122C x1 at 3512,2581,14 hue 0
+   84.61 admin    <- 0xF3 world item 0x403655D5 graphic 0x122D x1 at 3511,2582,14 hue 0
+   84.61 player   <- 0xF3 world item 0x403655D5 graphic 0x122D x1 at 3511,2582,14 hue 0
+   84.61 admin    <- 0xF3 world item 0x403655D6 graphic 0x122C x1 at 3511,2581,14 hue 0
+   84.61 player   <- 0xF3 world item 0x403655D6 graphic 0x122C x1 at 3511,2581,14 hue 0
+   84.61 admin    <- 0xF3 world item 0x403655D7 graphic 0x122E x1 at 3512,2581,14 hue 0
+   84.61 player   <- 0xF3 world item 0x403655D7 graphic 0x122E x1 at 3512,2581,14 hue 0
+   84.61 admin    <- 0xF3 world item 0x403655D8 graphic 0x122C x1 at 3512,2581,14 hue 0
+   84.61 player   <- 0xF3 world item 0x403655D8 graphic 0x122C x1 at 3512,2581,14 hue 0
+   84.64 admin    -> 0x6C target object 0x000247E2
+   84.65 admin    <- unicode(0) System: Property has been set. (2)
+   85.11 player   <- 0x3A skill 50 now 23.9 (cap 200.0)
+   85.11 player   <- 0x3A skill 50 now 24.0 (cap 200.0)
+   85.11 player   <- 0x3A skill 50 now 24.1 (cap 200.0)
+   85.11 player   <- 0x3A skill 50 now 24.2 (cap 200.0)
+   85.11 player   <- 0x3A skill 50 now 24.3 (cap 200.0)
+   85.25 admin    -> say '[go 0x247E2'
+   86.25 admin    -> say '[add Orc'
+   86.26 admin    <- 0x6C target cursor 2120 (type 1)
+   86.37 player   <- 0xF3 world item 0x403655D9 graphic 0x122C x1 at 3512,2581,14 hue 0
+   86.37 admin    <- 0xF3 world item 0x403655D9 graphic 0x122C x1 at 3512,2581,14 hue 0
+   86.37 player   <- 0xF3 world item 0x403655DA graphic 0x122B x1 at 3512,2582,14 hue 0
+   86.37 admin    <- 0xF3 world item 0x403655DA graphic 0x122B x1 at 3512,2582,14 hue 0
+   86.37 player   <- 0xF3 world item 0x403655DB graphic 0x122A x1 at 3512,2582,14 hue 0
+   86.37 admin    <- 0xF3 world item 0x403655DB graphic 0x122A x1 at 3512,2582,14 hue 0
+   86.37 player   <- 0xF3 world item 0x403655DC graphic 0x122A x1 at 3513,2582,14 hue 0
+   86.37 admin    <- 0xF3 world item 0x403655DC graphic 0x122A x1 at 3513,2582,14 hue 0
+   86.37 player   <- 0xF3 world item 0x403655DD graphic 0x122C x1 at 3512,2581,14 hue 0
+   86.37 admin    <- 0xF3 world item 0x403655DD graphic 0x122C x1 at 3512,2581,14 hue 0
+   86.46 admin    -> 0x6C target ground 3513,2581,14
+   86.46 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   86.46 admin    -> say '[go 0x247E2'
+   87.47 admin    -> say '[kill'
+   87.47 admin    <- 0x6C target cursor 2121 (type 0)
+   87.61 player   <- 0x3A skill 50 now 24.4 (cap 200.0)
+   87.61 player   <- 0x3A skill 50 now 24.5 (cap 200.0)
+   87.61 player   <- 0x3A skill 50 now 24.6 (cap 200.0)
+   87.61 player   <- 0x3A skill 50 now 24.7 (cap 200.0)
+   87.61 player   <- 0x3A skill 50 now 24.8 (cap 200.0)
+   87.61 player   <- 0x3A skill 50 now 24.9 (cap 200.0)
+   87.61 player   <- 0x3A skill 50 now 25.0 (cap 200.0)
+   87.61 player   <- 0x3A skill 50 now 25.1 (cap 200.0)
+   87.61 player   <- 0x3A skill 50 now 25.2 (cap 200.0)
+   87.61 player   <- 0x3A skill 50 now 25.3 (cap 200.0)
+   87.67 admin    -> 0x6C target object 0x00024BEE
+   87.67 player   <- 0xF3 world item 0x403655E3 graphic 0x2006 x17 at 3513,2581,8 hue 0
+   87.67 admin    <- 0xF3 world item 0x403655E3 graphic 0x2006 x17 at 3513,2581,8 hue 0
+   87.67 player   -> 0x06 double click 0x403655E3
+   87.67 admin    <- unicode(0) System: They have been killed.
+   87.79 player   <- cliloc(0) System #1005036: Looting this monster corpse will be a criminal act!
+   87.79 player   <- 0x24 open container 0x403655E3 gump 0x9
+   87.79 player   <- 0x3C 4 items into containers
+   87.79 player   <- cliloc(0) System #500119: You must wait to perform another action.
+   87.79 player   <- 0x25 item 0x403655DF graphic 0xEED x54 into 0x403655E3
+   88.13 admin    <- 0xF3 world item 0x403655E4 graphic 0x122A x1 at 3512,2581,14 hue 0
+   88.13 player   <- 0xF3 world item 0x403655E4 graphic 0x122A x1 at 3512,2581,14 hue 0
+   88.13 admin    <- 0xF3 world item 0x403655E5 graphic 0x122C x1 at 3512,2580,14 hue 0
+   88.13 player   <- 0xF3 world item 0x403655E5 graphic 0x122C x1 at 3512,2580,14 hue 0
+   88.13 admin    <- 0xF3 world item 0x403655E6 graphic 0x122F x1 at 3513,2581,14 hue 0
+   88.13 player   <- 0xF3 world item 0x403655E6 graphic 0x122F x1 at 3513,2581,14 hue 0
+   88.13 admin    <- 0xF3 world item 0x403655E7 graphic 0x122A x1 at 3513,2580,14 hue 0
+   88.13 admin    <- 0xF3 world item 0x403655E8 graphic 0x122C x1 at 3511,2582,14 hue 0
+   88.13 player   <- 0xF3 world item 0x403655E7 graphic 0x122A x1 at 3513,2580,14 hue 0
+   88.13 player   <- 0xF3 world item 0x403655E8 graphic 0x122C x1 at 3511,2582,14 hue 0
+   89.89 admin    <- 0xF3 world item 0x403655E9 graphic 0x122F x1 at 3512,2581,14 hue 0
+   89.89 player   <- 0xF3 world item 0x403655E9 graphic 0x122F x1 at 3512,2581,14 hue 0
+   89.89 admin    <- 0xF3 world item 0x403655EA graphic 0x122B x1 at 3511,2582,14 hue 0
+   89.89 player   <- 0xF3 world item 0x403655EA graphic 0x122B x1 at 3511,2582,14 hue 0
+   89.89 admin    <- 0xF3 world item 0x403655EB graphic 0x122C x1 at 3513,2581,14 hue 0
+   89.89 player   <- 0xF3 world item 0x403655EB graphic 0x122C x1 at 3513,2581,14 hue 0
+   89.89 admin    <- 0xF3 world item 0x403655EC graphic 0x122D x1 at 3512,2580,14 hue 0
+   89.89 player   <- 0xF3 world item 0x403655EC graphic 0x122D x1 at 3512,2580,14 hue 0
+   89.89 admin    <- 0xF3 world item 0x403655ED graphic 0x1645 x1 at 3512,2580,14 hue 0
+   89.89 player   <- 0xF3 world item 0x403655ED graphic 0x1645 x1 at 3512,2580,14 hue 0
+   90.12 player   <- 0x3A skill 50 now 25.4 (cap 200.0)
+   90.12 player   <- 0x3A skill 50 now 25.5 (cap 200.0)
+   90.12 player   <- 0x3A skill 50 now 25.6 (cap 200.0)
+   90.12 player   <- 0x3A skill 50 now 25.7 (cap 200.0)
+   90.12 player   <- 0x3A skill 50 now 25.8 (cap 200.0)
+   90.12 player   <- 0x3A skill 50 now 25.9 (cap 200.0)
+   90.12 player   <- 0x3A skill 50 now 26.0 (cap 200.0)
+   90.12 player   <- 0x3A skill 50 now 26.1 (cap 200.0)
+   90.12 player   <- 0x3A skill 50 now 26.2 (cap 200.0)
+   90.12 player   <- 0x3A skill 50 now 26.3 (cap 200.0)
+   90.12 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 139, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 103, 'int': 42, 'stam': 97, 'stamMax': 103, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   92.43 player   <- cliloc(0) System #1005040: You've committed a criminal act!!
+   92.43 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 139, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 103, 'int': 42, 'stam': 97, 'stamMax': 103, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 591, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   92.84 player   <- cliloc(0) System #1080017: That container cannot hold more items.
+   92.84 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 139, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 103, 'int': 42, 'stam': 98, 'stamMax': 103, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   92.84 player   <- 0x25 item 0x403655DF graphic 0xEED x54 into 0x403655E3
+   93.41 player   <- 0xF3 world item 0x403655EE graphic 0x122B x1 at 3512,2581,14 hue 0
+   93.41 admin    <- 0xF3 world item 0x403655EE graphic 0x122B x1 at 3512,2581,14 hue 0
+   93.41 player   <- 0xF3 world item 0x403655EF graphic 0x122E x1 at 3513,2582,14 hue 0
+   93.41 admin    <- 0xF3 world item 0x403655EF graphic 0x122E x1 at 3513,2582,14 hue 0
+   93.41 player   <- 0xF3 world item 0x403655F0 graphic 0x122F x1 at 3513,2581,14 hue 0
+   93.41 admin    <- 0xF3 world item 0x403655F0 graphic 0x122F x1 at 3513,2581,14 hue 0
+   93.41 player   <- 0xF3 world item 0x403655F1 graphic 0x122D x1 at 3512,2580,14 hue 0
+   93.41 admin    <- 0xF3 world item 0x403655F1 graphic 0x122D x1 at 3512,2580,14 hue 0
+   93.41 player   <- 0xF3 world item 0x403655F2 graphic 0x122B x1 at 3513,2581,14 hue 0
+   93.41 admin    <- 0xF3 world item 0x403655F2 graphic 0x122B x1 at 3513,2581,14 hue 0
+   93.74 player   <- cliloc(0) System #1005040: You've committed a criminal act!!
+   93.74 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 129, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 103, 'int': 42, 'stam': 96, 'stamMax': 103, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 595, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   94.14 player   <- cliloc(0) System #1080017: That container cannot hold more items.
+   94.14 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 129, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 103, 'int': 42, 'stam': 96, 'stamMax': 103, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   94.14 player   <- 0x25 item 0x403655E0 graphic 0x13B6 x1 into 0x403655E3
+   95.05 player   <- cliloc(0) System #1005040: You've committed a criminal act!!
+   95.05 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 129, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 103, 'int': 42, 'stam': 96, 'stamMax': 103, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 594, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   95.12 player   <- 0x3A skill 50 now 26.4 (cap 200.0)
+   95.12 player   <- 0x3A skill 50 now 26.5 (cap 200.0)
+   95.12 player   <- 0x3A skill 50 now 26.6 (cap 200.0)
+   95.12 player   <- 0x3A skill 50 now 26.7 (cap 200.0)
+   95.12 player   <- 0x3A skill 50 now 26.8 (cap 200.0)
+   95.12 player   <- 0x3A skill 50 now 26.9 (cap 200.0)
+   95.12 player   <- 0x3A skill 50 now 27.0 (cap 200.0)
+   95.12 player   <- 0x3A skill 50 now 27.1 (cap 200.0)
+   95.12 player   <- 0x3A skill 50 now 27.2 (cap 200.0)
+   95.12 player   <- 0x3A skill 50 now 27.3 (cap 200.0)
+   95.17 player   <- 0xF3 world item 0x403655F3 graphic 0x122F x1 at 3512,2581,14 hue 0
+   95.17 admin    <- 0xF3 world item 0x403655F3 graphic 0x122F x1 at 3512,2581,14 hue 0
+   95.17 player   <- 0xF3 world item 0x403655F4 graphic 0x122C x1 at 3511,2580,14 hue 0
+   95.17 admin    <- 0xF3 world item 0x403655F4 graphic 0x122C x1 at 3511,2580,14 hue 0
+   95.17 player   <- 0xF3 world item 0x403655F5 graphic 0x122F x1 at 3512,2580,14 hue 0
+   95.17 admin    <- 0xF3 world item 0x403655F5 graphic 0x122F x1 at 3512,2580,14 hue 0
+   95.17 player   <- 0xF3 world item 0x403655F6 graphic 0x122B x1 at 3512,2580,14 hue 0
+   95.17 player   <- 0xF3 world item 0x403655F7 graphic 0x122A x1 at 3512,2582,14 hue 0
+   95.17 admin    <- 0xF3 world item 0x403655F6 graphic 0x122B x1 at 3512,2580,14 hue 0
+   95.17 admin    <- 0xF3 world item 0x403655F7 graphic 0x122A x1 at 3512,2582,14 hue 0
+   95.45 player   <- cliloc(0) System #1080017: That container cannot hold more items.
+   95.45 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 118, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 103, 'int': 42, 'stam': 94, 'stamMax': 103, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   95.45 player   <- 0x25 item 0x403655E1 graphic 0x1711 x1 into 0x403655E3
+   96.36 player   <- cliloc(0) System #1005040: You've committed a criminal act!!
+   96.37 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 118, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 103, 'int': 42, 'stam': 94, 'stamMax': 103, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 591, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   96.78 player   <- cliloc(0) System #1080017: That container cannot hold more items.
+   96.78 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 119, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 251, 'dex': 103, 'int': 42, 'stam': 94, 'stamMax': 103, 'mana': 42, 'manaMax': 42, 'gold': 3553, 'ar': 0, 'weight': 590, 'maxWeight': 978, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   96.78 player   <- 0x25 item 0x403655E2 graphic 0x1BD4 x1 into 0x403655E3
+   96.93 player   <- 0xF3 world item 0x403655F8 graphic 0x1645 x1 at 3512,2581,14 hue 0
+   96.93 player   <- 0xF3 world item 0x403655F9 graphic 0x122A x1 at 3512,2580,14 hue 0
+   96.93 player   <- 0xF3 world item 0x403655FA graphic 0x122B x1 at 3511,2580,14 hue 0
+   96.93 player   <- 0xF3 world item 0x403655FB graphic 0x122C x1 at 3513,2581,14 hue 0
+   96.93 player   <- 0xF3 world item 0x403655FC graphic 0x122C x1 at 3512,2582,14 hue 0
+   96.93 admin    <- 0xF3 world item 0x403655F8 graphic 0x1645 x1 at 3512,2581,14 hue 0
+   96.93 admin    <- 0xF3 world item 0x403655F9 graphic 0x122A x1 at 3512,2580,14 hue 0
+   96.93 admin    <- 0xF3 world item 0x403655FA graphic 0x122B x1 at 3511,2580,14 hue 0
+   96.93 admin    <- 0xF3 world item 0x403655FB graphic 0x122C x1 at 3513,2581,14 hue 0
+   96.93 admin    <- 0xF3 world item 0x403655FC graphic 0x122C x1 at 3512,2582,14 hue 0
+   97.63 player   <- 0x3A skill 50 now 27.4 (cap 200.0)
+   97.63 player   <- 0x3A skill 50 now 27.5 (cap 200.0)
+   97.63 player   <- 0x3A skill 50 now 27.6 (cap 200.0)
+   97.63 player   <- 0x3A skill 50 now 27.7 (cap 200.0)
+   97.63 player   <- 0x3A skill 50 now 27.8 (cap 200.0)
+   97.65 admin    <- unicode(0) Sanitation Warden: Every piece of refuse removed is a service to the realm.
+   97.65 player   <- unicode(0) Sanitation Warden: Every piece of refuse removed is a service to the realm.
+   98.29 player   -> say '[cleanup'
+   98.29 player   <- unicode(0) System: Target an item to clean up.
+   98.29 player   <- 0x6C target cursor 2122 (type 0)
+   98.60 player   -> 0x6C target object 0x403655E3
+   98.60 player   <- unicode(0) System: Corpse cleared (4 items inside). +2.54 Clean Up points.
+   98.69 admin    <- 0xF3 world item 0x403655FD graphic 0x122B x1 at 3512,2581,14 hue 0
+   98.69 player   <- 0xF3 world item 0x403655FD graphic 0x122B x1 at 3512,2581,14 hue 0
+   98.69 admin    <- 0xF3 world item 0x403655FE graphic 0x122C x1 at 3513,2581,14 hue 0
+   98.69 admin    <- 0xF3 world item 0x403655FF graphic 0x122F x1 at 3511,2581,14 hue 0
+   98.69 admin    <- 0xF3 world item 0x40365600 graphic 0x122D x1 at 3512,2580,14 hue 0
+   98.69 admin    <- 0xF3 world item 0x40365601 graphic 0x122C x1 at 3512,2582,14 hue 0
+   98.69 player   <- 0xF3 world item 0x403655FE graphic 0x122C x1 at 3513,2581,14 hue 0
+   98.69 player   <- 0xF3 world item 0x403655FF graphic 0x122F x1 at 3511,2581,14 hue 0
+   98.69 player   <- 0xF3 world item 0x40365600 graphic 0x122D x1 at 3512,2580,14 hue 0
+   98.69 player   <- 0xF3 world item 0x40365601 graphic 0x122C x1 at 3512,2582,14 hue 0
+   99.12 harness  == P175-2 run 1: FAIL (warden none within 10 tiles of the post (3506, 2560, 21): the admin [add]ed a SanitationWarden beside the player; joined now: 'You have joined the The Custodians as Volunteer. Joining is free.'; Orc (body 17) by the player: lifted 5 out, 5 left; 'Corpse cleared (5 items inside). +4.09 Clean Up points.' -> 4.09 (expected 1.5 plus what is inside); Dragon (body 12) by the player: lifted 13 out, 12 left; 'Corpse cleared (12 items inside). +279.75 Clean Up points.' -> 279.75 (expected 15.0 plus what is inside); Orc (body 17) by the admin's [kill: lifted 4 out, 4 left; 'Corpse cleared (4 items inside). +2.54 Clean Up points.' -> 2.54 (expected 0.0, contents unknown: not judged))

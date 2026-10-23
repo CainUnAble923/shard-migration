@@ -1,0 +1,31 @@
+    0.00 harness  == P70-4 run 1: A tier III module is refused on a tier 1 mule and stays in the pack
+    0.00 admin    -> say '[go 0x247E2'
+    1.00 admin    -> say '[go 0x247E2'
+    1.69 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+    1.69 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+    2.01 admin    -> say '[set X 3504 Y 2574 Z 14 CantWalk true'
+    2.01 admin    <- 0x6C target cursor 436 (type 0)
+    2.22 admin    -> 0x6C target object 0x00024953
+    2.23 admin    <- unicode(0) System: Property has been set. (4)
+    3.54 player   -> 0xBF 0x13 context menu request 0x00024953
+    3.54 player   <- 0xBF 0x14 context menu 0x00024953: [(0, 3006111, 'Command: Kill', 0), (1, 3006108, 'Command: Follow', 0), (2, 3006107, 'Command: Guard', 0), (3, 3006112, 'Command: Stop', 0), (4, 3006114, 'Command: Stay', 0), (5, 3006098, '', 0), (6, 3006110, 'Add Friend', 0), (7, 3006099, 'Remove Friend', 0), (8, 3006113, 'Transfer', 0), (9, 3006118, 'Release', 0), (10, 3006145, 'Open Backpack', 0), (11, 1900000, '#1900000', 0), (12, 3000127, 'Options', 0)]
+    3.55 player   -> 0xBF 0x15 context pick 12 (Options) on 0x00024953
+    3.55 player   <- 0xDD gump 0x000009B4 type 1831174852: a Compact mule: modules 0 / 1 | Drop a module on the mule to fit it.
+    3.55 player      layout: { page 0 }{ resizepic 0 0 9270 460 520 }{ checkertrans 6 6 448 508 }{ text 20 14 1154 0 }{ text 20 40 946 1 }{ gumppictiled 10 68 440 2 9304 }
+    3.55 player   -> 0xB1 gump 0x000009B4 type 1831174852 button 0 switches [] texts []
+    3.55 admin    -> say '[go 0x247E2'
+    4.55 admin    -> say '[AddToPack MuleModule TimberRack 3'
+    4.55 admin    <- 0x6C target cursor 437 (type 0)
+    4.76 admin    -> 0x6C target object 0x000247E2
+    4.77 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+    4.77 player   <- affix(0) System #1019035: You are overloaded.  Carrying stones / Max stones : 177 / 173
+    4.77 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 60, 'hitsMax': 60, 'version': 6, 'female': 1, 'str': 21, 'dex': 16, 'int': 12, 'stam': 16, 'stamMax': 16, 'mana': 12, 'manaMax': 12, 'gold': 1000, 'ar': 0, 'weight': 177, 'maxWeight': 173, 'race': 1, 'statCap': 1500, 'followers': 4, 'followersMax': 5}
+    4.77 player   <- 0x25 item 0x403614D5 graphic 0x1BD7 x1 into 0x4035CF3C
+    4.77 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 60, 'hitsMax': 60, 'version': 6, 'female': 1, 'str': 21, 'dex': 16, 'int': 12, 'stam': 16, 'stamMax': 16, 'mana': 12, 'manaMax': 12, 'gold': 1000, 'ar': 0, 'weight': 177, 'maxWeight': 173, 'race': 1, 'statCap': 1500, 'followers': 4, 'followersMax': 5}
+    5.18 player   <- cliloc(0) a Compact mule #1043257: The animal shies away.
+    5.18 player   <- unicode(0) System: A tier III module needs a tier 3 mule or better; yours is tier 1.
+    5.18 player   <- affix(0) System #1019035: You are overloaded.  Carrying stones / Max stones : 177 / 173
+    5.18 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 60, 'hitsMax': 60, 'version': 6, 'female': 1, 'str': 21, 'dex': 16, 'int': 12, 'stam': 16, 'stamMax': 16, 'mana': 12, 'manaMax': 12, 'gold': 1000, 'ar': 0, 'weight': 177, 'maxWeight': 173, 'race': 1, 'statCap': 1500, 'followers': 4, 'followersMax': 5}
+    5.18 player   <- 0x25 item 0x403614D5 graphic 0x1BD7 x1 into 0x4035CF3C
+    5.18 player   <- 0xD6 properties 0x00024953:  a Compact mule  | (tame) | Tier 1: Compact Mule (female) | Quality: hits 98%, strength 85%, stamina 77%, resists 67%, pack 88% | Bloodline: none | Module slots: 0 / 1
+    5.18 harness  == P70-4 run 1: PASS (refusal 'A tier III module needs a tier 3 mule or better; yours is tier 1.'; module back in the pack True; mule's module lines ['Module slots: 0 / 1'])
