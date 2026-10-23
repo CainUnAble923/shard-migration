@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.23.3. Golem on, 28 queued, latest done P478. Play tests: 714 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.23.3. Golem on, 44 queued, latest done P478. Play tests: 714 open, 4 failed, 43 passed.
 
 ### Needs overseer review (5)
 
@@ -237,6 +237,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 |---|---|---|
 | P273 status-page-refresh | queued |  |
 | P290 tutorial-wing-trials-combat-magic | queued |  |
+| P291 tutorial-wing-trials-trades-and-more | queued |  |
 | P362 ui-skins-player-options | queued |  |
 | P363 quest-markers-keys-gates | queued |  |
 | P365 reward-mounts-and-evo-stages | queued |  |
@@ -263,6 +264,21 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P458 fix-eodon-fix-up-xmlspawner-weights-the | queued |  |
 | P459 fix-guild-hall-decor-seeder-refuse-overlapping | queued |  |
 | P460 fix-artificers-guildmaster-and-join-text-match | queued |  |
+| P479 tinker-docker-prune | queued |  |
+| P481 new-player-start-area-design | queued |  |
+| P489 review-wrong-and-covetous-void | queued |  |
+| P490 review-achievement-category-icons | queued |  |
+| P491 review-underworld-mini-champions-2 | queued |  |
+| P492 review-tinker-golem-watchdog | queued |  |
+| P493 review-golem-test-accounts | queued |  |
+| P494 review-artificers-unravel-container | queued |  |
+| P495 review-usable-ankhs | queued |  |
+| P496 review-props-ability-profile | queued |  |
+| P497 review-pkcs-pin-drop-audit-flag | queued |  |
+| P498 review-web-console-parity | queued |  |
+| P499 review-marathon-mode | queued |  |
+| P500 review-changelog-version-merges | queued |  |
+| P501 review-achievements-button | queued |  |
 | P478 wiki-catch-up-3 | done | 2026-10-23 |
 | P477 crystal-review-10-23-merges | done | 2026-10-23 |
 | P476 crystal-codex-findings-round-2 | done | 2026-10-23 |
