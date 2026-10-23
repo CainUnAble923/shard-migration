@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.23.2. Golem on, 30 queued, latest done P477. Play tests: 710 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.23.3. Golem on, 29 queued, latest done P478. Play tests: 710 open, 4 failed, 43 passed.
 
 ### Needs overseer review (5)
 
@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 293 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 294 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -264,7 +264,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P459 fix-guild-hall-decor-seeder-refuse-overlapping | queued |  |
 | P460 fix-artificers-guildmaster-and-join-text-match | queued |  |
 | P476 crystal-codex-findings-round-2 | queued |  |
-| P478 wiki-catch-up-3 | queued |  |
+| P478 wiki-catch-up-3 | done | 2026-10-23 |
 | P477 crystal-review-10-23-merges | done | 2026-10-23 |
 | P475 cont-fixup-tutorial-core-trials-playable | done | 2026-10-23 |
 | P474 review-league-bestiary-batch-2 | done | 2026-10-23 |
@@ -274,7 +274,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P470 review-work-order-numbers-pass | done | 2026-10-23 |
 | P469 review-tool-trials | done | 2026-10-23 |
 | P468 review-league-hall-decor-rewards | done | 2026-10-23 |
-| P467 review-new-haven-community-art | done | 2026-10-23 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 147 patches, 12 replacements
 
