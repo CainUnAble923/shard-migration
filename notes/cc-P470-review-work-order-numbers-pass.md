@@ -1,0 +1,33 @@
+# P470: review of P235 work order numbers
+
+Reviewed 2026-10-23. Notes only. Paths under `server/` refer to the ShatteredLegacy work copy; `PIN/` means `D:/UO/ModernUO-pinned/Projects/UOContent/`.
+
+P235 did not implement rolled orders. Its code-repo commit `dea8ec1` changed only `CHANGELOG.md` and `VERSION`; its migration-repo commit `03cbd78` added the numbers note. The findings below concern that proposed design and its draft build instructions, not new running-server behavior introduced by P235.
+
+Read `notes/cc-P235-work-order-numbers-pass.md` in full. No P235 review companion was found in the work copy or tracked file list. Also checked the later P417 gathering-order proposal and its review, which reported no findings; P417 is a separate proposal, not evidence that P235 was implemented. The old gem exploit, reward inversions, skill-gate mismatches and wood training ceiling already documented in P235 are excluded here.
+
+## Findings
+
+1. **bug** - `notes/cc-P235-work-order-numbers-pass.md:246`: The one-to-one large-ore conversion is wrong: `PIN/Items/Resources/Blacksmithing/Ore.cs:215` gives small ore half its amount in ingots, medium ore its amount, and large ore twice its amount, so the note cannot use ore/hour and ingots/hour interchangeably when pricing Raw samples against Consignments. Define a common metal-content unit, recalculate the mining comparisons with smelting losses, and check every pile size against the existing forge behavior before retaining the proposed rewards.
+
+2. **bug** - `notes/cc-P235-work-order-numbers-pass.md:360`: Accepted offers are immediately replaced, so completing stockpiled deliveries can draw additional offers indefinitely within the same six-hour period, contradicting `:445`'s claim that Rush is limited to about two or three offers a day. Refill offers on a persisted issuance clock or spend a bounded issue credit on every draw, and add a clock-driven case showing that acceptance, completion, reopening and relogging cannot create extra draws.
+
+3. **bug** - `notes/cc-P235-work-order-numbers-pass.md:430`: The Iron Haul example pays 1,560 gold for 600 ore even though `:310` caps a basic mule's load at 130 ore, which would pay only 338 gold; the regular-log example at `:437` similarly pays 1,170 for 900 logs despite the stated 800-log cap, which would pay 1,040. Apply the actual mule capacity and weight reductions to the rolled amount before calculating either payout or completion time, and repeat the Haul comparisons for a basic mule and upgraded equipment.
+
+4. **risk** - `notes/cc-P235-work-order-numbers-pass.md:377`: Whole-gold rounding is unspecified, and a permitted 305-board Rush at value 1 owes 457.5 gold; rounding that to 458 produces a 1.50164 multiplier against the same 305-board Consignment and exceeds the strict 1.5 bound at `:443`. Specify the rounding stage and mode for gold, standing and tokens, then test odd amounts and fractional results rather than only the midpoint rows, including whether the explicit token rounding is an approved exception to the exact one-twenty-fifth ratio.
+
+5. **risk** - `notes/cc-P235-work-order-numbers-pass.md:490`: Removing hidden definitions after one version strands any unfinished legacy entry because `server/customizations/ClusterFWorkOrderSystem.cs:260` stores its definition key without a payout snapshot or expiry, and `server/customizations/GuildContractLedgerGump.cs:523` refuses a missing definition while leaving the entry active. Retain legacy definitions for redemption until no outstanding entries reference them, or migrate the complete promised requirements and rewards into the entries, with a save/load redemption check across more than one subsequent version.
+
+6. **risk** - `notes/cc-P235-work-order-numbers-pass.md:379`: The claimed balance PASS depends on a scratch `numbers.py` that is absent from the tracked deliverable, and the draft facts at `:568` do not require verification of capped Hauls, fractional payouts or offer issuance limits; existing `server/tests/Misc/GuildResourcesVerification.cs:343` checks synthetic smithing-item consumption and history rather than the gathering reward curve. Preserve a runnable calculation alongside the proposal and require implementation tests for those boundaries plus actual gold, standing and currency credited through the shared ledger turn-in path, with each new test observed failing before the implementation change.
+
+## Verification and limits
+
+- Compared every reward row in P235 section 1.2 with the corresponding current `WorkOrderDef` in `server/customizations/ClusterFWorkOrderSystem.cs`. Standing, vouchers/tokens and gold all match the note's account of existing behavior; no additional reward-table transcription mismatch was found.
+- Read the relevant gates, requirements, serialization and payout paths in `ClusterFWorkOrderSystem.cs`, `GuildContractLedgerGump.cs` and `GuildResources.cs`; checked the ore and wood tier tables, harvest extensions, `server/patches/Mining.cs`, `Ore-smelt-at-forge.patch`, `CompactOreSatchel.cs` and `PackMuleBackpack.cs` against the proposed assumptions.
+- Read the relevant existing coverage in `server/tests/Items/OreSatchelVerification.cs`, `server/tests/Misc/GuildResourcesVerification.cs`, `server/tests/Items/StarterResourcesVerification.cs`, `server/tests/Misc/LeagueRegisterVerification.cs`, `server/tests/Engines/Harvest/PostValoriteHarvestVerification.cs` and `server/tests/Engines/Harvest/PermanentGrovesVerification.cs`. In particular, `OreSatchelVerification.cs:155` covers the different ore sizes and `:329` expects 20 ingots from ten large ore.
+- Recomputed the Haul and rounding examples with Windows PowerShell 5.1. For illustration, holding the note's 600 ore/hour and five-minute turn-in assumptions fixed, 300 ingots from successful large-ore smelts take 150 ore and imply 1,800 gold/hour rather than 1,029; that illustration excludes smelting failures and is not a measured play rate.
+- No accidental runtime rounding defect introduced by P235 was found, because its payout formula remains a proposal. Actual harvest rates, smelting losses over time, depot travel, live mule loads and save compatibility after a future implementation remain unverified in play; no server build or game tests were run or added for this notes-only review.
+- Ran `tools/progress.py --dry-run` with the work-copy path overrides, exit 0. It also rewrote `tools/progress.json` despite the flag; restored that generated file to its original contents and verified that it has no diff, leaving only this requested review note.
+- No Haven connection, deployment, code edit, commit, merge, push or branch switch.
+
+P470 DONE
