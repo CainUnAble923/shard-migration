@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 291 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 292 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
