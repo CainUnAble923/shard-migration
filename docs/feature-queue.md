@@ -2015,6 +2015,24 @@ Check first: the League design doc (`design\systems\league_of_extraordinary_citi
   five guildmasters, not by the Outriders; rank-gated crafting uses guild-sold schematics consumed as a craft resource.
 - Design doc's commission permissions name "Steel" and "Silver" citizens, which are not on the ladder: map them to
   ladder ranks when specified.
+- **Chase 2026-10-23, the League decision sheet (cc-P376, Crystal), all nine answered as recommended:**
+  1. Story chapters 4 and 5 sit at **Blaze (12) and Mythril (15)**, as built. "Every third rank" above is history; the
+     things that step every third rank today (requisition tiers, loot-box bands, guild requirements) stay as they are.
+  2. **Six chapters**, Dull Copper to Celestial (five blade pieces, then the ring). "The five trials" is history.
+  3. League bonuses step **only at the six milestones**. The per-rank lines in F-19, F-24 and F-25 are history.
+  4. Citizen Commissions posting (for the build prompt): accept at **Iron**, small posts at **Bronze**, larger posts at
+     **Verite** (the design's "Steel"), public and high-value posts at **Blaze** (the design's "Silver").
+  5. The Renown shop is **delivered**: League Shop (P229), Hall page (P243), backpack upgrades (P280). F-13's
+     "nothing spends it yet" (and the same line in P47, P75, P179) is history.
+  6. Players are told **no AP total and no title count**: list the visible titles by name, keep hidden ones secret.
+     F-13's "2,505 AP" is history.
+  7. Requisitions and Leads as built by P150 are the design: a request with a live Lead survives the daily refresh;
+     the extra roll with a guarantee by the 40th qualifying kill; a qualifying kill by area, creature group and 1,000+
+     Fame. F-47 and F-48 are "built (P150), as changed".
+  8. Requisition standing for non-members **pays at once**, as built. Banking stays a rule for League jobs only.
+  9. **No League Warehouse and no Featherweight satchels** (the bank grows only by milestone; weight belongs to the
+     guild satchels). The **Clockwork Scavenger stays** as the League's auto-loot reward (F-33 Option A). This also
+     answers P179 question 7 (the bank).
 
 ### F-25: BOD rewards banked; large BODs filled directly (added 2026-10-02)
 
