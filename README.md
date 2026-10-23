@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 285 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 286 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -267,6 +267,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P473 review-halloween-bank-decor | queued |  |
 | P474 review-league-bestiary-batch-2 | queued |  |
 | P475 cont-fixup-tutorial-core-trials-playable | done | 2026-10-23 |
+| P469 review-tool-trials | done | 2026-10-23 |
 | P468 review-league-hall-decor-rewards | done | 2026-10-23 |
 | P467 review-new-haven-community-art | done | 2026-10-23 |
 | P466 review-osi-joke-achievements | done | 2026-10-23 |
@@ -275,7 +276,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P463 review-guild-halls-placement | done | 2026-10-23 |
 | P462 review-rideable-red-dragon | done | 2026-10-23 |
 | P450 review-monster-stealing-shard-rules | done | 2026-10-22 |
-| P449 review-graduation-is-the-first-loop | done | 2026-10-22 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 147 patches, 12 replacements
 
