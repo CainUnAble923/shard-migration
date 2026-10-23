@@ -1,0 +1,43 @@
+# P448: review of pet gain speed (P172)
+
+2026-10-22. Codex lane. Notes only; no code changes.
+
+Read the working agreements in both work copies and `notes/cc-P172-pet-gain-speed.md` first. No separate P172 Codex review was found beside it. The findings below do not repeat P172's documented x2 baseline, chance saturation, worn-skill policy, or loop-source limitation.
+
+## Findings
+
+1. **risk | `server/customizations/ClusterFPetGainSpeed.cs:57`, `server/patches/SkillCheck-pet-gain-speed.patch:9`**: A controlled pet receives the full owner bonus on repeated combat skill checks against its owner or another pet in Felucca, because the multiplier ignores the opponent and pets bypass the player anti-macro check. If the bonus is meant to reward hostile training, pass opponent context from combat checks and withhold that bonus against owners and controlled or summoned sparring partners, preserving noncombat gains, with tests for an owner, pets sharing an owner, pets with different owners, and a wild opponent.
+
+2. **risk | `server/patches/SkillCheck-pet-gain-speed.patch:9`, pinned `Skills/SkillCheck.cs:284`**: With `stats.usePub45StatGain` enabled, the boost also increases how often a pet reaches the stat-gain roll, including when the checked skill is already capped, so P172's statement that stats are unchanged is incorrect even though the pet stat cooldown still applies. Add a fixed-random test with controlled time and an eligible pet stat, then either separate the added skill chance from stat rolls to preserve the stated scope or document and test the additional stat effect.
+
+3. **risk | `server/tests/Skills/PetGainSpeedVerification.cs:244`, `:253`, `:297`**: The boosted gain test resets Wrestling to 90/100 and calls `SkillCheck.CheckSkill` directly, leaving the actual `Mobile.CheckSkill` wrappers, skill cap and lock boundaries, transfer between owners, and the EvoPet-specific loop branch untested by this suite. Add deterministic checks through `Mobile.CheckSkill` at 99.9/100 and at cap, with locked skills, before and after transfer or release, and with an EvoPet whose test loops differ from its owner's source; also exercise the multiplier through a controlled pet's Focus check rather than only calling `Gain` as the P130 test does.
+
+## Source evidence
+
+Pinned paths in this note are relative to `D:/UO/ModernUO-pinned/Projects/UOContent/`, verified at commit `d4531cd94b739613155225c234900de9f47d2c88`. Shard paths are relative to the code work copy.
+
+- **Sparring path:** pinned `Mobiles/AI/BaseAI/BaseAI.cs:190` accepts the owner's targeted Attack command, and `:227` does not exclude the owner or another pet. `Mobiles/AI/BaseAI/PetOrders.cs:195` sets that target as the combatant; the same-owner exclusions at `:773` apply to Guard selection, not explicit Attack orders. `Mobiles/BaseCreature.cs:3717` adds no general owner or pet exclusion to harmful checks. `Misc/Notoriety.cs:209` permits harmful actions under Felucca's unrestricted map rules, outside a safe zone. `Items/Weapons/BaseWeapon.cs:858` performs the harmful check, `:1340` checks the attacking skill, and `:2524` checks Tactics during damage calculation. `Skills/SkillCheck.cs:233` applies the anti-macro system only to PlayerMobile. These calls reach the P172 patch without an opponent filter or repeat limit. This is an acceleration of an existing sparring route, not a claim that P172 introduced pet combat or bypasses protected-facet combat rules.
+- **Stat coupling:** pinned `Skills/SkillCheck.cs:30` defaults Publish 45 stat gain to `Core.ML`. The skill chance controls calls to `Gain` at `:145`; `Gain` then rolls for a stat at `:284` through `:307`, outside the skill-below-cap branch. `:452` retains the controlled pet's Strength cooldown, with corresponding Dexterity and Intelligence branches below it. Thus a higher skill-gain chance also raises the opportunity for a stat roll after cooldown, without changing that cooldown or the stat limits. P172's original note, item 7 under Deviations and decisions, calls this a separate, unchanged path; the source shows the coupling.
+- **Coverage:** `PetGainSpeedVerification.cs:119` constructs only GreyWolf test pets. The multiplier and rank cases check helpers, while the actual boosted roll at `:259` bypasses the installed Mobile handlers. The nearby P130 test, `server/tests/Services/PetTraining/PetTrainingVerification.cs`, calls `SkillCheck.Gain` directly for Focus, so it does not verify P172's boosted Focus chance. Its training-cap test checks training slots and points, not P172's skill-gain boundary.
+
+## Caps and stacking checked
+
+I found no new uncapped multiplier stack or individual skill-cap bypass in P172.
+
+- `ClusterFPetGainSpeed.cs:45` limits each owner's skill contribution to the range from 100 to 200. `:49` adds the contributions before clamping the result to the configured maximum, with a floor of 1. Inputs do not multiply one another.
+- The patch adds one multiplication inside the controlled-creature branch. ModernUO's preceding x2 and a gain chance above 1 are explicitly documented in P172 and are not new findings. Pinned `Skills/SkillCheck.cs:248` checks the skill lock and cap, and `:280` clamps the resulting skill value. The creature total-skill behavior is inherited from pinned code, whose `:278` enforces that total restriction only for players.
+- `server/customizations/TestCenter/TestCrystal.cs:68` requires the gaining mobile to be a PlayerMobile. An ordinary pet does not inherit its owner's Test Crystal. `server/customizations/Regions/ApprenticeTraining.cs:163` likewise excludes pets from the apprentice amount bonus.
+- Ordinary pets do not qualify for ClusterFSkillGain's added attempts or amount bonus, but controlled BaseCompanion instances do (`server/customizations/ClusterFSkillGain.cs:304`). A companion also qualifies for P172, so its checks combine the capped pet scalar with those separate attempts and any configured amount bonus (`:257`, `:288`); this is not evidence that P172's scalar escapes its cap. The companion gain-parity work is already recorded in `docs/companions/companions-squire-evo-research.md:87` and `notes/cc-P45-companion-probes.md`. `Companions/CompanionParty.cs:29` currently exposes a staff creation command, and `:164` explicitly says hiring is future B4 work. I did not refile that known, unfinished parity work as a new player farming defect.
+- The multiplier reads the current ControlMaster on every call, so no cached former-owner bonus was found. EvoPet's loop override comes from `Mobiles/Evo/EvoPet.cs:92` and is staff-controlled; the zero loop-source default is already documented by P172. No new loop or rank cap defect was found.
+
+## Files and verification
+
+Reviewed the P172 implementation and its listed tests: `ClusterFPetGainSpeed.cs`, `SkillCheck-pet-gain-speed.patch`, the registration in `docker/uo/apply-patches.sh`, the gain-speed additions in `Services/Pet Training/Gumps.cs`, `PetGainSpeedVerification.cs`, and `PetTrainingVerification.cs`. Also inspected the Focus and Test Crystal patches; `ClusterFSkillGain.cs`; `TestCenter/TestCrystal.cs`; `Mobiles/Evo/EvoPet.cs`; `Services/Pet Training/TrainingProfile.cs` and `PetTrainingHooks.cs`; `Regions/ApprenticeTraining.cs`; `Companions/BaseCompanion.cs` and `CompanionParty.cs`; and `server/tests/Mobiles/Companions/CompanionBaseVerification.cs`. Customization filenames in this paragraph are under `server/customizations/`, and patch filenames are under `server/patches/`. Pinned call paths are listed above.
+
+This is a source review. No tests or builds were run, no new tests were written, and the original P172 red/green results were not independently rerun. In-game sparring, observed stat-gain timing, live configuration, rendered gump layout, and availability of staff-created companions remain unverified. No Haven connection, deployment, account operation, commit, merge, push, or branch switch was performed. No generated `server/uo/` source was read.
+
+The review paused once at the Golem's budget stop request and resumed after authorization and removal of the stop file. The required progress tool was run with the work-copy paths and `--dry-run`; it exited successfully but still rewrote `tools/progress.json` in its report builder. That file was clean beforehand and was restored byte-for-byte from HEAD, leaving only this requested notes file changed. No progress-tool fix was made in this task.
+
+Final checks: the code work copy and pinned reference are clean; the migration work copy has only this notes file added. The notes are below 5 MB, contain no em dashes or trailing spaces, and the tracked diff whitespace check passed.
+
+P448 DONE
