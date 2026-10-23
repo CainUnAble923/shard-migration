@@ -1,0 +1,60 @@
+﻿# P486: accessory slot review
+
+Reviewed 2026-10-23. Notes only. No code changes.
+
+The review found jewelry trapped when slots lock, bonuses left behind after eligibility changes, and missing integration with other equipment systems. These are source findings, not runtime reproductions. Suggested fixes belong to a later implementation task.
+
+## Findings
+
+1. **F01 | bug | `server/customizations/Accessories/AccessoriesGump.cs:81`.** When a slot locks again, its jewelry stays in the invisible container, but the locked-row branch hides both the item and its Remove button, leaving the player unable to recover it through a newly opened accessories gump. Show stored items and allow removal even in locked slots, and test equipping a second bracelet, lowering the League rank, and removing it through a fresh gump.
+
+2. **F02 | bug | `server/customizations/Accessories/ClusterFAccessories.cs:338`; `server/customizations/ClusterFLeagueRanks.cs:251`.** Lowering a character's League rank below the second-bracelet threshold changes `IsActive` immediately but never calls `Refresh`, so applied skill and stat bonuses remain until another equipment change and cached resistances can also remain stale. Refresh affected wearers when eligibility changes, including settings changes, and test that locking a filled slot immediately removes every bonus while retaining its item.
+
+3. **F03 | bug | `server/customizations/Accessories/ClusterFAccessories.cs:430`.** The extra-slot branch calls `DropItem` without `CanEquip`, `CheckEquip`, or `OnEquip`, bypassing `PlayerMobile.CheckEquip`'s feature restrictions; when extra ring slots become reachable, it also bypasses `StaffRing.OnEquip`'s player rejection and `BarreraaksRing.CanEquip`'s mounted, flying, and transformation checks. Preserve equipment validation and equip hooks while allowing the intended occupied paperdoll layer, and add regressions for blocked jewelry and those custom rings.
+
+4. **F04 | bug | `server/customizations/Accessories/ClusterFAccessories.cs:115`.** `KindOf` accepts only `BaseRing` and `BaseBracelet` after its toe-ring check, so carrier-based jewelry such as `BraceletOfPrimalConsumption` and `EtoileBleue` is rejected as neither a ring nor a bracelet, including when the paperdoll slot is empty (`server/customizations/Items/Artifacts/Equipment/Jewelry/BraceletOfPrimalConsumption.cs:11`; `server/customizations/Items/Artifacts/Equipment/Armor/Sets/Luck/EtoileBleue.cs:11`). Recognize supported `BaseJewel` ring and bracelet layers after the toe-ring exception, with tests that preserve the carrier's set and absorption behavior.
+
+5. **F05 | bug | `server/customizations/Accessories/ClusterFAccessories.cs:302`, `:320`; `server/customizations/LevelGear/ClusterFLevelGear.cs:556`.** Moving a levelable crafted bracelet from the paperdoll into an active extra slot drops its purchased attribute and resistance bonuses and stops its XP gains, because accessory totals read only intrinsic properties while the level-gear hooks walk direct worn items and skip containers. Include active accessory jewels once in level-gear bonus aggregation and XP awards, and test moving a levelable bracelet between both locations and an inactive slot.
+
+6. **F06 | bug | `server/customizations/Imbuing/ClusterFImbueEffects.cs:153`, `:186`; `server/customizations/Accessories/ClusterFAccessories.cs:452`.** Custom properties such as Spell Leech, Bountiful, and Fortune's Favor stop contributing on an active extra bracelet or toe ring because `Worn` skips containers, and accessory activation never records the jewelry's Fortune's Favor equip time. Include active accessory jewels in these readers and activation notifications, retain the existing total cap, and test that locking the slot or covering a toe ring removes its effect.
+
+7. **F07 | bug | `server/customizations/Accessories/ClusterFAccessories.cs:345`; pinned `Projects/UOContent/Misc/AOS.cs:1748`.** If a player selects jewelry in the imbuing gump, equips it in an extra slot, then completes a skill imbue, the saved property changes but the applied skill bonus stays at its old value because `BaseAttributes.SetValue` updates only a direct mobile parent and `Refresh` skips already applied jewels (`server/customizations/ArtificersImbueGump.cs:1895`, `:2199`). Route property changes to the active accessory wearer and rebuild the affected bonuses, with a regression that changes a worn bracelet's skill bonus and checks it immediately without re-equipping.
+
+8. **F08 | bug | `server/customizations/Accessories/ClusterFAccessories.cs:520`.** Removing shoes can activate the last missing toe-ring contribution for Fully Accessorized, but `OnMobileItemRemoved` only refreshes bonuses and never checks jewelry achievements, so the newly satisfied achievement waits for another equipment addition. Check jewelry achievements after this activation and test filling every jewelry slot while shod, then removing the shoes as the final qualifying action.
+
+9. **F09 | risk | `server/tests/Misc/AccessorySlotsVerification.cs:153`, `:313`.** The cap test checks only fire resistance, the threshold test changes empty slots, and no accessory test exercises stat bonuses, repeated refreshes, repeated use of the same item, or movement between paperdoll and container, leaving duplicate bonuses and the filled-slot failures above unguarded. Add regressions for those transitions and combined paperdoll/accessory bonuses at the actual HCI, DCI, mana-cost, casting, skill, and configured stat-cap consumers, rather than expecting raw `AosAttributes.GetValue` totals to be capped.
+
+## Checks with no additional finding
+
+- **One item in two slots:** nothing found in ordinary equip and unequip. Pinned `Projects/Server/Items/Item.cs:3426` and `Projects/Server/Mobiles/Mobile.cs:6704` remove the old parent before assigning the new one; accessory equip also requires the item to be in the backpack. `OnLeftContainer` removes applied bonuses, and `_applied.Add` prevents a routine repeated refresh from adding them again. F09 records missing coverage, not a demonstrated duplication exploit.
+- **Stacking past caps:** no accessory-specific bypass found in the consumers checked. Pinned `Projects/Server/Mobiles/Mobile.cs:3273` clamps final resistances; `Projects/UOContent/Items/Weapons/BaseWeapon.cs:1266` and `:1315` cap hit and defense chance; `Projects/UOContent/Spells/Base/Spell.cs:643`, `:683`, and `:710` bound mana cost, recovery, and cast speed after reading totals. Pinned `AOS.cs:1358` makes jewelry skill mods obey their cap, `Projects/Server/Skills.cs:319` applies it, and `server/patches/PlayerMobile-individual-stat-cap.patch` retains the configured stat limits. F02 is stale eligibility, not proof of exceeding a cap.
+- **Items lost on relocking:** no deletion found. Items remain in the saved container; F01 is loss of player access, and F02 is inconsistent removal of benefits.
+- **Save format and load order:** no new defect found. `AccessoryContainer` adds no serialized fields, and inherited item serialization retains parents and contents. Pinned `Projects/Server/World/World.cs:202` loads persistence before invoking the world-load hook, so achievement and League records are available for accessory refresh; `BaseJewel` restores its own bonuses only for a direct mobile parent, avoiding duplicate restoration for container jewels. An actual save/restart round trip remains unverified, as P262 already disclosed.
+- **Container deletion:** ordinary deletion deletes children before detaching their container (`Projects/Server/Items/Item.cs:1543`), leaving the wearer available for bonus cleanup. No ordinary-deletion leak was established; staff forcibly moving the hidden container was not tested.
+- **Known unfinished work:** disabled loop slots, companion accessory wiring, the missing context-menu entry, insurance coverage limits, and timer/client checks are already disclosed in P262 and are not new findings. Companions now exist, but searches found no callers wiring them into `CompanionSlots` or `AccessoryFootLines`; the original accessory stub remains. `LoopOf` still returns zero in production, so enabling the loop setting alone cannot open extra ring slots.
+- **Race restrictions:** Gargish jewelry overrides `RequiredRaces`, but pinned `BaseJewel` and its normal equip path do not call `CheckRace` either. This is not evidence of an accessory-specific regression and is excluded from F03.
+- **Earlier reviews and merge:** P355's unrelated flaky creature-difficulty test finding and P379/P402's findings are not repeated. No additional problem found in the accessory patch registrations, preserved achievement triggers, or League title visibility changes.
+
+## Scope and evidence
+
+- Read both work copies' `AGENTS.md`, `docs/direction-decision.md`, and the working-agreement and task-list introduction in `docs/tasks.md`.
+- Code work copy: `D:\UO\golems\Valorite-tower\ShatteredLegacy`, HEAD `d58c75e164cb580446a24338f2999e64b487d5c0`.
+- Notes work copy: `D:\UO\golems\Valorite-tower\shard-migration`, HEAD `9c414ae4637a98f2a8bcbd4d3b7cbb72a515c75c`.
+- Pinned source: `D:\UO\ModernUO-pinned`, clean at `d4531cd94b739613155225c234900de9f47d2c88`. Citations marked pinned and paths starting with `Projects/` refer to that tree; other code paths refer to the code work copy.
+- Read `notes/cc-P355-cont-fixup-accessory-slots.md` and `notes/cc-P262-accessory-slots.md`, and earlier review material in `notes/cc-P379-crystal-review-10-21-merges.md` and `notes/cc-P402-review-noted-achievements-code.md`. No separate P355-named review file was found.
+- Read all accessory implementation files: `server/customizations/Accessories/ClusterFAccessories.cs`, `AccessoryContainer.cs`, `AccessoriesGump.cs`, `ToeRings.cs`, `AccessoryAchievements.cs`, `AccessoryCraftRegistrations.cs`, and `AccessoryFootLines.cs`.
+- Read `server/tests/Misc/AccessorySlotsVerification.cs`, the accessory registration and trigger edits in `ClusterFAchievements.cs`, earned-line count edits in `AchievementEarnedLineVerification.cs`, related assertions in `AchievementProgressLineVerification.cs` and `NotedBySystemVerification.cs`, the League title definitions and picker, and P355's edit in `server/tests/Mobiles/CreatureLevelsVerification.cs`. Searched tracked tests for accessory APIs and achievement keys before recording coverage gaps.
+- Read `server/patches/AOS-accessory-container-aggregation.patch`, `PlayerMobile-accessory-hooks.patch`, and their registration in `docker/uo/apply-patches.sh`, together with the relevant level-gear and resistance hooks.
+- Followed equipment validation, special jewelry hooks, carrier types, level-gear bonuses and XP, custom imbue effects, live property mutation, League rank changes, achievement persistence, parenting and deletion, death handling, world loading, skill mods, and the cap consumers cited above. Related test review included `LevelGearVerification.cs`, `LeagueShopVerification.cs`, and searches of the imbuing tests.
+
+## Validation and limits
+
+This was a source review with no lane tests, as requested. No tests were added or run, and no Docker build, deployment, account operation, or Haven connection was performed. Historical green builds in P262 and P355 are not validation of these findings.
+
+Ran `tools/progress.py --dry-run` with both work-copy paths configured. It completed successfully; its generated `tools/progress.json` was restored to the exact bytes it had before the run so the deliverable stays notes-only.
+
+The review paused once when the Golem reported that its Codex budget was exhausted, then resumed on the user's instruction after the stop file was removed. Runtime reproductions, save/restart behavior, client rendering, and live settings remain unverified. No files under `docs/` were edited, and no commits, merges, pushes, or branch switches were made.
+
+Final checks passed: the code working tree is clean, the only notes-repo change is this report, citations point to existing source lines, and the report is below 5 MB with no em dashes or trailing whitespace.
+
+P486 DONE
