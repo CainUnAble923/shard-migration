@@ -8,10 +8,11 @@
   finishes and clears up after itself. The practice items cannot hold a player's things, so they cannot take any
   with them. A relog, a restart or dying in the middle never leaves a player stuck: the lesson starts again, and the
   "Reset this lesson" button always works. Graduation pays once. I found no new way to get stuck on the test shard.
-- **The tutorial's biggest problem is on live, not on test.** Since P289 the tutorial only runs on the test shard,
-  but P371's island gate still runs everywhere. On live, every new player is held on New Haven island with nothing
-  that lets them graduate or skip. Codex flagged this in its P475 review. I confirmed it, and no fix is queued.
-  It must be fixed before live gets this build.
+- **The tutorial's biggest problem is for the next live, not the test shard.** Since P289 the tutorial only runs
+  on the test shard, but P371's island gate still runs everywhere. On a live shard, every new player would be held
+  on New Haven island with nothing that lets them graduate or skip. Codex flagged this in its P475 review. I
+  confirmed it, and no fix is queued. There is no live shard today (retired and deleted on 10-14 until the fresh
+  1.0 world, `README.md:112`), so no one is stuck now. It must be fixed before the 1.0 live opens.
 - **One reward repeats:** every character on an account that graduated (or skipped) gets its own tier-6 "loop" loot
   box the first time it logs in. On the test shard a player can delete the character and make a new one at once, so
   the boxes never run out. On live it is one box per character slot, then one more per slot every 7 days. This is
@@ -19,9 +20,9 @@
 - **Small:** the core lessons lost the "Open the World Map / Journal / options" buttons for TazUO (Codex's P475,
   finding 2, confirmed).
 - **Other merges:** P277 (the rideable dragons), P410, P287 and P288 have nothing to report. P408 (the Halloween
-  Sorcerer's Dungeon) turns itself on tomorrow, 10-24, on every shard that has the code, live included. Two of
-  Codex's open findings on it would then be live: the double ring purchase and pets' kills counting. And it cannot
-  be held off without also stopping the Halloween bank decor. P281's guild hall `clear` can remove the wrong
+  Sorcerer's Dungeon) turns itself on tomorrow, 10-24, on every shard that has the code. Today that is the test
+  shard only, since there is no live shard. Two of Codex's open findings would then be playable there: the double
+  ring purchase and pets' kills counting. And it cannot be held off without also stopping the Halloween bank decor. P281's guild hall `clear` can remove the wrong
   guildmaster (staff tool, test shard only).
 - Nothing was built or run: a cloud Golem cannot build the shard. Each draft asks for a failing test first.
 
@@ -36,7 +37,7 @@ are repeated here (T1, T3) because nothing queued names them, and the tutorial i
 
 ## Tutorial findings (P289, P475 and the graduation path)
 
-### T1. On live, every new player is held on New Haven island and can never leave (wrong behavior, severe)
+### T1. On a live shard, every new player would be held on New Haven island for good (wrong behavior, severe; blocks the 1.0 live)
 
 - **Where:** `server/customizations/Tutorial/ClusterFTutorial.cs:46-47` (P289: `Enabled` needs `testCenter.enable`);
   `Tutorial/TutorialIslandGate.cs:13`, `:17` and `:27-28` (P371: the gate is on by default and reads only
@@ -47,14 +48,13 @@ are repeated here (T1, T3) because nothing queued names them, and the tutorial i
   with loop 0. It blocks walking off the island, recall, gate, Mark and boats. Rook's gump shows "Status: NotStarted"
   and "Nothing more to teach you here", with no skip button, because skip needs `IsActive`. Nothing else ever sets
   the loop to 1. The new player is held on the island for good.
-- **How it is hit:** live gets a build with P289 and P371 in it (anything from 2026.10.23.2 on), and a new player
-  makes a character. Accounts that graduated or skipped before are fine, because `OnLogin` gives their characters
+- **How it is hit:** the fresh 1.0 live opens on a build with P289 and P371 in it (anything from 2026.10.23.2 on),
+  with `testCenter.enable` false, and a new player makes a character. There is no live shard today. Accounts that graduated or skipped before are fine, because `OnLogin` gives their characters
   loop 1. This is Codex's P475 finding 1, which I confirmed.
 - **Also:** on the test shard, an account whose tutorial character was deleted mid-tutorial is held the same way.
   `CharacterSerial` points at a deleted character, so no character is a participant and none can skip. P453
   item 3 ("re-point only when that character is deleted") covers that part. Make sure that P453 keeps it.
-- **Needs a server?** No for the logic. Which version live runs, and whether `clusterf.tutorial.islandGate` is set in
-  live's config, needs the game PC.
+- **Needs a server?** No for the logic, and the test has no live shard to check against.
 
 **Prompt draft:**
 
@@ -82,8 +82,8 @@ Found by cc-P477 (Crystal), finding T1, and Codex's P475 review, finding 1.
    one red against today's code.
 4. Build and run the tests (`docker\uo\build.sh -t sl-modernuo:cc-P??`).
 5. CHANGELOG, Fixed: "New characters on a shard without the tutorial can leave New Haven island again."
-6. Notes: `notes\cc-P??-island-gate-follows-tutorial.md`, including the live version and whether any live player
-   is stuck on the island today (game PC: loop-0 characters on the island, by last login). Last line `P?? DONE`.
+6. Notes: `notes\cc-P??-island-gate-follows-tutorial.md`. Last line `P?? DONE`. (There is no live shard today;
+   this must be in before the 1.0 live opens.)
 
 **Done means:** with the tutorial off, no player is held on the island. With it on, the gate is unchanged.
 ```
@@ -101,7 +101,7 @@ Found by cc-P477 (Crystal), finding T1, and Codex's P475 review, finding 1.
   Capstone fanfare. The box is account-bound (`LootBoxItems.cs:146`), but its gold and items are not.
 - **How it is hit:** a player graduates (or skips), then makes characters to collect a box on each. On the test shard
   pinned's 7-day delete delay is off (`server/patches/AccountHandler-test-center-deletion.patch`; pinned
-  `AccountHandler.cs:221`), so delete, recreate and log in pays a tier-6 box every few minutes. On live it is one
+  `AccountHandler.cs:221`), so delete, recreate and log in pays a tier-6 box every few minutes. On a live shard it would be one
   box per free slot at once, and then one per slot every 7 days. P371's notes say a character's first loop is
   idempotent, but nothing makes the box once per account.
 - **Not mine to decide:** whether a later character should be on loop 1 at all is P371's design, from Chase's
@@ -208,7 +208,7 @@ Found by cc-P477 (Crystal), finding T3, and Codex's P475 review, finding 2.
 
 ## Other findings
 
-### O1. Treasures of Sorcerer's Dungeon turns itself on 10-24 on every shard, and cannot be held off on its own (wrong behavior, timing)
+### O1. Treasures of Sorcerer's Dungeon turns itself on 10-24, and cannot be held off on its own (wrong behavior, timing)
 
 - **Where:** `server/customizations/Services/Seasonal Events/TreasuresOfSorceresDungeon/Generate.cs:58-66` (the switch
   borrows the Halloween dates); `server/customizations/ClusterFSeasonalSwitch.cs:104-106` and `:136` (`StartKey`,
@@ -216,16 +216,17 @@ Found by cc-P477 (Crystal), finding T3, and Codex's P475 review, finding 2.
 - **What goes wrong:** the switch acts at the first hourly check of 10-24 and calls `Up` on any shard with P408's
   code. The `[SorcerersDungeon` command is `CommandShard.TestFirst`, but the automatic switch does not look at that.
   The only way to keep it off is to turn `clusterf.seasonal.halloween.automatic` off, and that also stops the
-  Halloween bank decor going up (P267), or to run `[SorcerersDungeon off` after it turns on. Today it would go live
-  with two open findings:
+  Halloween bank decor going up (P267), or to run `[SorcerersDungeon off` after it turns on. Tomorrow it goes up on
+  the test shard (the only shard: there is no live, `README.md:112`) with two open findings:
   - P461 finding 1: a player can queue several 50-point ring confirmations and accept them all for one balance (an
     exploit that pays).
   - Codex's P408 finding 3: a pet killed in the dungeon counts toward kill tallies and artifacts.
   P476 drafts the fixes. They will not be merged by tomorrow.
-- **How it is hit:** live runs a build with P408 on 10-24. Which build live runs needs the game PC.
-- **For Chase (recommended):** if live has P408, either run `[SorcerersDungeon off` on live on 10-24 after the
-  first hourly check until P476's fixes merge, or accept the ring exploit for the season. The draft below makes this
-  a setting.
+- **How it is hit:** the test shard runs a build with P408 on 10-24 (which build it runs needs the game PC). With no
+  live shard, the exploit only touches test characters; it matters for next October's live season, and for any
+  League or Renown balance carried from the test world into 1.0.
+- **For Chase (recommended):** nothing urgent. Leave it on for testers, or run `[SorcerersDungeon off` after the
+  first hourly check on 10-24. The draft below makes this a setting of its own.
 
 **Prompt draft:**
 
@@ -246,7 +247,7 @@ Found by cc-P477 (Crystal), finding O1.
 1. `server/customizations/ClusterFSeasonalSwitch.cs`: `AutomaticKey` uses the switch's own `Name`
    (`clusterf.seasonal.sorcerersdungeon.automatic`), and `StartKey`/`EndKey` keep `DatesFrom`. Update the header
    comment and `Generate.cs`'s header (deviation 1).
-2. Decide the default with Chase: true keeps today's behavior. False makes staff turn it on by hand on live.
+2. Decide the default with Chase: true keeps today's behavior. False makes staff turn it on by hand.
 3. Tests: with the Halloween decor's automatic on and the event's off, the hourly check in season brings up the
    decor and not the event, and the reverse.
 4. Build and run the tests (`docker\uo\build.sh -t sl-modernuo:cc-P??`). `docker/uo/COMMANDS.md`: name the new
@@ -313,7 +314,8 @@ sign after [SignGen) if those are not queued by then.
 
 - Nothing was built and no test was run. P289's 93-check play-through was not re-run on the merged build (Codex's
   P475 notes ask for that too). Chase's test today is the first run of the merged tutorial.
-- Which version live runs, and so whether T1 and O1 already apply on live, needs the game PC.
+- There is no live shard (retired and deleted 10-14, `README.md:112`), so T1 and O1 matter for the 1.0 live and
+  the test shard only. Which build the test shard runs needs the game PC.
 - Whether test-shard characters are Young (the death lesson's "your things come back" depends on it). Pinned's
   `Young` also needs `ContentFeatureFlags.YoungPlayerSystem`.
 - Whether any stock spawner places a same-type guildmaster near a P281 post (O2).
