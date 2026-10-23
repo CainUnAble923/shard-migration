@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.23.5. Golem on, 39 queued, latest done P491. Play tests: 729 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.23.5. Golem on, 39 queued, latest done P492. Play tests: 729 open, 4 failed, 43 passed.
 
 ### Needs overseer review (5)
 
@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 305 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 306 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -274,6 +274,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P499 review-marathon-mode | queued |  |
 | P500 review-changelog-version-merges | queued |  |
 | P501 review-achievements-button | queued |  |
+| P492 review-tinker-golem-watchdog | done | 2026-10-23 |
 | P491 review-underworld-mini-champions-2 | done | 2026-10-23 |
 | P490 review-achievement-category-icons | done | 2026-10-23 |
 | P489 review-wrong-and-covetous-void | done | 2026-10-23 |
@@ -283,7 +284,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P483 review-flying-loot | done | 2026-10-23 |
 | P482 review-levelable-gear-build | done | 2026-10-23 |
 | P480 tutorial-first-play-fixes | done | 2026-10-23 |
-| P478 wiki-catch-up-3 | done | 2026-10-23 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 148 patches, 12 replacements
 
