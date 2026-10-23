@@ -94,7 +94,7 @@ class Grid:
                 return None, None, None
         return top, low, hi
 
-    def blocked_now(self, client):
+    def blocked_now(self, client, mobiles=True):
         out = set(self.learned)
         for s, it in list(client.items.items()):
             if it.get("world") and "graphic" in it and it["graphic"] < len(self.items):
@@ -102,7 +102,7 @@ class Grid:
                 if td["flags"] & IMP and not td["flags"] & SURF and "door" not in td["name"].lower():
                     out.add((it["x"], it["y"]))
         for s, m in list(client.mobiles.items()):
-            if s != client.serial and "x" in m:
+            if mobiles and s != client.serial and "x" in m:
                 out.add((m["x"], m["y"]))
         return out
 
@@ -144,7 +144,7 @@ class Player:
         self.seen = 0            # messages already in the play log
         self.gseen = 0
         self.aseen = 0
-        self.opened = set()
+        self.opened = []
 
     # -- the evidence --------------------------------------------------------------------------------------------
     def drain(self):
@@ -197,7 +197,7 @@ class Player:
         return self.pos() != before
 
     def go(self, target, within=0, tries=12):
-        self.opened = set()
+        self.opened = []
         goals = [(target[0] + dx, target[1] + dy) for dx in range(-within, within + 1) for dy in range(-within, within + 1)]
         for attempt in range(tries):
             if self.pos() in goals:
@@ -205,18 +205,32 @@ class Player:
             blocked = self.g.blocked_now(self.c)
             p = self.g.path(self.pos(), goals, blocked)
             if not p:
-                self.log("  walk: no path from %s to %s within %d" % (self.pos(), target, within))
-                return False
+                # a player shoves through a mobile at full stamina (pinned Mobile.CheckShove), e.g. its own pet that
+                # follows it into a one-tile doorway: plan through mobiles before giving up
+                p = self.g.path(self.pos(), goals, self.g.blocked_now(self.c, mobiles=False))
+                if p:
+                    self.log("  walk: the way is through someone; shoving (near: %s)" % self.who_is_near(3))
+            if not p:
+                # someone standing in a doorway closes the only way out; people move, so wait and plan again
+                self.log("  walk: no path from %s to %s within %d; near: %s" % (self.pos(), target, within, self.who_is_near(3)))
+                if attempt >= 4:
+                    return False
+                self.c.sleep(2.0)
+                self.drain()
+                continue
             for a, b in zip(p, p[1:]):
                 if self.pos() != a:
                     break
                 if not self.step(DIR_OF[(b[0] - a[0], b[1] - a[1])]):
+                    # a door closes on its own, so a walk may open the same one again (up to three times); a door's tile
+                    # is never learned as blocked, or every later walk through that house finds no path
                     door = self.door_at(b)
-                    if door and door not in self.opened:
-                        self.opened.add(door)
-                        self.log("  -> opens the door 0x%08X at %s" % (door, b))
-                        self.c.dclick(door)
-                        self.c.sleep(1.0)
+                    if door:
+                        if self.opened.count(door) < 3:
+                            self.opened.append(door)
+                            self.log("  -> opens the door 0x%08X at %s" % (door, b))
+                            self.c.dclick(door)
+                            self.c.sleep(1.0)
                         break
                     self.g.learned.add(b)
                     break
@@ -284,10 +298,16 @@ def recruiter_station(pl, key):
     if not rook:
         pl.log("  Rook is not at %s" % (ROOK,))
         return None
-    n = len(c.gumps)
-    c.dclick(rook)
-    g = c.wait_gump(lambda g: any("League Recruiter" in (t or "") for t in c.gump_text(g)), timeout=8, since=n)
-    pl.drain()
+    for attempt in range(2):
+        n, m0 = len(c.gumps), len(c.messages)
+        c.dclick(rook)
+        g = c.wait_gump(lambda g: any("League Recruiter" in (t or "") for t in c.gump_text(g)), timeout=8, since=n)
+        pl.drain()
+        # double-clicks too close together are refused ("You must wait to perform another action"): wait, once more
+        if g is not None or c.find_text(r"You must wait to perform another action", since=m0) is None:
+            return g
+        pl.log("  the double-click on Rook was refused as too soon: again")
+        c.sleep(1.5)
     return g
 
 
@@ -491,9 +511,10 @@ def play_core(pl, log, label):
         if key == "core.loop" and getattr(pl, "before", None):
             c.send(P.status_request(c.serial, 5))
             c.sleep(1.0)
-            # Focus (50) rises with stamina as the walker runs (testCenter.skillGainMultiplier); it is not the vision's
-            changed = sorted(k for k, v in pl.before.items() if c.skills.get(k) != v and k != 50)
-            log.check(not changed, "the vision changed no skill (Focus, raised by running, left out)%s" % (": %s" % changed if changed else ""))
+            # Focus (50) rises with stamina as the walker runs and Meditation (46) with mana regeneration (both passive,
+            # sped up by testCenter.skillGainMultiplier); neither is the vision's
+            changed = sorted(k for k, v in pl.before.items() if c.skills.get(k) != v and k not in (46, 50))
+            log.check(not changed, "the vision changed no skill (Focus and Meditation, passive, left out)%s" % (": %s" % changed if changed else ""))
         since = len(c.gumps)
         n = len(c.messages)
         c.reply_gump(done, 1)          # "Next lesson / graduate"
