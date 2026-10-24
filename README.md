@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.24.10. Golem on, 13 queued, latest done P563. Play tests: 948 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.24.10. Golem on, 19 queued, latest done P564. Play tests: 949 open, 4 failed, 43 passed.
 
 ### Needs overseer review (5)
 
@@ -71,7 +71,7 @@ Judgment reviewed 2026-10-20. Shard version 2026.10.24.10. Golem on, 13 queued, 
 - **gate What is built is seen in a client, not only compiled**: Waits on a confirmation: Chase: is the test shard on a build that carries P203 and P204 (version 2026.10.20.x), and which play tests ran after 2026-10-18? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "What is built is seen in a client, not only compiled" --done yes --detail "..."` or `python tools/judge.py confirm gate "What is built is seen in a client, not only compiled"`
 - **task DEPLOY**: Deploy main to the test shard and run its play tests: waits on a confirmation: Chase: which build is on the test shard today? `python tools/judge.py task DEPLOY --status todo|in-progress|blocked|done --note "..."` or `python tools/judge.py confirm task DEPLOY`
 - **direction**: Confirmed 2026-10-20; notes/cc-P509-review-playtest-decisions-inbox.md (2026-10-23) is newer. Read it; if the direction moved, edit "direction" in tools/progress-state.json. `python tools/judge.py confirm direction`
-- **play tests not sorted**: 505 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
+- **play tests not sorted**: 506 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
 
 ## Port list: 6 of 16 systems in. 807 of 983 files (82%).
 
@@ -231,14 +231,13 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 419 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 420 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
 | P273 status-page-refresh | queued |  |
 | P372 cont-fixup-hammer-t3-craft-order | queued |  |
 | P375 cont-fixup-playtest-bot-checks-first | queued |  |
-| P453 fix-tutorial-fix-up-one-pet-per | queued |  |
 | P454 fix-smith-commissions-cooldown-on-the-guild | queued |  |
 | P455 fix-death-hooks-boss-loot-boxes-and | queued |  |
 | P456 fix-music-room-saves-that-cannot-lose | queued |  |
@@ -248,6 +247,14 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P460 fix-artificers-guildmaster-and-join-text-match | queued |  |
 | P479 tinker-docker-prune | queued |  |
 | P481 new-player-start-area-design | queued |  |
+| P566 design-townsfolk-features | queued |  |
+| P567 design-summons-league-reward | queued |  |
+| P568 design-attunement | queued |  |
+| P569 design-procs-levelable-milestone | queued |  |
+| P570 design-gate-tiles-mount-levels | queued |  |
+| P571 design-butte-and-deed | queued |  |
+| P572 codex-findings-to-fix-drafts-5 | queued |  |
+| P564 design-pumpkin-king | done | 2026-10-24 |
 | P563 tracking-ping-design | done | 2026-10-24 |
 | P562 glossary-update-2 | done | 2026-10-24 |
 | P561 wiki-cross-check-3 | done | 2026-10-24 |
@@ -257,7 +264,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P559 guide-first-companion | done | 2026-10-24 |
 | P559 guide-pets-and-companions-new-player | done | 2026-10-24 |
 | P558 guide-requisitions-and-leads | done | 2026-10-24 |
-| P558 guide-requisitions | done | 2026-10-24 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 149 patches, 12 replacements
 
