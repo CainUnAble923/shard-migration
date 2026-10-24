@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.23.5. Golem on, 33 queued, latest done P507. Play tests: 747 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.23.5. Golem on, 39 queued, latest done P508. Play tests: 749 open, 4 failed, 43 passed.
 
 ### Needs overseer review (5)
 
@@ -71,7 +71,7 @@ Judgment reviewed 2026-10-20. Shard version 2026.10.23.5. Golem on, 33 queued, l
 - **gate What is built is seen in a client, not only compiled**: Waits on a confirmation: Chase: is the test shard on a build that carries P203 and P204 (version 2026.10.20.x), and which play tests ran after 2026-10-18? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "What is built is seen in a client, not only compiled" --done yes --detail "..."` or `python tools/judge.py confirm gate "What is built is seen in a client, not only compiled"`
 - **task DEPLOY**: Deploy main to the test shard and run its play tests: waits on a confirmation: Chase: which build is on the test shard today? `python tools/judge.py task DEPLOY --status todo|in-progress|blocked|done --note "..."` or `python tools/judge.py confirm task DEPLOY`
 - **direction**: Confirmed 2026-10-20; notes/cc-P376-league-decisions.md (2026-10-21) is newer. Read it; if the direction moved, edit "direction" in tools/progress-state.json. `python tools/judge.py confirm direction`
-- **play tests not sorted**: 304 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
+- **play tests not sorted**: 306 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
 
 ## Port list: 6 of 16 systems in. 807 of 983 files (82%).
 
@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 322 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 323 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -264,10 +264,17 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P460 fix-artificers-guildmaster-and-join-text-match | queued |  |
 | P479 tinker-docker-prune | queued |  |
 | P481 new-player-start-area-design | queued |  |
-| P508 review-vseuoaware-staff-commands | queued |  |
-| P509 review-playtest-decisions-inbox | queued |  |
 | P510 review-queue-notes-and-package-whats-new | queued |  |
 | P511 review-package-builds-from-tazuo | queued |  |
+| P512 play-test-plans-for-the-10-22 | queued |  |
+| P513 patch-notes-for-10-23 | queued |  |
+| P514 feature-queue-audit-round-2 | queued |  |
+| P515 the-league-design-against-what-is-built | queued |  |
+| P516 guild-halls-survey-and-design-against-what | queued |  |
+| P517 f-12-numbers-against-the-code | queued |  |
+| P518 skill-gain-paths-research-against-the-code | queued |  |
+| P519 herbalism-research-against-what-is-built | queued |  |
+| P508 review-vseuoaware-staff-commands | done | 2026-10-23 |
 | P507 review-night-shift-batches | done | 2026-10-23 |
 | P506 review-plain-english-emails | done | 2026-10-23 |
 | P505 review-kitsune-paperdoll-refit | done | 2026-10-23 |
@@ -277,7 +284,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P501 review-achievements-button | done | 2026-10-23 |
 | P500 review-changelog-version-merges | done | 2026-10-23 |
 | P499 review-marathon-mode | done | 2026-10-23 |
-| P498 review-web-console-parity | done | 2026-10-23 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 148 patches, 12 replacements
 
