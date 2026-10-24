@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 382 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 384 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -257,14 +257,14 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P537 ports-status-list | queued |  |
 | P543 cont-fixup-launcher-always-starts | done | 2026-10-24 |
 | P542 cont-fixup-town-houses-design | done | 2026-10-24 |
+| P541 patch-notes-10-24 | done | 2026-10-24 |
+| P541 patch-notes-2026-10-24 | done | 2026-10-24 |
 | P539 wiki-cross-check-2 | done | 2026-10-24 |
 | P539 wiki-drafts-cross-check-2 | done | 2026-10-24 |
 | P538 art-on-disk-unused | done | 2026-10-24 |
 | P538 art-unused | done | 2026-10-24 |
 | P536 design-vs-build-high-seas | done | 2026-10-24 |
 | P536 high-seas-design-vs-build | done | 2026-10-24 |
-| P535 design-vs-build-skills | done | 2026-10-24 |
-| P535 skills-design-vs-build | done | 2026-10-24 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 148 patches, 12 replacements
 
