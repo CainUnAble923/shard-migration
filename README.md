@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.24. Golem on, 35 queued, latest done P521. Play tests: 825 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.24. Golem on, 35 queued, latest done P522. Play tests: 825 open, 4 failed, 43 passed.
 
 ### Needs overseer review (5)
 
@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 346 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 347 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -270,6 +270,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P530 design-vs-build-clean-up-britannia | queued |  |
 | P531 playtest-plans-10-24 | queued |  |
 | P532 open-questions-sweep | queued |  |
+| P522 review-quest-markers | done | 2026-10-24 |
 | P521 review-reward-mounts-evo-stages | done | 2026-10-24 |
 | P519 herbalism-research-against-what-is-built | done | 2026-10-24 |
 | P519 herbalism-vs-build | done | 2026-10-24 |
@@ -279,7 +280,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P517 f12-numbers-vs-code | done | 2026-10-24 |
 | P516 guild-halls-design-vs-build | done | 2026-10-24 |
 | P516 guild-halls-survey-and-design-against-what | done | 2026-10-24 |
-| P515 league-design-vs-build | done | 2026-10-24 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 148 patches, 12 replacements
 
