@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 309 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 310 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -272,6 +272,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P500 review-changelog-version-merges | queued |  |
 | P501 review-achievements-button | queued |  |
 | P495 review-usable-ankhs | done | 2026-10-23 |
+| P494 review-artificers-unravel-container | done | 2026-10-23 |
 | P493 review-golem-test-accounts | done | 2026-10-23 |
 | P492 review-tinker-golem-watchdog | done | 2026-10-23 |
 | P491 review-underworld-mini-champions-2 | done | 2026-10-23 |
@@ -280,7 +281,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P488 review-exodus-encounter | done | 2026-10-23 |
 | P487 review-companions-b1-base | done | 2026-10-23 |
 | P486 review-accessory-slots | done | 2026-10-23 |
-| P484 review-climbing-boots | done | 2026-10-23 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 148 patches, 12 replacements
 
