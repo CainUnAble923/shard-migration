@@ -1,0 +1,149 @@
+// SPDX-License-Identifier: BSD-2-Clause
+// Shattered Legacy patch (cc-P362): optional UI skins, picked per profile in Options > Interface > Appearance.
+//
+// Each skin draws a stock gump (or a stock item's art) from one of the shard's own PNGs instead, under a NEW ID that
+// the player package ships in ExternalImages (registry.csv, cc-P362). The stock ID keeps its stock art for everyone
+// who has not picked the skin; nothing is overwritten. The remap is client side only: no packet, no server flag, and
+// other players see nothing different. "Classic" (stock) is every kind's default.
+//
+// The table is written by shard-migration notes/cc-P362-tools/skins.py from the same data as the package's
+// vendor/shattered-legacy-art/skins.json (a package test keeps the two the same). A skin is offered only when every
+// file it needs is present, so a client without our art offers Classic alone.
+//
+// Later (cc-P362 notes, not built): a skin can carry a lock that a server flag lifts (a loot box or League shop
+// cosmetic). Available() is the one place such a check would go.
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using ClassicUO.Assets;
+using ClassicUO.Configuration;
+
+namespace ClassicUO.Game.Managers
+{
+    internal static class SlSkins
+    {
+        public const string Classic = "classic";
+
+        /// <summary>One skin: its kind, a key saved in the profile, the label, its author, and stock ID to our ID.
+        /// For the scroll kind the IDs are item art IDs (without the 0x4000 art offset); for the others, gump IDs.</summary>
+        public sealed record Skin(string Kind, string Key, string Label, string Author, Dictionary<uint, uint> Map);
+
+        /// <summary>The kinds, in page order: key, label, and whether its IDs are item art (true) or gumps.</summary>
+        public static readonly (string Key, string Label, bool Art)[] Kinds =
+        {
+            ("backpack", "Backpack", false),
+            ("bag", "Bags", false),
+            ("chest", "Metal chests and the bank box", false),
+            ("crate", "Crates", false),
+            ("scroll", "Spell scrolls", true)
+        };
+
+        public static readonly Skin[] All =
+        {
+/*TABLE*/
+        };
+
+        public static bool IsArtKind(string kind) => Array.Exists(Kinds, k => k.Key == kind && k.Art);
+
+        public static IEnumerable<Skin> OfKind(string kind) => All.Where(s => s.Kind == kind);
+
+        /// <summary>The skins of a kind whose files are all present (Classic is always offered besides these).</summary>
+        public static List<Skin> Available(string kind, Func<uint, bool> hasGump, Func<uint, bool> hasArt)
+        {
+            bool art = IsArtKind(kind);
+            return OfKind(kind).Where(s => s.Map.Values.All(id => art ? hasArt(id) : hasGump(id))).ToList();
+        }
+
+        /// <summary>The profile's choices, "kind=key;kind=key". A kind not named is Classic.</summary>
+        public static Dictionary<string, string> Parse(string saved)
+        {
+            var choices = new Dictionary<string, string>();
+            if (string.IsNullOrWhiteSpace(saved))
+                return choices;
+            foreach (string part in saved.Split(';', StringSplitOptions.RemoveEmptyEntries))
+            {
+                string[] kv = part.Split('=', 2);
+                if (kv.Length == 2 && kv[0].Trim().Length > 0 && kv[1].Trim().Length > 0)
+                    choices[kv[0].Trim()] = kv[1].Trim();
+            }
+            return choices;
+        }
+
+        public static string Format(Dictionary<string, string> choices) =>
+            string.Join(";", choices.Where(c => c.Value != Classic).OrderBy(c => c.Key, StringComparer.Ordinal).Select(c => c.Key + "=" + c.Value));
+
+        /// <summary>The skin drawn for a kind: the chosen one if it is offered, else none (Classic).</summary>
+        public static Skin Effective(string kind, Dictionary<string, string> choices, Func<uint, bool> hasGump, Func<uint, bool> hasArt)
+        {
+            if (!choices.TryGetValue(kind, out string key) || key == Classic)
+                return null;
+            return Available(kind, hasGump, hasArt).FirstOrDefault(s => s.Key == key);
+        }
+
+        /// <summary>Every remap the choices make: gumps by gump ID, art by art index (item ID + 0x4000).</summary>
+        public static (Dictionary<uint, uint> Gumps, Dictionary<uint, uint> Art) Remaps(
+            Dictionary<string, string> choices, Func<uint, bool> hasGump, Func<uint, bool> hasArt)
+        {
+            var gumps = new Dictionary<uint, uint>();
+            var art = new Dictionary<uint, uint>();
+            foreach ((string kind, _, bool isArt) in Kinds)
+            {
+                Skin skin = Effective(kind, choices, hasGump, hasArt);
+                if (skin == null)
+                    continue;
+                foreach (KeyValuePair<uint, uint> m in skin.Map)
+                {
+                    if (isArt)
+                        art[m.Key + 0x4000] = m.Value + 0x4000;
+                    else
+                        gumps[m.Key] = m.Value;
+                }
+            }
+            return (gumps, art);
+        }
+
+        private static bool HasGump(uint id) => ExternalImageLoader.Instance.GetGumpFilePath(id) != null;
+
+        private static bool HasArt(uint itemId) => ExternalImageLoader.Instance.GetArtFilePath(itemId + 0x4000) != null;
+
+        public static List<Skin> Available(string kind) => Available(kind, HasGump, HasArt);
+
+        public static string Chosen(string kind)
+        {
+            Skin skin = Effective(kind, Parse(ProfileManager.CurrentProfile?.SlSkins), HasGump, HasArt);
+            return skin?.Key ?? Classic;
+        }
+
+        /// <summary>Applies the current profile's skins: at login (World.CreatePlayer, after the profile loads) and
+        /// after the option changes. Every gump and art whose source changed is dropped from its atlas, so open
+        /// containers and the paperdoll redraw with the new look on the next frame.</summary>
+        public static void Apply()
+        {
+            Dictionary<string, string> choices = Parse(ProfileManager.CurrentProfile?.SlSkins);
+            (Dictionary<uint, uint> gumps, Dictionary<uint, uint> art) = Remaps(choices, HasGump, HasArt);
+
+            List<uint> changedGumps = ExternalImageLoader.Instance.SetGumpRemap(gumps);
+            List<uint> changedArt = ExternalImageLoader.Instance.SetArtRemap(art);
+            var uo = Client.Game?.UO;
+            if (uo?.Gumps != null)
+                foreach (uint id in changedGumps)
+                    uo.Gumps.Invalidate(id);
+            if (uo?.Arts != null)
+                foreach (uint id in changedArt)
+                    uo.Arts.Invalidate(id);
+        }
+
+        /// <summary>The option's choice: saved in the profile at once and applied live.</summary>
+        public static void Choose(string kind, string key)
+        {
+            Profile profile = ProfileManager.CurrentProfile;
+            if (profile == null)
+                return;
+            Dictionary<string, string> choices = Parse(profile.SlSkins);
+            choices[kind] = key;
+            profile.SlSkins = Format(choices);
+            Apply();
+        }
+    }
+}
