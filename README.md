@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.23.5. Golem on, 37 queued, latest done P502. Play tests: 743 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.23.5. Golem on, 37 queued, latest done P503. Play tests: 743 open, 4 failed, 43 passed.
 
 ### Needs overseer review (5)
 
@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 317 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 318 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -272,6 +272,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P509 review-playtest-decisions-inbox | queued |  |
 | P510 review-queue-notes-and-package-whats-new | queued |  |
 | P511 review-package-builds-from-tazuo | queued |  |
+| P503 review-tutorial-wing-combat-magic | done | 2026-10-23 |
 | P502 review-tutorial-first-play-fixes | done | 2026-10-23 |
 | P501 review-achievements-button | done | 2026-10-23 |
 | P500 review-changelog-version-merges | done | 2026-10-23 |
@@ -281,7 +282,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P496 review-props-ability-profile | done | 2026-10-23 |
 | P495 review-usable-ankhs | done | 2026-10-23 |
 | P494 review-artificers-unravel-container | done | 2026-10-23 |
-| P493 review-golem-test-accounts | done | 2026-10-23 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 148 patches, 12 replacements
 
