@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.24.1. Golem on, 34 queued, latest done P530. Play tests: 834 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.24.2. Golem on, 29 queued, latest done P534. Play tests: 838 open, 4 failed, 43 passed.
 
 ### Needs overseer review (5)
 
@@ -71,7 +71,7 @@ Judgment reviewed 2026-10-20. Shard version 2026.10.24.1. Golem on, 34 queued, l
 - **gate What is built is seen in a client, not only compiled**: Waits on a confirmation: Chase: is the test shard on a build that carries P203 and P204 (version 2026.10.20.x), and which play tests ran after 2026-10-18? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "What is built is seen in a client, not only compiled" --done yes --detail "..."` or `python tools/judge.py confirm gate "What is built is seen in a client, not only compiled"`
 - **task DEPLOY**: Deploy main to the test shard and run its play tests: waits on a confirmation: Chase: which build is on the test shard today? `python tools/judge.py task DEPLOY --status todo|in-progress|blocked|done --note "..."` or `python tools/judge.py confirm task DEPLOY`
 - **direction**: Confirmed 2026-10-20; notes/cc-P509-review-playtest-decisions-inbox.md (2026-10-23) is newer. Read it; if the direction moved, edit "direction" in tools/progress-state.json. `python tools/judge.py confirm direction`
-- **play tests not sorted**: 391 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
+- **play tests not sorted**: 395 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
 
 ## Port list: 6 of 16 systems in. 807 of 983 files (82%).
 
@@ -231,15 +231,13 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 359 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 361 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
 | P273 status-page-refresh | queued |  |
 | P372 cont-fixup-hammer-t3-craft-order | queued |  |
 | P375 cont-fixup-playtest-bot-checks-first | queued |  |
-| P411 launcher-always-starts | queued |  |
-| P412 chopped-tree-visuals | queued |  |
 | P413 rootdeep-anthill-entrance | queued |  |
 | P414 retire-civic-waste-bundles | queued |  |
 | P415 trash-bag-corpse-claim | queued |  |
@@ -258,10 +256,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P460 fix-artificers-guildmaster-and-join-text-match | queued |  |
 | P479 tinker-docker-prune | queued |  |
 | P481 new-player-start-area-design | queued |  |
-| P531 playtest-plans-10-24 | queued |  |
-| P532 open-questions-sweep | queued |  |
-| P533 codex-findings-to-fix-drafts-3 | queued |  |
-| P534 design-vs-build-levelable-gear | queued |  |
 | P535 design-vs-build-skills | queued |  |
 | P536 design-vs-build-high-seas | queued |  |
 | P537 ports-status-list | queued |  |
@@ -269,6 +263,9 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P539 wiki-drafts-cross-check-2 | queued |  |
 | P540 glossary-update | queued |  |
 | P541 patch-notes-10-24 | queued |  |
+| P543 cont-fixup-launcher-always-starts | queued |  |
+| P534 design-vs-build-levelable-gear | done | 2026-10-24 |
+| P534 levelable-gear-design-vs-build | done | 2026-10-24 |
 | P530 clean-up-britannia-design-vs-build | done | 2026-10-24 |
 | P530 design-vs-build-clean-up-britannia | done | 2026-10-24 |
 | P529 design-vs-build-new-haven-dungeon | done | 2026-10-24 |
@@ -277,8 +274,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P528 design-vs-build-achievements-loot | done | 2026-10-24 |
 | P526 guide-mounts-and-reward-mounts | done | 2026-10-24 |
 | P526 guide-mounts | done | 2026-10-24 |
-| P525 guide-new-player-tutorial | done | 2026-10-24 |
-| P524 review-golem-fixes-flaky-builds | done | 2026-10-24 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 148 patches, 12 replacements
 
