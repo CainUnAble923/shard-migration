@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 365 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 366 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -267,12 +267,12 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P534 levelable-gear-design-vs-build | done | 2026-10-24 |
 | P533 codex-findings-to-fix-drafts-3 | done | 2026-10-24 |
 | P533 codex-findings-to-fixes-3 | done | 2026-10-24 |
+| P531 playtest-plans-10-24 | done | 2026-10-24 |
 | P530 clean-up-britannia-design-vs-build | done | 2026-10-24 |
 | P530 design-vs-build-clean-up-britannia | done | 2026-10-24 |
 | P529 design-vs-build-new-haven-dungeon | done | 2026-10-24 |
 | P529 new-haven-dungeon-design-vs-build | done | 2026-10-24 |
 | P528 achievements-loot-design-vs-build | done | 2026-10-24 |
-| P528 design-vs-build-achievements-loot | done | 2026-10-24 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 148 patches, 12 replacements
 
