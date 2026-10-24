@@ -115,7 +115,9 @@ Platinum through Celestial need their first report before you can keep harvestin
 
 ## The Miners' Compact Liaison
 
-Garrett's member dashboard offers **Work Orders**, **Restoration (Jacob's Pickaxe)**, pickaxe upgrades, **Upgrade Ore Satchel**, **Replace Starting Kit**, **Climbing Boots**, and the **Civic Mule Exchange**.
+Garrett's member dashboard offers **Work Orders**, **Learn Stone Mining**, **Restoration (Jacob's Pickaxe)**, pickaxe upgrades, **Upgrade Ore Satchel**, **Replace Starting Kit**, **Climbing Boots**, and the **Civic Mule Exchange**.
+
+**Learn Stone Mining** sells the Compact's copy of **Mining For Quality Stone**, the same book the Stone Crafter sells for 10,625 gold. The Compact's copy costs **50 Mining Vouchers** and needs **Journeyman** rank (5,000 standing). The page shows both and whether you meet them. Reading the book still needs **100.0 Mining**. You can buy it earlier and read it later; the page tells you your Mining first. Once you have learned stone mining, the dashboard shows **Stone mining: learned** and no longer offers the book.
 
 Keep the ore satchel in your backpack for automatic ore collection. It accepts ore, ingots, and plain Granite. Higher tiers reduce more weight and gain bulk smelting.
 
@@ -132,6 +134,8 @@ Each upgrade takes the previous satchel plus Vouchers, ingots, and gold. The men
 From Reinforced onward, choose **Smelt Ore** from the satchel's context menu while within 2 tiles of a forge. Each pile uses the forge's usual Mining check, output ratio, and loss on failure. Ingots return to the satchel, with normal overflow handling. Upgrading keeps this ability.
 
 Jacob's Pickaxe progresses through Reinforced, Prospector, Deepdelver, and Worldbreaker versions. Upgrades require the earlier tool, standing, Mining, and payment. An exhausted pickaxe remains as a spent tool. The Liaison's Restoration page restores a tier already unlocked on your account; check its displayed requirements and cost.
+
+If you are short of Mining Vouchers for a restoration, the page offers to cover **only the missing vouchers in gold**, at **100 gold per missing voucher**. The ingots and the base gold stay the same, and any vouchers you hold are still used. The next page shows the price with vouchers and the price with gold before you confirm. If you do not have enough gold, the Liaison tells you the whole amount and how much you are short.
 
 The Liaison also sells blessed, account-bound climbing boots for reaching mountain deposits. Their successive requirements include Mining **120, 150, and 180**, **100, 300, and 600 distinct mined blocks**, and Surveyor, Master Delver, and Deepwarden standing. Wear the boots and double-click them to hop. Hops cost stamina. Pets stay below, and combat and taming are restricted while you are on a climbed tile.
 
@@ -161,7 +165,11 @@ Foresters' **Timber Contracts**, the Compact's **Work Orders**, and Outriders' *
 
 Read the requirements and rewards, accept an order, then use **Active** to turn it in. You can hold **3 active contracts per guild**, with one active copy of a particular contract. Material turn-ins take the whole required amount from your backpack and bank. Animal contracts use the crook's delivery progress.
 
-Current contracts are fixed requests. Miners request ore, ingots, stone, or gems; Foresters request boards; Outriders offer animal deliveries and other field supplies. Completed orders pay the displayed standing, guild currency, and gold. Gathering and taming contract turn-ins currently give no skill checks.
+Current contracts are fixed requests. Miners request ingots, stone, or gems, or set a mining quota; Foresters request boards; Outriders offer animal deliveries and other field supplies. Completed orders pay the displayed standing, guild currency, and gold. Gathering and taming contract turn-ins currently give no skill checks.
+
+The Compact's two ore contracts are **mining quotas**. **Mine Iron Ore** asks for 100 iron ore. **Mine Dull Copper Ore** asks for 50 dull copper ore; it needs Journeyman rank, 65.0 Mining and a reported Dull Copper vein. Only ore you mine after accepting counts. Ore you mined before, bought, traded or picked up does not count, and nothing is taken when you turn the contract in. The **Active** tab shows how much you have mined. A contract you held before quotas, the old Raw Ore Sample or Ore Refinement Run, can still be finished by turning in its iron ore, or by mining.
+
+**Stone Contracts** are listed only once you have learned stone mining by reading **Mining For Quality Stone**. Until then the ledger lists none, not even as locked cards. The Dispatch Ledger shows the same list. A line at the foot of the ledger says where to get the book: the Stone Crafter, or the Compact from Journeyman rank. A Stone Contract you already hold can still be turned in.
 
 Rolled gathering contracts, Rush jobs, Surveys, mule Hauls, Rare finds, and gathering-contract skill checks are (planned). A separate redesign of the wood harvesting ladder and its training range is (planned). The crafting table above does not describe that future harvesting ladder.
 
@@ -182,6 +190,7 @@ Note links are relative to the shard-migration repository. Code paths name files
 - [P13](../cc-P13-grove-tracking.md), [P14](../cc-P14-newhaven-guild-mapping.md), [P15](../cc-P15-guild-starter-path.md), [P16](../cc-P16-mine-camp-tents.md), and [P18](../cc-P18-reset-stone-young-craftx.md): discoveries, starter items, locations, and character guild records.
 - [P22](../cc-P22-small-features-1.md), [P36](../cc-P36-dungeon-build-1.md), [P37](../cc-P37-upgrade-prep.md), [P38](../cc-P38-engine-upgrade.md), [P55](../cc-P55-bug-batch-5.md), [P56](../cc-P56-smith-economy-and-labels.md), [P57](../cc-P57-batch-6.md), and [P67](../cc-P67-craft-ceilings.md): starter resources, permanent deposits, satchels, smelting, and material ladders.
 - [P78](../cc-P78-recipe-gating.md), [P123](../cc-P123-port-bulk-orders-crafts.md), [P150](../cc-P150-requisitions-and-leads.md), [P151](../cc-P151-guild-halls-survey.md), and [P172](../cc-P172-pet-gain-speed.md): crafting promotion, deeds, requisitions, hall plans, and pet gains.
+- [P416](../cc-P416-stone-mining-gate.md): the stone mining gate, the Compact's copy of the book, mining quotas, and gold for missing vouchers on a restoration.
 - [P227](../cc-P227-extended-wood-bonuses.md), [P235](../cc-P235-work-order-numbers-pass.md), [P238](../cc-P238-climbing-boots.md), [P280](../cc-P280-league-register-build.md), and [P283](../cc-P283-skill-gain-paths-research.md): wood bonuses, contract research, climbing, consolidation items, and training limits.
 - Current guild code: `server/customizations/ClusterFGuildSystem.cs`, `ClusterFGuildStarterPath.cs`, `ClusterFGuildPromotion.cs`, the three guildmasters and their menus, `ClusterFWorkOrderSystem.cs`, and `GuildContractLedgerGump.cs`.
 - Current gathering code: `ClusterFMiningExtension.cs`, `ClusterFLumberjackingExtension.cs`, `ClusterFMetalTiers.cs`, `ClusterFWoodTiers.cs`, `ClusterFWoodBonuses.cs`, `CompactOreSatchelRoutingHook.cs`, both logbooks and their menus, `SurveyArchivistGump.cs`, and the ore and lumber satchel classes under `server/customizations/`.
