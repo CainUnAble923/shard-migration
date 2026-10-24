@@ -238,7 +238,7 @@ Updated October 24, 2026. The Page column points to a guide or design note for t
 |---|---|---|
 | Hall page | The League Shop's house-decor catalog, using AP requirements and Renown prices. It is separate from the planned League headquarters. | [League][league] |
 | Hammer of Hephaestus | The Society's blessed legacy hammer, with uses, recharge, metal familiarity, and a Reinforced upgrade. Its Blacksmithy bonus applies while held and usable. | [Society of Smiths][smiths] |
-| Harvest quota (planned) | A gathering order credited by the owner's harvesting after acceptance, with the gathered goods kept. P417 proposes extending this approach beyond P416's mining changes. | [Gathering orders design][gathering-plan] |
+| Harvest quota (planned) | A gathering order credited by the owner's harvesting after acceptance, with the gathered goods kept. P417 proposes extending the built mining quotas to other gathering work. | [Gathering orders design][gathering-plan] |
 | Haul (planned) | A rolled gathering contract delivering goods to another town, requiring a Compact Mule. | [Gathering guilds][gather] |
 | Healers' Covenant | The guild for Healing and Anatomy. Alchemy and Taste ID belong to the Order of the Alembic. | [Rangers, Custodians, and Healers][rangers] |
 | Herbalism (planned) | The Alembic's new skill for foraging, growing reagent plants, breeding strains, and processing harvests. | [Order of the Alembic][alembic] |
@@ -333,7 +333,7 @@ Updated October 24, 2026. The Page column points to a guide or design note for t
 | Metal familiarity | The Hammer of Hephaestus's remembered crafting experience in each metal, improving its use efficiency and the Reinforced hammer's bonus. | [Society of Smiths][smiths] |
 | Miner's box | A gathering-themed earned box using metal-ladder names and supplying mining-related rewards. | [Achievements and boxes][boxes] |
 | Miners' Compact | The mining guild, providing ore discoveries, contracts, satchels, legacy pickaxes, and climbing boots. | [Gathering guilds][gather] |
-| Mining quota (planned) | A Compact ore contract completed by mining the named ore after acceptance, keeping the ore. P416 specifies one iron amount and another metal rather than small and large iron orders; current source still uses ore turn-ins. | [P540 source notes][update] |
+| Mining quota | A Compact ore contract credited by your own mining after acceptance. Source orders ask for 100 iron ore or 50 dull copper ore; you keep the ore. Older accepted contracts may also finish with their original turn-in. | [P540 source notes][update] |
 | Mining Vouchers | The Miners' Compact's spendable guild currency. Spending Vouchers does not spend Compact standing. | [Gathering guilds][gather] |
 | Minor fanfare | A private celebration sent to the earning player. | [Achievements and boxes][boxes] |
 | Minstrel's Bells | A bard-themed mule module that helps it avoid attention, calm attackers, and support the owner's bard abilities. | [Companions and pets][pets] |
@@ -549,7 +549,7 @@ Updated October 24, 2026. The Page column points to a guide or design note for t
 - [New player tutorial][tutorial] and [Mounts and riding][mounts]: current lessons, wings, pet care, living reward mounts, and statuettes.
 - [League answers][league-answers]: Chase's October 23 answers to P376, superseding the older League contradictions.
 - [Town Houses design][town-houses] and [Gathering orders design][gathering-plan]: proposed leaseholds, sublets, and harvest quotas. Their tuning suggestions are not settled rules.
-- [P540 source notes][update]: current-source checks, the pending P363/P416 work, and P481's proposed custom facet, island, private lessons, and staged vision.
+- [P540 source notes][update]: current-source checks, built P416 mining quotas, pending P363 quest markers, and P481's proposed custom facet, island, private lessons, and staged vision.
 - [Starting in New Haven][start] and [Levels, loops, and scrolls][loops]: orientation, graduation, Young, and progression plans.
 - [League][league], [Achievements and loot boxes][boxes], and [League Register][register]: citizen services, currencies, requests, rewards, and consolidation items.
 - [Crafting changes][craft], [Society of Smiths][smiths], [Artificers' Order][artificers], and [Order of the Alembic][alembic]: learning systems, materials, tools, and planned craft extensions.
