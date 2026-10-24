@@ -774,6 +774,161 @@
      "transcript": "transcripts/P100-1-run3.txt"
     }
    ]
+  },
+  {
+   "id": "P100-2",
+   "title": "Search bench, Paint two with a hue, Fill box 3 x 3 (Filled 9), 21 x 21 refused, Nudge moves them",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "P100-2: the painted pieces and the hue look right on screen",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "search 'bench': 66 found, page 1 of 3; painted 2 bench(es) (graphics ['0xb2d']) hue [1157]; fill: 'Filled 9 item(s). Undo removes them.' (9 pavers, hue [1157]); 21x21: 'Refused: the box is 21 x 21 tiles; the most a fill takes is 20 x 20.' (0 placed); nudge: 'Moved 9 item(s).', the nine moved x+1: True; cleanup ['Undone: 9 item(s). 3 step(s) left.', 'Undone: 9 item(s). 2 step(s) left.', 'Undone: 1 item(s). 1 step(s) left.', 'Undone: 1 item(s). 0 step(s) left.', 'Nothing of yours to undo.']",
+     "seconds": 10.3,
+     "transcript": "transcripts/P100-2-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "search 'bench': 66 found, page 1 of 3; painted 2 bench(es) (graphics ['0xb2d']) hue [1157]; fill: 'Filled 9 item(s). Undo removes them.' (9 pavers, hue [1157]); 21x21: 'Refused: the box is 21 x 21 tiles; the most a fill takes is 20 x 20.' (0 placed); nudge: 'Moved 9 item(s).', the nine moved x+1: True; cleanup ['Undone: 9 item(s). 3 step(s) left.', 'Undone: 9 item(s). 2 step(s) left.', 'Undone: 1 item(s). 1 step(s) left.', 'Undone: 1 item(s). 0 step(s) left.', 'Nothing of yours to undo.']",
+     "seconds": 10.2,
+     "transcript": "transcripts/P100-2-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "search 'bench': 66 found, page 1 of 3; painted 2 bench(es) (graphics ['0xb2d']) hue [1157]; fill: 'Filled 9 item(s). Undo removes them.' (9 pavers, hue [1157]); 21x21: 'Refused: the box is 21 x 21 tiles; the most a fill takes is 20 x 20.' (0 placed); nudge: 'Moved 9 item(s).', the nine moved x+1: True; cleanup ['Undone: 9 item(s). 3 step(s) left.', 'Undone: 9 item(s). 2 step(s) left.', 'Undone: 1 item(s). 1 step(s) left.', 'Undone: 1 item(s). 0 step(s) left.', 'Nothing of yours to undo.']",
+     "seconds": 10.3,
+     "transcript": "transcripts/P100-2-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P100-3",
+   "title": "Wipe box over the corner removes what the session placed and leaves the town's own items",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "placed 11 (Filled 9 item(s). Undo removes them.); wipe said 'Wiped 11 item(s). Undo puts back them.'; all placed gone True; town items in the box before 0, after 0, same set True; cleanup ['Undone: 11 item(s). 3 step(s) left.', 'Undone: 9 item(s). 2 step(s) left.', 'Undone: 1 item(s). 1 step(s) left.', 'Undone: 1 item(s). 0 step(s) left.', 'Nothing of yours to undo.']",
+     "seconds": 10.8,
+     "transcript": "transcripts/P100-3-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "placed 11 (Filled 9 item(s). Undo removes them.); wipe said 'Wiped 11 item(s). Undo puts back them.'; all placed gone True; town items in the box before 0, after 0, same set True; cleanup ['Undone: 11 item(s). 3 step(s) left.', 'Undone: 9 item(s). 2 step(s) left.', 'Undone: 1 item(s). 1 step(s) left.', 'Undone: 1 item(s). 0 step(s) left.', 'Nothing of yours to undo.']",
+     "seconds": 10.9,
+     "transcript": "transcripts/P100-3-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "placed 11 (Filled 9 item(s). Undo removes them.); wipe said 'Wiped 11 item(s). Undo puts back them.'; all placed gone True; town items in the box before 0, after 0, same set True; cleanup ['Undone: 11 item(s). 3 step(s) left.', 'Undone: 9 item(s). 2 step(s) left.', 'Undone: 1 item(s). 1 step(s) left.', 'Undone: 1 item(s). 0 step(s) left.', 'Nothing of yours to undo.']",
+     "seconds": 10.8,
+     "transcript": "transcripts/P100-3-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P100-4",
+   "title": "Undo puts the wiped items back, then undoes the fill and the paints until the corner is as it was",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "placed 11; first undo: 'Undone: 11 item(s). 3 step(s) left.'; corner after it equals the placed picture: True; then ['Undone: 9 item(s). 2 step(s) left.', 'Undone: 1 item(s). 1 step(s) left.', 'Undone: 1 item(s). 0 step(s) left.', 'Nothing of yours to undo.']; corner back to its start: True (0 items)",
+     "seconds": 13.9,
+     "transcript": "transcripts/P100-4-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "placed 11; first undo: 'Undone: 11 item(s). 3 step(s) left.'; corner after it equals the placed picture: True; then ['Undone: 9 item(s). 2 step(s) left.', 'Undone: 1 item(s). 1 step(s) left.', 'Undone: 1 item(s). 0 step(s) left.', 'Nothing of yours to undo.']; corner back to its start: True (0 items)",
+     "seconds": 13.9,
+     "transcript": "transcripts/P100-4-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "placed 11; first undo: 'Undone: 11 item(s). 3 step(s) left.'; corner after it equals the placed picture: True; then ['Undone: 9 item(s). 2 step(s) left.', 'Undone: 1 item(s). 1 step(s) left.', 'Undone: 1 item(s). 0 step(s) left.', 'Nothing of yours to undo.']; corner back to its start: True (0 items)",
+     "seconds": 13.9,
+     "transcript": "transcripts/P100-4-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P100-5",
+   "title": "World mode (Administrator): a wipe takes a loose Static the builder did not place, undo puts it back",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "protected wipe: 'Wiped 0 item(s). Undo puts back them.' (loose still there True); 'World mode ON: erase and wipe now also r'; world wipe: 'Wiped 1 item(s). Undo puts back them.' (gone True); undo: 'Undone: 1 item(s). 0 step(s) left.' (back True); 'World mode off: erase and wipe only touch what this session placed.'",
+     "seconds": 10.4,
+     "transcript": "transcripts/P100-5-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "protected wipe: 'Wiped 0 item(s). Undo puts back them.' (loose still there True); 'World mode ON: erase and wipe now also r'; world wipe: 'Wiped 1 item(s). Undo puts back them.' (gone True); undo: 'Undone: 1 item(s). 0 step(s) left.' (back True); 'World mode off: erase and wipe only touch what this session placed.'",
+     "seconds": 10.4,
+     "transcript": "transcripts/P100-5-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "protected wipe: 'Wiped 0 item(s). Undo puts back them.' (loose still there True); 'World mode ON: erase and wipe now also r'; world wipe: 'Wiped 1 item(s). Undo puts back them.' (gone True); undo: 'Undone: 1 item(s). 0 step(s) left.' (back True); 'World mode off: erase and wipe only touch what this session placed.'",
+     "seconds": 10.4,
+     "transcript": "transcripts/P100-5-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P138-3",
+   "title": "A male human wears the Kitsune Ears and Tail (no 'Only females' refusal), on the earrings layer",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "P138-3: on his paperdoll the ears sit on the crown and the tail leaves the lower back",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "male human: worn True on layer 18 (want 0x12) graphic 0x3C3C (want 0x3C3C); refusals none; messages ['Welcome to Shattered Legacy BOT.']",
+     "seconds": 103.1,
+     "transcript": "transcripts/P138-3-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "male human: worn True on layer 18 (want 0x12) graphic 0x3C3C (want 0x3C3C); refusals none; messages ['A monster looks at you menacingly but does not attack.  You would be under attack now if not for your status as a new citizen of Britannia.', 'Welcome to Shattered Legacy BOT.']",
+     "seconds": 44.1,
+     "transcript": "transcripts/P138-3-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "male human: worn True on layer 18 (want 0x12) graphic 0x3C3C (want 0x3C3C); refusals none; messages ['A monster looks at you menacingly but does not attack.  You would be under attack now if not for your status as a new citizen of Britannia.', 'Welcome to Shattered Legacy BOT.']",
+     "seconds": 43.1,
+     "transcript": "transcripts/P138-3-run3.txt"
+    }
+   ]
   }
  ]
 }
