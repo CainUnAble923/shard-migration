@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 336 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 338 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -265,14 +265,14 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P519 herbalism-research-against-what-is-built | queued |  |
 | P516 guild-halls-design-vs-build | done | 2026-10-24 |
 | P516 guild-halls-survey-and-design-against-what | done | 2026-10-24 |
+| P515 league-design-vs-build | done | 2026-10-24 |
+| P515 the-league-design-against-what-is-built | done | 2026-10-24 |
 | P514 feature-queue-audit-2 | done | 2026-10-24 |
 | P514 feature-queue-audit-round-2 | done | 2026-10-24 |
 | P513 patch-notes-2026-10-23 | done | 2026-10-23 |
 | P513 patch-notes-for-10-23 | done | 2026-10-23 |
 | P512 play-test-plans-for-the-10-22 | done | 2026-10-23 |
 | P511 review-package-builds-from-tazuo | done | 2026-10-23 |
-| P510 review-queue-notes-and-package-whats-new | done | 2026-10-23 |
-| P509 review-playtest-decisions-inbox | done | 2026-10-23 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 148 patches, 12 replacements
 
