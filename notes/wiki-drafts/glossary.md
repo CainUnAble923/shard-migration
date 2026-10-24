@@ -20,6 +20,12 @@ The Page column points to the guide for the topic. Some links lead to DokuWiki p
 [accessories]: pages/uo/systems/accessories.txt
 [appraisal]: pages/uo/systems/creature_levels.txt
 [seasonal]: pages/uo/world/seasonal.txt
+[tutorial]: new-player-tutorial.md
+[first-pet]: first-companion.md
+[mounts]: mounts.md
+[mining]: mining-changes.md
+[cleanup]: clean-up-britannia-changes.md
+[houses]: town-houses.md
 
 ## A
 
@@ -103,12 +109,14 @@ The Page column points to the guide for the topic. Some links lead to DokuWiki p
 | Celestial mule | The highest Compact Mule upgrade tier. Mule upgrades are independent of player loops. | [Companions and pets][pets] |
 | Chapter | A guild's local presence, such as its New Haven chapter. A League story chapter is instead one of the milestone trials (planned). | [League][league] |
 | Chest mimic | A stationary monster drawn as a toothed chest. The decided dungeon-chest encounter, taming window, and PetMimic reward handoff are (planned). | [Companions and pets][pets] |
-| Citizen Commissions (planned) | Player-posted requests with rewards set aside in advance. Player-paid Renown will be spendable without counting toward League promotion. | [League][league] |
+| Citizen Commissions (planned) | Player-posted requests with rewards set aside in advance. Accepting starts at Iron; posting opens at Bronze, Verite, and Blaze for progressively larger requests. Player-paid Renown will not count toward promotion. | [League][league] |
 | Civic Contracts | Custodian work that asks for Clean Up points earned after the contract is taken, and pays gold. These contracts are separate from League requisitions. | [Rangers, Custodians, and Healers][rangers] |
 | Civic Mule Exchange | The service for upgrading an existing Compact Mule. The first mule comes from the Registrar's errand. | [Companions and pets][pets] |
 | Civic Tokens | The retired Custodian currency, replaced by Clean Up points. | [Rangers, Custodians, and Healers][rangers] |
-| Civic waste bundle | Retired. Custodian cleaning once made these for Civic Contracts; a bundle still held can be handed to the Sanitation Warden for 10 Clean Up points. | [Rangers, Custodians, and Healers][rangers] |
+| Civic waste bundle | Retired. Cleanup no longer makes these. Hand old bundles to the Sanitation Warden for 10 Clean Up points each; membership is not required. Civic Contracts now count newly earned points. | [Clean Up changes][cleanup] |
 | Clean Up points | The spendable Clean Up Britannia balance used by the Custodians and the cleanup store. Lifetime cleanup points separately determine Custodian rank. | [Rangers, Custodians, and Healers][rangers] |
+| Clear a corpse | A Trash Bag option targeting one eligible monster corpse. It deletes the corpse and everything inside, with confirmation if contents remain. Player corpses and protected loot cannot be cleared. | [Clean Up changes][cleanup] |
+| Clear corpses nearby | A Trash Bag option clearing eligible monster corpses within 10 tiles, leaving loose ground items alone. A successful sweep starts a 60-second cooldown shared with cleanupall. | [Clean Up changes][cleanup] |
 | Client Commissions (planned) | A proposed name for NPC clients' timed League crafting requests, with recurring clients and Renown rewards. Existing Smith commissions still use the Society's system. | [League][league] |
 | Climbing boots | Compact equipment for hopping onto mountain tiles to reach ore. The tiers are Surveyor's, Delver's, and Deepwarden's Climbing Boots. | [Gathering guilds][gather] |
 | Clockwork Load Harness | A mule module increasing pack weight capacity and adding sorting at higher tiers. Its Scavenger loot-delivery feature is (planned). | [Companions and pets][pets] |
@@ -119,10 +127,11 @@ The Page column points to the guide for the topic. Some links lead to DokuWiki p
 | Compact Mule | A bonded pack animal and mount earned through a League errand, with its own upgrades, breeding, and modules. It uses one follower slot before applicable module benefits. | [Companions and pets][pets] |
 | Compact Ore Satchel | The Miners' starting resource bag, which collects ore and accepts ingots and plain Granite. Higher ore satchel tiers add stronger weight reduction and bulk smelting. | [Gathering guilds][gather] |
 | Companion (planned) | A humanoid adventuring partner with equipment, a class path, personality, rank, and its own loops. Player hiring and promotion remain unfinished despite the built groundwork. | [Companions and pets][pets] |
+| Companion pick | Graduation's choice of a bonded dog, cat, fox, or bird evo pet, needing one free follower slot. Rook reopens it through Choose your companion until you pick. Taking the Farmhand's pet uses this choice. | [Your first companion][first-pet] |
 | Companion rank (planned) | The humanoid companion progression from Squire to Legend. It is separate from the companion's own loop count and from player or guild rank. | [Companions and pets][pets] |
 | Con word | The colored difficulty word below a creature's name, comparing its level with your estimated strength. It is separate from notoriety colors. | [Creature levels and Appraisal][appraisal] |
 | Copper Citizen | The League rank between Shadow Iron Citizen and Bronze Citizen. | [League][league] |
-| Core | The required tutorial lessons that make graduation available. Optional wings are separate. | [Starting in New Haven][start] |
+| Core | The nine required tutorial lessons, in order: movement, backpack, paperdoll, speech, death and resurrection, banking, travel, the League, and the loop vision. Completing them permits graduation. | [New player tutorial][tutorial] |
 | Crafting band | A design-learning category based on the recipe's minimum skill. It is separate from material tier, your current skill, and Imbuing intensity. | [Crafting][craft] |
 | Crawlway | The one-way passage from the Rootdeep Vault into the Warren, opened for trainees credited with defeating the Overdraft. | [Starting in New Haven][start] |
 | Creature level | The shard's difficulty estimate for a creature or NPC, derived from bard difficulty with special cases. It is separate from the planned player XP level. | [Creature levels and Appraisal][appraisal] |
@@ -217,6 +226,7 @@ The Page column points to the guide for the topic. Some links lead to DokuWiki p
 | Haul (planned) | A rolled gathering contract delivering goods to another town, requiring a Compact Mule. | [Gathering guilds][gather] |
 | Healers' Covenant | The guild for Healing and Anatomy. Alchemy and Taste ID belong to the Order of the Alembic. | [Rangers, Custodians, and Healers][rangers] |
 | Herbalism (planned) | The Alembic's new skill for foraging, growing reagent plants, breeding strains, and processing harvests. | [Order of the Alembic][alembic] |
+| Hint and arrow | The tutorial button that repeats the current instructions, points the way, and replaces a missing practice bag, cloak, or bank token when there is room. | [New player tutorial][tutorial] |
 | Hunter's box | A resource-themed earned box using leather-tier names. Its label does not guarantee that every reward is made of that leather. | [Achievements and boxes][boxes] |
 | Hunter's Satchel | The Outriders' bag for carved animal resources, with supported hide conversion and weight reduction. | [Gathering guilds][gather] |
 
@@ -251,21 +261,22 @@ The Page column points to the guide for the topic. Some links lead to DokuWiki p
 | Term | Meaning | Page |
 |---|---|---|
 | Landing | The Rootdeep arrival area beside the tutorial Vault. | [Starting in New Haven][start] |
-| Lead | A personal requisition rumor naming an area and creature group, with an extra reward chance that rises through qualifying kills. A live Lead preserves its request through daily refresh. | [League][league] |
+| Lead | A personal requisition rumor naming an area and creature group. Its extra reward roll guarantees a matching item by qualifying kill 40 under the defaults. A live Lead preserves its request through daily refresh. | [League][league] |
 | League | Short for the League of Extraordinary Citizens, the organization connecting the guilds and providing citizen rank, services, and work. | [League][league] |
 | League Field Satchel | A League container holding supported guild satchels while retaining each inner bag's resource and weight rules. | [League Register][register] |
 | League job (planned) | Adventuring or guild work on the broader League board, separate from the built requisitions board. | [League][league] |
-| League milestone | A bonus step at Dull Copper, Bronze, Verite, Blaze, Mythril, or Celestial Citizen. | [League][league] |
+| League milestone | A bonus step at Dull Copper, Bronze, Verite, Blaze, Mythril, or Celestial Citizen. Each adds 100 bank item slots under the defaults. Bonuses at every metal rank are not part of the current plan. | [League][league] |
 | League of Extraordinary Citizens | The full name of the League, also abbreviated LXC. | [League][league] |
 | League rank | Your character's metal-named citizen rank, checked using Lifetime Renown and guild standing. Account registration and individual guild ranks are separate. | [League][league] |
 | League Register | The character-owned book that binds joined guilds and opens League services as rank rises. | [League Register][register] |
 | League Registrar | Elara Voss, the contact for League registration, rank, shopping, and related services. | [League][league] |
 | League Shop | The reward store where AP opens rows and Renown pays for cosmetics, titles, decor, and conveniences. | [League][league] |
-| League story trial (planned) | A milestone chapter in the League's continuing story. It is separate from a guild's top-rank trial. | [League][league] |
+| League story trial (planned) | One of six story chapters at Dull Copper, Bronze, Verite, Blaze, Mythril, and Celestial. It is separate from a guild's top-rank trial; the playable chapters remain unbuilt. | [League][league] |
 | League-themed box | An earned box associated with the League, with extra Renown in the normal reward roll. The shop's Bronze, Silver, and Gold boxes follow separate rules. | [Achievements and boxes][boxes] |
 | Legacy points (planned) | Capped permanent benefits earned through the planned loop ladder. | [Levels and loops][loops] |
 | Legend (planned) | The final humanoid companion rank, separate from Legendary loot boxes or guild titles. | [Companions and pets][pets] |
 | Legendary box | Tier 5 of the rarity-named earned boxes. | [Achievements and boxes][boxes] |
+| Lesson | A tutorial activity completed by doing its required actions. Core lessons unlock graduation; optional wing lessons lend practice supplies and skills. Completed lessons are saved, but an unfinished lesson restarts after logout. | [New player tutorial][tutorial] |
 | Levelable gear | Crafted equipment that can earn item XP and spend points on supported properties. The engine is built, but normal player access through a Smith's Seal is (planned). | [Crafting][craft] |
 | Lifetime Renown | The account's qualifying earned Renown total used for League promotion. Spending Renown leaves it unchanged. | [League][league] |
 | Loop | The shard's lasting progression through repeated lives: graduation records loop 1. Later player loops, level resets, and path-specific skill retention are (planned). | [Levels and loops][loops] |
@@ -298,6 +309,8 @@ The Page column points to the guide for the topic. Some links lead to DokuWiki p
 | Metal familiarity | The Hammer of Hephaestus's remembered crafting experience in each metal, improving its use efficiency and the Reinforced hammer's bonus. | [Society of Smiths][smiths] |
 | Miner's box | A gathering-themed earned box using metal-ladder names and supplying mining-related rewards. | [Achievements and boxes][boxes] |
 | Miners' Compact | The mining guild, providing ore discoveries, contracts, satchels, legacy pickaxes, and climbing boots. | [Gathering guilds][gather] |
+| Mining For Quality Stone | The book teaching stone mining to one character at 100.0 base Mining, consumed when read successfully. Stone Crafters sell it; the Compact offers a copy from Journeyman for 50 Mining Vouchers by default. | [Mining changes][mining] |
+| Mining quota | A Compact contract counting only the named metal mined by that character after accepting. Bought, traded, and stored ore does not count. Turning in a completed quota takes no ore. | [Mining changes][mining] |
 | Mining Vouchers | The Miners' Compact's spendable guild currency. Spending Vouchers does not spend Compact standing. | [Gathering guilds][gather] |
 | Minor fanfare | A private celebration sent to the earning player. | [Achievements and boxes][boxes] |
 | Minstrel's Bells | A bard-themed mule module that helps it avoid attention, calm attackers, and support the owner's bard abilities. | [Companions and pets][pets] |
@@ -309,6 +322,12 @@ The Page column points to the guide for the topic. Some links lead to DokuWiki p
 | Mule schematic | A learned recipe for a mule module, retained by the account rather than consumed again for every craft. | [Crafting][craft] |
 | Mythril | The energy-themed extended metal between Obsidian and Adamantium, also providing luck. | [Society of Smiths][smiths] |
 | Mythril Citizen | The League milestone rank between Obsidian Citizen and Adamantium Citizen. | [League][league] |
+
+## N
+
+| Term | Meaning | Page |
+|---|---|---|
+| New facet (planned) | A proposed custom map for the tutorial start island and later private trials, events, and dungeons. Its map index, layout, and client delivery remain design work. | [New player tutorial][tutorial] |
 
 ## O
 
@@ -340,6 +359,12 @@ The Page column points to the guide for the topic. Some links lead to DokuWiki p
 | Prospector | A custom imbued property adding chances at rare mining and lumber finds. The name also appears on a Compact pickaxe tier. | [Artificers' Order][artificers] |
 | Prospector's Logbook | The account-backed record of ore discoveries, veins, totals, and distinct blocks mined. | [Gathering guilds][gather] |
 
+## Q
+
+| Term | Meaning | Page |
+|---|---|---|
+| Quest marker (planned) | A personal symbol above an NPC: ! for a new quest offer, ? for a quest ready to turn in. Integration is pending in the reviewed source; current availability is unverified. | [P522 review](../cc-P522-review-quest-markers.md) |
+
 ## R
 
 | Term | Meaning | Page |
@@ -352,9 +377,11 @@ The Page column points to the guide for the topic. Some links lead to DokuWiki p
 | Reinforced Ore Satchel | The first ore satchel upgrade, adding bulk smelting near a forge. | [Gathering guilds][gather] |
 | Reinforced Saddlebags | A mule module increasing pack item capacity. | [Companions and pets][pets] |
 | Remedial training | The full tutorial offered by Rook after skipping. Completion gives normal graduation rewards without recording an already granted first loop twice. | [Starting in New Haven][start] |
-| Remote repair deed | A crafted, single-use repair pass for damaged equipment worn, carried, and banked, like the Register's Blaze repair action. | [League Register][register] |
+| Remote repair deed | A crafted, single-use repair pass for damaged equipment worn, carried, and banked. The Register's free Blaze repair reaches equipped gear only. | [League Register](league-register.md) |
 | Renown | The account's spendable League balance, earned through achievements and other qualifying rewards. Spending it does not reduce Lifetime Renown. | [League][league] |
-| Requisition | A guild-themed request for matching magic equipment, found or crafted. A completed turn-in consumes the item and pays Renown, guild standing, and the Appraiser's gold value. | [League][league] |
+| Requisition | A guild-themed request for matching magic equipment, found or crafted. Turn-in consumes the item and pays Renown, guild standing, and the Appraiser's gold value. Non-member standing pays immediately. | [League][league] |
+| Reward mount | A living mount obtained through the League Shop, an achievement, or an eligible loot box. Custom reward mounts arrive bonded, use one follower slot, and currently have horse-level stats. Some reward routes remain unconfirmed. | [Mounts and riding][mounts] |
+| Reward mount statuette | A single-use item that calls its bonded living mount from your backpack while you are alive and have follower space. Successful use consumes it. Veteran ethereal figurines follow separate, reusable rules. | [Mounts and riding][mounts] |
 | Rogue path (planned) | The stealth and rogue starting path for a humanoid companion. | [Companions and pets][pets] |
 | Rook Hallowell | The League recruiter who runs New Haven orientation, graduation, skipping, and remedial training. He is separate from Registrar Elara Voss. | [Starting in New Haven][start] |
 | Rootdeep Burrows | The shard's dungeon under Old Haven, including the tutorial-only Vault. Its coded route and region do not establish current world availability. | [Starting in New Haven][start] |
@@ -394,6 +421,7 @@ The Page column points to the guide for the topic. Some links lead to DokuWiki p
 | Standing | Your character's reputation in a particular guild, used for rank and services. Spending that guild's currency does not spend standing. | [Gathering guilds][gather] |
 | Starwood | The final extended wood, with luck and additional exceptional weapon benefits. Its crafting requirement is separate from its harvesting requirement. | [Crafting][craft] |
 | Steady Hoof Wraps | A craftable mule module whose dismount-resistance effect remains (planned). | [Companions and pets][pets] |
+| Stone Contract | Compact work requiring learned stone mining before acceptance. Individual contracts can also require standing or a reported vein. Unlike a mining quota, it still takes the listed materials. | [Mining changes][mining] |
 | Strain (planned) | A reagent plant's breeding tier in Herbalism, separate from the plant type that determines its reagent. | [Order of the Alembic][alembic] |
 | Support path (planned) | The healing and support starting path for a humanoid companion. | [Companions and pets][pets] |
 | Survey (planned contract) | A gathering job asking for work in a named region or an unrecorded grove. Existing ore and timber discovery reports are built separately. | [Gathering guilds][gather] |
@@ -413,7 +441,7 @@ The Page column points to the guide for the topic. Some links lead to DokuWiki p
 | Tamer's box | An earned loot-box theme for animal-related rewards. Its Companion Treat reward is a placeholder with its use (planned). | [Achievements and boxes][boxes] |
 | Tangle | The root-themed area of Rootdeep Burrows, alongside the Dawnseam. | Rootdeep Burrows, `uo:drafts:rootdeep_burrows` |
 | The Compact's Mule | The League Registrar's errand granting the first bonded Compact Mule. | [Companions and pets][pets] |
-| The First Echo | The decided name for the tutorial story. Its fully guided, hands-on story route remains (planned), alongside the built orientation framework and farm lesson. | [Starting in New Haven][start] |
+| The First Echo | The decided name for the tutorial story. The core lessons and optional wings are built in New Haven; the secluded island route and staged vision scene remain (planned). | [New player tutorial][tutorial] |
 | The Setting (planned) | The deeper loop-linked dungeon in the League story design. | [League][league] |
 | The Unbroken (planned) | The name of the loop story's capstone epilogue. Its story details are left for play. | [League][league] |
 | Thief's Smoke Bomb | A crafted bomb using Hiding rather than the ordinary smoke bomb's Ninjitsu requirement. It allows an attempt to hide during combat without guaranteeing success. | [Thieves' Den][thieves] |
@@ -423,12 +451,14 @@ The Page column points to the guide for the topic. Some links lead to DokuWiki p
 | Timber Tokens | The Foresters' Union's spendable guild currency, separate from standing. | [Gathering guilds][gather] |
 | Tinkers' Union | The guild for Tinkering, its patterns, and bulk orders. Tinkers also craft the Den's deployable trap kits. | [Crafting][craft] |
 | Toe ring | Jewelry for the accessory system's toe-ring slots, separate from the ordinary ring layer. The slot window explains current wear rules. | [Accessory slots][accessories] |
+| Town Houses (planned) | Rental homes in existing town buildings, including guarded towns, with room subletting planned. A rental uses the account's one house slot. These are separate from inn rooms and guild halls. | [Town Houses][houses] |
 | Toxic | The poison-themed extended metal between Platinum and Blaze. | [Society of Smiths][smiths] |
 | Toxic Citizen | The League rank between Platinum Citizen and Blaze Citizen. | [League][league] |
 | Trader's Ledger | A merchant-themed mule module for selling from its pack and, at its highest tier, restricted portable banking. | [Companions and pets][pets] |
 | Trail Marks | The Rangers' League's spendable guild currency, separate from standing and League Renown. | [Gathering guilds][gather] |
 | Trailwise Tack | An Outrider-themed mule module for travel and homing; tier III removes the mule's follower-slot cost. | [Companions and pets][pets] |
-| Trash Bag | The Custodians' character-owned portable cleanup bag, with a review step before dumping its contents. | [Rangers, Custodians, and Healers][rangers] |
+| Trash Bag | The Custodians' character-owned cleanup bag. In its owner's backpack, it also offers Clear a corpse and Clear corpses nearby, without requiring membership for those actions. | [Clean Up changes][cleanup] |
+| Tutorial island (planned) | The secluded start area proposed for the new facet, with lessons in one direction, the farm, private lesson space, and an exit to New Haven. The current tutorial uses New Haven. | [New player tutorial][tutorial] |
 | Twin Paths Dojo | The guild teaching Bushido and Ninjitsu together. | [Starting in New Haven][start] |
 
 ## U
@@ -455,7 +485,7 @@ The Page column points to the guide for the topic. Some links lead to DokuWiki p
 |---|---|---|
 | Warren | The shallower Burrower area of Rootdeep Burrows, reached from the Vault's crawlway and containing the Brood Pit. | Rootdeep Burrows, `uo:drafts:rootdeep_burrows` |
 | Warriors' Brotherhood | The guild for melee weapon skills, Tactics, Parry, Chivalry, Focus, and Throwing. | [Starting in New Haven][start] |
-| Wings | Optional tutorial lessons grouped by trade or activity. Finishing the core permits graduation without completing every wing. | [Starting in New Haven][start] |
+| Wings | Optional tutorial groups for combat, magic, gathering, crafting, animals, bard skills, thieving, housing, travel, reputation, and shard systems. They open after the core, or from the start of remedial training, and are taken before graduation. | [New player tutorial][tutorial] |
 | Woodsman's box | A resource-themed earned box using wood-ladder names. Its label describes reward tier rather than every item's material. | [Achievements and boxes][boxes] |
 | Work Orders | The Compact's menu name for its guild contracts, distinct from Smith deeds and commissions. | [Gathering guilds][gather] |
 | Wren | The Thieves' Den lookout by New Haven's fighting pit. This is a different NPC from farmhand Wren Tallow. | [Thieves' Den][thieves] |
@@ -476,6 +506,7 @@ The Page column points to the guide for the topic. Some links lead to DokuWiki p
 
 ## Sources
 
+- [New player tutorial][tutorial], [Your first companion][first-pet], [Mounts and riding][mounts], [Mining changes][mining], [Clean Up changes][cleanup], and [Town Houses][houses]: October 24 guide updates. [P515](../cc-P515-league-design-vs-build.md) records the October 23 League answers; [P522](../cc-P522-review-quest-markers.md) records the missing quest-marker integration.
 - [Starting in New Haven][start] and [Levels, loops, and scrolls][loops]: orientation, graduation, Young, and progression plans.
 - [League][league], [Achievements and loot boxes][boxes], and [League Register][register]: citizen services, currencies, requests, rewards, and consolidation items.
 - [Crafting changes][craft], [Society of Smiths][smiths], [Artificers' Order][artificers], and [Order of the Alembic][alembic]: learning systems, materials, tools, and planned craft extensions.
@@ -487,16 +518,16 @@ The Page column points to the guide for the topic. Some links lead to DokuWiki p
 
 ## Contradictions
 
-These differences remain on record without choosing new rules or resolving the sources.
+Historical differences remain on record below. The October 23 League answers settle the trial, milestone, Lead, and non-member requisition rules as noted.
 
 - **Loop ladder and reset:** older F-12 text retains a maximum of 1,000, larger cap steps, and post-cap progression loops. The later ladder ends its scroll progression at 200 on loop 21; P371 records graduation as loop 1 while leaving level and skill resets unfinished.
 - **Echo and skill retention:** the tutorial vision describes skills returning to the beginning. Later Keeper and Breaker decisions specify different retention rules.
 - **Reserve:** F-12 retains a percentage-based reserve. P282 records approval for XP for five levels, with valuation details still proposed.
 - **Young:** earlier descriptions end Young at the first loop. P371 and the newer guides preserve remaining Young play time; the retained murder and voluntary rules also qualify the phrase time only.
 - **Pet and companion:** the graduation picker calls an evo animal a companion, while F-35 and the pet implementation distinguish it from a humanoid squire. Graduation's real loop count is not yet connected to evo-pet owner-loop requirements or the separate capacity and learning placeholders.
-- **League trials and ranks:** F-24 retains both five and six story trials and calls milestones every third rank while naming a different sequence. P47 and P48 also differ over the numbered positions of Blaze and Mythril.
+- **League trials and ranks:** the October 23 answers supersede the older five-trial and every-third-rank wording. There are six planned chapters at the named milestones, with chapters 4 and 5 at Blaze and Mythril. Requisition tiers, loot-box bands, and guild requirements keep their separate progression.
 - **Membership and names:** early guild descriptions use account-wide membership, skill-or-tribute joining, and Smiths' Fellowship. Later joining is free per character, with a separate Apprentice task, and the display name is Society of Smiths; some help and standing-only rank displays retain older rules.
-- **Commissions and requisitions:** F-37 moves NPC commissions to the League with deadlines and penalties; current Smith commissions remain at the Society without those deadlines. F-47 and F-48 describe future requisitions and Leads, while P150 and P203 record them built, including a live-Lead exception to daily rollover.
+- **Commissions and requisitions:** F-37 moves NPC commissions to the League with deadlines and penalties; current Smith commissions remain at the Society without those deadlines. The October 23 answers accept the built requisitions and Leads, including live-Lead rollover and immediate non-member standing. Banking rewards for later membership remains a planned League-job rule.
 - **Renown:** older F-13 and reward research say nothing spends it. The later shop and Register builds spend the balance without reducing Lifetime Renown.
 - **Craft books and rewards:** P78's recorded Smith and Alchemy book inventory differs from the later guides' catalog checks. Older mule text consumes a schematic for each craft; the later learned-recipe rules retain its knowledge on the account.
 - **Craft and harvest tiers:** the wood crafting ladder rises through Starwood at 200, while current extended-wood harvesting uses a separate flat requirement. F-20's guild-currency and teaching-order plans also differ from the ordinary bulk order point systems retained for other crafts.
