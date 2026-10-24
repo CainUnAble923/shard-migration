@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.23.5. Golem on, 42 queued, latest done P498. Play tests: 739 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.23.5. Golem on, 42 queued, latest done P499. Play tests: 739 open, 4 failed, 43 passed.
 
 ### Needs overseer review (5)
 
@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 313 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 314 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -277,6 +277,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P509 review-playtest-decisions-inbox | queued |  |
 | P510 review-queue-notes-and-package-whats-new | queued |  |
 | P511 review-package-builds-from-tazuo | queued |  |
+| P499 review-marathon-mode | done | 2026-10-23 |
 | P498 review-web-console-parity | done | 2026-10-23 |
 | P497 review-pkcs-pin-drop-audit-flag | done | 2026-10-23 |
 | P496 review-props-ability-profile | done | 2026-10-23 |
@@ -286,7 +287,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P492 review-tinker-golem-watchdog | done | 2026-10-23 |
 | P491 review-underworld-mini-champions-2 | done | 2026-10-23 |
 | P490 review-achievement-category-icons | done | 2026-10-23 |
-| P489 review-wrong-and-covetous-void | done | 2026-10-23 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 148 patches, 12 replacements
 
