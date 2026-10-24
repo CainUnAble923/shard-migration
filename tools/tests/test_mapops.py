@@ -14,6 +14,10 @@ Facts, on a synthetic facet (the real layout, one chunk, no EA bytes):
      Haven, 3614-3626 x 2608-2624), but for cc-P276's four removals in the tutorial farm (the two trees inside its
      fence, x 3381-3399, y 2603-2619, and nothing else there); when the pristine client data and P167's scratch build
      are on this PC, the patch without the farm's lines rebuilds the scratch build exactly (the farm was never in it).
+     cc-P413: the same comparison puts P188's hole back in place of the burrow, which the scratch build never had.
+  6. cc-P413: the shipped patch's additions in the Second Bank are exactly notes/cc-P413-tools/statics-placed.csv
+     (OSI's 6 x 6 sinkhole at x 3615-3620, y 2616-2621 and its rim), P188's hole 0x1B71 is gone, the set is laid as
+     OSI lays it, and its dark core is the mouth (x 3617-3619, y 2617-2620, ClusterFRootdeepSeeder.Mouth).
 ASCII only. Temporary folders only.
 """
 import os
@@ -28,7 +32,8 @@ DOCS = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(DOCS / "scripts"))
 from mapbuild import mapops, uofiles  # noqa: E402
 
-SHARD = Path(r"D:\ShatteredLegacy")
+# cc-P413: SL_SHARD_REPO points the facts at another work copy of the shard repo (a Golem's own).
+SHARD = Path(os.environ.get("SL_SHARD_REPO", r"D:\ShatteredLegacy"))
 APPLIER = SHARD / "player-package" / "payload" / "app" / "Apply-MapOps.ps1"
 SHIPPED = SHARD / "player-package" / "vendor" / "shattered-legacy-map" / "trammel.mapops"
 SCRATCH = Path(r"D:\UO\cc-p167-work\scratch-client")
@@ -41,6 +46,19 @@ FARM = (3381, 2603, 3399, 2619)
 FARM_REMOVALS = ["S- 3388 2607 19 3302 0", "S- 3388 2607 19 3303 0", "S- 3396 2616 38 3296 0", "S- 3396 2616 38 3297 0"]
 
 
+# cc-P413: the burrow that replaced P188's hole (notes/cc-P413-tools/build_anthill.py writes the csv).
+BURROW_CSV = DOCS / "notes" / "cc-P413-tools" / "statics-placed.csv"
+P188_HOLE = "S+ 3619 2620 0 7025 0"
+SINK_FIRST, SINK_LAST = 0x30E7, 0x310A
+MOUTH = [(x, y) for y in range(2617, 2621) for x in range(3617, 3620)]
+
+
+def burrow_lines():
+    import csv
+    with open(BURROW_CSV, newline="") as f:
+        return ["S+ %s %s %s %d 0" % (r["x"], r["y"], r["z"], int(r["id"], 16)) for r in csv.DictReader(f)]
+
+
 def inside(x, y, r):
     return r[0] <= x <= r[2] and r[1] <= y <= r[3]
 
@@ -49,6 +67,17 @@ def without_farm(text):
     """The patch as P167's scratch build knows it: the farm's removals and their two block fingerprints dropped."""
     farm_blocks = {(int(l.split()[1]) >> 3) * 512 + (int(l.split()[2]) >> 3) for l in FARM_REMOVALS}
     keep = [l for l in text.splitlines() if l not in FARM_REMOVALS and not (l.startswith("B ") and int(l.split()[1]) in farm_blocks)]
+    return "\n".join(keep) + "\n"
+
+
+def as_p188(text):
+    """The patch as P188 left the Second Bank: the burrow's lines and the block only they touch dropped, the hole back.
+    The F line's block count is left as it is: mapops.check never reads it."""
+    burrow = set(burrow_lines())
+    hole_block = (3619 >> 3) * 512 + (2620 >> 3)
+    burrow_blocks = {(int(l.split()[1]) >> 3) * 512 + (int(l.split()[2]) >> 3) for l in burrow} - {hole_block}
+    keep = [l for l in text.splitlines() if l not in burrow and not (l.startswith("B ") and int(l.split()[1]) in burrow_blocks)]
+    keep.append(P188_HOLE)
     return "\n".join(keep) + "\n"
 
 
@@ -162,10 +191,24 @@ class Shipped(unittest.TestCase):
     def test_5_the_shipped_patch_rebuilds_the_scratch_build_exactly(self):
         tmp = tempfile.mkdtemp(prefix="p188-mapops-real-")
         try:
-            drifted, missing, land_equal, bad = mapops.check(without_farm(SHIPPED.read_text()), uofiles.CLIENT, str(SCRATCH), FACET, scratch=tmp)
+            drifted, missing, land_equal, bad = mapops.check(as_p188(without_farm(SHIPPED.read_text())), uofiles.CLIENT, str(SCRATCH), FACET, scratch=tmp)
             self.assertEqual(([], [], True, []), (drifted, missing, land_equal, bad))
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
+
+    @unittest.skipUnless(SHIPPED.exists(), "needs the shard repo")
+    def test_6_the_burrow_replaced_the_hole(self):
+        lines = SHIPPED.read_text().splitlines()
+        bank = [l for l in lines if l.startswith("S+ ") and inside(int(l.split()[1]), int(l.split()[2]), WAY_IN)]
+        self.assertFalse(P188_HOLE in lines, "P188's hole 0x1B71 at 3619,2620 is still in the patch")
+        self.assertEqual(sorted(burrow_lines()), sorted(bank))
+        sink = {(int(l.split()[1]), int(l.split()[2])): int(l.split()[4]) for l in bank if SINK_FIRST <= int(l.split()[4]) <= SINK_LAST}
+        self.assertEqual(36, len(sink))
+        # OSI's layout (Trammel 5575,3015): id = 0x310A - column - 6 * row; the dark core is columns 2-4, rows 1-4.
+        ox, oy = min(x for x, y in sink), min(y for x, y in sink)
+        for (x, y), tid in sink.items():
+            self.assertEqual(SINK_LAST - (x - ox) - 6 * (y - oy), tid, (x, y))
+        self.assertEqual(sorted(MOUTH), sorted((ox + c, oy + r) for r in range(1, 5) for c in range(2, 5)))
 
 
 if __name__ == "__main__":

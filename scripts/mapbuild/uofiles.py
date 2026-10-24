@@ -13,7 +13,9 @@ Facts this module rests on, each checked against D:/UO/ModernUO-pinned:
 import collections, hashlib, os, shutil, struct
 import numpy as np
 
-CLIENT = r"D:\ShatteredLegacy\client-data\classic-client-7.0.117.0"   # read only: the shard's copy of the client files
+# read only: the shard's copy of the client files. cc-P413: MAPBUILD_CLIENT points it at another copy of the same
+# pristine 7.0.117.0 files (a Golem must not read another work copy's client-data).
+CLIENT = os.environ.get("MAPBUILD_CLIENT", r"D:\ShatteredLegacy\client-data\classic-client-7.0.117.0")
 FACETS = {0: ("Felucca", 7168, 4096), 1: ("Trammel", 7168, 4096), 2: ("Ilshenar", 2304, 1600),
           3: ("Malas", 2560, 2048), 4: ("Tokuno", 1448, 1448), 5: ("TerMur", 1280, 4096)}
 VOID = 0x0244
