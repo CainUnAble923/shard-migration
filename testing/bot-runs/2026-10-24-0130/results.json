@@ -1456,6 +1456,130 @@
      "transcript": "transcripts/P121-2-run3.txt"
     }
    ]
+  },
+  {
+   "id": "P171-1",
+   "title": "A 200 tamer on a Dread Warhorse: the taming starts on most of 20 tries, about 1 in 7 angers it",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "FAIL",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "fail",
+     "evidence": "1 tries: 1 started the taming, 0 angered the beast (0%; 15% expected, 95% before cc-P171); busy 0, unanswered 31 (last: ['Join The Custodians and earn your keep keeping the peace \u2014 of the streets.', 'Double Click On Me For Help!']); S???????????????????????????????",
+     "seconds": 202.6,
+     "transcript": "transcripts/P171-1-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "fail",
+     "evidence": "1 tries: 1 started the taming, 0 angered the beast (0%; 15% expected, 95% before cc-P171); busy 0, unanswered 31 (last: ['Tame which animal?', 'That is not accessible.']); S???????????????????????????????",
+     "seconds": 202.6,
+     "transcript": "transcripts/P171-1-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "fail",
+     "evidence": "1 tries: 1 started the taming, 0 angered the beast (0%; 15% expected, 95% before cc-P171); busy 0, unanswered 31 (last: ['Tame which animal?', 'That is not accessible.']); S???????????????????????????????",
+     "seconds": 202.6,
+     "transcript": "transcripts/P171-1-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P172-1",
+   "title": "A fresh tamer's wolf learns x1.0 and a Legendary Outrider's x2.4; the master's wolf gains more Wrestling in the same 3-minute fight",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "FLAKY",
+   "passes": 2,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "error",
+     "evidence": "AssertionError: the fresh tamer got no lore gump for the wolf",
+     "seconds": 73.8,
+     "transcript": "transcripts/P172-1-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "lore: fresh 'Learns x1.0' (want 'Learns x1.01' from Taming/Lore (100.0, 102.0)), master 'Learns x2.4' (want 'Learns x2.4' from (205.0, 200.0)); joined: You have joined the Rangers' League as Wanderer. Joining is free.; standing: Set Bot Human F Bm's Rangers' League standing to 150,000 (Legendary Outrider).; Wrestling fresh (80.0, 100.0) -> (84.6, 100.0) (gain 4.599999999999994), master (80.0, 100.0) -> None (gain None), master/fresh n/a over 180 s: reported only, the roll saturates at this skill (Chase's sample is 10 min)",
+     "seconds": 287.7,
+     "transcript": "transcripts/P172-1-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "lore: fresh 'Learns x1.0' (want 'Learns x1.0' from Taming/Lore (100.0, 101.0)), master 'Learns x2.4' (want 'Learns x2.4' from (205.0, 200.0)); joined: You have joined the Rangers' League as Wanderer. Joining is free.; standing: Set Bot Human F Bn's Rangers' League standing to 150,000 (Legendary Outrider).; Wrestling fresh (80.0, 100.0) -> (85.5, 100.0) (gain 5.5), master (80.0, 100.0) -> None (gain None), master/fresh n/a over 180 s: reported only, the roll saturates at this skill (Chase's sample is 10 min)",
+     "seconds": 273.2,
+     "transcript": "transcripts/P172-1-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P142-1",
+   "title": "Trammel Despise: an Initiate is refused the dungeons beyond Felucca, a Journeyman steals specials, a non-member is told of the Den",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "ERROR",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "error",
+     "evidence": "AssertionError: the thief did not arrive in Trammel Despise (at (3494, 2574, 59, 134))",
+     "seconds": 20.1,
+     "transcript": "transcripts/P142-1-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "error",
+     "evidence": "AssertionError: the thief did not arrive in Trammel Despise (at (3494, 2574, 59, 134))",
+     "seconds": 20.1,
+     "transcript": "transcripts/P142-1-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "error",
+     "evidence": "AssertionError: the thief did not arrive in Trammel Despise (at (3494, 2574, 59, 134))",
+     "seconds": 20.1,
+     "transcript": "transcripts/P142-1-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P142-2",
+   "title": "A champion spawn: an Initiate works it, the special-item message comes, no refusal",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "Den: already a member (Member. Rank: Initiate.); at (5511, 2360, 42) (Your region is ChampionSpawnRegion <- Region.); Initiate at Stealing 135.5 over 37 tries: {'caught': 24, 'nothing': 9, 'special': 4}; refusal line None",
+     "seconds": 83.6,
+     "transcript": "transcripts/P142-2-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "Den: already a member (Member. Rank: Initiate.); at (5511, 2360, 42) (Your region is ChampionSpawnRegion <- Region.); Initiate at Stealing 136.0 over 34 tries: {'caught': 18, 'nothing': 9, 'special': 7}; refusal line None",
+     "seconds": 84.6,
+     "transcript": "transcripts/P142-2-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "Den: already a member (Member. Rank: Initiate.); at (5511, 2360, 42) (Your region is ChampionSpawnRegion <- Region.); Initiate at Stealing 138.5 over 38 tries: {'caught': 31, 'special': 7}; refusal line None",
+     "seconds": 82.2,
+     "transcript": "transcripts/P142-2-run3.txt"
+    }
+   ]
   }
  ]
 }
