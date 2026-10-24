@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 372 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 374 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -265,13 +265,13 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P542 cont-fixup-town-houses-design | done | 2026-10-24 |
 | P536 design-vs-build-high-seas | done | 2026-10-24 |
 | P536 high-seas-design-vs-build | done | 2026-10-24 |
+| P535 design-vs-build-skills | done | 2026-10-24 |
+| P535 skills-design-vs-build | done | 2026-10-24 |
 | P534 design-vs-build-levelable-gear | done | 2026-10-24 |
 | P534 levelable-gear-design-vs-build | done | 2026-10-24 |
 | P533 codex-findings-to-fix-drafts-3 | done | 2026-10-24 |
 | P533 codex-findings-to-fixes-3 | done | 2026-10-24 |
 | P532 open-questions-for-chase | done | 2026-10-24 |
-| P532 open-questions-sweep | done | 2026-10-24 |
-| P531 playtest-plans-10-24 | done | 2026-10-24 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 148 patches, 12 replacements
 
