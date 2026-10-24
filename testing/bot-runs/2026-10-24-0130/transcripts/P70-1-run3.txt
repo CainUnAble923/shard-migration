@@ -1,0 +1,48 @@
+    0.00 harness  == P70-1 run 3: A member at the guildmaster buys a mule module schematic from 'Mule module schematics' and the account learns it (Miners' Compact, Ore Hopper I: priced in Mining Vouchers, which staff can set)
+    0.00 admin    -> say '[go 0x261E2'
+    1.01 admin    -> say '[SetSkill Mining 100'
+    1.01 admin    <- 0x6C target cursor 401 (type 0)
+    1.21 admin    -> 0x6C target object 0x000261E2
+    1.21 admin    <- unicode(0) System: Mining : 100 (Base: 100)
+    1.82 admin    -> say '[go 0x261E2'
+    2.83 admin    -> say '[add MinerGuildmaster'
+    2.83 admin    <- 0x6C target cursor 402 (type 1)
+    3.03 admin    -> 0x6C target ground 3504,2574,14
+    3.03 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+    3.10 admin    -> say '[go 0x261E2'
+    3.20 player   <- 0xF3 world item 0x403935B3 graphic 0x1 x1 at 3505,2572,14 hue 0
+    3.20 admin    <- 0xF3 world item 0x403935B3 graphic 0x1 x1 at 3505,2572,14 hue 0
+    3.25 admin    <- 0xF3 world item 0x403935BC graphic 0x1 x1 at 3506,2569,14 hue 0
+    3.25 player   <- 0xF3 world item 0x403935BC graphic 0x1 x1 at 3506,2569,14 hue 0
+    4.10 admin    -> say '[CompactStanding 1000'
+    4.11 admin    <- 0x6C target cursor 403 (type 0)
+    4.30 admin    -> 0x6C target object 0x000261E2
+    4.30 admin    <- unicode(0) System: Set Bot Human F Aa's Compact Standing to 1,000.
+    4.66 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+    4.66 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+    4.91 admin    -> say '[go 0x261E2'
+    5.92 admin    -> say '[CompactVouchers 30'
+    5.92 admin    <- 0x6C target cursor 404 (type 0)
+    6.12 admin    -> 0x6C target object 0x000261E2
+    6.12 admin    <- unicode(0) System: Set Bot Human F Aa's Mining Vouchers to 30.
+    6.72 player   -> 0xBF 0x13 context menu request 0x0002633E
+    6.73 player   <- 0xBF 0x14 context menu 0x0002633E: [(0, 3006123, 'Open Paperdoll', 0), (1, 3006146, 'Talk', 0), (2, 3006003, 'Train Item Identification', 0), (3, 3006045, 'Train Mining', 1)]
+    6.73 player   -> 0xBF 0x15 context pick 1 (Talk) on 0x0002633E
+    6.73 player   <- 0xDD gump 0x00000A17 type -810631593: Miners' Compact | <BASEFONT COLOR=#DDDDDD><I>The earth yields its secrets only to those who know where to dig.</I></BASEFONT> | <BASEFONT COLOR=#AAAAAA>Teaches: Mining</BASEFONT> | Separate from the stock trade guild (say "join", 500 gold). One does not join the other. | Member. Rank: Apprentice. | Starter items (1) | Mule module schematics | Apprentice task: | <BASEFONT COLOR=#DDDDDD>Demonstrate Mining of at least 50.0, or bring 20 Iron Ore as tribute.</BASEFONT> | Complete it: +25 reputation, +10 scrip | Guild services | Guild Directory | Requisitions | Close
+    6.73 player      layout: { resizepic 0 0 9270 520 400 }{ checkertrans 10 10 500 380 }{ text 20 14 1154 0 }{ gumppictiled 10 36 500 2 9304 }{ htmlgump 20 44 480 36 1 0 0 }{ htmlgump 20 82 480 36 2 0 0 }{ text 20 118 999 3 }{ gumppictiled 10 140 500 2 9304 }{ text 20 150 68 4 }{ button 20 172 4005 4007 1 0 3 }{ text 55 174 999 5 }{ button 20 200 4005 4007 1 0 7 }{ text 55 202 999 6 }{ gumppictiled 10 232 500 2 9304 }{ text 20 240 999 7 }{ htmlgump 20 260 480 36 8 0 0 }{ button 20 298 4023 4025 1 0 4 }{ text 55 300 1154 9 }{ gumppictiled 10 350 500 2 9304 }{ button 20 362 4011 4012 1 0 5 }{ text 45 364 999 10 }{ button 180 362 4011 4012 1 0 6 }{ text 205 364 999 11 }{ button 300 362 4011 4012 1 0 9 }{ text 325 364 999 12 }{ button 420 362 4017 4019 1 0 0 }{ text 455 364 999 13 }
+    6.73 player   -> 0xB1 gump 0x00000A17 type -810631593 button 7 switches [] texts []
+    6.73 player   <- 0xDD gump 0x00000A18 type 783529824: Mule module schematics | Ore Hopper I: 20 Mining Vouchers + 5 Mining Vouchers | Your account already knows that schematic. | Ore Hopper II: 50 Mining Vouchers + 10 Mining Vouchers | Tier II needs a higher rank in the Miners' Compact. | Ore Hopper III: 120 Mining Vouchers + 25 Mining Vouchers | Tier III needs a higher rank in the Miners' Compact.
+    6.73 player      layout: { page 0 }{ resizepic 0 0 9270 480 300 }{ checkertrans 6 6 468 288 }{ text 20 14 1154 0 }{ button 20 44 4005 4007 1 0 1 }{ text 55 46 999 1 }{ text 75 66 946 2 }{ button 20 92 4005 4007 1 0 2 }{ text 55 94 999 3 }{ text 75 114 946 4 }{ button 20 140 4005 4007 1 0 3 }{ text 55 142 999 5 }{ text 75 162 946 6 }
+    6.73 player   -> 0xB1 gump 0x00000A18 type 783529824 button 1 switches [] texts []
+    6.73 player   <- unicode(0) System: Your account already knows that schematic.
+    6.73 player   <- 0xDD gump 0x00000A19 type 783529824: Mule module schematics | Ore Hopper I: 20 Mining Vouchers + 5 Mining Vouchers | Your account already knows that schematic. | Ore Hopper II: 50 Mining Vouchers + 10 Mining Vouchers | Tier II needs a higher rank in the Miners' Compact. | Ore Hopper III: 120 Mining Vouchers + 25 Mining Vouchers | Tier III needs a higher rank in the Miners' Compact.
+    6.73 player      layout: { page 0 }{ resizepic 0 0 9270 480 300 }{ checkertrans 6 6 468 288 }{ text 20 14 1154 0 }{ button 20 44 4005 4007 1 0 1 }{ text 55 46 999 1 }{ text 75 66 946 2 }{ button 20 92 4005 4007 1 0 2 }{ text 55 94 999 3 }{ text 75 114 946 4 }{ button 20 140 4005 4007 1 0 3 }{ text 55 142 999 5 }{ text 75 162 946 6 }
+   11.74 player   -> 0xB1 gump 0x00000A19 type 783529824 button 0 switches [] texts []
+   11.74 admin    -> say '[go 0x261E2'
+   12.75 admin    -> say '[Recipes list'
+   12.75 admin    <- unicode(0) System: Target a player.
+   12.75 admin    <- 0x6C target cursor 405 (type 0)
+   12.95 admin    -> 0x6C target object 0x000261E2
+   12.96 admin    <- unicode(0) System: Bot Human F Aa's account knows 1 recipe keys:
+   12.96 admin    <- unicode(0) System:   recipe:9011  Ore Hopper I
+   14.46 harness  == P70-1 run 3: PASS (Miners' Compact in place of the Tinkers' Union (no staff scrip grant); joined now: None; 'Member. Rank: Apprentice.'; buy said 'Your account already knows that schematic.'; page then says 'Mule module schematics'; [Recipes list shows recipe:9011: True)

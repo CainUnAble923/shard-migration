@@ -1,0 +1,162 @@
+    0.00 harness  == P70-11 run 3: Trader's Ledger III: 'Open your bank box' opens it in town, and is refused while criminal, in a fight, and in a dungeon
+    0.00 admin    -> say '[go 0x261E2'
+    1.01 admin    -> say '[go 0x261E2'
+    2.01 admin    -> say '[set X 3504 Y 2574 Z 14 CantWalk true'
+    2.01 admin    <- 0x6C target cursor 589 (type 0)
+    2.21 admin    -> 0x6C target object 0x0002633B
+    2.21 admin    <- unicode(0) System: Property has been set. (4)
+    3.53 player   -> 0xBF 0x13 context menu request 0x0002633B
+    3.53 player   <- 0xBF 0x14 context menu 0x0002633B: [(0, 3006111, 'Command: Kill', 0), (1, 3006108, 'Command: Follow', 0), (2, 3006107, 'Command: Guard', 0), (3, 3006112, 'Command: Stop', 0), (4, 3006114, 'Command: Stay', 0), (5, 3006098, '', 0), (6, 3006110, 'Add Friend', 0), (7, 3006099, 'Remove Friend', 0), (8, 3006113, 'Transfer', 0), (9, 3006118, 'Release', 0), (10, 3006145, 'Open Backpack', 0), (11, 1900000, '#1900000', 0), (12, 3000127, 'Options', 0)]
+    3.54 player   -> 0xBF 0x15 context pick 12 (Options) on 0x0002633B
+    3.54 player   <- 0xDD gump 0x00000A8B type 1831174852: a Shadowhide mule: modules 1 / 3 | Remove Trader's Ledger III | Sell cargo to a vendor | Open your bank box
+    3.54 player      layout: { page 0 }{ resizepic 0 0 9270 460 520 }{ checkertrans 6 6 448 508 }{ text 20 14 1154 0 }{ button 20 40 4017 4019 1 0 100 }{ text 55 42 999 1 }{ gumppictiled 10 68 440 2 9304 }{ button 20 78 4005 4007 1 0 13 }{ text 55 80 999 2 }{ button 20 102 4005 4007 1 0 14 }{ text 55 104 999 3 }
+    3.54 player   -> 0xB1 gump 0x00000A8B type 1831174852 button 100 switches [] texts []
+    3.54 player   <- unicode(0) System: You take the Trader's Ledger III off the mule.
+    3.54 player   <- 0xDD gump 0x00000A8C type 1831174852: a Shadowhide mule: modules 0 / 3 | Drop a module on the mule to fit it.
+    3.54 player      layout: { page 0 }{ resizepic 0 0 9270 460 520 }{ checkertrans 6 6 448 508 }{ text 20 14 1154 0 }{ text 20 40 946 1 }{ gumppictiled 10 68 440 2 9304 }
+    3.54 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 182, 'hitsMax': 251, 'version': 6, 'female': 1, 'str': 402, 'dex': 17, 'int': 13, 'stam': 17, 'stamMax': 17, 'mana': 13, 'manaMax': 13, 'gold': 1000, 'ar': 0, 'weight': 479, 'maxWeight': 1507, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+    3.54 player   <- 0x25 item 0x40393CAD graphic 0xFEF x1 into 0x4038F020
+    4.75 player   -> 0xBF 0x13 context menu request 0x0002633B
+    4.75 player   <- 0xBF 0x14 context menu 0x0002633B: [(0, 3006111, 'Command: Kill', 0), (1, 3006108, 'Command: Follow', 0), (2, 3006107, 'Command: Guard', 0), (3, 3006112, 'Command: Stop', 0), (4, 3006114, 'Command: Stay', 0), (5, 3006098, '', 0), (6, 3006110, 'Add Friend', 0), (7, 3006099, 'Remove Friend', 0), (8, 3006113, 'Transfer', 0), (9, 3006118, 'Release', 0), (10, 3006145, 'Open Backpack', 0), (11, 1900000, '#1900000', 0), (12, 3000127, 'Options', 0)]
+    4.75 player   -> 0xBF 0x15 context pick 12 (Options) on 0x0002633B
+    4.75 player   <- 0xDD gump 0x00000A8D type 1831174852: a Shadowhide mule: modules 0 / 3 | Drop a module on the mule to fit it.
+    4.75 player      layout: { page 0 }{ resizepic 0 0 9270 460 520 }{ checkertrans 6 6 448 508 }{ text 20 14 1154 0 }{ text 20 40 946 1 }{ gumppictiled 10 68 440 2 9304 }
+    4.75 player   -> 0xB1 gump 0x00000A8D type 1831174852 button 0 switches [] texts []
+    4.75 admin    -> say '[go 0x261E2'
+    5.75 admin    -> say '[AddToPack MuleModule TradersLedger 3'
+    5.76 admin    <- 0x6C target cursor 590 (type 0)
+    5.96 admin    -> 0x6C target object 0x000261E2
+    5.96 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 183, 'hitsMax': 251, 'version': 6, 'female': 1, 'str': 402, 'dex': 17, 'int': 13, 'stam': 17, 'stamMax': 17, 'mana': 13, 'manaMax': 13, 'gold': 1000, 'ar': 0, 'weight': 484, 'maxWeight': 1507, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+    5.96 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+    5.96 player   <- 0x25 item 0x40393D09 graphic 0xFEF x1 into 0x4038F020
+    5.96 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 183, 'hitsMax': 251, 'version': 6, 'female': 1, 'str': 402, 'dex': 17, 'int': 13, 'stam': 17, 'stamMax': 17, 'mana': 13, 'manaMax': 13, 'gold': 1000, 'ar': 0, 'weight': 484, 'maxWeight': 1507, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+    6.38 player   <- cliloc(0) a Shadowhide mule #1043257: The animal shies away.
+    6.38 player   <- unicode(0) System: You fit the Trader's Ledger III to the mule.
+    6.38 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 183, 'hitsMax': 251, 'version': 6, 'female': 1, 'str': 402, 'dex': 17, 'int': 13, 'stam': 17, 'stamMax': 17, 'mana': 13, 'manaMax': 13, 'gold': 1000, 'ar': 0, 'weight': 479, 'maxWeight': 1507, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+    6.38 player   -> 0xBF 0x13 context menu request 0x0002633B
+    6.38 player   <- 0xBF 0x14 context menu 0x0002633B: [(0, 3006111, 'Command: Kill', 0), (1, 3006108, 'Command: Follow', 0), (2, 3006107, 'Command: Guard', 0), (3, 3006112, 'Command: Stop', 0), (4, 3006114, 'Command: Stay', 0), (5, 3006098, '', 0), (6, 3006110, 'Add Friend', 0), (7, 3006099, 'Remove Friend', 0), (8, 3006113, 'Transfer', 0), (9, 3006118, 'Release', 0), (10, 3006145, 'Open Backpack', 0), (11, 1900000, '#1900000', 0), (12, 3000127, 'Options', 0)]
+    6.38 player   -> 0xBF 0x15 context pick 12 (Options) on 0x0002633B
+    6.38 player   <- 0xDD gump 0x00000A8E type 1831174852: a Shadowhide mule: modules 1 / 3 | Remove Trader's Ledger III | Sell cargo to a vendor | Open your bank box
+    6.38 player      layout: { page 0 }{ resizepic 0 0 9270 460 520 }{ checkertrans 6 6 448 508 }{ text 20 14 1154 0 }{ button 20 40 4017 4019 1 0 100 }{ text 55 42 999 1 }{ gumppictiled 10 68 440 2 9304 }{ button 20 78 4005 4007 1 0 13 }{ text 55 80 999 2 }{ button 20 102 4005 4007 1 0 14 }{ text 55 104 999 3 }
+    6.38 player   -> 0xB1 gump 0x00000A8E type 1831174852 button 14 switches [] texts []
+    6.38 player   <- ascii(0) Bot Human F Aa: Bank container has 300 items, 219023 stones
+    6.38 player   <- 0x24 open container 0x4038EEF1 gump 0x4A
+    6.38 player   <- 0x3C 22 items into containers
+    7.89 admin    -> say '[go 0x261E2'
+    8.90 admin    -> say '[set Criminal true'
+    8.90 admin    <- 0x6C target cursor 591 (type 0)
+    9.12 admin    -> 0x6C target object 0x000261E2
+    9.12 admin    <- unicode(0) System: Property has been set.
+    9.63 player   -> 0xBF 0x13 context menu request 0x0002633B
+    9.63 player   <- 0xBF 0x14 context menu 0x0002633B: [(0, 3006111, 'Command: Kill', 0), (1, 3006108, 'Command: Follow', 0), (2, 3006107, 'Command: Guard', 0), (3, 3006112, 'Command: Stop', 0), (4, 3006114, 'Command: Stay', 0), (5, 3006098, '', 0), (6, 3006110, 'Add Friend', 0), (7, 3006099, 'Remove Friend', 0), (8, 3006113, 'Transfer', 0), (9, 3006118, 'Release', 0), (10, 3006145, 'Open Backpack', 0), (11, 1900000, '#1900000', 0), (12, 3000127, 'Options', 0)]
+    9.63 player   -> 0xBF 0x15 context pick 12 (Options) on 0x0002633B
+    9.63 player   <- 0xDD gump 0x00000A8F type 1831174852: a Shadowhide mule: modules 1 / 3 | Remove Trader's Ledger III | Sell cargo to a vendor | Open your bank box
+    9.63 player      layout: { page 0 }{ resizepic 0 0 9270 460 520 }{ checkertrans 6 6 448 508 }{ text 20 14 1154 0 }{ button 20 40 4017 4019 1 0 100 }{ text 55 42 999 1 }{ gumppictiled 10 68 440 2 9304 }{ button 20 78 4005 4007 1 0 13 }{ text 55 80 999 2 }{ button 20 102 4005 4007 1 0 14 }{ text 55 104 999 3 }
+    9.63 player   -> 0xB1 gump 0x00000A8F type 1831174852 button 14 switches [] texts []
+    9.63 player   <- unicode(0) System: The ledger will not open the bank for a criminal.
+   11.13 admin    -> say '[go 0x261E2'
+   12.14 admin    -> say '[set Criminal false'
+   12.14 admin    <- 0x6C target cursor 592 (type 0)
+   12.35 admin    -> 0x6C target object 0x000261E2
+   12.35 admin    <- unicode(0) System: Property has been set.
+   12.86 admin    -> say '[go 0x261E2'
+   13.87 admin    -> say '[add Rat'
+   13.87 admin    <- 0x6C target cursor 593 (type 1)
+   14.07 admin    -> 0x6C target ground 3504,2574,14
+   14.07 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   14.07 admin    -> say '[go 0x261E2'
+   15.08 admin    -> say '[set CantWalk true Hits 1'
+   15.09 admin    <- 0x6C target cursor 594 (type 0)
+   15.30 admin    -> 0x6C target object 0x0002637D
+   15.30 admin    <- unicode(0) System: Property has been set. (2)
+   16.13 admin    <- 0xF3 world item 0x40393D2A graphic 0x122E x1 at 3504,2574,14 hue 0
+   16.13 admin    <- 0xF3 world item 0x40393D2B graphic 0x122E x1 at 3505,2573,14 hue 0
+   16.13 player   <- 0x3A skill 43 now 13.7 (cap 200.0)
+   16.13 admin    <- 0xF3 world item 0x40393D2C graphic 0x122F x1 at 3505,2573,14 hue 0
+   16.13 player   <- 0x3A skill 43 now 13.8 (cap 200.0)
+   16.13 admin    <- 0xF3 world item 0x40393D2D graphic 0x122A x1 at 3503,2574,14 hue 0
+   16.13 player   <- 0x3A skill 43 now 13.9 (cap 200.0)
+   16.13 admin    <- 0xF3 world item 0x40393D2E graphic 0x122E x1 at 3505,2575,14 hue 0
+   16.13 player   <- 0x3A skill 43 now 14.0 (cap 200.0)
+   16.13 player   <- 0x3A skill 43 now 14.1 (cap 200.0)
+   16.13 player   <- 0x3A skill 43 now 14.2 (cap 200.0)
+   16.13 player   <- 0x3A skill 43 now 14.3 (cap 200.0)
+   16.13 player   <- 0x3A skill 43 now 14.4 (cap 200.0)
+   16.13 player   <- 0x3A skill 43 now 14.5 (cap 200.0)
+   16.13 player   <- 0x3A skill 43 now 14.6 (cap 200.0)
+   16.13 player   <- 0x3A skill 27 now 13.2 (cap 200.0)
+   16.13 player   <- 0x3A skill 27 now 13.3 (cap 200.0)
+   16.13 player   <- 0x3A skill 27 now 13.4 (cap 200.0)
+   16.13 player   <- 0x3A skill 27 now 13.5 (cap 200.0)
+   16.13 player   <- 0x3A skill 27 now 13.6 (cap 200.0)
+   16.13 player   <- 0x3A skill 1 now 56.1 (cap 200.0)
+   16.13 player   <- 0x3A skill 1 now 56.2 (cap 200.0)
+   16.13 player   <- 0x3A skill 1 now 56.3 (cap 200.0)
+   16.13 player   <- 0x3A skill 1 now 56.4 (cap 200.0)
+   16.13 player   <- 0x3A skill 1 now 56.5 (cap 200.0)
+   16.13 player   <- 0x3A skill 1 now 56.6 (cap 200.0)
+   16.13 admin    <- 0xF3 world item 0x40393D2F graphic 0x2006 x238 at 3504,2574,14 hue 0
+   16.13 player   <- 0x3A skill 1 now 56.7 (cap 200.0)
+   16.13 player   <- 0x3A skill 1 now 56.8 (cap 200.0)
+   16.13 player   <- 0x3A skill 1 now 56.9 (cap 200.0)
+   16.13 player   <- 0x3A skill 1 now 57.0 (cap 200.0)
+   16.13 player   <- 0x3A skill 1 now 57.1 (cap 200.0)
+   16.13 player   <- 0x3A skill 1 now 57.2 (cap 200.0)
+   16.13 player   <- 0x3A skill 1 now 57.3 (cap 200.0)
+   16.13 player   <- 0x3A skill 1 now 57.4 (cap 200.0)
+   16.13 player   <- 0x3A skill 1 now 57.5 (cap 200.0)
+   16.13 player   <- 0xF3 world item 0x40393D2A graphic 0x122E x1 at 3504,2574,14 hue 0
+   16.13 player   <- 0xF3 world item 0x40393D2B graphic 0x122E x1 at 3505,2573,14 hue 0
+   16.13 player   <- 0xF3 world item 0x40393D2C graphic 0x122F x1 at 3505,2573,14 hue 0
+   16.13 player   <- 0xF3 world item 0x40393D2D graphic 0x122A x1 at 3503,2574,14 hue 0
+   16.13 player   <- 0xF3 world item 0x40393D2E graphic 0x122E x1 at 3505,2575,14 hue 0
+   16.13 player   <- 0xF3 world item 0x40393D2F graphic 0x2006 x238 at 3504,2574,14 hue 0
+   16.13 player   <- cliloc(0) System #1019051: You have gained a little fame.
+   16.13 player   <- cliloc(0) System #1019059: You have gained a little karma.
+   16.13 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 186, 'hitsMax': 251, 'version': 6, 'female': 1, 'str': 402, 'dex': 17, 'int': 14, 'stam': 17, 'stamMax': 17, 'mana': 13, 'manaMax': 14, 'gold': 1000, 'ar': 0, 'weight': 479, 'maxWeight': 1507, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   17.58 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   17.58 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   17.64 player   -> 0xBF 0x13 context menu request 0x0002633B
+   17.64 player   <- 0xBF 0x14 context menu 0x0002633B: [(0, 3006111, 'Command: Kill', 0), (1, 3006108, 'Command: Follow', 0), (2, 3006107, 'Command: Guard', 0), (3, 3006112, 'Command: Stop', 0), (4, 3006114, 'Command: Stay', 0), (5, 3006098, '', 0), (6, 3006110, 'Add Friend', 0), (7, 3006099, 'Remove Friend', 0), (8, 3006113, 'Transfer', 0), (9, 3006118, 'Release', 0), (10, 3006145, 'Open Backpack', 0), (11, 1900000, '#1900000', 0), (12, 3000127, 'Options', 0)]
+   17.64 player   -> 0xBF 0x15 context pick 12 (Options) on 0x0002633B
+   17.64 player   <- 0xDD gump 0x00000A90 type 1831174852: a Shadowhide mule: modules 1 / 3 | Remove Trader's Ledger III | Sell cargo to a vendor | Open your bank box
+   17.64 player      layout: { page 0 }{ resizepic 0 0 9270 460 520 }{ checkertrans 6 6 448 508 }{ text 20 14 1154 0 }{ button 20 40 4017 4019 1 0 100 }{ text 55 42 999 1 }{ gumppictiled 10 68 440 2 9304 }{ button 20 78 4005 4007 1 0 13 }{ text 55 80 999 2 }{ button 20 102 4005 4007 1 0 14 }{ text 55 104 999 3 }
+   17.64 player   -> 0xB1 gump 0x00000A90 type 1831174852 button 14 switches [] texts []
+   17.64 player   <- unicode(0) System: The ledger will not open the bank in the middle of a fight.
+   18.77 player   <- unicode(0) Sanitation Warden: A tidy town is a safe town.
+   18.77 admin    <- unicode(0) Sanitation Warden: A tidy town is a safe town.
+   19.15 admin    -> say '[set X 5501 Y 570 Z 59'
+   19.15 admin    <- 0x6C target cursor 595 (type 0)
+   19.35 admin    -> 0x6C target object 0x000261E2
+   19.36 admin    <- unicode(0) System: Property has been set. (3)
+   19.36 player   <- unicode(0) System: Graduate with the League recruiter in New Haven before leaving the island.
+   19.36 player   <- unicode(0) System: Graduate with the League recruiter in New Haven before leaving the island.
+   19.86 admin    -> say '[set X 5502 Y 570 Z 59'
+   19.86 admin    <- 0x6C target cursor 596 (type 0)
+   20.08 admin    -> 0x6C target object 0x0002633B
+   20.08 admin    <- unicode(0) System: Property has been set. (3)
+   20.58 player   <- cliloc(0) System #1153192: Your pet has been teleported outside the Despise dungeon entrance.
+   26.61 player   -> 0xBF 0x13 context menu request 0x0002633B
+   32.61 admin    -> say '[set X 3503 Y 2574 Z 14'
+   32.62 admin    <- 0x6C target cursor 597 (type 0)
+   32.82 admin    -> 0x6C target object 0x000261E2
+   32.82 admin    <- unicode(0) System: Property has been set. (3)
+   33.32 admin    -> say '[set X 3504 Y 2574 Z 14'
+   33.32 admin    <- 0x6C target cursor 598 (type 0)
+   33.52 admin    -> 0x6C target object 0x0002633B
+   33.52 admin    <- unicode(0) System: Property has been set. (3)
+   34.03 harness  Traceback (most recent call last):
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\run.py", line 180, in run_checks
+    ok, evidence = chk.fn(ctx)
+                   ^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\checks_p224_mule.py", line 829, in p70_11
+    _, t4 = press_bank()
+            ^^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\checks_p224_mule.py", line 789, in press_bank
+    g = options(p, mule)
+        ^^^^^^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\checks_p224_mule.py", line 106, in options
+    raise AssertionError("the mule 0x%X gave no context menu" % mule)
+AssertionError: the mule 0x2633B gave no context menu
+
+   34.03 harness  == P70-11 run 3: ERROR (AssertionError: the mule 0x2633B gave no context menu)
