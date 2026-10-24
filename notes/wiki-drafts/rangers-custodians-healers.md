@@ -109,7 +109,9 @@ Points earned through barrels count toward lifetime standing too. Points you ear
 | Senior Custodian | 500 |
 | Chief Custodian | 1,250 |
 
-Every **5 items with point value** removed in one bag dump or area sweep give **1 civic waste bundle**. Use the directory's **Contracts** page for Civic Contracts that take these bundles. Those contracts pay gold, without extra standing or Civic Tokens. The Custodians do not post League requisitions.
+Use the directory's **Contracts** page for **Civic Contracts**. Each asks for an amount of **Clean Up points earned after you take it** (50, 150, 400, 800 or 2,000 by tier), and points earned before do not count. Turning one in takes no points: they stay yours to spend in the store. The same points never fill two contracts. The contracts pay gold (100 to 4,000), without extra standing or Civic Tokens. The Custodians do not post League requisitions.
+
+**Civic waste bundles are retired.** Cleaning no longer makes them. If you still have some, hand them to the Sanitation Warden: each counts as **10 Clean Up points**, once.
 
 ### The Sanitation Warden and store
 

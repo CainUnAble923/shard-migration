@@ -104,10 +104,10 @@ The Page column points to the guide for the topic. Some links lead to DokuWiki p
 | Chapter | A guild's local presence, such as its New Haven chapter. A League story chapter is instead one of the milestone trials (planned). | [League][league] |
 | Chest mimic | A stationary monster drawn as a toothed chest. The decided dungeon-chest encounter, taming window, and PetMimic reward handoff are (planned). | [Companions and pets][pets] |
 | Citizen Commissions (planned) | Player-posted requests with rewards set aside in advance. Player-paid Renown will be spendable without counting toward League promotion. | [League][league] |
-| Civic Contracts | Custodian delivery work using civic waste bundles and paying gold. These contracts are separate from League requisitions. | [Rangers, Custodians, and Healers][rangers] |
+| Civic Contracts | Custodian work that asks for Clean Up points earned after the contract is taken, and pays gold. These contracts are separate from League requisitions. | [Rangers, Custodians, and Healers][rangers] |
 | Civic Mule Exchange | The service for upgrading an existing Compact Mule. The first mule comes from the Registrar's errand. | [Companions and pets][pets] |
 | Civic Tokens | The retired Custodian currency, replaced by Clean Up points. | [Rangers, Custodians, and Healers][rangers] |
-| Civic waste bundle | A bundle earned from qualifying Custodian bag dumps or area sweeps, used for Civic Contracts. | [Rangers, Custodians, and Healers][rangers] |
+| Civic waste bundle | Retired. Custodian cleaning once made these for Civic Contracts; a bundle still held can be handed to the Sanitation Warden for 10 Clean Up points. | [Rangers, Custodians, and Healers][rangers] |
 | Clean Up points | The spendable Clean Up Britannia balance used by the Custodians and the cleanup store. Lifetime cleanup points separately determine Custodian rank. | [Rangers, Custodians, and Healers][rangers] |
 | Client Commissions (planned) | A proposed name for NPC clients' timed League crafting requests, with recurring clients and Renown rewards. Existing Smith commissions still use the Society's system. | [League][league] |
 | Climbing boots | Compact equipment for hopping onto mountain tiles to reach ore. The tiers are Surveyor's, Delver's, and Deepwarden's Climbing Boots. | [Gathering guilds][gather] |
