@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.24.10. Golem on, 16 queued, latest done P548. Play tests: 933 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.24.10. Golem on, 16 queued, latest done P549. Play tests: 933 open, 4 failed, 43 passed.
 
 ### Needs overseer review (5)
 
@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 396 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 397 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -251,6 +251,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P551 guide-mining-changes | queued |  |
 | P552 guide-clean-up-britannia-changes | queued |  |
 | P553 guide-launcher-troubleshooting | queued |  |
+| P549 review-launcher-always-starts | done | 2026-10-24 |
 | P548 review-stone-mining-gate | done | 2026-10-24 |
 | P547 review-trash-bag-corpse-clearing | done | 2026-10-24 |
 | P546 review-retire-civic-waste-bundles | done | 2026-10-24 |
@@ -260,7 +261,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P542 cont-fixup-town-houses-design | done | 2026-10-24 |
 | P541 patch-notes-10-24 | done | 2026-10-24 |
 | P541 patch-notes-2026-10-24 | done | 2026-10-24 |
-| P539 wiki-cross-check-2 | done | 2026-10-24 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 149 patches, 12 replacements
 
