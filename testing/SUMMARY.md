@@ -2,7 +2,7 @@
 
 Regenerated on every write of `play-tests.json` (cc-P83). Do not edit; the page and the importer rewrite it.
 
-Generated 2026-10-25T02:10:21Z: **1032 open**, **4 failed** (3 not yet logged as a bug), **43 passed**, 8 later, 1 blocked, 0 moot, 1079 in all.
+Generated 2026-10-25T02:40:31Z: **1033 open**, **4 failed** (3 not yet logged as a bug), **43 passed**, 8 later, 1 blocked, 0 moot, 1080 in all.
 
 ## Failures
 
@@ -15,6 +15,7 @@ Generated 2026-10-25T02:10:21Z: **1032 open**, **4 failed** (3 not yet logged as
 
 - P579: 1
 - P578: 1
+- P577: 1
 - P576: 61
 - P575: 1
 - P574: 1
