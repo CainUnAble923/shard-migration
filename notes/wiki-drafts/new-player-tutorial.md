@@ -1,6 +1,6 @@
 # New player tutorial
 
-Draft checked against the source on October 24, 2026. The tutorial is currently enabled only for the test world. This guide describes its New Haven lessons; the secluded tutorial island in P481 is **planned**.
+Draft refreshed against the merged P480, P290, P291, and P453 source on October 24, 2026. The tutorial is enabled only for the test world. This guide describes its New Haven lessons; the secluded tutorial island in P481 is **planned**.
 
 The tutorial teaches the basic controls, death and resurrection, banking, travel, and the League. Finish the core lessons to graduate, or stay for optional lessons in combat, magic, trades, and other parts of the game.
 
@@ -8,13 +8,15 @@ The tutorial teaches the basic controls, death and resurrection, banking, travel
 
 On your account's first tutorial login, follow the arrow to **Rook Hallowell, the League recruiter**, on the New Haven plaza. Walk close and double-click him with two quick left clicks. Choose the lesson marked **(next)**. The tutorial runs once per account; later characters do not start it again automatically.
 
+Continue with the character who started the tutorial. Your other characters can read Rook's page, but it has no buttons for them. They cannot take lessons, skip, graduate, start remedial training, or claim the waiting graduation pet while the tutorial belongs to that character.
+
 Do the core lessons in order. **Hint and arrow** repeats your instructions and points the way. It also replaces a missing practice bag, cloak, or bank token. If your backpack is full, make room and press it again. **Next lesson / graduate** moves you along after a completed lesson. **Reset this lesson** starts that lesson over.
 
 Completed lessons are saved. If you log out or the server restarts during a lesson, ask Rook to start the unfinished lesson again.
 
 To skip, choose **Skip the tutorial**, then confirm **Yes, skip** and **Yes. Really.** You earn **Didn't Read the Manual**. Under the current default rules, skipping records your first loop and lets you leave Haven Island, but does not give the tutorial graduation box or pet choice. Your Young protection keeps running on its normal time limit.
 
-You can return to Rook after skipping and choose **Remedial training (the full tutorial, with its rewards)**. This starts the lessons over. Finishing earns the normal graduation rewards and **Read the Manual Eventually**.
+You can return to Rook after skipping and choose **Remedial training (the full tutorial, with its rewards)**. This starts the lessons over. Finishing earns the normal graduation rewards and **Read the Manual Eventually**. Your account's tutorial pet claim and Farmhand bandage allowance carry over; remedial training does not grant a second pet or a fresh bandage allowance.
 
 ## Core lessons
 
@@ -40,10 +42,10 @@ Follow each lesson's arrow. Combat and magic use the training yard east of the f
 
 | Wing | What you try |
 |---|---|
-| Combat | Pick swords, macing, fencing, archery, throwing for gargoyles, or wrestling and land three hits; a separate bandage lesson has you heal yourself and a wounded villager. |
-| Magic | Cast Magic Arrow, Pain Spike, Close Wounds, or Eagle Strike, or land a hit with Honorable Execution or Focus Attack readied, in separate lessons for the six schools. |
+| Combat | Pick swords, macing, fencing, archery, throwing for gargoyles, or wrestling. Equip the loaned weapon, or use your fists for wrestling, press Tab for war mode, and double-click the sparring echo. Land three hits with your choice. A separate bandage lesson requires you to restore health to yourself and a wounded villager. |
+| Magic | In separate lessons, cast Magery's Magic Arrow, Necromancy's Pain Spike, or Mysticism's Eagle Strike at the training echo; use Chivalry's Close Wounds on the wounded villager from within two tiles; or land a hit with Bushido's Honorable Execution or Ninjitsu's Focus Attack readied. |
 | Gathering | Mine ore, chop logs, catch something in the practice pond, and light a campfire. |
-| Crafting | Make a dagger, skullcap, barrel staves, scissors, refresh potion, kindling, dough, Magic Arrow scroll, or local map in the matching lesson; smithing, tinkering, and alchemy also teach an identification skill. |
+| Crafting | Make a dagger, skullcap, barrel staves, scissors, refresh potion, kindling, dough, Magic Arrow scroll, or local map in the matching lesson. Smithing also asks for Arms Lore on your dagger, tinkering for Item Identification on the loaned curio, and alchemy for Taste Identification on the loaned apple. |
 | Animals | Herd, tame, study, and bandage a tutorial goat; the goat returns to the farm afterward. |
 | Bard | Use Peacemaking, Provocation, and Discordance on training echoes with a loaned lute; Musicianship is part of using the instrument. |
 | Thieving and stealth | Practice Hiding, Stealth, Detecting Hidden, Remove Trap, Lockpicking, Stealing, Snooping, Begging, Poisoning, and Tracking on tutorial props and a dummy. |
@@ -52,11 +54,19 @@ Follow each lesson's arrow. Combat and magic use the training yard east of the f
 | Reputation | Visit the training yard, healer, and plaza for karma, fame, name colors, murder counts, and guards. |
 | Shard systems | Visit the League office, bank, and Rook for an introduction to loot boxes, achievements, accessories, levels, loops, and TazUO tools. |
 
-Wing lessons lend the tools, supplies, and skill needed to practice. Loaned items disappear when you finish, stop, leave the lesson area, or log out. Dropping, banking, or trading a loaned item also removes it. You keep resources you gather and items you craft. Completion comes from performing the actions, not pressing a button to say you did them.
+Wing lessons lend the tools, supplies, and skill needed to practice. Loaned items disappear when you finish, stop, leave the lesson area, or log out, and temporary skill loans end too. Dropping, banking, or trading a loaned item also removes it. You keep resources you gather and items you craft. Completion comes from performing the actions, not pressing a button to say you did them. For walking tours, follow the arrow to each stop in order. If a lesson stops before you finish, start it again at Rook.
 
 The thieving lesson uses practice targets, but snooping and poisoning still cost a little karma. Resisting Spells, Spellweaving, Herbalism, Imbuing, and Forensic Evaluation are explained rather than practiced in these lessons. The full levels and loop reset system is **planned**.
 
-The Farmhand, **Wren Tallow**, also offers a dog or cat, a pest-clearing task, and bandage practice at the farm. That route can complete the animals and bandage stations too. Taking her pet uses your tutorial pet choice, so wait for graduation if you want a fox or bird.
+## The Farmhand's route
+
+Double-click **Wren Tallow, the Farmhand**, at the farm gate for a separate pet and practice route:
+
+1. Choose a dog or cat, with one follower slot free. This uses your account's one tutorial pet choice, so wait for graduation if you want a fox or bird. The optional goat lesson does not use that choice.
+2. Clear three pests in the crop rows, yourself or with your pet, then return to Wren. This completes the animals station too. Characters outside the tutorial and their pets cannot attack the tutorial creatures.
+3. Use a bandage to restore health to yourself, your pet, or someone else. A failed treatment does not finish this step. A successful heal completes the bandage station too.
+
+At the patch-up step, Wren supplies bandages when your backpack has none. Under the default rules, she offers at most **three stacks of ten per account**. Banking or trading a stack does not reset that allowance. After it runs out, buy bandages from the healer in town.
 
 ## Graduation and your companion pick
 
@@ -64,9 +74,9 @@ Once the core is complete, return to Rook on the plaza and press **Graduate**. G
 
 You receive a graduation loot box containing a blessed **elixir of rebirth**. Open the box in town: loot boxes open only in guarded towns or your own house.
 
-Unless you already took the Farmhand's dog or cat, a window offers **dog, cat, fox, or bird**. Choose one to receive a bonded evo starter pet, then choose its color. Keep one follower slot free. The picker calls this a companion; it is your starter animal.
+Unless your account already claimed its tutorial pet from the Farmhand, a window offers **dog, cat, fox, or bird**. Each choice has a picture and a description of its later forms. Choose one to receive a bonded evo starter pet, then choose its color. Keep one follower slot free. The picker calls this a companion; it is your starter animal. The Farmhand and graduation share one pet claim per account, including after skipping and remedial training.
 
-Closing the picker does not lose your choice. Double-click Rook and choose **Choose your companion** to reopen it. Login reminders continue until you pick. If you closed the color picker, double-click your living pet to bring it back.
+Closing the picker does not lose your choice, and the waiting choice survives a logout or server restart. Return with your tutorial character, double-click Rook, and choose **Choose your companion** to reopen it. Login reminders continue until you pick. If you closed the color picker, double-click your living pet to bring it back.
 
 The pet picker shows the intended later forms. Some evolution stages and their requirements remain unfinished; see the [companions and evo pets guide](companions-and-evo-pets.md) for details.
 
@@ -85,4 +95,4 @@ Your graduation box supplies one elixir. Animal Trainers sell more for **500 gol
 
 ## Sources
 
-Checked against the current tutorial source and the [P289 core notes](../cc-P289-tutorial-core-trials.md), [P475 integration notes](../cc-P475-cont-fixup-tutorial-core-trials-playable.md), [P480 first-play fixes](../cc-P480-tutorial-first-play-fixes.md), [P290 combat and magic notes](../cc-P290-tutorial-wing-trials-combat-magic.md), and [P291 trade and tour notes](../cc-P291-tutorial-wing-trials-trades.md). File and line evidence, planned-area evidence, and verification limits are in the [P525 work notes](../cc-P525-guide-new-player-tutorial.md).
+Checked against the current tutorial source and the [P289 core notes](../cc-P289-tutorial-core-trials.md), [P475 integration notes](../cc-P475-cont-fixup-tutorial-core-trials-playable.md), [P480 first-play fixes](../cc-P480-tutorial-first-play-fixes.md), [P290 combat and magic notes](../cc-P290-tutorial-wing-trials-combat-magic.md), [P291 trade and tour notes](../cc-P291-tutorial-wing-trials-trades.md), and [P453 account, pet, and farm fixes](../cc-P453-tutorial-fixups.md). Source evidence and verification limits are in the [P525 work notes](../cc-P525-guide-new-player-tutorial.md) and [P577 refresh notes](../cc-P577-guide-tutorial-refresh.md).
