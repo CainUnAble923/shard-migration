@@ -371,6 +371,285 @@
      "transcript": "transcripts/P62-7-run3.txt"
     }
    ]
+  },
+  {
+   "id": "T-039",
+   "title": "A new character is pointed at the board",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "T-039: a new player can find the board by eye",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "human female at (3503, 2574, 14): message None; welcome gump says 'The Guild Board in the town square lists every guild, what it teaches, and where its guildmaster stands.'; the board is 1 tiles away",
+     "seconds": 324.6,
+     "transcript": "transcripts/T-039-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "elf male at (3503, 2574, 14): message None; welcome gump says 'The Guild Board in the town square lists every guild, what it teaches, and where its guildmaster stands.'; the board is 1 tiles away",
+     "seconds": 13.1,
+     "transcript": "transcripts/T-039-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "gargoyle female at (3503, 2574, 14): message None; welcome gump says 'The Guild Board in the town square lists every guild, what it teaches, and where its guildmaster stands.'; the board is 1 tiles away",
+     "seconds": 13.1,
+     "transcript": "transcripts/T-039-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "CREATE",
+   "title": "Character creation for every race and sex, through the real 0xF8 packet",
+   "kind": "HARNESS",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "human male: body 400 (want 400), status name 'Bot Human M Ak' (asked for 'Bot Human M Ak'), at (3503, 2574, 14)",
+     "seconds": 304.8,
+     "transcript": "transcripts/CREATE-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "elf female: body 606 (want 606), status name 'Bot Elf F Al' (asked for 'Bot Elf F Al'), at (3503, 2574, 14)",
+     "seconds": 13.1,
+     "transcript": "transcripts/CREATE-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "gargoyle male: body 666 (want 666), status name 'Bot Gargoyle M A' (asked for 'Bot Gargoyle M A'), at (3503, 2574, 14)",
+     "seconds": 13.1,
+     "transcript": "transcripts/CREATE-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "T-047",
+   "title": "Young by time played: the countdown, and 'I want to grow up!' brings the confirm gump",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "countdown 'You will enjoy the benefits and relatively safe status of a young player for another 13 days and 23 hours of play time. Say \"I want to grow up!\" to give it up sooner.' (days and hours: True); confirm gump: ['', \"Renouncing 'Young Player' Status\"]",
+     "seconds": 304.9,
+     "transcript": "transcripts/T-047-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "countdown 'You will enjoy the benefits and relatively safe status of a young player for another 13 days and 23 hours of play time. Say \"I want to grow up!\" to give it up sooner.' (days and hours: True); confirm gump: ['', \"Renouncing 'Young Player' Status\"]",
+     "seconds": 13.1,
+     "transcript": "transcripts/T-047-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "countdown 'You will enjoy the benefits and relatively safe status of a young player for another 13 days and 23 hours of play time. Say \"I want to grow up!\" to give it up sooner.' (days and hours: True); confirm gump: ['', \"Renouncing 'Young Player' Status\"]",
+     "seconds": 13.1,
+     "transcript": "transcripts/T-047-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "D41",
+   "title": "Regression: the Guild Directory lists each guild once",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "18 rows, header says 18 guilds, 18 way buttons; duplicates none; Artificers' Order 1 time(s)",
+     "seconds": 0.3,
+     "transcript": "transcripts/D41-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "18 rows, header says 18 guilds, 18 way buttons; duplicates none; Artificers' Order 1 time(s)",
+     "seconds": 0.3,
+     "transcript": "transcripts/D41-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "18 rows, header says 18 guilds, 18 way buttons; duplicates none; Artificers' Order 1 time(s)",
+     "seconds": 0.3,
+     "transcript": "transcripts/D41-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P56-6",
+   "title": "Valorite refused at Mining 98.9, smelts at 99",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "at 98.9: refused True ['You have no idea how to smelt this strange ore!'], ore left 10; at 99.0 over 6 tries: refused 0, smelted 2, burned 4",
+     "seconds": 19.1,
+     "transcript": "transcripts/P56-6-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "at 98.9: refused True ['You have no idea how to smelt this strange ore!'], ore left 10; at 99.0 over 6 tries: refused 0, smelted 4, burned 2",
+     "seconds": 20.3,
+     "transcript": "transcripts/P56-6-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "at 98.9: refused True ['You have no idea how to smelt this strange ore!'], ore left 10; at 99.0 over 6 tries: refused 0, smelted 1, burned 5",
+     "seconds": 19.1,
+     "transcript": "transcripts/P56-6-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P56-4",
+   "title": "Platinum refused at Mining 112.4; at 112.5 it smelts (about half the time)",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "at 112.4: refused True ['You have no idea how to smelt this strange ore!'], ore left 10; at 112.5 over 8 tries: refused 0, smelted 3, burned 5",
+     "seconds": 23.3,
+     "transcript": "transcripts/P56-4-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "at 112.4: refused True ['You have no idea how to smelt this strange ore!'], ore left 10; at 112.5 over 8 tries: refused 0, smelted 3, burned 5",
+     "seconds": 23.3,
+     "transcript": "transcripts/P56-4-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "at 112.4: refused True ['You have no idea how to smelt this strange ore!'], ore left 10; at 112.5 over 8 tries: refused 0, smelted 5, burned 3",
+     "seconds": 24.5,
+     "transcript": "transcripts/P56-4-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P61-3",
+   "title": "Achievements: 'Oh Look, It's Dead' shows its Earned line and no 'Progress: 9/1'; unearned ones show progress",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "rat killed by the player: True; row 'Oh Look, It\\'s Dead [5 AP / 5 R]\"You are, by definition, a killer now. Congratulations.\"(Earned: slew your first creature)'; other rows with progress: 1",
+     "seconds": 3.6,
+     "transcript": "transcripts/P61-3-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "rat killed by the player: True; row 'Oh Look, It\\'s Dead [5 AP / 5 R]\"You are, by definition, a killer now. Congratulations.\"(Earned: slew your first creature)'; other rows with progress: 1",
+     "seconds": 33.7,
+     "transcript": "transcripts/P61-3-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "rat killed by the player: True; row 'Oh Look, It\\'s Dead [5 AP / 5 R]\"You are, by definition, a killer now. Congratulations.\"(Earned: slew your first creature)'; other rows with progress: 1",
+     "seconds": 3.6,
+     "transcript": "transcripts/P61-3-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P119-1",
+   "title": "Five of cc-P119's ported creatures spawn, fight back and die to a player, leaving a corpse",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "IceHound: killed True, corpse True; OrcChopper: killed True, corpse True; Lifestealer: killed True, corpse True; EffeteUndeadGargoyle: killed True, corpse True; Wight: killed True, corpse True; player hits at the end 175/176",
+     "seconds": 171.3,
+     "transcript": "transcripts/P119-1-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "IceHound: killed True, corpse True; OrcChopper: killed True, corpse True; Lifestealer: killed True, corpse True; EffeteUndeadGargoyle: killed True, corpse True; Wight: killed True, corpse True; player hits at the end 142/176",
+     "seconds": 38.1,
+     "transcript": "transcripts/P119-1-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "IceHound: killed True, corpse True; OrcChopper: killed True, corpse True; Lifestealer: killed True, corpse True; EffeteUndeadGargoyle: killed True, corpse True; Wight: killed True, corpse True; player hits at the end 175/176",
+     "seconds": 41.1,
+     "transcript": "transcripts/P119-1-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "P129-1",
+   "title": "Six of cc-P129's ported creatures spawn, fight back and die to a player, leaving a corpse",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "FLAKY",
+   "passes": 2,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "fail",
+     "evidence": "BloodFox: killed True, corpse True; OsseinRam: killed True, corpse True; LeatherWolfFellow: killed True, corpse True; GargishOutcast: the fighter died (a test problem, not this creature's); ParoxysmusSwampDragon: not fought: the fighter was dead; Drelgor: not fought: the fighter was dead; player hits at the end 0/176",
+     "seconds": 302.0,
+     "transcript": "transcripts/P129-1-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "BloodFox: killed True, corpse True; OsseinRam: killed True, corpse True; LeatherWolfFellow: killed True, corpse True; GargishOutcast: killed True, corpse True; ParoxysmusSwampDragon: killed True, corpse True; Drelgor: killed True, corpse True; player hits at the end 177/177",
+     "seconds": 66.3,
+     "transcript": "transcripts/P129-1-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "BloodFox: killed True, corpse True; OsseinRam: killed True, corpse True; LeatherWolfFellow: killed True, corpse True; GargishOutcast: killed True, corpse True; ParoxysmusSwampDragon: killed True, corpse True; Drelgor: killed True, corpse True; player hits at the end 175/177",
+     "seconds": 60.0,
+     "transcript": "transcripts/P129-1-run3.txt"
+    }
+   ]
   }
  ]
 }
