@@ -1,0 +1,813 @@
+    0.00 harness  == P142-2 run 2: A champion spawn: an Initiate works it, the special-item message comes, no refusal
+    0.00 admin    -> say '[go 0x27C41'
+    1.01 admin    -> say '[add ThiefGuildmaster'
+    1.01 admin    <- 0x6C target cursor 1187 (type 1)
+    1.21 admin    -> 0x6C target ground 5512,2360,42
+    1.21 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+    1.72 player   -> 0xBF 0x13 context menu request 0x00027FAD
+    1.72 player   <- 0xBF 0x14 context menu 0x00027FAD: [(0, 3006123, 'Open Paperdoll', 0), (1, 3006146, 'Talk', 0), (2, 3006014, 'Train Detect Hidden', 0), (3, 3006021, 'Train Hiding', 0), (4, 3006024, 'Train Lockpicking', 0), (5, 3006028, 'Train Snooping', 0), (6, 3006030, 'Train Poisoning', 0), (7, 3006033, 'Train Stealing', 1), (8, 3006042, 'Train Fencing', 0)]
+    1.72 player   -> 0xBF 0x15 context pick 1 (Talk) on 0x00027FAD
+    1.73 player   <- 0xDD gump 0x00000C40 type -810631593: Thieves' Den | <BASEFONT COLOR=#DDDDDD><I>We see all. Can we trust you? Show us your light fingers.</I></BASEFONT> | <BASEFONT COLOR=#AAAAAA>Teaches: Hiding, Stealth, Stealing, Snooping, Lockpicking, Poisoning, Detecting Hidden, Remove Trap</BASEFONT> | Separate from the stock trade guild (say "join", 500 gold). One does not join the other. | Member. Rank: Initiate. | Starter items (2) | Mule module schematics | Apprentice task: | <BASEFONT COLOR=#DDDDDD>Demonstrate Stealing of at least 20.0.</BASEFONT> | Complete it: +25 reputation, +10 scrip | Guild services | Guild Directory | Requisitions | Close
+    1.73 player      layout: { resizepic 0 0 9270 520 400 }{ checkertrans 10 10 500 380 }{ text 20 14 1154 0 }{ gumppictiled 10 36 500 2 9304 }{ htmlgump 20 44 480 36 1 0 0 }{ htmlgump 20 82 480 36 2 0 0 }{ text 20 118 999 3 }{ gumppictiled 10 140 500 2 9304 }{ text 20 150 68 4 }{ button 20 172 4005 4007 1 0 3 }{ text 55 174 999 5 }{ button 20 200 4005 4007 1 0 7 }{ text 55 202 999 6 }{ gumppictiled 10 232 500 2 9304 }{ text 20 240 999 7 }{ htmlgump 20 260 480 36 8 0 0 }{ button 20 298 4023 4025 1 0 4 }{ text 55 300 1154 9 }{ gumppictiled 10 350 500 2 9304 }{ button 20 362 4011 4012 1 0 5 }{ text 45 364 999 10 }{ button 180 362 4011 4012 1 0 6 }{ text 205 364 999 11 }{ button 300 362 4011 4012 1 0 9 }{ text 325 364 999 12 }{ button 420 362 4017 4019 1 0 0 }{ text 455 364 999 13 }
+    1.73 player   -> 0xB1 gump 0x00000C40 type -810631593 button 0 switches [] texts []
+    1.73 admin    -> say '[go 0x27C41'
+    2.74 admin    -> say '[SetSkill Stealing 120'
+    2.74 admin    <- 0x6C target cursor 1188 (type 0)
+    2.95 admin    -> 0x6C target object 0x00027C41
+    2.95 player   <- 0x3A skill 33 now 120.0 (cap 200.0)
+    2.95 admin    <- unicode(0) System: Stealing : 120 (Base: 120)
+    3.57 admin    -> say '[go 0x27C41'
+    4.57 admin    -> say '[set Blessed true'
+    4.57 admin    <- 0x6C target cursor 1189 (type 0)
+    4.78 admin    -> 0x6C target object 0x00027C41
+    4.78 admin    <- unicode(0) System: Property has been set.
+    5.28 admin    -> say '[go 0x27C41'
+    6.29 admin    -> say '[set Map Felucca X 5511 Y 2360 Z 42'
+    6.29 admin    <- 0x6C target cursor 1190 (type 0)
+    6.49 admin    -> 0x6C target object 0x00027C41
+    6.50 admin    <- unicode(0) System: Property has been set. (4)
+    7.00 admin    -> say '[go 0x27C41'
+    8.50 admin    -> say '[where'
+    8.50 admin    <- unicode(0) System: You are at 5511 2360 42 in Felucca.
+    8.50 admin    <- unicode(0) System: Your region is ChampionSpawnRegion <- Region.
+    9.10 admin    -> say '[go 0x27C41'
+   10.11 admin    -> say '[GuildStanding thieves 0'
+   10.11 admin    <- 0x6C target cursor 1191 (type 0)
+   10.31 admin    -> 0x6C target object 0x00027C41
+   10.31 admin    <- unicode(0) System: Set Bot Human F Aa's Thieves' Den standing to 0 (Initiate).
+   10.91 admin    -> say '[go 0x27C41'
+   11.91 admin    -> say '[add RedDeath'
+   11.91 admin    <- 0x6C target cursor 1192 (type 1)
+   12.12 admin    -> 0x6C target ground 5512,2360,42
+   12.12 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   12.12 admin    -> say '[set FightMode None CantWalk true'
+   12.12 admin    <- 0x6C target cursor 1193 (type 0)
+   12.33 admin    -> 0x6C target object 0x00027FAE
+   12.33 admin    <- unicode(0) System: Property has been set. (2)
+   12.83 admin    -> say '[go 0x27C41'
+   13.83 admin    -> say '[add RedDeath'
+   13.83 admin    <- 0x6C target cursor 1194 (type 1)
+   14.04 admin    -> 0x6C target ground 5510,2360,42
+   14.04 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   14.04 admin    -> say '[set FightMode None CantWalk true'
+   14.04 admin    <- 0x6C target cursor 1195 (type 0)
+   14.24 admin    -> 0x6C target object 0x00027FB4
+   14.25 admin    <- unicode(0) System: Property has been set. (2)
+   14.75 admin    -> say '[go 0x27C41'
+   15.75 admin    -> say '[add RedDeath'
+   15.75 admin    <- 0x6C target cursor 1196 (type 1)
+   15.95 admin    -> 0x6C target ground 5511,2361,42
+   15.95 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   15.95 admin    -> say '[set FightMode None CantWalk true'
+   15.95 admin    <- 0x6C target cursor 1197 (type 0)
+   16.16 admin    -> 0x6C target object 0x00027FB5
+   16.16 admin    <- unicode(0) System: Property has been set. (2)
+   16.66 admin    -> say '[go 0x27C41'
+   17.66 admin    -> say '[add RedDeath'
+   17.66 admin    <- 0x6C target cursor 1198 (type 1)
+   17.86 admin    -> 0x6C target ground 5511,2359,42
+   17.86 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   17.87 admin    -> say '[set FightMode None CantWalk true'
+   17.87 admin    <- 0x6C target cursor 1199 (type 0)
+   18.07 admin    -> 0x6C target object 0x00027FB6
+   18.07 admin    <- unicode(0) System: Property has been set. (2)
+   18.57 admin    -> say '[set NextSkillTime 0'
+   18.58 admin    <- 0x6C target cursor 1200 (type 0)
+   18.78 admin    -> 0x6C target object 0x00027C41
+   18.78 admin    <- unicode(0) System: Property has been set.
+   19.28 player   <- 0x6C target cursor 1201 (type 0)
+   19.28 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   19.28 player   -> 0x6C target object 0x00027FAE
+   19.28 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   19.28 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   19.28 player   <- 0x3A skill 33 now 120.1 (cap 200.0)
+   19.28 player   <- 0x3A skill 33 now 120.2 (cap 200.0)
+   19.28 player   <- 0x3A skill 33 now 120.3 (cap 200.0)
+   19.28 player   <- 0x3A skill 33 now 120.4 (cap 200.0)
+   19.28 player   <- 0x3A skill 33 now 120.5 (cap 200.0)
+   19.28 player   <- 0x3A skill 33 now 120.6 (cap 200.0)
+   19.28 player   <- 0x3A skill 33 now 120.7 (cap 200.0)
+   19.28 player   <- 0x3A skill 33 now 120.8 (cap 200.0)
+   19.28 player   <- 0x3A skill 33 now 120.9 (cap 200.0)
+   19.28 player   <- 0x3A skill 33 now 121.0 (cap 200.0)
+   19.28 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   19.28 admin    -> say '[set NextSkillTime 0'
+   19.29 admin    <- 0x6C target cursor 1202 (type 0)
+   19.50 admin    -> 0x6C target object 0x00027C41
+   19.50 admin    <- unicode(0) System: Property has been set.
+   20.01 player   <- 0x6C target cursor 1203 (type 0)
+   20.01 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   20.01 player   -> 0x6C target object 0x00027FB4
+   20.01 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   20.01 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   20.01 player   <- 0x3A skill 33 now 121.1 (cap 200.0)
+   20.01 player   <- 0x3A skill 33 now 121.2 (cap 200.0)
+   20.01 player   <- 0x3A skill 33 now 121.3 (cap 200.0)
+   20.01 player   <- 0x3A skill 33 now 121.4 (cap 200.0)
+   20.01 player   <- 0x3A skill 33 now 121.5 (cap 200.0)
+   20.01 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   20.01 admin    -> say '[set NextSkillTime 0'
+   20.01 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 108, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 250, 'dex': 20, 'int': 20, 'stam': 19, 'stamMax': 20, 'mana': 20, 'manaMax': 20, 'gold': 1500, 'ar': 0, 'weight': 515, 'maxWeight': 975, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   20.01 admin    <- 0x6C target cursor 1204 (type 0)
+   20.21 admin    -> 0x6C target object 0x00027C41
+   20.22 admin    <- unicode(0) System: Property has been set.
+   20.72 player   <- 0x6C target cursor 1205 (type 0)
+   20.72 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   20.72 player   -> 0x6C target object 0x00027FB5
+   20.72 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   20.72 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   20.72 player   <- 0x3A skill 33 now 121.6 (cap 200.0)
+   20.72 player   <- 0x3A skill 33 now 121.7 (cap 200.0)
+   20.72 player   <- 0x3A skill 33 now 121.8 (cap 200.0)
+   20.72 player   <- 0x3A skill 33 now 121.9 (cap 200.0)
+   20.72 player   <- 0x3A skill 33 now 122.0 (cap 200.0)
+   20.72 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   20.72 admin    -> say '[set NextSkillTime 0'
+   20.72 admin    <- 0x6C target cursor 1206 (type 0)
+   20.93 admin    -> 0x6C target object 0x00027C41
+   20.93 admin    <- unicode(0) System: Property has been set.
+   21.43 player   <- 0x6C target cursor 1207 (type 0)
+   21.43 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   21.43 player   -> 0x6C target object 0x00027FB6
+   21.43 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   21.43 player   <- cliloc(0) System #1094947: You successfully steal a special item from the creature!
+   21.43 player   <- 0x3A skill 33 now 122.1 (cap 200.0)
+   21.43 player   <- 0x3A skill 33 now 122.2 (cap 200.0)
+   21.43 player   <- 0x3A skill 33 now 122.3 (cap 200.0)
+   21.43 player   <- 0x3A skill 33 now 122.4 (cap 200.0)
+   21.43 player   <- 0x3A skill 33 now 122.5 (cap 200.0)
+   21.43 player   <- 0x3A skill 33 now 122.6 (cap 200.0)
+   21.43 player   <- 0x3A skill 33 now 122.7 (cap 200.0)
+   21.43 player   <- 0x3A skill 33 now 122.8 (cap 200.0)
+   21.43 player   <- 0x3A skill 33 now 122.9 (cap 200.0)
+   21.43 player   <- 0x3A skill 33 now 123.0 (cap 200.0)
+   21.43 player   <- 0x3A skill 33 now 123.1 (cap 200.0)
+   21.43 player   <- 0x3A skill 33 now 123.2 (cap 200.0)
+   21.43 player   <- 0x3A skill 33 now 123.3 (cap 200.0)
+   21.43 player   <- 0x3A skill 33 now 123.4 (cap 200.0)
+   21.43 player   <- 0x3A skill 33 now 123.5 (cap 200.0)
+   21.43 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   21.43 admin    -> say '[go 0x27C41'
+   21.43 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 108, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 250, 'dex': 20, 'int': 20, 'stam': 19, 'stamMax': 20, 'mana': 20, 'manaMax': 20, 'gold': 1500, 'ar': 0, 'weight': 516, 'maxWeight': 975, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   21.43 player   <- 0x25 item 0x403CA681 graphic 0xEFB x1 into 0x403C2E06
+   22.44 admin    -> say '[add RedDeath'
+   22.44 admin    <- 0x6C target cursor 1208 (type 1)
+   22.64 admin    -> 0x6C target ground 5511,2359,42
+   22.64 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   22.64 admin    -> say '[set FightMode None CantWalk true'
+   22.64 admin    <- 0x6C target cursor 1209 (type 0)
+   22.84 admin    -> 0x6C target object 0x00027FB7
+   22.84 admin    <- unicode(0) System: Property has been set. (2)
+   24.57 admin    -> say '[set NextSkillTime 0'
+   24.58 admin    <- 0x6C target cursor 1210 (type 0)
+   24.78 admin    -> 0x6C target object 0x00027C41
+   24.78 admin    <- unicode(0) System: Property has been set.
+   25.30 player   <- 0x6C target cursor 1211 (type 0)
+   25.30 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   25.30 player   -> 0x6C target object 0x00027FAE
+   25.30 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   25.30 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   25.30 player   <- 0x3A skill 33 now 123.6 (cap 200.0)
+   25.30 player   <- 0x3A skill 33 now 123.7 (cap 200.0)
+   25.30 player   <- 0x3A skill 33 now 123.8 (cap 200.0)
+   25.30 player   <- 0x3A skill 33 now 123.9 (cap 200.0)
+   25.30 player   <- 0x3A skill 33 now 124.0 (cap 200.0)
+   25.30 player   <- 0x3A skill 33 now 124.1 (cap 200.0)
+   25.30 player   <- 0x3A skill 33 now 124.2 (cap 200.0)
+   25.30 player   <- 0x3A skill 33 now 124.3 (cap 200.0)
+   25.30 player   <- 0x3A skill 33 now 124.4 (cap 200.0)
+   25.30 player   <- 0x3A skill 33 now 124.5 (cap 200.0)
+   25.30 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   25.32 admin    -> say '[set NextSkillTime 0'
+   25.32 admin    <- 0x6C target cursor 1212 (type 0)
+   25.53 admin    -> 0x6C target object 0x00027C41
+   25.53 admin    <- unicode(0) System: Property has been set.
+   26.04 player   <- 0x6C target cursor 1213 (type 0)
+   26.04 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   26.04 player   -> 0x6C target object 0x00027FB4
+   26.04 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   26.04 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   26.04 player   <- 0x3A skill 33 now 124.6 (cap 200.0)
+   26.04 player   <- 0x3A skill 33 now 124.7 (cap 200.0)
+   26.04 player   <- 0x3A skill 33 now 124.8 (cap 200.0)
+   26.04 player   <- 0x3A skill 33 now 124.9 (cap 200.0)
+   26.04 player   <- 0x3A skill 33 now 125.0 (cap 200.0)
+   26.04 player   <- 0x3A skill 33 now 125.1 (cap 200.0)
+   26.04 player   <- 0x3A skill 33 now 125.2 (cap 200.0)
+   26.04 player   <- 0x3A skill 33 now 125.3 (cap 200.0)
+   26.04 player   <- 0x3A skill 33 now 125.4 (cap 200.0)
+   26.04 player   <- 0x3A skill 33 now 125.5 (cap 200.0)
+   26.04 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   26.04 admin    -> say '[set NextSkillTime 0'
+   26.04 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 110, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 250, 'dex': 21, 'int': 20, 'stam': 20, 'stamMax': 21, 'mana': 20, 'manaMax': 20, 'gold': 1500, 'ar': 0, 'weight': 516, 'maxWeight': 975, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   26.04 admin    <- 0x6C target cursor 1214 (type 0)
+   26.24 admin    -> 0x6C target object 0x00027C41
+   26.24 admin    <- unicode(0) System: Property has been set.
+   26.75 player   <- 0x6C target cursor 1215 (type 0)
+   26.75 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   26.75 player   -> 0x6C target object 0x00027FB5
+   26.75 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   26.75 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   26.75 player   <- 0x3A skill 33 now 125.6 (cap 200.0)
+   26.75 player   <- 0x3A skill 33 now 125.7 (cap 200.0)
+   26.75 player   <- 0x3A skill 33 now 125.8 (cap 200.0)
+   26.75 player   <- 0x3A skill 33 now 125.9 (cap 200.0)
+   26.75 player   <- 0x3A skill 33 now 126.0 (cap 200.0)
+   26.75 player   <- 0x3A skill 33 now 126.1 (cap 200.0)
+   26.75 player   <- 0x3A skill 33 now 126.2 (cap 200.0)
+   26.75 player   <- 0x3A skill 33 now 126.3 (cap 200.0)
+   26.75 player   <- 0x3A skill 33 now 126.4 (cap 200.0)
+   26.75 player   <- 0x3A skill 33 now 126.5 (cap 200.0)
+   26.75 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   26.75 admin    -> say '[set NextSkillTime 0'
+   26.75 admin    <- 0x6C target cursor 1216 (type 0)
+   26.95 admin    -> 0x6C target object 0x00027C41
+   26.95 admin    <- unicode(0) System: Property has been set.
+   27.46 player   <- 0x6C target cursor 1217 (type 0)
+   27.46 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   27.46 player   -> 0x6C target object 0x00027FB7
+   27.46 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   27.46 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   27.46 player   <- 0x3A skill 33 now 126.6 (cap 200.0)
+   27.46 player   <- 0x3A skill 33 now 126.7 (cap 200.0)
+   27.46 player   <- 0x3A skill 33 now 126.8 (cap 200.0)
+   27.46 player   <- 0x3A skill 33 now 126.9 (cap 200.0)
+   27.46 player   <- 0x3A skill 33 now 127.0 (cap 200.0)
+   27.46 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   30.61 admin    -> say '[set NextSkillTime 0'
+   30.61 admin    <- 0x6C target cursor 1218 (type 0)
+   30.81 admin    -> 0x6C target object 0x00027C41
+   30.81 admin    <- unicode(0) System: Property has been set.
+   31.31 player   <- 0x6C target cursor 1219 (type 0)
+   31.31 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   31.31 player   -> 0x6C target object 0x00027FAE
+   31.31 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   31.31 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   31.31 player   <- 0x3A skill 33 now 127.1 (cap 200.0)
+   31.31 player   <- 0x3A skill 33 now 127.2 (cap 200.0)
+   31.31 player   <- 0x3A skill 33 now 127.3 (cap 200.0)
+   31.31 player   <- 0x3A skill 33 now 127.4 (cap 200.0)
+   31.31 player   <- 0x3A skill 33 now 127.5 (cap 200.0)
+   31.31 player   <- 0x3A skill 33 now 127.6 (cap 200.0)
+   31.31 player   <- 0x3A skill 33 now 127.7 (cap 200.0)
+   31.31 player   <- 0x3A skill 33 now 127.8 (cap 200.0)
+   31.31 player   <- 0x3A skill 33 now 127.9 (cap 200.0)
+   31.31 player   <- 0x3A skill 33 now 128.0 (cap 200.0)
+   31.31 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   31.31 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 111, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 250, 'dex': 22, 'int': 20, 'stam': 21, 'stamMax': 22, 'mana': 20, 'manaMax': 20, 'gold': 1500, 'ar': 0, 'weight': 516, 'maxWeight': 975, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   31.35 admin    -> say '[set NextSkillTime 0'
+   31.35 admin    <- 0x6C target cursor 1220 (type 0)
+   31.56 admin    -> 0x6C target object 0x00027C41
+   31.56 admin    <- unicode(0) System: Property has been set.
+   32.06 player   <- 0x6C target cursor 1221 (type 0)
+   32.06 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   32.06 player   -> 0x6C target object 0x00027FB4
+   32.06 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   32.06 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   32.06 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   32.06 admin    -> say '[set NextSkillTime 0'
+   32.06 admin    <- 0x6C target cursor 1222 (type 0)
+   32.27 admin    -> 0x6C target object 0x00027C41
+   32.27 admin    <- unicode(0) System: Property has been set.
+   32.77 player   <- 0x6C target cursor 1223 (type 0)
+   32.77 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   32.77 player   -> 0x6C target object 0x00027FB5
+   32.77 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   32.77 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   32.77 player   <- 0x3A skill 33 now 128.1 (cap 200.0)
+   32.77 player   <- 0x3A skill 33 now 128.2 (cap 200.0)
+   32.77 player   <- 0x3A skill 33 now 128.3 (cap 200.0)
+   32.77 player   <- 0x3A skill 33 now 128.4 (cap 200.0)
+   32.77 player   <- 0x3A skill 33 now 128.5 (cap 200.0)
+   32.77 player   <- 0x3A skill 33 now 128.6 (cap 200.0)
+   32.77 player   <- 0x3A skill 33 now 128.7 (cap 200.0)
+   32.77 player   <- 0x3A skill 33 now 128.8 (cap 200.0)
+   32.77 player   <- 0x3A skill 33 now 128.9 (cap 200.0)
+   32.77 player   <- 0x3A skill 33 now 129.0 (cap 200.0)
+   32.77 player   <- 0x3A skill 33 now 129.1 (cap 200.0)
+   32.77 player   <- 0x3A skill 33 now 129.2 (cap 200.0)
+   32.77 player   <- 0x3A skill 33 now 129.3 (cap 200.0)
+   32.77 player   <- 0x3A skill 33 now 129.4 (cap 200.0)
+   32.77 player   <- 0x3A skill 33 now 129.5 (cap 200.0)
+   32.77 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   32.77 admin    -> say '[set NextSkillTime 0'
+   32.77 admin    <- 0x6C target cursor 1224 (type 0)
+   32.97 admin    -> 0x6C target object 0x00027C41
+   32.97 admin    <- unicode(0) System: Property has been set.
+   33.48 player   <- 0x6C target cursor 1225 (type 0)
+   33.48 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   33.48 player   -> 0x6C target object 0x00027FB7
+   33.49 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   33.49 player   <- cliloc(0) System #1094947: You successfully steal a special item from the creature!
+   33.49 player   <- 0x3A skill 33 now 129.6 (cap 200.0)
+   33.49 player   <- 0x3A skill 33 now 129.7 (cap 200.0)
+   33.49 admin    -> say '[go 0x27C41'
+   33.49 player   <- 0x3A skill 33 now 129.8 (cap 200.0)
+   33.49 player   <- 0x3A skill 33 now 129.9 (cap 200.0)
+   33.49 player   <- 0x3A skill 33 now 130.0 (cap 200.0)
+   33.49 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   33.49 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 112, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 250, 'dex': 22, 'int': 20, 'stam': 21, 'stamMax': 22, 'mana': 20, 'manaMax': 20, 'gold': 1500, 'ar': 0, 'weight': 517, 'maxWeight': 975, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   33.49 player   <- 0x25 item 0x403CA699 graphic 0x1727 x1 into 0x403C2E06
+   34.49 admin    -> say '[add RedDeath'
+   34.49 admin    <- 0x6C target cursor 1226 (type 1)
+   34.70 admin    -> 0x6C target ground 5511,2359,42
+   34.70 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   34.70 admin    -> say '[set FightMode None CantWalk true'
+   34.70 admin    <- 0x6C target cursor 1227 (type 0)
+   34.90 admin    -> 0x6C target object 0x00027FB8
+   34.90 admin    <- unicode(0) System: Property has been set. (2)
+   36.61 admin    -> say '[set NextSkillTime 0'
+   36.62 admin    <- 0x6C target cursor 1228 (type 0)
+   36.81 admin    -> 0x6C target object 0x00027C41
+   36.82 admin    <- unicode(0) System: Property has been set.
+   37.32 player   <- 0x6C target cursor 1229 (type 0)
+   37.32 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   37.32 player   -> 0x6C target object 0x00027FAE
+   37.32 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   37.32 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   37.32 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   37.36 admin    -> say '[set NextSkillTime 0'
+   37.36 admin    <- 0x6C target cursor 1230 (type 0)
+   37.56 admin    -> 0x6C target object 0x00027C41
+   37.57 admin    <- unicode(0) System: Property has been set.
+   38.07 player   <- 0x6C target cursor 1231 (type 0)
+   38.07 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   38.07 player   -> 0x6C target object 0x00027FB4
+   38.07 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   38.07 player   <- cliloc(0) System #1094947: You successfully steal a special item from the creature!
+   38.07 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   38.07 admin    -> say '[go 0x27C41'
+   38.07 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 113, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 250, 'dex': 22, 'int': 20, 'stam': 22, 'stamMax': 22, 'mana': 20, 'manaMax': 20, 'gold': 1500, 'ar': 0, 'weight': 518, 'maxWeight': 975, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   38.07 player   <- 0x25 item 0x403CA6A0 graphic 0xEFD x1 into 0x403C2E06
+   39.08 admin    -> say '[add RedDeath'
+   39.08 admin    <- 0x6C target cursor 1232 (type 1)
+   39.28 admin    -> 0x6C target ground 5510,2360,42
+   39.28 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   39.28 admin    -> say '[set FightMode None CantWalk true'
+   39.28 admin    <- 0x6C target cursor 1233 (type 0)
+   39.49 admin    -> 0x6C target object 0x00027FB9
+   39.49 admin    <- unicode(0) System: Property has been set. (2)
+   39.99 admin    -> say '[set NextSkillTime 0'
+   39.99 admin    <- 0x6C target cursor 1234 (type 0)
+   40.21 admin    -> 0x6C target object 0x00027C41
+   40.21 admin    <- unicode(0) System: Property has been set.
+   40.72 player   <- 0x6C target cursor 1235 (type 0)
+   40.72 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   40.72 player   -> 0x6C target object 0x00027FB5
+   40.72 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   40.72 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   40.72 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   40.72 admin    -> say '[set NextSkillTime 0'
+   40.72 admin    <- 0x6C target cursor 1236 (type 0)
+   40.93 admin    -> 0x6C target object 0x00027C41
+   40.93 admin    <- unicode(0) System: Property has been set.
+   41.44 player   <- 0x6C target cursor 1237 (type 0)
+   41.44 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   41.44 player   -> 0x6C target object 0x00027FB8
+   41.44 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   41.44 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   41.44 player   <- 0x3A skill 33 now 130.1 (cap 200.0)
+   41.44 player   <- 0x3A skill 33 now 130.2 (cap 200.0)
+   41.44 player   <- 0x3A skill 33 now 130.3 (cap 200.0)
+   41.44 player   <- 0x3A skill 33 now 130.4 (cap 200.0)
+   41.44 player   <- 0x3A skill 33 now 130.5 (cap 200.0)
+   41.44 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   41.44 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 114, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 250, 'dex': 23, 'int': 20, 'stam': 22, 'stamMax': 23, 'mana': 20, 'manaMax': 20, 'gold': 1500, 'ar': 0, 'weight': 518, 'maxWeight': 975, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   42.63 admin    -> say '[set NextSkillTime 0'
+   42.63 admin    <- 0x6C target cursor 1238 (type 0)
+   42.83 admin    -> 0x6C target object 0x00027C41
+   42.83 admin    <- unicode(0) System: Property has been set.
+   43.33 player   <- 0x6C target cursor 1239 (type 0)
+   43.33 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   43.33 player   -> 0x6C target object 0x00027FAE
+   43.34 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   43.34 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   43.34 player   <- 0x3A skill 33 now 130.6 (cap 200.0)
+   43.34 player   <- 0x3A skill 33 now 130.7 (cap 200.0)
+   43.34 player   <- 0x3A skill 33 now 130.8 (cap 200.0)
+   43.34 player   <- 0x3A skill 33 now 130.9 (cap 200.0)
+   43.34 player   <- 0x3A skill 33 now 131.0 (cap 200.0)
+   43.34 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   43.34 admin    -> say '[set NextSkillTime 0'
+   43.34 admin    <- 0x6C target cursor 1240 (type 0)
+   43.54 admin    -> 0x6C target object 0x00027C41
+   43.54 admin    <- unicode(0) System: Property has been set.
+   44.04 player   <- 0x6C target cursor 1241 (type 0)
+   44.04 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   44.04 player   -> 0x6C target object 0x00027FB9
+   44.05 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   44.05 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   44.05 player   <- 0x3A skill 33 now 131.1 (cap 200.0)
+   44.05 player   <- 0x3A skill 33 now 131.2 (cap 200.0)
+   44.05 player   <- 0x3A skill 33 now 131.3 (cap 200.0)
+   44.05 player   <- 0x3A skill 33 now 131.4 (cap 200.0)
+   44.05 player   <- 0x3A skill 33 now 131.5 (cap 200.0)
+   44.05 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   46.02 admin    -> say '[set NextSkillTime 0'
+   46.02 admin    <- 0x6C target cursor 1242 (type 0)
+   46.22 admin    -> 0x6C target object 0x00027C41
+   46.22 admin    <- unicode(0) System: Property has been set.
+   46.73 player   <- 0x6C target cursor 1243 (type 0)
+   46.73 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   46.73 player   -> 0x6C target object 0x00027FB5
+   46.73 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   46.73 player   <- cliloc(0) System #1094947: You successfully steal a special item from the creature!
+   46.73 player   <- 0x3A skill 33 now 131.6 (cap 200.0)
+   46.73 player   <- 0x3A skill 33 now 131.7 (cap 200.0)
+   46.73 player   <- 0x3A skill 33 now 131.8 (cap 200.0)
+   46.73 player   <- 0x3A skill 33 now 131.9 (cap 200.0)
+   46.73 player   <- 0x3A skill 33 now 132.0 (cap 200.0)
+   46.73 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   46.73 admin    -> say '[go 0x27C41'
+   46.73 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 116, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 250, 'dex': 23, 'int': 21, 'stam': 23, 'stamMax': 23, 'mana': 20, 'manaMax': 21, 'gold': 1500, 'ar': 0, 'weight': 519, 'maxWeight': 975, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   46.73 player   <- 0x25 item 0x403CA6B5 graphic 0xEFC x1 into 0x403C2E06
+   47.73 admin    -> say '[add RedDeath'
+   47.73 admin    <- 0x6C target cursor 1244 (type 1)
+   47.94 admin    -> 0x6C target ground 5511,2361,42
+   47.94 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   47.94 admin    -> say '[set FightMode None CantWalk true'
+   47.94 admin    <- 0x6C target cursor 1245 (type 0)
+   48.15 admin    -> 0x6C target object 0x00027FBA
+   48.15 admin    <- unicode(0) System: Property has been set. (2)
+   48.66 admin    -> say '[set NextSkillTime 0'
+   48.66 admin    <- 0x6C target cursor 1246 (type 0)
+   48.87 admin    -> 0x6C target object 0x00027C41
+   48.87 admin    <- unicode(0) System: Property has been set.
+   49.37 player   <- 0x6C target cursor 1247 (type 0)
+   49.37 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   49.37 player   -> 0x6C target object 0x00027FB8
+   49.38 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   49.38 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   49.38 player   <- 0x3A skill 33 now 132.1 (cap 200.0)
+   49.38 player   <- 0x3A skill 33 now 132.2 (cap 200.0)
+   49.38 player   <- 0x3A skill 33 now 132.3 (cap 200.0)
+   49.38 player   <- 0x3A skill 33 now 132.4 (cap 200.0)
+   49.38 player   <- 0x3A skill 33 now 132.5 (cap 200.0)
+   49.38 player   <- 0x3A skill 33 now 132.6 (cap 200.0)
+   49.38 player   <- 0x3A skill 33 now 132.7 (cap 200.0)
+   49.38 player   <- 0x3A skill 33 now 132.8 (cap 200.0)
+   49.38 player   <- 0x3A skill 33 now 132.9 (cap 200.0)
+   49.38 player   <- 0x3A skill 33 now 133.0 (cap 200.0)
+   49.38 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   49.38 admin    -> say '[set NextSkillTime 0'
+   49.38 admin    <- 0x6C target cursor 1248 (type 0)
+   49.58 admin    -> 0x6C target object 0x00027C41
+   49.58 admin    <- unicode(0) System: Property has been set.
+   50.09 player   <- 0x6C target cursor 1249 (type 0)
+   50.09 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   50.09 player   -> 0x6C target object 0x00027FAE
+   50.09 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   50.09 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   50.09 player   <- 0x3A skill 33 now 133.1 (cap 200.0)
+   50.09 player   <- 0x3A skill 33 now 133.2 (cap 200.0)
+   50.09 player   <- 0x3A skill 33 now 133.3 (cap 200.0)
+   50.09 player   <- 0x3A skill 33 now 133.4 (cap 200.0)
+   50.09 player   <- 0x3A skill 33 now 133.5 (cap 200.0)
+   50.09 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   50.09 admin    -> say '[set NextSkillTime 0'
+   50.09 admin    <- 0x6C target cursor 1250 (type 0)
+   50.29 admin    -> 0x6C target object 0x00027C41
+   50.29 admin    <- unicode(0) System: Property has been set.
+   50.80 player   <- 0x6C target cursor 1251 (type 0)
+   50.80 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   50.80 player   -> 0x6C target object 0x00027FB9
+   50.80 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   50.80 player   <- cliloc(0) System #1094947: You successfully steal a special item from the creature!
+   50.80 player   <- 0x3A skill 33 now 133.6 (cap 200.0)
+   50.80 player   <- 0x3A skill 33 now 133.7 (cap 200.0)
+   50.80 player   <- 0x3A skill 33 now 133.8 (cap 200.0)
+   50.80 player   <- 0x3A skill 33 now 133.9 (cap 200.0)
+   50.80 player   <- 0x3A skill 33 now 134.0 (cap 200.0)
+   50.80 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   50.80 admin    -> say '[go 0x27C41'
+   50.80 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 117, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 250, 'dex': 23, 'int': 21, 'stam': 23, 'stamMax': 23, 'mana': 21, 'manaMax': 21, 'gold': 1500, 'ar': 0, 'weight': 520, 'maxWeight': 975, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   50.80 player   <- 0x25 item 0x403CA6C7 graphic 0x1F13 x1 into 0x403C2E06
+   51.81 admin    -> say '[add RedDeath'
+   51.81 admin    <- 0x6C target cursor 1252 (type 1)
+   52.01 admin    -> 0x6C target ground 5510,2360,42
+   52.02 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   52.02 admin    -> say '[set FightMode None CantWalk true'
+   52.02 admin    <- 0x6C target cursor 1253 (type 0)
+   52.22 admin    -> 0x6C target object 0x00027FBB
+   52.22 admin    <- unicode(0) System: Property has been set. (2)
+   52.72 admin    -> say '[set NextSkillTime 0'
+   52.73 admin    <- 0x6C target cursor 1254 (type 0)
+   52.93 admin    -> 0x6C target object 0x00027C41
+   52.93 admin    <- unicode(0) System: Property has been set.
+   53.43 player   <- 0x6C target cursor 1255 (type 0)
+   53.43 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   53.43 player   -> 0x6C target object 0x00027FBA
+   53.43 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   53.43 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   53.43 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   54.67 admin    -> say '[set NextSkillTime 0'
+   54.67 admin    <- 0x6C target cursor 1256 (type 0)
+   54.87 admin    -> 0x6C target object 0x00027C41
+   54.87 admin    <- unicode(0) System: Property has been set.
+   55.37 player   <- 0x6C target cursor 1257 (type 0)
+   55.37 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   55.37 player   -> 0x6C target object 0x00027FB8
+   55.37 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   55.37 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   55.37 player   <- 0x3A skill 33 now 134.1 (cap 200.0)
+   55.37 player   <- 0x3A skill 33 now 134.2 (cap 200.0)
+   55.37 player   <- 0x3A skill 33 now 134.3 (cap 200.0)
+   55.37 player   <- 0x3A skill 33 now 134.4 (cap 200.0)
+   55.37 player   <- 0x3A skill 33 now 134.5 (cap 200.0)
+   55.37 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   55.40 admin    -> say '[set NextSkillTime 0'
+   55.40 admin    <- 0x6C target cursor 1258 (type 0)
+   55.60 admin    -> 0x6C target object 0x00027C41
+   55.60 admin    <- unicode(0) System: Property has been set.
+   56.10 player   <- 0x6C target cursor 1259 (type 0)
+   56.10 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   56.10 player   -> 0x6C target object 0x00027FAE
+   56.10 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   56.10 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   56.10 player   <- 0x3A skill 33 now 134.6 (cap 200.0)
+   56.10 player   <- 0x3A skill 33 now 134.7 (cap 200.0)
+   56.10 player   <- 0x3A skill 33 now 134.8 (cap 200.0)
+   56.10 player   <- 0x3A skill 33 now 134.9 (cap 200.0)
+   56.10 player   <- 0x3A skill 33 now 135.0 (cap 200.0)
+   56.10 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   56.10 admin    -> say '[set NextSkillTime 0'
+   56.10 admin    <- 0x6C target cursor 1260 (type 0)
+   56.31 admin    -> 0x6C target object 0x00027C41
+   56.31 admin    <- unicode(0) System: Property has been set.
+   56.81 player   <- 0x6C target cursor 1261 (type 0)
+   56.81 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   56.81 player   -> 0x6C target object 0x00027FBB
+   56.82 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   56.82 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   56.82 player   <- 0x3A skill 33 now 135.1 (cap 200.0)
+   56.82 player   <- 0x3A skill 33 now 135.2 (cap 200.0)
+   56.82 player   <- 0x3A skill 33 now 135.3 (cap 200.0)
+   56.82 player   <- 0x3A skill 33 now 135.4 (cap 200.0)
+   56.82 player   <- 0x3A skill 33 now 135.5 (cap 200.0)
+   56.82 player   <- 0x3A skill 33 now 135.6 (cap 200.0)
+   56.82 player   <- 0x3A skill 33 now 135.7 (cap 200.0)
+   56.82 player   <- 0x3A skill 33 now 135.8 (cap 200.0)
+   56.82 player   <- 0x3A skill 33 now 135.9 (cap 200.0)
+   56.82 player   <- 0x3A skill 33 now 136.0 (cap 200.0)
+   56.82 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   58.74 admin    -> say '[set NextSkillTime 0'
+   58.74 admin    <- 0x6C target cursor 1262 (type 0)
+   58.95 admin    -> 0x6C target object 0x00027C41
+   58.95 admin    <- unicode(0) System: Property has been set.
+   59.46 player   <- 0x6C target cursor 1263 (type 0)
+   59.46 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   59.46 player   -> 0x6C target object 0x00027FBA
+   59.46 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   59.46 player   <- cliloc(0) System #1094947: You successfully steal a special item from the creature!
+   59.46 admin    -> say '[go 0x27C41'
+   59.46 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   59.46 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 120, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 250, 'dex': 23, 'int': 21, 'stam': 23, 'stamMax': 23, 'mana': 21, 'manaMax': 21, 'gold': 1500, 'ar': 0, 'weight': 521, 'maxWeight': 975, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   59.46 player   <- 0x25 item 0x403CA699 graphic 0x1727 x2 into 0x403C2E06
+   60.46 admin    -> say '[add RedDeath'
+   60.46 admin    <- 0x6C target cursor 1264 (type 1)
+   60.67 admin    -> 0x6C target ground 5511,2361,42
+   60.67 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   60.67 admin    -> say '[set FightMode None CantWalk true'
+   60.67 admin    <- 0x6C target cursor 1265 (type 0)
+   60.88 admin    -> 0x6C target object 0x00027FBC
+   60.88 admin    <- unicode(0) System: Property has been set. (2)
+   61.39 admin    -> say '[set NextSkillTime 0'
+   61.39 admin    <- 0x6C target cursor 1266 (type 0)
+   61.60 admin    -> 0x6C target object 0x00027C41
+   61.60 admin    <- unicode(0) System: Property has been set.
+   62.11 player   <- 0x6C target cursor 1267 (type 0)
+   62.11 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   62.11 player   -> 0x6C target object 0x00027FB8
+   62.11 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   62.11 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   62.11 player   <- 0x3A skill 33 now 136.1 (cap 200.0)
+   62.11 player   <- 0x3A skill 33 now 136.2 (cap 200.0)
+   62.11 player   <- 0x3A skill 33 now 136.3 (cap 200.0)
+   62.11 player   <- 0x3A skill 33 now 136.4 (cap 200.0)
+   62.11 player   <- 0x3A skill 33 now 136.5 (cap 200.0)
+   62.11 player   <- 0x3A skill 33 now 136.6 (cap 200.0)
+   62.11 player   <- 0x3A skill 33 now 136.7 (cap 200.0)
+   62.11 player   <- 0x3A skill 33 now 136.8 (cap 200.0)
+   62.11 player   <- 0x3A skill 33 now 136.9 (cap 200.0)
+   62.11 player   <- 0x3A skill 33 now 137.0 (cap 200.0)
+   62.11 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   62.11 admin    -> say '[set NextSkillTime 0'
+   62.11 admin    <- 0x6C target cursor 1268 (type 0)
+   62.32 admin    -> 0x6C target object 0x00027C41
+   62.32 admin    <- unicode(0) System: Property has been set.
+   62.82 player   <- 0x6C target cursor 1269 (type 0)
+   62.82 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   62.82 player   -> 0x6C target object 0x00027FAE
+   62.82 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   62.82 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   62.82 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   62.82 admin    -> say '[set NextSkillTime 0'
+   62.82 admin    <- 0x6C target cursor 1270 (type 0)
+   63.03 admin    -> 0x6C target object 0x00027C41
+   63.03 admin    <- unicode(0) System: Property has been set.
+   63.53 player   <- 0x6C target cursor 1271 (type 0)
+   63.53 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   63.53 player   -> 0x6C target object 0x00027FBB
+   63.54 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   63.54 player   <- cliloc(0) System #1094947: You successfully steal a special item from the creature!
+   63.54 player   <- 0x3A skill 33 now 137.1 (cap 200.0)
+   63.54 player   <- 0x3A skill 33 now 137.2 (cap 200.0)
+   63.54 player   <- 0x3A skill 33 now 137.3 (cap 200.0)
+   63.54 player   <- 0x3A skill 33 now 137.4 (cap 200.0)
+   63.54 player   <- 0x3A skill 33 now 137.5 (cap 200.0)
+   63.54 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   63.54 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 121, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 250, 'dex': 24, 'int': 21, 'stam': 23, 'stamMax': 24, 'mana': 21, 'manaMax': 21, 'gold': 1500, 'ar': 0, 'weight': 522, 'maxWeight': 975, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   63.54 player   <- 0x25 item 0x403CA6D4 graphic 0x2831 x1 into 0x403C2E06
+   63.54 admin    -> say '[go 0x27C41'
+   64.55 admin    -> say '[add RedDeath'
+   64.55 admin    <- 0x6C target cursor 1272 (type 1)
+   64.76 admin    -> 0x6C target ground 5510,2360,42
+   64.76 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   64.76 admin    -> say '[set FightMode None CantWalk true'
+   64.76 admin    <- 0x6C target cursor 1273 (type 0)
+   64.96 admin    -> 0x6C target object 0x00027FBD
+   64.97 admin    <- unicode(0) System: Property has been set. (2)
+   65.47 admin    -> say '[set NextSkillTime 0'
+   65.47 admin    <- 0x6C target cursor 1274 (type 0)
+   65.67 admin    -> 0x6C target object 0x00027C41
+   65.67 admin    <- unicode(0) System: Property has been set.
+   66.17 player   <- 0x6C target cursor 1275 (type 0)
+   66.17 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   66.17 player   -> 0x6C target object 0x00027FBC
+   66.18 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   66.18 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   66.18 player   <- 0x3A skill 33 now 137.6 (cap 200.0)
+   66.18 player   <- 0x3A skill 33 now 137.7 (cap 200.0)
+   66.18 player   <- 0x3A skill 33 now 137.8 (cap 200.0)
+   66.18 player   <- 0x3A skill 33 now 137.9 (cap 200.0)
+   66.18 player   <- 0x3A skill 33 now 138.0 (cap 200.0)
+   66.18 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   67.41 admin    -> say '[set NextSkillTime 0'
+   67.42 admin    <- 0x6C target cursor 1276 (type 0)
+   67.62 admin    -> 0x6C target object 0x00027C41
+   67.62 admin    <- unicode(0) System: Property has been set.
+   68.13 player   <- 0x6C target cursor 1277 (type 0)
+   68.13 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   68.13 player   -> 0x6C target object 0x00027FB8
+   68.13 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   68.13 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   68.13 player   <- 0x3A skill 33 now 138.1 (cap 200.0)
+   68.13 player   <- 0x3A skill 33 now 138.2 (cap 200.0)
+   68.13 player   <- 0x3A skill 33 now 138.3 (cap 200.0)
+   68.13 player   <- 0x3A skill 33 now 138.4 (cap 200.0)
+   68.13 player   <- 0x3A skill 33 now 138.5 (cap 200.0)
+   68.13 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   68.13 admin    -> say '[set NextSkillTime 0'
+   68.14 admin    <- 0x6C target cursor 1278 (type 0)
+   68.34 admin    -> 0x6C target object 0x00027C41
+   68.34 admin    <- unicode(0) System: Property has been set.
+   68.85 player   <- 0x6C target cursor 1279 (type 0)
+   68.85 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   68.85 player   -> 0x6C target object 0x00027FAE
+   68.85 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   68.85 player   <- cliloc(0) System #1094947: You successfully steal a special item from the creature!
+   68.85 player   <- 0x3A skill 33 now 138.6 (cap 200.0)
+   68.85 player   <- 0x3A skill 33 now 138.7 (cap 200.0)
+   68.85 player   <- 0x3A skill 33 now 138.8 (cap 200.0)
+   68.85 player   <- 0x3A skill 33 now 138.9 (cap 200.0)
+   68.85 player   <- 0x3A skill 33 now 139.0 (cap 200.0)
+   68.85 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   68.85 admin    -> say '[go 0x27C41'
+   68.85 player   <- 0x25 item 0x403CA588 graphic 0xF88 x2 into 0x403C2E06
+   69.87 admin    -> say '[add RedDeath'
+   69.87 admin    <- 0x6C target cursor 1280 (type 1)
+   70.07 admin    -> 0x6C target ground 5512,2360,42
+   70.07 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   70.07 admin    -> say '[set FightMode None CantWalk true'
+   70.07 admin    <- 0x6C target cursor 1281 (type 0)
+   70.28 admin    -> 0x6C target object 0x00027FBE
+   70.28 admin    <- unicode(0) System: Property has been set. (2)
+   70.78 admin    -> say '[set NextSkillTime 0'
+   70.78 admin    <- 0x6C target cursor 1282 (type 0)
+   70.99 admin    -> 0x6C target object 0x00027C41
+   70.99 admin    <- unicode(0) System: Property has been set.
+   71.49 player   <- 0x6C target cursor 1283 (type 0)
+   71.49 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   71.49 player   -> 0x6C target object 0x00027FBD
+   71.49 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   71.49 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   71.49 player   <- 0x3A skill 33 now 139.1 (cap 200.0)
+   71.49 player   <- 0x3A skill 33 now 139.2 (cap 200.0)
+   71.49 player   <- 0x3A skill 33 now 139.3 (cap 200.0)
+   71.49 player   <- 0x3A skill 33 now 139.4 (cap 200.0)
+   71.49 player   <- 0x3A skill 33 now 139.5 (cap 200.0)
+   71.49 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   71.49 admin    -> say '[set NextSkillTime 0'
+   71.49 admin    <- 0x6C target cursor 1284 (type 0)
+   71.70 admin    -> 0x6C target object 0x00027C41
+   71.70 admin    <- unicode(0) System: Property has been set.
+   72.20 player   <- 0x6C target cursor 1285 (type 0)
+   72.20 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   72.20 player   -> 0x6C target object 0x00027FBC
+   72.21 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   72.21 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   72.21 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   73.44 admin    -> say '[set NextSkillTime 0'
+   73.45 admin    <- 0x6C target cursor 1286 (type 0)
+   73.65 admin    -> 0x6C target object 0x00027C41
+   73.65 admin    <- unicode(0) System: Property has been set.
+   74.16 player   <- 0x6C target cursor 1287 (type 0)
+   74.16 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   74.16 player   -> 0x6C target object 0x00027FB8
+   74.16 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   74.16 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   74.16 player   <- 0x3A skill 33 now 139.6 (cap 200.0)
+   74.16 player   <- 0x3A skill 33 now 139.7 (cap 200.0)
+   74.16 player   <- 0x3A skill 33 now 139.8 (cap 200.0)
+   74.16 player   <- 0x3A skill 33 now 139.9 (cap 200.0)
+   74.16 player   <- 0x3A skill 33 now 140.0 (cap 200.0)
+   74.16 player   <- 0x3A skill 33 now 140.1 (cap 200.0)
+   74.16 player   <- 0x3A skill 33 now 140.2 (cap 200.0)
+   74.16 player   <- 0x3A skill 33 now 140.3 (cap 200.0)
+   74.16 player   <- 0x3A skill 33 now 140.4 (cap 200.0)
+   74.16 player   <- 0x3A skill 33 now 140.5 (cap 200.0)
+   74.16 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   74.16 admin    -> say '[set NextSkillTime 0'
+   74.16 admin    <- 0x6C target cursor 1288 (type 0)
+   74.36 admin    -> 0x6C target object 0x00027C41
+   74.37 admin    <- unicode(0) System: Property has been set.
+   74.87 player   <- 0x6C target cursor 1289 (type 0)
+   74.87 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   74.87 player   -> 0x6C target object 0x00027FBE
+   74.87 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   74.87 player   <- cliloc(0) System #1094947: You successfully steal a special item from the creature!
+   74.87 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   74.87 admin    -> say '[go 0x27C41'
+   74.87 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 124, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 250, 'dex': 24, 'int': 21, 'stam': 24, 'stamMax': 24, 'mana': 21, 'manaMax': 21, 'gold': 1500, 'ar': 0, 'weight': 523, 'maxWeight': 975, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   74.87 player   <- 0x25 item 0x403CA699 graphic 0x1727 x3 into 0x403C2E06
+   75.88 admin    -> say '[add RedDeath'
+   75.88 admin    <- 0x6C target cursor 1290 (type 1)
+   76.08 admin    -> 0x6C target ground 5512,2360,42
+   76.08 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   76.08 admin    -> say '[set FightMode None CantWalk true'
+   76.08 admin    <- 0x6C target cursor 1291 (type 0)
+   76.28 admin    -> 0x6C target object 0x00027FBF
+   76.29 admin    <- unicode(0) System: Property has been set. (2)
+   76.80 admin    -> say '[set NextSkillTime 0'
+   76.80 admin    <- 0x6C target cursor 1292 (type 0)
+   77.00 admin    -> 0x6C target object 0x00027C41
+   77.00 admin    <- unicode(0) System: Property has been set.
+   77.51 player   <- 0x6C target cursor 1293 (type 0)
+   77.51 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   77.51 player   -> 0x6C target object 0x00027FBD
+   77.51 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   77.51 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   77.51 player   <- 0x3A skill 33 now 140.6 (cap 200.0)
+   77.51 player   <- 0x3A skill 33 now 140.7 (cap 200.0)
+   77.51 player   <- 0x3A skill 33 now 140.8 (cap 200.0)
+   77.51 player   <- 0x3A skill 33 now 140.9 (cap 200.0)
+   77.51 player   <- 0x3A skill 33 now 141.0 (cap 200.0)
+   77.51 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   77.51 admin    -> say '[set NextSkillTime 0'
+   77.51 admin    <- 0x6C target cursor 1294 (type 0)
+   77.72 admin    -> 0x6C target object 0x00027C41
+   77.73 admin    <- unicode(0) System: Property has been set.
+   78.23 player   <- 0x6C target cursor 1295 (type 0)
+   78.23 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   78.23 player   -> 0x6C target object 0x00027FBC
+   78.23 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   78.23 player   <- cliloc(0) System #1094947: You successfully steal a special item from the creature!
+   78.23 player   <- 0x3A skill 33 now 141.1 (cap 200.0)
+   78.23 player   <- 0x3A skill 33 now 141.2 (cap 200.0)
+   78.23 player   <- 0x3A skill 33 now 141.3 (cap 200.0)
+   78.23 player   <- 0x3A skill 33 now 141.4 (cap 200.0)
+   78.23 player   <- 0x3A skill 33 now 141.5 (cap 200.0)
+   78.23 player   <- cliloc(0) System #1019065: You have lost a good amount of karma.
+   78.23 admin    -> say '[go 0x27C41'
+   78.23 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 125, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 250, 'dex': 25, 'int': 21, 'stam': 24, 'stamMax': 25, 'mana': 21, 'manaMax': 21, 'gold': 1500, 'ar': 0, 'weight': 524, 'maxWeight': 975, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   78.23 player   <- 0x25 item 0x403CA72B graphic 0x1C18 x1 into 0x403C2E06
+   79.24 admin    -> say '[add RedDeath'
+   79.24 admin    <- 0x6C target cursor 1296 (type 1)
+   79.44 admin    -> 0x6C target ground 5511,2361,42
+   79.44 admin    -> say '[set FightMode None CantWalk true'
+   79.44 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   79.44 admin    <- 0x6C target cursor 1297 (type 0)
+   79.65 admin    -> 0x6C target object 0x00027FC0
+   79.65 admin    <- unicode(0) System: Property has been set. (2)
+   80.16 admin    -> say '[go 0x27C41'
+   81.16 admin    -> say '[GuildStanding thieves 0'
+   81.16 admin    <- 0x6C target cursor 1298 (type 0)
+   81.37 admin    -> 0x6C target object 0x00027C41
+   81.37 admin    <- unicode(0) System: Set Bot Human F Aa's Thieves' Den standing to 0 (Initiate).
+   81.99 admin    -> say '[go 0x27C41'
+   83.00 admin    -> say '[set Blessed false'
+   83.00 admin    <- 0x6C target cursor 1299 (type 0)
+   83.21 admin    -> 0x6C target object 0x00027C41
+   83.21 admin    <- unicode(0) System: Property has been set.
+   83.36 player   <- 0xF3 world item 0x403CA74B graphic 0x122C x1 at 5511,2360,42 hue 0
+   83.37 admin    <- 0xF3 world item 0x403CA74B graphic 0x122C x1 at 5511,2360,42 hue 0
+   83.37 player   <- 0xF3 world item 0x403CA74C graphic 0x122B x1 at 5510,2360,42 hue 0
+   83.37 admin    <- 0xF3 world item 0x403CA74C graphic 0x122B x1 at 5510,2360,42 hue 0
+   83.37 player   <- 0xF3 world item 0x403CA74D graphic 0x122E x1 at 5511,2360,42 hue 0
+   83.37 admin    <- 0xF3 world item 0x403CA74D graphic 0x122E x1 at 5511,2360,42 hue 0
+   83.37 player   <- 0xF3 world item 0x403CA74E graphic 0x122D x1 at 5510,2360,42 hue 0
+   83.37 admin    <- 0xF3 world item 0x403CA74E graphic 0x122D x1 at 5510,2360,42 hue 0
+   83.37 player   <- 0xF3 world item 0x403CA74F graphic 0x122C x1 at 5512,2359,42 hue 0
+   83.37 player   <- cliloc(0) System #502808: You would have been poisoned, were you not new to the land of Britannia.  Be careful in the future.
+   83.37 admin    <- 0xF3 world item 0x403CA74F graphic 0x122C x1 at 5512,2359,42 hue 0
+   83.72 harness  == P142-2 run 2: PASS (Den: already a member (Member. Rank: Initiate.); at (5511, 2360, 42) (Your region is ChampionSpawnRegion <- Region.); Initiate at Stealing 141.5 over 39 tries: {'caught': 29, 'special': 10}; refusal line None)

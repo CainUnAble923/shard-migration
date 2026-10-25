@@ -1263,3 +1263,17 @@ Pending October 21 plans; checker candidates are proposals, not implemented chec
 | P378-85 | BOT | P280: Not built yet: yes. Proposed checker: Nested contents,fees,collection and total item accounting can be asserted;use original family types rather than icon lookalikes. |
 | P378-86 | BOT | P280: Not built yet: yes. Proposed checker: Inventory,record text and known bank sums are server-observable;Bank page is a report,not an implemented unlimited remote bank. |
 | P378-87 | BOT | P280: Not built yet: yes. Proposed checker: Craft gates,consumption,UsesRemaining and durability are checkable;craft thresholds are startup-read so fixture server must load desired settings before crafting. |
+
+### P269
+
+Added by cc-P269 (2026-10-25).
+
+| id | bucket | reason |
+|---|---|---|
+| P269-1 | BOT | Baiting and tying a hook are a target on the pole; the messages (1149759, 1150884) and the pole's tooltip lines are server-sent |
+| P269-2 | EYES | Lava fishing needs a lava pool and a cast; the splash and the catch are server-sent, the look of the stone footwear and rocks is Chase's eyes |
+| P269-3 | BOT-PARTIAL | Baking is a craft gump; the buff icon and the status numbers are server-sent, the pie's look is Chase's eyes |
+| P269-4 | EYES | The Oracle reading is a message, but finding the spot needs a boat at sea; Charybdis rising is Chase's eyes |
+| P269-5 | EYES | A fish order needs a boat docked by a fish monger and a sail to another port; the gump, crate and reward are server-sent |
+| P269-6 | EYES | Staff-placed boss on the island; the fight and his crew are Chase's eyes |
+| P269-7 | CC | The test world loads and saves on the new image with its fishing poles migrated: done by CC on a scratch copy |

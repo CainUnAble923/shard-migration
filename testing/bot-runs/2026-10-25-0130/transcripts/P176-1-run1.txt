@@ -1,0 +1,138 @@
+    0.00 harness  == P176-1 run 1: Unravel Container: a bag of 3 magic, 2 plain and 1 blessed item; the confirmation counts, the three summary lines, the bag keeps the plain and blessed ones, the shards rise by the Ingredients line
+    0.00 admin    -> say '[go 0x27C41'
+    1.00 admin    -> say '[set RawStr 400'
+    1.00 admin    <- 0x6C target cursor 693 (type 0)
+    1.20 admin    -> 0x6C target object 0x00027C41
+    1.21 admin    <- unicode(0) System: Property has been set.
+    1.21 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 250, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 17, 'stam': 16, 'stamMax': 16, 'mana': 17, 'manaMax': 17, 'gold': 1500, 'ar': 0, 'weight': 440, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+    1.71 player   -> 0xBF 0x13 context menu request 0x00027DFE
+    1.71 player   <- 0xBF 0x14 context menu 0x00027DFE: [(0, 3006123, 'Open Paperdoll', 0), (1, 3006146, 'Talk', 0), (2, 1114267, 'Imbue Item', 0), (3, 3006003, 'Train Item Identification', 0), (4, 3006016, 'Train Evaluating Intelligence', 0), (5, 3006025, 'Train Magery', 0), (6, 3006026, 'Train Resisting Spells', 0), (7, 3006056, 'Train Imbuing', 1)]
+    1.71 player   -> 0xBF 0x15 context pick 1 (Talk) on 0x00027DFE
+    1.71 player   <- 0xDD gump 0x00000C0F type -810631593: Artificers' Order | <BASEFONT COLOR=#DDDDDD><I>Magic and craft are one. Show you understand the art of imbuing.</I></BASEFONT> | <BASEFONT COLOR=#AAAAAA>Teaches: Imbuing</BASEFONT> | Separate from the stock trade guild (say "join", 500 gold). One does not join the other. | Member. Rank: Apprentice. | Mule module schematics | Apprentice task: | <BASEFONT COLOR=#DDDDDD>Demonstrate Imbuing of at least 20.0, or bring 3 Diamonds as tribute.</BASEFONT> | Complete it: +25 reputation, +10 scrip | Guild services | Guild Directory | Requisitions | Close
+    1.71 player      layout: { resizepic 0 0 9270 520 400 }{ checkertrans 10 10 500 380 }{ text 20 14 1154 0 }{ gumppictiled 10 36 500 2 9304 }{ htmlgump 20 44 480 36 1 0 0 }{ htmlgump 20 82 480 36 2 0 0 }{ text 20 118 999 3 }{ gumppictiled 10 140 500 2 9304 }{ text 20 150 68 4 }{ button 20 172 4005 4007 1 0 7 }{ text 55 174 999 5 }{ gumppictiled 10 204 500 2 9304 }{ text 20 212 999 6 }{ htmlgump 20 232 480 36 7 0 0 }{ button 20 270 4023 4025 1 0 4 }{ text 55 272 1154 8 }{ gumppictiled 10 350 500 2 9304 }{ button 20 362 4011 4012 1 0 5 }{ text 45 364 999 9 }{ button 180 362 4011 4012 1 0 6 }{ text 205 364 999 10 }{ button 300 362 4011 4012 1 0 9 }{ text 325 364 999 11 }{ button 420 362 4017 4019 1 0 0 }{ text 455 364 999 12 }
+    1.72 player   -> 0xB1 gump 0x00000C0F type -810631593 button 0 switches [] texts []
+    1.72 admin    -> say '[go 0x27C41'
+    2.72 admin    -> say '[AddToPack Bag'
+    2.72 admin    <- 0x6C target cursor 694 (type 0)
+    2.94 admin    -> 0x6C target object 0x00027C41
+    2.94 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+    2.94 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 250, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 17, 'stam': 16, 'stamMax': 16, 'mana': 17, 'manaMax': 17, 'gold': 1500, 'ar': 0, 'weight': 442, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+    2.94 player   <- 0x25 item 0x403C7DDD graphic 0xE76 x1 into 0x403C2E06
+    2.94 admin    -> say '[go 0x27C41'
+    3.95 admin    -> say '[AddToPack Longsword'
+    3.95 admin    <- 0x6C target cursor 695 (type 0)
+    4.15 admin    -> 0x6C target object 0x00027C41
+    4.15 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+    4.15 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 250, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 17, 'stam': 16, 'stamMax': 16, 'mana': 17, 'manaMax': 17, 'gold': 1500, 'ar': 0, 'weight': 449, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+    4.15 player   <- 0x25 item 0x403C7DDE graphic 0xF61 x1 into 0x403C2E06
+    4.15 admin    -> say '[go 0x27C41'
+    5.16 admin    -> say '[set WeaponAttributes.HitLeechHits 30'
+    5.17 admin    <- 0x6C target cursor 696 (type 0)
+    5.36 admin    -> 0x6C target object 0x403C7DDE
+    5.37 admin    <- unicode(0) System: Property has been set.
+    5.88 player   <- 0xD6 properties 0x403C7DDE: longsword | Weight: 7 stones | hit life leech 30% | physical damage 100% | weapon damage 15 - 16 | weapon speed 3.5s | strength requirement 35 | one-handed weapon | skill required: swordsmanship | durability 61 / 61
+    5.88 admin    -> say '[go 0x27C41'
+    6.89 admin    -> say '[AddToPack Longsword'
+    6.89 admin    <- 0x6C target cursor 697 (type 0)
+    7.09 admin    -> 0x6C target object 0x00027C41
+    7.09 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+    7.09 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 250, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 17, 'stam': 16, 'stamMax': 16, 'mana': 17, 'manaMax': 17, 'gold': 1500, 'ar': 0, 'weight': 456, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+    7.09 player   <- 0x25 item 0x403C7DDF graphic 0xF61 x1 into 0x403C2E06
+    7.09 admin    -> say '[go 0x27C41'
+    8.10 admin    -> say '[set WeaponAttributes.HitLeechHits 30'
+    8.10 admin    <- 0x6C target cursor 698 (type 0)
+    8.30 admin    -> 0x6C target object 0x403C7DDF
+    8.30 admin    <- unicode(0) System: Property has been set.
+    8.81 player   <- 0xD6 properties 0x403C7DDF: longsword | Weight: 7 stones | hit life leech 30% | physical damage 100% | weapon damage 15 - 16 | weapon speed 3.5s | strength requirement 35 | one-handed weapon | skill required: swordsmanship | durability 82 / 82
+    8.81 admin    -> say '[go 0x27C41'
+    9.82 admin    -> say '[AddToPack Longsword'
+    9.82 admin    <- 0x6C target cursor 699 (type 0)
+   10.02 admin    -> 0x6C target object 0x00027C41
+   10.02 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   10.02 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 250, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 17, 'stam': 16, 'stamMax': 16, 'mana': 17, 'manaMax': 17, 'gold': 1500, 'ar': 0, 'weight': 463, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   10.02 player   <- 0x25 item 0x403C7DE0 graphic 0xF61 x1 into 0x403C2E06
+   10.02 admin    -> say '[go 0x27C41'
+   11.04 admin    -> say '[set WeaponAttributes.HitLeechHits 30'
+   11.04 admin    <- 0x6C target cursor 700 (type 0)
+   11.24 admin    -> 0x6C target object 0x403C7DE0
+   11.24 admin    <- unicode(0) System: Property has been set.
+   11.75 player   <- 0xD6 properties 0x403C7DE0: longsword | Weight: 7 stones | hit life leech 30% | physical damage 100% | weapon damage 15 - 16 | weapon speed 3.5s | strength requirement 35 | one-handed weapon | skill required: swordsmanship | durability 42 / 42
+   11.75 admin    -> say '[go 0x27C41'
+   12.76 admin    -> say '[AddToPack Longsword set LootType Blessed'
+   12.76 admin    <- 0x6C target cursor 701 (type 0)
+   12.96 admin    -> 0x6C target object 0x00027C41
+   12.96 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   12.96 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 250, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 17, 'stam': 16, 'stamMax': 16, 'mana': 17, 'manaMax': 17, 'gold': 1500, 'ar': 0, 'weight': 470, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   12.96 player   <- 0x25 item 0x403C7DEB graphic 0xF61 x1 into 0x403C2E06
+   12.97 admin    -> say '[go 0x27C41'
+   13.98 admin    -> say '[set WeaponAttributes.HitLeechHits 30'
+   13.98 admin    <- 0x6C target cursor 702 (type 0)
+   14.18 admin    -> 0x6C target object 0x403C7DEB
+   14.18 admin    <- unicode(0) System: Property has been set.
+   14.68 player   <- 0xD6 properties 0x403C7DEB: longsword | Blessed | Weight: 7 stones | hit life leech 30% | physical damage 100% | weapon damage 15 - 16 | weapon speed 3.5s | strength requirement 35 | one-handed weapon | skill required: swordsmanship | durability 90 / 90
+   14.68 admin    -> say '[go 0x27C41'
+   15.61 admin    <- unicode(0) Sanitation Warden: Every piece of refuse removed is a service to the realm.
+   15.61 player   <- unicode(0) Sanitation Warden: Every piece of refuse removed is a service to the realm.
+   15.69 admin    -> say '[AddToPack Dagger'
+   15.69 admin    <- 0x6C target cursor 703 (type 0)
+   15.89 admin    -> 0x6C target object 0x00027C41
+   15.89 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   15.89 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 250, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 17, 'stam': 16, 'stamMax': 16, 'mana': 17, 'manaMax': 17, 'gold': 1500, 'ar': 0, 'weight': 471, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   15.89 player   <- 0x25 item 0x403C7E08 graphic 0xF52 x1 into 0x403C2E06
+   15.89 admin    -> say '[go 0x27C41'
+   16.89 admin    -> say '[AddToPack GoldRing'
+   16.89 admin    <- 0x6C target cursor 704 (type 0)
+   17.09 admin    -> 0x6C target object 0x00027C41
+   17.10 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   17.10 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 250, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 17, 'stam': 16, 'stamMax': 16, 'mana': 17, 'manaMax': 17, 'gold': 1500, 'ar': 0, 'weight': 472, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   17.10 player   <- 0x25 item 0x403C7E09 graphic 0x108A x1 into 0x403C2E06
+   17.10 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 250, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 17, 'stam': 16, 'stamMax': 16, 'mana': 17, 'manaMax': 17, 'gold': 1500, 'ar': 0, 'weight': 472, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   17.27 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   17.27 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   17.51 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 250, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 17, 'stam': 16, 'stamMax': 16, 'mana': 17, 'manaMax': 17, 'gold': 1500, 'ar': 0, 'weight': 472, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   17.51 player   <- 0x25 item 0x403C7DDE graphic 0xF61 x1 into 0x403C7DDD
+   18.52 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 250, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 17, 'stam': 16, 'stamMax': 16, 'mana': 17, 'manaMax': 17, 'gold': 1500, 'ar': 0, 'weight': 472, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   18.93 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 250, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 17, 'stam': 16, 'stamMax': 16, 'mana': 17, 'manaMax': 17, 'gold': 1500, 'ar': 0, 'weight': 472, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   18.93 player   <- 0x25 item 0x403C7DDF graphic 0xF61 x1 into 0x403C7DDD
+   19.94 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 250, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 17, 'stam': 16, 'stamMax': 16, 'mana': 17, 'manaMax': 17, 'gold': 1500, 'ar': 0, 'weight': 472, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   20.34 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 250, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 17, 'stam': 16, 'stamMax': 16, 'mana': 17, 'manaMax': 17, 'gold': 1500, 'ar': 0, 'weight': 472, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   20.34 player   <- 0x25 item 0x403C7DE0 graphic 0xF61 x1 into 0x403C7DDD
+   21.35 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 250, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 17, 'stam': 16, 'stamMax': 16, 'mana': 17, 'manaMax': 17, 'gold': 1500, 'ar': 0, 'weight': 472, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   21.75 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 250, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 17, 'stam': 16, 'stamMax': 16, 'mana': 17, 'manaMax': 17, 'gold': 1500, 'ar': 0, 'weight': 472, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   21.75 player   <- 0x25 item 0x403C7E08 graphic 0xF52 x1 into 0x403C7DDD
+   22.76 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 250, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 17, 'stam': 16, 'stamMax': 16, 'mana': 17, 'manaMax': 17, 'gold': 1500, 'ar': 0, 'weight': 472, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   23.16 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 250, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 17, 'stam': 16, 'stamMax': 16, 'mana': 17, 'manaMax': 17, 'gold': 1500, 'ar': 0, 'weight': 472, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   23.16 player   <- 0x25 item 0x403C7E09 graphic 0x108A x1 into 0x403C7DDD
+   24.17 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 250, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 17, 'stam': 16, 'stamMax': 16, 'mana': 17, 'manaMax': 17, 'gold': 1500, 'ar': 0, 'weight': 472, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   24.57 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 250, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 17, 'stam': 16, 'stamMax': 16, 'mana': 17, 'manaMax': 17, 'gold': 1500, 'ar': 0, 'weight': 472, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   24.57 player   <- 0x25 item 0x403C7DEB graphic 0xF61 x1 into 0x403C7DDD
+   25.58 player   -> 0x06 double click 0x403C7DDD
+   25.58 player   <- 0x24 open container 0x403C7DDD gump 0x3D
+   25.58 player   <- 0x3C 6 items into containers
+   26.39 player   -> 0x06 double click 0x403C7AA3
+   26.39 player   <- cliloc(0) System #500119: You must wait to perform another action.
+   35.77 player   <- 0xF3 world item 0x40067DB0 graphic 0x676 x1 at 3480,2569,20 hue 0
+   35.77 admin    <- 0xF3 world item 0x40067DB0 graphic 0x676 x1 at 3480,2569,20 hue 0
+   37.65 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   37.65 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   38.41 player   -> 0x06 double click 0x403C7AA3
+   38.41 player   <- 0xDD gump 0x00000C10 type 1158509001: Artificers' Order - Imbuing Table | Rank: Apprentice | Essence Shards: 28 | Imbuing | Target a weapon, armour, jewellery, or clothing item to begin imbuing. | Target an item to imbue... | Disenchanting | Break down a magic item into Essence Shards, or extract a specific property. | Target an item to disenchant... | Unravel Container - every magic item in a bag... | Craft Essence | You have not mastered any properties yet. Master a property by imbuing it enough times using a PropertyEssence. | X
+   38.41 player      layout: { resizepic 0 0 9270 530 570 }{ checkertrans 6 6 518 558 }{ text 170 12 1153 0 }{ gumppictiled 10 32 510 2 9304 }{ text 18 38 999 1 }{ text 200 38 1153 2 }{ gumppictiled 10 54 510 2 9304 }{ text 18 62 1153 3 }{ text 18 80 999 4 }{ button 18 100 4011 4012 1 0 1 }{ text 44 102 1154 5 }{ gumppictiled 10 132 510 1 9304 }{ text 18 140 1153 6 }{ text 18 158 999 7 }{ button 18 178 4011 4012 1 0 6 }{ text 44 180 33 8 }{ button 18 202 4011 4012 1 0 12 }{ text 44 204 33 9 }{ gumppictiled 10 234 510 1 9304 }{ text 18 242 1153 10 }{ text 18 260 946 11 }{ gumppictiled 10 532 510 2 9304 }{ button 480 542 4023 4025 1 0 0 }{ text 502 544 1153 12 }
+   38.41 player   -> 0xB1 gump 0x00000C10 type 1158509001 button 12 switches [] texts []
+   38.41 player   <- unicode(0) System: Target a container in your backpack to unravel the magic items in it.
+   38.41 player   <- 0x6C target cursor 705 (type 0)
+   38.41 player   -> 0x6C target object 0x403C7DDD
+   38.41 player   <- 0xDD gump 0x00000C11 type 1158509001: Artificers' Order - Imbuing Table | Rank: Apprentice | Essence Shards: 28 | Unravel Container - FINAL CONFIRMATION | <BASEFONT COLOR=#FF6666>You are about to unravel every magic item in:<BR><B>Bag</B></BASEFONT><BR><BR><BASEFONT COLOR=#FFCC44>3 item(s) will be DESTROYED for their ingredients.</BASEFONT><BR><BASEFONT COLOR=#AACCFF>3 item(s) will be skipped and stay in the container: plain, blessed, insured and quest items, and containers inside it (only the top level is unravelled).</BASEFONT><BR><BR><BASEFONT COLOR=#FF4444>This action CANNOT be undone.</BASEFONT> | Unravel 3 Item(s) | Back | X
+   38.41 player      layout: { resizepic 0 0 9270 530 570 }{ checkertrans 6 6 518 558 }{ text 170 12 1153 0 }{ gumppictiled 10 32 510 2 9304 }{ text 18 38 999 1 }{ text 200 38 1153 2 }{ gumppictiled 10 54 510 2 9304 }{ text 18 60 33 3 }{ gumppictiled 10 78 510 1 9304 }{ htmlgump 16 84 498 180 4 0 0 }{ gumppictiled 10 276 510 1 9304 }{ button 18 282 4005 4006 1 0 13 }{ text 44 284 33 5 }{ gumppictiled 10 532 510 2 9304 }{ button 18 542 4014 4015 1 0 2 }{ text 40 544 999 6 }{ button 480 542 4023 4025 1 0 0 }{ text 502 544 1153 7 }
+   38.41 player   -> 0xB1 gump 0x00000C11 type 1158509001 button 13 switches [] texts []
+   38.42 player   <- unicode(0) System: You magically unravel the items!
+   38.42 player   <- unicode(0) System: Unraveled: 3/6 items
+   38.42 player   <- unicode(0) System: Unraveled 3 item(s), skipped 3.
+   38.42 player   <- unicode(0) System: Ingredients: 9 Essence Shard(s).
+   38.42 player   <- 0xDD gump 0x00000C12 type 1158509001: Artificers' Order - Imbuing Table | Rank: Apprentice | Essence Shards: 37 | Imbuing | Target a weapon, armour, jewellery, or clothing item to begin imbuing. | Target an item to imbue... | Disenchanting | Break down a magic item into Essence Shards, or extract a specific property. | Target an item to disenchant... | Unravel Container - every magic item in a bag... | Craft Essence | You have not mastered any properties yet. Master a property by imbuing it enough times using a PropertyEssence. | X
+   38.42 player      layout: { resizepic 0 0 9270 530 570 }{ checkertrans 6 6 518 558 }{ text 170 12 1153 0 }{ gumppictiled 10 32 510 2 9304 }{ text 18 38 999 1 }{ text 200 38 1153 2 }{ gumppictiled 10 54 510 2 9304 }{ text 18 62 1153 3 }{ text 18 80 999 4 }{ button 18 100 4011 4012 1 0 1 }{ text 44 102 1154 5 }{ gumppictiled 10 132 510 1 9304 }{ text 18 140 1153 6 }{ text 18 158 999 7 }{ button 18 178 4011 4012 1 0 6 }{ text 44 180 33 8 }{ button 18 202 4011 4012 1 0 12 }{ text 44 204 33 9 }{ gumppictiled 10 234 510 1 9304 }{ text 18 242 1153 10 }{ text 18 260 946 11 }{ gumppictiled 10 532 510 2 9304 }{ button 480 542 4023 4025 1 0 0 }{ text 502 544 1153 12 }
+   38.42 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 250, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 17, 'stam': 16, 'stamMax': 16, 'mana': 17, 'manaMax': 17, 'gold': 1500, 'ar': 0, 'weight': 451, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   39.23 player   -> 0xB1 gump 0x00000C12 type 1158509001 button 0 switches [] texts []
+   39.23 player   -> 0x06 double click 0x403C7DDD
+   39.23 player   <- cliloc(0) System #500119: You must wait to perform another action.
+   40.04 harness  == P176-1 run 1: PASS (order: already a member; bag holds 6 of 6 (moved [True, True, True, True, True, True]); blessed tooltip ['Blessed']; prompt 'Target a container in your backpack to unravel the magic items in it.'; confirmation: go 3, stay 3, button 'Unravel 3 Item(s)'; summary 'You magically unravel the items!' / 'Unraveled: 3/6 items' / 'Unraveled 3 item(s), skipped 3.' / 'Ingredients: 9 Essence Shard(s).'; shards 28 -> 37; magic gone [True, True, True]; plain+blessed still in the bag [True, True, True])
