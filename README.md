@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.25. Golem on, 13 queued, latest done P587. Play tests: 1042 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.25. Golem on, 13 queued, latest done P588. Play tests: 1042 open, 4 failed, 43 passed.
 
 ### Needs overseer review (5)
 
@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 459 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 460 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -248,6 +248,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P594 patch-notes-10-25 | queued |  |
 | P595 playtest-plans-10-25 | queued |  |
 | P596 questions-for-chase-round-3 | queued |  |
+| P588 tutorial-text-pass | done | 2026-10-25 |
 | P587 cont-fixup-high-seas-fishing-second-half | done | 2026-10-25 |
 | P587 review-hammer-t3 | done | 2026-10-25 |
 | P586 codex-findings-to-fix-drafts-6 | done | 2026-10-25 |
@@ -257,7 +258,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P582 review-noted-by-system-2 | done | 2026-10-24 |
 | P581 review-death-hooks | done | 2026-10-24 |
 | P580 review-smith-commission-fixes | done | 2026-10-24 |
-| P579 design-requisitions-appraiser-numbers | done | 2026-10-24 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 158 patches, 12 replacements
 

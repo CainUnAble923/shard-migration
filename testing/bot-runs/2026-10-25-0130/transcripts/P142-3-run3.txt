@@ -1,0 +1,109 @@
+    0.00 harness  == P142-3 run 3: The Burrows: an Initiate steals, a non-member is refused, The Burrow Mother needs a Master
+    0.00 admin    -> say '[go 0x27C41'
+    1.01 admin    -> say '[add ThiefGuildmaster'
+    1.02 admin    <- 0x6C target cursor 1527 (type 1)
+    1.22 admin    -> 0x6C target ground 5201,1200,0
+    1.22 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+    1.73 player   -> 0xBF 0x13 context menu request 0x00027FED
+    1.73 player   <- 0xBF 0x14 context menu 0x00027FED: [(0, 3006123, 'Open Paperdoll', 0), (1, 3006146, 'Talk', 0), (2, 3006014, 'Train Detect Hidden', 0), (3, 3006021, 'Train Hiding', 0), (4, 3006024, 'Train Lockpicking', 0), (5, 3006028, 'Train Snooping', 0), (6, 3006030, 'Train Poisoning', 0), (7, 3006033, 'Train Stealing', 1), (8, 3006042, 'Train Fencing', 0)]
+    1.73 player   -> 0xBF 0x15 context pick 1 (Talk) on 0x00027FED
+    1.73 player   <- 0xDD gump 0x00000C47 type -810631593: Thieves' Den | <BASEFONT COLOR=#DDDDDD><I>We see all. Can we trust you? Show us your light fingers.</I></BASEFONT> | <BASEFONT COLOR=#AAAAAA>Teaches: Hiding, Stealth, Stealing, Snooping, Lockpicking, Poisoning, Detecting Hidden, Remove Trap</BASEFONT> | Separate from the stock trade guild (say "join", 500 gold). One does not join the other. | Member. Rank: Initiate. | Starter items (2) | Mule module schematics | Apprentice task: | <BASEFONT COLOR=#DDDDDD>Demonstrate Stealing of at least 20.0.</BASEFONT> | Complete it: +25 reputation, +10 scrip | Guild services | Guild Directory | Requisitions | Close
+    1.73 player      layout: { resizepic 0 0 9270 520 400 }{ checkertrans 10 10 500 380 }{ text 20 14 1154 0 }{ gumppictiled 10 36 500 2 9304 }{ htmlgump 20 44 480 36 1 0 0 }{ htmlgump 20 82 480 36 2 0 0 }{ text 20 118 999 3 }{ gumppictiled 10 140 500 2 9304 }{ text 20 150 68 4 }{ button 20 172 4005 4007 1 0 3 }{ text 55 174 999 5 }{ button 20 200 4005 4007 1 0 7 }{ text 55 202 999 6 }{ gumppictiled 10 232 500 2 9304 }{ text 20 240 999 7 }{ htmlgump 20 260 480 36 8 0 0 }{ button 20 298 4023 4025 1 0 4 }{ text 55 300 1154 9 }{ gumppictiled 10 350 500 2 9304 }{ button 20 362 4011 4012 1 0 5 }{ text 45 364 999 10 }{ button 180 362 4011 4012 1 0 6 }{ text 205 364 999 11 }{ button 300 362 4011 4012 1 0 9 }{ text 325 364 999 12 }{ button 420 362 4017 4019 1 0 0 }{ text 455 364 999 13 }
+    1.73 player   -> 0xB1 gump 0x00000C47 type -810631593 button 0 switches [] texts []
+    1.73 admin    -> say '[go 0x27C41'
+    2.74 admin    -> say '[SetSkill Stealing 120'
+    2.74 admin    <- 0x6C target cursor 1528 (type 0)
+    2.94 admin    -> 0x6C target object 0x00027C41
+    2.95 admin    <- unicode(0) System: Stealing : 120 (Base: 120)
+    3.55 admin    -> say '[go 0x27C41'
+    4.56 admin    -> say '[set Blessed true'
+    4.56 admin    <- 0x6C target cursor 1529 (type 0)
+    4.76 admin    -> 0x6C target object 0x00027C41
+    4.76 admin    <- unicode(0) System: Property has been set.
+    5.27 admin    -> say '[go 0x27C41'
+    6.29 admin    -> say '[set Map Trammel X 5200 Y 1200 Z 0'
+    6.29 admin    <- 0x6C target cursor 1530 (type 0)
+    6.49 admin    -> 0x6C target object 0x00027C41
+    6.50 admin    <- unicode(0) System: Property has been set. (4)
+    6.99 admin    -> say '[go 0x27C41'
+    8.52 admin    -> say '[go 0x27C41'
+    9.53 admin    -> say '[GuildStanding thieves 0'
+    9.53 admin    <- 0x6C target cursor 1531 (type 0)
+    9.73 admin    -> 0x6C target object 0x00027C41
+    9.73 admin    <- unicode(0) System: Set Bot Human F Aa's Thieves' Den standing to 0 (Initiate).
+   10.34 admin    -> say '[go 0x27C41'
+   11.35 admin    -> say '[add Skeleton'
+   11.35 admin    <- 0x6C target cursor 1532 (type 1)
+   11.55 admin    -> 0x6C target ground 5201,1200,0
+   11.55 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   11.55 admin    -> say '[set FightMode None CantWalk true'
+   11.55 admin    <- 0x6C target cursor 1533 (type 0)
+   11.77 admin    -> 0x6C target object 0x00027FF3
+   11.77 admin    <- unicode(0) System: Property has been set. (2)
+   12.28 admin    -> say '[go 0x27C41'
+   13.29 admin    -> say '[add Skeleton'
+   13.29 admin    <- 0x6C target cursor 1534 (type 1)
+   13.50 admin    -> 0x6C target ground 5199,1200,0
+   13.50 admin    -> say '[set FightMode None CantWalk true'
+   13.50 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   13.50 admin    <- 0x6C target cursor 1535 (type 0)
+   13.72 admin    -> 0x6C target object 0x00027FF4
+   13.72 admin    <- unicode(0) System: Property has been set. (2)
+   14.22 admin    -> say '[go 0x27C41'
+   15.24 admin    -> say '[add Skeleton'
+   15.24 admin    <- 0x6C target cursor 1536 (type 1)
+   15.44 admin    -> 0x6C target ground 5200,1201,0
+   15.45 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   15.45 admin    -> say '[set FightMode None CantWalk true'
+   15.45 admin    <- 0x6C target cursor 1537 (type 0)
+   15.66 admin    -> 0x6C target object 0x00027FF5
+   15.66 admin    <- unicode(0) System: Property has been set. (2)
+   16.17 admin    -> say '[go 0x27C41'
+   17.18 admin    -> say '[add Skeleton'
+   17.18 admin    <- 0x6C target cursor 1538 (type 1)
+   17.38 admin    -> 0x6C target ground 5200,1199,0
+   17.38 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   17.38 admin    -> say '[set FightMode None CantWalk true'
+   17.39 admin    <- 0x6C target cursor 1539 (type 0)
+   17.59 admin    -> 0x6C target object 0x00027FFB
+   17.59 admin    <- unicode(0) System: Property has been set. (2)
+   18.10 admin    -> say '[set NextSkillTime 0'
+   18.10 admin    <- 0x6C target cursor 1540 (type 0)
+   18.32 admin    -> 0x6C target object 0x00027C41
+   18.32 admin    <- unicode(0) System: Property has been set.
+   18.82 player   <- 0x6C target cursor 1541 (type 0)
+   18.82 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   18.82 player   -> 0x6C target object 0x00027FF3
+   18.82 player   <- cliloc(0) System #500237: Target cannot be seen.
+   21.33 admin    -> say '[set NextSkillTime 0'
+   21.34 admin    <- 0x6C target cursor 1542 (type 0)
+   21.54 admin    -> 0x6C target object 0x00027C41
+   21.54 admin    <- unicode(0) System: Property has been set.
+   22.05 player   <- 0x6C target cursor 1543 (type 0)
+   22.05 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   22.05 player   -> 0x6C target object 0x00027FF4
+   22.06 player   <- cliloc(0) System #500237: Target cannot be seen.
+   24.56 admin    -> say '[set NextSkillTime 0'
+   24.56 admin    <- 0x6C target cursor 1544 (type 0)
+   24.77 admin    -> 0x6C target object 0x00027C41
+   24.77 admin    <- unicode(0) System: Property has been set.
+   25.28 player   <- 0x6C target cursor 1545 (type 0)
+   25.28 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   25.28 player   -> 0x6C target object 0x00027FF5
+   25.28 player   <- cliloc(0) System #500237: Target cannot be seen.
+   27.78 admin    -> say '[set NextSkillTime 0'
+   27.78 admin    <- 0x6C target cursor 1546 (type 0)
+   27.98 admin    -> 0x6C target object 0x00027C41
+   27.99 admin    <- unicode(0) System: Property has been set.
+   28.49 player   <- 0x6C target cursor 1547 (type 0)
+   28.49 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   28.49 player   -> 0x6C target object 0x00027FFB
+   28.50 player   <- cliloc(0) System #500237: Target cannot be seen.
+   31.00 admin    -> say '[set NextSkillTime 0'
+   31.00 admin    <- 0x6C target cursor 1548 (type 0)
+   31.20 admin    -> 0x6C target object 0x00027C41
+   31.21 admin    <- unicode(0) System: Property has been set.
+   31.72 player   <- 0x6C target cursor 1549 (type 0)
+   31.72 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   31.72 player   -> 0x6C target object 0x00027FF3
+   31.72 player   <- cliloc(0) System #500237: Target cannot be seen.
