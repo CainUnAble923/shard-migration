@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.24.12. Golem on, 16 queued, latest done P572. Play tests: 959 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.24.12. Golem on, 16 queued, latest done P573. Play tests: 959 open, 4 failed, 43 passed.
 
 ### Needs overseer review (5)
 
@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 431 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 432 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -251,6 +251,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P577 guide-tutorial-refresh | queued |  |
 | P578 patch-notes-10-24b | queued |  |
 | P579 design-requisitions-appraiser-numbers | queued |  |
+| P573 review-tutorial-fixes-p453 | done | 2026-10-24 |
 | P572 codex-findings-to-fix-drafts-5 | done | 2026-10-24 |
 | P572 codex-findings-to-fixes-5 | done | 2026-10-24 |
 | P571 design-butte-and-deed | done | 2026-10-24 |
@@ -260,7 +261,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P567 design-summons-league-reward | done | 2026-10-24 |
 | P566 design-townsfolk-features | done | 2026-10-24 |
 | P565 design-league-reward-tokens | done | 2026-10-24 |
-| P564 design-pumpkin-king | done | 2026-10-24 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 151 patches, 12 replacements
 
