@@ -16,6 +16,7 @@
        Player's logout spot beside it); TazUO logs the Player in; after -SettleSeconds the window is captured (P219's
        Save-LegionShot); the client closes and the password is cleared from its settings file.
   Writes <Out>\<shot>.jpg and <Out>\proof-log.txt (each command and the server's answers). ASCII only.
+  cc-P374: -ClientSource runs another TazUO build (default D:\UO\tazuo-sl-build\client). -Frames N also writes <shot>-f1.jpg .. -f(N-1).jpg, FrameMs apart, right after the shot (animation check).
 #>
 param(
     [Parameter(Mandatory)][string]$Spec,
@@ -26,7 +27,10 @@ param(
     [string]$TargetHost = '127.0.0.1',
     [int]$Port = 2594,
     [string]$Golem = 'Iron',
-    [int]$SettleSeconds = 25
+    [int]$SettleSeconds = 25,
+    [string]$ClientSource = 'D:\UO\tazuo-sl-build\client',
+    [int]$Frames = 1,
+    [int]$FrameMs = 250
 )
 $ErrorActionPreference = 'Continue'
 . 'D:\UO\golem\LegionTest.ps1'
@@ -39,7 +43,7 @@ Say $guard.Why
 
 # 2. the client
 $client = Join-Path $Work 'client'
-[void](& robocopy 'D:\UO\tazuo-sl-build\client' $client /MIR /XD Data LegionScripts Logs Screenshots /NFL /NDL /NJH /NJS /NP /R:1 /W:1)
+[void](& robocopy $ClientSource $client /MIR /XD Data LegionScripts Logs Screenshots /NFL /NDL /NJH /NJS /NP /R:1 /W:1)
 $artOut = Join-Path $client 'ExternalImages\art'
 New-Item -ItemType Directory -Path $artOut -Force | Out-Null
 Copy-Item -Path (Join-Path $CodeRepo 'player-package\vendor\shattered-legacy-art\art\*.png') -Destination $artOut -Force
@@ -84,6 +88,10 @@ foreach ($s in $shots) {
         $proc.Refresh()
         $p = Join-Path $Out ($s.name + '.jpg')
         if (Save-LegionShot $proc.MainWindowHandle $p) { Say ('  shot: ' + $p) } else { Say '  no window to capture' }
+        for ($f = 1; $f -lt $Frames; $f++) {
+            Start-Sleep -Milliseconds $FrameMs
+            [void](Save-LegionShot $proc.MainWindowHandle (Join-Path $Out ($s.name + '-f' + $f + '.jpg')))
+        }
     } finally {
         try { $proc.CloseMainWindow() | Out-Null; Start-Sleep -Seconds 4; if (-not $proc.HasExited) { $proc.Kill() } } catch {}
         try { $j = Get-Content -LiteralPath $settings -Raw | ConvertFrom-Json; $j.password = ''; $j.autologin = $false; [IO.File]::WriteAllText($settings, ($j | ConvertTo-Json -Depth 6), (New-Object Text.UTF8Encoding($false))) } catch {}
