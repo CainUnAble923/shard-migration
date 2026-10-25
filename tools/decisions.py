@@ -17,7 +17,16 @@ no one doing anything:
 
 A decision's state: open (asked, no answer), later ("ask me later"), answered (on the page; changeable until taken),
 taken (the overseer took the answer into a prompt), elsewhere (answered outside the page: the source says where),
-moot (the reason says why), noted (an older deviation that was never put as a question).
+moot (the reason says why), noted (an older deviation that was never put as a question), archived (cc-P610: an answer
+whose question is gone from the notes or reworded; kept on the page, in the counts and in the copy, never attached to
+another question).
+
+cc-P610 (P509 #1-#3): P77-D3 is only the place a question has today. An answer is joined to its question by the question
+text saved with it: at its own place first, then anywhere in the same prompt (a bullet inserted, moved or renumbered),
+else it is archived. An answer saved before questions were stored (no text) still joins by place. A new answer goes in
+at the question's place, or, when an older answer holds that place, under the place plus the question's key
+(answerKey), so nothing is overwritten. Every change to an answer record raises its revision (rev); taking and undoing
+carry the revision the overseer saw (and, for an undo, the prompt it was taken into), and a stale one is refused.
 
 Standard library only (python:3-alpine runs it). ASCII only.
 """
@@ -25,6 +34,7 @@ import json
 import os
 import re
 import sys
+import zlib
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import playtests as pt  # noqa: E402
@@ -34,11 +44,11 @@ DATA_REL = os.path.join("testing", "decisions.json")
 OVERLAY_REL = os.path.join("testing", "decisions-overlay.json")
 NOTES_URL = "https://github.com/CainUnAble923/shard-migration/blob/main/"
 
-STATES = ("open", "later", "answered", "taken", "elsewhere", "moot", "noted")
-ACTIVE = ("open", "later", "answered")      # the default view (Open) shows these
+STATES = ("open", "later", "answered", "taken", "elsewhere", "moot", "noted", "archived")
+ACTIVE = ("open", "later", "answered", "archived")  # the default view (Open) shows these
 ASKING = ("open", "later")                  # these need Chase: You decide, and Mine
 LABELS = {"open": "open", "later": "ask me later", "answered": "answered", "taken": "taken", "elsewhere": "answered elsewhere",
-          "moot": "moot", "noted": "noted, not asked"}
+          "moot": "moot", "noted": "noted, not asked", "archived": "question gone or changed"}
 TAKEN_RE = re.compile(r"^P\d+$")
 LIMITS = {"text": 2000, "question": 600}
 
@@ -241,12 +251,7 @@ def build(notes, overlay, store):
         d["notesFile"] = "notes/" + name if name else d.get("notesFile", "")
         state = o.get("status") or ("noted" if d["prompt"] in noted else "open")
         d.update(source=o.get("source", ""), reason=o.get("reason", ""), elsewhere=o.get("answer", ""))
-        a = answers.get(d["id"])
-        if a and state != "moot":
-            state = a["status"]
-            d["answer"] = {k: a.get(k, "") for k in ("choice", "text", "by", "at", "takenInto", "takenAt", "takenBy")}
         d["state"] = state if state in STATES else "open"
-        d["stateLabel"] = LABELS[d["state"]]
         d["kind"] = "decision"
         out.append(d)
         seen.add(d["id"])
@@ -268,7 +273,9 @@ def build(notes, overlay, store):
              "detail": "", "options": [], "built": False, "recommended": "", "default": "", "split": True,
              "link": o.get("link", ""), "notesFile": o.get("notesFile", "")}
         finish(d, name)
+    out += join_answers(out, answers)
     for d in out:
+        d["stateLabel"] = LABELS[d["state"]]
         d.setdefault("split", False)
         d["who"] = {"key": "decide", "label": "You decide", "kind": "a choice for you", "bucket": "DECISION", "reason": ""}
         d["where"] = {"key": "questions", "label": WHERE_QUESTIONS, "chars": []}
@@ -278,6 +285,94 @@ def build(notes, overlay, store):
 
 
 WHERE_QUESTIONS = "Questions"
+
+
+def question_key(prompt, question):
+    """cc-P610: a question's own key, from its prompt and words (not its place): the page keeps drafts by it."""
+    return "%08x" % (zlib.crc32(("%s|%s" % (prompt, saved_question(question))).encode("utf-8")) & 0xffffffff)
+
+
+def saved_question(question):
+    """The question as an answer record keeps it (_record)."""
+    return pt.norm(question)[:LIMITS["question"]]
+
+
+def rev_of(a):
+    """An answer record's revision: every change raises it. Records from before cc-P610 count their history."""
+    return int(a.get("rev") or len(a.get("history") or []) + 1)
+
+
+def _shown_answer(a):
+    out = {k: a.get(k, "") for k in ("choice", "text", "by", "at", "takenInto", "takenAt", "takenBy")}
+    out["rev"] = rev_of(a)
+    return out
+
+
+def join_answers(items, answers):
+    """cc-P610: join each saved answer to its question by the question text saved with it (at its own place first,
+    then anywhere in its prompt; with no saved text, by place), give every item its answerKey and qkey, and return the
+    answers no question took as archived items. A moot item takes no answer (as before)."""
+    joined, archived = set(), []
+    live = {d["id"] for d in items}
+    for d in items:
+        d["qkey"] = question_key(d["prompt"], d["question"])
+        a = answers.get(d["id"])
+        if a and (not a.get("question") or a.get("question") == saved_question(d["question"])):
+            _attach(d, d["id"], a)
+            joined.add(d["id"])
+    by_text = {}
+    for d in items:
+        if "answerKey" not in d:
+            by_text.setdefault((d["prompt"], saved_question(d["question"])), []).append(d)
+    for key in sorted(answers, key=natural):
+        if key in joined:
+            continue
+        a = answers[key]
+        prompt = a.get("prompt") or key.split("#", 1)[0].rsplit("-D", 1)[0]
+        free = [d for d in by_text.get((prompt, a.get("question", "")), []) if "answerKey" not in d]
+        if a.get("question") and free:
+            _attach(free[0], key, a)
+            joined.add(key)
+            continue
+        if a.get("status") == "later" and not (a.get("choice") or a.get("text")):
+            continue                    # "ask me later" for a question that is gone: there is no answer to keep
+        base = key.split("#", 1)[0]
+        did = base if base not in live else base + "~old"
+        n = 2
+        while did in live:
+            did, n = "%s~old%d" % (base, n), n + 1
+        live.add(did)
+        num = re.sub(r"\D", "", base.rsplit("-D", 1)[-1])
+        state = "taken" if a.get("status") == "taken" else "archived"
+        archived.append({"id": did, "prompt": prompt, "number": int(num or 0), "section": "", "anchor": "",
+                         "question": a.get("question", ""), "detail": "", "options": [], "built": False,
+                         "recommended": "", "default": "", "link": "", "notesFile": "", "source": "", "reason":
+                         "the question is no longer in the notes as it was asked", "elsewhere": "", "kind": "decision",
+                         "state": state, "archived": True, "answerKey": key, "answer": _shown_answer(a),
+                         "answerStatus": a.get("status", ""), "qkey": question_key(prompt, a.get("question", ""))})
+    for d in items:
+        if "answerKey" not in d:
+            d["answerKey"] = d["id"] if d["id"] not in answers else "%s#%s" % (d["id"], d["qkey"])
+    return archived
+
+
+def _attach(d, key, a):
+    d["answerKey"] = key
+    if d["state"] == "moot":
+        return
+    d["state"] = a["status"] if a.get("status") in STATES else "open"
+    d["answer"] = _shown_answer(a)
+    d["answerStatus"] = a.get("status", "")
+
+
+def pending(decisions):
+    """The answers given on the page and not yet taken: answered ones, and archived ones still answered."""
+    return [d for d in decisions if d["state"] == "answered" or d["state"] == "archived" and d.get("answerStatus") == "answered"]
+
+
+def expectations(decisions):
+    """{id: {"rev"}} for pending(): what a take of the copied answers carries (cc-P610)."""
+    return {d["id"]: {"rev": d["answer"]["rev"]} for d in pending(decisions)}
 
 
 def natural(did):
@@ -323,7 +418,7 @@ def annotate(doc, decisions, overlay):
     tally = dict.fromkeys(STATES, 0)
     for d in decisions:
         tally[d["state"]] += 1
-    doc["answers"] = {"new": tally["answered"], "states": tally, "total": len(decisions),
+    doc["answers"] = {"new": len(pending(decisions)), "states": tally, "total": len(decisions),
                       "replaced": sorted(i for i in rep if any(x["id"] == i for x in doc.get("items", [])))}
     return doc
 
@@ -338,6 +433,7 @@ def ordered_answer(a):
     keys = ("id", "prompt", "question", "choice", "text", "status", "by", "at", "takenInto", "takenAt", "takenBy",
             "history")
     out = {k: a.get(k, [] if k == "history" else "") for k in keys}
+    out["rev"] = rev_of(a)
     out["history"] = [{k: h.get(k, "") for k in ("choice", "text", "status", "by", "at")} for h in out["history"]]
     return out
 
@@ -383,14 +479,23 @@ def update(data, fn):
 
 
 def _record(doc, decision):
-    a = doc["answers"].get(decision["id"])
+    if decision.get("archived"):
+        raise ValueError("%s: its question is gone from the notes or reworded; this answer can be taken or left, not changed"
+                         % decision["id"])
+    key = decision.get("answerKey") or decision["id"]
+    a = doc["answers"].get(key)
+    question = saved_question(decision.get("question", ""))
+    if a is not None and a.get("question") and a.get("question") != question:
+        raise ValueError("%s changed since the page loaded; reload and answer again" % decision["id"])
     if a is None:
-        a = doc["answers"][decision["id"]] = {"id": decision["id"], "prompt": decision["prompt"], "history": []}
+        a = doc["answers"][key] = {"id": key, "prompt": decision["prompt"], "history": []}
     elif a.get("status") == "taken":
         raise ValueError("%s was taken into %s; it can no longer be changed here" % (decision["id"], a.get("takenInto")))
+    rev = rev_of(a) if a.get("status") else 0
     if a.get("status"):
         a["history"].append({k: a.get(k, "") for k in ("choice", "text", "status", "by", "at")})
-    a["question"] = pt.norm(decision.get("question", ""))[:LIMITS["question"]]
+    a["question"] = question
+    a["rev"] = rev + 1
     return a
 
 
@@ -405,6 +510,8 @@ def answer(data, decision, choice="", text="", by=""):
         raise ValueError("pick an option or write an answer")
     if decision.get("state") == "moot":
         raise ValueError("%s is moot: %s" % (decision["id"], decision.get("reason", "")))
+    if decision.get("archived"):
+        _record({"answers": {}}, decision)  # refuses
 
     def fn(doc):
         a = _record(doc, decision)
@@ -422,27 +529,46 @@ def later(data, decision, by=""):
     return update(data, fn)
 
 
-def mark_taken(data, ids, prompt, by="", undo=False):
+def mark_taken(data, ids, prompt, by="", undo=False, expect=None, current=None):
     """The overseer took these answers into prompt P<nn> (each 'answered' one becomes 'taken'); undo puts a taken one
-    back to 'answered'. Others are left alone. Returns the ids changed."""
+    back to 'answered'. Returns the ids changed.
+
+    cc-P610 (P509 #3): expect is {id: {"rev": the answer's revision as the overseer saw it, "takenInto": for an undo,
+    the prompt it was taken into}}, from the page or expectations(). Under the lock, every id must still be what was
+    seen (an answered one for a take, one taken into that prompt for an undo, at that revision), or nothing changes and
+    the request is refused: an answer changed since it was copied is not marked taken, and a late or repeated undo
+    cannot reopen a later take. current (build()) turns the page's ids into their answer keys."""
     prompt = pt.norm(prompt).upper()
     if not undo and not TAKEN_RE.match(prompt):
         raise ValueError("say which prompt took them, for example P150")
     ids = [pt.norm(i) for i in ids]
+    if not isinstance(expect, dict) or any(not isinstance(expect.get(i), dict) for i in ids):
+        raise ValueError("say which answer you saw for each one (its rev): reload the page and try again")
+    keys = {}
+    for i in ids:
+        keys[i] = i
+        if current is not None:
+            keys[i] = find(current, i).get("answerKey") or i
 
     def fn(doc):
-        done = []
+        stale = []
         for i in ids:
-            a = doc["answers"].get(i)
-            if a is None:
-                continue
-            if not undo and a.get("status") == "answered":
-                a.update(status="taken", takenInto=prompt, takenAt=pt.now_iso(), takenBy=pt.norm(by)[:60])
-                done.append(i)
-            elif undo and a.get("status") == "taken":
+            a = doc["answers"].get(keys[i])
+            e = expect[i]
+            want = "taken" if undo else "answered"
+            if (a is None or a.get("status") != want or str(rev_of(a)) != str(e.get("rev"))
+                    or undo and pt.norm(str(e.get("takenInto", ""))).upper() != a.get("takenInto")):
+                stale.append(i)
+        if stale:
+            raise ValueError("changed since the page loaded, nothing marked: %s; reload and check" % ", ".join(stale))
+        for i in ids:
+            a = doc["answers"][keys[i]]
+            if undo:
                 a.update(status="answered", takenInto="", takenAt="", takenBy="")
-                done.append(i)
-        return done
+            else:
+                a.update(status="taken", takenInto=prompt, takenAt=pt.now_iso(), takenBy=pt.norm(by)[:60])
+            a["rev"] = rev_of(a) + 1
+        return list(ids)
     return update(data, fn)
 
 
@@ -455,7 +581,7 @@ def find(decisions, did):
 
 def copy_text(decisions):
     """The answers given on the page and not yet taken, as plain text for the overseer, oldest prompt first."""
-    rows = [d for d in decisions if d["state"] == "answered"]
+    rows = pending(decisions)
     if not rows:
         return ""
     out = ["New answers from the play-test page (%d), for the next prompt:" % len(rows), ""]
@@ -463,6 +589,8 @@ def copy_text(decisions):
         a = d.get("answer") or {}
         pick = "Keep what's built" if a.get("choice") == "built" else a.get("choice", "")
         out.append("%s: %s" % (d["id"], d["question"]))
+        if d["state"] == "archived":
+            out.append("  (This question is gone from the notes or was reworded since: check the answer still applies.)")
         if pick:
             out.append("  Choice: " + pick)
         if a.get("text"):
