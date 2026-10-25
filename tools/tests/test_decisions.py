@@ -21,7 +21,8 @@ from pathlib import Path
 
 TOOLS = Path(__file__).resolve().parents[1]
 ROOT = TOOLS.parent
-SHARD = Path(r"D:\ShatteredLegacy")
+# cc-P610: SL_SHARD points the facts at another work copy of the shard repo (a Golem's own).
+SHARD = Path(os.environ.get("SL_SHARD", r"D:\ShatteredLegacy"))
 SERVER = SHARD / "docker" / "test-queue" / "server.py"
 PAGE = SHARD / "docker" / "test-queue" / "html" / "index.html"
 sys.path.insert(0, str(TOOLS))
@@ -225,9 +226,14 @@ class Answers(unittest.TestCase):
         decisions.answer(self.data, self.ds()["P901-D1"], "No")
         decisions.later(self.data, self.ds()["P901-D4"])
         self.assertEqual("later", self.ds()["P901-D4"]["state"])
+        rev = self.ds()["P901-D1"]["answer"]["rev"]
         with self.assertRaises(ValueError):
-            decisions.mark_taken(self.data, ["P901-D1"], "soon")
-        self.assertEqual(["P901-D1"], decisions.mark_taken(self.data, ["P901-D1", "P901-D4"], "p150", by="overseer"))
+            decisions.mark_taken(self.data, ["P901-D1"], "soon", expect={"P901-D1": {"rev": rev}})
+        with self.assertRaises(ValueError, msg="a later one is not an answer to take"):
+            decisions.mark_taken(self.data, ["P901-D1", "P901-D4"], "p150", by="overseer",
+                                 expect={"P901-D1": {"rev": rev}, "P901-D4": {"rev": 1}})
+        self.assertEqual(["P901-D1"], decisions.mark_taken(self.data, ["P901-D1"], "p150", by="overseer",
+                                                           expect={"P901-D1": {"rev": rev}}))
         d = self.ds()["P901-D1"]
         self.assertEqual(("taken", "P150"), (d["state"], d["answer"]["takenInto"]))
         with self.assertRaises(ValueError):
@@ -235,7 +241,8 @@ class Answers(unittest.TestCase):
         doc = {"items": [], "decisions": list(self.ds().values())}
         self.assertNotIn("P901-D1", [x["id"] for x in playwhere.shown_items(doc, "open")], "taken leaves the default view")
         self.assertIn("P901-D1", [x["id"] for x in playwhere.shown_items(doc, "all")])
-        self.assertEqual(["P901-D1"], decisions.mark_taken(self.data, ["P901-D1"], "", undo=True))
+        self.assertEqual(["P901-D1"], decisions.mark_taken(self.data, ["P901-D1"], "", undo=True,
+                                                           expect={"P901-D1": {"rev": d["answer"]["rev"], "takenInto": "P150"}}))
         self.assertEqual("answered", self.ds()["P901-D1"]["state"])
 
     def test_answers_are_exported_with_the_other_marks(self):
@@ -384,7 +391,10 @@ class Service(unittest.TestCase):
         self.assertIn("P901-D1: Hand words?", self.call("/api/decisions/copy")[1]["text"])
         self.assertTrue(os.path.isfile(os.path.join(self.root, decisions.DATA_REL)))
         self.assertEqual(200, self.call("/api/decisions/later", {"id": "P901-D4"})[0])
-        code, r = self.call("/api/decisions/taken", {"ids": ["P901-D1"], "prompt": "P150"})
+        self.assertEqual(400, self.call("/api/decisions/taken", {"ids": ["P901-D1"], "prompt": "P150"})[0],
+                         "cc-P610: a take that does not say which answer it took is refused")
+        expect = self.call("/api/decisions/copy")[1]["expect"]
+        code, r = self.call("/api/decisions/taken", {"ids": ["P901-D1"], "prompt": "P150", "expect": expect})
         self.assertEqual((200, ["P901-D1"]), (code, r["taken"]))
         code, d = self.call("/api/items")
         ds = {x["id"]: x for x in d["decisions"]}
@@ -418,9 +428,9 @@ class Page(unittest.TestCase):
     def test_the_answered_filter_and_the_new_answers_count(self):
         self.assertIn('<button data-f="answered" aria-pressed="false"', self.t)
         self.assertIn(">Answered, not yet taken</button>", self.t)
-        self.assertIn("if (filter === 'answered') return it.state === 'answered';", self.t)
+        self.assertIn("if (filter === 'answered') return it.state === 'answered' || (it.state === 'archived' && it.answerStatus === 'answered');", self.t)
         self.assertIn("' new answer' + (na === 1 ? '' : 's')", self.t)
-        self.assertIn("var DEC_OPEN = { open: 1, later: 1, answered: 1 }, DEC_ASK = { open: 1, later: 1 };", self.t)
+        self.assertIn("var DEC_OPEN = { open: 1, later: 1, answered: 1, archived: 1 }, DEC_ASK = { open: 1, later: 1 };", self.t)
         self.assertIn("if (it.replacedBy && filter !== 'all') return false;", self.t)
         self.assertIn("var listFilter = 'open';", self.t, "the full list's default is still Open (cc-P164: the page opens on Up next)")
         self.assertIn("(s.open - (s.replaced || 0)) + ' open</span>'", self.t, "the open count leaves out replaced items")
@@ -466,6 +476,288 @@ class RealFiles(unittest.TestCase):
         self.assertEqual("moot", st["P106-D10"], "live's D94 question: live is retired")
         self.assertEqual(["elsewhere"] * 8, [st["P59-D%d" % i] for i in range(1, 9)])
         self.assertEqual(["elsewhere"] * 8, [st["P80-D%d" % i] for i in range(1, 9)])
+
+
+# --- cc-P610 (P533 U8, P509 #1-#5): identity, archived answers, safe take and undo, drafts ---------------
+
+def doors(*questions, num=902):
+    """A DONE notes file whose decisions are these questions, in this order."""
+    rows = "\n".join("%d. **%s** Say which." % (i + 1, q) for i, q in enumerate(questions))
+    return {"P%d" % num: ("cc-P%d-doors.md" % num, decisions.parse_notes(
+        "# cc-P%d\n\n## Decisions for Chase\n\n%s\n\nP%d DONE\n" % (num, rows, num), num))}
+
+
+class Identity(unittest.TestCase):
+    """P509 #1 and #2: an answer stays with its question when the notes change around it."""
+
+    def setUp(self):
+        need()
+        self.data = tempfile.mkdtemp(prefix="p610-data-")
+
+    def tearDown(self):
+        shutil.rmtree(self.data, ignore_errors=True)
+
+    def ds(self, notes):
+        return decisions.build(notes, {}, decisions.load(self.data))
+
+    def by_q(self, notes):
+        return {d["question"]: d for d in self.ds(notes)}
+
+    def test_an_inserted_question_does_not_take_another_ones_answer(self):
+        v1 = doors("Use oak for the door?")
+        decisions.answer(self.data, self.ds(v1)[0], "", "oak, please")
+        v2 = doors("Add a lamp?", "Use oak for the door?")      # a bullet inserted above it
+        q = self.by_q(v2)
+        self.assertEqual(("P902-D1", "open"), (q["**Add a lamp?** Say which."]["id"], q["**Add a lamp?** Say which."]["state"]),
+                         "the new question at D1 is open: the scratch example attached oak to it")
+        oak = q["**Use oak for the door?** Say which."]
+        self.assertEqual(("P902-D2", "answered", "oak, please"), (oak["id"], oak["state"], oak["answer"]["text"]))
+        # Answering the new D1 leaves the oak answer alone.
+        decisions.answer(self.data, q["**Add a lamp?** Say which."], "", "a lamp")
+        q = self.by_q(v2)
+        self.assertEqual("a lamp", q["**Add a lamp?** Say which."]["answer"]["text"])
+        self.assertEqual("oak, please", q["**Use oak for the door?** Say which."]["answer"]["text"])
+        self.assertEqual([], [d for d in self.ds(v2) if d["state"] == "archived"])
+
+    def test_reordered_and_renumbered_questions_keep_their_answers(self):
+        v1 = doors("Use oak for the door?", "Add a lamp?", "Paint it red?")
+        ds = self.ds(v1)
+        decisions.answer(self.data, ds[0], "", "oak")
+        decisions.answer(self.data, ds[2], "", "red")
+        q = self.by_q(doors("Paint it red?", "Use oak for the door?"))
+        self.assertEqual(("P902-D1", "red"), (q["**Paint it red?** Say which."]["id"], q["**Paint it red?** Say which."]["answer"]["text"]))
+        self.assertEqual(("P902-D2", "oak"), (q["**Use oak for the door?** Say which."]["id"], q["**Use oak for the door?** Say which."]["answer"]["text"]))
+
+    def test_a_reworded_question_keeps_its_old_answer_visible_and_unattached(self):
+        decisions.answer(self.data, self.ds(doors("Use oak for the door?"))[0], "", "oak")
+        ds = self.ds(doors("Use pine for the door?"))
+        live = [d for d in ds if d["state"] != "archived"]
+        self.assertEqual(["open"], [d["state"] for d in live], "never silently attached to a different question")
+        old = [d for d in ds if d["state"] == "archived"]
+        self.assertEqual(1, len(old), "the saved answer stays on the page for review")
+        self.assertEqual(("**Use oak for the door?** Say which.", "oak"), (old[0]["question"], old[0]["answer"]["text"]))
+        self.assertNotEqual(live[0]["id"], old[0]["id"], "each card has its own id on the page")
+        doc = {"items": [], "summary": {}}
+        decisions.annotate(doc, ds, {})
+        self.assertEqual(1, doc["answers"]["new"], "it still counts as an answer not yet taken")
+        self.assertEqual(0, sum(1 for d in ds if d["state"] in decisions.ASKING and d["state"] == "archived"))
+        self.assertIn("Use oak for the door?", decisions.copy_text(ds))
+        with self.assertRaises(ValueError):
+            decisions.answer(self.data, old[0], "", "changed")
+
+    def test_a_removed_question_keeps_its_answer_and_gets_it_back_when_it_returns(self):
+        v1 = doors("Use oak for the door?", "Add a lamp?")
+        decisions.answer(self.data, self.ds(v1)[1], "", "a lamp")
+        gone = self.ds(doors("Use oak for the door?"))
+        old = [d for d in gone if d["state"] == "archived"]
+        self.assertEqual(["**Add a lamp?** Say which."], [d["question"] for d in old])
+        self.assertIn("Add a lamp?", decisions.copy_text(gone))
+        back = self.by_q(v1)
+        self.assertEqual(("answered", "a lamp"), (back["**Add a lamp?** Say which."]["state"], back["**Add a lamp?** Say which."]["answer"]["text"]))
+        self.assertEqual([], [d for d in self.ds(v1) if d["state"] == "archived"])
+        # Notes that cannot be read for a while (no notes at all) lose no answer either.
+        self.assertEqual(["archived"], [d["state"] for d in self.ds({})])
+
+    def test_an_answer_saved_before_questions_were_stored_still_joins_by_place(self):
+        Path(self.data, "testing").mkdir()
+        Path(self.data, decisions.DATA_REL).write_text(json.dumps({"schema": 1, "answers": {"P902-D1": {
+            "id": "P902-D1", "prompt": "P902", "question": "", "choice": "", "text": "old", "status": "answered",
+            "by": "", "at": "2026-10-01T00:00:00Z", "history": []}}}), encoding="ascii")
+        d = self.ds(doors("Use oak for the door?"))[0]
+        self.assertEqual(("answered", "old"), (d["state"], d["answer"]["text"]))
+
+
+class Revisions(unittest.TestCase):
+    """P509 #3: a take or an undo says which answer it saw; a stale one is refused."""
+
+    def setUp(self):
+        need()
+        self.data = tempfile.mkdtemp(prefix="p610-rev-")
+        self.notes = doors("Use oak for the door?")
+
+    def tearDown(self):
+        shutil.rmtree(self.data, ignore_errors=True)
+
+    def d(self):
+        return decisions.build(self.notes, {}, decisions.load(self.data))[0]
+
+    def test_a_take_of_an_answer_that_changed_since_is_refused(self):
+        decisions.answer(self.data, self.d(), "", "A: oak")
+        seen = self.d()["answer"]["rev"]                         # the overseer copies answer A
+        decisions.answer(self.data, self.d(), "", "B: pine")     # Chase changes it
+        with self.assertRaises(ValueError):
+            decisions.mark_taken(self.data, ["P902-D1"], "P150", expect={"P902-D1": {"rev": seen}})
+        self.assertEqual("answered", self.d()["state"], "B is not marked taken on the strength of A")
+        with self.assertRaises(ValueError):
+            decisions.mark_taken(self.data, ["P902-D1"], "P150")
+        decisions.mark_taken(self.data, ["P902-D1"], "P150", expect={"P902-D1": {"rev": self.d()["answer"]["rev"]}})
+        self.assertEqual(("taken", "B: pine"), (self.d()["state"], self.d()["answer"]["text"]))
+
+    def test_a_delayed_or_repeated_undo_cannot_reopen_a_later_take(self):
+        decisions.answer(self.data, self.d(), "", "oak")
+        decisions.mark_taken(self.data, ["P902-D1"], "P150", expect={"P902-D1": {"rev": self.d()["answer"]["rev"]}})
+        undo = {"P902-D1": {"rev": self.d()["answer"]["rev"], "takenInto": "P150"}}
+        self.assertEqual(["P902-D1"], decisions.mark_taken(self.data, ["P902-D1"], "", undo=True, expect=undo))
+        with self.assertRaises(ValueError, msg="the same undo again"):
+            decisions.mark_taken(self.data, ["P902-D1"], "", undo=True, expect=undo)
+        decisions.mark_taken(self.data, ["P902-D1"], "P160", expect={"P902-D1": {"rev": self.d()["answer"]["rev"]}})
+        decisions.mark_taken(self.data, ["P902-D1"], "", undo=True,
+                             expect={"P902-D1": {"rev": self.d()["answer"]["rev"], "takenInto": "P160"}})
+        decisions.mark_taken(self.data, ["P902-D1"], "P150", expect={"P902-D1": {"rev": self.d()["answer"]["rev"]}})
+        with self.assertRaises(ValueError, msg="the first undo, arriving late"):
+            decisions.mark_taken(self.data, ["P902-D1"], "", undo=True, expect=undo)
+        self.assertEqual(("taken", "P150"), (self.d()["state"], self.d()["answer"]["takenInto"]))
+
+    def test_the_copy_gives_what_a_take_must_carry(self):
+        decisions.answer(self.data, self.d(), "", "oak")
+        ds = decisions.build(self.notes, {}, decisions.load(self.data))
+        expect = decisions.expectations(ds)
+        self.assertEqual({"P902-D1": {"rev": self.d()["answer"]["rev"]}}, expect)
+        self.assertEqual(["P902-D1"], decisions.mark_taken(self.data, ["P902-D1"], "P150", expect=expect))
+
+
+HOSTILE = '"><img src=x onerror="window.__pwned=1"></textarea><script>window.__pwned=2</script> \'q\' <b>tag</b> & done'
+HOSTILE_BY = '<img src=y onerror="window.__pwned=4">"quoted"'
+SCENARIO = r"""
+<script>
+(function () {
+  var out = { steps: [] };
+  function done(e) {
+    if (e) out.error = String(e && e.stack || e);
+    var pre = document.createElement('pre'); pre.id = 'p610-result';
+    pre.textContent = JSON.stringify(out); document.body.appendChild(pre);
+  }
+  function box(id) { return document.querySelector('textarea[data-t="' + id + '"]'); }
+  function until(test, then, n) {
+    n = n || 0;
+    if (test()) return then();
+    if (n > 400) return done('timed out at step ' + out.steps.length);
+    setTimeout(function () { until(test, then, n + 1); }, 25);
+  }
+  function type(id, text) { var b = box(id); b.focus(); b.value = text; b.dispatchEvent(new Event('input', { bubbles: true })); }
+  try { localStorage.clear(); } catch (x) {}
+  until(function () { return typeof data !== 'undefined' && data && data.decisions; }, function () {
+    document.querySelector('.filters button[data-f="open"]').click();
+    until(function () { return box('P903-D1') && box('P903-D2'); }, function () {
+      type('P903-D1', 'draft one');
+      document.querySelector('#where-chips button[data-w="questions"]').click();      // a Where chip
+      out.steps.push(['chip', box('P903-D1').value]);
+      type('P903-D2', 'two, saved');
+      document.querySelector('button[data-d="text"][data-i="P903-D2"]').click();       // another card saves
+      until(function () { return document.querySelector('#i-P903-D2.answered'); }, function () {
+        out.steps.push(['other save', box('P903-D1').value, box('P903-D2').value]);
+        load().then(function () {                                                        // a data refresh
+          out.steps.push(['reload', box('P903-D1').value]);
+          var discard = document.querySelector('button[data-d="discard"][data-i="P903-D1"]');
+          out.steps.push(['discard button', !!discard]);
+          if (discard) discard.click();
+          render();
+          out.steps.push(['after discard', box('P903-D1').value]);
+          var h = document.getElementById('i-P903-D3');
+          out.hostile = {
+            box: box('P903-D3') ? box('P903-D3').value : null,
+            answer: h && h.querySelector('.answer') ? h.querySelector('.answer').textContent : null,
+            label: h && h.querySelector('.label') ? h.querySelector('.label').textContent : null,
+            injected: document.querySelectorAll('#list img, #list script').length,
+            pwned: window.__pwned || 0
+          };
+          done();
+        }).catch(done);
+      });
+    });
+  });
+})();
+</script>
+"""
+
+
+def chrome():
+    for p in (r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+              r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"):
+        if os.path.isfile(p):
+            return p
+    return None
+
+
+class PageDom(unittest.TestCase):
+    """P509 #4 and #5, in a real browser (headless Chrome or Edge) on a throwaway loopback copy of the service: a draft
+    survives a Where chip, another card's save and a data refresh, and goes only on its own save or Discard; hostile
+    answer, writer and question text render as literal text."""
+
+    def setUp(self):
+        need()
+        self.browser = chrome()
+        if not self.browser:
+            self.skipTest("UNVERIFIED: no Chrome or Edge on this machine")
+        self.tmp = tempfile.mkdtemp(prefix="p610-dom-")
+        svc = os.path.join(self.tmp, "svc")
+        shutil.copytree(str(SHARD / "docker" / "test-queue"), svc)
+        page = Path(svc, "html", "index.html")
+        t = page.read_text(encoding="utf-8")
+        page.write_text(t.replace("</body>", SCENARIO + "</body>", 1), encoding="utf-8")
+        self.root = os.path.join(self.tmp, "root")
+        for d in ("notes", "docs", "testing"):
+            os.makedirs(os.path.join(self.root, d))
+        Path(self.root, "notes", "cc-P903-page.md").write_text(
+            "# cc-P903\n\n## Decisions for Chase\n\n1. **Use oak for the door?** Say which.\n"
+            "2. **Add a lamp?** Say which.\n3. **<img src=z onerror=\"window.__pwned=3\"> Paint it?** Say which.\n\nP903 DONE\n",
+            encoding="utf-8")
+        Path(self.root, decisions.OVERLAY_REL).write_text("{}", encoding="utf-8")
+        Path(self.root, pt.DATA_REL).write_text(json.dumps(pt.ordered_doc(pt.new_doc())), encoding="utf-8")
+        q3 = decisions.parse_notes(Path(self.root, "notes", "cc-P903-page.md").read_text(encoding="utf-8"), 903)[2]["question"]
+        Path(self.root, decisions.DATA_REL).write_text(json.dumps({"schema": 1, "answers": {"P903-D3": {
+            "id": "P903-D3", "prompt": "P903", "question": q3, "choice": "", "text": HOSTILE, "status": "answered",
+            "by": HOSTILE_BY, "at": "2026-10-25T00:00:00Z", "history": []}}}), encoding="ascii")
+        self.port = free_port()
+        e = {k: v for k, v in os.environ.items() if not k.startswith(("PLAYTESTS_", "ACCESS_", "REPO_STAMP"))}
+        self.proc = subprocess.Popen([sys.executable, "-B", os.path.join(svc, "server.py"), "--root", self.root, "--lib",
+                                      str(TOOLS), "--bind", "127.0.0.1", "--port", str(self.port), "--status-page",
+                                      os.devnull, "--deployed", os.devnull, "--import-seconds", "3600",
+                                      "--reload-seconds", "0"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=e)
+        for _ in range(100):
+            try:
+                urllib.request.urlopen("http://127.0.0.1:%d/nav.js" % self.port, timeout=2).close()
+                return
+            except OSError:
+                time.sleep(0.1)
+        self.fail("the service did not start")
+
+    def tearDown(self):
+        if getattr(self, "proc", None):
+            self.proc.terminate()
+            self.proc.wait(10)
+            self.proc.stdout.close()
+        if getattr(self, "tmp", None):
+            shutil.rmtree(self.tmp, ignore_errors=True)
+
+    def run_page(self):
+        r = subprocess.run([self.browser, "--headless=new", "--disable-gpu", "--no-first-run", "--no-default-browser-check",
+                            "--user-data-dir=" + os.path.join(self.tmp, "profile"), "--virtual-time-budget=30000",
+                            "--dump-dom", "http://127.0.0.1:%d/" % self.port],
+                           stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=120)
+        dom = r.stdout.decode("utf-8", "replace")
+        start = dom.find('<pre id="p610-result">')
+        if start < 0:
+            self.fail("UNVERIFIED: the browser gave no result (exit %d, %d bytes of DOM)" % (r.returncode, len(dom)))
+        import html
+        body = dom[start + len('<pre id="p610-result">'):dom.index("</pre>", start)]
+        return json.loads(html.unescape(body))
+
+    def test_drafts_survive_and_hostile_text_stays_text(self):
+        res = self.run_page()
+        self.assertNotIn("error", res, res.get("error"))
+        steps = {s[0]: s[1:] for s in res["steps"]}
+        self.assertEqual(["draft one"], steps["chip"], "a Where chip keeps the draft")
+        self.assertEqual(["draft one", "two, saved"], steps["other save"], "another card's save keeps it")
+        self.assertEqual(["draft one"], steps["reload"], "a data refresh keeps it")
+        self.assertEqual([True], steps["discard button"])
+        self.assertEqual([""], steps["after discard"], "Discard puts the saved answer (none) back")
+        h = res["hostile"]
+        self.assertEqual(HOSTILE, h["box"], "the answer reads back literally in its box")
+        self.assertIn("<b>tag</b>", h["answer"])
+        self.assertIn(HOSTILE_BY, h["answer"], "the writer's name is text")
+        self.assertIn("<img src=z", h["label"], "the question is text")
+        self.assertEqual((0, 0), (h["injected"], h["pwned"]), "no element or handler from the data")
 
 
 if __name__ == "__main__":

@@ -108,11 +108,11 @@ def primary(item, flt):
     who = (item.get("who") or {}).get("key", "")
     if dec:
         if flt == "open":
-            return st in ("open", "later", "answered")
+            return st in ("open", "later", "answered", "archived")
         if flt == "mine":
             return st in ("open", "later")
         if flt == "answered":
-            return st == "answered"
+            return st == "answered" or st == "archived" and item.get("answerStatus") == "answered"
         return flt == "all"
     if flt == "answered":
         return False

@@ -23,7 +23,8 @@ from pathlib import Path
 
 TOOLS = Path(__file__).resolve().parents[1]
 ROOT = TOOLS.parent
-SHARD = Path(r"D:\ShatteredLegacy")
+# cc-P610: SL_SHARD points the facts at another work copy of the shard repo (a Golem's own).
+SHARD = Path(os.environ.get("SL_SHARD", r"D:\ShatteredLegacy"))
 SERVER = SHARD / "docker" / "test-queue" / "server.py"
 PAGE = SHARD / "docker" / "test-queue" / "html" / "index.html"
 sys.path.insert(0, str(TOOLS))

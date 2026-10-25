@@ -541,7 +541,19 @@ def play_core(pl, log, label):
                      "the core is finished and the done page sends the player back to Rook")
 
 
-def graduate(pl, log, label):
+# cc-P610 (P533 U4 part 5): the graduation's rewards are required evidence, not optional log lines. A missing companion
+# pick (unless the character legitimately has its pet already: --farm-pet, or a remedial graduation after the pet was
+# taken) and a missing graduation box are failed checks. The patterns take P480's wording and P609's plainer one.
+GRADUATED = r"^System: (Graduated|You finished the tutorial)"
+OPEN_IN_TOWN = r"(Open that box here in town|Double-click your reward box here in town)"
+EARNED = r"(You have earned a companion|You earned a pet)"
+CHOOSE_PET = ("Choose your companion", "Choose your pet")
+BOX_REASONS = ("graduating the new haven tutorial", "finishing the new haven tutorial")
+
+
+def graduate(pl, log, label, expect_pick=None):
+    """expect_pick: True, the pick must be offered; False, it must not be (the pet is already the character's); None,
+    either (a remedial graduation)."""
     c = pl.c
     log("--- graduation (%s)" % label)
     log.check(pl.go(ROOK, 2), "walked back to Rook")
@@ -569,18 +581,22 @@ def graduate(pl, log, label):
     c.reply_gump(g, 3)
     c.sleep(3.0)
     pl.drain()
-    log.check(c.find_text(r"^System: Graduated", since=m0) is not None, "graduated (the fanfare line)")
-    log.check(c.find_text(r"Open that box here in town", since=m0) is not None, "the System says to open the box in town")
-    is_pick = lambda g: any("earned a companion" in (t or "") for t in c.gump_text(g))
+    log.check(c.find_text(GRADUATED, since=m0) is not None, "graduated (the fanfare line)")
+    log.check(c.find_text(OPEN_IN_TOWN, since=m0) is not None, "the System says to open the box in town")
+    is_pick = lambda g: any(re.search(EARNED, t or "") for t in c.gump_text(g))
     pick = c.wait_gump(is_pick, 4, since=n)
+    if expect_pick is True:
+        log.check(pick is not None, "the companion pick is offered at graduation")
+    elif expect_pick is False:
+        log.check(pick is None, "no companion pick: the character already has its pet")
     if pick is not None:
         log("  the pick: %s" % [t for t in c.gump_text(pick)])
-        log.check(c.find_text(r"You have earned a companion", since=m0) is not None, "the System says a companion is earned")
+        log.check(c.find_text(EARNED, since=m0) is not None, "the System says a companion is earned")
         # closed without choosing: Rook keeps it
         c.reply_gump(pick, 0)
         c.sleep(1.2)
         g = recruiter_station(pl, None)
-        has = g is not None and any("Choose your companion" in (t or "") for t in c.gump_text(g))
+        has = g is not None and any(w in (t or "") for t in c.gump_text(g) for w in CHOOSE_PET)
         log.check(has, "after closing the pick, Rook's page offers 'Choose your companion'")
         if has:
             n = len(c.gumps)
@@ -611,10 +627,12 @@ def graduate(pl, log, label):
     c.sleep(1.0)
     new = [s for s in pl.c.contents(c.backpack()) if s not in before]
     log("  new in the backpack: %s" % ["0x%08X graphic 0x%X" % (s, c.items[s].get("graphic", 0)) for s in new])
+    found_box = False
     for s in new:
         props = c.opl(s) or []
         log("  0x%08X: %s" % (s, " | ".join(props)))
-        if any("graduating the new haven tutorial" in p.lower() for p in props):   # P480: not the loop box
+        if any(r in p.lower() for p in props for r in BOX_REASONS):   # P480: not the loop box
+            found_box = True
             m0, g0 = len(c.messages), len(c.gumps)
             c.sleep(1.1)
             c.dclick(s)
@@ -627,6 +645,7 @@ def graduate(pl, log, label):
             elixir = next((x for x in pl.c.contents(c.backpack()) if c.items[x].get("graphic") == 0x24E2), None)
             log.check(elixir is not None, "the box held an elixir of rebirth (0x24E2): %s" % (c.opl(elixir) if elixir else None))
             break
+    log.check(found_box, "the graduation box is in the backpack")
     return True
 
 
@@ -642,6 +661,8 @@ def main(argv=None):
     ap.add_argument("--name", default="Iron Trainee")
     ap.add_argument("--parts", default="seed,core,skip")
     ap.add_argument("--leave-pick", action="store_true", help="after the remedial graduation, close the pick unchosen")
+    ap.add_argument("--farm-pet", action="store_true",
+                    help="the character took the farm's pet before graduating: no companion pick is expected (cc-P610)")
     a = ap.parse_args(argv)
     sys.path.insert(0, a.bot)
     global P
@@ -704,7 +725,7 @@ def main(argv=None):
         log.check(pl.wait_text(r"the League recruiter, is waiting", 2, since=0) is not None, "first login: the System greets and points to the recruiter")
         log.check(any(x["active"] and (x["x"], x["y"]) == ROOK for x in pc.arrows), "first login: a quest arrow to Rook")
         if play_core(pl, log, "core"):
-            graduate(pl, log, "core")
+            graduate(pl, log, "core", expect_pick=not a.farm_pet)
 
     if "skip" in parts and pl is None:
         user, pw = GC.account(a.golem, "player")
