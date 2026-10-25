@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 469 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 471 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -242,14 +242,14 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P597 cont-fixup-tinker-docker-prune | queued |  |
 | P594 patch-notes-10-25 | done | 2026-10-25 |
 | P594 patch-notes-2026-10-25 | done | 2026-10-25 |
+| P593 league-chapter-2-draft | done | 2026-10-25 |
+| P593 league-story-chapter-2-draft | done | 2026-10-25 |
 | P592 guide-achievements-refresh | done | 2026-10-25 |
 | P591 guide-eodon | done | 2026-10-25 |
 | P590 guide-sorcerers-dungeon-event | done | 2026-10-25 |
 | P590 guide-sorcerers-dungeon | done | 2026-10-25 |
 | P589 guide-rootdeep | done | 2026-10-25 |
 | P588 tutorial-text-pass | done | 2026-10-25 |
-| P587 cont-fixup-high-seas-fishing-second-half | done | 2026-10-25 |
-| P587 review-hammer-t3 | done | 2026-10-25 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 158 patches, 12 replacements
 
