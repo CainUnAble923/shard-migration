@@ -1,0 +1,375 @@
+    0.00 harness  == P142-5 run 3: Felucca Shame at Stealing 60, hidden: a miss reveals and is caught, the creature turns, wary at once, a roll after 6 s, then nothing left
+    0.00 admin    -> say '[go 0x27C41'
+    1.01 admin    -> say '[add ThiefGuildmaster'
+    1.01 admin    <- 0x6C target cursor 2055 (type 1)
+    1.21 admin    -> 0x6C target ground 5396,126,0
+    1.21 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+    1.72 player   -> 0xBF 0x13 context menu request 0x0002803A
+    1.72 player   <- 0xBF 0x14 context menu 0x0002803A: [(0, 3006123, 'Open Paperdoll', 0), (1, 3006146, 'Talk', 0), (2, 3006014, 'Train Detect Hidden', 0), (3, 3006021, 'Train Hiding', 1), (4, 3006024, 'Train Lockpicking', 0), (5, 3006028, 'Train Snooping', 0), (6, 3006030, 'Train Poisoning', 0), (7, 3006033, 'Train Stealing', 1), (8, 3006042, 'Train Fencing', 0), (9, 3006047, 'Train Stealth', 0)]
+    1.73 player   -> 0xBF 0x15 context pick 1 (Talk) on 0x0002803A
+    1.73 player   <- 0xDD gump 0x00000C4F type -810631593: Thieves' Den | <BASEFONT COLOR=#DDDDDD><I>We see all. Can we trust you? Show us your light fingers.</I></BASEFONT> | <BASEFONT COLOR=#AAAAAA>Teaches: Hiding, Stealth, Stealing, Snooping, Lockpicking, Poisoning, Detecting Hidden, Remove Trap</BASEFONT> | Separate from the stock trade guild (say "join", 500 gold). One does not join the other. | Member. Rank: Initiate. | Starter items (2) | Mule module schematics | Apprentice task: | <BASEFONT COLOR=#DDDDDD>Demonstrate Stealing of at least 20.0.</BASEFONT> | Complete it: +25 reputation, +10 scrip | Guild services | Guild Directory | Requisitions | Close
+    1.73 player      layout: { resizepic 0 0 9270 520 400 }{ checkertrans 10 10 500 380 }{ text 20 14 1154 0 }{ gumppictiled 10 36 500 2 9304 }{ htmlgump 20 44 480 36 1 0 0 }{ htmlgump 20 82 480 36 2 0 0 }{ text 20 118 999 3 }{ gumppictiled 10 140 500 2 9304 }{ text 20 150 68 4 }{ button 20 172 4005 4007 1 0 3 }{ text 55 174 999 5 }{ button 20 200 4005 4007 1 0 7 }{ text 55 202 999 6 }{ gumppictiled 10 232 500 2 9304 }{ text 20 240 999 7 }{ htmlgump 20 260 480 36 8 0 0 }{ button 20 298 4023 4025 1 0 4 }{ text 55 300 1154 9 }{ gumppictiled 10 350 500 2 9304 }{ button 20 362 4011 4012 1 0 5 }{ text 45 364 999 10 }{ button 180 362 4011 4012 1 0 6 }{ text 205 364 999 11 }{ button 300 362 4011 4012 1 0 9 }{ text 325 364 999 12 }{ button 420 362 4017 4019 1 0 0 }{ text 455 364 999 13 }
+    1.73 player   -> 0xB1 gump 0x00000C4F type -810631593 button 0 switches [] texts []
+    1.73 admin    -> say '[go 0x27C41'
+    1.87 admin    <- 0xF3 world item 0x403CB4BF graphic 0x122E x1 at 5395,126,0 hue 0
+    1.87 player   <- 0xF3 world item 0x403CB4BF graphic 0x122E x1 at 5395,126,0 hue 0
+    1.87 admin    <- 0xF3 world item 0x403CB4C0 graphic 0x122D x1 at 5394,127,0 hue 0
+    1.87 player   <- 0xF3 world item 0x403CB4C0 graphic 0x122D x1 at 5394,127,0 hue 0
+    1.87 admin    <- 0xF3 world item 0x403CB4C1 graphic 0x122D x1 at 5394,126,0 hue 0
+    1.87 player   <- 0xF3 world item 0x403CB4C1 graphic 0x122D x1 at 5394,126,0 hue 0
+    1.87 admin    <- 0xF3 world item 0x403CB4C2 graphic 0x122F x1 at 5395,125,0 hue 0
+    1.87 player   <- 0xF3 world item 0x403CB4C2 graphic 0x122F x1 at 5395,125,0 hue 0
+    2.73 admin    -> say '[SetSkill Stealing 60'
+    2.74 admin    <- 0x6C target cursor 2056 (type 0)
+    2.94 admin    -> 0x6C target object 0x00027C41
+    2.94 player   <- 0x3A skill 33 now 60.0 (cap 200.0)
+    2.94 admin    <- unicode(0) System: Stealing : 60 (Base: 60)
+    3.55 admin    -> say '[go 0x27C41'
+    3.61 player   <- 0xF3 world item 0x403CB4C8 graphic 0x122F x1 at 5395,126,0 hue 0
+    3.61 player   <- 0xF3 world item 0x403CB4C9 graphic 0x122E x1 at 5396,126,0 hue 0
+    3.61 player   <- 0xF3 world item 0x403CB4CA graphic 0x122D x1 at 5396,125,0 hue 0
+    3.61 player   <- 0xF3 world item 0x403CB4CB graphic 0x122C x1 at 5394,127,0 hue 0
+    3.61 admin    <- 0xF3 world item 0x403CB4C8 graphic 0x122F x1 at 5395,126,0 hue 0
+    3.61 admin    <- 0xF3 world item 0x403CB4C9 graphic 0x122E x1 at 5396,126,0 hue 0
+    3.61 admin    <- 0xF3 world item 0x403CB4CA graphic 0x122D x1 at 5396,125,0 hue 0
+    3.61 player   <- 0xF3 world item 0x403CB4CC graphic 0x122C x1 at 5394,127,0 hue 0
+    3.61 admin    <- 0xF3 world item 0x403CB4CB graphic 0x122C x1 at 5394,127,0 hue 0
+    3.61 admin    <- 0xF3 world item 0x403CB4CC graphic 0x122C x1 at 5394,127,0 hue 0
+    4.56 admin    -> say '[SetSkill Hiding 100'
+    4.56 admin    <- 0x6C target cursor 2057 (type 0)
+    4.76 admin    -> 0x6C target object 0x00027C41
+    4.76 admin    <- unicode(0) System: Hiding : 100 (Base: 100)
+    5.38 admin    -> say '[go 0x27C41'
+    5.61 player   <- 0xF3 world item 0x403CB4D8 graphic 0x122C x1 at 5395,126,0 hue 0
+    5.61 player   <- 0xF3 world item 0x403CB4D9 graphic 0x122E x1 at 5395,125,0 hue 0
+    5.61 player   <- 0xF3 world item 0x403CB4DA graphic 0x1645 x1 at 5396,125,0 hue 0
+    5.61 player   <- 0xF3 world item 0x403CB4DB graphic 0x122C x1 at 5396,127,0 hue 0
+    5.61 admin    <- 0xF3 world item 0x403CB4D8 graphic 0x122C x1 at 5395,126,0 hue 0
+    5.61 admin    <- 0xF3 world item 0x403CB4D9 graphic 0x122E x1 at 5395,125,0 hue 0
+    5.61 admin    <- 0xF3 world item 0x403CB4DA graphic 0x1645 x1 at 5396,125,0 hue 0
+    5.61 admin    <- 0xF3 world item 0x403CB4DB graphic 0x122C x1 at 5396,127,0 hue 0
+    5.87 admin    <- 0xF3 world item 0x403CB4DC graphic 0x122C x1 at 5395,126,0 hue 0
+    5.87 admin    <- 0xF3 world item 0x403CB4DD graphic 0x122F x1 at 5394,125,0 hue 0
+    5.87 admin    <- 0xF3 world item 0x403CB4DE graphic 0x122F x1 at 5395,127,0 hue 0
+    5.87 player   <- 0xF3 world item 0x403CB4DC graphic 0x122C x1 at 5395,126,0 hue 0
+    5.87 player   <- 0xF3 world item 0x403CB4DD graphic 0x122F x1 at 5394,125,0 hue 0
+    5.87 admin    <- 0xF3 world item 0x403CB4DF graphic 0x122F x1 at 5395,125,0 hue 0
+    5.87 admin    <- 0xF3 world item 0x403CB4E0 graphic 0x1645 x1 at 5396,125,0 hue 0
+    5.87 player   <- 0xF3 world item 0x403CB4DE graphic 0x122F x1 at 5395,127,0 hue 0
+    5.87 player   <- 0xF3 world item 0x403CB4DF graphic 0x122F x1 at 5395,125,0 hue 0
+    5.87 player   <- 0xF3 world item 0x403CB4E0 graphic 0x1645 x1 at 5396,125,0 hue 0
+    6.39 admin    -> say '[set RawStr 250 Hits 175'
+    6.39 admin    <- 0x6C target cursor 2058 (type 0)
+    6.59 admin    -> 0x6C target object 0x00027C41
+    6.59 admin    <- unicode(0) System: Property has been set. (2)
+    7.20 admin    -> say '[go 0x27C41'
+    7.87 admin    <- 0xF3 world item 0x403CB4E1 graphic 0x1645 x1 at 5395,126,0 hue 0
+    7.87 admin    <- 0xF3 world item 0x403CB4E2 graphic 0x122F x1 at 5394,125,0 hue 0
+    7.87 admin    <- 0xF3 world item 0x403CB4E3 graphic 0x122F x1 at 5394,126,0 hue 0
+    7.87 admin    <- 0xF3 world item 0x403CB4E4 graphic 0x122E x1 at 5396,126,0 hue 0
+    7.87 player   <- 0xF3 world item 0x403CB4E1 graphic 0x1645 x1 at 5395,126,0 hue 0
+    7.87 player   <- 0xF3 world item 0x403CB4E2 graphic 0x122F x1 at 5394,125,0 hue 0
+    7.87 player   <- 0xF3 world item 0x403CB4E3 graphic 0x122F x1 at 5394,126,0 hue 0
+    7.87 player   <- 0xF3 world item 0x403CB4E4 graphic 0x122E x1 at 5396,126,0 hue 0
+    8.21 admin    -> say '[set Map Felucca X 5395 Y 126 Z 0'
+    8.21 admin    <- 0x6C target cursor 2059 (type 0)
+    8.42 admin    -> 0x6C target object 0x00027C41
+    8.42 admin    <- unicode(0) System: Property has been set. (4)
+    8.93 admin    -> say '[go 0x27C41'
+   10.45 admin    -> say '[go 0x27C41'
+   11.45 admin    -> say '[GuildStanding thieves 0'
+   11.45 admin    <- 0x6C target cursor 2060 (type 0)
+   11.61 player   <- 0xF3 world item 0x403CB4E5 graphic 0x122E x1 at 5395,126,0 hue 0
+   11.61 player   <- 0xF3 world item 0x403CB4E6 graphic 0x122F x1 at 5396,126,0 hue 0
+   11.61 player   <- 0xF3 world item 0x403CB4E7 graphic 0x122C x1 at 5394,127,0 hue 0
+   11.61 player   <- 0xF3 world item 0x403CB4E8 graphic 0x122B x1 at 5396,125,0 hue 0
+   11.61 player   <- 0xF3 world item 0x403CB4E9 graphic 0x122D x1 at 5394,125,0 hue 0
+   11.61 admin    <- 0xF3 world item 0x403CB4E5 graphic 0x122E x1 at 5395,126,0 hue 0
+   11.61 admin    <- 0xF3 world item 0x403CB4E6 graphic 0x122F x1 at 5396,126,0 hue 0
+   11.61 admin    <- 0xF3 world item 0x403CB4E7 graphic 0x122C x1 at 5394,127,0 hue 0
+   11.61 admin    <- 0xF3 world item 0x403CB4E8 graphic 0x122B x1 at 5396,125,0 hue 0
+   11.61 admin    <- 0xF3 world item 0x403CB4E9 graphic 0x122D x1 at 5394,125,0 hue 0
+   11.67 admin    -> 0x6C target object 0x00027C41
+   11.67 admin    <- unicode(0) System: Set Bot Human F Aa's Thieves' Den standing to 0 (Initiate).
+   12.28 admin    -> say '[set NextSkillTime 0'
+   12.28 admin    <- 0x6C target cursor 2061 (type 0)
+   12.48 admin    -> 0x6C target object 0x00027C41
+   12.48 admin    <- unicode(0) System: Property has been set.
+   12.99 player   <- cliloc(0) Bot Human F Aa #501237: You can't seem to hide right now.
+   12.99 admin    -> say '[get Hidden'
+   12.99 admin    <- 0x6C target cursor 2062 (type 1)
+   13.20 admin    -> 0x6C target object 0x00027C41
+   13.20 admin    <- unicode(0) System: Hidden = False
+   13.20 admin    -> say '[set NextSkillTime 0'
+   13.20 admin    <- 0x6C target cursor 2063 (type 0)
+   13.41 admin    -> 0x6C target object 0x00027C41
+   13.42 admin    <- unicode(0) System: Property has been set.
+   13.87 admin    <- 0xF3 world item 0x403CB4EA graphic 0x122B x1 at 5395,126,0 hue 0
+   13.87 admin    <- 0xF3 world item 0x403CB4EB graphic 0x122F x1 at 5394,125,0 hue 0
+   13.87 admin    <- 0xF3 world item 0x403CB4EC graphic 0x122D x1 at 5395,125,0 hue 0
+   13.87 admin    <- 0xF3 world item 0x403CB4ED graphic 0x122B x1 at 5395,125,0 hue 0
+   13.87 admin    <- 0xF3 world item 0x403CB4EE graphic 0x122A x1 at 5395,127,0 hue 0
+   13.87 player   <- 0xF3 world item 0x403CB4EA graphic 0x122B x1 at 5395,126,0 hue 0
+   13.87 player   <- 0xF3 world item 0x403CB4EB graphic 0x122F x1 at 5394,125,0 hue 0
+   13.87 player   <- 0xF3 world item 0x403CB4EC graphic 0x122D x1 at 5395,125,0 hue 0
+   13.87 player   <- 0xF3 world item 0x403CB4ED graphic 0x122B x1 at 5395,125,0 hue 0
+   13.87 player   <- 0xF3 world item 0x403CB4EE graphic 0x122A x1 at 5395,127,0 hue 0
+   13.93 player   <- cliloc(0) Bot Human F Aa #501237: You can't seem to hide right now.
+   13.93 admin    -> say '[get Hidden'
+   13.93 admin    <- 0x6C target cursor 2064 (type 1)
+   14.13 admin    -> 0x6C target object 0x00027C41
+   14.13 admin    <- unicode(0) System: Hidden = False
+   14.13 admin    -> say '[set NextSkillTime 0'
+   14.13 admin    <- 0x6C target cursor 2065 (type 0)
+   14.33 admin    -> 0x6C target object 0x00027C41
+   14.34 admin    <- unicode(0) System: Property has been set.
+   14.85 player   <- cliloc(0) Bot Human F Aa #501237: You can't seem to hide right now.
+   14.85 admin    -> say '[get Hidden'
+   14.85 admin    <- 0x6C target cursor 2066 (type 1)
+   15.05 admin    -> 0x6C target object 0x00027C41
+   15.05 admin    <- unicode(0) System: Hidden = False
+   15.05 admin    -> say '[go 0x27C41'
+   15.61 player   <- 0xF3 world item 0x403CB4EF graphic 0x1645 x1 at 5395,126,0 hue 0
+   15.61 player   <- 0xF3 world item 0x403CB4F0 graphic 0x122C x1 at 5396,127,0 hue 0
+   15.61 player   <- 0xF3 world item 0x403CB4F1 graphic 0x1645 x1 at 5394,127,0 hue 0
+   15.61 player   <- 0xF3 world item 0x403CB4F2 graphic 0x122E x1 at 5395,126,0 hue 0
+   15.61 player   <- 0xF3 world item 0x403CB4F3 graphic 0x1645 x1 at 5396,126,0 hue 0
+   15.61 admin    <- 0xF3 world item 0x403CB4EF graphic 0x1645 x1 at 5395,126,0 hue 0
+   15.61 admin    <- 0xF3 world item 0x403CB4F0 graphic 0x122C x1 at 5396,127,0 hue 0
+   15.61 admin    <- 0xF3 world item 0x403CB4F1 graphic 0x1645 x1 at 5394,127,0 hue 0
+   15.61 admin    <- 0xF3 world item 0x403CB4F2 graphic 0x122E x1 at 5395,126,0 hue 0
+   15.61 admin    <- 0xF3 world item 0x403CB4F3 graphic 0x1645 x1 at 5396,126,0 hue 0
+   16.06 admin    -> say '[add Skeleton'
+   16.06 admin    <- 0x6C target cursor 2067 (type 1)
+   16.26 admin    -> 0x6C target ground 5396,126,0
+   16.26 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   16.26 admin    -> say '[set FightMode None CantWalk true'
+   16.26 admin    <- 0x6C target cursor 2068 (type 0)
+   16.47 admin    -> 0x6C target object 0x0002803B
+   16.47 admin    <- unicode(0) System: Property has been set. (2)
+   16.98 admin    -> say '[set DamageMin 1 DamageMax 1 FightMode Closest'
+   16.98 admin    <- 0x6C target cursor 2069 (type 0)
+   17.18 admin    -> 0x6C target object 0x0002803B
+   17.18 admin    <- unicode(0) System: Property has been set. (3)
+   17.61 admin    <- 0xF3 world item 0x403CB4F7 graphic 0x122A x1 at 5395,126,0 hue 0
+   17.61 player   <- 0xF3 world item 0x403CB4F7 graphic 0x122A x1 at 5395,126,0 hue 0
+   17.61 player   <- 0xF3 world item 0x403CB4F8 graphic 0x122C x1 at 5394,125,0 hue 0
+   17.61 admin    <- 0xF3 world item 0x403CB4F8 graphic 0x122C x1 at 5394,125,0 hue 0
+   17.61 admin    <- 0xF3 world item 0x403CB4F9 graphic 0x1645 x1 at 5395,125,0 hue 0
+   17.61 admin    <- 0xF3 world item 0x403CB4FA graphic 0x122C x1 at 5396,125,0 hue 0
+   17.61 player   <- 0xF3 world item 0x403CB4F9 graphic 0x1645 x1 at 5395,125,0 hue 0
+   17.61 player   <- 0xF3 world item 0x403CB4FA graphic 0x122C x1 at 5396,125,0 hue 0
+   17.61 player   <- 0xF3 world item 0x403CB4FB graphic 0x122F x1 at 5396,125,0 hue 0
+   17.61 admin    <- 0xF3 world item 0x403CB4FB graphic 0x122F x1 at 5396,125,0 hue 0
+   17.68 admin    -> say '[set NextSkillTime 0'
+   17.68 admin    <- 0x6C target cursor 2070 (type 0)
+   17.88 admin    <- 0xF3 world item 0x403CB4FC graphic 0x122F x1 at 5395,126,0 hue 0
+   17.88 player   <- 0xF3 world item 0x403CB4FC graphic 0x122F x1 at 5395,126,0 hue 0
+   17.88 admin    <- 0xF3 world item 0x403CB4FD graphic 0x122C x1 at 5396,126,0 hue 0
+   17.88 player   <- 0xF3 world item 0x403CB4FD graphic 0x122C x1 at 5396,126,0 hue 0
+   17.88 admin    <- 0xF3 world item 0x403CB4FE graphic 0x1645 x1 at 5395,125,0 hue 0
+   17.88 player   <- 0xF3 world item 0x403CB4FE graphic 0x1645 x1 at 5395,125,0 hue 0
+   17.88 player   <- 0xF3 world item 0x403CB4FF graphic 0x122A x1 at 5395,126,0 hue 0
+   17.88 admin    <- 0xF3 world item 0x403CB4FF graphic 0x122A x1 at 5395,126,0 hue 0
+   17.89 admin    -> 0x6C target object 0x00027C41
+   17.89 admin    <- unicode(0) System: Property has been set.
+   18.40 player   <- 0x6C target cursor 2071 (type 0)
+   18.40 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   18.40 player   -> 0x6C target object 0x0002803B
+   18.40 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   18.40 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   18.40 player   <- 0x3A skill 33 now 60.1 (cap 200.0)
+   18.40 player   <- 0x3A skill 33 now 60.2 (cap 200.0)
+   18.40 player   <- 0x3A skill 33 now 60.3 (cap 200.0)
+   18.40 player   <- 0x3A skill 33 now 60.4 (cap 200.0)
+   18.40 player   <- 0x3A skill 33 now 60.5 (cap 200.0)
+   18.40 player   <- 0x3A skill 33 now 60.6 (cap 200.0)
+   18.40 player   <- 0x3A skill 33 now 60.7 (cap 200.0)
+   18.40 player   <- 0x3A skill 33 now 60.8 (cap 200.0)
+   18.40 player   <- 0x3A skill 33 now 60.9 (cap 200.0)
+   18.40 player   <- 0x3A skill 33 now 61.0 (cap 200.0)
+   18.40 player   <- 0x3A skill 33 now 61.1 (cap 200.0)
+   18.40 player   <- 0x3A skill 33 now 61.2 (cap 200.0)
+   18.40 player   <- 0x3A skill 33 now 61.3 (cap 200.0)
+   18.40 player   <- 0x3A skill 33 now 61.4 (cap 200.0)
+   18.40 player   <- 0x3A skill 33 now 61.5 (cap 200.0)
+   18.40 player   <- cliloc(0) System #1019063: You have lost a little karma.
+   18.40 admin    -> say '[set NextSkillTime 0'
+   18.41 admin    <- 0x6C target cursor 2072 (type 0)
+   18.62 admin    -> 0x6C target object 0x00027C41
+   18.62 admin    <- unicode(0) System: Property has been set.
+   19.12 player   <- 0x6C target cursor 2073 (type 0)
+   19.12 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   19.12 player   -> 0x6C target object 0x0002803B
+   19.12 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   19.12 player   <- unicode(0) System: The creature is wary of your hands. Give it a moment.
+   19.12 player   <- cliloc(0) System #1019063: You have lost a little karma.
+   19.12 admin    -> say '[get Hidden'
+   19.12 admin    <- 0x6C target cursor 2074 (type 1)
+   19.34 admin    -> 0x6C target object 0x00027C41
+   19.34 admin    <- unicode(0) System: Hidden = False
+   19.34 admin    -> say '[get Combatant'
+   19.34 admin    <- 0x6C target cursor 2075 (type 1)
+   19.54 admin    -> 0x6C target object 0x0002803B
+   19.54 admin    <- unicode(0) System: Property 'Combatant' not found.
+   19.61 admin    <- 0xF3 world item 0x403CB500 graphic 0x1645 x1 at 5395,126,0 hue 0
+   19.61 player   <- 0xF3 world item 0x403CB500 graphic 0x1645 x1 at 5395,126,0 hue 0
+   19.61 admin    <- 0xF3 world item 0x403CB501 graphic 0x122E x1 at 5396,127,0 hue 0
+   19.61 player   <- 0xF3 world item 0x403CB501 graphic 0x122E x1 at 5396,127,0 hue 0
+   19.61 admin    <- 0xF3 world item 0x403CB502 graphic 0x122B x1 at 5395,125,0 hue 0
+   19.61 player   <- 0xF3 world item 0x403CB502 graphic 0x122B x1 at 5395,125,0 hue 0
+   19.61 admin    <- 0xF3 world item 0x403CB503 graphic 0x122C x1 at 5394,126,0 hue 0
+   19.61 player   <- 0xF3 world item 0x403CB503 graphic 0x122C x1 at 5394,126,0 hue 0
+   19.88 admin    <- 0xF3 world item 0x403CB504 graphic 0x122E x1 at 5395,126,0 hue 0
+   19.88 admin    <- 0xF3 world item 0x403CB505 graphic 0x122B x1 at 5396,125,0 hue 0
+   19.88 admin    <- 0xF3 world item 0x403CB506 graphic 0x122C x1 at 5394,126,0 hue 0
+   19.88 admin    <- 0xF3 world item 0x403CB507 graphic 0x122C x1 at 5395,125,0 hue 0
+   19.88 player   <- 0xF3 world item 0x403CB504 graphic 0x122E x1 at 5395,126,0 hue 0
+   19.88 player   <- 0xF3 world item 0x403CB505 graphic 0x122B x1 at 5396,125,0 hue 0
+   19.88 player   <- 0xF3 world item 0x403CB506 graphic 0x122C x1 at 5394,126,0 hue 0
+   19.88 player   <- 0xF3 world item 0x403CB507 graphic 0x122C x1 at 5395,125,0 hue 0
+   21.61 player   <- 0xF3 world item 0x403CB508 graphic 0x122B x1 at 5395,126,0 hue 0
+   21.61 player   <- 0xF3 world item 0x403CB509 graphic 0x122A x1 at 5395,127,0 hue 0
+   21.61 player   <- 0xF3 world item 0x403CB50A graphic 0x122D x1 at 5396,127,0 hue 0
+   21.61 player   <- 0xF3 world item 0x403CB50B graphic 0x122D x1 at 5394,127,0 hue 0
+   21.61 admin    <- 0xF3 world item 0x403CB508 graphic 0x122B x1 at 5395,126,0 hue 0
+   21.61 admin    <- 0xF3 world item 0x403CB509 graphic 0x122A x1 at 5395,127,0 hue 0
+   21.61 admin    <- 0xF3 world item 0x403CB50A graphic 0x122D x1 at 5396,127,0 hue 0
+   21.61 admin    <- 0xF3 world item 0x403CB50B graphic 0x122D x1 at 5394,127,0 hue 0
+   23.61 player   <- 0xF3 world item 0x403CB50C graphic 0x122A x1 at 5395,126,0 hue 0
+   23.61 admin    <- 0xF3 world item 0x403CB50C graphic 0x122A x1 at 5395,126,0 hue 0
+   23.61 player   <- 0xF3 world item 0x403CB50D graphic 0x122D x1 at 5396,126,0 hue 0
+   23.61 player   <- 0xF3 world item 0x403CB50E graphic 0x122E x1 at 5395,126,0 hue 0
+   23.61 player   <- 0xF3 world item 0x403CB50F graphic 0x122F x1 at 5395,126,0 hue 0
+   23.61 player   <- 0xF3 world item 0x403CB510 graphic 0x122C x1 at 5396,125,0 hue 0
+   23.61 admin    <- 0xF3 world item 0x403CB50D graphic 0x122D x1 at 5396,126,0 hue 0
+   23.61 admin    <- 0xF3 world item 0x403CB50E graphic 0x122E x1 at 5395,126,0 hue 0
+   23.61 admin    <- 0xF3 world item 0x403CB50F graphic 0x122F x1 at 5395,126,0 hue 0
+   23.61 admin    <- 0xF3 world item 0x403CB510 graphic 0x122C x1 at 5396,125,0 hue 0
+   24.54 admin    -> say '[set Blessed true'
+   24.54 admin    <- 0x6C target cursor 2076 (type 0)
+   24.74 admin    -> 0x6C target object 0x00027C41
+   24.74 admin    <- unicode(0) System: Property has been set.
+   25.26 admin    -> say '[set NextSkillTime 0'
+   25.26 admin    <- 0x6C target cursor 2077 (type 0)
+   25.46 admin    -> 0x6C target object 0x00027C41
+   25.46 admin    <- unicode(0) System: Property has been set.
+   25.96 player   <- 0x6C target cursor 2078 (type 0)
+   25.96 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   25.96 player   -> 0x6C target object 0x0002803B
+   25.96 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   25.96 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   25.96 player   <- 0x3A skill 33 now 61.6 (cap 200.0)
+   25.96 player   <- 0x3A skill 33 now 61.7 (cap 200.0)
+   25.96 player   <- 0x3A skill 33 now 61.8 (cap 200.0)
+   25.96 player   <- 0x3A skill 33 now 61.9 (cap 200.0)
+   25.96 player   <- 0x3A skill 33 now 62.0 (cap 200.0)
+   25.96 player   <- cliloc(0) System #1019063: You have lost a little karma.
+   25.96 admin    -> say '[go 0x27C41'
+   25.96 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 170, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 250, 'dex': 54, 'int': 35, 'stam': 54, 'stamMax': 54, 'mana': 34, 'manaMax': 35, 'gold': 1500, 'ar': 0, 'weight': 536, 'maxWeight': 975, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   26.97 admin    -> say '[SetSkill Stealing 200'
+   26.97 admin    <- 0x6C target cursor 2079 (type 0)
+   27.18 admin    -> 0x6C target object 0x00027C41
+   27.18 player   <- 0x3A skill 33 now 200.0 (cap 200.0)
+   27.18 admin    <- unicode(0) System: Stealing : 200 (Base: 200)
+   27.79 admin    -> say '[set NextSkillTime 0'
+   27.79 admin    <- 0x6C target cursor 2080 (type 0)
+   27.99 admin    -> 0x6C target object 0x00027C41
+   27.99 admin    <- unicode(0) System: Property has been set.
+   28.49 player   <- 0x6C target cursor 2081 (type 0)
+   28.49 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   28.49 player   -> 0x6C target object 0x0002803B
+   28.50 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   28.50 player   <- unicode(0) System: The creature is wary of your hands. Give it a moment.
+   28.50 player   <- cliloc(0) System #1019063: You have lost a little karma.
+   28.50 admin    -> say '[set NextSkillTime 0'
+   28.50 admin    <- 0x6C target cursor 2082 (type 0)
+   28.71 admin    -> 0x6C target object 0x00027C41
+   28.71 admin    <- unicode(0) System: Property has been set.
+   29.23 player   <- 0x6C target cursor 2083 (type 0)
+   29.23 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   29.23 player   -> 0x6C target object 0x0002803B
+   29.23 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   29.23 player   <- unicode(0) System: The creature is wary of your hands. Give it a moment.
+   29.23 player   <- cliloc(0) System #1019063: You have lost a little karma.
+   29.23 admin    -> say '[set NextSkillTime 0'
+   29.23 admin    <- 0x6C target cursor 2084 (type 0)
+   29.44 admin    -> 0x6C target object 0x00027C41
+   29.44 admin    <- unicode(0) System: Property has been set.
+   29.96 player   <- 0x6C target cursor 2085 (type 0)
+   29.96 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   29.96 player   -> 0x6C target object 0x0002803B
+   29.96 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   29.96 player   <- unicode(0) System: The creature is wary of your hands. Give it a moment.
+   29.96 player   <- cliloc(0) System #1019063: You have lost a little karma.
+   29.96 admin    -> say '[set NextSkillTime 0'
+   29.97 admin    <- 0x6C target cursor 2086 (type 0)
+   30.16 admin    -> 0x6C target object 0x00027C41
+   30.16 admin    <- unicode(0) System: Property has been set.
+   30.67 player   <- 0x6C target cursor 2087 (type 0)
+   30.67 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   30.67 player   -> 0x6C target object 0x0002803B
+   30.67 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   30.67 player   <- unicode(0) System: The creature is wary of your hands. Give it a moment.
+   30.67 player   <- cliloc(0) System #1019063: You have lost a little karma.
+   30.67 admin    -> say '[set NextSkillTime 0'
+   30.67 admin    <- 0x6C target cursor 2088 (type 0)
+   30.88 admin    -> 0x6C target object 0x00027C41
+   30.88 admin    <- unicode(0) System: Property has been set.
+   31.39 player   <- 0x6C target cursor 2089 (type 0)
+   31.39 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   31.39 player   -> 0x6C target object 0x0002803B
+   31.39 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   31.39 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   31.39 player   <- cliloc(0) System #1019063: You have lost a little karma.
+   36.90 admin    -> say '[set NextSkillTime 0'
+   36.90 admin    <- 0x6C target cursor 2090 (type 0)
+   37.11 admin    -> 0x6C target object 0x00027C41
+   37.11 admin    <- unicode(0) System: Property has been set.
+   37.62 player   <- 0x6C target cursor 2091 (type 0)
+   37.62 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   37.62 player   -> 0x6C target object 0x0002803B
+   37.62 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   37.62 player   <- unicode(0) System: The creature catches your hand in its hoard and turns on you!
+   37.62 player   <- cliloc(0) System #1019063: You have lost a little karma.
+   43.13 admin    -> say '[set NextSkillTime 0'
+   43.13 admin    <- 0x6C target cursor 2092 (type 0)
+   43.33 admin    -> 0x6C target object 0x00027C41
+   43.33 admin    <- unicode(0) System: Property has been set.
+   43.85 player   <- 0x6C target cursor 2093 (type 0)
+   43.85 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   43.85 player   -> 0x6C target object 0x0002803B
+   43.85 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   43.85 admin    <- 0xF3 world item 0x403CB52C graphic 0x1C18 x1 at 5395,126,0 hue 1177
+   43.85 player   <- cliloc(0) System #1094947: You successfully steal a special item from the creature!
+   43.85 player   <- 0xF3 world item 0x403CB52C graphic 0x1C18 x1 at 5395,126,0 hue 1177
+   43.85 player   <- cliloc(0) System #1019063: You have lost a little karma.
+   43.85 admin    -> say '[set NextSkillTime 0'
+   43.85 admin    <- 0x6C target cursor 2094 (type 0)
+   44.07 admin    -> 0x6C target object 0x00027C41
+   44.07 admin    <- unicode(0) System: Property has been set.
+   44.58 player   <- 0x6C target cursor 2095 (type 0)
+   44.58 player   <- cliloc(0) System #502698: Which item will you attempt to steal?
+   44.58 player   -> 0x6C target object 0x0002803B
+   44.58 player   <- cliloc(0) System #502700: You cannot steal from people or monsters right now.  Practice on chests and barrels.
+   44.58 player   <- cliloc(0) System #1094948: That creature has already been stolen from.  There is nothing left to steal.
+   44.58 player   <- cliloc(0) System #1019063: You have lost a little karma.
+   44.58 admin    -> say '[go 0x27C41'
+   45.59 admin    -> say '[GuildStanding thieves 0'
+   45.59 admin    <- 0x6C target cursor 2096 (type 0)
+   45.80 admin    -> 0x6C target object 0x00027C41
+   45.80 admin    <- unicode(0) System: Set Bot Human F Aa's Thieves' Den standing to 0 (Initiate).
+   46.40 admin    -> say '[go 0x27C41'
+   47.42 admin    -> say '[set Blessed false'
+   47.42 admin    <- 0x6C target cursor 2097 (type 0)
+   47.62 admin    -> 0x6C target object 0x00027C41
+   47.62 admin    <- unicode(0) System: Property has been set.
+   47.93 admin    <- 0xF3 world item 0x403CB52D graphic 0x122C x1 at 5395,126,0 hue 0
+   47.93 player   <- 0xF3 world item 0x403CB52D graphic 0x122C x1 at 5395,126,0 hue 0
+   47.93 admin    <- 0xF3 world item 0x403CB52E graphic 0x122C x1 at 5396,126,0 hue 0
+   47.93 player   <- 0xF3 world item 0x403CB52E graphic 0x122C x1 at 5396,126,0 hue 0
+   47.93 admin    <- 0xF3 world item 0x403CB52F graphic 0x122F x1 at 5396,127,0 hue 0
+   47.93 player   <- 0xF3 world item 0x403CB52F graphic 0x122F x1 at 5396,127,0 hue 0
+   47.93 admin    <- 0xF3 world item 0x403CB530 graphic 0x122B x1 at 5395,125,0 hue 0
+   47.93 player   <- 0xF3 world item 0x403CB530 graphic 0x122B x1 at 5395,125,0 hue 0
+   48.13 harness  == P142-5 run 3: FAIL (Den: already a member (Member. Rank: Initiate.); hidden before False; first steal caught (attempt 1); hidden after the miss False (pinned Stealing.cs:64 reveals at the cursor already); creature's Combatant None (the thief: False); at once wary; after 6 s caught; at Stealing 200.0: special then already; thief hits 170/175)
