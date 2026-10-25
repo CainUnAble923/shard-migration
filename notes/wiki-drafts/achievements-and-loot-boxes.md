@@ -1,6 +1,6 @@
 # Achievements, Achievement Points, and loot boxes
 
-Draft checked against project notes and source code on October 21, 2026. Availability and settings on the running shard have not been checked. Configurable numbers below are source defaults.
+Draft checked against project notes and source code on October 25, 2026. Availability and settings on the running shard have not been checked. Configurable numbers below are source defaults.
 
 ## Finding your achievements
 
@@ -25,7 +25,7 @@ Use **All** to see every category available to you. Collection, League, and Misc
 | League | Registration, League activities, and achievement milestones. |
 | Mischief | Hidden achievements discovered through play. |
 
-Hidden achievements stay out of the unfinished list until earned. Hidden entries also exist in other categories.
+Hidden achievements stay out of the unfinished list until earned. Hidden entries also exist in other categories. Some hidden achievements now check their conditions more carefully. Their names and conditions are left for you to discover.
 
 Older characters may have a **Retired** section. Those achievements are no longer awarded, but existing holders keep them and their rewards.
 
@@ -61,7 +61,7 @@ A new achievement earned while you are online gives its box to an online charact
 
 Tutorial graduation gives an Explorer's box and records your first loop, which also awards a Loop box. The broader system of later loops, player levels, and skill resets is (planned).
 
-First-boss boxes are part of the design and have award code, but later implementation notes report that they fail to award during ordinary kills. Treat this as an unreliable reward source; the disagreement is listed under Contradictions. First-dungeon and floor-clear boxes are (planned).
+Your character's first kill of each qualifying boss type awards a Boss box when you have looting rights or land the final blow. This reward now works during ordinary kills. Paragons do not qualify for boss boxes. Later kills of the same boss type on that character do not award another box. First-dungeon and floor-clear boxes are (planned).
 
 Earned boxes have a **theme** and a **tier**. Their tooltip tells you the theme, tier, and what earned them. The ordinary achievement tier follows the AP paid by that achievement, rather than your account's total AP. Individual rewards can have exceptions.
 
@@ -166,19 +166,21 @@ Note links are relative to the shard-migration repository. Detailed code file an
 - [P79](../cc-P79-loot-boxes-fanfare.md) and [P82](../cc-P82-artificers-imbuing.md): earned boxes, themes, scaling, fanfare, and later reward changes.
 - [P147](../cc-P147-achievements-button.md), [P165](../cc-P165-achievements-button-fix.md), and [P241](../cc-P241-achievement-category-icons.md): client access and category presentation.
 - [P229](../cc-P229-league-reward-shop.md) and [P243](../cc-P243-league-hall-decor-rewards.md): shop goods, prices, titles, shop boxes, and Hall decor.
-- [P231](../cc-P231-osi-joke-achievements.md), [P262](../cc-P262-accessory-slots.md), [P263](../cc-P263-noted-by-the-system-achievements.md), and [P361](../cc-P361-cont-fixup-noted-by-the-system-achievements.md): hidden-entry handling and the reported boss-box defect. Their discovery details are omitted here.
+- [P231](../cc-P231-osi-joke-achievements.md), [P262](../cc-P262-accessory-slots.md), [P263](../cc-P263-noted-by-the-system-achievements.md), and [P361](../cc-P361-cont-fixup-noted-by-the-system-achievements.md): hidden-entry handling and the earlier boss-box defect. Their discovery details are omitted here.
+- [P455](../cc-P455-death-hooks.md): first-boss boxes now award during ordinary kills.
+- [P457](../cc-P457-noted-fixups-2.md): corrections to hidden achievement checks. Discovery details are omitted here.
 - [P366](../cc-P366-cont-fixup-cont-loot-box-flying-loot.md) and [P371](../cc-P371-graduation-is-the-first-loop.md): flying loot and graduation rewards.
-- [P376](../cc-P376-league-decisions.md): remaining League documentation questions, including changing AP totals and title counts.
+- [P376](../cc-P376-league-decisions.md) and Chase's October 23 answers in the [feature queue](../../docs/feature-queue.md), F-24: settled League decisions. Publish no AP ceiling or title count, list visible titles by name, and keep hidden titles secret.
 - Current ShatteredLegacy source: `server/customizations/ClusterFAchievements.cs`, `ClusterFAccountData.cs`, `ClusterFLeagueRanks.cs`, `ClusterFGuildPromotion.cs`, `LeagueRegistrarGump.cs`, `LootBoxes/`, `LeagueShop/`, and `Tutorial/`, with their existing verification cases under `server/tests/`.
 
 ## Contradictions
 
-These differences remain on record without settling them.
+Historical differences and unresolved limits remain on record below. P455 and Chase's October 23 decisions resolve the boss rewards, AP publication, and Renown spending items.
 
-- **Boss rewards:** F-40 and P79 describe boxes for first boss kills. P263 reports that the ordinary kill path never awards them. The current source retains the death-event timing and eligibility check described in that report.
+- **Boss rewards, resolved:** P263 reported that ordinary kills never awarded the first-boss boxes described by F-40 and P79. P455 corrected the award timing, so first-boss boxes now work.
 - **Loops:** P79 records loop rewards as uncalled hooks and uses a fixed loop assumption. P371 records graduation as the first real loop and calls its reward. The wider later-loop system remains (planned).
-- **AP totals and title counts:** F-13 and P229 give different achievement-point totals, and later additions change the catalog again. P229 also calls its public title set nine in one place and eight elsewhere. This guide gives neither an AP ceiling nor a total title count.
-- **Renown spending:** F-13 and P75 retain statements that nothing spends Renown. P229 and P243 describe built shops that do.
+- **AP totals and title counts, resolved:** Chase's October 23 rule supersedes the older catalog figures. This guide publishes no AP ceiling or title count and lists only visible titles by name. Hidden titles stay secret.
+- **Renown spending, resolved:** Chase's October 23 decision confirms the delivered League shops. Older statements in F-13 and P75 that nothing spends Renown are history.
 - **Box lifetime:** F-40 and P79 describe a box disappearing when emptied, with cleanup for leftovers. Current opening code hands over its contents, clears the list, and deletes the box in that opening action.
 - **Gear strength:** F-40 promises box gear weaker than exceptional crafted gear of the same tier. P79 explicitly leaves that comparison unverified. This guide makes no strength guarantee.
 - **Scroll fragments:** F-40 and the fragment tooltip say five make a loop scroll. P79 and the current combination action leave that function unbuilt.
