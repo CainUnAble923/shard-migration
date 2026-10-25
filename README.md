@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.25.3. Golem on, 8 queued, latest done P614. Play tests: 1188 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.25.3. Golem on, 7 queued, latest done P615. Play tests: 1189 open, 4 failed, 43 passed.
 
 ### Needs overseer review (5)
 
@@ -71,7 +71,7 @@ Judgment reviewed 2026-10-20. Shard version 2026.10.25.3. Golem on, 8 queued, la
 - **gate What is built is seen in a client, not only compiled**: Waits on a confirmation: Chase: is the test shard on a build that carries P203 and P204 (version 2026.10.20.x), and which play tests ran after 2026-10-18? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "What is built is seen in a client, not only compiled" --done yes --detail "..."` or `python tools/judge.py confirm gate "What is built is seen in a client, not only compiled"`
 - **task DEPLOY**: Deploy main to the test shard and run its play tests: waits on a confirmation: Chase: which build is on the test shard today? `python tools/judge.py task DEPLOY --status todo|in-progress|blocked|done --note "..."` or `python tools/judge.py confirm task DEPLOY`
 - **direction**: Confirmed 2026-10-20; notes/cc-P509-review-playtest-decisions-inbox.md (2026-10-23) is newer. Read it; if the direction moved, edit "direction" in tools/progress-state.json. `python tools/judge.py confirm direction`
-- **play tests not sorted**: 745 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
+- **play tests not sorted**: 746 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
 
 ## Port list: 6 of 16 systems in. 833 of 983 files (85%).
 
@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 493 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 494 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -240,9 +240,9 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P611 fix-drafts-from-p556 | queued |  |
 | P612 fix-drafts-from-p572 | queued |  |
 | P613 fix-drafts-from-p586 | queued |  |
-| P615 review-tinker-fixes-p479 | queued |  |
 | P616 league-story-chapter-4-draft | queued |  |
 | P617 monday-list-for-chase | queued |  |
+| P615 review-tinker-fixes-p479 | done | 2026-10-25 |
 | P614 review-guild-hall-decor-proof | done | 2026-10-25 |
 | P609 apply-tutorial-text | done | 2026-10-25 |
 | P608 guards-patrol-design | done | 2026-10-25 |
@@ -252,7 +252,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P604 patch-notes-10-25b | done | 2026-10-25 |
 | P604 patch-notes-2026-10-25b | done | 2026-10-25 |
 | P603 playtest-plans-10-25b | done | 2026-10-25 |
-| P602 guide-rangers-refresh | done | 2026-10-25 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 158 patches, 12 replacements
 
