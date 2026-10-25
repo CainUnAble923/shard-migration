@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-20. Shard version 2026.10.25.2. Golem on, 7 queued, latest done P603. Play tests: 1180 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-20. Shard version 2026.10.25.2. Golem on, 7 queued, latest done P604. Play tests: 1180 open, 4 failed, 43 passed.
 
 ### Needs overseer review (5)
 
@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 483 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 485 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -242,6 +242,8 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P606 begging-skill-design | queued |  |
 | P607 item-identification-design | queued |  |
 | P608 guards-patrol-design | queued |  |
+| P604 patch-notes-10-25b | done | 2026-10-25 |
+| P604 patch-notes-2026-10-25b | done | 2026-10-25 |
 | P603 playtest-plans-10-25b | done | 2026-10-25 |
 | P602 guide-rangers-refresh | done | 2026-10-25 |
 | P601 league-chapter-3-draft | done | 2026-10-25 |
@@ -250,8 +252,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P600 guide-hammer | done | 2026-10-25 |
 | P599 guide-high-seas-refresh | done | 2026-10-25 |
 | P598 review-high-seas-second-half | done | 2026-10-25 |
-| P596 questions-for-chase-3 | done | 2026-10-25 |
-| P596 questions-for-chase-round-3 | done | 2026-10-25 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 158 patches, 12 replacements
 
