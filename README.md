@@ -231,7 +231,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 500 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 501 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -249,10 +249,10 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P616 league-story-chapter-4-draft | done | 2026-10-25 |
 | P615 review-tinker-fixes-p479 | done | 2026-10-25 |
 | P614 review-guild-hall-decor-proof | done | 2026-10-25 |
+| P612 fix-drafts-from-p572 | done | 2026-10-25 |
 | P611 fix-drafts-from-p556 | done | 2026-10-25 |
 | P610 fix-drafts-from-p533 | done | 2026-10-25 |
 | P609 apply-tutorial-text | done | 2026-10-25 |
-| P608 guards-patrol-design | done | 2026-10-25 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 161 patches, 12 replacements
 
