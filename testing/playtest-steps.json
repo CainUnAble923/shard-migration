@@ -4027,6 +4027,73 @@
    ],
    "pass": "Status MISSING, then 49 objects and the gate present; the world reloads with 345 more mobiles and no exception.",
    "check": "CC: done by cc-P198 (notes, Test shard)."
+  },
+  "P269-1": {
+   "where": "Test shard, any character with a fishing pole in the pack",
+   "do": [
+    "`[add Bait 4` (fairy salmon bait), double-click it, target your fishing pole",
+    "`[add LavaHook`, double-click it, target the same pole",
+    "Hover the pole"
+   ],
+   "pass": "\"You bait the hook.\", then \"You tie the hook to the fishing line.\" The pole turns red and its tooltip reads \"baited to attract: fairy salmon\", \"amount: 1\", \"special hook: lava hook\" and \"hook condition: new\".",
+   "check": "Not built yet: the bot would add the bait and hook, target the pole and read the two clilocs and the pole's property list."
+  },
+  "P269-2": {
+   "where": "Test shard, a fisher with Fishing 100 and a lava-hooked pole (P269-1), beside a lava pool (the Abyss in Ter Mur, or any dungeon lava)",
+   "do": [
+    "Cast into the lava a few times",
+    "Double-click a cracked lava rock with an axe (hatchet) and target the rock in your pack",
+    "Put on a pair of stone boots and try to walk"
+   ],
+   "pass": "The cast splashes lava (not water); you pull up stone footwear, stone pavers and cracked lava rocks (rarely a lava fish, a weapon goes straight to your pack); the rock splits into a geode or lava rock; in stone boots you cannot move until you take them off. Each catch wears the hook (its condition drops).",
+   "check": "Chase's eyes: the lava splash and the look of the stone items."
+  },
+  "P269-3": {
+   "where": "Test shard, a cook with 70 Cooking whose account knows the Cooking band II book, beside an oven",
+   "do": [
+    "`[add BullFishSteak`, `[add Dough`, `[add Squash`, `[add MentoSeasoning`",
+    "Cooking menu, Fish Pies, Bull Fish Pie; bake it",
+    "Eat the pie and open your status"
+   ],
+   "pass": "The pie bakes; eating it says \"You eat the bull fish pie. Mmm, tasty!\", a fish pie buff icon appears, and your damage increase is 5 higher for five minutes. A second bull fish pie in that time says \"You are already under a similar effect.\"",
+   "check": "Not built yet: the bot would bake through the craft gump and read the buff packet."
+  },
+  "P269-4": {
+   "where": "Test shard, a fisher with Fishing 100 on their own boat at sea in Trammel or Felucca",
+   "do": [
+    "`[add OracleOfTheSea`, `[add Bait 35` (charybdis bait); bait your pole",
+    "Double-click the Oracle: it names a spot in sextant coordinates",
+    "Sail to the spot and cast into the water there"
+   ],
+   "pass": "The Oracle spends a charge (4/5) and names a spot; at the spot the cast says \"It seems as though you've snagged your hook.\" and twelve seconds later Charybdis rises with tentacles around your boat. When it dies its corpse holds fish pies.",
+   "check": "Chase's eyes: the rising and the fight."
+  },
+  "P269-5": {
+   "where": "Test shard after `[GenFishMongers` (once), a fisher with Fishing 60 who owns a boat docked near the Britain fish monger (1482, 1754)",
+   "do": [
+    "Double-click the fish monger; read the order and Accept",
+    "Open the boat's hold: a shipping crate is there; `[add` the fish it asks for and drop them in it",
+    "Bring the boat to the port of delivery the crate names and double-click that port's fish monger; Continue"
+   ],
+   "pass": "The order window shows the fish and the port; the crate refuses other fish; at the port the crate disappears with its fish and a reward (bait, a hook, a lava lobster trap, a rare book, a power scroll or an Oracle) lands in your pack with \"You have gained a fair amount of reputation with the Fish Mongers.\" [FishMongerStatus then names your standing.",
+   "check": "Chase's eyes: sailing between ports."
+  },
+  "P269-6": {
+   "where": "Test shard, staff, Felucca or Trammel `[go 6431 1236 10` (Corgul's island)",
+   "do": [
+    "`[add CorgulTheSoulBinder`, then `[props` him and set SpawnCrew true",
+    "Fight him with a character or two"
+   ],
+   "pass": "Seventy-five soulbound (bound souls, pirates, mages) appear around the island; Corgul pulls fighters to himself, blasts everyone near, and sends a ring of fire; when all his crew are dead they come back once. At death his crew die too and his corpse holds a message in a bottle and two special fishing nets.",
+   "check": "Chase's eyes: the fight."
+  },
+  "P269-7": {
+   "where": "CC, a scratch copy of the bot world",
+   "do": [
+    "Boot sl-modernuo:cc-P269 on the copy, stop it (it saves), boot it again"
+   ],
+   "pass": "Both boots load the world with no exceptions; the fishing poles in the world load (version 0 to 1) and save.",
+   "check": "Done by CC: see the notes' headless boot section."
   }
  }
 }
