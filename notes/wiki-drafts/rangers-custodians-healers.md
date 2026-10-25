@@ -1,6 +1,6 @@
 # Rangers' League, Custodians, and Healers' Covenant
 
-Draft checked against project notes and source code on October 21, 2026. Features still to come are marked (planned). Availability and settings on the running shard have not been checked. Configurable numbers below are source defaults.
+Draft refreshed for the Ranger elixir and Tracking Ping on October 25, 2026; other sections were checked on October 21. Features still to come are marked (planned). Availability and settings on the running shard have not been checked. Configurable numbers below are source defaults; planned Ping numbers are recommendations, not settled settings.
 
 ## Find your guild
 
@@ -34,6 +34,14 @@ Use **Tracking** from the skills list, choose Animals, Monsters, Human NPCs, or 
 
 Tracking can keep gaining through normal successful use above 100, up to your current skill cap. Its search radius counts at most **100 Tracking**, reaching **110 tiles**. More skill does not keep widening that search.
 
+### Tracking Ping (planned)
+
+The [Tracking Ping design](../cc-P563-tracking-ping-design.md) proposes a short radar sweep at **90.0 base Tracking**. It would count nearby creatures and show moving dots on TazUO's mini map, with a results window for choosing one quarry to follow with a tracking arrow. Clients without the Ping patch would receive a chat count and could open the results window. This ability is not implemented, and its numbers remain recommendations.
+
+The proposed creature radius is **18 tiles at 90**, **24 at 100**, and **44 at 200**. A pulse would last **6 to 10 seconds**, cost **15 stamina**, and have a **30-second cooldown** after a successful one-second focus. Movement or damage during focus would cancel it. Equipment bonuses would not unlock or strengthen Ping. Ping itself would grant no skill gain or XP; normal Tracking would remain the training path.
+
+The proposed sweep could sense creatures through dungeon walls only on the same mapped floor. Ping would be unavailable on unmapped dungeon floors and would exclude other players' private interiors. Visible players could appear from **120 base Tracking**, within **12 tiles and line of sight**, with a warning to the player being tracked. Hidden or invisible targets would stay excluded at every skill level. A player's dot would show their actual notoriety, not permission to attack.
+
 ### Field contracts and rank
 
 Open **Field Contracts** from the member dashboard, or **Contracts** in the directory. Resource deliveries ask for goods such as leather, feathers, meat, wool, or camp supplies. Taming contracts ask for specified animals. Read the order's standing and skill requirements before accepting it.
@@ -61,6 +69,12 @@ The Hunter's Satchel accepts leather, hides, bone, wool, feathers, and raw meat.
 Your Rangers' rank also improves a controlled pet's chance to gain skills. Animal Taming and Animal Lore above 100 contribute too. The Animal Lore window's skill pages show **Learns x...**. This raises the chance of a gain; it does not award free skill points. Loop contributions are (planned).
 
 The League's **Requisitions** provide another source of Ranger standing. They request items such as magic bows and leather armor and pay standing, Renown, and gold. These are separate from Field Contracts and do not pay Trail Marks. See the [League guide](league.md).
+
+### Bring back a dead bonded pet
+
+Rangers' League members can open the Outriders' Guildmaster's **Member Dashboard** and choose **Buy an elixir of rebirth** for **375 gold**. Payment comes from your backpack or bank. Animal trainers sell the same elixir for **500 gold**, so the member price saves 25 percent. These purchases use gold, not Trail Marks.
+
+Keep the elixir in your backpack. Once your dead bonded pet's body has faded, stand within **2 tiles** of its ghost, double-click the elixir, and target the pet. You must be alive, and the pet must be on a tile where it can be resurrected. A successful resurrection uses up the elixir. It cannot bring back an unbonded pet.
 
 ### The Rangers' Guild hall
 
@@ -175,6 +189,8 @@ Note links are relative to shard-migration. Detailed code and test file:line evi
 - [P33](../cc-P33-clean-up-britannia.md) and [P175](../cc-P175-cont-clean-up-britannia-finish.md): Clean Up, the Custodian layer, store, property values, and corpses.
 - [P17](../cc-P17-playtest-bugs-1.md), [P32](../cc-P32-spawner-importer-bods-self-repair.md), and [P137](../cc-P137-usable-ankhs-and-playtest-fixes.md): healers, spawn issues, and working ankhs.
 - [P48](../cc-P48-league-batch-1.md), [P52](../cc-P52-bug-batch-4.md), [P66](../cc-P66-clamps-and-hook-g.md), [P71](../cc-P71-high-skill-effect-scaling.md), [P172](../cc-P172-pet-gain-speed.md), and [P283](../cc-P283-skill-gain-paths-research.md): ranks, menu differences, Tracking, Healing, and pet gains.
+- [P480](../cc-P480-tutorial-first-play-fixes.md): elixir sales and the Ranger member price. Verified in `server/customizations/OutridersGuildmasterGump.cs`, `server/customizations/Tutorial/TutorialPetCare.cs`, `server/customizations/Items/Consumables/ElixirOfRebirth.cs`, and `server/patches/AnimalTrainer-elixir-of-rebirth.patch`.
+- [P563](../cc-P563-tracking-ping-design.md): Tracking Ping proposal, including radar dots, suggested skill thresholds and costs, fallback display, and privacy limits. Design only.
 - [P150](../cc-P150-requisitions-and-leads.md), [P151](../cc-P151-guild-halls-survey.md), and [P265](../cc-P265-guild-hall-decor-packs.md): requisitions, hall surveys, and unplaced decor.
 - Current ShatteredLegacy sources: `server/customizations/ClusterFGuildSystem.cs`, `ClusterFGuildStarterPath.cs`, `OutridersGuildmasterGump.cs`, `OutridersCrook.cs`, `HuntersSatchel.cs`, `ClusterFPetGainSpeed.cs`, `ClusterFCustodianSystem.cs`, `SanitationWardenGump.cs`, `TrashBag.cs`, `ClusterFHealerPolicy.cs`, `ClusterFSelfResurrect.cs`, and the Clean Up, requisition, skill, and resurrection files listed in the work notes. Existing verification cases were read as source, not rerun for this draft.
 
