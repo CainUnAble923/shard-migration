@@ -1,0 +1,61 @@
+--- a/src/ClassicUO.IO/UOFile.cs
++++ b/src/ClassicUO.IO/UOFile.cs
+@@ -19,6 +19,10 @@
+         public UOFileIndex[] Entries;
+ 
+ 
++        // The animated-statics frame offset lives on the index entry even when the art comes from ExternalImages only.
++        public sbyte GetAnimOffset(int index) =>
++            Entries != null && index >= 0 && index < Entries.Length ? Entries[index].AnimOffset : (sbyte)0;
++
+         public ref UOFileIndex GetValidRefEntry(int index)
+         {
+             if (index < 0 || Entries == null || index >= Entries.Length)
+--- a/src/ClassicUO.Client/Game/GameObjects/Views/ItemView.cs
++++ b/src/ClassicUO.Client/Game/GameObjects/Views/ItemView.cs
+@@ -477,11 +477,7 @@
+                     }
+                     else
+                     {
+-                        ref UOFileIndex index = ref Client.Game.UO.FileManager.Arts.File.GetValidRefEntry(
+-                            graphic + 0x4000
+-                        );
+-
+-                        graphic += (ushort)index.AnimOffset;
++                        graphic += (ushort)Client.Game.UO.FileManager.Arts.File.GetAnimOffset(graphic + 0x4000);
+                     }
+                 }
+ 
+--- a/src/ClassicUO.Client/Game/GameObjects/Views/View.cs
++++ b/src/ClassicUO.Client/Game/GameObjects/Views/View.cs
+@@ -304,15 +304,13 @@
+             Color? outlineColor = null
+         )
+         {
+-            ref UOFileIndex index = ref Client.Game.UO.FileManager.Arts.File.GetValidRefEntry(graphic + ART_STATIC_OFFSET);
+-
+-            graphic = (ushort)(graphic + index.AnimOffset);
++            graphic = (ushort)(graphic + Client.Game.UO.FileManager.Arts.File.GetAnimOffset(graphic + ART_STATIC_OFFSET));
+ 
+             ref readonly SpriteInfo artInfo = ref Client.Game.UO.Arts.GetArt(graphic);
+ 
+             if (artInfo.Texture != null)
+             {
+-                index = ref Client.Game.UO.FileManager.Arts.File.GetValidRefEntry(graphic + ART_STATIC_OFFSET);
++                ref UOFileIndex index = ref Client.Game.UO.FileManager.Arts.File.GetValidRefEntry(graphic + ART_STATIC_OFFSET);
+                 index.Width = (short)((artInfo.UV.Width >> 1) - TILE_CENTER_OFFSET);
+                 index.Height = (short)(artInfo.UV.Height - TILE_HEIGHT_OFFSET);
+ 
+--- a/src/ClassicUO.Client/Game/Scenes/GameSceneDrawingSorting.cs
++++ b/src/ClassicUO.Client/Game/Scenes/GameSceneDrawingSorting.cs
+@@ -760,9 +760,7 @@
+                 }
+                 else
+                 {
+-                    graphic += (ushort)Client.Game.UO.FileManager.Arts.File
+-                        .GetValidRefEntry(graphic + 0x4000)
+-                        .AnimOffset;
++                    graphic += (ushort)Client.Game.UO.FileManager.Arts.File.GetAnimOffset(graphic + 0x4000);
+                 }
+             }
+ 

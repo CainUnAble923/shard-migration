@@ -423,6 +423,8 @@ RedRooster asks to be on the shard credits list for both packs; Outlands asks to
   `uobot.legionsetup`, one capture per set), `find_spot.py` (empty spots: Alembic 1135,1791; Smiths 1199,1823;
   Artificers 1231,1889, Trammel z0).
 - **Mid-flight:** nothing. The proof container is removed, its scratch copy deleted, both locks released.
+- **Part 4 done in cc-P374** (2026-10-25): `notes\cc-P374-cont-guild-hall-decor-proof.md`, shots in
+  `notes\art\cc-P374\`. It found that our client drew every animated piece on its first frame; client patch 0007 fixes it.
 
 ## Files changed
 
