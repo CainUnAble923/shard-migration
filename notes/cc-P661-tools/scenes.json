@@ -1,0 +1,37 @@
+[
+  {
+    "name": "1-voidC-32-33-after-save-restart",
+    "restart": true,
+    "commands": [
+      "[global set Map 32 where playermobile Name == \"{player}\"",
+      "[global set Location (6214,2001,0) where playermobile Name == \"{player}\"",
+      "[global set LogoutMap 32 where playermobile Name == \"{player}\"",
+      "[global set LogoutLocation (6214,2001,0) where playermobile Name == \"{player}\"",
+      "[Fold goto 1",
+      "[save"
+    ]
+  },
+  {
+    "name": "2-newhaven-32-33",
+    "restart": false,
+    "commands": [
+      "[global set Map 32 where playermobile Name == \"{player}\"",
+      "[global set Location (3503,2574,14) where playermobile Name == \"{player}\"",
+      "[global set LogoutMap 32 where playermobile Name == \"{player}\"",
+      "[global set LogoutLocation (3503,2574,14) where playermobile Name == \"{player}\"",
+      "[Fold goto 1 3503 2574"
+    ]
+  },
+  {
+    "name": "3-control-trammel-felucca",
+    "restart": false,
+    "commands": [
+      "[global set Map 0 where playermobile Name == \"{player}\"",
+      "[global set Location (3503,2574,14) where playermobile Name == \"{player}\"",
+      "[global set LogoutMap 0 where playermobile Name == \"{player}\"",
+      "[global set LogoutLocation (3503,2574,14) where playermobile Name == \"{player}\"",
+      "[global set Map 1 where playermobile Name == \"{golem}\"",
+      "[global set Location (3503,2574,14) where playermobile Name == \"{golem}\""
+    ]
+  }
+]

@@ -1,0 +1,99 @@
+// Scratch only (cc-P661 measurement), never committed.
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using Server;
+using Server.Engines.Spawners;
+using Server.Items;
+using Server.Mobiles;
+using Server.Tests;
+using Server.Tutorial;
+using Xunit;
+using Xunit.Abstractions;
+
+namespace ShatteredLegacy.Tests;
+
+[Collection("Sequential UOContent Tests")]
+public class FoldMeasure
+{
+    private readonly ITestOutputHelper _out;
+    public FoldMeasure(ITestOutputHelper o) => _out = o;
+
+    private (long Managed, long Private, long Rss, int Fds, int Mapfds) Now()
+    {
+        var managed = GC.GetTotalMemory(true);
+        var p = Process.GetCurrentProcess();
+        p.Refresh();
+        var fds = Directory.GetFiles("/proc/self/fd");
+        var mapfds = fds.Count(f => { try { var t = new FileInfo(f).LinkTarget ?? ""; return t.Contains("map1") || t.Contains("staidx1") || t.Contains("statics1"); } catch { return false; } });
+        return (managed, p.PrivateMemorySize64, p.WorkingSet64, fds.Length, mapfds);
+    }
+
+    private (long, long, long, int, int) _last;
+    private void Step(string name)
+    {
+        var n = Now();
+        _out.WriteLine($"MEASURE {name}: managed {n.Managed / 1024} KB (+{(n.Managed - _last.Item1) / 1024}), private {n.Private / 1024} KB (+{(n.Private - _last.Item2) / 1024}), rss {n.Rss / 1024} KB (+{(n.Rss - _last.Item3) / 1024}), fds {n.Fds} (+{n.Fds - _last.Item4}), map-file fds {n.Mapfds}");
+        _last = n;
+    }
+
+    [SkippableFact]
+    public void Measure()
+    {
+        TileDataRequirement.SkipIfMissing();
+        Map.Trammel.Tiles.GetLandTile(6300, 2000); // Trammel itself open, as on a live server
+        _last = Now();
+        Step("baseline (Trammel open, Fold not registered)");
+
+        var sw = Stopwatch.StartNew();
+        FoldMaps.Configure();
+        _out.WriteLine($"MEASURE configure took {sw.ElapsedMilliseconds} ms");
+        Step("17 maps registered, none touched");
+
+        sw.Restart();
+        Map.Maps[32].Tiles.GetLandTile(6300, 2000);
+        _out.WriteLine($"MEASURE opening the Fold's tiles took {sw.ElapsedMilliseconds} ms");
+        Step("the Fold (32) opened");
+
+        sw.Restart();
+        for (var i = 1; i <= 16; i++) { FoldMaps.Copy(i).Tiles.GetLandTile(6300, 2000); }
+        _out.WriteLine($"MEASURE opening 16 copies took {sw.ElapsedMilliseconds} ms");
+        Step("16 empty copies opened");
+
+        // Read the isle's whole drawn area (x 6170-6441, y 1913-2057) on every copy, as 16 trainees walking it would.
+        sw.Restart();
+        for (var i = 0; i <= 16; i++)
+        {
+            var map = FoldMaps.Copy(i);
+            for (var x = 6170; x <= 6441; x += 8)
+            for (var y = 1913; y <= 2057; y += 8)
+            {
+                map.Tiles.GetLandTile(x, y);
+                map.Tiles.GetStaticTiles(x, y);
+            }
+        }
+        _out.WriteLine($"MEASURE reading the isle area on 17 maps took {sw.ElapsedMilliseconds} ms");
+        Step("isle area read on all 17");
+
+        // One copy with the farm, moved whole as design 11.2 says (+2890, -628), its door, Farmhand and spawners.
+        var copy = FoldMaps.Copy(1);
+        var items0 = World.Items.Count; var mobs0 = World.Mobiles.Count;
+        var shift = new Point3D(2890, -628, 0);
+        var anchor = TutorialFarmLayout.Anchor;
+        var addon = new TutorialFarmAddon();
+        addon.MoveToWorld(new Point3D(anchor.X + shift.X, anchor.Y + shift.Y, anchor.Z), copy);
+        TutorialFarm.MakeDoor().MoveToWorld(new Point3D(TutorialFarmLayout.DoorSpot.X + shift.X, TutorialFarmLayout.DoorSpot.Y + shift.Y, TutorialFarmLayout.DoorSpot.Z), copy);
+        var hs = new Point3D(TutorialFarm.FarmhandSpot.X + shift.X, TutorialFarm.FarmhandSpot.Y + shift.Y, 0);
+        new TutorialFarmhand { Home = hs, RangeHome = 0 }.MoveToWorld(hs, copy);
+        foreach (var (spot, range, count, types) in TutorialFarm.SpawnerRows)
+        {
+            var s = new Spawner(count, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(3), 0, default, types);
+            s.MoveToWorld(new Point3D(spot.X + shift.X, spot.Y + shift.Y, 0), copy);
+            s.HomeRange = range;
+            s.Respawn();
+        }
+        _out.WriteLine($"MEASURE farm seeded on {copy.Name}: +{World.Items.Count - items0} items (addon components count), +{World.Mobiles.Count - mobs0} mobiles");
+        Step("one copy with a seeded farm");
+    }
+}
