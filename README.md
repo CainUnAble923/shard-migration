@@ -230,7 +230,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem off; 526 prompts done, 4 more stopped early and not counted)
+### Queue (Golem off; 527 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -243,6 +243,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P645 review-build-procs-milestone | queued |  |
 | P646 review-build-town-houses | queued |  |
 | P639 review-build-item-identification | done | 2026-10-26 |
+| P638 review-build-social-skill | done | 2026-10-26 |
 | P637 review-build-tracking-ping | done | 2026-10-26 |
 | P635 cont-fixup-build-guard-patrols-pilot | done | 2026-10-26 |
 | P634 build-town-houses | done | 2026-10-26 |
@@ -251,7 +252,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P631 build-townsfolk-rest | done | 2026-10-26 |
 | P630 build-echo-summon | done | 2026-10-26 |
 | P629 build-league-warrants | done | 2026-10-26 |
-| P628 build-guard-patrols-pilot | done | 2026-10-26 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 169 patches, 12 replacements
 
