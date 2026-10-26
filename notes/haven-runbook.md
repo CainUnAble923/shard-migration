@@ -236,7 +236,31 @@ by a dashboard prompt; see `D:\ShatteredLegacy\docker\uo\README.md`.
 ### DDNS updater `ddns`
 
 `sl-ddns` on the game PC: keeps `shatteredlegacyuo.com` at the house's public address (Cloudflare). Secrets in
-`docker\uo\.env` (git-ignored). **Moving it** to Haven: copy the `.env`, start it there, stop it here; only one may run.
+`docker\uo\.env` (git-ignored). Since cc-P668 its **only** address source is the gate (`ddns-gate`, below): it publishes
+Haven's address, never the game PC's, so Chase's VPN no longer matters (on 2026-10-26 it published the VPN's exit and the
+site went dark). `docker\uo\Test-DdnsSafe.ps1` says whether the container is that one (UNSAFE otherwise; `-Fix` stops it
+and sets restart=no); `Start-TestShard.ps1` and the console's "Restart sl-ddns" run it first. **Recreate** (after any
+change to its compose): `docker compose -p uo -f docker\uo\docker-compose.yml up -d` in `D:\ShatteredLegacy`, then
+`Test-DdnsSafe.ps1`. **Moving it** to Haven: never copy `docker\uo\.env` off the game PC; Haven gets its own Cloudflare
+token (Chase makes it), then start it there, stop it here; only one may run.
+
+### DDNS gate `ddns-gate`
+
+`sl-ddns-gate` on the game PC, in the same compose project (`uo`), no host port: answers sl-ddns at
+`https://ddns-gate:8443/ip` (self-signed certificate in volume `ddns_tls`; sl-ddns trusts it through `SSL_CERT_FILE`).
+It serves Haven's address from `sl-homeip` (LAN `192.168.1.61:8098`, then the tailnet), and refuses (403, no address in
+the text, the record is left alone, `*** REFUSED ***` in its log) when Haven does not answer, Haven's URLs disagree, or
+Haven reports a known VPN exit (`BLOCK`) or one it learned (the game PC's egress differing from Haven's for 15 minutes,
+kept in volume `ddns_gate`). **Check the way to Haven:** `docker\uo\Test-DdnsSafe.ps1 -Reach` (with the VPN on and off).
+**Logs:** `docker logs sl-ddns-gate`. Code: `docker\uo\ddns-gate`.
+
+### Home IP `homeip`
+
+`sl-homeip` on Haven: the house's public IPv4 as text, `http://192.168.1.61:8098/ip` and `127.0.0.1:8098` (Tailscale Serve
+:8098; never public, never NPM). Every 3 minutes it asks two public lookups and keeps the answer only when they agree; `/ip`
+answers 503 when there is no agreed answer younger than 15 minutes; `/status` is the detail. `~/sl-homeip`
+(project `sl-homeip`). **Deploy / roll back:** `docker\homeip\Deploy-HavenHomeIp.ps1 -Mode Deploy|Rollback` (Discover first,
+typed word). No data, nothing to back up. Stopped, sl-ddns gets no address and leaves the record alone.
 
 ### Ops pages `play-tests`
 
@@ -450,3 +474,6 @@ Deviation 2). **Start/remove:** with the node (`Install-WebConsole.ps1 -Tailscal
 - 2026-10-19 cc-P182: the web console's Golem buttons; its tailnet listener demands the sidecar's proof; the proof
   forwarder `uoconsole-proof` (in `uoconsole-ts`'s namespace, 127.0.0.2:8097) between Serve and `:8096`.
   `services.json` 34 services.
+- 2026-10-26 cc-P668: sl-ddns publishes Haven's address only. `ddns-gate` (`sl-ddns-gate`, game PC, project `uo`) and
+  `homeip` (`sl-homeip`, Haven, `192.168.1.61:8098` and `127.0.0.1:8098`, Serve :8098) added, both built and not deployed;
+  `ddns` now depends on the gate. `services.json` 36 services (counted from the file).
