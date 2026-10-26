@@ -1,0 +1,20 @@
+    0.00 harness  == P121-2 run 2: A tamed Giant Spider at Poisoning 100 gives a player Lethal poison within a few bites
+    0.00 admin    -> 0xEF seed, client 7.0.117.0; 0x80 login as slbot-admin
+    0.01 admin    <- 0xA8 servers [(0, 'Shattered Legacy BOT')]
+    0.01 admin    <- 0x8C relay 127.0.0.1:2595 (checked: the scratch shard 127.0.0.1:2595; reconnecting to 127.0.0.1:2595)
+    5.01 admin    DISCONNECTED: the server closed the connection
+    5.02 harness  Traceback (most recent call last):
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\run.py", line 180, in run_checks
+    ok, evidence = chk.fn(ctx)
+                   ^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\checks_p224_pets.py", line 112, in p121_2
+    a = ctx.ensure_admin()
+        ^^^^^^^^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\run.py", line 59, in ensure_admin
+    chars = c.login()
+            ^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\client.py", line 266, in login
+    raise LoginFailed("no character list after the game login (%s)" % (self.closed or "timeout"))
+uobot.client.LoginFailed: no character list after the game login (the server closed the connection)
+
+    5.02 harness  == P121-2 run 2: ERROR (LoginFailed: no character list after the game login (the server closed the connection))

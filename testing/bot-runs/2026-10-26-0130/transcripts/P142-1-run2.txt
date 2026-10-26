@@ -1,0 +1,51 @@
+    0.00 harness  == P142-1 run 2: Trammel Despise: an Initiate is refused the dungeons beyond Felucca, a Journeyman steals specials, a non-member is told of the Den
+    0.00 admin    -> say '[go 0x29699'
+    1.01 admin    -> say '[add ThiefGuildmaster'
+    1.01 admin    <- 0x6C target cursor 1054 (type 1)
+    1.23 admin    -> 0x6C target ground 3495,2574,59
+    1.23 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+    1.36 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+    1.36 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+    1.74 player   -> 0xBF 0x13 context menu request 0x000298B5
+    1.74 player   <- 0xBF 0x14 context menu 0x000298B5: [(0, 3006123, 'Open Paperdoll', 0), (1, 3006146, 'Talk', 0), (2, 3006014, 'Train Detect Hidden', 0), (3, 3006021, 'Train Hiding', 0), (4, 3006024, 'Train Lockpicking', 0), (5, 3006028, 'Train Snooping', 0), (6, 3006030, 'Train Poisoning', 0), (7, 3006033, 'Train Stealing', 1), (8, 3006042, 'Train Fencing', 0)]
+    1.74 player   -> 0xBF 0x15 context pick 1 (Talk) on 0x000298B5
+    1.74 player   <- 0xDD gump 0x00000D20 type -810631593: Thieves' Den | <BASEFONT COLOR=#DDDDDD><I>We see all. Can we trust you? Show us your light fingers.</I></BASEFONT> | <BASEFONT COLOR=#AAAAAA>Teaches: Hiding, Stealth, Stealing, Snooping, Lockpicking, Poisoning, Detecting Hidden, Remove Trap</BASEFONT> | Separate from the stock trade guild (say "join", 500 gold). One does not join the other. | Member. Rank: Initiate. | Starter items (2) | Mule module schematics | Apprentice task: | <BASEFONT COLOR=#DDDDDD>Demonstrate Stealing of at least 20.0.</BASEFONT> | Complete it: +25 reputation, +10 scrip | Guild services | Guild Directory | Requisitions | Close
+    1.74 player      layout: { resizepic 0 0 9270 520 400 }{ checkertrans 10 10 500 380 }{ text 20 14 1154 0 }{ gumppictiled 10 36 500 2 9304 }{ htmlgump 20 44 480 36 1 0 0 }{ htmlgump 20 82 480 36 2 0 0 }{ text 20 118 999 3 }{ gumppictiled 10 140 500 2 9304 }{ text 20 150 68 4 }{ button 20 172 4005 4007 1 0 3 }{ text 55 174 999 5 }{ button 20 200 4005 4007 1 0 7 }{ text 55 202 999 6 }{ gumppictiled 10 232 500 2 9304 }{ text 20 240 999 7 }{ htmlgump 20 260 480 36 8 0 0 }{ button 20 298 4023 4025 1 0 4 }{ text 55 300 1154 9 }{ gumppictiled 10 350 500 2 9304 }{ button 20 362 4011 4012 1 0 5 }{ text 45 364 999 10 }{ button 180 362 4011 4012 1 0 6 }{ text 205 364 999 11 }{ button 300 362 4011 4012 1 0 9 }{ text 325 364 999 12 }{ button 420 362 4017 4019 1 0 0 }{ text 455 364 999 13 }
+    1.74 player   -> 0xB1 gump 0x00000D20 type -810631593 button 0 switches [] texts []
+    1.74 admin    -> say '[go 0x29699'
+    2.75 admin    -> say '[SetSkill Stealing 120'
+    2.75 admin    <- 0x6C target cursor 1055 (type 0)
+    2.95 admin    -> 0x6C target object 0x00029699
+    2.95 admin    <- unicode(0) System: Stealing : 120 (Base: 120)
+    3.55 admin    -> say '[go 0x29699'
+    4.56 admin    -> say '[set Blessed true'
+    4.57 admin    <- 0x6C target cursor 1056 (type 0)
+    4.77 admin    -> 0x6C target object 0x00029699
+    4.77 admin    <- unicode(0) System: Property has been set.
+    5.28 admin    -> say '[go 0x29699'
+    6.28 admin    -> say '[set Map Trammel X 5501 Y 570 Z 59'
+    6.28 admin    <- 0x6C target cursor 1057 (type 0)
+    6.48 admin    -> 0x6C target object 0x00029699
+    6.48 player   <- unicode(0) System: Finish the main tutorial lessons, then double-click Rook on the New Haven plaza and choose Graduate. You can leave Haven Island afterward.
+    6.48 player   <- unicode(0) System: Finish the main tutorial lessons, then double-click Rook on the New Haven plaza and choose Graduate. You can leave Haven Island afterward.
+    6.48 admin    <- unicode(0) System: Property has been set. (4)
+   15.00 admin    -> say '[go 0x29699'
+   16.51 admin    -> say '[go 0x29699'
+   17.52 admin    -> say '[GuildStanding thieves 0'
+   17.52 admin    <- 0x6C target cursor 1058 (type 0)
+   17.72 admin    -> 0x6C target object 0x00029699
+   17.72 admin    <- unicode(0) System: Set Bot Human F Aa's Thieves' Den standing to 0 (Initiate).
+   18.33 admin    -> say '[go 0x29699'
+   19.34 admin    -> say '[set Blessed false'
+   19.34 admin    <- 0x6C target cursor 1059 (type 0)
+   19.56 admin    -> 0x6C target object 0x00029699
+   19.56 admin    <- unicode(0) System: Property has been set.
+   20.07 harness  Traceback (most recent call last):
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\run.py", line 180, in run_checks
+    ok, evidence = chk.fn(ctx)
+                   ^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\checks_p224_thieves.py", line 294, in p142_1
+    raise AssertionError("the thief did not arrive in Trammel Despise (at %s)" % (p.pos,))
+AssertionError: the thief did not arrive in Trammel Despise (at (3494, 2574, 59, 134))
+
+   20.07 harness  == P142-1 run 2: ERROR (AssertionError: the thief did not arrive in Trammel Despise (at (3494, 2574, 59, 134)))

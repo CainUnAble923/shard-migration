@@ -1,0 +1,20 @@
+    0.00 harness  == P172-1 run 1: A fresh tamer's wolf learns x1.0 and a Legendary Outrider's x2.4; the master's wolf gains more Wrestling in the same 3-minute fight
+    0.00 p172     -> 0xEF seed, client 7.0.117.0; 0x80 login as slbot-player2
+    0.01 p172     <- 0xA8 servers [(0, 'Shattered Legacy BOT')]
+    0.01 p172     <- 0x8C relay 127.0.0.1:2595 (checked: the scratch shard 127.0.0.1:2595; reconnecting to 127.0.0.1:2595)
+    5.01 p172     DISCONNECTED: the server closed the connection
+    5.01 harness  Traceback (most recent call last):
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\run.py", line 180, in run_checks
+    ok, evidence = chk.fn(ctx)
+                   ^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\checks_p224_pets.py", line 269, in p172_1
+    mas = ctx.fresh(race="human", female=True, label="p172")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\run.py", line 118, in fresh
+    chars = c.login()
+            ^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\client.py", line 266, in login
+    raise LoginFailed("no character list after the game login (%s)" % (self.closed or "timeout"))
+uobot.client.LoginFailed: no character list after the game login (the server closed the connection)
+
+    5.01 harness  == P172-1 run 1: ERROR (LoginFailed: no character list after the game login (the server closed the connection))

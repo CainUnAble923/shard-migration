@@ -1,0 +1,170 @@
+    0.00 harness  == P70-10 run 1: Survey Saddle Roll: Options lists a decoded map in the pack and tracks it with a quest arrow; at the spot with III, 'Dig here' raises the chest and its guardians
+    0.00 admin    -> say '[go 0x29699'
+    0.95 player   <- ascii(0) System: The world is saving, please wait.
+    0.95 player   <- ascii(0) System: World save completed in 0.01 seconds.
+    0.95 admin    <- ascii(0) System: The world is saving, please wait.
+    0.95 admin    <- ascii(0) System: World save completed in 0.01 seconds.
+    1.01 admin    -> say '[go 0x29699'
+    2.01 admin    -> say '[set X 3504 Y 2574 Z 14 CantWalk true'
+    2.01 admin    <- 0x6C target cursor 556 (type 0)
+    2.22 admin    -> 0x6C target object 0x000297EE
+    2.22 admin    <- unicode(0) System: Property has been set. (4)
+    3.54 player   -> 0xBF 0x13 context menu request 0x000297EE
+    3.54 player   <- 0xBF 0x14 context menu 0x000297EE: [(0, 3006111, 'Command: Kill', 0), (1, 3006108, 'Command: Follow', 0), (2, 3006107, 'Command: Guard', 0), (3, 3006112, 'Command: Stop', 0), (4, 3006114, 'Command: Stay', 0), (5, 3006098, '', 0), (6, 3006110, 'Add Friend', 0), (7, 3006099, 'Remove Friend', 0), (8, 3006113, 'Transfer', 0), (9, 3006118, 'Release', 0), (10, 3006145, 'Open Backpack', 0), (11, 1900000, '#1900000', 0), (12, 3000127, 'Options', 0)]
+    3.54 player   -> 0xBF 0x15 context pick 12 (Options) on 0x000297EE
+    3.55 player   <- 0xDD gump 0x00000C35 type 1831174852: a Shadowhide mule: modules 1 / 3 | Remove Trailwise Tack II
+    3.55 player      layout: { page 0 }{ resizepic 0 0 9270 460 520 }{ checkertrans 6 6 448 508 }{ text 20 14 1154 0 }{ button 20 40 4017 4019 1 0 100 }{ text 55 42 999 1 }{ gumppictiled 10 68 440 2 9304 }
+    3.55 player   -> 0xB1 gump 0x00000C35 type 1831174852 button 100 switches [] texts []
+    3.55 player   <- unicode(0) System: You take the Trailwise Tack II off the mule.
+    3.55 player   <- 0xDD gump 0x00000C36 type 1831174852: a Shadowhide mule: modules 0 / 3 | Drop a module on the mule to fit it.
+    3.55 player      layout: { page 0 }{ resizepic 0 0 9270 460 520 }{ checkertrans 6 6 448 508 }{ text 20 14 1154 0 }{ text 20 40 946 1 }{ gumppictiled 10 68 440 2 9304 }
+    3.55 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 140, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 16, 'stam': 16, 'stamMax': 16, 'mana': 16, 'manaMax': 16, 'gold': 1000, 'ar': 0, 'weight': 300, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+    3.55 player   <- 0x25 item 0x403FBB00 graphic 0x1079 x1 into 0x403F722C
+    4.75 player   -> 0xBF 0x13 context menu request 0x000297EE
+    4.75 player   <- 0xBF 0x14 context menu 0x000297EE: [(0, 3006111, 'Command: Kill', 0), (1, 3006108, 'Command: Follow', 0), (2, 3006107, 'Command: Guard', 0), (3, 3006112, 'Command: Stop', 0), (4, 3006114, 'Command: Stay', 0), (5, 3006098, '', 0), (6, 3006110, 'Add Friend', 0), (7, 3006099, 'Remove Friend', 0), (8, 3006113, 'Transfer', 0), (9, 3006118, 'Release', 0), (10, 3006145, 'Open Backpack', 0), (11, 1900000, '#1900000', 0), (12, 3000127, 'Options', 0)]
+    4.75 player   -> 0xBF 0x15 context pick 12 (Options) on 0x000297EE
+    4.76 player   <- 0xDD gump 0x00000C37 type 1831174852: a Shadowhide mule: modules 0 / 3 | Drop a module on the mule to fit it.
+    4.76 player      layout: { page 0 }{ resizepic 0 0 9270 460 520 }{ checkertrans 6 6 448 508 }{ text 20 14 1154 0 }{ text 20 40 946 1 }{ gumppictiled 10 68 440 2 9304 }
+    4.76 player   -> 0xB1 gump 0x00000C37 type 1831174852 button 0 switches [] texts []
+    4.76 admin    -> say '[go 0x29699'
+    5.77 admin    -> say '[get Map'
+    5.77 admin    <- 0x6C target cursor 557 (type 1)
+    5.97 admin    -> 0x6C target object 0x00029699
+    5.97 admin    <- unicode(0) System: Map = Trammel
+    5.97 admin    -> say '[go 0x29699'
+    6.98 admin    -> say '[AddToPack TreasureMap 1 Trammel'
+    6.98 admin    <- 0x6C target cursor 558 (type 0)
+    7.18 admin    -> 0x6C target object 0x00029699
+    7.18 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 141, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 16, 'stam': 16, 'stamMax': 16, 'mana': 16, 'manaMax': 16, 'gold': 1000, 'ar': 0, 'weight': 301, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+    7.19 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+    7.19 player   <- 0x25 item 0x403FBD3F graphic 0x14EC x1 into 0x403F722C
+    7.19 admin    -> say '[go 0x29699'
+    8.19 admin    -> say '[set Decoder 0x29699'
+    8.19 admin    <- 0x6C target cursor 559 (type 0)
+    8.39 admin    -> 0x6C target object 0x403FBD3F
+    8.39 admin    <- unicode(0) System: Property has been set.
+    8.89 admin    -> say '[go 0x29699'
+    9.89 admin    -> say '[get ChestLocation'
+    9.90 admin    <- 0x6C target cursor 560 (type 1)
+   10.10 admin    -> 0x6C target object 0x403FBD3F
+   10.10 admin    <- unicode(0) System: ChestLocation = (1741, 257)
+   10.10 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 142, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 16, 'stam': 16, 'stamMax': 16, 'mana': 16, 'manaMax': 16, 'gold': 1000, 'ar': 0, 'weight': 301, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   10.50 admin    -> say '[go 0x29699'
+   10.50 player   <- cliloc(0) a Shadowhide mule #1043257: The animal shies away.
+   10.50 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 142, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 16, 'stam': 16, 'stamMax': 16, 'mana': 16, 'manaMax': 16, 'gold': 1000, 'ar': 0, 'weight': 300, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   11.51 admin    -> say '[AddToPack MuleModule SurveySaddleRoll 2'
+   11.51 admin    <- 0x6C target cursor 561 (type 0)
+   11.71 admin    -> 0x6C target object 0x00029699
+   11.72 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   11.72 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 143, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 16, 'stam': 16, 'stamMax': 16, 'mana': 16, 'manaMax': 16, 'gold': 1000, 'ar': 0, 'weight': 305, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   11.72 player   <- 0x25 item 0x403FBD40 graphic 0x14EB x1 into 0x403F722C
+   11.72 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 143, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 16, 'stam': 16, 'stamMax': 16, 'mana': 16, 'manaMax': 16, 'gold': 1000, 'ar': 0, 'weight': 305, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   12.12 player   <- cliloc(0) a Shadowhide mule #1043257: The animal shies away.
+   12.12 player   <- unicode(0) System: You fit the Survey Saddle Roll II to the mule.
+   12.12 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 143, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 16, 'stam': 16, 'stamMax': 16, 'mana': 16, 'manaMax': 16, 'gold': 1000, 'ar': 0, 'weight': 300, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   12.12 player   -> 0xBF 0x13 context menu request 0x000297EE
+   12.12 player   <- 0xBF 0x14 context menu 0x000297EE: [(0, 3006111, 'Command: Kill', 0), (1, 3006108, 'Command: Follow', 0), (2, 3006107, 'Command: Guard', 0), (3, 3006112, 'Command: Stop', 0), (4, 3006114, 'Command: Stay', 0), (5, 3006098, '', 0), (6, 3006110, 'Add Friend', 0), (7, 3006099, 'Remove Friend', 0), (8, 3006113, 'Transfer', 0), (9, 3006118, 'Release', 0), (10, 3006145, 'Open Backpack', 0), (11, 1900000, '#1900000', 0), (12, 3000127, 'Options', 0)]
+   12.12 player   -> 0xBF 0x15 context pick 12 (Options) on 0x000297EE
+   12.13 player   <- 0xDD gump 0x00000C38 type 1831174852: a Shadowhide mule: modules 1 / 3 | Remove Survey Saddle Roll II | Track map (nearest by default): | TreasureMap
+   12.13 player      layout: { page 0 }{ resizepic 0 0 9270 460 520 }{ checkertrans 6 6 448 508 }{ text 20 14 1154 0 }{ button 20 40 4017 4019 1 0 100 }{ text 55 42 999 1 }{ gumppictiled 10 68 440 2 9304 }{ text 20 78 1154 2 }{ button 20 100 4005 4007 1 0 200 }{ text 55 102 999 3 }
+   12.13 player   -> 0xB1 gump 0x00000C38 type 1831174852 button 200 switches [] texts []
+   12.13 player   <- 0xBA quest arrow {'active': True, 'x': 1741, 'y': 257, 'serial': 169966}
+   12.13 player   <- 0xDD gump 0x00000C39 type 1831174852: a Shadowhide mule: modules 1 / 3 | Remove Survey Saddle Roll II | Track map (nearest by default): | TreasureMap
+   12.13 player      layout: { page 0 }{ resizepic 0 0 9270 460 520 }{ checkertrans 6 6 448 508 }{ text 20 14 1154 0 }{ button 20 40 4017 4019 1 0 100 }{ text 55 42 999 1 }{ gumppictiled 10 68 440 2 9304 }{ text 20 78 1154 2 }{ button 20 100 4005 4007 1 0 200 }{ text 55 102 999 3 }
+   12.13 player   -> 0xBF 0x13 context menu request 0x000297EE
+   12.13 player   <- 0xBF 0x14 context menu 0x000297EE: [(0, 3006111, 'Command: Kill', 0), (1, 3006108, 'Command: Follow', 0), (2, 3006107, 'Command: Guard', 0), (3, 3006112, 'Command: Stop', 0), (4, 3006114, 'Command: Stay', 0), (5, 3006098, '', 0), (6, 3006110, 'Add Friend', 0), (7, 3006099, 'Remove Friend', 0), (8, 3006113, 'Transfer', 0), (9, 3006118, 'Release', 0), (10, 3006145, 'Open Backpack', 0), (11, 1900000, '#1900000', 0), (12, 3000127, 'Options', 0)]
+   12.13 player   -> 0xBF 0x15 context pick 12 (Options) on 0x000297EE
+   12.13 player   <- 0xDD gump 0x00000C3A type 1831174852: a Shadowhide mule: modules 1 / 3 | Remove Survey Saddle Roll II | Track map (nearest by default): | TreasureMap
+   12.13 player      layout: { page 0 }{ resizepic 0 0 9270 460 520 }{ checkertrans 6 6 448 508 }{ text 20 14 1154 0 }{ button 20 40 4017 4019 1 0 100 }{ text 55 42 999 1 }{ gumppictiled 10 68 440 2 9304 }{ text 20 78 1154 2 }{ button 20 100 4005 4007 1 0 200 }{ text 55 102 999 3 }
+   12.13 player   -> 0xB1 gump 0x00000C3A type 1831174852 button 100 switches [] texts []
+   12.13 player   <- unicode(0) System: You take the Survey Saddle Roll II off the mule.
+   12.13 player   <- 0xDD gump 0x00000C3B type 1831174852: a Shadowhide mule: modules 0 / 3 | Drop a module on the mule to fit it.
+   12.13 player      layout: { page 0 }{ resizepic 0 0 9270 460 520 }{ checkertrans 6 6 448 508 }{ text 20 14 1154 0 }{ text 20 40 946 1 }{ gumppictiled 10 68 440 2 9304 }
+   12.13 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 143, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 16, 'stam': 16, 'stamMax': 16, 'mana': 16, 'manaMax': 16, 'gold': 1000, 'ar': 0, 'weight': 305, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   12.13 player   <- 0x25 item 0x403FBD40 graphic 0x14EB x1 into 0x403F722C
+   13.34 admin    -> say '[go 0x29699'
+   14.35 admin    -> say '[AddToPack MuleModule SurveySaddleRoll 3'
+   14.35 admin    <- 0x6C target cursor 562 (type 0)
+   14.55 admin    -> 0x6C target object 0x00029699
+   14.55 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+   14.55 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 143, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 16, 'stam': 16, 'stamMax': 16, 'mana': 16, 'manaMax': 16, 'gold': 1000, 'ar': 0, 'weight': 310, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   14.55 player   <- 0x25 item 0x403FBD41 graphic 0x14EB x1 into 0x403F722C
+   14.55 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 143, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 16, 'stam': 16, 'stamMax': 16, 'mana': 16, 'manaMax': 16, 'gold': 1000, 'ar': 0, 'weight': 310, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   14.96 player   <- cliloc(0) a Shadowhide mule #1043257: The animal shies away.
+   14.96 player   <- unicode(0) System: You fit the Survey Saddle Roll III to the mule.
+   14.96 admin    -> say '[go 1741 257'
+   14.96 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 144, 'hitsMax': 250, 'version': 6, 'female': 1, 'str': 400, 'dex': 16, 'int': 16, 'stam': 16, 'stamMax': 16, 'mana': 16, 'manaMax': 16, 'gold': 1000, 'ar': 0, 'weight': 305, 'maxWeight': 1500, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+   14.96 admin    <- 0xF3 world item 0x40014A06 graphic 0x1F13 x1 at 1723,252,16 hue 0
+   14.96 admin    <- 0xF3 world item 0x40011909 graphic 0xF88 x1 at 1723,250,16 hue 0
+   14.96 admin    <- 0xF3 world item 0x40011942 graphic 0xF88 x1 at 1731,247,6 hue 0
+   14.96 admin    <- 0xF3 world item 0x40011964 graphic 0xF7A x1 at 1738,250,16 hue 0
+   14.96 admin    <- 0xF3 world item 0x40011986 graphic 0xF8C x1 at 1743,242,16 hue 0
+   14.96 admin    <- 0xF3 world item 0x4001197F graphic 0xF7A x1 at 1756,243,22 hue 0
+   14.96 admin    <- 0xF3 world item 0x40011979 graphic 0xF85 x1 at 1740,259,16 hue 0
+   14.96 admin    <- 0xF3 world item 0x40011908 graphic 0xF86 x1 at 1754,257,22 hue 0
+   14.96 admin    <- 0xF3 world item 0x40011960 graphic 0xF7A x1 at 1751,258,22 hue 0
+   14.96 admin    <- 0xF3 world item 0x400140D3 graphic 0x1F13 x1 at 1759,259,21 hue 0
+   14.96 admin    <- cliloc(0) System #500113: You have left the protection of the town guards.
+   16.46 admin    -> say '[set Blessed true'
+   16.46 admin    <- 0x6C target cursor 563 (type 0)
+   16.48 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   16.66 admin    -> 0x6C target object 0x00029699
+   16.66 admin    <- unicode(0) System: Property has been set.
+   17.17 admin    -> say '[set X 1741 Y 257 Z 16'
+   17.17 admin    <- 0x6C target cursor 564 (type 0)
+   17.37 admin    -> 0x6C target object 0x00029699
+   17.37 player   <- unicode(0) System: Finish the main tutorial lessons, then double-click Rook on the New Haven plaza and choose Graduate. You can leave Haven Island afterward.
+   17.37 admin    <- unicode(0) System: Property has been set. (3)
+   17.37 player   <- unicode(0) System: Finish the main tutorial lessons, then double-click Rook on the New Haven plaza and choose Graduate. You can leave Haven Island afterward.
+   17.88 admin    -> say '[set X 1742 Y 257 Z 16'
+   17.88 admin    <- 0x6C target cursor 565 (type 0)
+   18.08 admin    -> 0x6C target object 0x000297EE
+   18.08 admin    <- unicode(0) System: Property has been set. (3)
+   24.63 player   -> 0xBF 0x13 context menu request 0x000297EE
+   27.08 admin    <- cliloc(0) a Shadowhide mule #1042858: *a Shadowhide mule looks ill.*
+   27.33 admin    <- 0xF3 world item 0x403FBD76 graphic 0x122C x1 at 1742,257,16 hue 0
+   27.33 admin    <- 0xF3 world item 0x403FBD77 graphic 0x1645 x1 at 1743,256,16 hue 0
+   27.33 admin    <- 0xF3 world item 0x403FBD78 graphic 0x122B x1 at 1742,256,16 hue 0
+   27.33 admin    <- 0xF3 world item 0x403FBD79 graphic 0x122C x1 at 1742,257,16 hue 0
+   27.33 admin    <- 0xF3 world item 0x403FBD7A graphic 0x122E x1 at 1742,258,16 hue 0
+   27.92 admin    <- 0xF3 world item 0x403FBD7B graphic 0x122D x1 at 1742,257,16 hue 0
+   27.92 admin    <- 0xF3 world item 0x403FBD7C graphic 0x122D x1 at 1741,258,16 hue 0
+   27.92 admin    <- 0xF3 world item 0x403FBD7D graphic 0x122F x1 at 1741,256,16 hue 0
+   27.92 admin    <- 0xF3 world item 0x403FBD7E graphic 0x1645 x1 at 1743,257,16 hue 0
+   27.92 admin    <- 0xF3 world item 0x403FBD7F graphic 0x122E x1 at 1743,256,16 hue 0
+   29.08 admin    <- 0xF3 world item 0x403FBD80 graphic 0x1645 x1 at 1742,257,16 hue 0
+   29.08 admin    <- 0xF3 world item 0x403FBD81 graphic 0x122F x1 at 1742,257,16 hue 0
+   29.08 admin    <- 0xF3 world item 0x403FBD82 graphic 0x1645 x1 at 1743,256,16 hue 0
+   29.08 admin    <- 0xF3 world item 0x403FBD83 graphic 0x122C x1 at 1741,256,16 hue 0
+   30.63 admin    -> say '[set Blessed false'
+   30.63 admin    <- 0x6C target cursor 571 (type 0)
+   30.83 admin    -> 0x6C target object 0x00029699
+   30.84 admin    <- unicode(0) System: Property has been set.
+   31.35 admin    -> say '[set X 3503 Y 2574 Z 14'
+   31.35 admin    <- 0x6C target cursor 574 (type 0)
+   31.44 admin    <- 0xF3 world item 0x403FBD9C graphic 0x122D x1 at 1742,257,16 hue 0
+   31.44 admin    <- 0xF3 world item 0x403FBD9D graphic 0x122B x1 at 1741,256,16 hue 0
+   31.44 admin    <- 0xF3 world item 0x403FBD9E graphic 0x122E x1 at 1742,257,16 hue 0
+   31.44 admin    <- 0xF3 world item 0x403FBD9F graphic 0x122A x1 at 1743,257,16 hue 0
+   31.56 admin    -> 0x6C target object 0x00029699
+   31.56 admin    <- unicode(0) System: Property has been set. (3)
+   32.06 admin    -> say '[set X 3504 Y 2574 Z 14'
+   32.06 admin    <- 0x6C target cursor 575 (type 0)
+   32.25 admin    <- 0xF3 world item 0x403FBDA0 graphic 0x122B x1 at 1742,257,16 hue 0
+   32.25 admin    <- 0xF3 world item 0x403FBDA1 graphic 0x122C x1 at 1742,257,16 hue 0
+   32.25 admin    <- 0xF3 world item 0x403FBDA2 graphic 0x122D x1 at 1742,258,16 hue 0
+   32.25 admin    <- 0xF3 world item 0x403FBDA3 graphic 0x122E x1 at 1742,257,16 hue 0
+   32.27 admin    -> 0x6C target object 0x000297EE
+   32.27 admin    <- unicode(0) System: Property has been set. (3)
+   32.80 harness  Traceback (most recent call last):
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\run.py", line 180, in run_checks
+    ok, evidence = chk.fn(ctx)
+                   ^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\checks_p224_mule.py", line 745, in p70_10
+    g = options(p, mule)
+        ^^^^^^^^^^^^^^^^
+  File "D:\ShatteredLegacy\tools\playtest-bot\uobot\checks_p224_mule.py", line 106, in options
+    raise AssertionError("the mule 0x%X gave no context menu" % mule)
+AssertionError: the mule 0x297EE gave no context menu
+
+   32.80 harness  == P70-10 run 1: ERROR (AssertionError: the mule 0x297EE gave no context menu)

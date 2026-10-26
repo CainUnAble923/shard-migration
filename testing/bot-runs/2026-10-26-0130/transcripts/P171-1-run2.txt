@@ -1,0 +1,362 @@
+    0.00 harness  == P171-1 run 2: A 200 tamer on a Dread Warhorse: the taming starts on most of 20 tries, about 1 in 7 angers it
+    0.00 admin    -> say '[go 0x29699'
+    1.00 admin    -> say '[SetSkill AnimalTaming 200'
+    1.00 admin    <- 0x6C target cursor 836 (type 0)
+    1.20 admin    -> 0x6C target object 0x00029699
+    1.21 admin    <- unicode(0) System: AnimalTaming : 200 (Base: 200)
+    1.81 admin    -> say '[go 0x29699'
+    2.83 admin    -> say '[SetSkill AnimalLore 200'
+    2.83 admin    <- 0x6C target cursor 837 (type 0)
+    3.03 admin    -> 0x6C target object 0x00029699
+    3.03 admin    <- unicode(0) System: AnimalLore : 200 (Base: 200)
+    3.63 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 175, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 250, 'dex': 16, 'int': 16, 'stam': 16, 'stamMax': 16, 'mana': 16, 'manaMax': 16, 'gold': 1500, 'ar': 0, 'weight': 453, 'maxWeight': 975, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+    4.44 admin    -> say '[go 0x29699'
+    5.45 admin    -> say '[set FollowersMax 8 RawStr 250 Hits 175'
+    5.45 admin    <- 0x6C target cursor 838 (type 0)
+    5.65 admin    -> 0x6C target object 0x00029699
+    5.65 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 175, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 250, 'dex': 16, 'int': 16, 'stam': 16, 'stamMax': 16, 'mana': 16, 'manaMax': 16, 'gold': 1500, 'ar': 0, 'weight': 453, 'maxWeight': 975, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 8}
+    5.65 admin    <- unicode(0) System: Property has been set. (3)
+    6.27 admin    -> say '[go 0x29699'
+    7.27 admin    -> say '[add DreadWarhorse'
+    7.27 admin    <- 0x6C target cursor 839 (type 1)
+    7.47 admin    -> 0x6C target ground 3496,2574,16
+    7.47 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+    7.47 admin    -> say '[set CantWalk true'
+    7.47 admin    <- 0x6C target cursor 840 (type 0)
+    7.68 admin    -> 0x6C target object 0x00029876
+    7.68 admin    <- unicode(0) System: Property has been set.
+    8.29 admin    -> say '[set Hits 175'
+    8.29 admin    <- 0x6C target cursor 841 (type 0)
+    8.49 admin    -> 0x6C target object 0x00029699
+    8.49 admin    <- unicode(0) System: Property has been set.
+    9.09 player   <- 0x6C target cursor 842 (type 0)
+    9.09 player   <- cliloc(0) System #502789: Tame which animal?
+    9.09 player   -> 0x6C target object 0x00029876
+    9.09 player   <- cliloc(2) Bot Human F Aa #1010597: *You start to tame the creature.*
+    9.09 admin    <- cliloc(2) Bot Human F Aa #1010598: *begins taming a creature.*
+    9.09 admin    -> say '[set Tamable false'
+    9.09 admin    <- 0x6C target cursor 843 (type 0)
+    9.29 admin    <- unicode(0) Sanitation Warden: A tidy town is a safe town.
+    9.29 player   <- unicode(0) Sanitation Warden: A tidy town is a safe town.
+    9.31 admin    -> 0x6C target object 0x00029876
+    9.31 admin    <- unicode(0) System: Property has been set.
+   12.09 player   <- cliloc(0) System #1049654: You do not have a clear path to the animal you are taming, and must cease your attempt.
+   15.92 admin    -> say '[set Tamable true'
+   15.92 admin    <- 0x6C target cursor 844 (type 0)
+   16.12 admin    -> 0x6C target object 0x00029876
+   16.12 admin    <- unicode(0) System: Property has been set.
+   17.88 player   <- cliloc(0) System #1019067: A monster looks at you menacingly but does not attack.  You would be under attack now if not for your status as a new citizen of Britannia.
+   17.88 admin    <- cliloc(0) Brody #1013041: Help! Guards! Flood, fire, famine!
+   17.88 player   <- cliloc(0) Brody #1013041: Help! Guards! Flood, fire, famine!
+   17.88 admin    <- 0xF3 world item 0x403FB774 graphic 0x1 x1 at 3496,2574,14 hue 0
+   17.88 admin    <- cliloc(0)  #500131: Thou wilt regret thine actions, swine!
+   17.88 admin    <- cliloc(0) Strom #1013044: Look! Tis that evil one! Guards!
+   17.88 player   <- 0xF3 world item 0x403FB774 graphic 0x1 x1 at 3496,2574,14 hue 0
+   17.88 player   <- cliloc(0)  #500131: Thou wilt regret thine actions, swine!
+   17.88 player   <- cliloc(0) Strom #1013044: Look! Tis that evil one! Guards!
+   17.89 admin    <- 0xF3 world item 0x403FC98E graphic 0x122F x1 at 3496,2574,14 hue 0
+   17.89 admin    <- 0xF3 world item 0x403FC98F graphic 0x122C x1 at 3496,2574,14 hue 0
+   17.89 admin    <- 0xF3 world item 0x403FC990 graphic 0x122D x1 at 3495,2573,14 hue 0
+   17.89 admin    <- 0xF3 world item 0x403FC991 graphic 0x122C x1 at 3495,2574,14 hue 0
+   17.89 admin    <- 0xF3 world item 0x403FC992 graphic 0x122B x1 at 3495,2574,14 hue 0
+   17.89 player   <- 0xF3 world item 0x403FC98E graphic 0x122F x1 at 3496,2574,14 hue 0
+   17.89 player   <- 0xF3 world item 0x403FC98F graphic 0x122C x1 at 3496,2574,14 hue 0
+   17.89 player   <- 0xF3 world item 0x403FC990 graphic 0x122D x1 at 3495,2573,14 hue 0
+   17.89 player   <- 0xF3 world item 0x403FC991 graphic 0x122C x1 at 3495,2574,14 hue 0
+   17.89 player   <- 0xF3 world item 0x403FC992 graphic 0x122B x1 at 3495,2574,14 hue 0
+   18.14 player   <- 0xF3 world item 0x403FB773 graphic 0x1 x1 at 3496,2574,14 hue 0
+   18.14 admin    <- 0xF3 world item 0x403FB773 graphic 0x1 x1 at 3496,2574,14 hue 0
+   18.14 admin    <- 0xF3 world item 0x403FB75A graphic 0x1 x1 at 3496,2574,14 hue 0
+   18.14 player   <- 0xF3 world item 0x403FB75A graphic 0x1 x1 at 3496,2574,14 hue 0
+   18.14 admin    <- 0xF3 world item 0x403FC993 graphic 0x2006 x116 at 3496,2574,14 hue 1175
+   18.14 admin    <- unicode(0) Strom: Thou hast suffered thy punishment, scoundrel.
+   18.14 player   <- 0xF3 world item 0x403FC993 graphic 0x2006 x116 at 3496,2574,14 hue 1175
+   18.14 player   <- unicode(0) Strom: Thou hast suffered thy punishment, scoundrel.
+   18.73 admin    -> say '[set Hits 175'
+   18.73 admin    <- 0x6C target cursor 845 (type 0)
+   18.93 admin    -> 0x6C target object 0x00029699
+   18.93 admin    <- unicode(0) System: Property has been set.
+   19.54 player   <- 0x6C target cursor 846 (type 0)
+   19.54 player   <- cliloc(0) System #502789: Tame which animal?
+   19.54 player   -> 0x6C target object 0x00029876
+   19.54 player   <- cliloc(0) System #500447: That is not accessible.
+   21.06 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   21.06 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   24.56 admin    -> say '[set Hits 175'
+   24.56 admin    <- 0x6C target cursor 847 (type 0)
+   24.76 admin    -> 0x6C target object 0x00029699
+   24.76 admin    <- unicode(0) System: Property has been set.
+   25.37 player   <- 0x6C target cursor 848 (type 0)
+   25.37 player   <- cliloc(0) System #502789: Tame which animal?
+   25.37 player   -> 0x6C target object 0x00029876
+   25.37 player   <- cliloc(0) System #500447: That is not accessible.
+   30.38 admin    -> say '[set Hits 175'
+   30.38 admin    <- 0x6C target cursor 849 (type 0)
+   30.58 admin    -> 0x6C target object 0x00029699
+   30.59 admin    <- unicode(0) System: Property has been set.
+   31.19 player   <- 0x6C target cursor 850 (type 0)
+   31.19 player   <- cliloc(0) System #502789: Tame which animal?
+   31.19 player   -> 0x6C target object 0x00029876
+   31.19 player   <- cliloc(0) System #500447: That is not accessible.
+   36.21 admin    -> say '[set Hits 175'
+   36.21 admin    <- 0x6C target cursor 851 (type 0)
+   36.42 admin    -> 0x6C target object 0x00029699
+   36.42 admin    <- unicode(0) System: Property has been set.
+   37.02 player   <- 0x6C target cursor 852 (type 0)
+   37.02 player   <- cliloc(0) System #502789: Tame which animal?
+   37.02 player   -> 0x6C target object 0x00029876
+   37.03 player   <- cliloc(0) System #500447: That is not accessible.
+   41.22 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   41.22 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   42.03 admin    -> say '[set Hits 175'
+   42.03 admin    <- 0x6C target cursor 853 (type 0)
+   42.23 admin    -> 0x6C target object 0x00029699
+   42.23 admin    <- unicode(0) System: Property has been set.
+   42.85 player   <- 0x6C target cursor 854 (type 0)
+   42.85 player   <- cliloc(0) System #502789: Tame which animal?
+   42.85 player   -> 0x6C target object 0x00029876
+   42.85 player   <- cliloc(0) System #500447: That is not accessible.
+   47.87 admin    -> say '[set Hits 175'
+   47.87 admin    <- 0x6C target cursor 855 (type 0)
+   48.07 admin    -> 0x6C target object 0x00029699
+   48.07 admin    <- unicode(0) System: Property has been set.
+   48.68 player   <- 0x6C target cursor 856 (type 0)
+   48.68 player   <- cliloc(0) System #502789: Tame which animal?
+   48.68 player   -> 0x6C target object 0x00029876
+   48.68 player   <- cliloc(0) System #500447: That is not accessible.
+   53.70 admin    -> say '[set Hits 175'
+   53.70 admin    <- 0x6C target cursor 857 (type 0)
+   53.90 admin    -> 0x6C target object 0x00029699
+   53.90 admin    <- unicode(0) System: Property has been set.
+   54.51 player   <- 0x6C target cursor 858 (type 0)
+   54.51 player   <- cliloc(0) System #502789: Tame which animal?
+   54.51 player   -> 0x6C target object 0x00029876
+   54.51 player   <- cliloc(0) System #500447: That is not accessible.
+   59.54 admin    -> say '[set Hits 175'
+   59.54 admin    <- 0x6C target cursor 859 (type 0)
+   59.74 admin    -> 0x6C target object 0x00029699
+   59.74 admin    <- unicode(0) System: Property has been set.
+   60.20 player   <- 0xF3 world item 0x403FB766 graphic 0x1 x1 at 3504,2566,15 hue 0
+   60.20 admin    <- 0xF3 world item 0x403FB766 graphic 0x1 x1 at 3504,2566,15 hue 0
+   60.35 player   <- 0x6C target cursor 860 (type 0)
+   60.35 player   <- cliloc(0) System #502789: Tame which animal?
+   60.35 player   -> 0x6C target object 0x00029876
+   60.35 player   <- cliloc(0) System #500447: That is not accessible.
+   61.60 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   61.60 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   65.37 admin    -> say '[set Hits 175'
+   65.37 admin    <- 0x6C target cursor 861 (type 0)
+   65.57 admin    -> 0x6C target object 0x00029699
+   65.57 admin    <- unicode(0) System: Property has been set.
+   66.18 player   <- 0x6C target cursor 862 (type 0)
+   66.18 player   <- cliloc(0) System #502789: Tame which animal?
+   66.18 player   -> 0x6C target object 0x00029876
+   66.18 player   <- cliloc(0) System #500447: That is not accessible.
+   71.20 admin    -> say '[set Hits 175'
+   71.21 admin    <- 0x6C target cursor 863 (type 0)
+   71.41 admin    -> 0x6C target object 0x00029699
+   71.41 admin    <- unicode(0) System: Property has been set.
+   72.01 player   <- 0x6C target cursor 864 (type 0)
+   72.01 player   <- cliloc(0) System #502789: Tame which animal?
+   72.01 player   -> 0x6C target object 0x00029876
+   72.01 player   <- cliloc(0) System #500447: That is not accessible.
+   77.02 admin    -> say '[set Hits 175'
+   77.02 admin    <- 0x6C target cursor 865 (type 0)
+   77.22 admin    -> 0x6C target object 0x00029699
+   77.22 admin    <- unicode(0) System: Property has been set.
+   77.83 player   <- 0x6C target cursor 866 (type 0)
+   77.83 player   <- cliloc(0) System #502789: Tame which animal?
+   77.83 player   -> 0x6C target object 0x00029876
+   77.83 player   <- cliloc(0) System #500447: That is not accessible.
+   81.70 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   81.70 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+   82.86 admin    -> say '[set Hits 175'
+   82.86 admin    <- 0x6C target cursor 867 (type 0)
+   83.06 admin    -> 0x6C target object 0x00029699
+   83.06 admin    <- unicode(0) System: Property has been set.
+   83.66 player   <- 0x6C target cursor 868 (type 0)
+   83.66 player   <- cliloc(0) System #502789: Tame which animal?
+   83.66 player   -> 0x6C target object 0x00029876
+   83.66 player   <- cliloc(0) System #500447: That is not accessible.
+   88.68 admin    -> say '[set Hits 175'
+   88.69 admin    <- 0x6C target cursor 869 (type 0)
+   88.89 admin    -> 0x6C target object 0x00029699
+   88.89 admin    <- unicode(0) System: Property has been set.
+   89.50 player   <- 0x6C target cursor 870 (type 0)
+   89.50 player   <- cliloc(0) System #502789: Tame which animal?
+   89.50 player   -> 0x6C target object 0x00029876
+   89.50 player   <- cliloc(0) System #500447: That is not accessible.
+   94.50 admin    -> say '[set Hits 175'
+   94.50 admin    <- 0x6C target cursor 871 (type 0)
+   94.71 admin    -> 0x6C target object 0x00029699
+   94.71 admin    <- unicode(0) System: Property has been set.
+   95.31 player   <- 0x6C target cursor 872 (type 0)
+   95.31 player   <- cliloc(0) System #502789: Tame which animal?
+   95.31 player   -> 0x6C target object 0x00029876
+   95.31 player   <- cliloc(0) System #500447: That is not accessible.
+   95.72 admin    <- unicode(0) Sanitation Warden: Still carrying civic waste bundles? Hand them to me and I'll count them as Clean Up points.
+   95.72 player   <- unicode(0) Sanitation Warden: Still carrying civic waste bundles? Hand them to me and I'll count them as Clean Up points.
+  100.33 admin    -> say '[set Hits 175'
+  100.33 admin    <- 0x6C target cursor 873 (type 0)
+  100.55 admin    -> 0x6C target object 0x00029699
+  100.55 admin    <- unicode(0) System: Property has been set.
+  101.16 player   <- 0x6C target cursor 874 (type 0)
+  101.16 player   <- cliloc(0) System #502789: Tame which animal?
+  101.16 player   -> 0x6C target object 0x00029876
+  101.16 player   <- cliloc(0) System #500447: That is not accessible.
+  103.35 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+  103.35 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+  106.17 admin    -> say '[set Hits 175'
+  106.17 admin    <- 0x6C target cursor 875 (type 0)
+  106.38 admin    -> 0x6C target object 0x00029699
+  106.38 admin    <- unicode(0) System: Property has been set.
+  106.99 player   <- 0x6C target cursor 876 (type 0)
+  106.99 player   <- cliloc(0) System #502789: Tame which animal?
+  106.99 player   -> 0x6C target object 0x00029876
+  106.99 player   <- cliloc(0) System #500447: That is not accessible.
+  111.99 admin    -> say '[set Hits 175'
+  111.99 admin    <- 0x6C target cursor 877 (type 0)
+  112.20 admin    -> 0x6C target object 0x00029699
+  112.20 admin    <- unicode(0) System: Property has been set.
+  112.80 player   <- 0x6C target cursor 878 (type 0)
+  112.80 player   <- cliloc(0) System #502789: Tame which animal?
+  112.80 player   -> 0x6C target object 0x00029876
+  112.80 player   <- cliloc(0) System #500447: That is not accessible.
+  117.82 admin    -> say '[set Hits 175'
+  117.82 admin    <- 0x6C target cursor 879 (type 0)
+  118.02 admin    -> 0x6C target object 0x00029699
+  118.03 admin    <- unicode(0) System: Property has been set.
+  118.63 player   <- 0x6C target cursor 880 (type 0)
+  118.63 player   <- cliloc(0) System #502789: Tame which animal?
+  118.63 player   -> 0x6C target object 0x00029876
+  118.63 player   <- cliloc(0) System #500447: That is not accessible.
+  123.65 admin    -> say '[set Hits 175'
+  123.66 admin    <- 0x6C target cursor 881 (type 0)
+  123.86 admin    -> 0x6C target object 0x00029699
+  123.86 admin    <- unicode(0) System: Property has been set.
+  123.96 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+  123.96 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+  124.46 player   <- 0x6C target cursor 882 (type 0)
+  124.46 player   <- cliloc(0) System #502789: Tame which animal?
+  124.46 player   -> 0x6C target object 0x00029876
+  124.46 player   <- cliloc(0) System #500447: That is not accessible.
+  129.48 admin    -> say '[set Hits 175'
+  129.48 admin    <- 0x6C target cursor 883 (type 0)
+  129.69 admin    -> 0x6C target object 0x00029699
+  129.69 admin    <- unicode(0) System: Property has been set.
+  130.30 player   <- 0x6C target cursor 884 (type 0)
+  130.30 player   <- cliloc(0) System #502789: Tame which animal?
+  130.30 player   -> 0x6C target object 0x00029876
+  130.30 player   <- cliloc(0) System #500447: That is not accessible.
+  135.31 admin    -> say '[set Hits 175'
+  135.32 admin    <- 0x6C target cursor 885 (type 0)
+  135.53 admin    -> 0x6C target object 0x00029699
+  135.53 admin    <- unicode(0) System: Property has been set.
+  136.14 player   <- 0x6C target cursor 886 (type 0)
+  136.14 player   <- cliloc(0) System #502789: Tame which animal?
+  136.14 player   -> 0x6C target object 0x00029876
+  136.14 player   <- cliloc(0) System #500447: That is not accessible.
+  136.33 player   <- ascii(0) System: The world is saving, please wait.
+  136.33 admin    <- ascii(0) System: The world is saving, please wait.
+  136.33 admin    <- ascii(0) System: World save completed in 0.01 seconds.
+  136.33 player   <- ascii(0) System: World save completed in 0.01 seconds.
+  141.16 admin    -> say '[set Hits 175'
+  141.16 admin    <- 0x6C target cursor 887 (type 0)
+  141.37 admin    -> 0x6C target object 0x00029699
+  141.38 admin    <- unicode(0) System: Property has been set.
+  141.98 player   <- 0x6C target cursor 888 (type 0)
+  141.98 player   <- cliloc(0) System #502789: Tame which animal?
+  141.98 player   -> 0x6C target object 0x00029876
+  141.98 player   <- cliloc(0) System #500447: That is not accessible.
+  144.52 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+  144.52 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+  146.98 admin    -> say '[set Hits 175'
+  146.98 admin    <- 0x6C target cursor 889 (type 0)
+  147.19 admin    -> 0x6C target object 0x00029699
+  147.19 admin    <- unicode(0) System: Property has been set.
+  147.80 player   <- 0x6C target cursor 890 (type 0)
+  147.80 player   <- cliloc(0) System #502789: Tame which animal?
+  147.80 player   -> 0x6C target object 0x00029876
+  147.80 player   <- cliloc(0) System #500447: That is not accessible.
+  152.82 admin    -> say '[set Hits 175'
+  152.82 admin    <- 0x6C target cursor 891 (type 0)
+  153.02 admin    -> 0x6C target object 0x00029699
+  153.02 admin    <- unicode(0) System: Property has been set.
+  153.62 player   <- 0x6C target cursor 892 (type 0)
+  153.62 player   <- cliloc(0) System #502789: Tame which animal?
+  153.62 player   -> 0x6C target object 0x00029876
+  153.62 player   <- cliloc(0) System #500447: That is not accessible.
+  158.57 admin    <- unicode(0) Sanitation Warden: Britannia's streets won't clean themselves!
+  158.57 player   <- unicode(0) Sanitation Warden: Britannia's streets won't clean themselves!
+  158.64 admin    -> say '[set Hits 175'
+  158.64 admin    <- 0x6C target cursor 893 (type 0)
+  158.84 admin    -> 0x6C target object 0x00029699
+  158.84 admin    <- unicode(0) System: Property has been set.
+  159.45 player   <- 0x6C target cursor 894 (type 0)
+  159.45 player   <- cliloc(0) System #502789: Tame which animal?
+  159.45 player   -> 0x6C target object 0x00029876
+  159.45 player   <- cliloc(0) System #500447: That is not accessible.
+  164.46 admin    -> say '[set Hits 175'
+  164.46 admin    <- 0x6C target cursor 895 (type 0)
+  164.66 admin    -> 0x6C target object 0x00029699
+  164.67 admin    <- unicode(0) System: Property has been set.
+  165.27 player   <- 0x6C target cursor 896 (type 0)
+  165.27 player   <- cliloc(0) System #502789: Tame which animal?
+  165.27 player   -> 0x6C target object 0x00029876
+  165.28 player   <- cliloc(0) System #500447: That is not accessible.
+  165.96 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+  165.96 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+  170.29 admin    -> say '[set Hits 175'
+  170.29 admin    <- 0x6C target cursor 897 (type 0)
+  170.49 admin    -> 0x6C target object 0x00029699
+  170.49 admin    <- unicode(0) System: Property has been set.
+  171.10 player   <- 0x6C target cursor 898 (type 0)
+  171.10 player   <- cliloc(0) System #502789: Tame which animal?
+  171.10 player   -> 0x6C target object 0x00029876
+  171.10 player   <- cliloc(0) System #500447: That is not accessible.
+  176.12 admin    -> say '[set Hits 175'
+  176.12 admin    <- 0x6C target cursor 899 (type 0)
+  176.32 admin    -> 0x6C target object 0x00029699
+  176.33 admin    <- unicode(0) System: Property has been set.
+  176.94 player   <- 0x6C target cursor 900 (type 0)
+  176.94 player   <- cliloc(0) System #502789: Tame which animal?
+  176.94 player   -> 0x6C target object 0x00029876
+  176.94 player   <- cliloc(0) System #500447: That is not accessible.
+  181.96 admin    -> say '[set Hits 175'
+  181.96 admin    <- 0x6C target cursor 901 (type 0)
+  182.17 admin    -> 0x6C target object 0x00029699
+  182.17 admin    <- unicode(0) System: Property has been set.
+  182.77 player   <- 0x6C target cursor 902 (type 0)
+  182.77 player   <- cliloc(0) System #502789: Tame which animal?
+  182.77 player   -> 0x6C target object 0x00029876
+  182.77 player   <- cliloc(0) System #500447: That is not accessible.
+  187.62 admin    <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+  187.62 player   <- cliloc(0) Giles #1078099: Double Click On Me For Help!
+  187.80 admin    -> say '[set Hits 175'
+  187.80 admin    <- 0x6C target cursor 903 (type 0)
+  188.00 admin    -> 0x6C target object 0x00029699
+  188.00 admin    <- unicode(0) System: Property has been set.
+  188.61 player   <- 0x6C target cursor 904 (type 0)
+  188.61 player   <- cliloc(0) System #502789: Tame which animal?
+  188.61 player   -> 0x6C target object 0x00029876
+  188.61 player   <- cliloc(0) System #500447: That is not accessible.
+  193.63 admin    -> say '[set Hits 175'
+  193.63 admin    <- 0x6C target cursor 905 (type 0)
+  193.85 admin    -> 0x6C target object 0x00029699
+  193.85 admin    <- unicode(0) System: Property has been set.
+  194.45 player   <- 0x6C target cursor 906 (type 0)
+  194.45 player   <- cliloc(0) System #502789: Tame which animal?
+  194.45 player   -> 0x6C target object 0x00029876
+  194.45 player   <- cliloc(0) System #500447: That is not accessible.
+  199.47 admin    -> say '[go 0x29699'
+  200.47 admin    -> say '[kill'
+  200.48 admin    <- 0x6C target cursor 907 (type 0)
+  200.68 admin    -> 0x6C target object 0x00029876
+  200.68 admin    -> say '[go 0x29699'
+  200.68 admin    <- cliloc(0) System #500447: That is not accessible.
+  201.69 admin    -> say '[set FollowersMax 5'
+  201.69 admin    <- 0x6C target cursor 908 (type 0)
+  201.89 admin    -> 0x6C target object 0x00029699
+  201.89 admin    <- unicode(0) System: Property has been set.
+  201.89 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 175, 'hitsMax': 175, 'version': 6, 'female': 1, 'str': 250, 'dex': 16, 'int': 16, 'stam': 16, 'stamMax': 16, 'mana': 16, 'manaMax': 16, 'gold': 1500, 'ar': 0, 'weight': 453, 'maxWeight': 975, 'race': 1, 'statCap': 1500, 'followers': 5, 'followersMax': 5}
+  202.50 harness  == P171-1 run 2: FAIL (1 tries: 1 started the taming, 0 angered the beast (0%; 15% expected, 95% before cc-P171); busy 0, unanswered 31 (last: ['Tame which animal?', 'That is not accessible.']); S???????????????????????????????)
