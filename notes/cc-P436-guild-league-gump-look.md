@@ -1,17 +1,21 @@
-# cc-P436: a new look for the guild and League gumps from art we already have (step 1: pick)
+# cc-P436: a new look for the guild and League gumps from art we already have
+
+Step 1 (10-24) drew three looks and stopped for Chase. He picked **B, Stone and bronze** (10-25 20:09). Step 2
+(10-25, below the step 1 sections) builds it.
 
 ## In plain words
 
-- **Three new looks are drawn for the guild and League menus, beside today's look.** Each preview shows the same three
-  real menus: the Miners' Compact dashboard, the League board and the Foresters' page.
-  - **A. Dark Celtic:** a dark frame with Celtic-knot corners and green arrow buttons.
-  - **B. Stone and bronze:** a dark basalt frame with a braided bronze edge. It keeps today's buttons.
-  - **C. Clean modern:** a flat dark frame with a thin bronze edge. Its art is already in the player package today.
-- **The pictures are in** `D:\UO\shard-migration\notes\cc-P436-tools\previews\` (in this branch's copy):
-  `overview.png` has all four one under another; `look-*.png` has each on its own.
-- **Players will see nothing yet.** No menu has changed and nothing ships until you pick.
-- **For you:** pick A, B, C or "none, keep stock" on the Golem card. After your pick, the menus change together, and
-  anyone without our client keeps today's look.
+- **The guild and League menus now have your pick, the stone and bronze frame:** a dark basalt frame with a braided
+  bronze edge. That covers every guildmaster's pages and dashboard, the contract ledgers, the guild directory and
+  starter path, the League board, the Register and the League's confirm and title menus: 34 menus, all switched in
+  one place. Buttons and text stay as they are; the thin dividing lines become bronze.
+- **Only players on our client (the Shattered Legacy package) see it.** Anyone on another client gets today's
+  look, unchanged. The League shop is left alone: it is a scroll of its own.
+- **For you:** the new frame reaches players in two parts, and both must go out together. The server image is
+  `sl-modernuo:cc-P436`. The package must be published **with or before** the server deploy, because the frame's
+  pictures travel in the package (players' launchers update it at their next start). If the server goes out first,
+  turn the look off until the package is out with the setting `clusterf.guildStyle.enabled` = `False`. Nobody has seen
+  it in the game client yet; a quick look at one guildmaster menu after the next package goes out is worth doing.
 
 ## 1. The guild and League gumps today, and the stock art they use
 
@@ -142,8 +146,145 @@ own `gumpartLegacyMUL.uop`: zlib, then EA's BWT pass, which `cc-P29-tools\cliloc
    whenever the client cannot show ours. The tests open every gump and check both IDs, ours and stock.
 3. Then the docker build and the package gates.
 
-## Stopped for Chase
+## Step 1 ended waiting for Chase
 
 Asked through `Ask-Chase.ps1` (question Iron-P436-20261024-090945-cbe4): which look (A, B, C, or none, keep stock).
+Step 1 stopped there on 10-24. Chase answered on 10-25 at 20:09: **B, Stone and bronze**.
 
-P436 STOPPED: waiting for Chase's pick (asked Chase, Iron-P436-20261024-090945-cbe4)
+---
+
+# Step 2: look B built (2026-10-25)
+
+Branches: ShatteredLegacy `golem/Iron/P436` (level with main at `57924e6` when I started), shard-migration
+`golem/Iron/P436`, which carries step 1's WIP commit `b2bff82` (it sits on an older main; it only adds these notes and
+tools).
+
+## 4. The art: gumps 23200-23208
+
+- **IDs.** `notes\cc-P436-tools\free_ids.py` uses `find-free-art.py`'s gump rules on `D:\UO\UltimaOnlineVanilla`. The
+  first free runs of 9 started at 22470, 23083, 23200 and 40337. I took **23200-23208** (0x5AA0-0x5AA8), a round
+  block away from the end of the last used block (22469). The next art prompt is most likely to start right after
+  the last used ID, so this keeps clear of it. No branch in the repository registers any of them.
+- **Pieces.** `make_pieces.py` writes the nine PNGs with the exact cut the step 1 preview used (`previews.basalt_frame()`).
+  They are in AddBackground's order: top-left, top, top-right, left, centre, right, bottom-left, bottom, bottom-right.
+  - Sizes: corners 12x12, top and bottom 96x12, sides 12x96, centre 190x44.
+  - All are RGBA and fully opaque. TazUO's `ExternalImageLoader` keeps PNG alpha and keys out no colour, so nothing
+    in them goes transparent.
+  - `make_pieces.py --check` compares the shipped files with a fresh cut: 9 of 9 match.
+- **Registry and credits.** `register_pieces.py` added 9 `kind=gump` rows to `registry.csv`, naming the source BMP
+  and the cut, with Erachiro's terms quoted. It also added a section to `vendor\shattered-legacy-art\SOURCE.txt`:
+  "Credit Erachiro", ship only inside the package, do not repost.
+  - `find-free-art.py --check-registry` (with `--data D:\UO\UltimaOnlineVanilla`): "0 of 781 registered IDs are no
+    longer free".
+- **The rules.** The bronze braid is the top 5 rows of the top edge (measured: rows 0-4 bronze, 5-11 basalt). A rule
+  drawn at 1 or 2 pixels shows the outer rows of the braid. The step 1 preview squeezed the braid to 3 pixels, so the
+  real rules are a little thinner than the preview showed.
+
+## 5. The server: one style for 34 gumps
+
+- **`server\customizations\GuildStyle.cs` (new).** It holds `GuildStyle` and `GuildStyledGump`.
+  - The gumps still build exactly as before, with stock art. `GuildStyledGump.SendTo` restyles a gump once, as it is
+    sent, and only for a client that has our art.
+  - **The frame:** 9270 becomes 23200.
+  - **The inside:** an alpha region or cc-P169 panel (2624) that fills a frame, starting 0 to 12 pixels in from each
+    edge, is removed. The frame's own basalt centre is the inside, and it is opaque.
+  - **The rules:** 9304 becomes the top edge (23201) when drawn across, and the left edge (23203) when drawn down,
+    at the rule's own size.
+  - **Left alone:** buttons, labels, text, item art, other backgrounds, and an alpha region or panel in the middle
+    of a gump.
+- **Who counts as "has our art".** `GuildStyle.UsesOurArt(ns)` = `clusterf.guildStyle.enabled` (default True) and
+  `TazUOClientCommand.CanRunCommands(ns)`.
+  - Only our patched TazUO acknowledges the ClientCommand packet, and it ships in the same package as the PNGs.
+  - Stock TazUO, ClassicUO and the EA client never acknowledge it, so they never receive an ID they cannot draw. They
+    get today's gump, byte for byte.
+- **The 34 classes** (`notes\cc-P436-tools\rebase_gumps.py`). One line each, `: Gump` became `: GuildStyledGump`, in
+  28 files; every file already imported `Server.Gumps`. The classes:
+  - GuildMenuGump, MinersCompactLiaisonGump, SmithGuildmasterGump, SmithSealsInfoGump.
+  - ForestersGuildmasterGump, ForestersLogbookGump, OutridersGuildmasterGump, CrookActionsGump.
+  - ArtificersGuildmasterGump, ArtificersImbueGump, ArtificersMasteryGump, ArtificerWorkOrderGump.
+  - SanitationWardenGump, GuildContractLedgerGump, CrossGuildExchangeGump, SmithBulkOrderChoiceGump,
+    SmithCommissionGump, SmithGuildBookGump, SmithSealCatalogGump.
+  - SmithTurnInChoiceGump, RegularSmithBulkOrderGump.
+  - GuildProgressGump, GuildTaskDetailGump, GuildWelcomeGump, GuildStarterItemsGump, GuildRecipeShopGump,
+    GuildSchematicsGump.
+  - LeagueRegistrarGump, LeagueRegisterGump, CombinedLogbookGump, LeagueHallFacingGump, LeagueShopConfirmGump,
+    LeagueHallGump, LeagueTitleGump.
+- **Left out on purpose.** That is step 1's table without:
+  - LeagueShopGump: a scroll of its own, with no frame.
+  - The two mule gumps beside GuildSchematicsGump, MuleOptionsGump and MuleSellGump: they are mule menus, not guild
+    menus.
+  - Step 1 said "36 gump classes" but its table lists the classes above plus those three, which is 37. I did not
+    re-count step 1's sweep. The list here is the artifact: it is what `S1` pins by name.
+- **The kill switch.** `clusterf.guildStyle.enabled` turns the look off for everyone. It is for a server deployed
+  before the package carrying the art is published. A patched client on a package without the PNGs would draw blank
+  frames, which is the gap step 1 noted. Launchers update the package at every start, so publishing the package
+  with or before the server closes that gap. I did not add a package-version handshake; this setting covers it.
+
+## 6. Tests
+
+**Server:** `server\tests\Misc\GuildStyleVerification.cs`, 4 facts. I probed on `sl-uo-builder:cc-P624`, with the
+new and changed files bind-mounted and `dotnet test` filtered.
+
+| Fact | What it pins |
+|---|---|
+| S1 | Each of the 34 classes, found by name, is a GuildStyledGump |
+| S2 | 27 real gumps, opened as `DumpsTodaysGuildMenus` opens them, are sent to two Journeymen: one on our client (the real ClientCommand acknowledgement, `OnEnhancedPacket(ns, 00 04)`) and one on a stock client. Ours: frame 23200 and no 9270, no alpha region or panel filling it, no 9304; buttons, labels, text and item art identical to the stock copy, in order. Stock: entries exactly as built, no ID of ours. Both compile and send. |
+| S3 | `clusterf.guildStyle.enabled` off: our client gets stock |
+| S4 | Restyle on a probe gump changes exactly the frame, two insides and two rules (5), across to 23201 and down to 23203; a mid-gump alpha region, a small panel, another background, a button and a label are untouched |
+
+Results:
+- **Red** (the helper present, the gumps still on `Gump`): S1 failed, listing all 34 classes; S2 failed for every
+  gump ("our client got no stone and bronze frame", "still got frame 9270", and so on). S3 and S4 passed, as they
+  should: they cover new behaviour.
+- **Green:** 4 of 4. The six existing `GuildMenuTemplateVerification` facts were run alongside: 6 of 6.
+- **Mutants** of GuildStyle.cs, each red:
+
+| Mutant | What failed |
+|---|---|
+| ignores the switch | S3 ("Collections differ") |
+| MaxInset 0 | S4 ("Expected: 5") and S2 ("GuildDirectory: an alpha region still fills our frame") |
+| every rule across | S4 (position 4, the downward rule) |
+
+**Package.** I held the package lock for this part.
+- **`Build-UoOverrides.Tests.ps1`.** The pinned counts are now 781 rows and 54 gump rows (were 772 and 45). There is
+  one new fact, `TheGuildFrameIsNineRegisteredCreditedPngsTheServerDraws`: each of 23200-23208 is registered once as
+  a gump crediting Erachiro, its PNG is at the cut's size and RGBA, SOURCE.txt carries the section, and GuildStyle
+  draws 23200.
+- **Red** on a `git archive` copy of the pre-change tree with the new test file: 2 failed, "expected [781] but got
+  [772]" and "gump 23200 registered once: expected [1] but got [0]". 23 passed. **Green:** 25 of 25.
+- **The other package test files, green:** Cliloc-Overrides 10/10, Launch-Overrides 18/18, Launch-Settings 27/27,
+  Legion-Scripts 24, Map-Overrides 7, Music-Overrides 9/9, Paperdoll-Bodies 9/9, Ui-Skins 4/4.
+- **`Package-Client.Tests.ps1`: 3 of 9.** All six failures say "No EA client data in ...\client-data\classic-client".
+  This work copy has no client data; P362 recorded the same six. On the pre-change copy it fails the same way (1 of
+  9, since that copy also lacks the client folder). It is not caused by this change.
+- **The real package build, in place of that test.** I ran `Build-PlayerPackage.ps1 -TazUO <client> -Out <scratchpad>
+  -UoData D:\UO\UltimaOnlineVanilla`, never to dist and never published.
+  - The default client build `D:\UO\tazuo-sl-build` is stale: it lacks patch 0005, and P362's build lacks 0006 and
+    0007. So I built a current client with `client\Build-Client.ps1 -Out D:\UO\tazuo-sl-build-iron-p436`: patches
+    0001-0007, 1,318 client tests passed.
+  - With that client, every gate passed and it built `ShatteredLegacy-2026.10.25.2108.zip`. The zip carries
+    `app/tazuo/ExternalImages/gumps/23200.png` to `23208.png`, 9 of 9.
+  - The zip stays in the session scratchpad.
+
+**Gated build.** I held the `docker-build` lock (9.4 GB free at launch) and released it afterwards.
+- `docker\uo\build.sh -t sl-modernuo:cc-P436` finished with EXIT=0: "Built sl-modernuo:cc-P436 with patches applied
+  and 2481 shard test(s) passing". Of 2,485 tests, 2,481 passed and 4 were skipped (the real-map-data facts); none
+  failed.
+- The images are `sl-modernuo:cc-P436` = `b441dcaaffaa` and `sl-uo-builder:cc-P436` = `aa7bc94f1407`.
+- Memory ran low during the test gate, and Claude Code stopped my background wait loop. The build itself was
+  launched detached, kept running and finished. The log is `build-P436.log` in the session scratchpad.
+- CHANGELOG: 2026.10.25.9, one Changed line. P624's branch, not yet in main, takes .8.
+
+## 7. Not done, and unverified
+
+- **Not seen in a game client.** The tests prove what the server sends and the build proves what the package holds,
+  but nobody has opened a guild menu on our client with this package. A quick look at a guildmaster menu after the
+  next package goes out would confirm the frame draws as in the preview.
+- **No package-version handshake** (the gap step 1 named). The kill switch and publishing the package first cover it
+  instead.
+- **Header icons** (spell-icons-1000) were not added, as step 1 suggested was optional.
+- The client build `D:\UO\tazuo-sl-build-iron-p436` is outside every repo. The default client folder
+  `D:\UO\tazuo-sl-build` is still stale, missing patches 0005-0007. The next real package build needs a current
+  client, whoever builds it.
+
+P436 DONE
