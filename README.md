@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-25. Shard version 2026.10.26.9. Golem off, 1 queued, latest done P657. Play tests: 1338 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-25. Shard version 2026.10.26.9. Golem off, 1 queued, latest done P658. Play tests: 1338 open, 4 failed, 43 passed.
 
 ### Needs overseer review (4)
 
@@ -230,11 +230,12 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem off; 546 prompts done, 4 more stopped early and not counted)
+### Queue (Golem off; 547 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
 | P375 cont-fixup-playtest-bot-checks-first | queued |  |
+| P658 patch-notes | done | 2026-10-26 |
 | P657 review-p647 | done | 2026-10-26 |
 | P656 p574-safeguards | done | 2026-10-26 |
 | P655 guide-weapon-procs-buttes | done | 2026-10-26 |
@@ -244,7 +245,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P651 guide-league-warrants-echo | done | 2026-10-26 |
 | P650 guide-item-identification | done | 2026-10-26 |
 | P649 guide-social-skill | done | 2026-10-26 |
-| P648 guide-tracking-ping | done | 2026-10-26 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 169 patches, 12 replacements
 
