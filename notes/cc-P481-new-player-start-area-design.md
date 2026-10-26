@@ -2,6 +2,24 @@
 
 ## In plain words
 
+**Update 10-25 evening (section 10): which land becomes the Wakening Isle.** You picked the Fold, then asked to see
+the island itself first, across every map we have.
+- **I looked at all ten maps:** the six stock ones (Felucca, Trammel, Ilshenar, Malas, Tokuno, Ter Mur) and the four
+  downloaded ones (Siege of Sosaria's Trammel, TheArt's dungeon map and Ter Mur replacement, ParanoiaPhD's custom
+  map). I found every island on them and drew the best three side by side in
+  `notes\cc-P481-tools\island-candidates\candidates.png`.
+- **My pick: the Isle of Colossus from the Siege of Sosaria map.** It is a finished woodland island of about 248 by
+  196 tiles, with ponds, a footbridge, rocky hills and paths. It uses only art every client already has. Its author
+  invites reuse with credit (Zigholtul). It would be copied into the empty corner of the Trammel map we already
+  planned to use, through the map patch the player package already ships, so players need no new files.
+- **Second choice: an unnamed forest island south-east of Britain**, already in everyone's Trammel map. It needs
+  no map work at all, but it is plainer, and it is the twin of a real Trammel island anyone can sail to.
+  **Third:** paint a brand-new island, as planned this morning: the most work.
+- **For you:** pick one in the Ask-Chase question: use the Isle of Colossus, look for another, or make a new one. The
+  six build prompts come after your answer.
+
+**From this morning's design (still the plan):**
+
 - New characters would wake on a small island of their own, the **Wakening Isle**, instead of the busy New Haven plaza.
   One road runs across it with every core lesson in a line, the farm included. The last lesson is a moongate on the
   pier that drops them beside Rook in New Haven. No lesson sends them back the way they came. The walk from the beach
@@ -350,4 +368,87 @@ shots).
 - Docs (`D:\UO\golems\Iron\shard-migration`): this file and `notes\cc-P481-tools\` (two scripts, three plan files, six
   PNGs, the largest 513 KB). Code (`D:\UO\golems\Iron\ShatteredLegacy`): no change. No lock held, nothing running.
 
-P481 STOPPED: asked Chase (Iron-P481-20261025-060051-0bb2), waiting for Chase's pick
+Chase answered on 10-25 at 20:05: **the Fold**. At 20:12 he asked to be shown the island's land before the build
+prompts are written, and at 20:23-20:24 to look at every map we have (section 10).
+
+## 10. Which land becomes the Wakening Isle (Chase 10-25 20:12-20:24)
+
+### 10.1 How I looked
+
+- **The maps.** Ten in all:
+  - Six stock maps from the vanilla 7.0.117.0 client in `D:\UO\UltimaOnlineVanilla`: Felucca, Trammel, Ilshenar,
+    Malas, Tokuno, Ter Mur.
+  - The four downloaded maps in the art library's "Added facets and whole maps" section and the third-party
+    README. I copied their data files only (map, staidx, statics: 12 files, about 410 MB) into
+    `notes\cc-P481-tools\scratch\`. That folder is git-ignored (`notes\cc-P481-tools\.gitignore`, and `*.mul`
+    repo-wide, proven with `git check-ignore`). Nothing was run from `D:\UO\third-party`, and nothing is added to
+    the package.
+  - Each file's size matches its stated size exactly (196 bytes per 8x8 block). For example, Siege of Sosaria's
+    Map1.mul is 89,915,392 bytes = 7168 x 4096.
+- **The tools** (in `notes\cc-P481-tools\`):
+  - `islands.py`. Reads stock UOP or downloaded MUL land and the statics, colours each tile the way the radar map
+    does, and finds every dry patch on a 4x4-tile grid, so sizes are good to about 4 tiles. A tile is water when its
+    land or topmost static is Wet in tiledata, and void when it is 0x0244 or NoDraw with nothing on it.
+  - A patch counts as an island when at least 80% of its border is water. A void border means a dungeon or staff
+    area.
+  - Each island is tagged with the pinned regions it touches (`Distribution/Data/regions.json`) and the teleporters
+    that land on it (`teleporters.json`).
+  - `iso.py` draws a patch as the classic client lays it out, through `scripts\mapbuild\isorender.py`.
+  - `compose.py` builds the comparison sheet.
+- **The pictures** (`notes\cc-P481-tools\island-candidates\`; the scratch renders stay out of git):
+  - `candidates.png` (743 KB): the three finalists side by side, from above and in-client style.
+  - `where-trammel.png` and `where-sos.png`: whole-map locators with every island numbered. Red means no region and
+    no teleporter.
+
+### 10.2 What each map offers
+
+| Map | Islands found | Usable for the isle? |
+|---|---|---|
+| Trammel (and Felucca, the same layout) | 33 | Seven unclaimed islands of 7,000-17,000 dry tiles. The best are **#16** (2008-2211 x 2056-2207, 204 x 152, forest and grass with a sandy cove) and #23 (2392-2543 x 3872-4047). #174 (6396-6471 x 1208-1291) is a sand island with a cave, alone in a sea square among the dungeon blocks: a real unused corner, but 76 x 84, too small for the road |
+| Ilshenar | 3 | No: Spectre's entrance, the Ancient Citadel, and one 28 x 28 rock |
+| Malas | 0 | No |
+| Tokuno | 10 | No: the largest is 152 x 56 (3,920 dry tiles) |
+| Ter Mur | 14 | No: the unclaimed patches in its middle are river-cut jungle in the Valley of Eodon, which is live Time of Legends content, not islands |
+| Siege of Sosaria (Zigholtul) | 97 | Several new islands. The best is **#51, the "Isle of Colossus"** in the author's own Regions.xml: 1832-2079 x 1656-1851, 248 x 196, 27,280 dry tiles, 15,376 statics. #99 is shaped like a rooster (a joke island), #179 is unfinished bare dirt, and #155 (360 x 252) hugs the mainland |
+| Dungeon map 4 (TheArt) | 1 | No: an undecorated cave map |
+| Ter Mur replacement (TheArt) | 6 | No: mostly blank blobs (five of the six islands carry 851-2,342 statics on 6,000-50,000 dry tiles; the sixth, its one built town, 11,000) |
+| ParanoiaPhD custom map | 12 | No: rough painted landmasses (recognisably Britain and Ireland) with blanket ground cover |
+
+Every count above is from the scripts' CSVs (`scratch\<map>-islands.csv`). The "island" test is mine: it is a
+candidate list, not a census of every islet.
+
+### 10.3 The three finalists, best first
+
+| | 1. Isle of Colossus (Siege of Sosaria #51), **recommended** | 2. Forest isle south-east of Britain (Trammel #16) | 3. A new island painted in void C |
+|---|---|---|---|
+| Look | Finished and hand-decorated: mixed woods, a rock-ringed pond with a footbridge, rocky hills, paths, a cave mouth | Natural but plain: grass rim, dense forest heart, a sandy cove on the south side, nothing built | Whatever we paint (this morning's sketch: about 200 x 90 on the diagonal) |
+| Size | 248 x 196 (27,280 dry tiles) | 204 x 152 (15,504) | about 200 x 90 |
+| Today | On no stock map. In Siege of Sosaria it is a named region with no town | On every Trammel and Felucca map. No pinned region and no teleporter; players can sail to it on Trammel | Nothing: void C is 215,040 empty cells |
+| Art | 188 distinct statics and 146 land tiles, **all in the stock client** (checked against `artidx.mul`; land IDs up to 0x305) | 96 statics and 90 land tiles, all stock | Stock, by the playbook |
+| How players get it | The Fold's plan as written: the island's land and statics are copied into **void C** of Trammel's file, as lines in `trammel.mapops`, the patch the package already ships | **Nothing new:** the Fold (map 32 on Trammel's file) already shows it. Every building is a server item on map 32, so nothing changes on Trammel | As 1, but the island is painted rather than copied |
+| Patch size | About 1.5 MB more patch text. A 280 x 230 box with its sea is 64,400 land lines at the file's measured 18.7 bytes, plus 15,376 static lines at 21.6 bytes. Today's `trammel.mapops` is 253 KB. Under the 5 MB rule. The `R` (fill) op from section 3.1 would cut the sea's share | 0 | About 1 MB plus the decor (section 3.1) |
+| Map work | One prompt: copy, place in void C (the zone plan shifts a little: zone 1 grows to about 280 x 230 and the vision chamber moves east), then the road and the lesson buildings | None for land; the road and the buildings as server items | The most: land, shore, decor and buildings, with render rounds |
+| Licence | The author: "feel free to take advantage to your hearts content". No licence file. Credit Zigholtul; ship only inside the package | EA's own map, already on every PC | Ours |
+| Catch | A copy of someone else's island (credited); its cave mouth and colossus theme hint at content we don't have (dress it, or block the cave) | A sailor on Trammel can find its twin, an empty island shaped like the tutorial isle | Time, and art judgement round by round |
+
+**Why 1:** it is the only candidate that already looks like a place someone made, it is big enough for the
+165-tile road with room for the farm, it needs no new client files, and its copy cost is one prompt and about 1.5
+MB of patch text. If you would rather not use someone else's island, 2 is the zero-cost fallback.
+
+**Unverified:**
+- How #51's shore and cliffs look in a real client (the renders are `isorender`'s classic layout, without hues).
+- That nothing in Siege of Sosaria's statics depends on its own hue or verdata files. All IDs exist in stock
+  `artidx.mul`, but a stock tile could still be drawn with an author's hue.
+- Whether its cave mouth leads anywhere in the author's map. It is outside the copy box either way.
+
+## Asked, and commit preflight
+
+- The first question, `Iron-P481-20261025-060051-0bb2` (the Fold), was answered on 10-25.
+- The island question went to Chase through `Ask-Chase.ps1`, question `Iron-P481-20261025-212706-1405`: use the Isle of Colossus (recommended), look for
+  another, or make a new one. F1 to F6 come after his answer, folding in Codex's review
+  (`notes\cc-P605-start-area-design-review.md`, owned interactions against full copies) as the overseer asked.
+- Docs (`D:\UO\golems\Iron\shard-migration`): this file and `notes\cc-P481-tools\` (new: `islands.py`, `iso.py`,
+  `compose.py`, `.gitignore`, `island-candidates\` with three PNGs under 1 MB). Scratch: `notes\cc-P481-tools\scratch\`
+  (git-ignored). Code (`D:\UO\golems\Iron\ShatteredLegacy`): no change. No lock held, nothing running.
+
+P481 STOPPED: asked Chase (Iron-P481-20261025-212706-1405), waiting for Chase's island pick
