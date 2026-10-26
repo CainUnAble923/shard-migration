@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-25. Shard version 2026.10.26.11. Golem on, 3 queued, latest done P671. Play tests: 1349 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-25. Shard version 2026.10.26.11. Golem on, 3 queued, latest done P672. Play tests: 1349 open, 4 failed, 43 passed.
 
 ### Needs overseer review (4)
 
@@ -230,13 +230,14 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 553 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 554 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
 | P375 cont-fixup-playtest-bot-checks-first | queued |  |
 | P669 sos-trammel-assessment | queued |  |
 | P670 redrawn-statics-opt-in | queued |  |
+| P672 sos-quest-seeds | done | 2026-10-26 |
 | P671 review-p661 | done | 2026-10-26 |
 | P667 review-p659 | done | 2026-10-26 |
 | P661 fold-map-32 | done | 2026-10-26 |
@@ -246,7 +247,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P657 review-p647 | done | 2026-10-26 |
 | P656 p574-safeguards | done | 2026-10-26 |
 | P655 guide-weapon-procs-buttes | done | 2026-10-26 |
-| P654 guide-pumpkin-king | done | 2026-10-26 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 169 patches, 12 replacements
 
