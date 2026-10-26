@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-25. Shard version 2026.10.26.7. Golem on, 5 queued, latest done P650. Play tests: 1328 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-25. Shard version 2026.10.26.7. Golem on, 5 queued, latest done P651. Play tests: 1328 open, 4 failed, 43 passed.
 
 ### Needs overseer review (4)
 
@@ -230,7 +230,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 538 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 539 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -239,6 +239,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P653 guide-guard-patrols | queued |  |
 | P654 guide-pumpkin-king | queued |  |
 | P655 guide-weapon-procs-buttes | queued |  |
+| P651 guide-league-warrants-echo | done | 2026-10-26 |
 | P650 guide-item-identification | done | 2026-10-26 |
 | P649 guide-social-skill | done | 2026-10-26 |
 | P648 guide-tracking-ping | done | 2026-10-26 |
@@ -248,7 +249,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P643 review-build-townsfolk-rest | done | 2026-10-26 |
 | P642 review-build-echo-summon | done | 2026-10-26 |
 | P641 review-build-league-warrants | done | 2026-10-26 |
-| P640 review-build-guard-patrols-pilot | done | 2026-10-26 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 169 patches, 12 replacements
 
