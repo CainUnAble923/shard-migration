@@ -739,7 +739,7 @@ The author named places only. There are no descriptions or stories; those are ou
 
 ## Named regions (author's Trammel and Sosaria sets)
 
-Bounding box of all rectangles per region: x1-x2, y1-y2. Unnamed sub-regions skipped; duplicates between the two sets listed once.
+Bounding box of all rectangles per region: x1-x2, y1-y2. Unnamed sub-regions skipped; duplicates between the two sets listed once. Caution: some of the author's catch-all regions (Orc Territory, some Old Ruins, a Cemetary, a Cave, at or near a Dungeon Entrance, an Abandoned Home and similar) are many small scattered rectangles, so their bounding box spans most of the map; check the rectangles in Regions.xml for the real spots. The second set (lower case names like "the town of Dawn") looks like leftover naming from another project and may not match this map's land.
 
 - Lord British Castle: 1291-1410, 1553-1701
 - Britain: 1356-1786, 1408-1798
