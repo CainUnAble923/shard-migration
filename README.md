@@ -230,12 +230,13 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem off; 533 prompts done, 4 more stopped early and not counted)
+### Queue (Golem off; 534 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
 | P375 cont-fixup-playtest-bot-checks-first | queued |  |
 | P646 review-build-town-houses | done | 2026-10-26 |
+| P645 review-build-procs-milestone | done | 2026-10-26 |
 | P644 review-build-scoring-buttes | done | 2026-10-26 |
 | P643 review-build-townsfolk-rest | done | 2026-10-26 |
 | P642 review-build-echo-summon | done | 2026-10-26 |
@@ -244,7 +245,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P639 review-build-item-identification | done | 2026-10-26 |
 | P638 review-build-social-skill | done | 2026-10-26 |
 | P637 review-build-tracking-ping | done | 2026-10-26 |
-| P635 cont-fixup-build-guard-patrols-pilot | done | 2026-10-26 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 169 patches, 12 replacements
 
