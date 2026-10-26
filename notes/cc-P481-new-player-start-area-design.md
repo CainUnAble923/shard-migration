@@ -157,6 +157,13 @@ returning player's new character gets the start choice below and can skip.
   pinned's Distribution (`docker/uo/Dockerfile:102`). Either a customization registers map 32 in code before world
   load, or a one-entry patch to the json. **Unverified:** whether a customization's `Configure` runs early enough. It
   is the first thing the facet prompt checks. Saves store a mobile's map by index, so index 32 must never be reused.
+- **Built (P661, 10-26): indexes 32 to 48 are reserved for good.** `server/customizations/Fold/FoldMaps.cs` registers
+  map 32 "TheFold" and the tutorial copies 33 to 48 "TheFold 1" to "TheFold 16" in a `Configure` at priority 3, after
+  `MapLoader.Configure` (2) and before world load, so no JSON patch. A save names a map by its index byte, so none of
+  32 to 48 may ever be reused, renumbered or unregistered; a larger pool grows upward from 49. The Fold's rules (no
+  housing, no recall, mark or gate in or out, always day) are each map's **default region** (`FoldRegion`), not a
+  registered whole-map region: registering one over 7168 x 4096 builds all 114,688 sectors of each map (P661 notes).
+  So every zone region F2 to F4 adds on the Fold takes `FoldRegion.On(map)` as its `Parent`, or it loses those rules.
 
 **Not recommended: a facet with its own client map number (id 6, file index 6).** This is a real problem for the
 client and the package, and it is the plain answer to the prompt's question:
