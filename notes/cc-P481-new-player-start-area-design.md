@@ -2,23 +2,25 @@
 
 ## In plain words
 
-**Update 10-25 evening (section 10): which land becomes the Wakening Isle.** You picked the Fold, then asked to see
-the island itself first, across every map we have.
-- **I looked at all ten maps:** the six stock ones (Felucca, Trammel, Ilshenar, Malas, Tokuno, Ter Mur) and the four
-  downloaded ones (Siege of Sosaria's Trammel, TheArt's dungeon map and Ter Mur replacement, ParanoiaPhD's custom
-  map). I found every island on them and drew the best three side by side in
-  `notes\cc-P481-tools\island-candidates\candidates.png`.
-- **My pick: the Isle of Colossus from the Siege of Sosaria map.** It is a finished woodland island of about 248 by
-  196 tiles, with ponds, a footbridge, rocky hills and paths. It uses only art every client already has. Its author
-  invites reuse with credit (Zigholtul). It would be copied into the empty corner of the Trammel map we already
-  planned to use, through the map patch the player package already ships, so players need no new files.
-- **Second choice: an unnamed forest island south-east of Britain**, already in everyone's Trammel map. It needs
-  no map work at all, but it is plainer, and it is the twin of a real Trammel island anyone can sail to.
-  **Third:** paint a brand-new island, as planned this morning: the most work.
-- **For you:** pick one in the Ask-Chase question: use the Isle of Colossus, look for another, or make a new one. The
-  six build prompts come after your answer.
+**Update 10-26 (sections 11 to 13): the new island, and the six build prompts.** You asked for a new island built for
+the tutorial.
+- **The new Wakening Isle** is drawn in `notes\cc-P481-tools\new-isle\plan.png`. It is a long island, about 200 by
+  90 tiles, in the empty corner of the map. One road runs west to east: the beach where players wake, the first
+  lessons, a flat meadow with the farm, a training yard, a trades square with the practice bank, the League lodge,
+  standing stones on a low hill for the vision, and a dock with the moongate to New Haven. The walk is 201 tiles,
+  measured on the sketch, plus 20 inside the farm. Players need only the usual package update, no new map files.
+- **One change from your lean:** I now recommend giving each new player (or party) a **private copy of the whole
+  island**, instead of one shared island where other players are hidden. With one shared island, two hidden players
+  still fight over the same farm pests, share one lodge door and can bump into each other's invisible pets. Copies
+  avoid all of that, and on this server they cost little memory. Section 12 has the comparison.
+- **Six build prompts** (F1 to F6) are written at the end of the notes, in order, for the overseer to number: the
+  new world, the island map, moving the tutorial with the start choice, the private copies, the vision scene, and
+  pet protection with the vet.
+- **For you:** look at the island pictures. Then say whether you agree to private copies instead of the hidden-players
+  mix, before F4 is queued. F1 to F3 do not depend on that answer.
 
-**From this morning's design (still the plan):**
+**From the 10-25 design (history; the Fold still holds, and sections 11 to 13 replace the island, the walk and the
+privacy choice):**
 
 - New characters would wake on a small island of their own, the **Wakening Isle**, instead of the busy New Haven plaza.
   One road runs across it with every core lesson in a line, the farm included. The last lesson is a moongate on the
@@ -320,6 +322,8 @@ art IDs above are candidates from tiledata names; the scene prompt picks them fr
 
 ## 9. Build plan (Golem prompts)
 
+*Superseded by section 13 (10-26): the full prompt drafts, with private copies in F4.*
+
 | # | Prompt | Touches | Notes |
 |---|---|---|---|
 | F1 | The Fold: map 32 on Trammel's file, the `FoldRegion` rules, the Trammel mirror guard, `[Tutorial goto` | server | First check: register map 32 before world load (customization or a json patch). A fact moves a player to 32 and back; a TazUO shot shows Trammel's tiles |
@@ -451,4 +455,388 @@ MB of patch text. If you would rather not use someone else's island, 2 is the ze
   `compose.py`, `.gitignore`, `island-candidates\` with three PNGs under 1 MB). Scratch: `notes\cc-P481-tools\scratch\`
   (git-ignored). Code (`D:\UO\golems\Iron\ShatteredLegacy`): no change. No lock held, nothing running.
 
-P481 STOPPED: asked Chase (Iron-P481-20261025-212706-1405), waiting for Chase's island pick
+Chase answered on 10-26 at 12:37: **make a new one**. The Isle of Colossus has too few flat places for the farm.
+Paint a new island in the Fold's empty corner, built for the tutorial: a flat farm meadow, the training and trades
+yards, a dock, with the one-way route laid out first. Then write F1 to F6 (sections 11 to 13).
+
+## 11. The new Wakening Isle (Chase 10-26)
+
+### 11.1 The pictures (`notes\cc-P481-tools\new-isle\`, drawn by `notes\cc-P481-tools\newisle.py`)
+
+| File | What it shows |
+|---|---|
+| `plan.png` | **The island, top-down:** stops 0 to 10, the walked road (white), the walk inside the farm (yellow), the zones |
+| `where.png` | Where it sits in void C, with the Fold's other zones |
+| `iso-farm.png` | In-client style mock (`isorender`): the road and the flat meadow with P276's farm moved onto it whole |
+| `iso-east.png` | In-client style mock: the trades square and bank, the League lodge, the stones on their knoll, the dock and moongate |
+| `legs.txt` | Every leg's walked length, and the counts below |
+
+The script reads only the vanilla client files (`MAPBUILD_CLIENT=D:/UO/UltimaOnlineVanilla`, `MAPBUILD_ART` as for
+`isorender`) and the farm layout from the code work copy (`TutorialFarmLayout.cs`). It writes no map file. The
+mocks have no shore transitions, no hues and no roofs on the bank and lodge, so the lessons inside show. F2 builds
+the real tiles through the playbook.
+
+### 11.2 The plan
+
+The route was laid first, as Chase asked: a road of 18 waypoints, three tiles wide, west to east. The island was then
+shaped round it: every tile within about 11 tiles of the road, plus eight round lobes for the meadow, the yards, the
+knoll and two wooded hills to the north. The shore is a 4-tile sand rim. All of it is flat Z 0 except the knoll,
+which rises to Z 8 under the stones.
+
+| | Where (Trammel file, void C) | Size |
+|---|---|---|
+| Walkable land and dock | x 6202-6409, y 1938-2026 | 208 x 89 (9,184 dry tiles) |
+| Drawn area with its sea | x 6170-6441, y 1913-2057 | 272 x 145 (39,440 cells) |
+| Sea margin | at least 24 tiles past every walkable tile, more than the client's view range, so no one on the isle sees the void's black edge or another zone | |
+
+The Fold's zones (section 3.2) still fit round it: zone 1 is now the box above. The vision chamber (zone 2, 6440-6463 x
+1850-1873) is 40 tiles north of the isle's sea and 31 tiles east of the dock's tip. Under section 12's
+recommendation the vision no longer needs it, so zone 2 is free for later.
+
+| Stop | Place (x, y) | Leg walked | Lesson |
+|---|---|---|---|
+| 0 | West beach (6214, 2001): the player wakes; Tamsin the guide | - | arrival, the core menu |
+| 1 | Two bright tiles in the road (6222, 2000) | 8 | `core.movement` |
+| 2 | A camp beside the road (6232, 1998): campfire, bedrolls, the blue bag | 10 | `core.backpack` |
+| 3 | A clothes rack (6241, 2000) | 9 | `core.paperdoll` |
+| 4 | A signpost at the meadow's edge (6268, 1998) | 27 | `core.chat` |
+| 5 | The farm gate (6290, 1987): Wren, Tobin the vet just outside; inside, the pet pick, the pests, the bandages | 28 | the farm (section 12.3 says how it joins the core) |
+| 6 | The training yard (6312, 2003): a low fence, four training dummies, an archery butte; the pale echo, Sera and an ankh | 23 | `core.death` |
+| 7 | The trades square (6338, 1989): cobbles, a forge, an anvil, a loom; the practice bank's door (Merrin inside) | 27 | `core.banking` |
+| 8 | The League lodge door (6358, 2002): Elara inside | 20 | `core.league` (open the door) |
+| 9 | The standing stones on the knoll (6370, 1990) | 12 | `core.loop`, the vision |
+| 10 | The dock's end (6407, 1999): the moongate | 37 | `core.travel`: out to New Haven beside Rook |
+
+- **Walked:** 201 tiles from the beach to the moongate, plus 20 inside the farm (gate, crop rows, the pen fence, back
+  to the gate). Legs were walked on the sketch: 8 directions, no diagonal past a blocked corner, fences, walls, trees,
+  dummies and stones blocking, gates and doors open. Among equal walks the road is preferred.
+- **This corrects two of P605's points about the first sketch.** Its legs summed to 185, not the 165 I wrote. Its walk
+  allowed diagonals past blocked corners, and its square was 221 wide. The 201 here is measured with those fixed.
+  It is still a sketch: F2's built map is walked again, with doors and lesson detours.
+- **One direction:** every stop is ahead of the last. The only steps back are in and out of a gate or door, at the
+  farm, the yard, the bank and the lodge.
+- **The farm, moved whole:** all 334 pieces of P276's approved layout (`TutorialFarmLayout.cs`, x 3372-3401, y 2603-2619),
+  shifted by (+2890, -628) to x 6262-6291, y 1975-1991, inside a flat meadow of 41 x 30 (x 6252-6292, y 1966-1995).
+  Its gate stays on the east side, toward the road. Each piece keeps its height above the old ground. That ground ran
+  from Z 3 to 45 in New Haven; none of the 334 pieces sat below it, so none is clipped. The farmhouse door goes on as
+  a real door, as P276 placed it.
+- **The yards:** the training yard (x 6302-6324, y 2002-2018) holds the death lesson, with room for later combat
+  tasters. The trades square (x 6330-6350, y 1979-1996) holds the bank, with room for later trade tasters. These are
+  the "training and trades yards" Chase named. Only the core lessons use them in F3.
+- **Art in the mocks** (all stock, from tiledata names): the farm's own pieces; stone walls 0x001A along x, 0x001B along
+  y, 0x001C corner, 0x001D post. That order was picked from a 5 x 5 test room; the swapped order rendered as loose
+  slabs. Also wooden boards 0x04A9, cobbles 0x0442-0x0445, fence 0x0836/0x0837 (the farm's), training dummies 0x1070
+  and 0x1074, archery butte 0x100A, forge 0x0FB1, anvil 0x0FAF, loom 0x1049/0x104A, rocks 0x1772 for the stones,
+  ankh 0x0003, planks 0x04A1, dock poles 0x01CD, moongate 0x0F6C (a server item in the build). Trees: oak, walnut and
+  cedar pairs.
+
+### 11.3 What it costs in the package
+
+- **Patch text:** every cell in the drawn area changes from void to sea or land: 39,440 `L` lines at the measured
+  18.7 bytes, about 0.74 MB. The sketch has 1,127 statics. The built isle with decor is estimated at 3,000 to 5,000
+  `S+` lines at 21.6 bytes, 0.07 to 0.11 MB. So `trammel.mapops` grows by about 0.8 to 0.9 MB, under the 5 MB rule.
+- **Correction (P605):** the player's `statics1.mul` does grow. `Apply-MapOps.ps1` appends the changed static blocks
+  and repoints the index. With about 5,000 statics at 7 bytes, plus about 650 touched blocks, that is under 50 KB. The
+  map file's size does not change. "No new client files" means no new facet files and no client change. Players
+  still need the package update that carries the patch and the cliloc lines; a stale package shows the old void.
+
+## 12. Privacy, priced: the mix against full copies (P605)
+
+P605 split the promise in two: other trainees are hidden, and other trainees cannot interrupt your lesson. The mix
+(section 5, (iii)) gives the first easily. The second needs every shared interactive thing on the isle to be owned
+by one trainee. Here is that list against today's code, and the same list for full copies.
+
+### 12.1 What sharing breaks, and what it costs to fix
+
+| Shared thing on one isle | What goes wrong | Fix under the mix | Under copies |
+|---|---|---|---|
+| Farm pests | `TutorialCreature.cs:35` admits any active trainee; `TutorialFarm.cs:242` credits everyone who hit a dying pest; `:402` seeds shared spawners. Hidden trainees fight over one pest and see it vanish | Per-trainee spawns on demand, owned, hidden from others, cleaned up on leave; credit only the owner | Nothing: the copy's pests are yours |
+| The pale echo | One echo for everyone; it can be fighting another trainee | Spawn one owned echo per trainee | Nothing |
+| The lodge door | A door's open or closed state is shared; a closed door hidden or not still blocks movement | Accept a door that moves by itself, or replace the door lesson | Nothing |
+| NPC replies | One public `Say` today (`TutorialRecruiter.cs`); a shared greeter's reply reaches everyone who can see the greeter | `SayTo` / private messages for every lesson NPC | Nothing (P605's rule is still good practice) |
+| Effects and sounds | Location effects and sounds reach every client in range (`Effects.cs:66-77, :168`); the walking-tile sparkles use them | Send each lesson effect to the one NetState | Nothing |
+| Others' pets and summons | Hidden mobiles still occupy tiles; whether one blocks you depends on movement rules, not sight | Make tutorial pets pass-through, or accept bumps | Nothing |
+| The vision | Its sounds, lights and figures | A private chamber copy (a slot pool), or private-everything at the stones | Plays in place at the stones, on your copy |
+| Hiding itself | The `CanSee` hooks (`PlayerMobile.cs:3239, 3282`) with party, staff, corpse and ghost rules, ordered against the existing visibility list (P605 risk 1) | Needed | Not needed |
+
+### 12.2 What copies cost
+
+| Cost | Size |
+|---|---|
+| Memory per copy | Small. Pinned allocates a map's sector array and its tile-block arrays as columns are first used (`Map.cs:88, 1447`; `TileMatrix.cs`). Matrices on one file index link to each other's caches (`TileMatrix.cs:79-86`). Each copy still opens its own three file streams (map, index, statics). **Unverified:** a measured number; F1 measures it |
+| Objects per copy | The farm addon (334 pieces), about eight lesson NPCs, the farm's animals and pests, the lesson props: about 400 items and 15 mobiles, saved with the world while a copy is seeded |
+| Map indexes | One per copy, reserved forever once a save can name it (P605). A pool of 16 at map 33 to 48, raised later if ever full |
+| A slot manager | Give a free copy to a trainee, or to a party's leader with the members; hold it while anyone is inside, online or not; free it and reseed it when empty |
+| A logout rule | Every copy has the same coordinates. A trainee who logs back in after their copy was freed goes to a fresh copy at the stop of their first undone lesson. No queue for "your" copy |
+| Staff | `[Tutorial goto <n>`, and a list of copies in use |
+
+**Settled: full copies, one per trainee or party** (the old (ii), on the Fold's shared tiles). The mix needs the
+ownership work above plus the visibility hooks plus a vision pool. Copies need a pool too, and nothing else. Once each
+copy shares the Trammel tiles, the remaining cost is seeding and resetting about 400 items, which the seeder already
+does once. Copies also remove the bug classes outright (shared pests, the door, stray sounds, invisible blockers)
+instead of patching each one. They match the League's private trial maps (storyline decided 5), so the pool is
+built once. This changes Chase's lean of 10-23 (the mix), so it is his to confirm before F4 (see "For Chase"). If
+he keeps the mix, F4's alternative text below is the larger build.
+
+### 12.3 Other P605 corrections folded into the prompts
+
+- **Map startup:** a customization `Configure` with an explicit priority runs after pinned's `MapLoader.Configure`
+  (priority 2) and before regions and `World.Load` (`Main.cs:667`, `Attributes.cs:40`). So the Fold registers in code
+  with no JSON patch (F1).
+- **Hard-coded Trammel:** 18 `Map.Trammel` uses in the core lesson files (`TutorialCorePlacement.cs` 8,
+  `TutorialCoreTrials.cs` 4, `TutorialFarm.cs` 4, `TutorialRecruiter.cs` 1, `TutorialIslandGate.cs` 1; counted today
+  on code HEAD 3b4d321). The trade and wing trials (15 more) stay in New Haven. F3 routes the core 18 through the
+  trainee's own lesson map.
+- **The farm is optional today** (`TutorialFarm.cs:52`; `CoreDone` and `Graduate` need only core stations). Putting it
+  in line needs a rule. Proposal: a new core station `core.farm` (pick the pet, clear the pests, use the bandages),
+  so the arrow does not skip it. The pet pick then moves from graduation to the farm (dog or cat). An account that
+  already has its pet skips the pick. That is Chase's 11:18 intent, stated so he can see the trade.
+- **The travel item answers a double-click** (`TutorialCorePlacement.cs:174`), not a step. The moongate takes both.
+- **Supplies are not persistent:** login cancels the active trial, and the bag, cloak and token delete themselves on
+  load. Keep that: a reconnect regenerates the current lesson's supply.
+- **Pets cross maps only when moved.** `MoveToWorld` takes carried items, not followers; stock moongates call
+  `BaseCreature.TeleportPets`, which has range and order limits. Every Fold crossing (arrival into a copy, the dock
+  moongate out, Rook's remedial trip in) moves all the trainee's controlled pets on the Fold with them, whatever the
+  range.
+- **The island gate:** `TutorialIslandGate.cs` and `PlayerMobile-tutorial-island-gate.patch` treat any destination
+  outside Haven and Rootdeep as leaving the island. Rook's remedial trip to the Fold needs an explicit allowed route.
+- **Account eligibility** needs a full rule (F3's table).
+- **Skip wording:** a creation-screen skip gives no *tutorial graduation* box. The loop box still comes from
+  `ClusterFLoops` -> `ClusterFLootBoxes.OnLoopCompleted`.
+- **Light is not a guaranteed blackout:** client light settings can override server light (TazUO `LightLevel.cs`,
+  `PersonalLightLevel.cs`). The scene tries `NetState.SendScreenEffect` for fades. Its subtitles must make sense
+  with lighting overridden.
+- **No stock `Clone`:** the echo figure copies appearance only. Pinned's Mirror Image clone copies skills, follows,
+  times out and registers itself.
+- **A restart mid-scene:** the scene saves enough to return the player to the stones, unfrozen, with the light
+  restored, at startup or the next login.
+- **Tobin today** charges Young owners 0, but refuses an existing corpse and takes 0.2 from every skill
+  (`TutorialPetCare.cs`). Free, lossless revival on the isle is new behaviour (F6).
+
+## 13. Build prompts F1 to F6 (drafts for the overseer to number)
+
+Order: F1, then F2 and F3 (F3 needs F1; F2 can ship first, since nobody can see void C), then F4, then F5 and F6.
+**Must ship together:** F2's map patch and F3's cliloc lines in one player package. F3 and F4 go live together
+(the isle without copies is a crowded shared isle). Nothing goes live until F1 to F4 have played through on a
+private world with two clients.
+
+---
+
+### F1. The Fold: map 32, its rules and the copy pool's indexes
+
+**Model:** Opus
+
+**Touches:** server
+
+**Summary:** Register the Fold (server map 32, client id 1, file index 1, Trammel's tiles) and the tutorial copy maps
+(33 to 48, same files) in code, with their region rules, and prove a player can stand there, save, reload and come
+back. Design: `notes\cc-P481-new-player-start-area-design.md` sections 3.1, 11 and 12 (shard-migration).
+
+**Read first:** that design, P605 (`notes\cc-P605-start-area-design-review.md`) risk 8 and "What holds up", pinned
+`Projects/Server/Maps/MapLoader.cs`, `Map.cs`, `TileMatrix/TileMatrix.cs`, `Main.cs:667`, `Attributes.cs:40`.
+
+1. A customization registers maps 32 to 48 in `Map.Maps` and `Map.AllMaps`, in a `Configure` with an explicit
+   priority after `MapLoader.Configure` (2) and before world load: `TrammelRules`, season 0, names "TheFold" and
+   "TheFold 1" to "TheFold 16". Indexes 32 to 48 are reserved for good; say so in a comment and in the design.
+2. Regions on every Fold map: no housing, no recall, mark or gate in or out (`CheckTravel`, the Green Acres model), and
+   always-day light. A `FoldMirrorRegion` on Trammel over void C sends any non-staff player found there to New Haven.
+3. `[Fold goto <n> [x y]` for staff, test shard only to start.
+4. Facts, each seen failing first: a player moved to 32 and to 40 stands on Trammel's tile and Z at that spot;
+   housing, recall and gate are refused there; a save and reload keeps a character on map 40; an unregistered index
+   in a save is reported, not crashed on. Measure the memory and file handles of 16 empty copies and one copy with a
+   seeded farm, and write the numbers in the notes.
+5. A TazUO shot on the private world, two characters on 32 and 33: each sees Trammel's void C (black until F2), not
+   Felucca.
+6. `docker\uo\build.sh -t sl-modernuo:cc-P<nn>` green. Staff CHANGELOG line. Notes, last line `P<nn> DONE`.
+
+---
+
+### F2. The Wakening Isle, map work
+
+**Model:** Opus
+
+**Touches:** map, package
+
+**Summary:** Paint the new island into void C of the Trammel files by `notes\map-building-playbook.md`: land, shore,
+road, meadow, yards, square, bank, lodge, knoll, dock, and decor, following the approved plan
+(`notes\cc-P481-tools\new-isle\plan.png`, coordinates in design section 11.2). Ship it as `trammel.mapops` lines for
+the package and the server overlay.
+
+**Read first:** the playbook (all of it), design section 11, `notes\cc-P481-tools\newisle.py` (the plan's
+coordinates, to import or copy), `notes\cc-P167-tools\build_burrows.py` (the driver's shape).
+
+1. A driver `notes\cc-P<nn>-tools\build_isle.py` with `--fresh` and `--plan-only`, one seeded random stream per stage.
+   Sea over the whole drawn area (x 6170-6441, y 1913-2057), shore with stock sand-to-water and grass-to-sand
+   transitions (audit them with vseUOAware `diagnose_land_transitions`), the road and meadow flat at Z 0, the knoll to
+   Z 8 with the slope audit clean.
+2. The bank and lodge as stone buildings with roofs, doors framed, every corner dressed (playbook section 4); the
+   training yard and the meadow fenced; the dock of planks with poles; woods on the north hills at 5 to 12 pieces per
+   100 tiles. The farm addon and every NPC, door and moongate stay server items (F3), not statics.
+3. The walkable gate: walk the built map from the beach to the dock with pinned's movement rules reduced to the files.
+   Record each leg in a table beside design 11.2's sketch numbers.
+4. The playbook's checklist table and junction sheet in the notes; the picture set in `notes\art\wakening-isle\`:
+   top-down, every zone, the shore, the bank and lodge in-client style. Chase approves the renders before the patch
+   ships.
+5. `mapops.py diff` to `player-package\vendor\shattered-legacy-map\trammel.mapops`; `check` reads drifted 0, missing 0.
+   Report the patch's size. `tools\tests\test_mapops.py`, the package's map gate and `Map-Overrides.Tests.ps1` green.
+   Take the `package` lock for any package build.
+6. Notes, last line `P<nn> DONE`. No CHANGELOG line until F3 makes it reachable.
+
+---
+
+### F3. The tutorial moves to the isle, with the start choice
+
+**Model:** Opus
+
+**Touches:** server, package (cliloc)
+
+**Summary:** Move the core tutorial from the New Haven plaza to the Wakening Isle, in one line west to east (design
+11.2), with the farm as a core station, the dock moongate as the last lesson, and a start choice at character
+creation. Single-copy for now (map 32); F4 adds the copies, so every lookup goes through the trainee's lesson map.
+
+**Read first:** design sections 4, 7, 11 and 12.3; P605 risks 3, 4 and 5; P289, P371, P475, P480, P276 notes;
+`server\customizations\Tutorial\*.cs`; `CharacterCreation.cs`.
+
+1. **One lesson map.** A `TutorialWorld.MapOf(PlayerMobile)` (32 now; F4 returns the trainee's copy) replaces the 18
+   core `Map.Trammel` uses (design 12.3 lists them). The wing and trade trials stay on Trammel.
+2. **The seeder on the isle:** Tamsin (the core menu, Rook's core role, directed replies with `SayTo`), the lesson
+   props at design 11.2's stops, Wren, Tobin, Sera, the pale echo, Merrin and a practice bank box, Elara in the lodge,
+   the stones, the dock moongate (walk in or double-click). The farm addon moves with its pieces' heights above the
+   old ground kept (design 11.2); its door and pen as P276 placed them.
+3. **The order:** movement, backpack, paperdoll, chat, `core.farm` (new: pet pick, pests, bandages; an account that
+   has its pet skips the pick), death, banking, league, loop (the vision as built today until F5), travel last. A
+   character partway through keeps its done keys and resumes at its first undone stop; old-order travel counts only
+   once the rest are done.
+4. **Pets cross with the trainee** on every Fold crossing: all controlled pets on the Fold, whatever the range.
+5. **The start choice:** two city entries, "Tutorial Island" (index 0, default; display coordinates in the sea south
+   of Haven Island) and "New Haven" (skip), both sent as Trammel; cliloc descriptions in the package. The choice is
+   stored on the new character and consumed once at its first login.
+6. **Eligibility,** decided per account and character:
+
+   | Account state | "Tutorial Island" chosen | "New Haven" chosen |
+   |---|---|---|
+   | Fresh (NotStarted) | isle, entered on this character | skip (P371: Skipped, loop 1, "Didn't Read the Manual", no tutorial graduation box) |
+   | InCore on another character | New Haven, told the tutorial is with that character | New Haven |
+   | Graduated or Skipped | New Haven; Rook offers Remedial training | New Haven |
+   | Tutorial character deleted mid-core | isle, re-bound to this character, done keys kept | skip |
+   | Created before go-live | never entered or moved (P80 item 1) | - |
+
+7. **Remedial:** Rook's button sends a skipper to the isle's beach, through an allowed route past the island gate
+   patch; the dock moongate brings them back to Rook, who gives the box and the second achievement as today.
+8. Facts, each seen failing first: the order; a pet crossing the dock; each row of the eligibility table; a choice
+   surviving a disconnect before first login; a second character not consuming another's choice; the moongate by step
+   and by double-click; a reconnect regenerating the current supply. Then the P289 bot route on a private world with
+   the isle loaded, and TazUO shots of the city screen and five stops.
+9. `docker\uo\build.sh -t sl-modernuo:cc-P<nn>` green. CHANGELOG player lines (test shard only until F4 ships). Notes,
+   last line `P<nn> DONE`.
+
+---
+
+### F4. Private copies of the isle
+
+**Model:** Opus
+
+**Touches:** server
+
+**Summary:** Each trainee, or a party, gets a private copy of the Wakening Isle (maps 33 to 48 from F1), seeded on
+first use and reset when empty, so nobody else's pests, doors, pets or sounds reach a lesson. Settled in design section
+12 against the hidden-players mix; Chase confirms first.
+
+**Read first:** design section 12, P605 risks 1, 2 and 6, F1's memory numbers.
+
+1. A slot manager: assign a free copy at entry (a party's leader and members share one); hold it while anyone is
+   inside, online or offline; free and reseed it after the last occupant has been gone 30 minutes; staff
+   `[Tutorial copies` lists them. A trainee whose copy was freed goes to a fresh copy at their first undone stop.
+2. `TutorialWorld.MapOf` returns the copy; the seeder seeds a copy on assignment, and removes exactly what it placed on
+   reset (no stray items left on a reused copy).
+3. When all 16 are in use, the next trainee waits on the beach of map 32 with a line saying so, and is moved when a
+   copy frees. Report how often that would happen at today's sign-up rate.
+4. Facts, each seen failing first: two trainees in two copies kill pests without crediting each other; a party shares
+   one copy; logout and login inside a held copy; login after the copy was freed; a reset copy holds only fresh seeds;
+   a save and restart with copies in use.
+5. Two-client TazUO playthrough on the private world, solo and as a party.
+6. `docker\uo\build.sh -t sl-modernuo:cc-P<nn>` green. CHANGELOG player line. Notes, last line `P<nn> DONE`.
+
+*If Chase keeps the mix instead:* one isle (map 32); `CanSee` hooks hiding other trainees, ordered against pinned's
+visibility list and its staff, ghost and container checks; per-trainee owned pests and echo; `SayTo` replies; lesson
+effects to one NetState; a decision on the lodge door; pass-through tutorial pets; and F5's chamber pool. Same facts,
+plus two hidden trainees on one pest and one door. Expect it to be the larger prompt.
+
+---
+
+### F5. The vision as a staged scene
+
+**Model:** Opus
+
+**Touches:** server, package (panels later)
+
+**Summary:** Replace the vision placeholder with the 45-second scene of design section 6, for one player, at the
+standing stones of their own copy, with restart-safe recovery.
+
+**Read first:** design section 6 (the storyboard) and 12.3; P605 risks 6 and 7; `docs\league-storyline.md` chapter 1;
+`ClusterFLoops.cs`, `TutorialCoreTrials.cs`.
+
+1. `TutorialVisionScene`: frozen, private light per player, fades with `SendScreenEffect` where the client honours
+   it, centred subtitle gump that reads correctly with lighting overridden, the beats and effect and sound IDs of
+   section 6, all sent to the one player.
+2. The figures are plain mobiles that copy the player's appearance only (no Mirror Image `Clone`), deleted at the end.
+3. Recovery: logout, death, disconnect or restart mid-scene returns the player to the stones, unfrozen, light
+   restored, figures gone, scene replayable; the saved state survives a restart.
+4. The scene changes no skill, level, loop or Young status (a fact, against the current check).
+5. Two full-screen panel IDs reserved in the art registry for Chase's later drawings; the scene runs without them.
+6. Facts, each seen failing first; a TazUO recording (frame burst) of the scene; sounds checked by ear on the private
+   world.
+7. `docker\uo\build.sh -t sl-modernuo:cc-P<nn>` green. CHANGELOG player line. Notes, last line `P<nn> DONE`.
+
+---
+
+### F6. Pets on the isle, and every vet brings pets back
+
+**Model:** Opus
+
+**Touches:** server, patch
+
+**Summary:** On the isle a Young player's dead pet comes back free and whole at Tobin; Sera points pet ghosts to him;
+a lesson line at the farm says what to do when a pet dies. Shard-wide, stock vets resurrect pets as P480 drafted.
+
+**Read first:** design section 8 and 12.3; P480's notes and its "every vet" draft; `TutorialPetCare.cs`.
+
+1. On any Fold map: a Young owner's pet ghost within 3 tiles of Tobin is resurrected free, with no skill loss, and
+   its corpse's things go back to it. It still dies, so the lesson has meaning.
+2. Off the isle: Tobin's rule today (free while Young, 0.2 skill loss) stays, unless Chase says otherwise.
+3. Stock `Veterinarian` everywhere offers resurrection on ServUO's fee (P480's draft), so New Haven's stable vet and
+   every town vet can bring a pet back.
+4. Wren's and Sera's lines; the farm's pet lesson line.
+5. Facts, each seen failing first: free and lossless on the isle; the fee and loss off it; a stock vet resurrects; a
+   non-Young owner pays.
+6. `docker\uo\build.sh -t sl-modernuo:cc-P<nn>` green. CHANGELOG player lines. Notes, last line `P<nn> DONE`.
+
+## For Chase (10-26)
+
+1. **The island:** `notes\cc-P481-tools\new-isle\plan.png`, `iso-farm.png` and `iso-east.png`. Say if anything should
+   move. F2 makes the real tiles and shows you its renders before anything ships.
+2. **Private copies instead of the mix** (section 12): agree, or keep the mix. This is needed before F4 is queued,
+   not before F1 to F3.
+3. **The farm becomes a required lesson,** and the pet pick moves there from graduation (section 12.3). Agree, or keep
+   the farm optional off to one side of the road.
+4. Still open from 10-25: the names (the Fold, the Wakening Isle, Tamsin), and whether a creation-screen skip earns
+   "Didn't Read the Manual".
+
+## Checks, files and commit preflight (10-26)
+
+- **Counted here:** the legs, sizes and tile counts in section 11 (`legs.txt`); the farm's 334 pieces and their
+  ground (none below it); 18 core `Map.Trammel` uses on code HEAD 3b4d321; the one public `Say` in the tutorial NPCs.
+  Read in pinned: `Map.cs:88, 1447` and `TileMatrix.cs:71-110` for the per-map allocations.
+- **Unverified:** memory per copy (F1 measures it); every leg on a built map (F2 walks it); how the shore and the
+  knoll look with real transitions; P605's citations not listed above, which this design folds in as written.
+- **A repair, not part of the design:** the Golem's WIP commit `1777f59` (when P659 was claimed) recorded the deletion
+  of 11 files that exist on main: `tools\decisions.py`, `tools\playwhere.py`, `tools\tests\test_decisions.py`,
+  `tools\tests\test_play_who.py`, `notes\cc-P265-tools\proof.ps1`, `notes\cc-P480-tools\playthrough.py` and five P481
+  scripts. Every one is a `.py` or `.ps1` script, which points to something outside git removing scripts from the
+  work copy. I restored all 11 from `89fbbe2` (staged, not committed), so merging this branch does not delete them
+  from main. Worth a look by the overseer.
+- **Files (shard-migration):** this note; `notes\cc-P481-tools\newisle.py`; `notes\cc-P481-tools\new-isle\` (four PNGs,
+  the largest 0.94 MB, and `legs.txt`); the 11 restored files. Code work copy: no change. Nothing was built, run on a
+  shard, or sent to Haven, and no lock was needed.
+
+P481 DONE
