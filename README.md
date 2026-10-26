@@ -63,14 +63,14 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-25. Shard version 2026.10.26.7. Golem off, 8 queued, latest done P639. Play tests: 1316 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-25. Shard version 2026.10.26.7. Golem off, 6 queued, latest done P640. Play tests: 1318 open, 4 failed, 43 passed.
 
 ### Needs overseer review (4)
 
 - **gate The player package installs on a clean PC**: Waits on a confirmation: Chase: which package is published on get.shatteredlegacyuo.com (the one with the 10-24 launcher?), and has a package with our TazUO build passed a clean-PC install? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "The player package installs on a clean PC" --done no --detail "..."` or `python tools/judge.py confirm gate "The player package installs on a clean PC"`
 - **gate What is built is seen in a client, not only compiled**: Waits on a confirmation: Chase: deploy main (2026.10.25.7) to the test shard, and mark the bot's 10-25 evidence on the play-test page? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "What is built is seen in a client, not only compiled" --done yes --detail "..."` or `python tools/judge.py confirm gate "What is built is seen in a client, not only compiled"`
 - **gate Somewhere to go**: Waits on a confirmation: Chase: which of [GenWrongRevamp, [SetupNewCovetous, [GenExodusEncounter, [GenBlackthorn and [GenEodon have been run on the test world? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "Somewhere to go" --done yes --detail "..."` or `python tools/judge.py confirm gate "Somewhere to go"`
-- **play tests not sorted**: 873 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
+- **play tests not sorted**: 875 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
 
 ## Port list: 6 of 16 systems in. 833 of 983 files (85%).
 
@@ -230,18 +230,17 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem off; 527 prompts done, 4 more stopped early and not counted)
+### Queue (Golem off; 528 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
 | P375 cont-fixup-playtest-bot-checks-first | queued |  |
-| P640 review-build-guard-patrols-pilot | queued |  |
-| P641 review-build-league-warrants | queued |  |
 | P642 review-build-echo-summon | queued |  |
 | P643 review-build-townsfolk-rest | queued |  |
 | P644 review-build-scoring-buttes | queued |  |
 | P645 review-build-procs-milestone | queued |  |
 | P646 review-build-town-houses | queued |  |
+| P640 review-build-guard-patrols-pilot | done | 2026-10-26 |
 | P639 review-build-item-identification | done | 2026-10-26 |
 | P638 review-build-social-skill | done | 2026-10-26 |
 | P637 review-build-tracking-ping | done | 2026-10-26 |
@@ -251,7 +250,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P632 build-scoring-buttes | done | 2026-10-26 |
 | P631 build-townsfolk-rest | done | 2026-10-26 |
 | P630 build-echo-summon | done | 2026-10-26 |
-| P629 build-league-warrants | done | 2026-10-26 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 169 patches, 12 replacements
 
