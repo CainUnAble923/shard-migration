@@ -13,8 +13,8 @@ the hidden-players mix on 10-26 14:08 (the prompt's footer). Not committed; noth
 - **If all 16 copies are busy,** the player waits on the isle's beach with a line saying so, and is taken to a copy as
   soon as one frees. At up to 20 sign-ups a day that practically never happens. It starts to matter at about 5 or more
   new players an hour.
-- **For you: one decision.** The two-client play-through on a private world (part 5, with P663's bot walk and the
-  city-screen pictures) is not done yet. Choose on your Golem card how it should run.
+- **For you: nothing now.** You moved the two-client play-through on a private world (part 5, with P663's bot walk and
+  the city-screen pictures) to P707, which comes after P665 and P666 and still gates going live.
 
 ## What was built
 
@@ -101,6 +101,12 @@ done), or hold. Free memory was also down to 0.6-0.7 GB after
 two gated builds, too little for a shard and two clients. The code, the facts and the build are done. The question for
 Chase is how to run it (below).
 
+**Answered 10-27 11:38 (overseer, console): "Own prompt".** P664 is marked done. P707, after P665 and P666, does the
+two-client play-through, the isle bot route and the shots, and gates going live. P664 was resumed in a new session
+after P666 and P665 only to record this. Both WIP commits (`69b81ff` code, `900a648` docs) were checked and neither
+deletes a file. **Version clash for the integrator:** this branch, P665 and P666 each add `2026.10.27.3` to
+`CHANGELOG.md` and `VERSION`, so each later merge needs the next number.
+
 **Denied in this unattended run, and not routed around:** a `Grep` of `docker\uo` for how the server applies the map
 patch (`MapOverlay|overlay|mapops`). It came after the guard hook stopped the same read through Bash without the
 `test-shard` lock. Part 5 will need it, under that lock.
@@ -124,4 +130,4 @@ patch (`MapOverlay|overlay|mapops`). It came after the guard hook stopped the sa
 - Edits to existing code files were made through scripts: the Read tool is denied on the code copy in unattended runs.
 - Locks: `docker-build` taken and released. No test shard, no package. Nothing committed.
 
-P664 STOPPED: asked Chase (Iron-P664-20261027-101447-d918) how to run the two-client play-through (part 5); code, facts and build are done
+P664 DONE
