@@ -18,6 +18,10 @@ Facts, on a synthetic facet (the real layout, one chunk, no EA bytes):
   6. cc-P413: the shipped patch's additions in the Second Bank are exactly notes/cc-P413-tools/statics-placed.csv
      (OSI's 6 x 6 sinkhole at x 3615-3620, y 2616-2621 and its rim), P188's hole 0x1B71 is gone, the set is laid as
      OSI lays it, and its dark core is the mouth (x 3617-3619, y 2617-2620, ClusterFRootdeepSeeder.Mouth).
+  7. cc-P662: the Wakening Isle (site A, x 6594-6865, y 3905-4049; P673 1.4). Every cell of its drawn area is an L
+     line, their tiles and heights are notes/cc-P662-tools/land-summary.csv, its S+ lines are exactly that build's
+     statics-placed.csv, it removes nothing of EA's, and the moongate's tile (6832, 3991) is land with nothing on it
+     (the landing: P663's seeder fits the gate at the land's height). Facts 4 and 5 allow the isle and leave it out.
 ASCII only. Temporary folders only.
 """
 import os
@@ -42,6 +46,9 @@ FACET = 1
 BURROWS = (5136, 1128, 5247, 1263)
 WAY_IN = (3614, 2608, 3626, 2624)
 FARM = (3381, 2603, 3399, 2619)
+# cc-P662: the Wakening Isle's drawn area with its sea (P481 11.2 shifted to site A, P673 1.4).
+ISLE = (6594, 3905, 6865, 4049)
+ISLE_TOOLS = DOCS / "notes" / "cc-P662-tools"
 # cc-P276: the two trees inside the tutorial farm's fence, trunk and foliage (design/tutorial-farm/west_v3_layout.json).
 FARM_REMOVALS = ["S- 3388 2607 19 3302 0", "S- 3388 2607 19 3303 0", "S- 3396 2616 38 3296 0", "S- 3396 2616 38 3297 0"]
 
@@ -78,6 +85,23 @@ def as_p188(text):
     burrow_blocks = {(int(l.split()[1]) >> 3) * 512 + (int(l.split()[2]) >> 3) for l in burrow} - {hole_block}
     keep = [l for l in text.splitlines() if l not in burrow and not (l.startswith("B ") and int(l.split()[1]) in burrow_blocks)]
     keep.append(P188_HOLE)
+    return "\n".join(keep) + "\n"
+
+
+def without_isle(text):
+    """The patch as P167's scratch build knows it: the isle's lines and the B lines of the blocks only they touch
+    dropped (the isle's area is void in that build)."""
+    isle_blocks = set()
+    other_blocks = set()
+    for l in text.splitlines():
+        f = l.split()
+        if f and f[0] in ("L", "S+", "S-"):
+            b = (int(f[1]) >> 3) * 512 + (int(f[2]) >> 3)
+            (isle_blocks if inside(int(f[1]), int(f[2]), ISLE) else other_blocks).add(b)
+    only = isle_blocks - other_blocks
+    keep = [l for l in text.splitlines()
+            if not (l.split() and l.split()[0] in ("L", "S+", "S-") and inside(int(l.split()[1]), int(l.split()[2]), ISLE))
+            and not (l.startswith("B ") and int(l.split()[1]) in only)]
     return "\n".join(keep) + "\n"
 
 
@@ -174,13 +198,13 @@ class Shipped(unittest.TestCase):
         self.assertEqual(int([l for l in text.splitlines() if l.startswith("F ")][0].split()[2]), len(fps))
         self.assertGreater(len(land), 11000)
         for x, y, t, z in land:
-            self.assertTrue(inside(x, y, BURROWS), (x, y))
+            self.assertTrue(inside(x, y, BURROWS) or inside(x, y, ISLE), (x, y))
         for lines in (adds, removes):
             for b, rows in lines.items():
                 bx, by = divmod(b, 512)
                 for tid, cx, cy, z, hue in rows:
                     x, y = bx * 8 + cx, by * 8 + cy
-                    self.assertTrue(inside(x, y, BURROWS) or inside(x, y, WAY_IN) or inside(x, y, FARM), (x, y, hex(tid)))
+                    self.assertTrue(inside(x, y, BURROWS) or inside(x, y, WAY_IN) or inside(x, y, FARM) or inside(x, y, ISLE), (x, y, hex(tid)))
                     self.assertEqual(0, hue)
         self.assertEqual(3 + len(FARM_REMOVALS), sum(len(r) for r in removes.values()))
         farm = [l for l in text.splitlines() if l.startswith(("L ", "S+ ", "S- ")) and inside(int(l.split()[1]), int(l.split()[2]), FARM)]
@@ -191,7 +215,7 @@ class Shipped(unittest.TestCase):
     def test_5_the_shipped_patch_rebuilds_the_scratch_build_exactly(self):
         tmp = tempfile.mkdtemp(prefix="p188-mapops-real-")
         try:
-            drifted, missing, land_equal, bad = mapops.check(as_p188(without_farm(SHIPPED.read_text())), uofiles.CLIENT, str(SCRATCH), FACET, scratch=tmp)
+            drifted, missing, land_equal, bad = mapops.check(without_isle(as_p188(without_farm(SHIPPED.read_text()))), uofiles.CLIENT, str(SCRATCH), FACET, scratch=tmp)
             self.assertEqual(([], [], True, []), (drifted, missing, land_equal, bad))
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
@@ -209,6 +233,26 @@ class Shipped(unittest.TestCase):
         for (x, y), tid in sink.items():
             self.assertEqual(SINK_LAST - (x - ox) - 6 * (y - oy), tid, (x, y))
         self.assertEqual(sorted(MOUTH), sorted((ox + c, oy + r) for r in range(1, 5) for c in range(2, 5)))
+
+    @unittest.skipUnless(SHIPPED.exists(), "needs the shard repo")
+    def test_7_the_isle_is_the_build_and_nothing_else(self):
+        import collections, csv
+        lines = SHIPPED.read_text().splitlines()
+        isle = [l.split() for l in lines if l.split() and l.split()[0] in ("L", "S+", "S-")
+                and inside(int(l.split()[1]), int(l.split()[2]), ISLE)]
+        land = [f for f in isle if f[0] == "L"]
+        self.assertEqual((ISLE[2] - ISLE[0] + 1) * (ISLE[3] - ISLE[1] + 1), len(land), "every cell of the drawn area")
+        self.assertEqual(len(land), len({(f[1], f[2]) for f in land}))
+        with open(ISLE_TOOLS / "land-summary.csv", newline="") as f:
+            want = {(int(r["land_id_hex"], 16), int(r["z"])): int(r["tiles"]) for r in csv.DictReader(f)}
+        self.assertEqual(want, dict(collections.Counter((int(f[3]), int(f[4])) for f in land)))
+        with open(ISLE_TOOLS / "statics-placed.csv", newline="") as f:
+            placed = sorted("S+ %s %s %s %d 0" % (r["x"], r["y"], r["z"], int(r["id_hex"], 16)) for r in csv.DictReader(f))
+        self.assertEqual(placed, sorted(" ".join(f) for f in isle if f[0] == "S+"))
+        self.assertEqual([], [f for f in isle if f[0] == "S-"])
+        gate = [f for f in land if (f[1], f[2]) == ("6832", "3991")]
+        self.assertNotIn(int(gate[0][3]), (0x00A8, 0x00A9, 0x00AA, 0x00AB), "the moongate stands on land")
+        self.assertEqual([], [f for f in isle if f[0] == "S+" and (f[1], f[2]) == ("6832", "3991")])
 
 
 if __name__ == "__main__":
