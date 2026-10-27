@@ -1,0 +1,103 @@
+Commit-ShardWork.ps1 size cap facts (cc-P706): C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\8171e764-a96d-4626-96ae-30d0dbb67f64\scratchpad\p706\Commit-ShardWork.orig.ps1
+  FAIL  P706_A20MbStrayInTheBotRunFolderIsLeftOutAndTheMergeCommitsAndPushes
+        not true: exit 0, got 2:   play-test mirror and dashboard not refreshed (-NoRefresh, or not the real repos)
+
+=== code  (C:\Users\ckfle\AppData\Local\Temp\csw-tests-fa4eb55b\leftout\code) ===
+  1 file(s) pending:
+    code-change.txt
+[main 0396a78] Merge golem/Test/P1: test
+powershell.exe : To C:\Users\ckfle\AppData\Local\Temp\csw-tests-fa4eb55b\leftout\code-origin.git
+At D:\UO\golems\Iron\shard-migration\notes\cc-P706-tools\CommitShardWork.Tests.ps1:63 char:10
++     $o = & powershell.exe @a 2>&1 | Out-String
++          ~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (To C:\Users\ckf...code-origin.git:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+   981a1b8..0396a78  main -> main
+  pushed: 0396a78 Merge golem/Test/P1: test
+
+=== docs  (C:\Users\ckfle\AppData\Local\Temp\csw-tests-fa4eb55b\leftout\docs) ===
+  3 file(s) pending:
+    docs-change.txt
+    testing/bot-runs/2026-10-27-0130/report.md
+    testing/bot-runs/2026-10-27-0130/transcripts/soak.txt
+
+  REFUSING to commit this repo. The shard's two repos are public; the scripts repo gets the same checks.
+    size     testing/bot-runs/2026-10-27-0130/transcripts/soak.txt  (20.0 MB)
+  Add these to .gitignore, or move them out, then run again.
+
+
+Repo Result 
+---- ------ 
+code pushed 
+docs BLOCKED
+
+
+  prompt archiving skipped (-NoArchive: the integrator archives after the merge).
+One or more repos were refused. Nothing was committed there.
+
+  FAIL  P706_A20MbStrayElsewhereIsRefusedAndTheLastLineNamesItsPathSizeAndTheCap
+        not true: the last line names it: [One or more repos were refused. Nothing was committed there.]
+  FAIL  P706_ABlockedPatternIsNamedInTheSummaryToo
+        not true: named:   play-test mirror and dashboard not refreshed (-NoRefresh, or not the real repos)
+
+=== code  (C:\Users\ckfle\AppData\Local\Temp\csw-tests-fa4eb55b\pattern\code) ===
+  2 file(s) pending:
+    code-change.txt
+    dist/pkg.txt
+
+  REFUSING to commit this repo. The shard's two repos are public; the scripts repo gets the same checks.
+    pattern  dist/pkg.txt  (matched (^|/)dist/)
+  Add these to .gitignore, or move them out, then run again.
+
+=== docs  (C:\Users\ckfle\AppData\Local\Temp\csw-tests-fa4eb55b\pattern\docs) ===
+  1 file(s) pending:
+    docs-change.txt
+[main b0a0a9e] Merge golem/Test/P1: test
+powershell.exe : To C:\Users\ckfle\AppData\Local\Temp\csw-tests-fa4eb55b\pattern\docs-origin.git
+At D:\UO\golems\Iron\shard-migration\notes\cc-P706-tools\CommitShardWork.Tests.ps1:63 char:10
++     $o = & powershell.exe @a 2>&1 | Out-String
++          ~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (To C:\Users\ckf...docs-origin.git:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+   cda45d5..b0a0a9e  main -> main
+  pushed: b0a0a9e Merge golem/Test/P1: test
+
+
+Repo Result 
+---- ------ 
+code BLOCKED
+docs pushed 
+
+
+  prompt archiving skipped (-NoArchive: the integrator archives after the merge).
+One or more repos were refused. Nothing was committed there.
+
+  FAIL  P706_OnlyAnOversizedBotFilePendingIsNothingToCommit
+        not true: exit 0, got 2:   play-test mirror and dashboard not refreshed (-NoRefresh, or not the real repos)
+
+=== code  (C:\Users\ckfle\AppData\Local\Temp\csw-tests-fa4eb55b\onlystray\code) ===
+  nothing to commit
+
+=== docs  (C:\Users\ckfle\AppData\Local\Temp\csw-tests-fa4eb55b\onlystray\docs) ===
+  1 file(s) pending:
+    testing/bot-runs/2026-10-27-0130/transcripts/soak.txt
+
+  REFUSING to commit this repo. The shard's two repos are public; the scripts repo gets the same checks.
+    size     testing/bot-runs/2026-10-27-0130/transcripts/soak.txt  (20.0 MB)
+  Add these to .gitignore, or move them out, then run again.
+
+
+Repo Result 
+---- ------ 
+code clean  
+docs BLOCKED
+
+
+  prompt archiving skipped (-NoArchive: the integrator archives after the merge).
+One or more repos were refused. Nothing was committed there.
+
+  PASS  P706_TheDocsRepoIgnoresRunTranscriptsSoTheyAreNotEvenPending
+
+5 facts, 1 passed, 4 failed

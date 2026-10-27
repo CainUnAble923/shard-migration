@@ -1,0 +1,47 @@
+Commit-ShardWork.ps1 size cap facts (cc-P706): C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\8171e764-a96d-4626-96ae-30d0dbb67f64\scratchpad\p706\Commit-ShardWork.ps1
+  PASS  P706_A20MbStrayInTheBotRunFolderIsLeftOutAndTheMergeCommitsAndPushes
+  PASS  P706_A20MbStrayElsewhereIsRefusedAndTheLastLineNamesItsPathSizeAndTheCap
+  PASS  P706_ABlockedPatternIsNamedInTheSummaryToo
+  PASS  P706_OnlyAnOversizedBotFilePendingIsNothingToCommit
+  FAIL  P706_TheDocsRepoIgnoresRunTranscriptsSoTheyAreNotEvenPending
+        not true: nothing to leave out, the rule ignores it:   play-test mirror and dashboard not refreshed (-NoRefresh, or not the real repos)
+
+=== code  (C:\Users\ckfle\AppData\Local\Temp\csw-tests-0d50b3df\ignored\code) ===
+  1 file(s) pending:
+    code-change.txt
+[main 977afe3] Merge golem/Test/P1: test
+powershell.exe : To C:\Users\ckfle\AppData\Local\Temp\csw-tests-0d50b3df\ignored\code-origin.git
+At D:\UO\golems\Iron\shard-migration\notes\cc-P706-tools\CommitShardWork.Tests.ps1:63 char:10
++     $o = & powershell.exe @a 2>&1 | Out-String
++          ~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (To C:\Users\ckf...code-origin.git:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+   3c98220..977afe3  main -> main
+  pushed: 977afe3 Merge golem/Test/P1: test
+
+=== docs  (C:\Users\ckfle\AppData\Local\Temp\csw-tests-0d50b3df\ignored\docs) ===
+  4 file(s) pending:
+    docs-change.txt
+    testing/bot-runs/2026-10-27-0130/results.json
+    testing/bot-runs/2026-10-27-0130/transcripts/P64-6-run1.txt
+    testing/bot-runs/2026-10-27-0130/transcripts/soak.txt
+
+  left out of this commit (1): the overnight bot's output over the cap stays on disk, uncommitted:
+    size     testing/bot-runs/2026-10-27-0130/transcripts/soak.txt  (20.0 MB, over the 5 MB cap, -MaxFileMB)
+[main 17b6695] Merge golem/Test/P1: test
+To C:\Users\ckfle\AppData\Local\Temp\csw-tests-0d50b3df\ignored\docs-origin.git
+   21aae42..17b6695  main -> main
+  pushed: 17b6695 Merge golem/Test/P1: test
+
+
+Repo Result
+---- ------
+code pushed
+docs pushed
+
+
+  prompt archiving skipped (-NoArchive: the integrator archives after the merge).
+
+
+5 facts, 4 passed, 1 failed
