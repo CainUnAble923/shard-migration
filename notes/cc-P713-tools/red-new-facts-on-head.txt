@@ -1,0 +1,57 @@
+Map override facts (cc-P188)
+  PASS  TheEntryNameHashIsJenkinsLookup3AsTheClientAndTheServerKeyUopEntries
+  Shattered Legacy map: patched copies of map1LegacyMUL.uop (1 cells, 0 pieces added, 0 removed) in 0.2 s.
+  PASS  ALandLineWritesExactlyItsThreeBytesAndNothingElse
+  Shattered Legacy map: patched copies of map1LegacyMUL.uop (0 cells, 2 pieces added, 1 removed) in 0.1 s.
+  PASS  AddedStaticsGoAfterEaRowsAtTheEndAndARemovedOneGoesExactly
+  Shattered Legacy map: patched copies of map1LegacyMUL.uop (1 cells, 0 pieces added, 0 removed) in 0.1 s.
+  Shattered Legacy map: patched copies of map1LegacyMUL.uop (1 cells, 0 pieces added, 0 removed) in 0.0 s.
+  PASS  TheStampSkipsASecondRunAndANewPatchRebuilds
+  PASS  ADriftedBlockIsReportedAndStillPatchedAndAMovedRemovalIsLeft
+  PASS  NoPatchMeansNoLinesAndNoErrorFromTheBuilder
+  PASS  TheShippedPatchAppliesToASyntheticTrammelWithoutErrorWhenItsChunksExist
+  Shattered Legacy map: patched copies of map1LegacyMUL.uop (1 cells, 0 pieces added, 0 removed) in 0.1 s.
+  PASS  P674_AShippedBaseIsPatchedInsteadOfThePlayersFilesAndFeluccaGetsTheSameLand
+  Shattered Legacy map: patched copies of map1LegacyMUL.uop (1 cells, 0 pieces added, 0 removed) in 0.0 s.
+  Shattered Legacy map: patched copies of map1LegacyMUL.uop (1 cells, 0 pieces added, 0 removed) in 0.1 s.
+  Shattered Legacy map: patched copies of map1LegacyMUL.uop (1 cells, 0 pieces added, 0 removed) in 0.1 s.
+  Shattered Legacy map: patched copies of map1LegacyMUL.uop (1 cells, 0 pieces added, 0 removed) in 0.1 s.
+  PASS  P674_TheStampNamesTheBaseSoANewBaseRebuildsAndAnUnchangedOneDoesNot
+  PASS  P674_AFeluccaCopyRefusesAFileThatIsNotTrammelsMapAndAFacetOfAnotherSize
+  FAIL  P713_TheSwitchIsOffUntilTheSwapGoesLive
+        Build-PlayerPackage.ps1 has no function Get-SosMapSwitch
+  FAIL  P713_ASwitchThatIsNotOneWordOffOrOnStopsTheBuild
+        Build-PlayerPackage.ps1 has no function Get-SosMapSwitch
+  FAIL  P713_SwitchedOffTheReadmeLosesOnlyItsAppMapEntry
+        Build-PlayerPackage.ps1 has no function Remove-SosMapReadme
+  PASS  P713_WithNoAppMapTheLauncherPatchesThePlayersOwnStockFilesAsBefore
+  FAIL  P713_Gate4SwitchedOffRefusesAnyAppMapFileAndTheCredit
+        not true: gate 4 ran: powershell.exe : D:\UO\golems\Iron\ShatteredLegacy\player-package\Build-PlayerPackage.ps1 : A parameter cannot be 
+found that matches 
+At D:\UO\golems\Iron\ShatteredLegacy\player-package\tests\Map-Overrides.Tests.ps1:301 char:13
++     $text = & powershell.exe @a 2>&1 | Out-String
++             ~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (D:\UO\golems\Ir...d that matches :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+parameter name 'SosMap'.
+    + CategoryInfo          : InvalidArgument: (:) [Build-PlayerPackage.ps1], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : NamedParameterNotFound,Build-PlayerPackage.ps1
+ 
+
+  FAIL  P713_Gate4SwitchedOnWantsTheThreeFilesAndTheCredit
+        not true: gate 4 ran: powershell.exe : D:\UO\golems\Iron\ShatteredLegacy\player-package\Build-PlayerPackage.ps1 : A parameter cannot be 
+found that matches 
+At D:\UO\golems\Iron\ShatteredLegacy\player-package\tests\Map-Overrides.Tests.ps1:301 char:13
++     $text = & powershell.exe @a 2>&1 | Out-String
++             ~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (D:\UO\golems\Ir...d that matches :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+parameter name 'SosMap'.
+    + CategoryInfo          : InvalidArgument: (:) [Build-PlayerPackage.ps1], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : NamedParameterNotFound,Build-PlayerPackage.ps1
+ 
+
+
+16 facts, 5 failed
