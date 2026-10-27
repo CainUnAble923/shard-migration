@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-25. Shard version 2026.10.27.2. Golem on, 23 queued, latest done P705. Play tests: 1372 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-25. Shard version 2026.10.27.2. Golem on, 23 queued, latest done P709. Play tests: 1372 open, 4 failed, 43 passed.
 
 ### Needs overseer review (4)
 
@@ -230,7 +230,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 566 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 567 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -257,6 +257,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P706 bot-runs-out-of-repo | queued |  |
 | P707 isle-playthrough | queued |  |
 | P708 guild-hqs-on-sos | queued |  |
+| P709 gated-skills-and-start-choices | done | 2026-10-27 |
 | P705 fix-p663-codex | done | 2026-10-27 |
 | P704 guild-hq-proposal | done | 2026-10-27 |
 | P702 tutorial-new-player-text | done | 2026-10-27 |
@@ -266,7 +267,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P673 sos-swap-plan | done | 2026-10-26 |
 | P672 sos-quest-seeds | done | 2026-10-26 |
 | P671 review-p661 | done | 2026-10-26 |
-| P670 redrawn-statics | done | 2026-10-26 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 169 patches, 12 replacements
 
