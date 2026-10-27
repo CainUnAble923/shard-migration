@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-25. Shard version 2026.10.27.4. Golem on, 20 queued, latest done P709. Play tests: 1376 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-25. Shard version 2026.10.27.4. Golem on, 19 queued, latest done P710. Play tests: 1376 open, 4 failed, 43 passed.
 
 ### Needs overseer review (4)
 
@@ -230,14 +230,13 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 569 prompts done, 5 more stopped early and not counted)
+### Queue (Golem on; 571 prompts done, 5 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
 | P675 sos-s2-the-server-reads-the-sos-map-felucca-on | queued |  |
 | P676 sos-s3-trammel-s-regions-and-guard-zones-redraw | queued |  |
 | P677 sos-s8-our-code-and-ea-s-later-dungeons-on-the | queued |  |
-| P678 sos-s7-new-haven-moves-into-the-author-s-haven | queued |  |
 | P679 sos-s4-moongates-teleporters-and-the-staff-go-m | queued |  |
 | P680 sos-s5-stock-decoration-on-the-new-land | queued |  |
 | P681 sos-s9-stock-spawners-on-the-new-land | queued |  |
@@ -254,6 +253,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P706 bot-runs-out-of-repo | queued |  |
 | P707 isle-playthrough | queued |  |
 | P708 guild-hqs-on-sos | queued |  |
+| P710 cont-fixup-private-isle-copies | done | 2026-10-27 |
 | P709 gated-skills-and-start-choices | done | 2026-10-27 |
 | P705 fix-p663-codex | done | 2026-10-27 |
 | P704 guild-hq-proposal | done | 2026-10-27 |
@@ -263,7 +263,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P700 review-p663 | done | 2026-10-27 |
 | P674 sos-map-in-package | stopped: asked Chase (Iron-P674-20261027-153414-0e8f) which version-floor rule part 5 should use; part 7 waits for S2's server; parts 1 to 4 and 6 are done and tested | 2026-10-27 |
 | P673 sos-swap-plan | done | 2026-10-26 |
-| P672 sos-quest-seeds | done | 2026-10-26 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 170 patches, 12 replacements
 
@@ -300,7 +299,7 @@ What a MODERNUO_COMMIT bump must reconcile. Patches fail LOUDLY - apply-patches.
 - **S3 costed menu - declines upheld with their ratios recorded** — Measured 2026-09-07, notes/s3-decline-costs.md. Skill Masteries (45 files/8,542 lines, unblocks 14, patches 35 upstream files - fails the layering test). Vice vs Virtue (57/9,613, unblocks 5, patches 21). Exploring the Deep (70/10,292, unblocks 2 - structurally the safest build here and the worst ratio). Shadowguard (14/11,222, unblocks 8). City Loyalty (28/8,177, unblocks 15 - decline on ratio, not structure; revisit with Town Cryer). Instanced Peerless (13/1,543, unblocks 2, and BasePeerless and PeerlessAltar are both absent from ModernUO, so there is no base to instance - cost Services/Peerless first). ServUO's ML quest framework (22 files/6,269 lines, not the 21/5,625 the brief stated) - declined because ModernUO already ships the same OSI system. NOT declined and recommended instead: SAAbsorptionAttributes, the TribeType transformation, and a one-quest spike onto ModernUO's ML quest engine. Vendor Searching (4/2,545) is a player feature, not content; the unblock ratio is the wrong test and it is Chase's call.
 - **ServUO ML quest framework - decline REAFFIRMED by S5** — S5 translated one quest end to end and the objective mapping holds for 4 of 5 types, two of them pinned by tests. Porting ServUO's 22-file, 6,269-line framework would put a second engine in the tree to do a job the engine we already have does correctly. The decline was always on two-engines-for-one-job; it now rests on measurement rather than on principle alone. What is NOT declined: the 164 of 203 missing quests that use a single standard objective type. The 39 that hand-write a BaseObjective subclass (25 InternalObjective, 3 CollectionsObtain, 2 QuestionAndAnswer, ~9 one-offs) are per-quest work, not a framework port, and are the thing to cost before the next quest batch.
 
-Counted from the trees: 1683 customization files, 177 patch files, 1828 tests in 268 files.
+Counted from the trees: 1684 customization files, 177 patch files, 1835 tests in 269 files.
 Shard status: the test shard is the only shard: live was retired and deleted on 2026-10-14 until the fresh 1.0 world, and the launcher's Play button now connects to the test shard (2026.10.24.2); the test shard (2594, up) runs sl-modernuo:latest, built 2026-10-23 from main 0f1871f (version 2026.10.23.2), while main is 2026.10.25.7, 33 merges ahead; the overnight bot tests the newest main on its own world copy each night; which player package is published is not visible from the repos (confirmed 2026-10-25).
 <!-- PROGRESS:END -->
 
