@@ -63,14 +63,14 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-25. Shard version 2026.10.27.2. Golem on, 21 queued, latest done P705. Play tests: 1371 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-25. Shard version 2026.10.27.2. Golem on, 23 queued, latest done P705. Play tests: 1372 open, 4 failed, 43 passed.
 
 ### Needs overseer review (4)
 
 - **gate The player package installs on a clean PC**: Waits on a confirmation: Chase: which package is published on get.shatteredlegacyuo.com (the one with the 10-24 launcher?), and has a package with our TazUO build passed a clean-PC install? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "The player package installs on a clean PC" --done no --detail "..."` or `python tools/judge.py confirm gate "The player package installs on a clean PC"`
 - **gate What is built is seen in a client, not only compiled**: Waits on a confirmation: Chase: deploy main (2026.10.25.7) to the test shard, and mark the bot's 10-25 evidence on the play-test page? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "What is built is seen in a client, not only compiled" --done yes --detail "..."` or `python tools/judge.py confirm gate "What is built is seen in a client, not only compiled"`
 - **gate Somewhere to go**: Waits on a confirmation: Chase: which of [GenWrongRevamp, [SetupNewCovetous, [GenExodusEncounter, [GenBlackthorn and [GenEodon have been run on the test world? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "Somewhere to go" --done yes --detail "..."` or `python tools/judge.py confirm gate "Somewhere to go"`
-- **play tests not sorted**: 928 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
+- **play tests not sorted**: 929 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
 
 ## Port list: 6 of 16 systems in. 833 of 983 files (85%).
 
@@ -230,12 +230,12 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 565 prompts done, 4 more stopped early and not counted)
+### Queue (Golem on; 566 prompts done, 4 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
+| P664 private-isle-copies | queued |  |
 | P665 vision-scene | queued |  |
-| P666 pet-protection-vet | queued |  |
 | P674 sos-s1-the-siege-of-sosaria-map-in-the-player-p | queued |  |
 | P675 sos-s2-the-server-reads-the-sos-map-felucca-on | queued |  |
 | P676 sos-s3-trammel-s-regions-and-guard-zones-redraw | queued |  |
@@ -255,16 +255,18 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P690 sos-s17-the-whole-swapped-world-played-through-t | queued |  |
 | P691 blackthorn-to-fold | queued |  |
 | P706 bot-runs-out-of-repo | queued |  |
+| P707 isle-playthrough | queued |  |
+| P708 guild-hqs-on-sos | queued |  |
 | P705 fix-p663-codex | done | 2026-10-27 |
 | P704 guild-hq-proposal | done | 2026-10-27 |
 | P702 tutorial-new-player-text | done | 2026-10-27 |
 | P701 check-codex-prep-consistency | done | 2026-10-27 |
 | P701 prep-cross-check | done | 2026-10-27 |
+| P700 review-p663 | done | 2026-10-27 |
 | P673 sos-swap-plan | done | 2026-10-26 |
 | P672 sos-quest-seeds | done | 2026-10-26 |
 | P671 review-p661 | done | 2026-10-26 |
 | P670 redrawn-statics | done | 2026-10-26 |
-| P669 sos-trammel-assessment | done | 2026-10-26 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 169 patches, 12 replacements
 
