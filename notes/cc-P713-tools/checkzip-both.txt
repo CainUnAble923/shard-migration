@@ -1,0 +1,49 @@
+
+=== ShatteredLegacy-2026.10.27.1515.zip -SosMap on
+  GATE 4 passed: D:\UO\golems\Iron\ShatteredLegacy\player-package\dist\ShatteredLegacy-2026.10.27.1515.zip
+  gate 6: 123 native files checked, 172 skipped (IL-only .NET, non-Windows, excepted)
+  GATE 6 passed: D:\UO\golems\Iron\ShatteredLegacy\player-package\dist\ShatteredLegacy-2026.10.27.1515.zip
+  GATE 5 passed: D:\UO\golems\Iron\ShatteredLegacy\player-package\dist\ShatteredLegacy-2026.10.27.1515.version.json
+EXIT=0
+=== ShatteredLegacy-2026.10.27.1515.zip -SosMap (switch.txt: off)
+GATE 4: D:\UO\golems\Iron\ShatteredLegacy\player-package\dist\ShatteredLegacy-2026.10.27.1515.zip fails:
+  app/map/base-map1legacymul.uop shipped, but the Siege of Sosaria map is switched off 
+  app/map/base-staidx1.mul shipped, but the Siege of Sosaria map is switched off (vendor\sos-trammel-map\switch.txt)
+  app/map/base-statics1.mul shipped, but the Siege of Sosaria map is switched off (vendor\sos-trammel-map\switch.txt)
+  README.txt credits the Siege of Sosaria Trammel Map, which is switched off (vendor\sos-trammel-map\switch.txt)
+  app/map/base-map1legacymul.uop is an EA data file type
+  app/map/base-staidx1.mul is an EA data file type
+  app/map/base-statics1.mul is an EA data file type
++ ... il.Count) { throw "GATE 4: $CheckZip fails:`n  $($fail -join "`n  ")" ...
+    + CategoryInfo          : OperationStopped: (GATE 4: D:\UO\g... data file type:String) [], RuntimeException
+    + FullyQualifiedErrorId : GATE 4: D:\UO\golems\Iron\ShatteredLegacy\player-package\dist\ShatteredLegacy-2026.10.27 
+      app/map/base-map1legacymul.uop shipped, but the Siege of Sosaria map is switched off (vendor\sos-trammel-map\swi 
+      app/map/base-staidx1.mul shipped, but the Siege of Sosaria map is switched off (vendor\sos-trammel-map\switch.tx 
+      app/map/base-statics1.mul shipped, but the Siege of Sosaria map is switched off (vendor\sos-trammel-map\switch.t 
+  README.txt credits the Siege of Sosaria Trammel Map, which is switched off (vendor\sos-trammel-map\switch.txt)
+  app/map/base-map1legacymul.uop is an EA data file type
+  app/map/base-staidx1.mul is an EA data file type
+  app/map/base-statics1.mul is an EA data file type
+EXIT=1
+=== ShatteredLegacy-2026.10.27.1704.zip -SosMap (switch.txt: off)
+  GATE 4 passed: D:\UO\golems\Iron\ShatteredLegacy\player-package\dist\ShatteredLegacy-2026.10.27.1704.zip
+  gate 6: 123 native files checked, 172 skipped (IL-only .NET, non-Windows, excepted)
+  GATE 6 passed: D:\UO\golems\Iron\ShatteredLegacy\player-package\dist\ShatteredLegacy-2026.10.27.1704.zip
+  GATE 5 passed: D:\UO\golems\Iron\ShatteredLegacy\player-package\dist\ShatteredLegacy-2026.10.27.1704.version.json
+EXIT=0
+=== ShatteredLegacy-2026.10.27.1704.zip -SosMap on
+GATE 4: D:\UO\golems\Iron\ShatteredLegacy\player-package\dist\ShatteredLegacy-2026.10.27.1704.zip fails:
+  0 files under app/map/, expected 3 (vendor\sos-trammel-map\manifest.csv)
+  no app/map/base-statics1.mul (the Siege of Sosaria map)
+  no app/map/base-staidx1.mul (the Siege of Sosaria map)
+  no app/map/base-map1legacymul.uop (the Siege of Sosaria map)
+  README.txt does not credit the Siege of Sosaria Trammel Map that app/map/ ships
++ ... il.Count) { throw "GATE 4: $CheckZip fails:`n  $($fail -join "`n  ")" ...
+    + CategoryInfo          : OperationStopped: (GATE 4: D:\UO\g... app/map/ ships:String) [], RuntimeException
+    + FullyQualifiedErrorId : GATE 4: D:\UO\golems\Iron\ShatteredLegacy\player-package\dist\ShatteredLegacy-2026.10.27 
+  0 files under app/map/, expected 3 (vendor\sos-trammel-map\manifest.csv)
+  no app/map/base-statics1.mul (the Siege of Sosaria map)
+  no app/map/base-staidx1.mul (the Siege of Sosaria map)
+  no app/map/base-map1legacymul.uop (the Siege of Sosaria map)
+  README.txt does not credit the Siege of Sosaria Trammel Map that app/map/ ships
+EXIT=1
