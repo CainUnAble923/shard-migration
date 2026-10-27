@@ -1,0 +1,22 @@
+FE
+======================================================================
+ERROR: test_2_the_start_group_is_together_and_the_services_are_in_the_town (tools.tests.test_haven_spots.HavenSpotsOnSos.test_2_the_start_group_is_together_and_the_services_are_in_the_town)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UO\golems\Iron\shard-migration\tools\tests\test_haven_spots.py", line 54, in test_2_the_start_group_is_together_and_the_services_are_in_the_town
+    group = [s[n] for n in ("Start", "Rook", "MoongateExit", "QuestBoard")]
+             ~^^^
+KeyError: 'QuestBoard'
+
+======================================================================
+FAIL: test_1_every_spot_is_open_ground_at_its_floor (tools.tests.test_haven_spots.HavenSpotsOnSos.test_1_every_spot_is_open_ground_at_its_floor)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UO\golems\Iron\shard-migration\tools\tests\test_haven_spots.py", line 44, in test_1_every_spot_is_open_ground_at_its_floor
+    self.assertGreaterEqual(len(self.spots), 8, self.spots)
+AssertionError: 7 not greater than or equal to 8 : {'Start': (3503, 2574, 14), 'Rook': (3500, 2572, 14), 'MoongateExit': (3501, 2572, 14), 'Centre': (3500, 2590, 0), 'VetSpot': (3526, 2578, 7), 'PublicMoongate': (3450, 2677, 25), 'Healer': (3462, 2559, 35)}
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.174s
+
+FAILED (failures=1, errors=1)
