@@ -1,0 +1,55 @@
+== mutant cities
+     Failed: 18
+     Passed: 3
+Total tests: 21
+  Passed EachRowOfTheEligibilityTable(before: Graduated, choice: Isle, expected: Finished)
+  Failed EachRowOfTheEligibilityTable(before: Skipped, choice: Haven, expected: Haven)
+  Passed EachRowOfTheEligibilityTable(before: InCoreElsewhere, choice: Isle, expected: Elsewhere)
+  Failed EachRowOfTheEligibilityTable(before: Fresh, choice: Isle, expected: Isle)
+  Failed EachRowOfTheEligibilityTable(before: Skipped, choice: Isle, expected: Finished)
+  Failed EachRowOfTheEligibilityTable(before: Graduated, choice: Haven, expected: Haven)
+  Failed EachRowOfTheEligibilityTable(before: InCoreElsewhere, choice: Haven, expected: Haven)
+  Failed EachRowOfTheEligibilityTable(before: Fresh, choice: Haven, expected: Skip)
+  Failed EachRowOfTheEligibilityTable(before: DeletedMidCore, choice: Isle, expected: Isle)
+  Failed EachRowOfTheEligibilityTable(before: DeletedMidCore, choice: Haven, expected: Skip)
+  Failed TheMoongateTakesAStepOrADoubleClick(step: True)
+  Failed TheMoongateTakesAStepOrADoubleClick(step: False)
+  Failed AReconnectRegeneratesTheCurrentSupply
+  Failed WithTheTutorialOffCreationRecordsNoChoice
+  Failed APetCrossesTheDockFromAnywhereOnTheFold
+  Passed ACharacterFromBeforeGoLiveIsNeverEnteredOrMoved
+  Failed TheCoreRunsWestToEastWithTheFarmAndTravelLast
+  Failed RemedialSailsToTheIsleAndTheMoongateBringsTheSkipperBackToRook
+  Failed TheCityListOffersTheIsleFirstAndNewHavenSecondBothAsTrammel
+  Failed AChoiceSurvivesADisconnectBeforeTheFirstLogin
+  Failed ASecondCharacterNeverConsumesAnothersChoice
+## TutorialIsleVerification.EachRowOfTheEligibilityTable
+  System.IndexOutOfRangeException : Index was outside the bounds of the array.
+  @ Tutorial/TutorialIsleVerification.cs:line 138
+## TutorialIsleVerification.TheMoongateTakesAStepOrADoubleClick
+  Assert.False() Failure | Expected: False | Actual:   True
+  @ Tutorial/TutorialIsleVerification.cs:line 417
+## TutorialIsleVerification.AReconnectRegeneratesTheCurrentSupply
+  Assert.Contains() Failure: Item not found in set | Set:       [] | Not found: "core.movement"
+  @ Tutorial/TutorialIsleVerification.cs:line 165
+## TutorialIsleVerification.WithTheTutorialOffCreationRecordsNoChoice
+  System.IndexOutOfRangeException : Index was outside the bounds of the array.
+  @ Tutorial/TutorialIsleVerification.cs:line 517
+## TutorialIsleVerification.APetCrossesTheDockFromAnywhereOnTheFold
+  Assert.Contains() Failure: Item not found in set | Set:       [] | Not found: "core.movement"
+  @ Tutorial/TutorialIsleVerification.cs:line 165
+## TutorialIsleVerification.TheCoreRunsWestToEastWithTheFarmAndTravelLast
+  Assert.Contains() Failure: Item not found in set | Set:       ["core.movement", "core.backpack", "core.paperdoll", "core.travel"] | Not found: "core.chat"
+  @ Tutorial/TutorialIsleVerification.cs:line 165
+## TutorialIsleVerification.RemedialSailsToTheIsleAndTheMoongateBringsTheSkipperBackToRook
+  System.IndexOutOfRangeException : Index was outside the bounds of the array. | [xUnit.net 00:00:01.17]     ShatteredLegacy.Tests.TutorialIsleVerification.TheCityListOffersTheIsleFirstAndNewHavenSecondBothAsTrammel [FAIL] | [xUnit.net 00:00:01.17]       Assert.Equal() Failure: Collections differ | [xUnit.net 00:00:01.17]                  ↓ (pos 0)
+  @ Tutorial/TutorialIsleVerification.cs:line 138
+## TutorialIsleVerification.TheCityListOffersTheIsleFirstAndNewHavenSecondBothAsTrammel
+  Assert.Equal() Failure: Collections differ | ↓ (pos 0) | Expected: ["Tutorial Island", "New Haven"] | Actual:   ["New Haven"]
+  @ Tutorial/TutorialIsleVerification.cs:line 542
+## TutorialIsleVerification.AChoiceSurvivesADisconnectBeforeTheFirstLogin
+  Assert.Same() Failure: Values are not the same instance | Expected: TheFold | Actual:   Trammel
+  @ Tutorial/TutorialIsleVerification.cs:line 367
+## TutorialIsleVerification.ASecondCharacterNeverConsumesAnothersChoice
+  Assert.Equal() Failure: Values differ | Expected: Isle | Actual:   Haven | Test Run Failed.
+  @ Tutorial/TutorialIsleVerification.cs:line 394
