@@ -14,10 +14,9 @@ both on `golem/Iron/P665` (main at P705; P664's private copies are not merged, s
   if the player's client overrides the game's lighting. It changes nothing about the character.
 - **Logging out, dying or a server restart in the middle puts the player back at the stones**, free to move, with
   normal light and the figures gone, and they can watch it again.
-- **For you: one decision, and two later things.** Not done: a recording of the scene in our client and the sounds
-  checked by ear on a private world. Choose on your Golem card whether that goes into P707's play-through (which sets up
-  the private world with the isle) or a session of its own. Later: draw the two optional full-screen pictures (art
-  request `p665-vision-panels`); and our TazUO does not do the screen fades yet (it ignores them), so the scene darkens
+- **For you: nothing now, two things later.** You chose to fold the recording of the scene in our client, and the sounds
+  checked by ear, into P707's play-through on its private world. Later: draw the two optional full-screen pictures (art
+  request `p665-vision-panels`). Also, our TazUO does not do the screen fades yet (it ignores them), so the scene darkens
   with light instead.
 
 ## What was built
@@ -79,13 +78,15 @@ skipped, 0 failed (`suite.txt`). One existing fact changed: `TutorialVerificatio
 skipped (the usual client-data facts); the 7 new facts pass in it. Windows had 5.4 GB free before it, the Docker VM 13.8 GB
 available.
 
-## Not done: the recording and the sounds by ear (asked Chase)
+## Moved to P707: the recording and the sounds by ear
 
 Part 6 also asks for a TazUO recording (frame burst) of the scene and its sounds checked by ear on the private world.
 Both need a private shard reading P662's patched map (`D:\UO\golems\Iron\p662-work\edited`), the isle seeded on it,
 and TazUO drawing the same map. That is the setup P664 stopped on, and the overseer has given it to **P707** (after
 P665 and P666: the two-client play-through, the isle bot route and the shots). I cannot judge sounds by ear in any
-case; that check is Chase's. Asked Chase whether the recording goes into P707 or a session of its own (`Iron-P665-20261027-120539-6267`).
+case; that check is Chase's. Asked Chase whether the recording goes into P707 or a session of its own
+(`Iron-P665-20261027-120539-6267`). **Answered 10-27 14:12 (overseer, console): "Fold into P707"**, so P707 records the
+vision (a frame burst) on its private world and the sounds are checked by ear then. P665 is marked done without them.
 
 What a recording should look for, so P707 or a session can do it quickly: the light really drops to near black and
 back for the player only (a second client beside them stays in day light); the subtitle band is readable on a dark
@@ -124,7 +125,11 @@ the ground; the echo wears the player's clothes; nothing is left when it ends. `
 
 ## Asked, and commit preflight
 
-- Asked Chase: `Iron-P665-20261027-120539-6267` (the recording and the sounds).
+- Asked Chase: `Iron-P665-20261027-120539-6267` (the recording and the sounds); answered "Fold into P707".
+- **Version clash for the integrator:** this branch and P666 both add `2026.10.27.3` to `CHANGELOG.md` and `VERSION`
+  (P664's WIP did too). The second of them to merge needs the next number.
+- Resumed in a new session after P666: both WIP commits (`ae76e8f` code, `ffda847` docs) were checked; neither deletes
+  a file, and nothing changed since apart from this notes file.
 - Files, code copy: new `server/customizations/Tutorial/TutorialVisionScene.cs`, `server/tests/Tutorial/TutorialVisionSceneVerification.cs`,
   `player-package/vendor/shattered-legacy-art/gumps/23209.png`, `23210.png`; changed `TutorialCoreTrials.cs`,
   `ClusterFLoops.cs`, `Fold/FoldRegions.cs`, `server/tests/Misc/TutorialVerification.cs`, the art `registry.csv` and
@@ -132,4 +137,4 @@ the ground; the echo wears the player's clothes; nothing is left when it ends. `
 - Files, docs copy: this file, `notes\cc-P665-tools\` (probe, mutants script, red runs, placeholders script, summaries).
 - No file over 5 MB; nothing under `docs\` changed; no secrets.
 
-P665 STOPPED: asked Chase (Iron-P665-20261027-120539-6267) whether the TazUO recording and the sounds by ear go into P707 or a session of their own; code, facts, panels and the gated build are done
+P665 DONE
