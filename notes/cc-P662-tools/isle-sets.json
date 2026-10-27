@@ -1,0 +1,63 @@
+{
+  "_about": "cc-P662: the Wakening Isle's look (build_isle.py reads it; nothing about the look is in the code). One seed per stage: a stage's random stream is Random(seed ^ crc32(stage name)), so switching a stage off or adding one never moves the others (playbook section 5). Every id below was measured on stock Trammel by the survey scripts beside this file, or picked from candidates.py's sheets. Coordinates are P481 section 11.2's (void C); the driver adds the site shift.",
+  "seed": 6620,
+  "shift": [424, 1992],
+  "land": {
+    "water": {"0x00A8": 1, "0x00A9": 1, "0x00AA": 1, "0x00AB": 1},
+    "sand": {"0x0016": 55, "0x0017": 15, "0x0018": 15, "0x0019": 15},
+    "grass": {"0x0003": 50, "0x0004": 17, "0x0005": 17, "0x0006": 16},
+    "dirt": {"0x0071": 50, "0x0072": 17, "0x0073": 17, "0x0074": 16},
+    "stone": {"0x0442": 40, "0x0443": 20, "0x0444": 20, "0x0445": 20},
+    "_transitions": "corner patterns top, right, bottom, left (survey_corners.py, survey_pairs.py); dirt aaba (grass at the bottom) is 0x0079, too rare on OSI's map for the survey (under 5 tiles) and confirmed by render beside 0x007A-0x007C (each grass patch at its measured corner); the diagonal saddles have no stock tile: the road grows over them, or the tile becomes grass",
+    "sandGrass": {"ssgs": ["0x0033"], "sssg": ["0x0034"], "gsss": ["0x0035"], "sgss": ["0x0036"], "sggs": ["0x0037"],
+                  "gssg": ["0x0038"], "ssgg": ["0x0039"], "ggss": ["0x003A"], "gsgg": ["0x003B"], "gggs": ["0x003C"],
+                  "ggsg": ["0x003D"], "sggg": ["0x003E"]},
+    "dirtGrass": {"aaab": ["0x007B"], "aaba": ["0x0079"], "aabb": ["0x0085", "0x0086"], "abaa": ["0x007C"], "abba": ["0x0087", "0x0088"],
+                  "abbb": ["0x007E"], "baaa": ["0x007A"], "baab": ["0x0089", "0x008A"], "babb": ["0x0083"],
+                  "bbaa": ["0x008B", "0x008C"], "bbab": ["0x007D"], "bbba": ["0x0082"]},
+    "_z": "the sea at -5 as OSI's; the first sand ring at -7 under OSI's static water (shoreWater), so the water plane cuts the beach's slope into a smooth waterline as on OSI's coasts (osi-beach.png); then -3, -1 and 0; the road, meadow, yards and buildings at 0; the knoll to 8",
+    "seaZ": -5,
+    "beachZ": {"1": -7, "2": -3, "3": -1}
+  },
+  "walls": {
+    "_measured": "survey of stock Trammel by walls.wall_role: 0x001A corner 69 of 74, 0x001B north-south 761 of 782, 0x001C east-west 779 of 813, 0x001D post 55 of 60 (P481's sketch had east-west and corner swapped)",
+    "stone": {"ew": "0x001C", "ns": "0x001B", "corner": "0x001A", "post": "0x001D"},
+    "fence": {"ew": "0x0836", "ns": "0x0837", "post": "0x0835", "corner": null}
+  },
+  "floors": {
+    "_measured": "OSI's doors in stone town buildings stand on the floor static (cobblestones 0x0515-0x0518), the wall pieces either side keep their run piece (survey_doors.py)",
+    "bank": {"0x0515": 25, "0x0516": 25, "0x0517": 25, "0x0518": 25},
+    "lodge": {"0x04A9": 50, "0x04AA": 10, "0x04AB": 10, "0x04AC": 10, "0x04AD": 10, "0x04AE": 5, "0x04AF": 5}
+  },
+  "roof": {"_measured": "OSI's most common piece over this wall set: grey slate 0x049C at +20 (3,608 tiles); over the visible room only (candidates.py testhouse.png)", "id": "0x049C", "z": 20},
+  "corners": {
+    "_rule": "playbook 2.2 for item-walled rooms: every inner corner gets at least one thing; passable pieces on the corner floor tile; wall torches only on a north or west wall at floor + 13; impassable pieces only on the visible strip (the south and east ring tiles, inside the wall's slab)",
+    "torchNorth": ["0x0A0C"],
+    "torchWest": ["0x0A07", "0x0A09"],
+    "floorPieces": {"0x0A2A": 3, "0x0A2B": 3, "0x0B2C": 2, "0x0B2D": 2},
+    "stripPieces": {"0x0E3C": 3, "0x0E3D": 3, "0x0FAE": 3, "0x0E7F": 2, "0x0E3E": 1}
+  },
+  "dock": {
+    "_measured": "planks also cover the wet first ring of sand in the dock's rows, as OSI's docks do (1,653 planks on sand within 2 of the sea). OSI's docks (survey: 1,325 planks over the sea at Z -3; the Trammel dock at 496,768): planks 0x07C9 and 0x07CD; rope rails 0x03A6 along x and 0x03A9 along y at deck + 5; corner posts stacked 0x03AE at deck - 5, 0x03A5 at deck, 0x03AB at deck + 5",
+    "deckZ": -3,
+    "planks": {"0x07C9": 50, "0x07CD": 50},
+    "railX": "0x03A6", "railY": "0x03A9",
+    "post": [["0x03AE", -5], ["0x03A5", 0], ["0x03AB", 5]],
+    "railDz": 5
+  },
+  "stones": {"_picked": "candidates.py stones.png: the tall boulders read as standing stones, P481's rock 0x1772 as pebbles", "ids": {"0x1350": 2, "0x135D": 2, "0x134F": 1}},
+  "yard": {"dummies": [["0x1070", 6306, 2007], ["0x1074", 6309, 2007], ["0x1074", 6306, 2011], ["0x1070", 6309, 2011]],
+           "butte": [["0x100A", 6320, 2015]],
+           "ankh": [["0x0004", 6317, 2008], ["0x0005", 6318, 2008]]},
+  "square": {"pieces": [["0x0FB1", 6345, 1983], ["0x0FAF", 6345, 1985], ["0x0E3C", 6348, 1981], ["0x0FAE", 6349, 1981], ["0x0E3D", 6348, 1994], ["0x0E7F", 6349, 1993]]},
+  "decor": {
+    "_rule": "seeded clusters with gaps, never two identical pieces side by side (scatter.pick_unlike); zone densities in pieces per 100 tiles, a tree counting as its two pieces; the woods must land inside 5 to 12",
+    "woods": {"density": [5, 12], "trees": [["0x0CDA", "0x0CDB", 3], ["0x0CDD", "0x0CDE", 3], ["0x0CE0", "0x0CE1", 2], ["0x0CE3", "0x0CE4", 2], ["0x0CD6", "0x0CD7", 2]],
+              "under": {"0x0C9F": 3, "0x0CA1": 2, "0x0CA2": 2, "0x0CA3": 2, "0x0CA4": 1},
+              "treeShare": 0.03, "underShare": 0.025},
+    "meadow": {"flowers": {"0x0C84": 1, "0x0C85": 1, "0x0C86": 1, "0x0C87": 1, "0x0CC5": 3}, "share": 0.012},
+    "grass": {"trees": 0.004, "under": 0.008, "flowers": 0.006},
+    "beach": {"pieces": {"0x0DBA": 3, "0x0DBB": 3, "0x1773": 1, "0x1774": 1, "0x1776": 1, "0x1779": 1}, "share": 0.02},
+    "shoreWater": {"_measured": "OSI lays the static water 0x1797 (Background, Impassable, Wet) on the first ring of sand (1,736 on sand within 2 of the sea, Trammel mainland), at the sea's Z: the flat water plane over the sloping sand draws the waterline", "id": "0x1797", "z": -5}
+  }
+}
