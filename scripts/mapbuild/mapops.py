@@ -21,6 +21,8 @@ suite (shard-migration tools/tests/test_mapops.py) runs both on the same files a
     python -P mapops.py diff <base folder> <edited folder> <facet> <out .mapops>
     python -P mapops.py apply <ops> <base folder> <out folder> <facet>
     python -P mapops.py check <ops> <base folder> <edited folder> <facet>
+    python -P mapops.py pack <map MUL> <out .uop> <facet>          cc-P674: a whole map (the SoS Map1.mul) as a UOP
+    python -P mapops.py rename <in .uop> <out .uop> <from> <to>     cc-P674: the same UOP under another facet's names
 """
 import collections, hashlib, os, shutil, struct, sys
 
@@ -95,26 +97,70 @@ def blocks_present(mf):
     return out
 
 
+def write_map_uop(path, fi, land, table_size=100):
+    """cc-P674: write <land> (raw 196-byte blocks, a map MUL's bytes) as facet fi's UOP the way the client and the
+    server read it: entries build/map<fi>legacymul/<chunk, 8 digits>.dat of 4,096 blocks each (the last may be
+    shorter), uncompressed, found by the Jenkins hash of that name, in tables of at most <table_size> entries (EA uses
+    100) chained by their next pointers, all tables first and the data after them. Returns the entry count."""
+    per = 4096 * BLOCK_BYTES
+    assert len(land) % BLOCK_BYTES == 0, 'not a whole number of map blocks'
+    bodies = [land[o:o + per] for o in range(0, len(land), per)]
+    groups = [bodies[g:g + table_size] for g in range(0, len(bodies), table_size)]
+    table_pos = 28
+    data_pos = table_pos + sum(12 + 34 * len(g) for g in groups)
+    out = bytearray(struct.pack('<IiIqii', 0x50594D, 5, 0xFD23EC43, table_pos, table_size, len(bodies)))  # 28-byte header
+    off, pos, c = data_pos, table_pos, 0
+    for gi, g in enumerate(groups):
+        pos += 12 + 34 * len(g)
+        out += struct.pack('<iq', len(g), pos if gi + 1 < len(groups) else 0)
+        for body in g:
+            name = 'build/map%dlegacymul/%08d.dat' % (fi, c)
+            out += struct.pack('<qiiiQIh', off, 0, len(body), len(body), uofiles.hashlittle2(name), 0, 0)
+            off += len(body)
+            c += 1
+    assert len(out) == data_pos
+    with open(path, 'wb') as f:
+        f.write(out)
+        for body in bodies:
+            f.write(body)
+    return len(bodies)
+
+
+def pack(mul, out, fi):
+    """cc-P674: a map MUL (the Siege of Sosaria Map1.mul) packed as facet fi's UOP. -> entries written."""
+    return write_map_uop(out, fi, open(mul, 'rb').read())
+
+
+def rename_uop(src, dst, frm, to):
+    """cc-P674: copy facet frm's UOP map as facet to's: same bytes, each entry's name hash rewritten to the to name.
+    The Python twin of Apply-MapOps.ps1's Copy-UopRenamed (the launcher's Felucca copy). -> entries renamed."""
+    data = bytearray(open(src, 'rb').read())
+    names = {uofiles.hashlittle2('build/map%dlegacymul/%08d.dat' % (frm, c)): c for c in range(4096)}
+    nxt = struct.unpack_from('<q', data, 12)[0]
+    done = 0
+    while nxt:
+        cnt, nxt2 = struct.unpack_from('<iq', data, nxt)
+        for i in range(cnt):
+            p = nxt + 12 + 34 * i
+            if struct.unpack_from('<q', data, p)[0] == 0:
+                continue
+            h = struct.unpack_from('<Q', data, p + 20)[0]
+            if h not in names:
+                raise ValueError('%s holds an entry that is not a map%d chunk' % (src, frm))
+            struct.pack_into('<Q', data, p + 20, uofiles.hashlittle2('build/map%dlegacymul/%08d.dat' % (to, names[h])))
+            done += 1
+        nxt = nxt2
+    open(dst, 'wb').write(data)
+    return done
+
+
 def synthetic_facet(folder, fi, chunks=1, fill=(0x0003, 0)):
     """Test support: write a facet's three files with the real layout but only the first <chunks> map chunks (4,096
     blocks each, so chunk 0 is x 0-63 for every y of facet fi), every cell <fill> and no statics. Returns the folder."""
     m, s, i = _files(fi)
     os.makedirs(folder, exist_ok=True)
-    names = ['build/map%dlegacymul/%08d.dat' % (fi, c) for c in range(chunks)]
-    chunk = struct.pack('<I', 0) + struct.pack('<Hb', *fill) * 64
-    body = chunk * 4096
-    # header 28 bytes, one entry table at 28: count, next, then 34-byte entries; data after the table
-    table_pos = 28
-    data_pos = table_pos + 12 + 34 * chunks
-    out = bytearray(struct.pack('<IiIqii', 0x50594D, 5, 0xFD23EC43, table_pos, 100, chunks))  # 28-byte header
-    out += struct.pack('<iq', chunks, 0)
-    off = data_pos
-    for n in names:
-        out += struct.pack('<qiiiQIh', off, 0, len(body), len(body), uofiles.hashlittle2(n), 0, 0)
-        off += len(body)
-    for n in names:
-        out += body
-    open(os.path.join(folder, m), 'wb').write(out)
+    block = struct.pack('<I', 0) + struct.pack('<Hb', *fill) * 64
+    write_map_uop(os.path.join(folder, m), fi, block * (4096 * chunks))
     nblocks = 4096 * chunks
     open(os.path.join(folder, i), 'wb').write(struct.pack('<iii', -1, -1, 0) * nblocks)
     open(os.path.join(folder, s), 'wb').write(b'')
@@ -211,6 +257,12 @@ if __name__ == '__main__':
     elif cmd == 'apply':
         d, m = apply(open(sys.argv[2]).read(), sys.argv[3], sys.argv[4], int(sys.argv[5]))
         print('applied; drifted blocks', len(d), 'removals not found', len(m))
+    elif cmd == 'pack':
+        n = pack(sys.argv[2], sys.argv[3], int(sys.argv[4]))
+        print('packed', sys.argv[2], 'as', sys.argv[3], 'facet', sys.argv[4], n, 'entries')
+    elif cmd == 'rename':
+        n = rename_uop(sys.argv[2], sys.argv[3], int(sys.argv[4]), int(sys.argv[5]))
+        print('renamed', n, 'entries')
     elif cmd == 'check':
         d, m, le, bad = check(open(sys.argv[2]).read(), sys.argv[3], sys.argv[4], int(sys.argv[5]))
         print('drifted', len(d), 'missing', len(m), 'land identical', le, 'statics blocks differing', len(bad))

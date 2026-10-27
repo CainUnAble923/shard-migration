@@ -1,0 +1,32 @@
+EEE
+======================================================================
+ERROR: test_10_the_manifest_is_the_authors_download_and_the_pack_is_its_shipped_uop (tools.tests.test_mapops.SosBase.test_10_the_manifest_is_the_authors_download_and_the_pack_is_its_shipped_uop)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\8a22c23c-dc07-4563-a080-b92e53c9b16f\scratchpad\p674\headdocs\tools\tests\test_mapops.py", line 379, in test_10_the_manifest_is_the_authors_download_and_the_pack_is_its_shipped_uop
+    self.assertEqual(112, mapops.pack(str(SOS_THIRD / src["Map1.mul"]["from"]), out, 1))
+                          ^^^^^^^^^^^
+AttributeError: module 'mapbuild.mapops' has no attribute 'pack'
+
+======================================================================
+ERROR: test_8_pack_writes_the_whole_map_as_the_client_reads_it_and_rename_gives_felucca_the_same_land (tools.tests.test_mapops.SosBase.test_8_pack_writes_the_whole_map_as_the_client_reads_it_and_rename_gives_felucca_the_same_land)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\8a22c23c-dc07-4563-a080-b92e53c9b16f\scratchpad\p674\headdocs\tools\tests\test_mapops.py", line 298, in test_8_pack_writes_the_whole_map_as_the_client_reads_it_and_rename_gives_felucca_the_same_land
+    self.assertEqual(3, mapops.write_map_uop(os.path.join(d, "map1LegacyMUL.uop"), 1, land, table_size=2))
+                        ^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'mapbuild.mapops' has no attribute 'write_map_uop'
+
+======================================================================
+ERROR: test_9_the_powershell_applier_patches_a_shipped_base_and_writes_feluccas_copy (tools.tests.test_mapops.SosBase.test_9_the_powershell_applier_patches_a_shipped_base_and_writes_feluccas_copy)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\8a22c23c-dc07-4563-a080-b92e53c9b16f\scratchpad\p674\headdocs\tools\tests\test_mapops.py", line 332, in test_9_the_powershell_applier_patches_a_shipped_base_and_writes_feluccas_copy
+    mapops.rename_uop(os.path.join(py, "map1LegacyMUL.uop"), os.path.join(py, "map0LegacyMUL.uop"), 1, 0)
+    ^^^^^^^^^^^^^^^^^
+AttributeError: module 'mapbuild.mapops' has no attribute 'rename_uop'
+
+----------------------------------------------------------------------
+Ran 3 tests in 1.196s
+
+FAILED (errors=3)

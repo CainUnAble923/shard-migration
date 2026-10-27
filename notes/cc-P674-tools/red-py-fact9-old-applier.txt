@@ -1,0 +1,20 @@
+F
+======================================================================
+FAIL: test_9_the_powershell_applier_patches_a_shipped_base_and_writes_feluccas_copy (tools.tests.test_mapops.SosBase.test_9_the_powershell_applier_patches_a_shipped_base_and_writes_feluccas_copy)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UO\golems\Iron\shard-migration\tools\tests\test_mapops.py", line 341, in test_9_the_powershell_applier_patches_a_shipped_base_and_writes_feluccas_copy
+    self.assertEqual(0, r.returncode, r.stdout + r.stderr)
+AssertionError: 0 != 1 : Build-MapOverride : A parameter cannot be found that matches parameter name 'BaseDir'.
+At line:1 char:440
++ ... Users\ckfle\AppData\Local\Temp\p674-sos-o65br0e7\ps' -BaseDir 'C:\Use ...
++                                                          ~~~~~~~~
+    + CategoryInfo          : InvalidArgument: (:) [Build-MapOverride], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : NamedParameterNotFound,Build-MapOverride
+ 
+
+
+----------------------------------------------------------------------
+Ran 1 test in 1.830s
+
+FAILED (failures=1)
