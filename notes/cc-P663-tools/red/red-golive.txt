@@ -1,0 +1,34 @@
+== mutant golive
+     Failed: 3
+     Passed: 18
+Total tests: 21
+  Passed EachRowOfTheEligibilityTable(before: Graduated, choice: Isle, expected: Finished)
+  Passed EachRowOfTheEligibilityTable(before: Skipped, choice: Haven, expected: Haven)
+  Passed EachRowOfTheEligibilityTable(before: InCoreElsewhere, choice: Isle, expected: Elsewhere)
+  Passed EachRowOfTheEligibilityTable(before: Fresh, choice: Isle, expected: Isle)
+  Passed EachRowOfTheEligibilityTable(before: Skipped, choice: Isle, expected: Finished)
+  Passed EachRowOfTheEligibilityTable(before: Graduated, choice: Haven, expected: Haven)
+  Passed EachRowOfTheEligibilityTable(before: InCoreElsewhere, choice: Haven, expected: Haven)
+  Passed EachRowOfTheEligibilityTable(before: Fresh, choice: Haven, expected: Skip)
+  Passed EachRowOfTheEligibilityTable(before: DeletedMidCore, choice: Isle, expected: Isle)
+  Passed EachRowOfTheEligibilityTable(before: DeletedMidCore, choice: Haven, expected: Skip)
+  Passed TheMoongateTakesAStepOrADoubleClick(step: True)
+  Passed TheMoongateTakesAStepOrADoubleClick(step: False)
+  Passed AReconnectRegeneratesTheCurrentSupply
+  Failed WithTheTutorialOffCreationRecordsNoChoice
+  Passed APetCrossesTheDockFromAnywhereOnTheFold
+  Failed ACharacterFromBeforeGoLiveIsNeverEnteredOrMoved
+  Passed TheCoreRunsWestToEastWithTheFarmAndTravelLast
+  Passed RemedialSailsToTheIsleAndTheMoongateBringsTheSkipperBackToRook
+  Passed TheCityListOffersTheIsleFirstAndNewHavenSecondBothAsTrammel
+  Passed AChoiceSurvivesADisconnectBeforeTheFirstLogin
+  Failed ASecondCharacterNeverConsumesAnothersChoice
+## TutorialIsleVerification.WithTheTutorialOffCreationRecordsNoChoice
+  Assert.Equal() Failure: Values differ | Expected: None | Actual:   Haven
+  @ Tutorial/TutorialIsleVerification.cs:line 524
+## TutorialIsleVerification.ACharacterFromBeforeGoLiveIsNeverEnteredOrMoved
+  Assert.Equal() Failure: Values differ | Expected: NotStarted | Actual:   InCore
+  @ Tutorial/TutorialIsleVerification.cs:line 354
+## TutorialIsleVerification.ASecondCharacterNeverConsumesAnothersChoice
+  Assert.Equal() Failure: Values differ | Expected: NotStarted | Actual:   InCore | Test Run Failed.
+  @ Tutorial/TutorialIsleVerification.cs:line 395

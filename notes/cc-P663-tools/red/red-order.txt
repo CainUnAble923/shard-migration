@@ -1,0 +1,33 @@
+== mutant order
+     Failed: 4
+     Passed: 16
+Total tests: 20
+  Passed EachRowOfTheEligibilityTable(before: Graduated, choice: Isle, expected: Finished)
+  Passed EachRowOfTheEligibilityTable(before: Skipped, choice: Haven, expected: Haven)
+  Passed EachRowOfTheEligibilityTable(before: InCoreElsewhere, choice: Isle, expected: Elsewhere)
+  Passed EachRowOfTheEligibilityTable(before: Fresh, choice: Isle, expected: Isle)
+  Passed EachRowOfTheEligibilityTable(before: Skipped, choice: Isle, expected: Finished)
+  Passed EachRowOfTheEligibilityTable(before: Graduated, choice: Haven, expected: Haven)
+  Passed EachRowOfTheEligibilityTable(before: InCoreElsewhere, choice: Haven, expected: Haven)
+  Passed EachRowOfTheEligibilityTable(before: Fresh, choice: Haven, expected: Skip)
+  Passed EachRowOfTheEligibilityTable(before: DeletedMidCore, choice: Isle, expected: Isle)
+  Passed EachRowOfTheEligibilityTable(before: DeletedMidCore, choice: Haven, expected: Skip)
+  Failed TheMoongateTakesAStepOrADoubleClick(step: True)
+  Failed TheMoongateTakesAStepOrADoubleClick(step: False)
+  Passed AReconnectRegeneratesTheCurrentSupply
+  Passed APetCrossesTheDockFromAnywhereOnTheFold
+  Passed ACharacterFromBeforeGoLiveIsNeverEnteredOrMoved
+  Failed TheCoreRunsWestToEastWithTheFarmAndTravelLast
+  Failed RemedialSailsToTheIsleAndTheMoongateBringsTheSkipperBackToRook
+  Passed TheCityListOffersTheIsleFirstAndNewHavenSecondBothAsTrammel
+  Passed AChoiceSurvivesADisconnectBeforeTheFirstLogin
+  Passed ASecondCharacterNeverConsumesAnothersChoice
+## TutorialIsleVerification.TheMoongateTakesAStepOrADoubleClick
+  Assert.Equal() Failure: Values differ | Expected: InWings | Actual:   InCore
+  @ Tutorial/TutorialIsleVerification.cs:line 438
+## TutorialIsleVerification.TheCoreRunsWestToEastWithTheFarmAndTravelLast
+  Assert.Equal() Failure: Collections differ | ↓ (pos 4) | Expected: [···, "core.paperdoll", "core.chat", "core.farm", "core.death", "core.banking", ···] | Actual:   [···, "core.paperdoll", "core.chat", "core.death", "core.banking", "core.travel", ···]
+  @ Tutorial/TutorialIsleVerification.cs:line 180
+## TutorialIsleVerification.RemedialSailsToTheIsleAndTheMoongateBringsTheSkipperBackToRook
+  Assert.Equal() Failure: Values differ | Expected: Graduated | Actual:   Remedial
+  @ Tutorial/TutorialIsleVerification.cs:line 507

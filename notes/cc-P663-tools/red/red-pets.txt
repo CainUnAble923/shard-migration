@@ -1,0 +1,30 @@
+== mutant pets
+     Failed: 2
+     Passed: 18
+Total tests: 20
+  Passed EachRowOfTheEligibilityTable(before: Graduated, choice: Isle, expected: Finished)
+  Passed EachRowOfTheEligibilityTable(before: Skipped, choice: Haven, expected: Haven)
+  Passed EachRowOfTheEligibilityTable(before: InCoreElsewhere, choice: Isle, expected: Elsewhere)
+  Passed EachRowOfTheEligibilityTable(before: Fresh, choice: Isle, expected: Isle)
+  Passed EachRowOfTheEligibilityTable(before: Skipped, choice: Isle, expected: Finished)
+  Passed EachRowOfTheEligibilityTable(before: Graduated, choice: Haven, expected: Haven)
+  Passed EachRowOfTheEligibilityTable(before: InCoreElsewhere, choice: Haven, expected: Haven)
+  Passed EachRowOfTheEligibilityTable(before: Fresh, choice: Haven, expected: Skip)
+  Passed EachRowOfTheEligibilityTable(before: DeletedMidCore, choice: Isle, expected: Isle)
+  Passed EachRowOfTheEligibilityTable(before: DeletedMidCore, choice: Haven, expected: Skip)
+  Passed TheMoongateTakesAStepOrADoubleClick(step: True)
+  Passed TheMoongateTakesAStepOrADoubleClick(step: False)
+  Passed AReconnectRegeneratesTheCurrentSupply
+  Failed APetCrossesTheDockFromAnywhereOnTheFold
+  Passed ACharacterFromBeforeGoLiveIsNeverEnteredOrMoved
+  Passed TheCoreRunsWestToEastWithTheFarmAndTravelLast
+  Failed RemedialSailsToTheIsleAndTheMoongateBringsTheSkipperBackToRook
+  Passed TheCityListOffersTheIsleFirstAndNewHavenSecondBothAsTrammel
+  Passed AChoiceSurvivesADisconnectBeforeTheFirstLogin
+  Passed ASecondCharacterNeverConsumesAnothersChoice
+## TutorialIsleVerification.APetCrossesTheDockFromAnywhereOnTheFold
+  Assert.Same() Failure: Values are not the same instance | Expected: Trammel | Actual:   TheFold
+  @ Tutorial/TutorialIsleVerification.cs:line 245
+## TutorialIsleVerification.RemedialSailsToTheIsleAndTheMoongateBringsTheSkipperBackToRook
+  Assert.Same() Failure: Values are not the same instance | Expected: TheFold | Actual:   Trammel
+  @ Tutorial/TutorialIsleVerification.cs:line 492
