@@ -1,0 +1,74 @@
+{
+  "purpose": "One-time data inspection report, not a test suite or runtime proof",
+  "pinnedCommit": "d4531cd94b739613155225c234900de9f47d2c88",
+  "regions": 198,
+  "rectangles": 1182,
+  "kindCounts": {
+    "town": 50,
+    "wild": 90,
+    "dungeon": 58
+  },
+  "sourceCounts": {
+    "author": 150,
+    "ours": 1,
+    "stock kept": 47
+  },
+  "authorSourceRegions": 150,
+  "authorSourceRectangles": 1128,
+  "authorNonemptyRectanglesKept": 1123,
+  "authorEmptyRectanglesOmitted": 5,
+  "stockDispositionCounts": {
+    "deferred": 35,
+    "replaced": 59,
+    "stock candidate": 47,
+    "retired": 4
+  },
+  "musicPresent": 85,
+  "entrancePresent": 45,
+  "parsedJsonFiles": [
+    "geometry-review.json",
+    "omitted-properties.json",
+    "source-inventory.json",
+    "trammel-regions.json"
+  ],
+  "parsedCsvFiles": [
+    {
+      "file": "areas-review.csv",
+      "rows": 73
+    },
+    {
+      "file": "author-mapping.csv",
+      "rows": 150
+    },
+    {
+      "file": "locations-review.csv",
+      "rows": 410
+    },
+    {
+      "file": "sosaria-mapping.csv",
+      "rows": 132
+    },
+    {
+      "file": "stock-mapping.csv",
+      "rows": 145
+    }
+  ],
+  "checked": [
+    "Author per-record XYZ rectangle conversion and five zero-area omissions",
+    "Stock candidate rectangles preserve pinned coordinates and implicit Z range",
+    "Stock crosswalk agrees with actual pinned Trammel row order",
+    "Unique names, parents exist earlier in array",
+    "Registered native types, valid MusicName strings",
+    "Positive map-bounded rectangles and explicit Z endpoints",
+    "Source and kind enums",
+    "Windows PowerShell 5.1 ConvertFrom-Json parsed 198 records"
+  ],
+  "errors": [],
+  "unverified": [
+    "Native runtime deserialization and region registration",
+    "SoS terrain, statics, walkability and guard boundaries",
+    "Actual guard, travel, housing and music behavior",
+    "Name consumers and custom runtime region collisions"
+  ],
+  "progressReporter": "Ran --dry-run. It unexpectedly wrote tools/progress.json before returning; restored exact initial HEAD bytes. No reporter code changed."
+}
