@@ -1,0 +1,31 @@
+cc-P678 gated build 1 (sl-modernuo:cc-P678, 2026-10-28 00:20-00:45): compiled; the test gate ran 2688 facts, 8 failed:
+  Failed ShatteredLegacy.Tests.TutorialTradeTrialVerification.GoingFarFromNewHavenStopsATourAndLeavingTheYardStopsATrade [4 ms]
+   Assert.Null() Failure: Value is not null
+Expected: null
+Actual:   Trial { Armed = True, ArmRetryAt = 0001-01-01T00:00:00.0000000, BandageHits = -1, Choice = -1, Creatures = [], ,%V%,%V%,%V% }
+  Failed ShatteredLegacy.Tests.HavenTownVerification.T1_TheHookRefusesThePlazaTheRuinAndPreUomlOutsideTownAndNothingElse [43 ms]
+   Assert.Equal() Failure: Values differ
+Expected: 8
+Actual:   10
+  Failed ShatteredLegacy.Tests.WinterDecorVerification.NoRowSitsOnADoorItsSwingAnNpcASpawnerAFixedTileOrACommunityArtTile [2 ms]
+   the community art table
+  Failed ShatteredLegacy.Tests.WinterDecorVerification.ThePlacementTableLoadsAndEveryItemIsRegisteredOrStock [2 ms]
+   gate-1 at 3567,2555 is outside Haven's town box
+  Failed ShatteredLegacy.Tests.ThievesDenLookoutVerification.TheArrowPointsAtTheGuildmasterAndAMissingOneIsReported [2 ms]
+   Assert.Contains() Failure: Sub-string not found
+String:    "The Thieves' Den's guildmaster is not at ",%V%,%V%,%V%
+Not found: "is not at Bountiful Harvest Inn, back roo",%V%,%V%,%V%
+  Failed ShatteredLegacy.Tests.ThievesDenLookoutVerification.TheSeederRunTwicePlacesOneLookoutOnTheStool [2 ms]
+   Assert.Equal() Failure: Values differ
+Expected: (3440, 2558, 56)
+Actual:   (3689, 2510, 0)
+  Failed ShatteredLegacy.Tests.GuildStarterPathVerification.TheDirectoryArrowResolvesToAGuildmasterThatExistsAndAMissingOneReportsIt [2 ms]
+   Assert.Contains() Failure: Sub-string not found
+String:    "The Warriors' Brotherhood's guildmaster i",%V%,%V%,%V%
+Not found: "is not at Warrior's Guild Hall"
+  Failed ShatteredLegacy.Tests.RecipeGatingVerification.HintLinesCountTheBandAndNameTheRankTheWildLineHasNoCountAndNoneShowBelowTheFloor [7 ms]
+   Assert.Contains() Failure: Filter not matched in collection
+Collection: ["The Society of Smiths teaches Blacksmithy patterns",%V%,%V%,%V%, "The Band II book is sold at rank Apprentice and gi",%V%,%V%,%V%, "Joining is free. A book teaches your whole account",%V%,%V%,%V%, "Recipes 
+Total tests: 2688
+     Passed: 2675
+     Failed: 8

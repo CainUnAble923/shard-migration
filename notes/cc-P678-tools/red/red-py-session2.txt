@@ -1,0 +1,36 @@
+  raw = open(os.path.join(folder, files[0]), "rb").read()
+  idx = np.frombuffer(open(ip, "rb").read(), dtype="<i4").reshape(-1, 3)
+  sta = np.frombuffer(open(sp, "rb").read(), dtype=np.uint8)
+F..F
+======================================================================
+FAIL: test_1_every_spot_is_reached_on_foot_at_its_standing_z (__main__.HavenSpotsOnSos.test_1_every_spot_is_reached_on_foot_at_its_standing_z)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UO\golems\Iron\shard-migration\tools\tests\test_haven_spots.py", line 59, in test_1_every_spot_is_reached_on_foot_at_its_standing_z
+    self.assertEqual([], bad)
+AssertionError: Lists differ: [] != ['PublicMoongate 3696,2570,16: stands at 14, reached']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'PublicMoongate 3696,2570,16: stands at 14, reached'
+
+- []
++ ['PublicMoongate 3696,2570,16: stands at 14, reached']
+
+======================================================================
+FAIL: test_4_every_tile_our_code_uses_in_the_town_checks_together (__main__.HavenSpotsOnSos.test_4_every_tile_our_code_uses_in_the_town_checks_together)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UO\golems\Iron\shard-migration\tools\tests\test_haven_spots.py", line 87, in test_4_every_tile_our_code_uses_in_the_town_checks_together
+    self.assertEqual(0, crosscheck.main())
+AssertionError: 0 != 1
+
+----------------------------------------------------------------------
+Ran 4 tests in 2.942s
+
+FAILED (failures=2)
+277 rows: {'HavenSpots.Rook': 1, 'HavenSpots.MoongateExit': 1, 'HavenSpots.QuestBoard': 1, 'HavenSpots.ResetStone': 1, 'HavenSpots.FountainOfYouth': 1, 'HavenSpots.Centre': 1, 'HavenSpots.VetSpot': 1, 'HavenSpots.PublicMoongate': 1, 'HavenSpots.Healer': 1, 'HavenSpots.Bank': 1, 'HavenSpots.Dock': 1, 'home': 51, 'office': 28, 'art': 44, 'winter': 109, 'halloween': 17, 'alembic': 11, 'ankh': 2, 'hatch': 1, 'ladder': 1, 'training': 1, 'trades': 1}
+NOT REACHED training yard (3411, 2617) None None
+NOT REACHED trades yard (3426, 2626) None None
+blocking props 36; tiles reached 55928; start to hatch 51 steps
+FAILURES 2

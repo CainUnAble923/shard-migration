@@ -1,0 +1,72 @@
+  Logger -> /build/modernuo/Distribution/Assemblies/Logger.dll
+  Server -> /build/modernuo/Distribution/Server.dll
+  UOContent -> /build/modernuo/Distribution/Assemblies/UOContent.dll
+  Application -> /build/modernuo/Distribution/ModernUO.dll
+  Server.Tests -> /build/modernuo/Projects/Server.Tests/bin/Release/net10.0/Server.Tests.dll
+  UOContent.Tests -> /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll
+Test run for /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.0+05679a7ab5 (64-bit .NET 10.0.7)
+[xUnit.net 00:00:00.12]   Discovering: UOContent.Tests
+[xUnit.net 00:00:00.40]   Discovered:  UOContent.Tests
+[xUnit.net 00:00:00.42]   Starting:    UOContent.Tests
+[21:05:42 INF] Loading world <s:Server.World>
+[21:05:42 INF] Loading world done (0 items, 0 mobiles) (0.01 seconds) <s:Server.World>
+[21:05:42 INF] Discovered 3 spawner JSON type(s) <s:Server.Engines.Spawners.SpawnerJsonSerializer>
+[xUnit.net 00:00:00.97]     ShatteredLegacy.Tests.HavenMoveVerification.ANewCharactersNewHavenStartIsTheSquare [FAIL]
+[xUnit.net 00:00:00.97]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:00.97]       Expected: (3634, 2586, 0)
+[xUnit.net 00:00:00.97]       Actual:   (3503, 2574, 14)
+[xUnit.net 00:00:00.97]       Stack Trace:
+[xUnit.net 00:00:00.97]         /build/modernuo/Projects/UOContent.Tests/Tests/Tutorial/HavenMoveVerification.cs(32,0): at ShatteredLegacy.Tests.HavenMoveVerification.ANewCharactersNewHavenStartIsTheSquare()
+[xUnit.net 00:00:00.97]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:00.97]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.97]     ShatteredLegacy.Tests.HavenMoveVerification.RookTheMoongateExitAndTheTownsOwnPiecesStandOnTheSquare [FAIL]
+[xUnit.net 00:00:00.97]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:00.97]       Expected: (3631, 2584, 0)
+[xUnit.net 00:00:00.97]       Actual:   (3500, 2572, 14)
+[xUnit.net 00:00:00.97]       Stack Trace:
+[xUnit.net 00:00:00.97]         /build/modernuo/Projects/UOContent.Tests/Tests/Tutorial/HavenMoveVerification.cs(39,0): at ShatteredLegacy.Tests.HavenMoveVerification.RookTheMoongateExitAndTheTownsOwnPiecesStandOnTheSquare()
+[xUnit.net 00:00:00.97]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:00.97]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.98]     ShatteredLegacy.Tests.HavenMoveVerification.TheOldHavenAchievementKeepsItsKeyAndNamesTheWayBeneathHaven [FAIL]
+[xUnit.net 00:00:00.98]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:00.98]       String:    "Discover the ruins of Old Haven. Nobody l"···
+[xUnit.net 00:00:00.98]       Not found: "way beneath Haven"
+[xUnit.net 00:00:00.98]       Stack Trace:
+[xUnit.net 00:00:00.98]         /build/modernuo/Projects/UOContent.Tests/Tests/Tutorial/HavenMoveVerification.cs(60,0): at ShatteredLegacy.Tests.HavenMoveVerification.TheOldHavenAchievementKeepsItsKeyAndNamesTheWayBeneathHaven()
+[xUnit.net 00:00:00.98]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:00.98]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.98]   Finished:    UOContent.Tests
+  Failed ShatteredLegacy.Tests.HavenMoveVerification.ANewCharactersNewHavenStartIsTheSquare [6 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: (3634, 2586, 0)
+Actual:   (3503, 2574, 14)
+  Stack Trace:
+     at ShatteredLegacy.Tests.HavenMoveVerification.ANewCharactersNewHavenStartIsTheSquare() in /build/modernuo/Projects/UOContent.Tests/Tests/Tutorial/HavenMoveVerification.cs:line 32
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed ShatteredLegacy.Tests.HavenMoveVerification.RookTheMoongateExitAndTheTownsOwnPiecesStandOnTheSquare [< 1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: (3631, 2584, 0)
+Actual:   (3500, 2572, 14)
+  Stack Trace:
+     at ShatteredLegacy.Tests.HavenMoveVerification.RookTheMoongateExitAndTheTownsOwnPiecesStandOnTheSquare() in /build/modernuo/Projects/UOContent.Tests/Tests/Tutorial/HavenMoveVerification.cs:line 39
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed ShatteredLegacy.Tests.HavenMoveVerification.TheOldHavenAchievementKeepsItsKeyAndNamesTheWayBeneathHaven [3 ms]
+  Error Message:
+   Assert.Contains() Failure: Sub-string not found
+String:    "Discover the ruins of Old Haven. Nobody l"···
+Not found: "way beneath Haven"
+  Stack Trace:
+     at ShatteredLegacy.Tests.HavenMoveVerification.TheOldHavenAchievementKeepsItsKeyAndNamesTheWayBeneathHaven() in /build/modernuo/Projects/UOContent.Tests/Tests/Tutorial/HavenMoveVerification.cs:line 60
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+Test Run Failed.
+Total tests: 3
+     Failed: 3
+ Total time: 1.2380 Seconds
