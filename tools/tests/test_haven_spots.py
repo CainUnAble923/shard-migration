@@ -3,11 +3,16 @@
     python -m unittest tools/tests/test_haven_spots.py      (SL_SHARD_REPO: another work copy of the shard repo)
 
 Facts, read from the code and the map files, nothing hand-copied:
-  1. Every Point3D in server/customizations/Tutorial/HavenSpots.cs is open on SoS (not water, void or under an impassable
-     static; notes/cc-P678-tools/townmap.py's reading), and its Z is that tile's floor (within 2).
+  1. Every Point3D in server/customizations/Tutorial/HavenSpots.cs is reachable on foot from the start, and its Z is the
+     standing Z there, by the playbook's walk with pinned's movement rules and GetAverageZ (notes/cc-P678-tools/
+     soswalk.py; the first version read townmap.py's floor, which is off by 1 or 2 on a slope: the moongate's 16 is 14).
   2. The start, Rook, the moongate's way out and the quest board are within 3 tiles of each other, as on the old plaza,
      and the bank, healer, dock and public moongate are inside the Haven town (x 3600-3760, y 2500-2665).
   3. The Fountain of Youth's 4 x 4 addon stands on open, flat tiles holding no static.
+  4. Every tile our code uses in the town (the spots, the NPC homes, the office and Alembic props, community art, the
+     winter and Halloween decor, the ankh, the cellar hatch and its ladder's landing, the tutorial's yards) shares no
+     tile it must not, every NPC and spot stays reachable on foot with every blocking prop in place, and nothing stands
+     on or beside the hatch or the landing (notes/cc-P678-tools/crosscheck.py, run as it is).
 Needs the SoS map files (notes/cc-P481-tools/scratch/sos); skipped without them.
 """
 import os
@@ -41,13 +46,16 @@ class HavenSpotsOnSos(unittest.TestCase):
         cls.tile = staticmethod(townmap.tile)
         cls.spots = spots()
 
-    def test_1_every_spot_is_open_ground_at_its_floor(self):
+    def test_1_every_spot_is_reached_on_foot_at_its_standing_z(self):
+        import soswalk
         self.assertGreaterEqual(len(self.spots), 8, self.spots)
+        walk = soswalk.Walk((3540, 2370, 3790, 2720))
+        reach = walk.flood(self.spots["Start"][:2])
         bad = []
         for name, (x, y, z) in sorted(self.spots.items()):
-            kind, fz = self.tile(x, y)
-            if kind != "open" or abs(fz - z) > 2:
-                bad.append("%s %d,%d,%d is %s at Z %d" % (name, x, y, z, kind, fz))
+            if (x, y) not in reach or walk.stand[(x, y)] != z:
+                bad.append("%s %d,%d,%d: stands at %s, %s" % (name, x, y, z, walk.stand.get((x, y)),
+                                                              "reached" if (x, y) in reach else walk.why.get((x, y))))
         self.assertEqual([], bad)
 
     def test_3_the_fountain_of_youth_fits_flat_on_clear_ground(self):
@@ -72,6 +80,11 @@ class HavenSpotsOnSos(unittest.TestCase):
         for n in ("Bank", "Healer", "Dock", "PublicMoongate", "Centre", "VetSpot"):
             x, y, _ = s[n]
             self.assertTrue(TOWN[0] <= x <= TOWN[2] and TOWN[1] <= y <= TOWN[3], "%s %d,%d is outside the Haven town" % (n, x, y))
+
+    def test_4_every_tile_our_code_uses_in_the_town_checks_together(self):
+        import crosscheck
+        os.environ.setdefault("SL_SHARD_REPO", str(SHARD))
+        self.assertEqual(0, crosscheck.main())
 
 
 if __name__ == "__main__":

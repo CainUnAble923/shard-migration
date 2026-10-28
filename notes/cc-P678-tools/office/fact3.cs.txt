@@ -1,0 +1,60 @@
+    [Fact]
+    public void NoComponentSitsOnTheDoorwayBesideItOrAnOfficeNpcTile()
+    {
+        ClearOffice();
+        try
+        {
+            ClusterFRegistrarOfficeSeeder.Seed(false);
+
+            var registrar = ClusterFNewHavenSeeder.Entries.Single(e => e.Type == typeof(LeagueRegistrar)).GetLocation();
+            Assert.Equal(new Point3D(3660, 2549, 0), registrar);
+            var appraiser = ClusterFRequisitionSeeder.AppraiserPosts.Single(p => p.Where == "League field office");
+            Assert.Equal(AppraiserTile, new Point2D(appraiser.X, appraiser.Y));
+
+            var keepClear = new Dictionary<Point2D, string>
+            {
+                [new Point2D(registrar.X, registrar.Y)] = "the Registrar's tile",
+                [AppraiserTile] = "the Appraiser's tile",
+                [WardenTile] = "the Sanitation Warden's tile",
+            };
+
+            // The doorway's two tiles and every tile around them, inside and out.
+            foreach (var d in HallDoorway)
+            {
+                for (var dx = -1; dx <= 1; dx++)
+                {
+                    for (var dy = -1; dy <= 1; dy++)
+                    {
+                        keepClear.TryAdd(new Point2D(d.X + dx, d.Y + dy), "the hall doorway or a tile next to it");
+                    }
+                }
+            }
+
+            Assert.Equal(3 + 12, keepClear.Count);
+
+            var onThem = new List<string>();
+            foreach (var addon in OfficeAddons())
+            {
+                foreach (var c in addon.Components)
+                {
+                    if (keepClear.TryGetValue(new Point2D(c.X, c.Y), out var what))
+                    {
+                        onThem.Add($"0x{c.ItemID:X4} at {c.Location} is on {what}");
+                    }
+                }
+            }
+
+            _out.WriteLine(string.Join("\n", onThem));
+            Assert.Empty(onThem);
+
+            // Every component is in the hall (walls x3658-3674, y2547-2562) or, for the outside group, south of it.
+            Assert.All(ClusterFRegistrarOfficeLayout.Office.Concat(ClusterFRegistrarOfficeLayout.Quarters),
+                c => Assert.True(c.X is > 3658 and < 3674 && c.Y is > 2547 and < 2562, $"{c.Name} at {c.Location}"));
+            Assert.All(ClusterFRegistrarOfficeLayout.Outside,
+                c => Assert.True(c.X is >= 3658 and <= 3674 && c.Y == 2563, $"{c.Name} at {c.Location}"));
+        }
+        finally
+        {
+            ClearOffice();
+        }
+    }
