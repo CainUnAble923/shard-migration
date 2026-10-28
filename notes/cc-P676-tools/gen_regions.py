@@ -20,7 +20,8 @@ The rules (notes/cc-P676-*.md says why):
      takes his rectangles and keeps everything else of pinned's (type, priority, music, rune name, entrance, children
      that still fit). Its go location is his, else pinned's if it is still inside, else the middle of its largest rect.
   3. One changed that the author did not draw keeps only its rectangles whose own area changed under 25 percent;
-     with none left it is dropped. New Haven, Haven Island and old Haven with every shop in them stay for S7 (P673),
+     with none left it is dropped, unless our server code looks it up by name (3b: then its stock rects stay; the
+     names are read from <code copy>/server/customizations, as namelookups.py does). New Haven, Haven Island and old Haven with every shop in them stay for S7 (P673),
      which moves New Haven into the author's Haven.
   4. The author's regions with no stock match are added: his 7 new towns guarded (TownRegion), his keeps and other
      towns unguarded with no housing, his dungeons DungeonRegion, his named wild areas BaseRegion.
@@ -51,6 +52,7 @@ MUSIC = set(open(os.path.join(HERE, 'musicnames.txt')).read().split())
 OUT_REL = os.path.join('server', 'data', 'regions-trammel.json')
 W, H = 7168, 4096
 REDRAW = 25.0
+GUARDED = {'TownRegion', 'GuardedRegion'}
 
 NEW_TOWNS = ['Valunstead', 'Hammerhill', 'Kameron Kove', 'Elmhaven', 'Kettleburg', 'Fort Yondall', 'Elandrim Nur Shaz']
 # the stock families S7 moves (P673 section 2, S7): kept as pinned has them here
@@ -96,6 +98,8 @@ class Land:
         n = idx[:(W // 8) * (H // 8), 1].astype(np.int64)
         n[idx[:(W // 8) * (H // 8), 0] < 0] = 0
         self.blk_statics = (n // 7).reshape(W // 8, H // 8)
+        self.td = uofiles.read_tiledata(uofiles.CLIENT)[1]
+        self.built = {}  # block -> holds a built static (is_wild), filled as asked
 
     def share(self, rects, what):
         n = hit = 0
@@ -150,6 +154,80 @@ def block_rects(blocks):
     return out
 
 
+def peel_to_town(land, rects, join=2, margin=1):
+    """A guard zone that follows the town (P676 item 1), in 8 x 8 blocks, inside the author's town rects (the blocks at
+    least half inside them):
+      1. the blocks with something built on them (built_static: walls, roofs, doors, floors);
+      2. joined: blocks within `join` blocks of two built ones are closed over (dilate, then erode), so a town of
+         scattered houses is one zone, not a patchwork;
+      3. filled: any block not reachable from outside his rects through unbuilt blocks (a yard or harbour inside the
+         walls) is the town's too;
+      4. `margin` blocks round that that hold some dry land or a built static, still inside his rects (OSI's zones
+         reach a little past a town's edge; not out to sea).
+    Open land, forest and sea that only touch the town from outside are left out.
+    Returns (block rects, blocks before, blocks after)."""
+    inside = set()
+    for (x1, y1, x2, y2) in rects:
+        for bx in range(max(0, x1) // 8, (min(W, x2) - 1) // 8 + 1):
+            for by in range(max(0, y1) // 8, (min(H, y2) - 1) // 8 + 1):
+                ox = max(0, min(x2, bx * 8 + 8) - max(x1, bx * 8))
+                oy = max(0, min(y2, by * 8 + 8) - max(y1, by * 8))
+                if ox * oy >= 32:
+                    inside.add((bx, by))
+
+    def grow(cells, r):
+        return {(bx + dx, by + dy) for (bx, by) in cells for dx in range(-r, r + 1) for dy in range(-r, r + 1)}
+
+    built = {b for b in inside if is_built(land, b)}
+    grown = grow(built, join)
+    closed = {c for c in grown if all(n in grown for n in grow({c}, join))} | built
+    town = closed & inside
+    open_ = inside - town
+    edge = [b for b in open_ if any((b[0] + dx, b[1] + dy) not in inside for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))]
+    outside, q = set(edge), list(edge)
+    while q:
+        bx, by = q.pop()
+        for n in ((bx + 1, by), (bx - 1, by), (bx, by + 1), (bx, by - 1)):
+            if n in open_ and n not in outside:
+                outside.add(n)
+                q.append(n)
+    core = inside - outside
+    # the margin reaches land, not open sea (a harbour enclosed by the town is already in core)
+    keep = core | {c for c in grow(core, margin) & inside if land.blk_dry[c] > 0 or is_built(land, c)}
+    return block_rects(keep), len(inside), len(keep)
+
+
+BUILT_FLAGS = uofiles.WALL | (1 << 10) | (1 << 28) | (1 << 29)   # wall, bridge, roof, door
+SURFACE, FOLIAGE = 1 << 9, 1 << 17
+
+
+NATURE = re.compile(r'flower|grass|mushroom|fern|leaves|weed|vine|reed|lily|rock|boulder|cattail|plant|bush|shrub|'
+                    r'stump|sapling|tree|cave|stalag|crystal|lava|water|sand|dirt')
+
+
+def built_static(td, tid):
+    """A static a town is built of: a wall, bridge, roof or door, or a surface that is not foliage (floors, stairs,
+    counters, tables). Trees, foliage, flowers (a surface in tiledata), rocks, grass and cave walls are not."""
+    f, name = td[tid]['flags'], (td[tid]['name'] or '').lower()
+    if NATURE.search(name):
+        return False
+    return bool(f & BUILT_FLAGS) or bool(f & SURFACE and not f & FOLIAGE)
+
+
+def is_built(land, b):
+    """An 8 x 8 block holding at least one built static (cached)."""
+    if b not in land.built:
+        bx, by = b
+        land.built[b] = any(built_static(land.td, s[3])
+                            for s in uofiles.statics_in(land.folder, 1, bx * 8, by * 8, bx * 8 + 7, by * 8 + 7))
+    return land.built[b]
+
+
+def is_wild(land, b):
+    """Open wild: an 8 x 8 block all dry land with nothing built on it (forest and meadow alike)."""
+    return land.blk_dry[b] == 64 and not is_built(land, b)
+
+
 def dock_spots():
     out, town = [], None
     for line in open(SPOTS, encoding='utf-8'):
@@ -187,10 +265,30 @@ def dock_rect(land, td, sx, sy, r=24):
     return (min(xs), min(ys), max(xs) + 1, max(ys) + 1), len(seen)
 
 
+def code_lookups(code, names):
+    """{stock name: first file} for each stock Trammel region name a server/customizations file names in a string on a
+    line that looks a region up (namelookups.py's rule, the shipped code only, not the tests)."""
+    out = {}
+    top = os.path.join(code, 'server', 'customizations')
+    for dp, dn, fn in os.walk(top):
+        for f in fn:
+            if not f.endswith('.cs'):
+                continue
+            p = os.path.join(dp, f)
+            for line in open(p, encoding='utf-8', errors='replace'):
+                if not re.search(r'Region|IsPartOf|Find\(|\.Name', line):
+                    continue
+                for n in names:
+                    if '"%s"' % n in line:
+                        out.setdefault(n, os.path.relpath(p, code).replace(os.sep, '/'))
+    return out
+
+
 def main():
     folder, code = sys.argv[1], sys.argv[2]
     pinned = json.load(open(PINNED, encoding='utf-8'))
     stock = [r for r in pinned if r['Map'] == 'Trammel']
+    looked_up = code_lookups(code, {s.get('Name') for s in stock if s.get('Name')})
     rows = list(csv.DictReader(open(CHANGED, newline='')))
     assert len(rows) == len(stock) and all(r['name'] == (s.get('Name') or '') for r, s in zip(rows, stock)), 'P669 csv order'
     pct = [float(r['percentChanged']) for r in rows]
@@ -231,6 +329,10 @@ def main():
         a = a_top.get(norm(name)) if s.get('Name') and not pn else None
         if a:
             rects = [(x1, y1, x2 + 1, y2 + 1) for (x1, y1, x2, y2) in a[4] if x2 >= x1]
+            peeled = ''
+            if r.get('$type') in GUARDED:  # the guard zone follows the town, not his whole rect (P676 item 1)
+                rects, b0, b1 = peel_to_town(land, rects)
+                peeled = ', guard zone peeled to the town: %d of %d blocks' % (b1, b0)
             r['Area'] = area(rects)
             go = r.get('GoLocation')
             if a[5]:
@@ -241,7 +343,7 @@ def main():
             if a[6] and 'Entrance' in r:
                 r['Entrance'] = {'x': int(a[6]['x']), 'y': int(a[6]['y']), 'z': int(a[6].get('z', 0))}
             out.append(r); kept_names.add(name)
-            log.append(('redrawn from the author', name, pct[i], '%d rects (pinned %d)' % (len(rects), len(rects_of(s)))))
+            log.append(('redrawn from the author', name, pct[i], '%d rects (pinned %d)%s' % (len(rects), len(rects_of(s)), peeled)))
             continue
         keep = [q for q in rects_of(s) if cmp.changed_share(q) < REDRAW]
         if keep:
@@ -252,6 +354,10 @@ def main():
                 r['GoLocation'] = {'x': (big[0] + big[2]) // 2, 'y': (big[1] + big[3]) // 2, 'z': go.get('z', 0)}
             out.append(r); kept_names.add(name)
             log.append(('clipped', name, pct[i], '%d of %d rects kept (each under 25 percent changed)' % (len(keep), len(rects_of(s)))))
+        elif name in looked_up:
+            out.append(r); kept_names.add(name)
+            log.append(('kept by name', name, pct[i], 'our code looks it up by name (%s); its land changed and the author '
+                        'drew no region of that name, so its stock rects stay, on dry SoS land' % looked_up[name]))
         else:
             dropped.add(name)
             log.append(('dropped', name, pct[i], 'the land under it changed and the author drew no region of that name'))
@@ -267,8 +373,9 @@ def main():
             continue
         e = {'Map': 'Trammel', 'Name': name, 'Priority': 50, 'Area': area(rects)}
         if typ == 'TownRegion' and name in NEW_TOWNS + ['Lord British Castle']:
-            e = {'$type': 'TownRegion', **e}
-            why = 'the author\'s town, guarded'
+            rects, b0, b1 = peel_to_town(land, rects)
+            e = {'$type': 'TownRegion', **e, 'Area': area(rects)}
+            why = 'the author\'s town, guarded; guard zone peeled to the town: %d of %d blocks' % (b1, b0)
         elif typ == 'TownRegion':
             e = {'$type': 'NoHousingRegion', **e}
             why = 'the author\'s keep or hamlet: no housing, no guards (S10 decides its people)'
@@ -348,9 +455,9 @@ def main():
 
     # children after their parents (pinned order already is; added ones are top level or name a parent above)
     names = [r.get('Name') for r in out]
-    for r in out:
+    for i, r in enumerate(out):  # by position: pinned has unnamed children (Jhelom's)
         pn = parent_name(r)
-        assert not pn or pn in names[:names.index(r.get('Name'))], ('parent after child', r.get('Name'), pn)
+        assert not pn or pn in names[:i], ('parent after child', r.get('Name'), pn)
     named = collections.Counter(r.get('Name') for r in out if r.get('Name'))
     assert all(v == 1 for v in named.values()), [k for k, v in named.items() if v > 1]
     path = os.path.join(code, OUT_REL)
