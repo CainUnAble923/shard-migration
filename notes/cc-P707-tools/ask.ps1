@@ -1,0 +1,6 @@
+# cc-P707: the question for Chase after Claude Code stopped the play-through run for low memory.
+& powershell.exe -NoProfile -ExecutionPolicy Bypass -File 'D:\UO\golem\Ask-Chase.ps1' `
+    -Question 'P707 (the Wakening Isle play-through): Claude Code stopped my play-through run because this PC was down to about 1 GB of free memory (several Golems building at once). I may not restart it on my own. What is done: the private isle shard, the bot route through the first five lessons on a real server, and two newcomer blockers on the farm fixed with tests (nobody was hurt to bandage, and a newcomer without Healing could not finish the bandage step); the build is green (2697 tests). Still to do: the rest of the route (yard, bank, lodge, vision, dock to Rook), the party and copy-reset check, and the TazUO shots and vision recording. All scripts are ready; it is about an hour of shard time when memory allows. How should I go on?' `
+    -Choice 'Resume now|A fresh session on golem/Iron/P707 restarts the private shard and finishes the route, the copies check and the shots' `
+    -Choice2 'Resume tonight|Wait until the other Golems are idle (fewer builds), then resume the same way' `
+    -Choice3 'Merge what is done|Merge the two farm fixes and the hold setting now; the play-through and shots become their own prompt'
