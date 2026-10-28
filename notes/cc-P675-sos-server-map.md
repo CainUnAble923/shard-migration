@@ -154,6 +154,7 @@ lock taken and released; Windows 3.4 to 3.6 GB available, the Docker VM 13 GB fr
   with the client's overrides built on the SoS base and today's patch, TazUO from `D:\UO\golems\Iron\tazuo-p670\client`)
   and `scenes.json` (Valunstead on Trammel, Felucca and the Fold; the beach on Trammel and Felucca; Passage of Lost
   Souls level 2). None of them has been run yet.
+- **P716 (the shots):** see `notes\cc-P716-sos-s2-tazuo-shots.md`.
 - **Mid-flight:** nothing. No container of mine is running; no lock is held; the scratch overlay is in this session's
   scratchpad and is rebuilt by `overlay-run.ps1` in about 5 s.
 

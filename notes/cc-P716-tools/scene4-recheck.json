@@ -1,0 +1,26 @@
+[
+ {
+  "name": "4-passage-of-lost-souls-2-player-trammel-admin-felucca",
+  "restart": false,
+  "commands": [
+   "[global set Map 1 where playermobile Name == \"{player}\"",
+   "[global set Location (6202,2116,-9) where playermobile Name == \"{player}\"",
+   "[global set LogoutMap 1 where playermobile Name == \"{player}\"",
+   "[global set LogoutLocation (6202,2116,-9) where playermobile Name == \"{player}\"",
+   "[global set Map 0 where playermobile Name == \"{golem}\"",
+   "[global set Location (6202,2116,-9) where playermobile Name == \"{golem}\"",
+   "[global set LogoutMap 0 where playermobile Name == \"{golem}\"",
+   "[global set LogoutLocation (6202,2116,-9) where playermobile Name == \"{golem}\""
+  ]
+ },
+ {
+  "name": "5-where-is-the-player",
+  "restart": false,
+  "commands": [
+   "[global get Location where playermobile Name == \"{player}\"",
+   "[global get Map where playermobile Name == \"{player}\"",
+   "[global get Location where playermobile Name == \"{golem}\"",
+   "[global get Map where playermobile Name == \"{golem}\""
+  ]
+ }
+]

@@ -230,7 +230,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 579 prompts done, 5 more stopped early and not counted)
+### Queue (Golem on; 580 prompts done, 5 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -258,13 +258,13 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P720 isle-walkthrough-fixes-2 | done | 2026-10-28 |
 | P718 isle-walkthrough-fixes-1 | done | 2026-10-28 |
 | P717 isle-first | done | 2026-10-28 |
+| P716 sos-s2-tazuo-shots | done | 2026-10-28 |
 | P713 sos-map-switch | done | 2026-10-27 |
 | P710 cont-fixup-private-isle-copies | done | 2026-10-27 |
 | P709 gated-skills-and-start-choices | done | 2026-10-27 |
 | P707 isle-playthrough | done | 2026-10-27 |
 | P706 bot-runs-out-of-repo | done | 2026-10-27 |
 | P705 fix-p663-codex | done | 2026-10-27 |
-| P704 guild-hq-proposal | done | 2026-10-27 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 172 patches, 12 replacements
 
