@@ -1,0 +1,79 @@
+  Logger -> /build/modernuo/Distribution/Assemblies/Logger.dll
+  Server -> /build/modernuo/Distribution/Server.dll
+  UOContent -> /build/modernuo/Distribution/Assemblies/UOContent.dll
+  Application -> /build/modernuo/Distribution/ModernUO.dll
+  Server.Tests -> /build/modernuo/Projects/Server.Tests/bin/Release/net10.0/Server.Tests.dll
+  UOContent.Tests -> /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll
+Test run for /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.0+05679a7ab5 (64-bit .NET 10.0.7)
+[xUnit.net 00:00:00.29]   Discovering: UOContent.Tests
+[xUnit.net 00:00:00.58]   Discovered:  UOContent.Tests
+[xUnit.net 00:00:00.60]   Starting:    UOContent.Tests
+[06:25:15 INF] Loading world <s:Server.World>
+[06:25:15 INF] Loading world done (0 items, 0 mobiles) (0.01 seconds) <s:Server.World>
+[06:25:16 INF] Discovered 3 spawner JSON type(s) <s:Server.Engines.Spawners.SpawnerJsonSerializer>
+[06:25:16 INF] 0x00000001 "" is generating spawners from /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/Data/Spawns/shared/trammel/Outdoors.json <s:Server.Engines.Spawners.ImportSpawnersCommand>
+[06:25:16 WRN] map1.mul was not found. <s:Server.TileMatrix>
+[06:25:16 WRN] staidx1.mul was not found. <s:Server.TileMatrix>
+[06:25:16 WRN] statics1.mul was not found. <s:Server.TileMatrix>
+[06:25:17 INF] Generated 420 spawners (0.93 seconds, 0 failures) <s:Server.Engines.Spawners.ImportSpawnersCommand>
+[xUnit.net 00:00:02.32]     ShatteredLegacy.Tests.SosSpawnPlacementsVerification.ARealImportBuildsMovedSpawnersAtTheirNewHomeAndNoDroppedOne(facet: "Trammel") [FAIL]
+[xUnit.net 00:00:02.33]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:02.33]       Expected: (2091, 3412, 0)
+[xUnit.net 00:00:02.33]       Actual:   (2091, 3413, 0)
+[xUnit.net 00:00:02.33]       Stack Trace:
+[xUnit.net 00:00:02.33]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/SosSpawnPlacementsVerification.cs(116,0): at ShatteredLegacy.Tests.SosSpawnPlacementsVerification.ARealImportBuildsMovedSpawnersAtTheirNewHomeAndNoDroppedOne(String facet)
+[xUnit.net 00:00:02.33]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:02.33]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.33]       Output:
+[xUnit.net 00:00:02.33]         Trammel: shared/trammel/Outdoors.json, 420 spawners, 21 moved, 8 dropped
+[06:25:17 INF] 0x00000CAE "" is generating spawners from /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/Data/Spawns/shared/felucca/Outdoors.json <s:Server.Engines.Spawners.ImportSpawnersCommand>
+[06:25:17 WRN] map0.mul was not found. <s:Server.TileMatrix>
+[06:25:17 WRN] staidx0.mul was not found. <s:Server.TileMatrix>
+[06:25:17 WRN] statics0.mul was not found. <s:Server.TileMatrix>
+  Failed ShatteredLegacy.Tests.SosSpawnPlacementsVerification.ARealImportBuildsMovedSpawnersAtTheirNewHomeAndNoDroppedOne(facet: "Trammel") [1 s]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: (2091, 3412, 0)
+Actual:   (2091, 3413, 0)
+  Stack Trace:
+     at ShatteredLegacy.Tests.SosSpawnPlacementsVerification.ARealImportBuildsMovedSpawnersAtTheirNewHomeAndNoDroppedOne(String facet) in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/SosSpawnPlacementsVerification.cs:line 116
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Standard Output Messages:
+ Trammel: shared/trammel/Outdoors.json, 420 spawners, 21 moved, 8 dropped
+
+
+[06:25:18 INF] Generated 429 spawners (0.72 seconds, 0 failures) <s:Server.Engines.Spawners.ImportSpawnersCommand>
+[xUnit.net 00:00:03.15]     ShatteredLegacy.Tests.SosSpawnPlacementsVerification.ARealImportBuildsMovedSpawnersAtTheirNewHomeAndNoDroppedOne(facet: "Felucca") [FAIL]
+[xUnit.net 00:00:03.15]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:03.15]       Expected: (2552, 136, 20)
+[xUnit.net 00:00:03.15]       Actual:   (2549, 136, 0)
+[xUnit.net 00:00:03.15]       Stack Trace:
+[xUnit.net 00:00:03.15]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/SosSpawnPlacementsVerification.cs(116,0): at ShatteredLegacy.Tests.SosSpawnPlacementsVerification.ARealImportBuildsMovedSpawnersAtTheirNewHomeAndNoDroppedOne(String facet)
+[xUnit.net 00:00:03.15]            at InvokeStub_SosSpawnPlacementsVerification.ARealImportBuildsMovedSpawnersAtTheirNewHomeAndNoDroppedOne(Object, Span`1)
+[xUnit.net 00:00:03.15]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:03.15]       Output:
+[xUnit.net 00:00:03.15]         Felucca: shared/felucca/Outdoors.json, 429 spawners, 21 moved, 8 dropped
+[xUnit.net 00:00:03.30]   Finished:    UOContent.Tests
+  Failed ShatteredLegacy.Tests.SosSpawnPlacementsVerification.ARealImportBuildsMovedSpawnersAtTheirNewHomeAndNoDroppedOne(facet: "Felucca") [827 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: (2552, 136, 20)
+Actual:   (2549, 136, 0)
+  Stack Trace:
+     at ShatteredLegacy.Tests.SosSpawnPlacementsVerification.ARealImportBuildsMovedSpawnersAtTheirNewHomeAndNoDroppedOne(String facet) in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/SosSpawnPlacementsVerification.cs:line 116
+   at InvokeStub_SosSpawnPlacementsVerification.ARealImportBuildsMovedSpawnersAtTheirNewHomeAndNoDroppedOne(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ Felucca: shared/felucca/Outdoors.json, 429 spawners, 21 moved, 8 dropped
+
+
+  Passed ShatteredLegacy.Tests.SosSpawnPlacementsVerification.EveryRowIsAStockSpawnerOfItsFacetOnceAndEitherMovedOrDropped [141 ms]
+
+Test Run Failed.
+Total tests: 3
+     Passed: 1
+     Failed: 2
+ Total time: 3.5738 Seconds
