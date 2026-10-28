@@ -1,0 +1,164 @@
+  Logger -> /build/modernuo/Distribution/Assemblies/Logger.dll
+  Server -> /build/modernuo/Distribution/Server.dll
+  UOContent -> /build/modernuo/Distribution/Assemblies/UOContent.dll
+  Application -> /build/modernuo/Distribution/ModernUO.dll
+  Server.Tests -> /build/modernuo/Projects/Server.Tests/bin/Release/net10.0/Server.Tests.dll
+  UOContent.Tests -> /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll
+Test run for /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.0+05679a7ab5 (64-bit .NET 10.0.7)
+[xUnit.net 00:00:00.15]   Discovering: UOContent.Tests
+[xUnit.net 00:00:00.45]   Discovered:  UOContent.Tests
+[xUnit.net 00:00:00.47]   Starting:    UOContent.Tests
+[08:26:21 INF] Loading world <s:Server.World>
+[08:26:21 INF] Loading world done (0 items, 0 mobiles) (0.01 seconds) <s:Server.World>
+[08:26:21 INF] Discovered 3 spawner JSON type(s) <s:Server.Engines.Spawners.SpawnerJsonSerializer>
+[08:26:22 INF] The Fold: registered 17 maps (32-48) on Trammel's files <s:Server.FoldMaps>
+[xUnit.net 00:00:02.89]     ShatteredLegacy.Tests.FoldVerification.FoldGotoIsForStaffOnTheTestShardOnly [FAIL]
+[xUnit.net 00:00:02.89]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:02.89]       Expected: (6638, 3993)
+[xUnit.net 00:00:02.89]       Actual:   (6214, 2001)
+[xUnit.net 00:00:02.89]       Stack Trace:
+[xUnit.net 00:00:02.89]         /build/modernuo/Projects/UOContent.Tests/Tests/Regions/FoldVerification.cs(386,0): at ShatteredLegacy.Tests.FoldVerification.FoldGotoIsForStaffOnTheTestShardOnly()
+[xUnit.net 00:00:02.89]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:02.89]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.89]       Output:
+[xUnit.net 00:00:02.89]         You are on TheFold 1 (map 33) at (6214, 2001, 0).
+  Failed ShatteredLegacy.Tests.FoldVerification.FoldGotoIsForStaffOnTheTestShardOnly [632 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: (6638, 3993)
+Actual:   (6214, 2001)
+  Stack Trace:
+     at ShatteredLegacy.Tests.FoldVerification.FoldGotoIsForStaffOnTheTestShardOnly() in /build/modernuo/Projects/UOContent.Tests/Tests/Regions/FoldVerification.cs:line 386
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ You are on TheFold 1 (map 33) at (6214, 2001, 0).
+
+
+  Passed ShatteredLegacy.Tests.FoldVerification.ASaveAndReloadKeepsACharacterOnMapForty [28 ms]
+[xUnit.net 00:00:03.78]     ShatteredLegacy.Tests.FoldVerification.APlayerOn32And40StandsOnTrammelsTileAndZ [FAIL]
+[xUnit.net 00:00:03.78]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:03.78]       Expected: 3
+[xUnit.net 00:00:03.78]       Actual:   168
+[xUnit.net 00:00:03.78]       Stack Trace:
+[xUnit.net 00:00:03.78]         /build/modernuo/Projects/UOContent.Tests/Tests/Regions/FoldVerification.cs(151,0): at ShatteredLegacy.Tests.FoldVerification.APlayerOn32And40StandsOnTrammelsTileAndZ()
+[xUnit.net 00:00:03.78]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:03.78]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:03.78]       Output:
+[xUnit.net 00:00:03.78]         TheFold 504,384: land 0x00A8 Z -5, stands at Z -5, statics 
+[xUnit.net 00:00:03.78]         TheFold 8 504,384: land 0x00A8 Z -5, stands at Z -5, statics 
+[xUnit.net 00:00:03.78]         TheFold 479,388: land 0x00A8 Z -5, stands at Z -5, statics 
+[xUnit.net 00:00:03.78]         TheFold 8 479,388: land 0x00A8 Z -5, stands at Z -5, statics 
+[xUnit.net 00:00:03.78]         TheFold 3634,2586: land 0x07A2 Z 0, stands at Z 0, statics 
+[xUnit.net 00:00:03.78]         TheFold 8 3634,2586: land 0x07A2 Z 0, stands at Z 0, statics 
+[xUnit.net 00:00:03.78]         TheFold 6638,3993: land 0x0244 Z 0, stands at Z 0, statics 
+[xUnit.net 00:00:03.78]         TheFold 8 6638,3993: land 0x0244 Z 0, stands at Z 0, statics 
+[xUnit.net 00:00:03.79]     ShatteredLegacy.Tests.FoldVerification.APlayerFoundOnTrammelsMirrorIsSentToNewHaven [FAIL]
+[xUnit.net 00:00:03.79]       Assert.IsType() Failure: Value is not the exact type
+[xUnit.net 00:00:03.79]       Expected: typeof(Server.Regions.FoldMirrorRegion)
+[xUnit.net 00:00:03.79]       Actual:   typeof(Server.Region)
+[xUnit.net 00:00:03.79]       Stack Trace:
+[xUnit.net 00:00:03.79]         /build/modernuo/Projects/UOContent.Tests/Tests/Regions/FoldVerification.cs(227,0): at ShatteredLegacy.Tests.FoldVerification.APlayerFoundOnTrammelsMirrorIsSentToNewHaven()
+[xUnit.net 00:00:03.79]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:03.79]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:03.80]     ShatteredLegacy.Tests.SosMapsVerification.FeluccaReadsTrammelsFileIndexAndKeepsItsOwnRules [FAIL]
+[xUnit.net 00:00:03.80]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:03.80]       Expected: 1
+[xUnit.net 00:00:03.80]       Actual:   0
+[xUnit.net 00:00:03.80]       Stack Trace:
+[xUnit.net 00:00:03.80]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/SosMapsVerification.cs(59,0): at ShatteredLegacy.Tests.SosMapsVerification.FeluccaReadsTrammelsFileIndexAndKeepsItsOwnRules()
+[xUnit.net 00:00:03.80]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:03.80]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:03.80]     ShatteredLegacy.Tests.SosMapsVerification.APlayerOnTrammelFeluccaAndTheFoldAtValunsteadStandsOnSosTileAndZ [FAIL]
+[xUnit.net 00:00:03.80]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:03.80]       Expected: 3
+[xUnit.net 00:00:03.80]       Actual:   168
+[xUnit.net 00:00:03.80]       Stack Trace:
+[xUnit.net 00:00:03.80]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/SosMapsVerification.cs(100,0): at ShatteredLegacy.Tests.SosMapsVerification.APlayerOnTrammelFeluccaAndTheFoldAtValunsteadStandsOnSosTileAndZ()
+[xUnit.net 00:00:03.80]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:03.80]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:03.80]       Output:
+[xUnit.net 00:00:03.80]         Trammel: 504,384 land 0x00A8 Z -5, stands at Z -5; 479,388 land 0x00A8 Z -5, statics 
+[xUnit.net 00:00:04.31]     ShatteredLegacy.Tests.MapCheckRealDataVerification.TheRealAdapterReadsTheSosMapAsTheIndependentUopReadDid [FAIL]
+[xUnit.net 00:00:04.31]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:04.31]       Expected: 6
+[xUnit.net 00:00:04.31]       Actual:   1001
+[xUnit.net 00:00:04.31]       Stack Trace:
+[xUnit.net 00:00:04.31]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/MapCheckRealDataVerification.cs(93,0): at ShatteredLegacy.Tests.MapCheckRealDataVerification.TheRealAdapterReadsTheSosMapAsTheIndependentUopReadDid()
+[xUnit.net 00:00:04.31]            at System.RuntimeMethodHandle.InvokeMethod(ObjectHandleOnStack target, Void** arguments, ObjectHandleOnStack sig, BOOL isConstructor, ObjectHandleOnStack result)
+[xUnit.net 00:00:04.31]            at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Passed ShatteredLegacy.Tests.FoldVerification.HousingRecallMarkAndGateAreRefusedOnTheFold [858 ms]
+  Failed ShatteredLegacy.Tests.FoldVerification.APlayerOn32And40StandsOnTrammelsTileAndZ [8 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 3
+Actual:   168
+  Stack Trace:
+     at ShatteredLegacy.Tests.FoldVerification.APlayerOn32And40StandsOnTrammelsTileAndZ() in /build/modernuo/Projects/UOContent.Tests/Tests/Regions/FoldVerification.cs:line 151
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ TheFold 504,384: land 0x00A8 Z -5, stands at Z -5, statics 
+ TheFold 8 504,384: land 0x00A8 Z -5, stands at Z -5, statics 
+ TheFold 479,388: land 0x00A8 Z -5, stands at Z -5, statics 
+ TheFold 8 479,388: land 0x00A8 Z -5, stands at Z -5, statics 
+ TheFold 3634,2586: land 0x07A2 Z 0, stands at Z 0, statics 
+ TheFold 8 3634,2586: land 0x07A2 Z 0, stands at Z 0, statics 
+ TheFold 6638,3993: land 0x0244 Z 0, stands at Z 0, statics 
+ TheFold 8 6638,3993: land 0x0244 Z 0, stands at Z 0, statics 
+
+
+  Failed ShatteredLegacy.Tests.FoldVerification.APlayerFoundOnTrammelsMirrorIsSentToNewHaven [2 ms]
+  Error Message:
+   Assert.IsType() Failure: Value is not the exact type
+Expected: typeof(Server.Regions.FoldMirrorRegion)
+Actual:   typeof(Server.Region)
+  Stack Trace:
+     at ShatteredLegacy.Tests.FoldVerification.APlayerFoundOnTrammelsMirrorIsSentToNewHaven() in /build/modernuo/Projects/UOContent.Tests/Tests/Regions/FoldVerification.cs:line 227
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed ShatteredLegacy.Tests.FoldVerification.MapsThirtyTwoToFortyEightAreRegisteredOnTrammelsFiles [2 ms]
+  Passed ShatteredLegacy.Tests.FoldVerification.AnUnregisteredIndexInASaveIsReportedNotCrashedOn [10 ms]
+  Failed ShatteredLegacy.Tests.SosMapsVerification.FeluccaReadsTrammelsFileIndexAndKeepsItsOwnRules [< 1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0
+  Stack Trace:
+     at ShatteredLegacy.Tests.SosMapsVerification.FeluccaReadsTrammelsFileIndexAndKeepsItsOwnRules() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/SosMapsVerification.cs:line 59
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed ShatteredLegacy.Tests.SosMapsVerification.APlayerOnTrammelFeluccaAndTheFoldAtValunsteadStandsOnSosTileAndZ [< 1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 3
+Actual:   168
+  Stack Trace:
+     at ShatteredLegacy.Tests.SosMapsVerification.APlayerOnTrammelFeluccaAndTheFoldAtValunsteadStandsOnSosTileAndZ() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/SosMapsVerification.cs:line 100
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ Trammel: 504,384 land 0x00A8 Z -5, stands at Z -5; 479,388 land 0x00A8 Z -5, statics 
+
+
+  Passed ShatteredLegacy.Tests.MapCheckRealDataVerification.NewHavenStaticsWalkabilityAndShore [509 ms]
+  Failed ShatteredLegacy.Tests.MapCheckRealDataVerification.TheRealAdapterReadsTheSosMapAsTheIndependentUopReadDid [< 1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 6
+Actual:   1001
+  Stack Trace:
+     at ShatteredLegacy.Tests.MapCheckRealDataVerification.TheRealAdapterReadsTheSosMapAsTheIndependentUopReadDid() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/MapCheckRealDataVerification.cs:line 93
+   at System.RuntimeMethodHandle.InvokeMethod(ObjectHandleOnStack target, Void** arguments, ObjectHandleOnStack sig, BOOL isConstructor, ObjectHandleOnStack result)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Passed ShatteredLegacy.Tests.MapCheckRealDataVerification.ValidateSpotsOverThePinnedSpawnFiles [1 s]
+[xUnit.net 00:00:08.04]   Finished:    UOContent.Tests
+  Passed ShatteredLegacy.Tests.MapCheckRealDataVerification.ValidateSpotsOverThePinnedDecorationFiles [2 s]
+
+Test Run Failed.
+Total tests: 13
+     Passed: 7
+     Failed: 6
+ Total time: 8.3094 Seconds

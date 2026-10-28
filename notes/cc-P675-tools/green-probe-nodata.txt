@@ -1,0 +1,130 @@
+  Logger -> /build/modernuo/Distribution/Assemblies/Logger.dll
+  Server -> /build/modernuo/Distribution/Server.dll
+  UOContent -> /build/modernuo/Distribution/Assemblies/UOContent.dll
+  Application -> /build/modernuo/Distribution/ModernUO.dll
+  Server.Tests -> /build/modernuo/Projects/Server.Tests/bin/Release/net10.0/Server.Tests.dll
+  UOContent.Tests -> /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll
+Test run for /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.0+05679a7ab5 (64-bit .NET 10.0.7)
+[xUnit.net 00:00:00.15]   Discovering: UOContent.Tests
+[xUnit.net 00:00:00.45]   Discovered:  UOContent.Tests
+[xUnit.net 00:00:00.48]   Starting:    UOContent.Tests
+[08:34:27 INF] Loading world <s:Server.World>
+[08:34:27 INF] Loading world done (0 items, 0 mobiles) (0.01 seconds) <s:Server.World>
+[08:34:28 INF] Discovered 3 spawner JSON type(s) <s:Server.Engines.Spawners.SpawnerJsonSerializer>
+[08:34:28 WRN] map1.mul was not found. <s:Server.TileMatrix>
+[08:34:28 WRN] staidx1.mul was not found. <s:Server.TileMatrix>
+[08:34:28 WRN] statics1.mul was not found. <s:Server.TileMatrix>
+[08:34:28 INF] The Fold: registered 17 maps (32-48) on Trammel's files <s:Server.FoldMaps>
+[08:34:28 INF] Felucca reads file index 1, Trammel's map (the Siege of Sosaria swap) <s:Server.SosMaps>
+[08:34:28 WRN] map1.mul was not found. <s:Server.TileMatrix>
+[08:34:28 WRN] staidx1.mul was not found. <s:Server.TileMatrix>
+[08:34:28 WRN] statics1.mul was not found. <s:Server.TileMatrix>
+[08:34:28 WRN] map1.mul was not found. <s:Server.TileMatrix>
+[08:34:28 WRN] staidx1.mul was not found. <s:Server.TileMatrix>
+[08:34:28 WRN] statics1.mul was not found. <s:Server.TileMatrix>
+[08:34:28 WRN] map1.mul was not found. <s:Server.TileMatrix>
+[08:34:28 WRN] staidx1.mul was not found. <s:Server.TileMatrix>
+[08:34:28 WRN] statics1.mul was not found. <s:Server.TileMatrix>
+[xUnit.net 00:00:01.34]     ShatteredLegacy.Tests.FoldVerification.APlayerOn32And40StandsOnTrammelsTileAndZ [SKIP]
+[xUnit.net 00:00:01.34]       Requires UO client tile data (tiledata.mul); absent on CI.
+[08:34:28 WRN] map5.mul was not found. <s:Server.TileMatrix>
+[08:34:28 WRN] staidx5.mul was not found. <s:Server.TileMatrix>
+[08:34:28 WRN] statics5.mul was not found. <s:Server.TileMatrix>
+  Passed ShatteredLegacy.Tests.RootdeepWayInVerification.W2_TheRegionRectanglesMatchTheBuiltFloors [18 ms]
+  Passed ShatteredLegacy.Tests.RootdeepWayInVerification.W1_TheHatchTakesAPlayerDownAndTheLadderLandsBesideIt [202 ms]
+  Passed ShatteredLegacy.Tests.FoldVerification.FoldGotoIsForStaffOnTheTestShardOnly [29 ms]
+  Passed ShatteredLegacy.Tests.FoldVerification.ASaveAndReloadKeepsACharacterOnMapForty [31 ms]
+  Passed ShatteredLegacy.Tests.FoldVerification.HousingRecallMarkAndGateAreRefusedOnTheFold [5 ms]
+  Skipped ShatteredLegacy.Tests.FoldVerification.APlayerOn32And40StandsOnTrammelsTileAndZ [< 1 ms]
+  Passed ShatteredLegacy.Tests.FoldVerification.APlayerFoundOnTrammelsMirrorIsSentToNewHaven [3 ms]
+  Passed ShatteredLegacy.Tests.FoldVerification.MapsThirtyTwoToFortyEightAreRegisteredOnTrammelsFiles [2 ms]
+  Passed ShatteredLegacy.Tests.FoldVerification.AnUnregisteredIndexInASaveIsReportedNotCrashedOn [3 ms]
+[08:34:28 INF] 0x00000062 "" is generating spawners from /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/Data/Spawns/shared/trammel/Outdoors.json <s:Server.Engines.Spawners.ImportSpawnersCommand>
+[08:34:29 INF] Generated 414 spawners (0.85 seconds, 0 failures) <s:Server.Engines.Spawners.ImportSpawnersCommand>
+  Passed ShatteredLegacy.Tests.ChestMimicVerification.TheServersTiledataForTheMimicIsOurs [7 ms]
+  Passed ShatteredLegacy.Tests.ChestMimicVerification.EachStateShowsItsRegisteredArtAndTheShutLidTakesNoDamage [6 ms]
+  Passed ShatteredLegacy.Tests.ChestMimicVerification.ItNeverMovesFromItsTile [7 ms]
+  Passed ShatteredLegacy.Tests.ChestMimicVerification.ItRoundTripsWithItsLevelFacingLookAndChest [4 ms]
+  Passed ShatteredLegacy.Tests.ChestMimicVerification.ATargetOnItsLookLandsOnItAndNothingReferencesPetMimic [27 ms]
+  Passed ShatteredLegacy.Tests.ChestMimicVerification.AChestBecomesAMimicOnItsTileAndFacingInOneStep [< 1 ms]
+  Passed ShatteredLegacy.Tests.ChestMimicVerification.EachLevelHasItsRowOfStatsAndLevelFourIsOsisMimic [4 ms]
+  Passed ShatteredLegacy.Tests.ChestMimicVerification.DeathLeavesOnlyTheDeadMimicCorpseWithTheChestsContentsAndADeleteRestoresTheChest [2 ms]
+  Passed ShatteredLegacy.Tests.SosSpawnPlacementsVerification.ARealImportBuildsMovedSpawnersAtTheirNewHomeAndNoDroppedOne(facet: "Trammel") [978 ms]
+[08:34:29 INF] 0x00000C8A "" is generating spawners from /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/Data/Spawns/shared/felucca/Outdoors.json <s:Server.Engines.Spawners.ImportSpawnersCommand>
+[08:34:29 WRN] map1.mul was not found. <s:Server.TileMatrix>
+[08:34:29 WRN] staidx1.mul was not found. <s:Server.TileMatrix>
+[08:34:29 WRN] statics1.mul was not found. <s:Server.TileMatrix>
+[08:34:30 INF] Generated 423 spawners (0.72 seconds, 0 failures) <s:Server.Engines.Spawners.ImportSpawnersCommand>
+[xUnit.net 00:00:03.32]     ShatteredLegacy.Tests.SosMapsVerification.APlayerOnTrammelFeluccaAndTheFoldAtValunsteadStandsOnSosTileAndZ [SKIP]
+[xUnit.net 00:00:03.32]       Requires UO client tile data (tiledata.mul); absent on CI.
+[xUnit.net 00:00:03.32]     ShatteredLegacy.Tests.MapCheckRealDataVerification.NewHavenStaticsWalkabilityAndShore [SKIP]
+[xUnit.net 00:00:03.32]       Requires UO client tile data (tiledata.mul); absent on CI.
+[xUnit.net 00:00:03.32]     ShatteredLegacy.Tests.MapCheckRealDataVerification.TheRealAdapterReadsTheSosMapAsTheIndependentUopReadDid [SKIP]
+[xUnit.net 00:00:03.32]       Requires UO client tile data (tiledata.mul); absent on CI.
+[xUnit.net 00:00:03.32]     ShatteredLegacy.Tests.MapCheckRealDataVerification.ValidateSpotsOverThePinnedSpawnFiles [SKIP]
+[xUnit.net 00:00:03.32]       Requires UO client tile data (tiledata.mul); absent on CI.
+[xUnit.net 00:00:03.32]     ShatteredLegacy.Tests.MapCheckRealDataVerification.ValidateSpotsOverThePinnedDecorationFiles [SKIP]
+[xUnit.net 00:00:03.32]       Requires UO client tile data (tiledata.mul); absent on CI.
+[08:34:30 INF] Client: 127.0.0.1: Connected. [1 Online] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Disconnected. [0 Online] [p238875885ae484c] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Connected. [1 Online] <s:Server.Network.NetState>
+  Passed ShatteredLegacy.Tests.SosSpawnPlacementsVerification.ARealImportBuildsMovedSpawnersAtTheirNewHomeAndNoDroppedOne(facet: "Felucca") [801 ms]
+  Passed ShatteredLegacy.Tests.SosSpawnPlacementsVerification.EveryRowIsAStockSpawnerOfItsFacetOnceAndEitherMovedOrDropped [126 ms]
+  Passed ShatteredLegacy.Tests.SosMapsVerification.FeluccaReadsTrammelsFileIndexAndKeepsItsOwnRules [1 ms]
+  Skipped ShatteredLegacy.Tests.SosMapsVerification.APlayerOnTrammelFeluccaAndTheFoldAtValunsteadStandsOnSosTileAndZ [< 1 ms]
+  Skipped ShatteredLegacy.Tests.MapCheckRealDataVerification.NewHavenStaticsWalkabilityAndShore [< 1 ms]
+  Skipped ShatteredLegacy.Tests.MapCheckRealDataVerification.TheRealAdapterReadsTheSosMapAsTheIndependentUopReadDid [< 1 ms]
+  Skipped ShatteredLegacy.Tests.MapCheckRealDataVerification.ValidateSpotsOverThePinnedSpawnFiles [< 1 ms]
+  Skipped ShatteredLegacy.Tests.MapCheckRealDataVerification.ValidateSpotsOverThePinnedDecorationFiles [< 1 ms]
+  Passed ShatteredLegacy.Tests.ClimbingBootsVerification.TheLogbookRecordsTheTargetedBlockOnceAndCountsIt [36 ms]
+[08:34:30 INF] Client: 127.0.0.1: Connected. [2 Online] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Connected. [3 Online] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Disconnected. [2 Online] [p2383a81ac126493] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Disconnected. [1 Online] [p2384da21b428683] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Disconnected. [0 Online] [p238a991187b4dcb] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Connected. [1 Online] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Connected. [2 Online] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Connected. [3 Online] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Connected. [4 Online] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Connected. [5 Online] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Connected. [6 Online] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Connected. [7 Online] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Disconnected. [6 Online] [p23890be33a5b5b0] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Disconnected. [5 Online] [p2387f09073bc475] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Disconnected. [4 Online] [p23884b2d50c4420] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Disconnected. [3 Online] [p238d0ffd889b0a6] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Disconnected. [2 Online] [p238ef2faa2df8ce] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Disconnected. [1 Online] [p238509bdee83444] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Disconnected. [0 Online] [p238db2f818e37ef] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Connected. [1 Online] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Disconnected. [0 Online] [p2384a376667d350] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Connected. [1 Online] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Connected. [2 Online] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Disconnected. [1 Online] [p238cca00bb0eba7] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Disconnected. [0 Online] [p2382c3f04d5ba6a] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Connected. [1 Online] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Disconnected. [0 Online] [p238fe93544377c4] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Connected. [1 Online] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Disconnected. [0 Online] [p238fb01de4e1bb7] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Connected. [1 Online] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Disconnected. [0 Online] [p238912be7fece84] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Connected. [1 Online] <s:Server.Network.NetState>
+[08:34:30 INF] Client: 127.0.0.1: Disconnected. [0 Online] [p2382371ea2f40d3] <s:Server.Network.NetState>
+[xUnit.net 00:00:03.42]   Finished:    UOContent.Tests
+  Passed ShatteredLegacy.Tests.ClimbingBootsVerification.AHopLandsOnlyWithinRangeOnAnAllowedTile [20 ms]
+  Passed ShatteredLegacy.Tests.ClimbingBootsVerification.TheGatesRefuseOneShortOfEachAndTheUpgradeConsumesTheBootsBefore [13 ms]
+  Passed ShatteredLegacy.Tests.ClimbingBootsVerification.StaminaCostGrowsWithTheClimbAndTheCooldownApplies [1 ms]
+  Passed ShatteredLegacy.Tests.ClimbingBootsVerification.LedgeMemoryReturnsWithinThirtyTilesAndNotBeyond [3 ms]
+  Passed ShatteredLegacy.Tests.ClimbingBootsVerification.OnAClimbedTileOnlyMiningProspectingAndHoppingAreLeft [2 ms]
+  Passed ShatteredLegacy.Tests.ClimbingBootsVerification.TheAccountsBlocksRoundTripThroughASave [4 ms]
+  Passed ShatteredLegacy.Tests.ClimbingBootsVerification.TheRealTerrainRefusesALandingInsideAStatic [2 ms]
+  Passed ShatteredLegacy.Tests.ClimbingBootsVerification.AHopIsRefusedIntoATownADungeonAndAHouse [7 ms]
+  Passed ShatteredLegacy.Tests.ClimbingBootsVerification.PetsAreToldToStayAndThenToFollowAndNoneIsLost [2 ms]
+
+Test Run Successful.
+Total tests: 36
+     Passed: 30
+    Skipped: 6
+ Total time: 3.7009 Seconds
