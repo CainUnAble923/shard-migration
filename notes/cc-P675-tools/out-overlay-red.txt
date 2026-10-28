@@ -1,0 +1,130 @@
+== build on SoS (exit 0, 5.3 s)
+Shattered Legacy map: patched copies of map1LegacyMUL.uop (50760 cells, 3243 pieces added, 0 removed) in 4.2 s.
+map overlay: C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\010b2204-7c4d-4613-86c5-8288f972be7b\scratchpad\red\overlay
+  map1legacymul.uop=C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\010b2204-7c4d-4613-86c5-8288f972be7b\scratchpad\red\overlay\map1LegacyMUL.uop
+  statics1.mul=C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\010b2204-7c4d-4613-86c5-8288f972be7b\scratchpad\red\overlay\statics1.mul
+  staidx1.mul=C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\010b2204-7c4d-4613-86c5-8288f972be7b\scratchpad\red\overlay\staidx1.mul
+  stamp: uo-map 2
+  stamp: D:\UO\UltimaOnlineVanilla\map1LegacyMUL.uop 89965543 639242995082288940
+  stamp: D:\UO\UltimaOnlineVanilla\statics1.mul 20393786 639232349680000000
+  stamp: D:\UO\UltimaOnlineVanilla\staidx1.mul 5505024 639232349670000000
+  stamp: ops 0847DCE4D0FF8EA1FFED906479F28B504933112FACADD1934E3D806D22D0F6BC
+  stamp: also
+== again (the stamp skips) (exit 0, 1.5 s)
+map overlay: C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\010b2204-7c4d-4613-86c5-8288f972be7b\scratchpad\red\overlay
+  map1legacymul.uop=C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\010b2204-7c4d-4613-86c5-8288f972be7b\scratchpad\red\overlay\map1LegacyMUL.uop
+  statics1.mul=C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\010b2204-7c4d-4613-86c5-8288f972be7b\scratchpad\red\overlay\statics1.mul
+  staidx1.mul=C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\010b2204-7c4d-4613-86c5-8288f972be7b\scratchpad\red\overlay\staidx1.mul
+  stamp: uo-map 2
+  stamp: D:\UO\UltimaOnlineVanilla\map1LegacyMUL.uop 89965543 639242995082288940
+  stamp: D:\UO\UltimaOnlineVanilla\statics1.mul 20393786 639232349680000000
+  stamp: D:\UO\UltimaOnlineVanilla\staidx1.mul 5505024 639232349670000000
+  stamp: ops 0847DCE4D0FF8EA1FFED906479F28B504933112FACADD1934E3D806D22D0F6BC
+  stamp: also
+  map-stamp.txt                   287
+  map1LegacyMUL.uop        89,965,543
+  staidx1.mul               5,505,024
+  statics1.mul             20,416,487
+== refuse: map1.mul in the client data (exit 1, 0.8 s)
+powershell.exe : no map1LegacyMUL.uop in 
+C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\010b2204-7c4d-4613-8
+At D:\UO\golems\Iron\shard-migration\notes\cc-P675-tools\overlay-run.ps1:12 char:10
++     $o = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $s ...
++          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (no map1LegacyMU...204-7c4d-4613-8:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+6c5-8288f972be7b\scratchpad\red\ea-with-mul (-UoData)
+At C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\010b2204-7c4d-4613-86c5-8288f972be7b\scra
+tchpad\oldroot\docker\uo\Build-MapOverlay.ps1:31 char:78
++ ... gacyMUL.uop'))) { throw "no map1LegacyMUL.uop in $UoData (-UoData)" }
++                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (no map1LegacyMU...h-mul (-UoData):String) [], RuntimeException
+    + FullyQualifiedErrorId : no map1LegacyMUL.uop in C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard 
+   -migration\010b2204-7c4d-4613-86c5-8288f972be7b\scratchpad\red\ea-with-mul (-UoData)
+Copy-Item : Cannot find path 'C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\010b2204-7c4d-
+4613-86c5-8288f972be7b\scratchpad\oldroot\player-package\vendor\sos-trammel-map\files\base-map1legacymul.uop' because 
+it does not exist.
+At D:\UO\golems\Iron\shard-migration\notes\cc-P675-tools\overlay-run.ps1:31 char:85
++ ... dx1.mul') { Copy-Item -LiteralPath (Join-Path $files $f) -Destination ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:\Users\ckfle\...p1legacymul.uop:String) [Copy-Item], ItemNotFoundExce 
+   ption
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.CopyItemCommand
+ 
+Copy-Item : Cannot find path 'C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\010b2204-7c4d-
+4613-86c5-8288f972be7b\scratchpad\oldroot\player-package\vendor\sos-trammel-map\files\base-statics1.mul' because it 
+does not exist.
+At D:\UO\golems\Iron\shard-migration\notes\cc-P675-tools\overlay-run.ps1:31 char:85
++ ... dx1.mul') { Copy-Item -LiteralPath (Join-Path $files $f) -Destination ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:\Users\ckfle\...se-statics1.mul:String) [Copy-Item], ItemNotFoundExce 
+   ption
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.CopyItemCommand
+ 
+Copy-Item : Cannot find path 'C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\010b2204-7c4d-
+4613-86c5-8288f972be7b\scratchpad\oldroot\player-package\vendor\sos-trammel-map\files\base-staidx1.mul' because it 
+does not exist.
+At D:\UO\golems\Iron\shard-migration\notes\cc-P675-tools\overlay-run.ps1:31 char:85
++ ... dx1.mul') { Copy-Item -LiteralPath (Join-Path $files $f) -Destination ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:\Users\ckfle\...ase-staidx1.mul:String) [Copy-Item], ItemNotFoundExce 
+   ption
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.CopyItemCommand
+ 
+Exception calling "ReadAllBytes" with "1" argument(s): "Could not find file 'C:\Users\ckfle\AppData\Local\Temp\claude\D
+--UO-golems-Iron-shard-migration\010b2204-7c4d-4613-86c5-8288f972be7b\scratchpad\red\base-bad\base-staidx1.mul'."
+At D:\UO\golems\Iron\shard-migration\notes\cc-P675-tools\overlay-run.ps1:32 char:1
++ $b = [IO.File]::ReadAllBytes((Join-Path $bad 'base-staidx1.mul')); $b ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : FileNotFoundException
+ 
+Cannot index into a null array.
+At D:\UO\golems\Iron\shard-migration\notes\cc-P675-tools\overlay-run.ps1:32 char:68
++ ... oin-Path $bad 'base-staidx1.mul')); $b[100] = $b[100] -bxor 1; [IO.Fi ...
++                                         ~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (:) [], RuntimeException
+    + FullyQualifiedErrorId : NullArray
+ 
+Exception calling "WriteAllBytes" with "2" argument(s): "Value cannot be null.
+Parameter name: bytes"
+At D:\UO\golems\Iron\shard-migration\notes\cc-P675-tools\overlay-run.ps1:32 char:95
++ ... 0] -bxor 1; [IO.File]::WriteAllBytes((Join-Path $bad 'base-staidx1.mu ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : ArgumentNullException
+ 
+== refuse: a base file changed (exit 1, 0.8 s)
+powershell.exe : 
+C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\010b2204-7c4d-4613-86c5-8288f972be7b\scratch
+At D:\UO\golems\Iron\shard-migration\notes\cc-P675-tools\overlay-run.ps1:12 char:10
++     $o = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $s ...
++          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C:\Users\ckfle\...972be7b\scratch:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+pad\oldroot\docker\uo\Build-MapOverlay.ps1 : A parameter cannot be found that matches parameter name 'Base'.
+    + CategoryInfo          : InvalidArgument: (:) [Build-MapOverlay.ps1], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : NamedParameterNotFound,Build-MapOverlay.ps1
+Remove-Item : Cannot find path 'C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\010b2204-7c4
+d-4613-86c5-8288f972be7b\scratchpad\red\base-bad\base-staidx1.mul' because it does not exist.
+At D:\UO\golems\Iron\shard-migration\notes\cc-P675-tools\overlay-run.ps1:36 char:1
++ Remove-Item -LiteralPath (Join-Path $bad 'base-staidx1.mul') -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:\Users\ckfle\...ase-staidx1.mul:String) [Remove-Item], ItemNotFoundEx 
+   ception
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.RemoveItemCommand
+ 
+== refuse: a base file missing (exit 1, 0.8 s)
+powershell.exe : 
+C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\010b2204-7c4d-4613-86c5-8288f972be7b\scratch
+At D:\UO\golems\Iron\shard-migration\notes\cc-P675-tools\overlay-run.ps1:12 char:10
++     $o = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $s ...
++          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C:\Users\ckfle\...972be7b\scratch:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+pad\oldroot\docker\uo\Build-MapOverlay.ps1 : A parameter cannot be found that matches parameter name 'Base'.
+    + CategoryInfo          : InvalidArgument: (:) [Build-MapOverlay.ps1], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : NamedParameterNotFound,Build-MapOverlay.ps1

@@ -1,0 +1,40 @@
+======================================================================
+FAIL: test_4_the_shipped_patch_is_the_burrows_and_the_isle_only (__main__.Shipped.test_4_the_shipped_patch_is_the_burrows_and_the_isle_only)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UO\golems\Iron\shard-migration\tools\tests\test_mapops.py", line 181, in test_4_the_shipped_patch_is_the_burrows_and_the_isle_only
+    self.assertTrue(inside(x, y, BURROWS) or inside(x, y, ISLE), (x, y, hex(tid)))
+AssertionError: False is not true : (3615, 2616, '0x310a')
+
+======================================================================
+FAIL: test_5_the_shipped_patch_is_made_on_the_sos_map (__main__.Shipped.test_5_the_shipped_patch_is_made_on_the_sos_map)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UO\golems\Iron\shard-migration\tools\tests\test_mapops.py", line 201, in test_5_the_shipped_patch_is_made_on_the_sos_map
+    self.assertEqual(([], []), (drifted, missing))
+AssertionError: Tuples differ: ([], []) != ([216901, 217415, 231239, 231751], [(231751[75 chars]0))])
+
+First differing element 0:
+[]
+[216901, 217415, 231239, 231751]
+
+- ([], [])
++ ([216901, 217415, 231239, 231751],
++  [(231751, (641, 2, 6, 0, 0)),
++   (231751, (641, 3, 6, 0, 0)),
++   (231751, (641, 4, 6, 0, 0))])
+
+======================================================================
+FAIL: test_6_the_way_in_from_old_haven_is_gone (__main__.Shipped.test_6_the_way_in_from_old_haven_is_gone)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UO\golems\Iron\shard-migration\tools\tests\test_mapops.py", line 212, in test_6_the_way_in_from_old_haven_is_gone
+    self.assertEqual(set(), blocks & set(fps), box)
+AssertionError: Items in the second set but not the first:
+231751
+231239 : (3608, 2616, 3623, 2623)
+
+----------------------------------------------------------------------
+Ran 4 tests in 1.959s
+
+FAILED (failures=3)
