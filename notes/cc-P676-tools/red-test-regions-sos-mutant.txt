@@ -1,0 +1,33 @@
+D:\UO\golems\Iron\shard-migration\tools\tests\test_regions_sos.py:70: ResourceWarning: unclosed file <_io.TextIOWrapper name='D:\\UO\\golems\\Iron\\p676-work\\mutant-sea-rect.json' mode='r' encoding='utf-8'>
+  cls.regions = json.load(open(REGIONS, encoding='utf-8'))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+D:\UO\golems\Iron\shard-migration\tools\tests\test_regions_sos.py:71: ResourceWarning: unclosed file <_io.TextIOWrapper name='D:\\UO\\golems\\Iron\\shard-migration\\notes\\cc-P676-tools\\out-decisions.csv' mode='r' encoding='cp1252'>
+  cls.decided = {r['region']: r['decision'] for r in csv.DictReader(open(DECISIONS))}
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+test_1_every_rect_on_dry_land_or_its_own_water (__main__.Regions.test_1_every_rect_on_dry_land_or_its_own_water) ... D:\UO\golems\Iron\shard-migration\notes\cc-P676-tools\gen_regions.py:51: ResourceWarning: unclosed file <_io.TextIOWrapper name='D:\\UO\\golems\\Iron\\shard-migration\\notes\\cc-P676-tools\\musicnames.txt' mode='r' encoding='cp1252'>
+  MUSIC = set(open(os.path.join(HERE, 'musicnames.txt')).read().split())
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+D:\UO\golems\Iron\shard-migration\notes\cc-P676-tools\gen_regions.py:97: ResourceWarning: unclosed file <_io.BufferedReader name='D:\\UO\\golems\\Iron\\p676-work\\sos-overlay\\staidx1.mul'>
+  idx = np.frombuffer(open(os.path.join(folder, 'staidx1.mul'), 'rb').read(), dtype='<i4').reshape(-1, 3)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+FAIL
+
+======================================================================
+FAIL: test_1_every_rect_on_dry_land_or_its_own_water (__main__.Regions.test_1_every_rect_on_dry_land_or_its_own_water)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UO\golems\Iron\shard-migration\tools\tests\test_regions_sos.py", line 90, in test_1_every_rect_on_dry_land_or_its_own_water
+    self.assertEqual([], bad)
+AssertionError: Lists differ: [] != [('Britain', (2000, 3900, 2010, 3910), "open sea, away from the region's land")]
+
+Second list contains 1 additional elements.
+First extra element 0:
+('Britain', (2000, 3900, 2010, 3910), "open sea, away from the region's land")
+
+- []
++ [('Britain', (2000, 3900, 2010, 3910), "open sea, away from the region's land")]
+
+----------------------------------------------------------------------
+Ran 1 test in 2.133s
+
+FAILED (failures=1)
