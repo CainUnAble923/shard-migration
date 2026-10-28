@@ -114,8 +114,80 @@ def server_items():
     for m in re.finditer(r'\((0x[0-9A-Fa-f]+), TutorialWorld\.(\w+), "([^"]+)"\)', cp):
         bx, by = pts[m.group(2)]
         props.append((bx, by, None, int(m.group(1), 16), m.group(3)))
+    # cc-P720: each lesson's signpost beside its stop (SignPoint) and the League's notice board in the lodge
+    for m in re.finditer(r'"(core\.\w+)" => new Point2D\((\d+), (\d+)\),', cp):
+        props.append((int(m.group(2)), int(m.group(3)), None, 0xA854, 'sign ' + m.group(1)))
+    m = re.search(r'LeagueBoard = new\((\d+), (\d+)\)', cp)
+    if m:
+        props.append((int(m.group(1)), int(m.group(2)), None, 0x1E5E, 'League notice board'))
     door = re.search(r'DoorSpot = new\((\d+), (\d+), (-?\d+)\)', lay)
     return farm, props, pts, (int(door.group(1)), int(door.group(2)))
+
+
+def pitched_roof(wx1, wy1, wx2, wy2, R, floor_z=0):
+    """cc-P720: a shingle roof pitched along y over the wall ring (wx1..wx2, wy1..wy2), as OSI's stone shop (multi
+    0x00A0) lays it: the roof's tiles are the ring moved one tile east and south (the art leans that way), each column
+    k tiles in from the eaves at floor + eaveDz + rise * k, the west slope, the ridge and the east slope pieces; and
+    the gable on the south wall row in rows of gableDz, on the columns whose roof clears the row (this column at row +
+    1 and the next column east at row). Returns [(x, y, z, id, what)]. Checked against the multi itself by
+    check_pitched_roof()."""
+    out = []
+    rx1, rx2 = wx1 + 1, wx2 + 1
+    ridge = (rx1 + rx2) / 2.0
+    top = lambda x: floor_z + R['eaveDz'] + R['rise'] * int(min(x - rx1, rx2 - x))
+    for x in range(rx1, rx2 + 1):
+        tid = hx(R['ridge']) if x == ridge else hx(R['west']) if x < ridge else hx(R['east'])
+        for y in range(wy1 + 1, wy2 + 2):
+            out.append((x, y, top(x), tid, 'roof %s' % ('ridge' if x == ridge else 'slope')))
+    z = floor_z + R['eaveDz'] + 1
+    while True:
+        cols = [x for x in range(rx1, rx2) if top(x) >= z + 1 and top(x + 1) >= z]
+        if not cols:
+            break
+        for x in cols:
+            out.append((x, wy2, z, hx(R['gable']), 'gable'))
+        z += R['gableDz']
+    return out
+
+
+def dock_steps(edited, rise=2):
+    """cc-P720 item 7 (Chase 10-28: "the bridge tiles are too high"): along each inner row of the dock, from four tiles
+    of beach west of the deck to the landing, where a person stands on each tile (the walkable surface, as
+    TutorialWorld.Ground and its SurfaceZ read it: a surface's top above the land's average and under a person's
+    height of it, else the land's average) may change by at most `rise` a step, either way. TazUO refused the step from
+    the beach (standing at -5, over the wet sand's -7 corner) onto the planks (top -2). Returns the steps over it."""
+    td = uofiles.read_tiledata(CLIENT)[1]
+    x1, y1 = shifted(P.DOCK[0], P.DOCK[1])
+    x2, y2 = shifted(P.DOCK[2], P.DOCK[3])
+    w = Walker(edited, (x1 - 6, y1 - 1, x2 + 1, y2 + 1))
+    bad, rows = [], {}
+    for y in range(y1 + 1, y2):
+        zs = []
+        for x in range(x1 - 4, x2 + 1):
+            avg = w.avg(x, y)[1]
+            best = avg
+            for (z, t) in w.tiles.get((x, y), []):
+                f = td[t]['flags']
+                if f & SURF and not f & IMP and avg < z + td[t]['height'] < avg + 16:
+                    best = max(best, z + td[t]['height'])
+            zs.append((x, best))
+        rows[y] = zs
+        for (xa, za), (xb, zb) in zip(zs, zs[1:]):
+            if abs(zb - za) > rise:
+                bad.append(((xa, y, za), (xb, y, zb)))
+    return bad, rows
+
+
+def check_pitched_roof():
+    """The rule must give the stone shop's own roof: its shingles and its gable, piece for piece (multi 0x00A0, walls
+    x -3..3, y -3..3, floor 27)."""
+    sys.path.insert(0, os.path.join(REPO, 'notes', 'cc-P720-tools'))
+    import multis
+    want = sorted((x, y, z, t) for (x, y, z, t, fl) in multis.multi(0x00A0) if t in (0x05C2, 0x05C3, 0x05C4, 0x0069))
+    got = sorted((x, y, z, t) for (x, y, z, t, w) in pitched_roof(-3, -3, 3, 3, RULES['pitched'], floor_z=27))
+    assert got == want, ('pitched roof rule differs from multi 0x00A0', [g for g in got if g not in want][:6],
+                         [w for w in want if w not in got][:6])
+    return len(want)
 
 
 # ------------------------------------------------------------------------------------------------ the plan
@@ -304,6 +376,12 @@ def plan(farm, props, pts, quiet=False):
             land[c] = (S.weighted(rng, table(L['grass'])), 0)
             tcount['grass'] += 1
     report['land'] = dict(tcount)
+    # cc-P720 item 7: in the dock's rows the wet sand keeps the beach's height (-3), not the -7 dip under the shore
+    # water: the dip pulled the last beach tile's average to -5, three below the planks' top, and TazUO would not step
+    # up (Chase 10-28, "the bridge tiles are too high"; dock_steps is the gate)
+    dock_dry = {c for c in cells(P.DOCK) if cls.get(c) == 's' and land[c][1] < L['beachZ']['2']}
+    for c in dock_dry:
+        land[c] = (land[c][0], L['beachZ']['2'])
     # 3. the knoll: a rise to Z 8 round the stone ring (newisle's profile), on dry land only
     kx, ky, kr = P.KNOLL
     for c in cells((kx - kr - 5, ky - kr - 5, kx + kr + 5, ky + kr + 5)):
@@ -332,21 +410,26 @@ def plan(farm, props, pts, quiet=False):
             for b in (-1, 0, 1):
                 keep_clear.add((c[0] + a, c[1] + b))
 
-    # 4. the bank and the lodge: stone walls by the run rule, the door tile an opening (OSI's stone town doors: floor
-    #    static on the door tile, run pieces either side, the door a server item), floors, the slate roof over the
-    #    visible room, every inner corner dressed
-    stone = RULES['walls']['stone']
+    # 4. the bank and the lodge (cc-P720 items 4-5; Chase 10-28: "a plain stone box with a flat gray roof", "an empty
+    #    roofless box"). OSI's stone shop (house multi 0x00A0) is the model: its stone set with windows, the door tile
+    #    an opening (floor static on it, the run piece either side, the door a server item), a slate ceiling over the
+    #    visible room, and over it a shingle roof pitched along y, rising 3 a tile to the ridge, with a stone gable on
+    #    the south end (the end the client shows). Each room is furnished from isle-sets.json "interiors" (isle
+    #    coordinates), and every inner corner holds a piece of it.
+    shop = RULES['wallsShop']
     rooms = {}
     corner_log = {}
     wall_tiles = {}
-    rngc = stream('corners')
-    C = RULES['corners']
     for name, floor, door, ftable in (('bank', bank_floor, BANK_DOOR, RULES['floors']['bank']),
                                       ('lodge', lodge_floor, LODGE_DOOR, RULES['floors']['lodge'])):
         ring = W.ring_of(floor) - {door}
         Wt = lambda c, ring=ring: c in ring
+        I = RULES['interiors'][name]
+        windows = {unshift(tuple(c)) for c in I['windows']}
         for (x, y) in sorted(ring):
-            for tid, role in W.wall_pieces(Wt, x, y, stone):
+            for tid, role in W.wall_pieces(Wt, x, y, shop):
+                if (x, y) in windows and role in ('ew', 'ns'):
+                    tid, role = hx(shop['window' + role.upper()]), 'window ' + role
                 put(x, y, 0, tid, '%s wall %s' % (name, role))
             wall_tiles[(x, y)] = 'stone'
         rf = stream('floor ' + name)
@@ -356,30 +439,16 @@ def plan(farm, props, pts, quiet=False):
         x1, x2, y1, y2 = min(xs), max(xs), min(ys), max(ys)
         for (x, y) in cells((x1, y1, x2 + 1, y2 + 1)):
             put(x, y, RULES['roof']['z'], hx(RULES['roof']['id']), '%s roof' % name)
-        # corners: NW torch on the north wall and a seat; NE a piece on the east strip; SW a torch on the west wall
-        # and a piece on the south strip; SE two pieces, one on each strip
+        for (x, y, z, tid, what) in pitched_roof(x1 - 1, y1 - 1, x2 + 1, y2 + 1, RULES['pitched']):
+            put(x, y, z, tid, '%s %s' % (name, what))
+        for (tid, x, y, z, what) in I['pieces']:
+            c = unshift((x, y))
+            put(c[0], c[1], z, hx(tid), '%s interior %s' % (name, what))
+        # the inner corners: each must hold a piece of the room's furniture
         log = collections.Counter()
-        dressing = {
-            'NW': [((x1, y1), 13, rngc.choice([hx(v) for v in C['torchNorth']]), 'torch north wall'),
-                   ((x1, y1), 0, None, 'seat')],
-            'NE': [((x2 + 1, y1), 0, 'strip', 'strip')],
-            'SW': [((x1, y2), 13, rngc.choice([hx(v) for v in C['torchWest']]), 'torch west wall'),
-                   ((x1, y2 + 1), 0, 'strip', 'strip')],
-            'SE': [((x2 + 1, y2), 0, 'strip', 'strip'), ((x2, y2 + 1), 0, 'strip', 'strip')],
-        }
-        for corner, pieces in dressing.items():
+        for c in ((x1, y1), (x2, y1), (x1, y2), (x2, y2)):
             log['concave'] += 1
-            placed = 0
-            for (c, z, tid, what) in pieces:
-                if c in keep_clear or c == door:
-                    continue
-                if tid is None:
-                    tid = S.pick_unlike(rngc, table(C['floorPieces']), c, by_tile)
-                elif tid == 'strip':
-                    tid = S.pick_unlike(rngc, table(C['stripPieces']), c, by_tile)
-                put(c[0], c[1], z, tid, '%s corner %s %s' % (name, corner, what))
-                placed += 1
-            if placed:
+            if any(s for s in statics if (s[0], s[1]) == c and 'interior' in s[4]):
                 log['concave dressed'] += 1
         corner_log[name] = log
         rooms[name] = dict(floor=floor, ring=ring, door=door)
@@ -394,7 +463,10 @@ def plan(farm, props, pts, quiet=False):
     fence_lines['yard'] = yard_line
     near_road = {(c[0] + a, c[1] + b) for c in road for a in (-1, 0, 1) for b in (-1, 0, 1)}
     mx1, my1, mx2, my2 = P.MEADOW
-    meadow_line = {c for c in cells(P.MEADOW) if c[0] in (mx1, mx2) or c[1] in (my1, my2)}
+    # cc-P720 item 2: no meadow fence. The road and the farm cut it into runs that stopped short or jutted out beside
+    # the farm's own fence (Chase 10-28: "fencing around farm is weird"); the farm's field fence is the one enclosure.
+    meadow_line = set() if RULES.get('meadowFence') is False else \
+        {c for c in cells(P.MEADOW) if c[0] in (mx1, mx2) or c[1] in (my1, my2)}
     meadow_line = {c for c in meadow_line if c not in near_road and c not in server_tiles and cls[c] != 'w'
                    and not any((c[0] + a, c[1] + b) in server_tiles for a in (-1, 0, 1) for b in (-1, 0, 1))}
     # drop the runs the road's gaps cut to fewer than 3 tiles (render round 3: lone posts beside the road)
@@ -518,25 +590,31 @@ def plan(farm, props, pts, quiet=False):
     for zone, share, tab in (('meadow', De['meadow']['share'], De['meadow']['flowers']),
                              ('grass', De['grass']['flowers'], De['meadow']['flowers'])):
         for c in sorted(zones[zone]):
+            # cc-P720: no flowers within 2 of the road (a red bush, 0x0C86, stood on the lodge's road: Chase 10-28 "a
+            # stray red animal-like object")
             if rf.random() < share and c not in keep_clear and not by_tile.get(c) and cls.get(c) == 'g' \
-                    and c not in road and c not in server_tiles:
+                    and c not in road and c not in server_tiles and \
+                    not any((c[0] + a, c[1] + b) in road for a in range(-2, 3) for b in range(-2, 3)):
                 put(c[0], c[1], land[c][1], S.pick_unlike(rf, table(tab), c, by_tile), zone + ' flowers')
     rb = stream('beach')
     for c in sorted(zones['beach']):
         if rb.random() < De['beach']['share'] and c not in keepout and not by_tile.get(c) and c not in road:
             put(c[0], c[1], land[c][1], S.pick_unlike(rb, table(De['beach']['pieces']), c, by_tile), 'beach')
     for c in sorted(dry):
-        if cls.get(c) == 's' and dw[c] == 1 and c not in deck_set and c not in landing:
+        if cls.get(c) == 's' and dw[c] == 1 and c not in deck_set and c not in landing and c not in dock_dry:
             put(c[0], c[1], De['shoreWater']['z'], hx(De['shoreWater']['id']), 'shore water')
 
     # 9. checks of the plan: nothing outside the area, nothing impassable on a kept-clear tile, one wall piece a tile
     for (x, y, z, tid, why) in statics:
         assert AREA[0] <= x <= AREA[2] and AREA[1] <= y <= AREA[3], (x, y, why)
-        if (x, y) in spot_tiles and (items[tid]['flags'] & IMP):
+        # cc-P720: a gable or roof 16 or more above the tile (over a door) is over a person's head, not in the way
+        if (x, y) in spot_tiles and (items[tid]['flags'] & IMP) and z < 16:
             raise AssertionError(('impassable static on a server item spot', x, y, why))
     # the fence set has no corner piece: its south-east corners carry both runs (walls.wall_pieces), as allowed
     fence_corners = {c for c, st in wall_tiles.items() if st == 'fence'}
-    report['doubled wall tiles'] = [t for t in W.check_wall_tiles(statics, items) if t[0] not in fence_corners]
+    # cc-P720: the gable stands on the south wall's tiles above the wall, as in OSI's stone shop (not a doubled wall)
+    report['doubled wall tiles'] = [t for t in W.check_wall_tiles([s for s in statics if 'gable' not in s[4]], items)
+                                    if t[0] not in fence_corners]
     report['slope audit'] = audit.slope_audit(land, limit=12)
     densities = {}
     piece_count = collections.Counter()
@@ -850,6 +928,7 @@ def main():
     plan_only = '--plan-only' in args
     base = args[args.index('--base') + 1] if '--base' in args else CLIENT
     farm, props, pts, farm_door = server_items()
+    print('pitched roof rule: stone shop (multi 0x00A0) rebuilt piece for piece,', check_pitched_roof(), 'pieces')
     land, statics, report, info = plan(farm, props, pts)
     print('land:', report['land'], 'transition rounds', report['transition rounds'])
     print('zones (tiles):', report['zones'])
@@ -891,6 +970,9 @@ def main():
     print('verify (a second read of the files): land mismatches', bad, '; statics round-trip', same, '(%d read back)' % n)
     assert bad == 0 and same
     rows, fits, walkable = gate(edited, farm, props, pts, farm_door)
+    steps, dock_rows = dock_steps(edited)
+    print('the dock, standing heights by row:', {y: [z for (x, z) in r] for y, r in dock_rows.items()})
+    print('dock steps over 2:', steps)
     print('the walk (pinned movement, server items in place):')
     for r in rows:
         print('  %-28s %-30s walked %-5s sketch %s' % r)
@@ -910,6 +992,7 @@ def main():
               open(os.path.join(HERE, 'walk-report.json'), 'w'), indent=1)
     assert all(r[2] is not None for r in rows), 'a leg cannot be walked'
     assert not bad_fit, 'a P663 spot does not fit'
+    assert not steps, 'a step across the dock rises more than 2 (cc-P720 item 7)'
     patch = mapops.diff(base, edited, FACET)
     out = os.path.join(work, 'trammel.mapops')
     open(out, 'w', newline='\n').write(patch)
