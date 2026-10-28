@@ -63,14 +63,14 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-25. Shard version 2026.10.28.4. Golem on, 21 queued, latest done P720. Play tests: 1385 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-25. Shard version 2026.10.28.5. Golem on, 20 queued, latest done P720. Play tests: 1387 open, 4 failed, 43 passed.
 
 ### Needs overseer review (4)
 
 - **gate The player package installs on a clean PC**: Waits on a confirmation: Chase: which package is published on get.shatteredlegacyuo.com (the one with the 10-24 launcher?), and has a package with our TazUO build passed a clean-PC install? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "The player package installs on a clean PC" --done no --detail "..."` or `python tools/judge.py confirm gate "The player package installs on a clean PC"`
 - **gate What is built is seen in a client, not only compiled**: Waits on a confirmation: Chase: deploy main (2026.10.25.7) to the test shard, and mark the bot's 10-25 evidence on the play-test page? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "What is built is seen in a client, not only compiled" --done yes --detail "..."` or `python tools/judge.py confirm gate "What is built is seen in a client, not only compiled"`
 - **gate Somewhere to go**: Waits on a confirmation: Chase: which of [GenWrongRevamp, [SetupNewCovetous, [GenExodusEncounter, [GenBlackthorn and [GenEodon have been run on the test world? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "Somewhere to go" --done yes --detail "..."` or `python tools/judge.py confirm gate "Somewhere to go"`
-- **play tests not sorted**: 942 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
+- **play tests not sorted**: 944 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
 
 ## Port list: 6 of 16 systems in. 833 of 983 files (85%).
 
@@ -230,7 +230,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 580 prompts done, 5 more stopped early and not counted)
+### Queue (Golem on; 581 prompts done, 5 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -251,11 +251,11 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P708 guild-hqs-on-sos | queued |  |
 | P714 gated-chivalry-necromancy-and-start-skills | queued |  |
 | P715 ask-expires-too-soon | queued |  |
-| P722 isle-only-release-branch | queued |  |
 | P724 isle-addons-from-new-downloads | queued |  |
 | P725 isle-shore-tiles | queued |  |
 | P726 isle-pet-reward-and-pet-info | queued |  |
 | P720 isle-walkthrough-fixes-2 | done | 2026-10-28 |
+| P719 always-run-off | done | 2026-10-28 |
 | P718 isle-walkthrough-fixes-1 | done | 2026-10-28 |
 | P717 isle-first | done | 2026-10-28 |
 | P716 sos-s2-tazuo-shots | done | 2026-10-28 |
@@ -264,7 +264,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P709 gated-skills-and-start-choices | done | 2026-10-27 |
 | P707 isle-playthrough | done | 2026-10-27 |
 | P706 bot-runs-out-of-repo | done | 2026-10-27 |
-| P705 fix-p663-codex | done | 2026-10-27 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 172 patches, 12 replacements
 
