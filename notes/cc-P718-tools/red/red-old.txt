@@ -1,0 +1,43 @@
+== old
+     Failed: 10
+Total tests: 10
+  Failed WrenGreetsATraineeWhoseNextLessonIsTheFarmUntilThePetIsChosen
+  Failed APestFightsOnlyATraineeOnThePestPartAndStaysInTheField
+  Failed TheSignpostsStandAndAreNamedAndTheArrowPointsAtTheChatPost
+  Failed TamsinGreetsANewTraineeNoFasterThanTheIntervalAndStopsOnceUsed
+  Failed WrensHealStepHandsBandagesAndSaysHowToUseAndMakeThem
+  Failed TheClientTipsAreOfferedAtAnyTimeAndAreNotCore
+  Failed TheBackpackLessonWaitsForTheCharacterWindow
+  Failed OnTheIsleEachSkillGainsAtMostOncePerInterval
+  Failed TheCloakWaitsOnTheTableIsWornToFinishAndIsKept
+  Failed ThePetCommandsComeFirstAndOnePestMustFallToThePet
+## TutorialIsleWalkFixesVerification.WrenGreetsATraineeWhoseNextLessonIsTheFarmUntilThePetIsChosen
+  Assert.Equal() Failure: Values differ | Expected: 1 | Actual:   0
+  @ Tutorial/TutorialIsleWalkFixesVerification.cs:line 230
+## TutorialIsleWalkFixesVerification.APestFightsOnlyATraineeOnThePestPartAndStaysInTheField
+  Assert.False() Failure | Expected: False | Actual:   True
+  @ Tutorial/TutorialIsleWalkFixesVerification.cs:line 401
+## TutorialIsleWalkFixesVerification.TheSignpostsStandAndAreNamedAndTheArrowPointsAtTheChatPost
+  Assert.Contains() Failure: Filter not matched in collection | Collection: [Tuple (3555, (6655, 3988), "campfire"), Tuple (2645, (6657, 3988), "bedroll"), Tuple (2645, (6658, 3988), "bedroll"), Tuple (3782, (6665, 3990), "clothes rack"), Tuple (2959, (6664, 3990), "table"), ···]
+  @ Tutorial/TutorialIsleWalkFixesVerification.cs:line 342
+## TutorialIsleWalkFixesVerification.TamsinGreetsANewTraineeNoFasterThanTheIntervalAndStopsOnceUsed
+  Assert.Equal() Failure: Values differ | Expected: 1 | Actual:   0
+  @ Tutorial/TutorialIsleWalkFixesVerification.cs:line 184
+## TutorialIsleWalkFixesVerification.WrensHealStepHandsBandagesAndSaysHowToUseAndMakeThem
+  Assert.Contains() Failure: Sub-string not found | String:    "" | Not found: "scissors"
+  @ Tutorial/TutorialIsleWalkFixesVerification.cs:line 514
+## TutorialIsleWalkFixesVerification.TheClientTipsAreOfferedAtAnyTimeAndAreNotCore
+  Assert.Contains() Failure: Item not found in collection | Collection: [100, 101, 102, 103, 104, ···] | Not found:  138
+  @ Tutorial/TutorialIsleWalkFixesVerification.cs:line 308
+## TutorialIsleWalkFixesVerification.TheBackpackLessonWaitsForTheCharacterWindow
+  Assert.DoesNotContain() Failure: Item found in set | Set:   ["core.movement", "core.backpack"] | Found: "core.backpack"
+  @ Tutorial/TutorialIsleWalkFixesVerification.cs:line 330
+## TutorialIsleWalkFixesVerification.OnTheIsleEachSkillGainsAtMostOncePerInterval
+  Assert.Equal() Failure: Values are not within 1 decimal place | Expected: 11.699999999999999 (rounded from 11.699999999999999) | Actual:   13.6 (rounded from 13.6)
+  @ Tutorial/TutorialIsleWalkFixesVerification.cs:line 475
+## TutorialIsleWalkFixesVerification.TheCloakWaitsOnTheTableIsWornToFinishAndIsKept
+  Assert.NotNull() Failure: Value is null | [xUnit.net 00:00:01.13]     ShatteredLegacy.Tests.TutorialIsleWalkFixesVerification.ThePetCommandsComeFirstAndOnePestMustFallToThePet [FAIL] | [xUnit.net 00:00:01.13]       Assert.Equal() Failure: Values differ | [xUnit.net 00:00:01.13]       Expected: Stay
+  @ Tutorial/TutorialIsleWalkFixesVerification.cs:line 253
+## TutorialIsleWalkFixesVerification.ThePetCommandsComeFirstAndOnePestMustFallToThePet
+  Assert.Equal() Failure: Values differ | Expected: Stay | Actual:   Follow | Test Run Failed.
+  @ Tutorial/TutorialIsleWalkFixesVerification.cs:line 527
