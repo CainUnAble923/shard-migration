@@ -1,0 +1,152 @@
+test_1_every_gate_stands_on_a_floor (__main__.OnSos.test_1_every_gate_stands_on_a_floor) ... FAIL
+test_2_every_teleporter_end_stands_and_every_source_fires (__main__.OnSos.test_2_every_teleporter_end_stands_and_every_source_fires) ... FAIL
+
+======================================================================
+FAIL: test_1_every_gate_stands_on_a_floor (__main__.OnSos.test_1_every_gate_stands_on_a_floor)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UO\golems\Iron\shard-migration\tools\tests\test_s4_gates.py", line 123, in test_1_every_gate_stands_on_a_floor
+    self.assertEqual([], bad)
+AssertionError: Lists differ: [] != ['Trammel 1012003 at 4467,1283,5: floors [[423 chars]16]']
+
+Second list contains 10 additional elements.
+First extra element 0:
+'Trammel 1012003 at 4467,1283,5: floors [23]'
+
+- []
++ ['Trammel 1012003 at 4467,1283,5: floors [23]',
++  'Trammel 1012004 at 1336,1997,5: floors [15]',
++  'Trammel 1012006 at 771,752,5: floors [15]',
++  'Trammel 1012007 at 2701,692,5: floors [20]',
++  'Trammel 1012008 at 1828,2948,-20: floors [-16]',
++  'Felucca 1012003 at 4467,1283,5: floors [23]',
++  'Felucca 1012004 at 1336,1997,5: floors [15]',
++  'Felucca 1012006 at 771,752,5: floors [15]',
++  'Felucca 1012007 at 2701,692,5: floors [20]',
++  'Felucca 1012008 at 1828,2948,-20: floors [-16]']
+
+======================================================================
+FAIL: test_2_every_teleporter_end_stands_and_every_source_fires (__main__.OnSos.test_2_every_teleporter_end_stands_and_every_source_fires)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UO\golems\Iron\shard-migration\tools\tests\test_s4_gates.py", line 146, in test_2_every_teleporter_end_stands_and_every_source_fires
+    self.assertEqual([], bad)
+AssertionError: Lists differ: [] != ['Felucca src 424,3283,35: water', 'Felucc[4271 chars]ter']
+
+Second list contains 105 additional elements.
+First extra element 0:
+'Felucca src 424,3283,35: water'
+
+Diff is 4638 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 2 tests in 2.046s
+
+FAILED (failures=2)
+
+  ends 1698 as stock 60 failing 105
+    Felucca src 424,3283,35: water
+    Felucca dst 2605,2130,8: z: stands at 15
+    Felucca dst 2605,2130,8: z: stands at 15
+    Felucca dst 2727,2133,5: blocked by 0x0091 log wall z5
+    Felucca src 2685,2063,39: z: stands at -20
+    Felucca dst 2756,2097,38: z: stands at -20
+    Felucca dst 2756,2097,38: z: stands at -20
+    Felucca src 2985,2890,35: z: stands at 3
+    Felucca src 4110,430,5: land ignored
+    Felucca src 4111,430,5: land ignored
+    Felucca src 4112,430,5: land ignored
+    Felucca src 5126,3143,99: z: stands at -5
+    Felucca src 5137,3664,27: z: stands at 35
+    Felucca src 5137,3665,31: never fires
+    Felucca src 5140,973,0: land impassable
+    Felucca dst 4110,430,5: land ignored
+    Felucca dst 4110,430,5: land ignored
+    Felucca dst 4111,430,5: land ignored
+    Felucca dst 4112,430,5: land ignored
+    Felucca dst 424,3283,35: water
+    Felucca src 5304,676,-20: z: stands at 0
+    Felucca dst 7109,1097,18: void
+    Felucca src 5503,3971,40: z: stands at -25
+    Felucca dst 1296,1080,0: land ignored
+    Felucca dst 1296,1081,0: land ignored
+    Felucca dst 1296,1082,0: land ignored
+    Felucca dst 5127,3143,97: z: stands at -5
+    Felucca dst 5127,3143,97: z: stands at -5
+    Felucca dst 5127,3143,97: z: stands at -5
+    Felucca dst 5127,3143,97: z: stands at -5
+    Felucca src 5882,243,0: never fires
+    Felucca dst 2985,2890,35: z: stands at 3
+    Felucca dst 5522,3921,37: z: stands at -34
+    Felucca dst 5137,3664,27: z: stands at 35
+    Felucca dst 5137,3664,27: z: stands at 35
+    Felucca dst 6987,805,24: land impassable
+    Felucca dst 6987,805,24: land impassable
+    Felucca src 6086,3676,16: never fires
+    Felucca src 6941,987,-15: void
+    Felucca src 6972,802,28: land impassable
+    Felucca src 6992,1367,-15: void
+    Felucca src 6993,1367,-15: void
+    Felucca src 6994,1367,-15: void
+    Felucca src 7045,1090,-15: void
+    Felucca src 7049,709,28: land impassable
+    Felucca src 7149,756,25: void
+    Felucca src 7150,756,26: void
+    Felucca src 7151,756,25: void
+    Felucca src 7152,756,25: void
+    Trammel src 424,3283,35: water
+    Trammel src 1477,1471,-8: water
+    Trammel dst 6432,2677,0: z: stands at -11
+    Trammel src 1477,1472,-8: water
+    Trammel dst 6432,2678,0: land impassable
+    Trammel src 1477,1473,-8: water
+    Trammel dst 6432,2679,0: land impassable
+    Trammel src 1477,1474,-8: water
+    Trammel dst 6432,2680,0: land impassable
+    Trammel src 1477,1475,-8: water
+    Trammel dst 6432,2681,0: land impassable
+    Trammel dst 2605,2130,8: z: stands at 15
+    Trammel dst 2605,2130,8: z: stands at 15
+    Trammel dst 2727,2133,5: blocked by 0x0091 log wall z5
+    Trammel src 2685,2063,39: z: stands at -20
+    Trammel dst 2756,2097,38: z: stands at -20
+    Trammel dst 2756,2097,38: z: stands at -20
+    Trammel src 2985,2890,35: z: stands at 3
+    Trammel src 3508,2777,26: land impassable
+    Trammel src 4110,430,5: land ignored
+    Trammel src 4111,430,5: land ignored
+    Trammel src 4112,430,5: land ignored
+    Trammel src 5126,3143,99: z: stands at -5
+    Trammel src 5137,3664,27: z: stands at 35
+    Trammel src 5137,3665,31: never fires
+    Trammel dst 4110,430,5: land ignored
+    Trammel dst 4110,430,5: land ignored
+    Trammel dst 4111,430,5: land ignored
+    Trammel dst 4112,430,5: land ignored
+    Trammel dst 424,3283,35: water
+    Trammel dst 1296,1080,0: land ignored
+    Trammel dst 1296,1081,0: land ignored
+    Trammel dst 1296,1082,0: land ignored
+    Trammel dst 5127,3143,97: z: stands at -5
+    Trammel dst 5127,3143,97: z: stands at -5
+    Trammel dst 5127,3143,97: z: stands at -5
+    Trammel dst 5127,3143,97: z: stands at -5
+    Trammel dst 2985,2890,35: z: stands at 3
+    Trammel dst 5137,3664,27: z: stands at 35
+    Trammel dst 5137,3664,27: z: stands at 35
+    Trammel src 6086,3676,16: never fires
+    Trammel src 6440,2677,20: z: stands at -8
+    Trammel dst 1477,1471,-8: water
+    Trammel src 6440,2678,20: land impassable
+    Trammel dst 1477,1472,-8: water
+    Trammel src 6440,2679,20: land impassable
+    Trammel dst 1477,1473,-8: water
+    Trammel src 6440,2680,20: land impassable
+    Trammel dst 1477,1474,-8: water
+    Trammel src 6440,2681,20: land impassable
+    Trammel dst 1477,1475,-8: water
+    Felucca dst 6992,1367,-15: void
+    Felucca dst 6992,1367,-15: void
+    Felucca dst 6993,1367,-15: void
+    Felucca dst 6993,1367,-15: void
+    Felucca dst 511,585,11: water

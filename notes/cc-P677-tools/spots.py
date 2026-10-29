@@ -35,6 +35,9 @@ def calc_height(it):
     return it['height'] // 2 if it['flags'] & BRIDGE else it['height']
 PERSON, ZTOL = 16, 5
 VOID_IDS = set(int(i) for i in islands.VOID_IDS)  # P481's void land ids
+# cc-P679: pinned LandTile.Ignored (2, 0x1DB, 0x1AE-0x1B5: the cave-mouth "no draw" tiles). Movement and GetAverageZ's
+# callers skip such land (Movement.cs:437, considerLand), so a person stands there only on a static floor.
+IGNORED_LAND = {2, 0x1DB} | set(range(0x1AE, 0x1B6))
 SOS_FACETS = ('Trammel', 'Felucca', 'both', 'unnamed')
 
 PAT = [
@@ -103,11 +106,11 @@ class Land:
         self.land, self.items = uofiles.read_tiledata(uofiles.CLIENT)
 
     def avgz(self, x, y):
-        """pinned Map.GetAverageZ (Map.cs:243-285): the diagonal with the smaller slope, halved toward zero (as P678's
-        soswalk.py)."""
+        """pinned Map.GetAverageZ (Map.cs:243-285): the diagonal with the smaller slope, halved by FloorAverage
+        (Map.cs:287-297), which rounds down (cc-P679: this halved toward zero before, one Z high on an odd negative sum)."""
         zs = self.zs
         t, l, r, b = int(zs[x, y]), int(zs[x, min(4095, y + 1)]), int(zs[min(7167, x + 1), y]), int(zs[min(7167, x + 1), min(4095, y + 1)])
-        return int((l + r) / 2) if abs(t - b) > abs(l - r) else int((t + b) / 2)
+        return (l + r) // 2 if abs(t - b) > abs(l - r) else (t + b) // 2
 
     def surfaces(self, x, y):
         """(standing Zs on this tile, statics on it, land reason), every level kept."""
@@ -117,6 +120,8 @@ class Land:
         tops, why = [], None
         if lid in VOID_IDS:
             why = 'void'
+        elif lid in IGNORED_LAND:
+            why = 'land ignored'  # cc-P679: pinned never stands anyone on it; only a static floor counts there
         elif lf & WET:
             why = 'water'
         elif lf & IMP:
