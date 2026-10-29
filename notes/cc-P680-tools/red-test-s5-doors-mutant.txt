@@ -1,0 +1,28 @@
+test_2_no_door_outside_a_doorway (__main__.OnSos.test_2_no_door_outside_a_doorway) ... FAIL
+
+======================================================================
+FAIL: test_2_no_door_outside_a_doorway (__main__.OnSos.test_2_no_door_outside_a_doorway)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UO\golems\Iron\shard-migration\tools\tests\test_s5_decoration.py", line 136, in test_2_no_door_outside_a_doorway
+    self.assertEqual([], bad)
+AssertionError: Lists differ: [] != ['Trammel Britannia/britain.cfg SecretSton[221 chars]ile']
+
+Second list contains 2 additional elements.
+First extra element 0:
+'Trammel Britannia/britain.cfg SecretStoneDoor3 0x0356 (Facin at 1336,1652,72: inside a wall: stone wall 0x0081 z72 on its own tile'
+
+- []
++ ['Trammel Britannia/britain.cfg SecretStoneDoor3 0x0356 (Facin at '
++  '1336,1652,72: inside a wall: stone wall 0x0081 z72 on its own tile',
++  'Felucca Britannia/britain.cfg SecretStoneDoor3 0x0356 (Facin at '
++  '1336,1652,72: inside a wall: stone wall 0x0081 z72 on its own tile']
+
+----------------------------------------------------------------------
+Ran 1 test in 2.752s
+
+FAILED (failures=1)
+
+  door placements 1325 stock quirks 8 outside a doorway 2
+    Trammel Britannia/britain.cfg SecretStoneDoor3 0x0356 (Facin at 1336,1652,72: inside a wall: stone wall 0x0081 z72 on its own tile
+    Felucca Britannia/britain.cfg SecretStoneDoor3 0x0356 (Facin at 1336,1652,72: inside a wall: stone wall 0x0081 z72 on its own tile
