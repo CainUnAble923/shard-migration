@@ -10,8 +10,9 @@ Facts, on a synthetic facet (the real layout, one chunk, no EA bytes):
   3. The PowerShell applier (player-package/payload/app/Apply-MapOps.ps1, what players run) writes the same three files
      byte for byte as the Python one, and its stamp makes the second run a skip.
   4. The shipped patch (player-package/vendor/shattered-legacy-map/trammel.mapops) parses, lists its touched blocks,
-     and every line lies inside the Burrows rectangle (x 5136-5247, y 1128-1263) or the Wakening Isle; it adds and
-     changes, and removes nothing of the map's (cc-P675).
+     and every line lies inside the Burrows rectangle (x 5136-5247, y 1128-1263) or the Wakening Isle, or is one of
+     cc-P687's seam boulders (S14: an S+ of OSI's boulders 0x1357-0x135C on the surface, x < 5120; checked on the SoS
+     land by tools/tests/test_sos_fences.py fact 4); it adds and changes, and removes nothing of the map's (cc-P675).
   5. cc-P675 (SoS swap S2): the patch is made on the Siege of Sosaria map. On a pristine copy of it (the package's
      vendor/sos-trammel-map/files, at notes/cc-P675-tools/sos-base/ORIGINAL-SHA256.txt) it applies with no block
      drifted and no removal missing, and diffing that copy against the result gives the shipped patch line for line.
@@ -60,6 +61,7 @@ WAY_IN_BLOCKS = (3608, 2616, 3623, 2623)
 FARM_BLOCKS = (3384, 2600, 3399, 2623)
 # cc-P662: the Wakening Isle's drawn area with its sea (P481 11.2 shifted to site A, P673 1.4).
 ISLE = (6594, 3905, 6865, 4049)
+SEAM_BOULDERS = range(0x1357, 0x135D)   # cc-P687: S14's seam dressing (notes/cc-P687-tools/dress.py)
 ISLE_TOOLS = DOCS / "notes" / "cc-P662-tools"
 # cc-P276: the two trees inside the tutorial farm's fence, trunk and foliage (design/tutorial-farm/west_v3_layout.json).
 FARM_REMOVALS = ["S- 3388 2607 19 3302 0", "S- 3388 2607 19 3303 0", "S- 3396 2616 38 3296 0", "S- 3396 2616 38 3297 0"]
@@ -178,7 +180,8 @@ class Shipped(unittest.TestCase):
             bx, by = divmod(b, 512)
             for tid, cx, cy, z, hue in rows:
                 x, y = bx * 8 + cx, by * 8 + cy
-                self.assertTrue(inside(x, y, BURROWS) or inside(x, y, ISLE), (x, y, hex(tid)))
+                seam = x < 5120 and tid in SEAM_BOULDERS
+                self.assertTrue(inside(x, y, BURROWS) or inside(x, y, ISLE) or seam, (x, y, hex(tid)))
                 self.assertEqual(0, hue)
         self.assertEqual(0, sum(len(r) for r in removes.values()))
         self.assertTrue(all(b in fps for b in set(adds)))
