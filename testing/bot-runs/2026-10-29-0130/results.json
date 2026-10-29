@@ -371,6 +371,68 @@
      "transcript": "transcripts/P62-7-run3.txt"
     }
    ]
+  },
+  {
+   "id": "T-039",
+   "title": "A new character is pointed at the board",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "T-039: a new player can find the board by eye",
+   "result": "FAIL",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "fail",
+     "evidence": "human female at (3634, 2586, 0): message None; welcome gump says 'The Guild Board in the town square lists every guild, what it teaches, and where its guildmaster stands.'; the board is 132 tiles away",
+     "seconds": 324.9,
+     "transcript": "transcripts/T-039-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "fail",
+     "evidence": "elf male at (3634, 2586, 0): message None; welcome gump says 'The Guild Board in the town square lists every guild, what it teaches, and where its guildmaster stands.'; the board is 132 tiles away",
+     "seconds": 13.1,
+     "transcript": "transcripts/T-039-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "fail",
+     "evidence": "gargoyle female at (3634, 2586, 0): message None; welcome gump says 'The Guild Board in the town square lists every guild, what it teaches, and where its guildmaster stands.'; the board is 132 tiles away",
+     "seconds": 13.2,
+     "transcript": "transcripts/T-039-run3.txt"
+    }
+   ]
+  },
+  {
+   "id": "CREATE",
+   "title": "Character creation for every race and sex, through the real 0xF8 packet",
+   "kind": "HARNESS",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 3,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "human male: body 400 (want 400), status name 'Bot Human M Ak' (asked for 'Bot Human M Ak'), at (3634, 2586, 0)",
+     "seconds": 304.9,
+     "transcript": "transcripts/CREATE-run1.txt"
+    },
+    {
+     "run": 2,
+     "verdict": "pass",
+     "evidence": "elf female: body 606 (want 606), status name 'Bot Elf F Al' (asked for 'Bot Elf F Al'), at (3634, 2586, 0)",
+     "seconds": 13.0,
+     "transcript": "transcripts/CREATE-run2.txt"
+    },
+    {
+     "run": 3,
+     "verdict": "pass",
+     "evidence": "gargoyle male: body 666 (want 666), status name 'Bot Gargoyle M A' (asked for 'Bot Gargoyle M A'), at (3634, 2586, 0)",
+     "seconds": 13.2,
+     "transcript": "transcripts/CREATE-run3.txt"
+    }
+   ]
   }
  ]
 }
