@@ -237,6 +237,35 @@ class Shipped(unittest.TestCase):
         self.assertNotIn(int(gate[0][3]), (0x00A8, 0x00A9, 0x00AA, 0x00AB), "the moongate stands on land")
         self.assertEqual([], [f for f in isle if f[0] == "S+" and (f[1], f[2]) == ("6832", "3991")])
 
+    def test_11_the_isle_has_osis_surf_and_tropical_plants(self):
+        """cc-P725 (Chase 10-28: "island needs shore tiles"; "dress it as a tropical island"): the coast is drawn with
+        OSI's surf pieces, never P662's plain water diamond on a walkable sand tile, every sea tile with the island
+        north or west of it (the coasts the camera looks across) carries a surf-edged piece, and the island is planted
+        with stock tropical trees and plants."""
+        lines = SHIPPED.read_text().splitlines()
+        isle = [l.split() for l in lines if l.split() and l.split()[0] in ("L", "S+")
+                and inside(int(l.split()[1]), int(l.split()[2]), ISLE)]
+        land = {(int(f[1]), int(f[2])): int(f[3]) for f in isle if f[0] == "L"}
+        pieces = {}
+        for f in isle:
+            if f[0] == "S+":
+                pieces.setdefault((int(f[1]), int(f[2])), []).append(int(f[4]))
+        sea = {c for c, t in land.items() if t in (0x00A8, 0x00A9, 0x00AA, 0x00AB)}
+        plain = set(range(0x1797, 0x179D))
+        surf = set(range(0x179D, 0x17B3))
+        sand = set(range(0x0016, 0x001A)) | set(range(0x0033, 0x003B))
+        self.assertEqual([], sorted(c for c, ids in pieces.items() if plain & set(ids) and land.get(c) in sand),
+                         "a plain water diamond on walkable sand (the sawtooth)")
+        self.assertGreater(sum(1 for ids in pieces.values() for t in ids if t in surf), 500, "OSI's surf pieces")
+        back = [c for c in sea if (c[0], c[1] - 1) in land and (c[0], c[1] - 1) not in sea
+                and (c[0] + 1, c[1]) in sea and (c[0], c[1] + 1) in sea]
+        self.assertGreater(len(back), 50)
+        self.assertEqual([], sorted(c for c in back if not surf & set(pieces.get(c, []))), "north coast without surf")
+        tropical = {0x0C95, 0x0C96, 0x0C99, 0x0C9A, 0x0C9B, 0x0C9C, 0x0C9D, 0x0C9E, 0x0CA8, 0x0CAA, 0x0CAB}
+        jungle = set(range(0x0D41, 0x0D94))
+        self.assertGreater(sum(1 for ids in pieces.values() for t in ids if t in tropical), 100, "palms, banana, o'hii")
+        self.assertGreater(sum(1 for ids in pieces.values() for t in ids if t in jungle), 40, "OSI's jungle trees")
+
 
 
 def blocks(n, seed):

@@ -35,9 +35,14 @@ def main():
                  'server item. The yard gate is a 3-tile gap in the fence'))
     rows.append(('5 variety', *K.variety(St, skip_why=('wall', 'fence', 'roof', 'floor', 'shore water', 'plank', 'rail', 'post', 'gable', 'counter', 'carpet', 'vault chest', 'bookcase', 'writing table', 'League banner', 'candelabra'))))
     rows.append(('6 transitions', *K.transitions(report['slope audit'])))
-    rows.append(('  vseUOAware diagnose', True, 'west shore 6624-6633 x 3994-3999 on the written files: sea -5, wet sand '
-                 '-7 under the static water, sand -3, stock sand-grass 0x0033/0x0036/0x0037/0x003C/0x003E, grass 0; '
-                 'no step over 4'))
+    # cc-P725: read from the written files (it was P662's one-off vseUOAware reading, a fixed line that went stale when
+    # the shore changed): the west shore's heights and the largest step between neighbours
+    mf = uofiles.MapFile(edited, 1)
+    shore = mf.region(6624, 3994, 6633, 3999)
+    step = max(abs(shore[c][1] - shore[n][1]) for c in shore for n in ((c[0] + 1, c[1]), (c[0], c[1] + 1)) if n in shore)
+    zs = sorted({z for (t, z) in shore.values()})
+    rows.append(('  west shore on the files', step <= 4, 'west shore 6624-6633 x 3994-3999 on the written files: '
+                 'heights %s, largest step between neighbours %d' % (zs, step)))
     doubled = [t for t in W.check_wall_tiles([s for s in St if 'gable' not in s[4]], items) if t[0] not in {c for c, s in wall_tiles.items() if s == 'fence'}]
     rows.append(('7 one wall piece per tile', not doubled, doubled[:8] or 'every stone wall tile one piece'))
     rep = json.load(open(os.path.join(HERE, 'walk-report.json')))
