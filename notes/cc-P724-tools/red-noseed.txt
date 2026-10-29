@@ -1,0 +1,56 @@
+  Logger -> /build/modernuo/Distribution/Assemblies/Logger.dll
+  Server -> /build/modernuo/Distribution/Server.dll
+  UOContent -> /build/modernuo/Distribution/Assemblies/UOContent.dll
+  Application -> /build/modernuo/Distribution/ModernUO.dll
+  Server.Tests -> /build/modernuo/Projects/Server.Tests/bin/Release/net10.0/Server.Tests.dll
+  UOContent.Tests -> /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll
+Test run for /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.0+05679a7ab5 (64-bit .NET 10.0.7)
+[xUnit.net 00:00:00.16]   Discovering: UOContent.Tests
+[xUnit.net 00:00:00.47]   Discovered:  UOContent.Tests
+[xUnit.net 00:00:00.49]   Starting:    UOContent.Tests
+[03:38:07 INF] Loading world <s:Server.World>
+[03:38:07 INF] Loading world done (0 items, 0 mobiles) (0.01 seconds) <s:Server.World>
+[03:38:07 INF] Discovered 3 spawner JSON type(s) <s:Server.Engines.Spawners.SpawnerJsonSerializer>
+[03:38:07 INF] The Fold: registered 17 maps (32-48) on Trammel's files <s:Server.FoldMaps>
+[03:38:07 WRN] map1.mul was not found. <s:Server.TileMatrix>
+[03:38:07 WRN] staidx1.mul was not found. <s:Server.TileMatrix>
+[03:38:07 WRN] statics1.mul was not found. <s:Server.TileMatrix>
+[03:38:07 WRN] map1.mul was not found. <s:Server.TileMatrix>
+[03:38:07 WRN] staidx1.mul was not found. <s:Server.TileMatrix>
+[03:38:07 WRN] statics1.mul was not found. <s:Server.TileMatrix>
+[xUnit.net 00:00:01.20]     ShatteredLegacy.Tests.TutorialIsleAddonsVerification.SeedingPlacesEachAddonOnceAndStandsTheGateOnTheFrame [FAIL]
+[xUnit.net 00:00:01.20]       Assert.Single() Failure: The collection was empty
+[xUnit.net 00:00:01.21]       Stack Trace:
+[xUnit.net 00:00:01.21]         /build/modernuo/Projects/UOContent.Tests/Tests/Tutorial/TutorialIsleAddonsVerification.cs(61,0): at ShatteredLegacy.Tests.TutorialIsleAddonsVerification.SeedingPlacesEachAddonOnceAndStandsTheGateOnTheFrame()
+[xUnit.net 00:00:01.21]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.21]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.21]     ShatteredLegacy.Tests.TutorialIsleAddonsVerification.ACopysResetRemovesTheAddons [FAIL]
+[xUnit.net 00:00:01.21]       Assert.NotEmpty() Failure: Collection was empty
+[xUnit.net 00:00:01.21]       Stack Trace:
+[xUnit.net 00:00:01.21]         /build/modernuo/Projects/UOContent.Tests/Tests/Tutorial/TutorialIsleAddonsVerification.cs(157,0): at ShatteredLegacy.Tests.TutorialIsleAddonsVerification.ACopysResetRemovesTheAddons()
+[xUnit.net 00:00:01.21]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.21]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.22]   Finished:    UOContent.Tests
+  Failed ShatteredLegacy.Tests.TutorialIsleAddonsVerification.SeedingPlacesEachAddonOnceAndStandsTheGateOnTheFrame [133 ms]
+  Error Message:
+   Assert.Single() Failure: The collection was empty
+  Stack Trace:
+     at ShatteredLegacy.Tests.TutorialIsleAddonsVerification.SeedingPlacesEachAddonOnceAndStandsTheGateOnTheFrame() in /build/modernuo/Projects/UOContent.Tests/Tests/Tutorial/TutorialIsleAddonsVerification.cs:line 61
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed ShatteredLegacy.Tests.TutorialIsleAddonsVerification.NoAddonCoversALessonOrThePathsBetweenThem [4 ms]
+  Failed ShatteredLegacy.Tests.TutorialIsleAddonsVerification.ACopysResetRemovesTheAddons [5 ms]
+  Error Message:
+   Assert.NotEmpty() Failure: Collection was empty
+  Stack Trace:
+     at ShatteredLegacy.Tests.TutorialIsleAddonsVerification.ACopysResetRemovesTheAddons() in /build/modernuo/Projects/UOContent.Tests/Tests/Tutorial/TutorialIsleAddonsVerification.cs:line 157
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+Test Run Failed.
+Total tests: 3
+     Passed: 1
+     Failed: 2
+ Total time: 1.5182 Seconds
