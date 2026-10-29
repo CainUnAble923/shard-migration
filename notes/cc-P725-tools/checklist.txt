@@ -1,0 +1,17 @@
+| Check | Result | Detail |
+|---|---|---|
+| 1 walls against a test room | PASS | 1 wall sets, 5 x 5 rooms: corners post / ew / ns / corner, runs single pieces |
+|   fence set (no corner piece) | PASS | its south-east corners carry both runs, by walls.wall_pieces; the farm addon (P276) lays them the same way |
+| 2 no diagonal runs | PASS | 143 wall tiles, none joined only diagonally |
+| 3 rows straight | PASS | no furniture rows on the isle (the furniture is server items) |
+| 4 inner corners dressed | PASS | 8 inner corners, every one dressed |
+| 4 doorways framed or passages | PASS | 2 doors (bank, lodge): OSI's stone town rule, a passage with the run piece either side and the floor static on the door tile (survey_doors.py); the door is a... |
+| 5 variety | PASS | {'distinct_decor_ids': 106, 'categories': 22, 'adjacent_identical': [], 'adjacent_identical_count': 0} |
+| 6 transitions | PASS | no tile over the slope limit |
+|   west shore on the files | PASS | west shore 6624-6633 x 3994-3999 on the written files: heights [-5, -4, -3, -1, 0], largest step between neighbours 3 |
+| 7 one wall piece per tile | PASS | every stone wall tile one piece |
+| 8 walkable gate, files re-read | PASS | 17 legs and detours walked, 25 of 25 P663 spots fit, 8505 walkable tiles recorded (plan-cells.json); re-read: 0 land mismatches, statics equal (3026) |
+| 9 junctions by the run rule | PASS | 143 wall tiles carry the run-topology piece |
+| 10 torches mounted | PASS | 6 wall torches on the floor tile before a north or west wall, 13-15 above it |
+| 11 frames touch | PASS | no framed openings (the doors are passages, item 4) |
+| 12 junction sheet | PASS | 24 crops in junctions-1.png: {'L': 12, 'end': 6, 'mount': 6} |

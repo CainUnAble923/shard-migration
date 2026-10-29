@@ -120,6 +120,18 @@ def server_items():
     m = re.search(r'LeagueBoard = new\((\d+), (\d+)\)', cp)
     if m:
         props.append((int(m.group(1)), int(m.group(2)), None, 0x1E5E, 'League notice board'))
+    # cc-P725: P724's addons (the wreck, the lighthouse, the fountain): every tile of each, so nothing of ours grows on or
+    # beside them (the moongate's frame stands on the landing, which is kept clear already)
+    ad = code_file(os.path.join('server', 'customizations', 'Tutorial', 'TutorialIsleAddons.cs'), r'WreckSpot')
+    spots_ad = {m.group(1): (int(m.group(2)), int(m.group(3))) for m in
+                re.finditer(r'Point3D (\w+Spot) = new\((\d+), (\d+), -?\d+\)', ad)}
+    for spot, cls_name in (('WreckSpot', 'WakeningIsleShipwreckAddon'), ('LighthouseSpot', 'WakeningIsleLighthouseAddon')):
+        body = ad[ad.index('class ' + cls_name):]
+        body = body[body.index('Pieces ='):body.index(';')]
+        for tid, ox, oy in re.findall(r'\((\d+), (-?\d+), (-?\d+), -?\d+\)', body):
+            props.append((spots_ad[spot][0] + int(ox), spots_ad[spot][1] + int(oy), None, int(tid), 'addon ' + cls_name))
+    if 'FountainSpot' in spots_ad:
+        props.append((spots_ad['FountainSpot'][0], spots_ad['FountainSpot'][1], None, 0xA62B, 'addon brass fountain'))
     door = re.search(r'DoorSpot = new\((\d+), (\d+), (-?\d+)\)', lay)
     return farm, props, pts, (int(door.group(1)), int(door.group(2)))
 
@@ -403,6 +415,7 @@ def plan(farm, props, pts, quiet=False):
         return c[0] - DX, c[1] - DY
     spots = {k: unshift(v) for k, v in pts.items()}
     server_tiles = {unshift((s[0], s[1])) for s in farm} | {unshift((s[0], s[1])) for s in props}
+    addon_tiles = {unshift((s[0], s[1])) for s in props if s[4].startswith('addon')}
     spot_tiles = set(spots.values()) | server_tiles     # nothing impassable of ours on these (the assertion below)
     keep_clear = set(server_tiles)                        # no decor of ours on these or beside a spot
     for c in spots.values():
@@ -560,32 +573,92 @@ def plan(farm, props, pts, quiet=False):
             zones['beach'].add(c)
         elif k == 'g':
             zones['grass'].add(c)
-    trees = [(hx(a), hx(b), w) for a, b, w in De['woods']['trees']]
-    under = table(De['woods']['under'])
+    # cc-P725: a tropical island (Chase 10-28: "the isle looks bare. Dress it as a tropical island"). isle-sets.json
+    # "tropics": the planting by tier, from the sand inward (Chebyshev distance from the sand, ds): the beach (sparse
+    # palms), the edge (palms, pampas, ferns), the middle (banana, o'hii, palms, undergrowth) and the deep (OSI's jungle
+    # trees, laid whole as on Buccaneer's Den's island: notes/cc-P725-tools/jungle-trees.json). Everything grows in
+    # clusters: a tile's chance is its tier's share times a seeded field of round clumps, so there are thickets and
+    # clearings, never a grid. Trees keep further back than undergrowth from every road, stop, building and gate
+    # (TreeClear) so nothing hides a lesson spot or blocks the walked route, and the wake-up beach stays open.
+    Tr = RULES['tropics']
+    rt = stream('tropics')
+    land_tiles = [c for c in cls if cls[c] != 'w']
+    clumps = []
+    for _ in range(int(len(land_tiles) / Tr['tilesPerClump'])):
+        c = rt.choice(land_tiles)
+        clumps.append((c[0], c[1], rt.uniform(*Tr['clumpRadius'])))
+    clump_at = collections.defaultdict(list)
+    for (cx, cy, r) in clumps:
+        clump_at[(int(cx) // 8, int(cy) // 8)].append((cx, cy, r))
 
-    def tree_ok(c):
-        return all((c[0] + a, c[1] + b) not in keepout and not by_tile.get((c[0] + a, c[1] + b))
-                   for a in (-1, 0, 1) for b in (-1, 0, 1)) and cls.get(c) == 'g'
+    def field(c):
+        best = 0.0
+        for a in (-1, 0, 1):
+            for b in (-1, 0, 1):
+                for (cx, cy, r) in clump_at.get((c[0] // 8 + a, c[1] // 8 + b), []):
+                    best = max(best, math.exp(-(math.hypot(c[0] - cx, c[1] - cy) / r) ** 2))
+        return best
 
-    def plant(rng, c, why):
-        t = trees[S.weighted(rng, {i: w for i, (_, _, w) in enumerate(trees)})]
-        if any(t[0] in by_tile.get((c[0] + a, c[1] + b), []) for a in (-1, 0, 1) for b in (-1, 0, 1)):
-            t = trees[(trees.index(t) + 1) % len(trees)]
-        z = land[c][1]
-        put(c[0], c[1], z, t[0], why + ' tree')
-        put(c[0], c[1], z, t[1], why + ' leaves')
+    wake = P.STOPS[0][2:]                                 # the wake-up spot on the beach (plan coordinates)
+    tree_clear = set(keepout)
+    big_clear = Tr['treeClear']
+    for c in set(spots.values()) | road | server_tiles:
+        for a in range(-big_clear, big_clear + 1):
+            for b in range(-big_clear, big_clear + 1):
+                tree_clear.add((c[0] + a, c[1] + b))
+    for r in (P.YARD, P.SQUARE, P.LODGE, P.BANK, P.MEADOW):
+        tree_clear |= set(cells((r[0] - big_clear - 1, r[1] - big_clear - 1, r[2] + big_clear + 1, r[3] + big_clear + 1)))
+    wake_plants = {c for c in cls if math.hypot(c[0] - wake[0], c[1] - wake[1]) <= Tr['wakeClearPlants']}
+    wake_trees = {c for c in cls if math.hypot(c[0] - wake[0], c[1] - wake[1]) <= Tr['wakeClearTrees']}
+    tree_clear |= wake_trees
 
-    rw = stream('woods')
-    for zone, tshare, ushare in (('woods', De['woods']['treeShare'], De['woods']['underShare']),
-                                 ('grass', De['grass']['trees'], De['grass']['under'])):
-        tiles = sorted(zones[zone])
-        rw.shuffle(tiles)
-        for c in tiles:
-            k = rw.random()
-            if k < tshare and tree_ok(c):
-                plant(rw, c, zone)
-            elif k < tshare + ushare and c not in keepout and not by_tile.get(c) and cls.get(c) == 'g':
-                put(c[0], c[1], land[c][1], S.pick_unlike(rw, under, c, by_tile), zone + ' undergrowth')
+    def tier(c):
+        if cls.get(c) == 's':
+            return 'beach' if dw.get(c, 0) >= Tr['beachFromSea'] else None
+        if cls.get(c) != 'g' or c in zones['meadow']:
+            return None
+        d = ds.get(c, 0)
+        return 'edge' if d <= Tr['edgeTo'] else 'middle' if d <= Tr['middleTo'] else 'deep'
+
+    trunk_tiles = set()
+
+    def free_round(c, reach=1):
+        return all((c[0] + a, c[1] + b) not in trunk_tiles for a in range(-reach, reach + 1) for b in range(-reach, reach + 1))
+
+    plant_log = collections.Counter()
+    tiles = sorted(c for c in cls if tier(c))
+    rt.shuffle(tiles)
+    jungle = [[(a, b, dz, hx(u)) for a, b, dz, u in comp] for comp in Tr['jungleTrees']]
+    singles = {k: table(v) for k, v in Tr['trees'].items()}
+    unders = {k: table(v) for k, v in Tr['under'].items()}
+    # 1. the trees: OSI's whole jungle trees in the deep, single trees elsewhere, by the tier's share x the clumps
+    for c in tiles:
+        t = tier(c)
+        f = field(c)
+        if rt.random() >= Tr['treeShare'][t] * f or c in tree_clear or by_tile.get(c) or not free_round(c, 1):
+            continue
+        if t == 'deep' and rt.random() < Tr['jungleShare']:
+            comp = rt.choice(jungle)
+            spots_of = {(c[0] + a, c[1] + b) for a, b, dz, u in comp}
+            if all(tier(s2) in ('deep', 'middle') and s2 not in tree_clear and not by_tile.get(s2) and free_round(s2, 1)
+                   and abs(land[s2][1] - land[c][1]) <= 2 for s2 in spots_of):
+                for (a, b, dz, u) in comp:
+                    put(c[0] + a, c[1] + b, land[c][1] + dz, u, 'tropics jungle tree')
+                trunk_tiles |= spots_of
+                plant_log['jungle tree'] += 1
+                continue
+        put(c[0], c[1], land[c][1], S.pick_unlike(rt, singles[t], c, by_tile), 'tropics %s tree' % t)
+        trunk_tiles.add(c)
+        plant_log['tree ' + t] += 1
+    # 2. the undergrowth: ferns, fan and elephant-ear plants, blade and snake plants, pampas; passable or low, and kept
+    #    off the road's edge, the spots and the wake-up beach
+    for c in tiles:
+        t = tier(c)
+        if rt.random() >= Tr['underShare'][t] * (0.35 + field(c)) or c in keepout or by_tile.get(c) or c in wake_plants:
+            continue
+        put(c[0], c[1], land[c][1], S.pick_unlike(rt, unders[t], c, by_tile), 'tropics %s undergrowth' % t)
+        plant_log['under ' + t] += 1
+    report['tropics'] = dict(plant_log)
     rf = stream('flowers')
     for zone, share, tab in (('meadow', De['meadow']['share'], De['meadow']['flowers']),
                              ('grass', De['grass']['flowers'], De['meadow']['flowers'])):
@@ -600,14 +673,81 @@ def plan(farm, props, pts, quiet=False):
     for c in sorted(zones['beach']):
         if rb.random() < De['beach']['share'] and c not in keepout and not by_tile.get(c) and c not in road:
             put(c[0], c[1], land[c][1], S.pick_unlike(rb, table(De['beach']['pieces']), c, by_tile), 'beach')
-    for c in sorted(dry):
-        if cls.get(c) == 's' and dw[c] == 1 and c not in deck_set and c not in landing and c not in dock_dry:
-            put(c[0], c[1], De['shoreWater']['z'], hx(De['shoreWater']['id']), 'shore water')
+    # cc-P725: the shoreline as OSI draws its sandy coasts (Chase 10-28: "island needs shore tiles"; P662's plain
+    # water diamond on every first sand tile drew the coast as a sawtooth). shore-rule.json is learned from stock
+    # Trammel by notes/cc-P725-tools/survey_rule.py: for each cell beside the sea/land line, by its own class and its
+    # 8-neighbour sea pattern, the water pieces OSI lays there (surf-edged pieces on the sea cells, small surf pieces on
+    # the last sand cell). A cell takes one of the compositions OSI uses for its pattern at least a quarter as often as
+    # the commonest; a pattern OSI's gentle beaches never show gets none (plain sea, or bare sand).
+    shore_rule = json.load(open(os.path.join(HERE, 'shore-rule.json')))
+    rs2 = stream('shore')
+    nb8 = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
+    sea = lambda c: cls.get(c, 'w') == 'w'
+    no_shore = deck_set | landing | dock_dry
+    shore_log = collections.Counter()
+    names8 = ('N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW')
+    pattern = lambda c, wet: ''.join('S' if wet((c[0] + a, c[1] + b)) else '.' for a, b in nb8)
+    # pass 1, the front coasts (land only east and/or south of a sea cell, the sides the camera faces): OSI's
+    # half-tile surf pieces over shore land, so the sand fills the notch and the surf runs along it (surf-survey.json:
+    # 0x179D/0x179E land east, 0x17A1/0x17A2 land south, 0x17A7 both); the land under them is impassable sand
+    front = RULES['shoreFront']
+    front_cells = {}
+    for c in sorted(cls):
+        if c in no_shore or not sea(c):
+            continue
+        dry = {d for d, ch in zip(names8, pattern(c, sea)) if ch == '.'}
+        if dry and 'E' in dry and 'S' in dry and dry <= {'NE', 'E', 'SE', 'S', 'SW'}:
+            front_cells[c] = 'eastSouth'
+        elif 'E' in dry and dry <= {'NE', 'E', 'SE'}:
+            front_cells[c] = 'east'
+        elif 'S' in dry and dry <= {'SE', 'S', 'SW'}:
+            front_cells[c] = 'south'
+    for c, side in sorted(front_cells.items()):
+        land[c] = (hx(front['land']), L['seaZ'])
+        put(c[0], c[1], L['seaZ'], hx(rs2.choice(front[side])), 'shore water front ' + side)
+        shore_log['S front ' + side] += 1
+    # pass 2, every other cell beside the line, by OSI's table; a filled notch counts as land for its neighbours (it is
+    # mostly sand on screen). A pattern OSI's gentle beaches show fewer than shoreRuleMin times falls back to the
+    # surf edge for the side the land is on (north 0x179F/0x17A0, west 0x17A3/0x17A4, both the corner 0x17A6/0x17AF)
+    wet2 = lambda c: sea(c) and c not in front_cells
+    fallback = RULES['shoreFallback']
+    for c in sorted(cls):
+        if c in no_shore or c in front_cells:
+            continue
+        pat = pattern(c, wet2)
+        if pat in ('SSSSSSSS', '........'):
+            continue
+        if not sea(c) and cls[c] != 's':
+            continue
+        key = ('S' if sea(c) else 'L') + ':' + pat
+        r = shore_rule.get(key)
+        if (not r or r['n'] < fallback['min']) and sea(c):
+            dry = {d for d, ch in zip(names8, pat) if ch == '.'}
+            side = 'northWest' if {'N', 'W'} <= dry else 'north' if 'N' in dry else 'west' if 'W' in dry else None
+            if side:
+                put(c[0], c[1], L['seaZ'], hx(rs2.choice(fallback[side])), 'shore water fallback ' + side)
+                shore_log['S fallback ' + side] += 1
+                continue
+        if not r:
+            shore_log['unknown ' + key[0]] += 1
+            continue
+        top = r['top'][0][1]
+        options = {i: n for i, (p, n) in enumerate(r['top']) if n * 4 >= top}
+        pieces = r['top'][S.weighted(rs2, options)][0]
+        shore_log[key[0] + (' pieces' if pieces else ' none')] += 1
+        base_z = L['seaZ']
+        for p in pieces:
+            tid, dz = p.split('@')
+            put(c[0], c[1], base_z + int(dz), hx(tid), 'shore water ' + key)
+    report['shore'] = dict(shore_log)
 
     # 9. checks of the plan: nothing outside the area, nothing impassable on a kept-clear tile, one wall piece a tile
     for (x, y, z, tid, why) in statics:
         assert AREA[0] <= x <= AREA[2] and AREA[1] <= y <= AREA[3], (x, y, why)
         # cc-P720: a gable or roof 16 or more above the tile (over a door) is over a person's head, not in the way
+        # cc-P725: P724's wreck lies in the surf on the west tip: OSI's water pieces may lie under it
+        if why.startswith('shore water') and (x, y) in addon_tiles:
+            continue
         if (x, y) in spot_tiles and (items[tid]['flags'] & IMP) and z < 16:
             raise AssertionError(('impassable static on a server item spot', x, y, why))
     # the fence set has no corner piece: its south-east corners carry both runs (walls.wall_pieces), as allowed
@@ -935,6 +1075,8 @@ def main():
     print('densities (pieces, tiles, per 100):', report['densities'])
     print('corners:', {k: dict(v) for k, v in report['corners'].items()})
     print('doubled wall tiles:', report['doubled wall tiles'])
+    print('shore (cc-P725):', report['shore'])
+    print('tropics (cc-P725):', report['tropics'])
     print(audit.summary(report['slope audit']))
     counts = collections.Counter(s[4].split(' ')[0] + ' ' + s[4].split(' ')[1] if ' ' in s[4] else s[4] for s in statics)
     print('statics', len(statics), dict(sorted(counts.items())))
