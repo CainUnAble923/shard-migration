@@ -1,0 +1,23 @@
+test_4_the_exact_walk_where_one_level_a_tile_is_not_enough (__main__.Exact.test_4_the_exact_walk_where_one_level_a_tile_is_not_enough) ... D:\UO\golems\Iron\shard-migration\notes\cc-P481-tools\islands.py:60: ResourceWarning: unclosed file <_io.BufferedReader name='D:\\UO\\golems\\Iron\\shard-migration\\notes\\cc-P481-tools\\scratch\\sos\\Map1.mul'>
+  raw = open(os.path.join(folder, files[0]), "rb").read()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+D:\UO\golems\Iron\shard-migration\notes\cc-P481-tools\islands.py:81: ResourceWarning: unclosed file <_io.BufferedReader name='D:\\UO\\golems\\Iron\\shard-migration\\notes\\cc-P481-tools\\scratch\\sos\\Staidx1.mul'>
+  idx = np.frombuffer(open(ip, "rb").read(), dtype="<i4").reshape(-1, 3)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+D:\UO\golems\Iron\shard-migration\notes\cc-P481-tools\islands.py:82: ResourceWarning: unclosed file <_io.BufferedReader name='D:\\UO\\golems\\Iron\\shard-migration\\notes\\cc-P481-tools\\scratch\\sos\\Statics1.mul'>
+  sta = np.frombuffer(open(sp, "rb").read(), dtype=np.uint8)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+FAIL
+
+======================================================================
+FAIL: test_4_the_exact_walk_where_one_level_a_tile_is_not_enough (__main__.Exact.test_4_the_exact_walk_where_one_level_a_tile_is_not_enough)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UO\golems\Iron\shard-migration\tools\tests\test_sos_walk.py", line 136, in test_4_the_exact_walk_where_one_level_a_tile_is_not_enough
+    self.assertTrue(ok, 'Fort Yondall bank to outside; nearest %s' % (near,))
+AssertionError: False is not true : Fort Yondall bank to outside; nearest (3377, 373)
+
+----------------------------------------------------------------------
+Ran 1 test in 1.478s
+
+FAILED (failures=1)

@@ -1,0 +1,1047 @@
+{
+ "checks": [
+  {
+   "id": "P64-1",
+   "title": "Fresh account login: bulletin with the current version, All patch notes, no wiki button",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "FAIL",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "fail",
+     "evidence": "no bulletin gump on the account's first login (0 gumps: [])",
+     "seconds": 3.7,
+     "transcript": "transcripts/P64-1-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P64-2",
+   "title": "All patch notes opens the history; a relog shows no bulletin",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "FAIL",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "fail",
+     "evidence": "no bulletin, so no All patch notes to press (observed during the matching P64-1 run)",
+     "seconds": 0.0,
+     "transcript": "transcripts/P64-2-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P64-3",
+   "title": "[version: the current version first, with (you are here)",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "P64-3: the entry shows gold",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "first heading 'Shattered Legacy 2026.10.29'; (you are here) on page 1: True",
+     "seconds": 1.9,
+     "transcript": "transcripts/P64-3-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P64-4",
+   "title": "[version pages: Next to Page N of N, last version 2026.10.01, Previous goes back",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "last page ['Page 124 of 124']; last version 2026.10.01; after Previous ['Page 123 of 124']",
+     "seconds": 0.7,
+     "transcript": "transcripts/P64-4-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P58-0",
+   "title": "[version as a player: 2026.10.02 to 2026.10.05 sections, no Staff lines",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "P58-0: the patch-note wording reads right",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "versions 10.02-10.05 shown: ['2026.10.05.3', '2026.10.05.2', '2026.10.05', '2026.10.04', '2026.10.03', '2026.10.02']; missing none; Staff list visible to a player: False",
+     "seconds": 0.7,
+     "transcript": "transcripts/P58-0-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P61-5",
+   "title": "[version history holds 2026.10.05.2 with its four lines",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "2026.10.05.2 present: True, 4 player lines (CHANGELOG at the code under test: 4)",
+     "seconds": 0.7,
+     "transcript": "transcripts/P61-5-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P64-5",
+   "title": "The 2026.10.05.2 line ends 'The chance to make the item is unchanged.'",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "P64-5: it wraps onto four rows",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "matching line: 'thril to 187.5, Adamantium and Celestial to 200. The chance to make the item is unchanged.'",
+     "seconds": 0.7,
+     "transcript": "transcripts/P64-5-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P71-7",
+   "title": "[version history holds 2026.10.10 with five lines",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "2026.10.10 present: True, 5 player lines (CHANGELOG at the code under test: 5)",
+     "seconds": 0.6,
+     "transcript": "transcripts/P71-7-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P64-6",
+   "title": "Staff list: shown to staff, hidden from players",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "P64-6: the staff list shows lavender",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "admin sees 'Staff (players do not see this list)': True; player sees it: False",
+     "seconds": 2.9,
+     "transcript": "transcripts/P64-6-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P66-7",
+   "title": "[ClusterFSkillGain reports the rate and 'past stock ceilings on'",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "reply: 'ClusterF skill gain: rate enabled, 3 chance attempt(s), 5x gain amount; past stock ceilings on.'",
+     "seconds": 1.0,
+     "transcript": "transcripts/P66-7-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P62-1",
+   "title": "A female character can wear the Kitsune Ears and Tail",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "worn: True (layer 18); messages []",
+     "seconds": 4.9,
+     "transcript": "transcripts/P62-1-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P62-7",
+   "title": "A male character cannot: 'Only females can wear this.', the item stays in the pack",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "FAIL",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "fail",
+     "evidence": "refusal False; worn True; back in pack False; messages []",
+     "seconds": 12.0,
+     "transcript": "transcripts/P62-7-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "T-039",
+   "title": "A new character is pointed at the board",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "T-039: a new player can find the board by eye",
+   "result": "FAIL",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "fail",
+     "evidence": "human female at (6638, 3993, 0): message None; welcome gump says None; the board is 3005 tiles away",
+     "seconds": 18.7,
+     "transcript": "transcripts/T-039-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "CREATE",
+   "title": "Character creation for every race and sex, through the real 0xF8 packet",
+   "kind": "HARNESS",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "human male: body 400 (want 400), status name 'Bot Human M Ae' (asked for 'Bot Human M Ae'), at (3634, 2586, 0)",
+     "seconds": 286.3,
+     "transcript": "transcripts/CREATE-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "T-047",
+   "title": "Young by time played: the countdown, and 'I want to grow up!' brings the confirm gump",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "countdown 'You will enjoy the benefits and relatively safe status of a young player for another 13 days and 23 hours of play time. Say \"I want to grow up!\" to give it up sooner.' (days and hours: True); confirm gump: ['', \"Renouncing 'Young Player' Status\"]",
+     "seconds": 26.1,
+     "transcript": "transcripts/T-047-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "D41",
+   "title": "Regression: the Guild Directory lists each guild once",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "18 rows, header says 18 guilds, 18 way buttons; duplicates none; Artificers' Order 1 time(s)",
+     "seconds": 1.4,
+     "transcript": "transcripts/D41-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P56-6",
+   "title": "Valorite refused at Mining 98.9, smelts at 99",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "at 98.9: refused True ['You have no idea how to smelt this strange ore!'], ore left 10; at 99.0 over 6 tries: refused 0, smelted 4, burned 2",
+     "seconds": 21.4,
+     "transcript": "transcripts/P56-6-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P56-4",
+   "title": "Platinum refused at Mining 112.4; at 112.5 it smelts (about half the time)",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "at 112.4: refused True ['You have no idea how to smelt this strange ore!'], ore left 10; at 112.5 over 8 tries: refused 0, smelted 3, burned 5",
+     "seconds": 22.1,
+     "transcript": "transcripts/P56-4-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P61-3",
+   "title": "Achievements: 'Oh Look, It's Dead' shows its Earned line and no 'Progress: 9/1'; unearned ones show progress",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "rat killed by the player: True; row 'Oh Look, It\\'s Dead [5 AP / 5 R]\"You are, by definition, a killer now. Congratulations.\"(Earned: slew your first creature)'; other rows with progress: 1",
+     "seconds": 5.9,
+     "transcript": "transcripts/P61-3-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P119-1",
+   "title": "Five of cc-P119's ported creatures spawn, fight back and die to a player, leaving a corpse",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "IceHound: killed True, corpse True; OrcChopper: killed True, corpse True; Lifestealer: killed True, corpse True; EffeteUndeadGargoyle: killed True, corpse True; Wight: killed True, corpse True; player hits at the end 175/177",
+     "seconds": 47.1,
+     "transcript": "transcripts/P119-1-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P129-1",
+   "title": "Six of cc-P129's ported creatures spawn, fight back and die to a player, leaving a corpse",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "FAIL",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "fail",
+     "evidence": "BloodFox: killed True, corpse True; OsseinRam: killed True, corpse True; LeatherWolfFellow: killed True, corpse True; GargishOutcast: killed False, corpse False; ParoxysmusSwampDragon: killed True, corpse True; Drelgor: killed True, corpse True; player hits at the end 176/177",
+     "seconds": 314.5,
+     "transcript": "transcripts/P129-1-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P139-1",
+   "title": "The body-route test creature spawns on body 2048, fights back with its bow and dies to a player, leaving a corpse",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "BurrowScampSlingerBodyTest: killed True, corpse True; player hits at the end 169/175",
+     "seconds": 12.7,
+     "transcript": "transcripts/P139-1-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P140-1",
+   "title": "Six Rootdeep Burrows spawns appear on their bodies, fight back and die to a player, leaving a corpse",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "FAIL",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "fail",
+     "evidence": "BurrowHog: killed True, corpse True; BurrowGrub: killed True, corpse True; BurrowScamp: killed False, corpse False; Rootling: killed True, corpse True; Sporecap: killed True, corpse True; Gloomling: killed True, corpse True; player hits at the end 162/176",
+     "seconds": 111.6,
+     "transcript": "transcripts/P140-1-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "T-046",
+   "title": "Reset stone and [ResetMyAccount open the same gump",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "T-046: each scope (this character / all / account) clearing what it says, joined guilds included, is not pressed by the bot; it would wipe its own characters",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "same gump type True; same text True (29 lines); same buttons True [0, 1, 2, 10]",
+     "seconds": 2.6,
+     "transcript": "transcripts/T-046-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P100-1",
+   "title": "[VBuild opens the Visual Builder: title, Paint, Fill box (20), Wipe box (50) and Undo",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "title and tools present: True (missing none); Undo (0); buttons 10/11/13/30 present True; 52 lines",
+     "seconds": 1.3,
+     "transcript": "transcripts/P100-1-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P100-2",
+   "title": "Search bench, Paint two with a hue, Fill box 3 x 3 (Filled 9), 21 x 21 refused, Nudge moves them",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "P100-2: the painted pieces and the hue look right on screen",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "search 'bench': 66 found, page 1 of 3; painted 2 bench(es) (graphics ['0xb2d']) hue [1157]; fill: 'Filled 9 item(s). Undo removes them.' (9 pavers, hue [1157]); 21x21: 'Refused: the box is 21 x 21 tiles; the most a fill takes is 20 x 20.' (0 placed); nudge: 'Moved 9 item(s).', the nine moved x+1: True; cleanup ['Undone: 9 item(s). 3 step(s) left.', 'Undone: 9 item(s). 2 step(s) left.', 'Undone: 1 item(s). 1 step(s) left.', 'Undone: 1 item(s). 0 step(s) left.', 'Nothing of yours to undo.']",
+     "seconds": 10.3,
+     "transcript": "transcripts/P100-2-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P100-3",
+   "title": "Wipe box over the corner removes what the session placed and leaves the town's own items",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "placed 11 (Filled 9 item(s). Undo removes them.); wipe said 'Wiped 11 item(s). Undo puts back them.'; all placed gone True; town items in the box before 0, after 0, same set True; cleanup ['Undone: 11 item(s). 3 step(s) left.', 'Undone: 9 item(s). 2 step(s) left.', 'Undone: 1 item(s). 1 step(s) left.', 'Undone: 1 item(s). 0 step(s) left.', 'Nothing of yours to undo.']",
+     "seconds": 10.9,
+     "transcript": "transcripts/P100-3-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P100-4",
+   "title": "Undo puts the wiped items back, then undoes the fill and the paints until the corner is as it was",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "placed 11; first undo: 'Undone: 11 item(s). 3 step(s) left.'; corner after it equals the placed picture: True; then ['Undone: 9 item(s). 2 step(s) left.', 'Undone: 1 item(s). 1 step(s) left.', 'Undone: 1 item(s). 0 step(s) left.', 'Nothing of yours to undo.']; corner back to its start: True (0 items)",
+     "seconds": 13.9,
+     "transcript": "transcripts/P100-4-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P100-5",
+   "title": "World mode (Administrator): a wipe takes a loose Static the builder did not place, undo puts it back",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "protected wipe: 'Wiped 0 item(s). Undo puts back them.' (loose still there True); 'World mode ON: erase and wipe now also r'; world wipe: 'Wiped 1 item(s). Undo puts back them.' (gone True); undo: 'Undone: 1 item(s). 0 step(s) left.' (back True); 'World mode off: erase and wipe only touch what this session placed.'",
+     "seconds": 10.5,
+     "transcript": "transcripts/P100-5-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P138-3",
+   "title": "A male human wears the Kitsune Ears and Tail (no 'Only females' refusal), on the earrings layer",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "P138-3: on his paperdoll the ears sit on the crown and the tail leaves the lower back",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "male human: worn True on layer 18 (want 0x12) graphic 0x3C3C (want 0x3C3C); refusals none; messages ['Welcome to Shattered Legacy BOT (P688 private).']",
+     "seconds": 161.5,
+     "transcript": "transcripts/P138-3-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P138-5",
+   "title": "A gargoyle is refused: 'Only humans and elves can wear this.' and the item stays in the pack",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "gargoyle: refusal True; worn False; back in pack True; messages ['Only humans and elves can wear this.', 'Welcome to Shattered Legacy BOT (P688 private).']",
+     "seconds": 12.7,
+     "transcript": "transcripts/P138-5-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P69-6",
+   "title": "A tier-3 mule shows 'Tier 3: Shadowhide Mule', lists its module slots, and costs its owner 1 follower slot",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "a NEW tier-3 mule (no old mules exist here; the play test's 'existing mules' are the same code path): 'Tier 3: Shadowhide Mule (male)'; 'Module slots: 0 / 3'; owner's followers 0 -> 1 (1 slot); other lines [' a Shadowhide mule ', '(tame)', 'Quality: hits 63%, strength 87%, stamina 56%, resists 98%, pack 31%', 'Bloodline: none']",
+     "seconds": 8.7,
+     "transcript": "transcripts/P69-6-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P70-1",
+   "title": "A member at the guildmaster buys a mule module schematic from 'Mule module schematics' and the account learns it (Miners' Compact, Ore Hopper I: priced in Mining Vouchers, which staff can set)",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "P70-1: the Tinkers' Union half as written (20 Tinkers' scrip, Clockwork Load Harness I): no staff command grants a guild's scrip, only [CompactVouchers (mining) and [GuildStanding (standing); the Apprentice task pays 10",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "Miners' Compact in place of the Tinkers' Union (no staff scrip grant); joined now: \"You have joined the Miners' Compact as Apprentice. Joining is free.\"; 'Member. Rank: Apprentice.'; buy said 'You learn the Ore Hopper I schematic (Blacksmithy).'; page then says 'Mule module schematics'; [Recipes list shows recipe:9011: True",
+     "seconds": 9.4,
+     "transcript": "transcripts/P70-1-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P70-2",
+   "title": "Tinker tools, 'Mule Modules': the Clockwork Load Harness I is refused without 15 ingots, 2 gears and 10 bone, and made with them",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "refusal without materials: True (pack had ingots 0, gears 0, bone 0); with them: made True, new tier-I harness ['0x404AB6B8']; notice ['You create the item.']",
+     "seconds": 9.9,
+     "transcript": "transcripts/P70-2-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P70-3",
+   "title": "A module dropped on the mule is fitted and listed; Options > Remove puts it back in the pack, still tier I",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "fitted True (['You fit the Clockwork Load Harness I to the mule.']); mule lists it True, 'Module slots: 1 / 1'; Remove row True -> 'You take the Clockwork Load Harness I off the mule.'; back in the pack True as \"Mule module: Tinkers' Union, tier I\"",
+     "seconds": 9.8,
+     "transcript": "transcripts/P70-3-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P70-4",
+   "title": "A tier III module is refused on a tier 1 mule and stays in the pack",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "refusal 'A tier III module needs a tier 3 mule or better; yours is tier 1.'; module back in the pack True; mule's module lines ['Module slots: 0 / 1']",
+     "seconds": 5.2,
+     "transcript": "transcripts/P70-4-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P70-5",
+   "title": "Tier II is crafted from a tier I in the pack; the tier I is gone after the success, and a second try is refused",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "tier-I 0x404AB6CB used (pack cleared of modules first, then one tier I added); craft: made True after 0 failed roll(s) (tier I kept through each failure: True), the tier I gone True, new tier II ['0x404AB6DE']; second try with no tier I: refused True",
+     "seconds": 11.5,
+     "transcript": "transcripts/P70-5-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P70-6",
+   "title": "Trailwise Tack III on a tier-3 mule: the owner's followers drop by one, and come back when it is removed",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "fitted True; followers 2 -> 1 with the tack -> 2 without; module back in the pack True; ['You fit the Trailwise Tack III to the mule.']",
+     "seconds": 10.8,
+     "transcript": "transcripts/P70-6-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P70-7",
+   "title": "Trailwise Tack II: left behind on the same map, the mule is beside its owner within seconds; 'all come' reaches it from far away",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "fitted True; owner moved 25 tiles True: mule beside within 4.4s (True); told to stay and owner moved again True: stayed away True; 'all come' brought it within 0.0s (True)",
+     "seconds": 22.3,
+     "transcript": "transcripts/P70-7-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P70-8",
+   "title": "Soul Tether II: the killed mule's corpse is empty, its pack stays on the ghost, and it is resurrected",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "fitted True; pack before 'Contents: 1/220 items, 10/2356 stones'; killed (hits 0) True, ghost still in view True; corpse 0x404AB6EE with 0 items; pack tooltip after 'Contents: 1/220 items, 10/2356 stones'; admin opening the pack sees graphics [7154]; resurrected by the owner's bandage: True (['You are able to resurrect your patient.', 'You have gained a lot of karma.'])",
+     "seconds": 26.1,
+     "transcript": "transcripts/P70-8-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P70-9",
+   "title": "Ore Hopper: 100 iron ingots in the mule's pack weigh less once the hopper is fitted",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "fitted True; stones: pack alone 0, with 100 ingots 10 (+10), right after fitting 10, with 200 ingots 15 (undiscounted would be +20, a 25% hopper gives about +15)",
+     "seconds": 10.8,
+     "transcript": "transcripts/P70-9-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P70-10",
+   "title": "Survey Saddle Roll: Options lists a decoded map in the pack and tracks it with a quest arrow; at the spot with III, 'Dig here' raises the chest and its guardians",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "map on Trammel at (845, 2225), in the mule's pack True; II fitted True: 'Track map' heading True, 1 map rows, arrow {'active': True, 'x': 845, 'y': 2225, 'serial': 194511} -> points at the spot True; III fitted True, owner at the spot True, 'Dig here' row True: chest 0x404AB720 (graphic 0xA304), 4 guardians [None, None, None, None], refusal None",
+     "seconds": 23.7,
+     "transcript": "transcripts/P70-10-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P70-11",
+   "title": "Trader's Ledger III: 'Open your bank box' opens it in town, and is refused while criminal, in a fight, and in a dungeon",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "ERROR",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "error",
+     "evidence": "AssertionError: the mule 0x2F7CF gave no context menu",
+     "seconds": 29.1,
+     "transcript": "transcripts/P70-11-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P82-0",
+   "title": "Artificers' imbuing rework: a formula book read, staff-granted Bountiful imbued at Full anywhere and at Overcharged only by a hall soul forge, the hint line, the refusal and the tooltip",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "order: joined now [\"You have joined the Artificers' Order as Apprentice. Joining is free.\", \"You have been issued an Artificers' Essence Satchel and an Artificers' Toolkit.\"]; Imbuing 140.0; book apprentice-formulary: tooltip \"[Artificers' rank Journeyman: 36 imbue formulae]\"; 'You study the Apprentice Formulary. Your account now knows: Balanced: Basic; Bonus Dexterity: Refined; Bonus Intelligence: Refined; Bonus Strength: Refined; Cold Resist Bonus: Refined; Crafter Skill Bonus: Basic; Durability (Armor): Refined; Durability (Weapon): Refined; Elemental Damage: Basic; Energy Resist Bonus: Refined; Enhance Potions: Refined; Fire Resist Bonus: Refined; Hit Life Leech: Basic; Hit Lower Attack: Basic; Hit Lower Defense: Basic; Hit Mana Leech: Basic; Hit Point Increase: Refined; Hit Points Regen: Refined; Hit Stamina Leech: Basic; Jewelry Skill Bonus: Basic; Lower Reagent Cost: Refined; Lower Stat Req (Armor): Refined; Lower Stat Req (Weapon): Refined; Luck: Refined; Mage Armor: Basic; Mana Increase: Refined; Mana Regen: Refined; Night Sight: Refined; Physical Resist Bonus: Refined; Poison Resist Bonus: Refined; Self Repair: Refined; Self Repair (Armor): Refined; Spell Channeling: Basic; Stamina Increase: Refined; Stamina Regen: Refined; Velocity: Basic.'; consumed True; [ImbueKnowledge Bountiful: ['None'] then ['None', 'Basic', 'Refined', 'Full', 'Overcharged']; shards 70 (farm: ['You disenchant the Longsword, recovering 35 Essence Shard(s)!', 'You disenchant the Longsword, recovering 35 Essence Shard(s)!']); away from forges True: 'Properties: 0/5  |  Here: up to Full'; hint []; row ['0 / 15']; select ['Ingredient: 5 SpiderCarapace'] ['Full: set to 15 - 15 Shard(s) + 8,000 gold'] ['Overcharged (22): needs a soul forge']; Full -> \"You successfully imbue LeatherChest with Bountiful = 15! (+7 Artificers' Standing)\" (falters 0); now ['15 (Full)']; Overcharged away from a forge (not pressable, the row is greyed) -> \"button 132 opened no 'Imbue: Bountiful' page\"; forge placed [\"an Artificers' hall soul forge\", '[Imbue here to reach Overcharged]']: 'Properties: 1/5  |  Here: up to Overcharged, +2% success'; row ['15 / 22']; select ['Overcharged: set to 22 - 22 Shard(s) + 11,733 gold']; Overcharged -> \"You successfully imbue LeatherChest with Bountiful = 22! (+11 Artificers' Standing)\" (falters 0); now ['22 (Overcharged)']; tooltip ['[Bountiful 22%]']",
+     "seconds": 31.7,
+     "transcript": "transcripts/P82-0-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P173-1",
+   "title": "A Snow Elemental slayer war axe: listed as [ON], extracted to its essence, imbued onto a second weapon",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "order: already a member; Slayer family known: ['None', 'Basic']; axe tooltip has the slayer: True; shards 33 ; disenchant list ['Slayer: Summer Wind (Snow Elemental)  [ON]']; extract row Extract: Slayer: Summer Wind (Snow Elemental)  -> 1 Essence + 3 shards; extract -> 'You extract Slayer: Summer Wind (Snow Elemental) from WarAxe, receiving an Essence of Slayer: Summer Wind (Snow Elemental) and 3 Essence Shard(s).'; essence seen (None) ['Essence of Slayer: Summer Wind (Snow Elemental)', '[Slayer: Summer Wind (Snow Elemental)]']; axe still says slayer: False; imbue -> \"You successfully imbue Longsword with Slayer: Summer Wind (Snow Elemental) = 1! (+7 Artificers' Standing)\" (falters 0); confirm said ['Property: Slayer: Summer Wind (Snow Elemental)Current value: 0  ->  Target: 1 (Basic)Requires: 1 Essence of Slayer: Summ']; enable line ['Enable Slayer: Summer Wind (Snow Elemental)']; Longsword tooltip says snow elemental slayer: True",
+     "seconds": 32.0,
+     "transcript": "transcripts/P173-1-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P176-1",
+   "title": "Unravel Container: a bag of 3 magic, 2 plain and 1 blessed item; the confirmation counts, the three summary lines, the bag keeps the plain and blessed ones, the shards rise by the Ingredients line",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "order: already a member; bag holds 6 of 6 (moved [True, True, True, True, True, True]); blessed tooltip ['Blessed']; prompt 'Target a container in your backpack to unravel the magic items in it.'; confirmation: go 3, stay 3, button 'Unravel 3 Item(s)'; summary 'You magically unravel the items!' / 'Unraveled: 3/6 items' / 'Unraveled 3 item(s), skipped 3.' / 'Ingredients: 9 Essence Shard(s), 1 Essence of Hit Life Leech.'; shards 21 -> 30; magic gone [True, True, True]; plain+blessed still in the bag [True, True, True]",
+     "seconds": 40.1,
+     "transcript": "transcripts/P176-1-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P121-2",
+   "title": "A tamed Giant Spider at Poisoning 100 gives a player Lethal poison within a few bites",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "P121-2: the green flash on each poisoning hit",
+   "result": "FAIL",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "fail",
+     "evidence": "poison messages to the victim within 45 s: none; Lethal (1042865) NO; the victim died; wording from Cliloc.enu",
+     "seconds": 52.9,
+     "transcript": "transcripts/P121-2-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P171-1",
+   "title": "A 200 tamer on a Dread Warhorse: the taming starts on most of 20 tries, about 1 in 7 angers it",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "20 tries: 18 started the taming, 2 angered the beast (10%; 15% expected, 95% before cc-P171); busy 0, unanswered 0; SSASSSSSSSSSASSSSSSS",
+     "seconds": 203.7,
+     "transcript": "transcripts/P171-1-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P172-1",
+   "title": "A fresh tamer's wolf learns x1.0 and a Legendary Outrider's x2.4; the master's wolf gains more Wrestling in the same 3-minute fight",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "lore: fresh 'Learns x1.0' (want 'Learns x1.0' from Taming/Lore (100.0, 100.5)), master 'Learns x2.4' (want 'Learns x2.4' from (205.0, 200.0)); joined: You have joined the Rangers' League as Wanderer. Joining is free.; standing: Set Bot Human F An's Rangers' League standing to 150,000 (Legendary Outrider).; Wrestling fresh (80.0, 100.0) -> (84.1, 100.0) (gain 4.099999999999994), master (80.0, 100.0) -> None (gain None), master/fresh n/a over 180 s: reported only, the roll saturates at this skill (Chase's sample is 10 min)",
+     "seconds": 273.2,
+     "transcript": "transcripts/P172-1-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P142-1",
+   "title": "Trammel Despise: an Initiate is refused the dungeons beyond Felucca, a Journeyman steals specials, a non-member is told of the Den",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "FAIL",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "fail",
+     "evidence": "Den: joined now: \"You have joined the Thieves' Den as Initiate. Joining is free.\"; Initiate (standing 0) at Despise (5501, 570, 59): 'nothing'; Set Iron the Tester's Thieves' Den standing to 5,000 (Journeyman).; Journeyman at Stealing 120.0 over 19 tries: {'nothing': 19}; non-member: 'nothing'. Stealing 120 as the play test says; RedDeath for the fame bonus; the thief Blessed; the Den join is one-way on the long-lived player",
+     "seconds": 112.5,
+     "transcript": "transcripts/P142-1-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P142-2",
+   "title": "A champion spawn: an Initiate works it, the special-item message comes, no refusal",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "Den: already a member (Member. Rank: Initiate.); at (5511, 2360, 42) (Your region is ChampionSpawnRegion <- Ice Island.); Initiate at Stealing 127.5 over 25 tries: {'caught': 6, 'nothing': 13, 'special': 6}; refusal line None",
+     "seconds": 84.3,
+     "transcript": "transcripts/P142-2-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P142-3",
+   "title": "The Burrows: an Initiate steals, a non-member is refused, The Burrow Mother needs a Master",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "FAIL",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "fail",
+     "evidence": "Den: already a member (Member. Rank: Initiate.); Initiate at (5200, 1200, 0) over 20 tries: {'caught': 19, 'special': 1} (rolled 20); non-member: 'nothing'; Mother at standing 0: 'The Den does not trust an Initiate to work a creature of that renown. Come back a Master.'; Set Iron the Tester's Thieves' Den standing to 15,000 (Master).; Mother at 15000: caught",
+     "seconds": 75.1,
+     "transcript": "transcripts/P142-3-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P142-4",
+   "title": "Felucca Shame at Stealing 80: minor hauls only (gold, lockpicks, potion, bandages, scrip), never a special, Stealing rises",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "Den: already a member (Member. Rank: Initiate.); Felucca Shame at (5395, 126, 0), standing 0; 50 tries: {'caught': 36, 'minor': 2, 'nothing': 12, 're-set': 3}; hauls ['gold', 'gold']; haul lines ['You lift 541 gold from the creature.', 'You lift 800 gold from the creature.']; specials 0; Stealing 80.0 -> 82.5",
+     "seconds": 103.8,
+     "transcript": "transcripts/P142-4-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P142-5",
+   "title": "Felucca Shame at Stealing 60, hidden: a miss reveals and is caught, the creature turns, wary at once, a roll after 6 s, then nothing left",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "FAIL",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "fail",
+     "evidence": "Den: already a member (Member. Rank: Initiate.); hidden before False; first steal caught (attempt 1); hidden after the miss False (pinned Stealing.cs:64 reveals at the cursor already); creature's Combatant None (the thief: False); at once wary; after 6 s caught; at Stealing 200.0: special then already; thief hits 160/175",
+     "seconds": 41.9,
+     "transcript": "transcripts/P142-5-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P170-1",
+   "title": "Society orders at 144.0 Blacksmithy: teaching on gives Blaze armor only (large: a Blaze set; hammer too); off is mixed",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "guildmaster found 8 tiles from the post; joined now: 'You have joined the Society of Smiths as Initiate. Joining is free.'; route context; on (already on): 10 small ['Buckler/Blaze', 'RingmailChest/Blaze', 'PlateHelm/Blaze', 'ChainChest/Blaze', 'ChainChest/Blaze', 'RingmailGloves/Blaze', 'WoodenKiteShield/Blaze', 'PlateArms/Blaze', 'PlateGorget/Blaze', 'BronzeShield/Blaze']; 3 large ['?/Blaze', '?/Blaze', '?/Blaze'] (sets [None, None, None]); hammer worn False ([]): 3 small ['PlateChest/Blaze', 'RingmailGloves/Blaze', 'NorseHelm/Blaze']; off (Society orders will ask for any item you can make.): 10 small ['PlateGorget/ShadowIron', 'LargeBattleAxe/Iron', 'Maul/Iron', 'Axe/Iron', 'MetalKiteShield/Platinum', 'Axe/Iron', 'WarFork/Iron', 'VikingSword/Iron', 'MetalShield/ShadowIron', 'MetalShield/Iron']",
+     "seconds": 12.0,
+     "transcript": "transcripts/P170-1-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P175-1",
+   "title": "Appraise for Cleanup: a plain longsword about 1 point, one with Hit Lightning 50 and Swing Speed 30 about 6",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "plain: 'This item is worth approximately one point for Clean Up Britannia.' (1.0); magic: 'This item is worth approximately 6 points for Clean Up Britannia.' (6.0); the magic sword's tooltip: ['hit lightning 50%', 'swing speed increase 30%']",
+     "seconds": 5.4,
+     "transcript": "transcripts/P175-1-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P175-2",
+   "title": "[cleanup: a Custodian's own orc corpse pays 1.5 + contents, a dragon 15 + contents; one the admin killed pays contents only",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "FAIL",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "fail",
+     "evidence": "warden none within 10 tiles of the post (3662, 2549, 0): the admin [add]ed a SanitationWarden beside the player; joined now: 'You have joined the The Custodians as Volunteer. Joining is free.'; Orc (body 17) by the player: lifted 6 out, 0 left; 'Empty corpse cleared. +1.5 Clean Up points.' -> 1.5 (expected 1.5); Dragon: no corpse (Dragon (body 59) by the player); Orc (body 17) by the admin's [kill: 2 left inside; [cleanup said None",
+     "seconds": 97.2,
+     "transcript": "transcripts/P175-2-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P175-3",
+   "title": "Clean Up store: two Valorite runic hammers dumped (640,000), Bamboo, a pigment and the Lucky Charm bought, the pigment dyes an artifact and counts down",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "P175-3: the Bamboo's, pigment's and Lucky Charm's art in the pack, and the Helm of Insight's new hue on screen",
+   "result": "FAIL",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "fail",
+     "evidence": "dumped 'Dumped 1 item: +320,000 Clean Up points.' ('Dump Now  (+320,000 Clean Up points)'); the store did not open (['Dumped 1 item: +320,000 Clean Up points.'])",
+     "seconds": 12.7,
+     "transcript": "transcripts/P175-3-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P141-2",
+   "title": "The Vault doorway: a trainee and its pet walk in; a graduate and a skipper are turned back with the Echo's lines",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "FAIL",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "fail",
+     "evidence": "doorway z 0; skipper (reset True, enter False, skip True): stayed at (5179, 1137), said \"The Vault is for the League's trainees. You are not one. The door has excellent judgement.\"; trainee (reset True, enter False): walked to (5176, 1137), dog 0x2F977 at x 5178, Echo lines none; graduate (0/9 stations done, graduate said None): stayed at (5176, 1137), said []",
+     "seconds": 156.1,
+     "transcript": "transcripts/P141-2-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P141-3",
+   "title": "The Overdraft's death opens the crawlway (0x1367 to 0x1B71); a step onto it lands the killer at 5160,1163",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "P141-3: the cave-in and the dust read right",
+   "result": "FAIL",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "fail",
+     "evidence": "trainee (reset True, enter False); crawlway 0x404AD8AD added by the admin (none stood there); rocks before 0x1367, after the kill 0x1367; Overdraft: killed; Echo on the kill 'Something gave way in the south wall. A crawlway. One way, I am told. Do not get sentimental about the Vault.'; after the step south at (5160, 1158) (want (5160, 1163)); crawl line None; doorway afterwards: ((5177, 1137), None) (observed during the matching P141-2 run)",
+     "seconds": 0.0,
+     "transcript": "transcripts/P141-3-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P100-6",
+   "title": "After [save and a restart, [VBuild undo still puts a wiped corner back",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "ERROR",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "error",
+     "evidence": "RuntimeError: not run: this check restarts the test shard (sl-modernuo-test) and the run targets the scratch shard 127.0.0.1:2595",
+     "seconds": 0.0,
+     "transcript": "transcripts/P100-6-run1.txt"
+    }
+   ]
+  }
+ ],
+ "soak": null,
+ "firstLogins": [
+  "slbot-player2",
+  "slbot-player3",
+  "slbot-player4"
+ ]
+}
