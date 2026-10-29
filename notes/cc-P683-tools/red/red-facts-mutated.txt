@@ -1,0 +1,40 @@
+D:\UO\golems\Iron\shard-migration\tools\tests\test_sos_dungeon_decoration.py:63: ResourceWarning: unclosed file <_io.TextIOWrapper name='D:\\UO\\golems\\Iron\\shard-migration\\notes\\sos-author-data\\SOS-Trammel-Dungeons.cfg' mode='r' encoding='utf-8'>
+  lines = open(cls.port.SOURCE, encoding="utf-8").read().splitlines()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+D:\UO\golems\Iron\shard-migration\tools\tests\test_sos_dungeon_decoration.py:68: ResourceWarning: unclosed file <_io.BufferedReader name='D:\\UO\\golems\\Iron\\shard-migration\\notes\\sos-author-data\\SOS-Trammel-Dungeons.cfg'>
+  self.assertEqual(self.port.SOURCE_SHA256, hashlib.sha256(open(self.port.SOURCE, "rb").read()).hexdigest())
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+FD:\UO\golems\Iron\shard-migration\tools\tests\test_sos_dungeon_decoration.py:39: ResourceWarning: unclosed file <_io.TextIOWrapper name='C:\\Users\\ckfle\\AppData\\Local\\Temp\\claude\\D--UO-golems-Iron-shard-migration\\4c2a6962-336c-47c5-aae3-127925a0dc9f\\scratchpad\\red683\\server\\data\\Decoration\\Trammel\\sos-dungeons.cfg' mode='r' encoding='utf-8'>
+  for raw in open(path, encoding="utf-8"):
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+FF
+======================================================================
+FAIL: test_1_the_shipped_cfgs_are_the_ports_of_the_unchanged_author_file (__main__.SosDungeonDecoration.test_1_the_shipped_cfgs_are_the_ports_of_the_unchanged_author_file)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UO\golems\Iron\shard-migration\tools\tests\test_sos_dungeon_decoration.py", line 74, in test_1_the_shipped_cfgs_are_the_ports_of_the_unchanged_author_file
+    self.assertEqual(self.port.build(facet, self.rows, self.placements), text, facet)
+AssertionError: '# Si[1539 chars]nce\n# S6 SEALED: Teleporter 0x1BC3 (PointDest[21988 chars]l)\n' != '# Si[1539 chars]nce\nTeleporter 0x1BC3 (PointDest=(6969, 1237,[21962 chars]l)\n'
+Diff is 24461 characters long. Set self.maxDiff to None to see it. : Trammel
+
+======================================================================
+FAIL: test_2_every_unopened_dungeons_way_in_is_out (__main__.SosDungeonDecoration.test_2_every_unopened_dungeons_way_in_is_out)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UO\golems\Iron\shard-migration\tools\tests\test_sos_dungeon_decoration.py", line 88, in test_2_every_unopened_dungeons_way_in_is_out
+    self.assertEqual(set(), {p[4] for p in sealed} & live_at)
+AssertionError: Items in the second set but not the first:
+(1558, 2621, 1)
+
+======================================================================
+FAIL: test_3_every_end_is_walkable_and_no_shipped_teleporter_shares_a_tile (__main__.SosDungeonDecoration.test_3_every_end_is_walkable_and_no_shipped_teleporter_shares_a_tile)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UO\golems\Iron\shard-migration\tools\tests\test_sos_dungeon_decoration.py", line 129, in test_3_every_end_is_walkable_and_no_shipped_teleporter_shares_a_tile
+    self.assertIn("shipped teleporters into an author dungeon from outside it: 0", r.stdout)
+AssertionError: 'shipped teleporters into an author dungeon from outside it: 0' not found in "200 placements, 130 ship; ends without a floor from 15 below to 5 above: 0\ncollisions with shipped teleporters on the same tile: 0\nauthor dungeon regions found in regions-trammel.json: 25 of 25 sections with placements (missing: none)\nshipped teleporters into an author dungeon from outside it: 1\n  Trammel (1300, 1300, 0) -> (6970, 1237, -28) into Agurast Ascension\ncalibration: of the shard's 394 shipped Trammel teleporters, 18 fail the same test\n\n"
+
+----------------------------------------------------------------------
+Ran 3 tests in 2.015s
+
+FAILED (failures=3)

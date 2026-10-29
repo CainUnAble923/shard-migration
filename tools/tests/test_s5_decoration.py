@@ -35,11 +35,18 @@ FOLDERS = ('Britannia', 'Trammel', 'Felucca')
 ENTRY = re.compile(r'^\s*(-?\d+)\s+(-?\d+)\s+(-?\d+)(.*)$')
 
 
+# cc-P683 (S6): the author's dungeon decoration ships beside pinned's decided cfgs; it is not pinned's, and its own
+# facts are tools/tests/test_sos_dungeon_decoration.py
+OURS = {'sos-dungeons.cfg'}
+
+
 def read(root):
-    """[(folder, file, header, x, y, z, extra)] of every entry, in order."""
+    """[(folder, file, header, x, y, z, extra)] of every entry of pinned's cfgs, in order."""
     out = []
     for folder in FOLDERS:
         for path in sorted(glob.glob(os.path.join(root, folder, '*.cfg'))):
+            if os.path.basename(path) in OURS:
+                continue
             header = None
             with open(path, encoding='utf-8') as f:
                 for raw in f:
