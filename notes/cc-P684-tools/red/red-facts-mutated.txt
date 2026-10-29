@@ -1,0 +1,30 @@
+FD:\UO\golems\Iron\shard-migration\tools\tests\test_sos_s11.py:80: ResourceWarning: unclosed file <_io.TextIOWrapper name='C:\\Users\\ckfle\\AppData\\Local\\Temp\\claude\\D--UO-golems-Iron-shard-migration\\4c2a6962-336c-47c5-aae3-127925a0dc9f\\scratchpad\\red684\\server\\data\\regions-trammel.json' mode='r' encoding='utf-8'>
+  regs = {r["Name"]: r for r in json.load(open(SHARD / "server" / "data" / "regions-trammel.json", encoding="utf-8"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+FD:\UO\golems\Iron\shard-migration\tools\tests\test_sos_s11.py:97: ResourceWarning: unclosed file <_io.TextIOWrapper name='D:\\UO\\golems\\Iron\\shard-migration\\notes\\cc-P684-tools\\out\\docks.csv' mode='r' encoding='utf-8'>
+  rows = list(csv.DictReader(open(TOOLS / "out" / "docks.csv", encoding="utf-8")))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+.
+======================================================================
+FAIL: test_1_treasure_spots (__main__.SosS11.test_1_treasure_spots)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UO\golems\Iron\shard-migration\tools\tests\test_sos_s11.py", line 56, in test_1_treasure_spots
+    self.assertEqual(Path(out).read_bytes(), (SHARD / "server" / "data" / "treasure.cfg").read_bytes())
+AssertionError: b'264[2437 chars]03 672\r\n4199 1663\r\n205 3613\r\n5008 1993\r[3149 chars]2078' != b'264[2437 chars]03 673\r\n4210 1631\r\n205 3613\r\n5005 1993\r[3035 chars] 434'
+
+======================================================================
+FAIL: test_2_new_towns_and_the_authors_dungeons_refuse_houses (__main__.SosS11.test_2_new_towns_and_the_authors_dungeons_refuse_houses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UO\golems\Iron\shard-migration\tools\tests\test_sos_s11.py", line 83, in test_2_new_towns_and_the_authors_dungeons_refuse_houses
+    self.assertEqual("TownRegion", regs[t]["$type"], t)
+AssertionError: 'TownRegion' != 'BaseRegion'
+- TownRegion
++ BaseRegion
+ : Valunstead
+
+----------------------------------------------------------------------
+Ran 3 tests in 6.166s
+
+FAILED (failures=2)
