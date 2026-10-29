@@ -1,0 +1,33 @@
+D:\UO\golems\Iron\shard-migration\tools\tests\test_regions_sos.py:180: ResourceWarning: unclosed file <_io.TextIOWrapper name='C:/Users/ckfle/AppData/Local/Temp/claude/D--UO-golems-Iron-shard-migration/71e72b77-fd9a-4904-a0cd-13be5b18b5b1/scratchpad/mutant-champ.json' mode='r' encoding='utf-8'>
+  cls.fel = json.load(open(REGIONS_FELUCCA, encoding='utf-8'))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+D:\UO\golems\Iron\shard-migration\tools\tests\test_regions_sos.py:181: ResourceWarning: unclosed file <_io.TextIOWrapper name='D:/UO/golems/Iron/ShatteredLegacy\\server\\data\\regions-trammel.json' mode='r' encoding='utf-8'>
+  cls.tram = json.load(open(REGIONS, encoding='utf-8'))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+D:\UO\golems\Iron\shard-migration\tools\tests\test_regions_sos.py:182: ResourceWarning: unclosed file <_io.TextIOWrapper name='D:/UO/ModernUO-pinned/Distribution/Data/regions.json' mode='r' encoding='utf-8'>
+  cls.pinned = json.load(open(PINNED, encoding='utf-8'))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+test_5_no_champion_area_in_a_guard_zone (__main__.FeluccaMatches.test_5_no_champion_area_in_a_guard_zone) ... D:\UO\golems\Iron\shard-migration\tools\tests\test_regions_sos.py:204: ResourceWarning: unclosed file <_io.TextIOWrapper name='D:\\UO\\golems\\Iron\\shard-migration\\notes\\cc-P685-tools\\out\\champs.csv' mode='r' encoding='cp1252'>
+  for row in csv.DictReader(open(CHAMPS)):
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+FAIL
+
+======================================================================
+FAIL: test_5_no_champion_area_in_a_guard_zone (__main__.FeluccaMatches.test_5_no_champion_area_in_a_guard_zone)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UO\golems\Iron\shard-migration\tools\tests\test_regions_sos.py", line 211, in test_5_no_champion_area_in_a_guard_zone
+    self.assertEqual([], bad)
+AssertionError: Lists differ: [] != [('LL01', 'Britain', (5509, 2358, 5513, 2362))]
+
+Second list contains 1 additional elements.
+First extra element 0:
+('LL01', 'Britain', (5509, 2358, 5513, 2362))
+
+- []
++ [('LL01', 'Britain', (5509, 2358, 5513, 2362))]
+
+----------------------------------------------------------------------
+Ran 1 test in 0.055s
+
+FAILED (failures=1)
