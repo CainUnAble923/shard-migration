@@ -1,0 +1,55 @@
+  Logger -> /build/modernuo/Distribution/Assemblies/Logger.dll
+  Server -> /build/modernuo/Distribution/Server.dll
+  UOContent -> /build/modernuo/Distribution/Assemblies/UOContent.dll
+  Application -> /build/modernuo/Distribution/ModernUO.dll
+  Server.Tests -> /build/modernuo/Projects/Server.Tests/bin/Release/net10.0/Server.Tests.dll
+  UOContent.Tests -> /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll
+Test run for /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.0+05679a7ab5 (64-bit .NET 10.0.7)
+[xUnit.net 00:00:00.14]   Discovering: UOContent.Tests
+[xUnit.net 00:00:00.43]   Discovered:  UOContent.Tests
+[xUnit.net 00:00:00.46]   Starting:    UOContent.Tests
+[xUnit.net 00:00:00.51]     ShatteredLegacy.Tests.SosFeluccaRegionsVerification.F3_FeluccasRulesStayGuardsOnlyOnTownsAndBucsDenUnguarded [FAIL]
+[xUnit.net 00:00:00.51]       Buccaneer's Den stays unguarded
+[xUnit.net 00:00:00.51]       Stack Trace:
+[xUnit.net 00:00:00.51]         /build/modernuo/Projects/UOContent.Tests/Tests/Regions/SosFeluccaRegionsVerification.cs(181,0): at ShatteredLegacy.Tests.SosFeluccaRegionsVerification.F3_FeluccasRulesStayGuardsOnlyOnTownsAndBucsDenUnguarded()
+[xUnit.net 00:00:00.51]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:00.51]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed ShatteredLegacy.Tests.SosTrammelRegionsVerification.R4_GuardsAreOnlyTownsAndTheSevenNewTownsAreGuarded [18 ms]
+  Failed ShatteredLegacy.Tests.SosFeluccaRegionsVerification.F3_FeluccasRulesStayGuardsOnlyOnTownsAndBucsDenUnguarded [17 ms]
+  Error Message:
+   Buccaneer's Den stays unguarded
+  Stack Trace:
+     at ShatteredLegacy.Tests.SosFeluccaRegionsVerification.F3_FeluccasRulesStayGuardsOnlyOnTownsAndBucsDenUnguarded() in /build/modernuo/Projects/UOContent.Tests/Tests/Regions/SosFeluccaRegionsVerification.cs:line 181
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed ShatteredLegacy.Tests.SosTrammelRegionsVerification.R2_TheShippedFileIsTrammelOnlyInPinnedsTypesParentsFirst [22 ms]
+  Passed ShatteredLegacy.Tests.SosFeluccaRegionsVerification.F2_EveryRegionOurCodeLooksUpByNameIsThere [18 ms]
+  Passed ShatteredLegacy.Tests.SosTrammelRegionsVerification.R1_MergeReplacesOnlyTheMapsTheShardFileNames [3 ms]
+  Passed ShatteredLegacy.Tests.SosTrammelRegionsVerification.R3_EveryRegionOurCodeLooksUpByNameIsThere [3 ms]
+  Passed ShatteredLegacy.Tests.SosTrammelRegionsVerification.R6_PinnedMergedWithTheFileHasTheFilesTrammelAndPinnedsOtherMaps [19 ms]
+  Passed ShatteredLegacy.Tests.SosFeluccaRegionsVerification.F6_PinnedMergedWithBothFilesHasTheFilesFeluccaAndTrammelAndPinnedsOtherMaps [29 ms]
+[xUnit.net 00:00:00.60]     ShatteredLegacy.Tests.SosFeluccaRegionsVerification.F5_TheTownsMatchTrammels [FAIL]
+[xUnit.net 00:00:00.60]       different rects on the two facets: Britain
+[xUnit.net 00:00:00.60]       Stack Trace:
+[xUnit.net 00:00:00.60]         /build/modernuo/Projects/UOContent.Tests/Tests/Regions/SosFeluccaRegionsVerification.cs(222,0): at ShatteredLegacy.Tests.SosFeluccaRegionsVerification.F5_TheTownsMatchTrammels()
+[xUnit.net 00:00:00.60]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:00.60]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.60]   Finished:    UOContent.Tests
+  Passed ShatteredLegacy.Tests.SosTrammelRegionsVerification.R5_TheAuthorsDungeonsAreDungeonRegionsAndTheUnfinishedLandHasNoHousing [5 ms]
+  Passed ShatteredLegacy.Tests.SosFeluccaRegionsVerification.F4_TheAuthorsDungeonsAreDungeonRegionsAndTheUnfinishedLandHasNoHousing [9 ms]
+  Passed ShatteredLegacy.Tests.SosFeluccaRegionsVerification.F1_TheShippedFileIsFeluccaOnlyInPinnedsTypesParentsFirst [17 ms]
+  Failed ShatteredLegacy.Tests.SosFeluccaRegionsVerification.F5_TheTownsMatchTrammels [17 ms]
+  Error Message:
+   different rects on the two facets: Britain
+  Stack Trace:
+     at ShatteredLegacy.Tests.SosFeluccaRegionsVerification.F5_TheTownsMatchTrammels() in /build/modernuo/Projects/UOContent.Tests/Tests/Regions/SosFeluccaRegionsVerification.cs:line 222
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+Test Run Failed.
+Total tests: 12
+     Passed: 10
+     Failed: 2
+ Total time: 0.8470 Seconds

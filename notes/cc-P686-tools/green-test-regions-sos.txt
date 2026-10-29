@@ -1,0 +1,47 @@
+D:\UO\golems\Iron\shard-migration\tools\tests\test_regions_sos.py:180: ResourceWarning: unclosed file <_io.TextIOWrapper name='D:/UO/golems/Iron/ShatteredLegacy\\server\\data\\regions-felucca.json' mode='r' encoding='utf-8'>
+  cls.fel = json.load(open(REGIONS_FELUCCA, encoding='utf-8'))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+D:\UO\golems\Iron\shard-migration\tools\tests\test_regions_sos.py:181: ResourceWarning: unclosed file <_io.TextIOWrapper name='D:/UO/golems/Iron/ShatteredLegacy\\server\\data\\regions-trammel.json' mode='r' encoding='utf-8'>
+  cls.tram = json.load(open(REGIONS, encoding='utf-8'))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+D:\UO\golems\Iron\shard-migration\tools\tests\test_regions_sos.py:182: ResourceWarning: unclosed file <_io.TextIOWrapper name='D:/UO/ModernUO-pinned/Distribution/Data/regions.json' mode='r' encoding='utf-8'>
+  cls.pinned = json.load(open(PINNED, encoding='utf-8'))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+test_4_the_towns_match_and_felucca_keeps_its_rules (__main__.FeluccaMatches.test_4_the_towns_match_and_felucca_keeps_its_rules) ... ok
+test_5_no_champion_area_in_a_guard_zone (__main__.FeluccaMatches.test_5_no_champion_area_in_a_guard_zone) ... D:\UO\golems\Iron\shard-migration\tools\tests\test_regions_sos.py:204: ResourceWarning: unclosed file <_io.TextIOWrapper name='D:\\UO\\golems\\Iron\\shard-migration\\notes\\cc-P685-tools\\out\\champs.csv' mode='r' encoding='cp1252'>
+  for row in csv.DictReader(open(CHAMPS)):
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+D:\UO\golems\Iron\shard-migration\tools\tests\test_regions_sos.py:87: ResourceWarning: unclosed file <_io.TextIOWrapper name='D:/UO/golems/Iron/ShatteredLegacy\\server\\data\\regions-felucca.json' mode='r' encoding='utf-8'>
+  cls.regions = json.load(open(cls.FILE, encoding='utf-8'))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+D:\UO\golems\Iron\shard-migration\tools\tests\test_regions_sos.py:88: ResourceWarning: unclosed file <_io.TextIOWrapper name='D:\\UO\\golems\\Iron\\shard-migration\\notes\\cc-P686-tools\\out-decisions.csv' mode='r' encoding='cp1252'>
+  cls.decided = {r['region']: r['decision'] for r in csv.DictReader(open(cls.LOG))}
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+test_1_every_rect_on_dry_land_or_its_own_water (__main__.FeluccaRegions.test_1_every_rect_on_dry_land_or_its_own_water) ... D:\UO\golems\Iron\shard-migration\notes\cc-P676-tools\gen_regions.py:51: ResourceWarning: unclosed file <_io.TextIOWrapper name='D:\\UO\\golems\\Iron\\shard-migration\\notes\\cc-P676-tools\\musicnames.txt' mode='r' encoding='cp1252'>
+  MUSIC = set(open(os.path.join(HERE, 'musicnames.txt')).read().split())
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+D:\UO\golems\Iron\shard-migration\notes\cc-P676-tools\gen_regions.py:97: ResourceWarning: unclosed file <_io.BufferedReader name='D:/UO/golems/Iron/p686-work/sos-overlay\\staidx1.mul'>
+  idx = np.frombuffer(open(os.path.join(folder, 'staidx1.mul'), 'rb').read(), dtype='<i4').reshape(-1, 3)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_2_no_guard_zone_drawn_here_covers_open_wild (__main__.FeluccaRegions.test_2_no_guard_zone_drawn_here_covers_open_wild) ... ok
+test_3_the_new_towns_and_wild_areas_are_on_dry_land (__main__.FeluccaRegions.test_3_the_new_towns_and_wild_areas_are_on_dry_land) ... ok
+D:\UO\golems\Iron\shard-migration\tools\tests\test_regions_sos.py:87: ResourceWarning: unclosed file <_io.TextIOWrapper name='D:/UO/golems/Iron/ShatteredLegacy\\server\\data\\regions-trammel.json' mode='r' encoding='utf-8'>
+  cls.regions = json.load(open(cls.FILE, encoding='utf-8'))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+D:\UO\golems\Iron\shard-migration\tools\tests\test_regions_sos.py:88: ResourceWarning: unclosed file <_io.TextIOWrapper name='D:\\UO\\golems\\Iron\\shard-migration\\notes\\cc-P676-tools\\out-decisions.csv' mode='r' encoding='cp1252'>
+  cls.decided = {r['region']: r['decision'] for r in csv.DictReader(open(cls.LOG))}
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+test_1_every_rect_on_dry_land_or_its_own_water (__main__.Regions.test_1_every_rect_on_dry_land_or_its_own_water) ... ok
+test_2_no_guard_zone_drawn_here_covers_open_wild (__main__.Regions.test_2_no_guard_zone_drawn_here_covers_open_wild) ... ok
+test_3_the_new_towns_and_wild_areas_are_on_dry_land (__main__.Regions.test_3_the_new_towns_and_wild_areas_are_on_dry_land) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 298.236s
+
+OK
+
+  pinned guard zones kept as pinned (open-wild blocks): Moongates 17 of 18; The Heartwood 916 of 1089; Ocllo 272 of 633; Trinsic 474 of 1161; Wind 100 of 489; Serpent's Hold 223 of 675; Skara Brae 89 of 475; Nujel'm 697 of 2530
+
+  pinned guard zones kept as pinned (open-wild blocks): Moongates 17 of 18; The Heartwood 916 of 1089; Trinsic 474 of 1161; Wind 100 of 489; Serpent's Hold 223 of 675; Skara Brae 89 of 475; Nujel'm 697 of 2530
