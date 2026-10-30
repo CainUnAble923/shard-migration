@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-25. Shard version 2026.10.29. Golem on, 7 queued, latest done P733. Play tests: 1408 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-25. Shard version 2026.10.30. Golem on, 7 queued, latest done P733. Play tests: 1408 open, 4 failed, 43 passed.
 
 ### Needs overseer review (4)
 
@@ -234,15 +234,15 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 
 | Prompt | State | When |
 |---|---|---|
-| P689 sos-s16-credits-the-fidelity-register-and-the-wi | queued |  |
 | P690 sos-s17-the-whole-swapped-world-played-through-t | queued |  |
 | P691 blackthorn-to-fold | queued |  |
 | P708 guild-hqs-on-sos | queued |  |
 | P714 gated-chivalry-necromancy-and-start-skills | queued |  |
 | P715 ask-expires-too-soon | queued |  |
-| P734 building-guide-and-build-review | queued |  |
+| P735 p688-leftovers-bot-proof-and-new-haven-start | queued |  |
+| P737 review-build-building-guide-and-build-review | queued |  |
 | P733 isle-release-3 | done | 2026-10-29 |
-| P732 isle-wake-pose | done | 2026-10-28 |
+| P732 isle-wake-pose | done | 2026-10-29 |
 | P731 isle-release-2 | done | 2026-10-28 |
 | P730 cont-fixup-isle-pet-reward-and-pet-info | done | 2026-10-28 |
 | P729 no-tazuo-page | done | 2026-10-28 |
