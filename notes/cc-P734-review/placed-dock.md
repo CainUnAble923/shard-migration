@@ -1,0 +1,164 @@
+## dock: a plank bridge across a lake and a pier from the south bank, rope rails and posts as OSI lays them
+
+Relative to the plot corner; `[PlaceBuild practice-dock` (148 pieces).
+
+
+### bridge
+
+- 0x07C9 bridge plank, 4,6,1
+- 0x07CD bridge plank, 4,7,1
+- 0x07C9 bridge plank, 4,8,1
+- 0x07CD bridge plank, 5,6,1
+- 0x07C9 bridge plank, 5,7,1
+- 0x07CD bridge plank, 5,8,1
+- 0x07C9 bridge plank, 6,6,1
+- 0x07CD bridge plank, 6,7,1
+- 0x07C9 bridge plank, 6,8,1
+- 0x07CD bridge plank, 7,6,1
+- 0x07C9 bridge plank, 7,7,1
+- 0x07CD bridge plank, 7,8,1
+- 0x07C9 bridge plank, 8,6,1
+- 0x07CD bridge plank, 8,7,1
+- 0x07C9 bridge plank, 8,8,1
+- 0x07CD bridge plank, 9,6,1
+- 0x07C9 bridge plank, 9,7,1
+- 0x07CD bridge plank, 9,8,1
+- 0x07C9 bridge plank, 10,6,1
+- 0x07CD bridge plank, 10,7,1
+- 0x07C9 bridge plank, 10,8,1
+- 0x07CD bridge plank, 11,6,1
+- 0x07C9 bridge plank, 11,7,1
+- 0x07CD bridge plank, 11,8,1
+- 0x07C9 bridge plank, 12,6,1
+- 0x07CD bridge plank, 12,7,1
+- 0x07C9 bridge plank, 12,8,1
+- 0x07CD bridge plank, 13,6,1
+- 0x07C9 bridge plank, 13,7,1
+- 0x07CD bridge plank, 13,8,1
+- 0x07C9 bridge plank, 14,6,1
+- 0x07CD bridge plank, 14,7,1
+- 0x07C9 bridge plank, 14,8,1
+- 0x07CD bridge plank, 15,6,1
+- 0x07C9 bridge plank, 15,7,1
+- 0x07CD bridge plank, 15,8,1
+- 0x07C9 bridge plank, 16,6,1
+- 0x07CD bridge plank, 16,7,1
+- 0x07C9 bridge plank, 16,8,1
+- 0x07CD bridge plank, 17,6,1
+- 0x07C9 bridge plank, 17,7,1
+- 0x07CD bridge plank, 17,8,1
+- 0x07C9 bridge plank, 18,6,1
+- 0x07CD bridge plank, 18,7,1
+- 0x07C9 bridge plank, 18,8,1
+- 0x07CD bridge plank, 19,6,1
+- 0x07C9 bridge plank, 19,7,1
+- 0x07CD bridge plank, 19,8,1
+- 0x07C9 bridge plank, 20,6,1
+- 0x07CD bridge plank, 20,7,1
+- 0x07C9 bridge plank, 20,8,1
+- 0x07CD bridge plank, 21,6,1
+- 0x07C9 bridge plank, 21,7,1
+- 0x07CD bridge plank, 21,8,1
+- 0x07C9 bridge plank, 22,6,1
+- 0x07CD bridge plank, 22,7,1
+- 0x07C9 bridge plank, 22,8,1
+- 0x03AE bridge post, 4,6,-4, stacked post (P720 isle-sets dock)
+- 0x03A5 bridge post, 4,6,1, stacked post (P720 isle-sets dock)
+- 0x03AB bridge post, 4,6,6, stacked post (P720 isle-sets dock)
+- 0x03AE bridge post, 4,8,-4, stacked post (P720 isle-sets dock)
+- 0x03A5 bridge post, 4,8,1, stacked post (P720 isle-sets dock)
+- 0x03AB bridge post, 4,8,6, stacked post (P720 isle-sets dock)
+- 0x03A6 bridge rope rail, 5,6,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 5,8,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 6,6,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 6,8,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 7,6,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 7,8,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 8,6,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 8,8,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 9,6,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 9,8,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 10,6,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 10,8,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 11,6,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 11,8,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 12,6,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 12,8,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 13,6,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 13,8,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 14,6,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 14,8,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 15,6,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 15,8,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 16,6,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 16,8,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 17,6,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 17,8,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 18,6,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 18,8,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 19,6,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 19,8,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 20,6,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 20,8,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 21,6,6, along x, on the outer row, deck + 5
+- 0x03A6 bridge rope rail, 21,8,6, along x, on the outer row, deck + 5
+- 0x03AE bridge post, 22,6,-4, stacked post (P720 isle-sets dock)
+- 0x03A5 bridge post, 22,6,1, stacked post (P720 isle-sets dock)
+- 0x03AB bridge post, 22,6,6, stacked post (P720 isle-sets dock)
+- 0x03AE bridge post, 22,8,-4, stacked post (P720 isle-sets dock)
+- 0x03A5 bridge post, 22,8,1, stacked post (P720 isle-sets dock)
+- 0x03AB bridge post, 22,8,6, stacked post (P720 isle-sets dock)
+
+### pier
+
+- 0x07C9 pier plank, 15,15,5
+- 0x07CD pier plank, 15,16,5
+- 0x07C9 pier plank, 15,17,5
+- 0x07CD pier plank, 15,18,5
+- 0x07C9 pier plank, 15,19,5
+- 0x07CD pier plank, 15,20,5
+- 0x07CD pier plank, 16,15,5
+- 0x07C9 pier plank, 16,16,5
+- 0x07CD pier plank, 16,17,5
+- 0x07C9 pier plank, 16,18,5
+- 0x07CD pier plank, 16,19,5
+- 0x07C9 pier plank, 16,20,5
+- 0x07C9 pier plank, 17,15,5
+- 0x07CD pier plank, 17,16,5
+- 0x07C9 pier plank, 17,17,5
+- 0x07CD pier plank, 17,18,5
+- 0x07C9 pier plank, 17,19,5
+- 0x07CD pier plank, 17,20,5
+- 0x03AE pier post, 15,15,0, stacked post (P720 isle-sets dock)
+- 0x03A5 pier post, 15,15,5, stacked post (P720 isle-sets dock)
+- 0x03AB pier post, 15,15,10, stacked post (P720 isle-sets dock)
+- 0x03A9 pier rope rail, 15,16,10, along y, on the outer column, deck + 5
+- 0x03A9 pier rope rail, 15,17,10, along y, on the outer column, deck + 5
+- 0x03A9 pier rope rail, 15,18,10, along y, on the outer column, deck + 5
+- 0x03A9 pier rope rail, 15,19,10, along y, on the outer column, deck + 5
+- 0x03AE pier post, 15,20,0, stacked post (P720 isle-sets dock)
+- 0x03A5 pier post, 15,20,5, stacked post (P720 isle-sets dock)
+- 0x03AB pier post, 15,20,10, stacked post (P720 isle-sets dock)
+- 0x03AE pier post, 17,15,0, stacked post (P720 isle-sets dock)
+- 0x03A5 pier post, 17,15,5, stacked post (P720 isle-sets dock)
+- 0x03AB pier post, 17,15,10, stacked post (P720 isle-sets dock)
+- 0x03A9 pier rope rail, 17,16,10, along y, on the outer column, deck + 5
+- 0x03A9 pier rope rail, 17,17,10, along y, on the outer column, deck + 5
+- 0x03A9 pier rope rail, 17,18,10, along y, on the outer column, deck + 5
+- 0x03A9 pier rope rail, 17,19,10, along y, on the outer column, deck + 5
+- 0x03AE pier post, 17,20,0, stacked post (P720 isle-sets dock)
+- 0x03A5 pier post, 17,20,5, stacked post (P720 isle-sets dock)
+- 0x03AB pier post, 17,20,10, stacked post (P720 isle-sets dock)
+- 0x03A6 pier rope rail, 16,15,10, across the free end, deck + 5
+- 0x14F8 coil of rope, 15,17,11, hung on the west rail
+
+### banks
+
+- 0x0E77 barrel, 19,22,6, on the south bank by the pier, off its line
+- 0x0E3D crate, 20,22,6, on the south bank by the pier
+- 0x0B20 lamp post, 3,5,1, west bank, beside the bridge end, off its line
+
+### signpost
+
+- 0xA854 standing signpost, 3,9,1, beside the path, off the door line and the walk line
+- 0xA854 standing signpost, 13,22,6, beside the path, off the door line and the walk line

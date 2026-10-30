@@ -1,0 +1,57 @@
+Overnight play tests: 41 pass, 12 fail, 4 flaky, 4 could not run
+
+The overnight test bot ran 61 checks on the scratch shard: 41 passed, 12 failed, 4 were flaky and 4 could not run.
+
+Needs a look:
+- P62-7 (A male character cannot: 'Only females can wear this.', the item stays in the pack) failed every run
+- T-039 (A new character is pointed at the board) failed every run
+- P119-1 (Five of cc-P119's ported creatures spawn, fight back and die to a player, leaving a corpse) passed 2 of 3 runs
+- P140-1 (Six Rootdeep Burrows spawns appear on their bodies, fight back and die to a player, leaving a corpse) passed 2 of 3 runs
+- P70-2 (Tinker tools, 'Mule Modules': the Clockwork Load Harness I is refused without 15 ingots, 2 gears and 10 bone, and made with them) failed every run
+- P70-3 (A module dropped on the mule is fitted and listed; Options > Remove puts it back in the pack, still tier I) failed every run
+- P70-5 (Tier II is crafted from a tier I in the pack; the tier I is gone after the success, and a second try is refused) failed every run
+- P70-8 (Soul Tether II: the killed mule's corpse is empty, its pack stays on the ghost, and it is resurrected) passed 1 of 3 runs
+- P70-10 (Survey Saddle Roll: Options lists a decoded map in the pack and tracks it with a quest arrow; at the spot with III, 'Dig here' raises the chest and its guardians) could not run
+- P70-11 (Trader's Ledger III: 'Open your bank box' opens it in town, and is refused while criminal, in a fight, and in a dungeon) could not run
+- P171-1 (A 200 tamer on a Dread Warhorse: the taming starts on most of 20 tries, about 1 in 7 angers it) failed every run
+- P142-1 (Trammel Despise: an Initiate is refused the dungeons beyond Felucca, a Journeyman steals specials, a non-member is told of the Den) could not run
+- P142-3 (The Burrows: an Initiate steals, a non-member is refused, The Burrow Mother needs a Master) failed every run
+- P142-4 (Felucca Shame at Stealing 80: minor hauls only (gold, lockpicks, potion, bandages, scrip), never a special, Stealing rises) passed 2 of 3 runs
+- P142-5 (Felucca Shame at Stealing 60, hidden: a miss reveals and is caught, the creature turns, wary at once, a roll after 6 s, then nothing left) failed every run
+- P175-2 ([cleanup: a Custodian's own orc corpse pays 1.5 + contents, a dragon 15 + contents; one the admin killed pays contents only) failed every run
+- P175-3 (Clean Up store: two Valorite runic hammers dumped (640,000), Bamboo, a pigment and the Lucky Charm bought, the pigment dyes an artifact and counts down) failed every run
+- P141-2 (The Vault doorway: a trainee and its pet walk in; a graduate and a skipper are turned back with the Echo's lines) failed every run
+- P141-3 (The Overdraft's death opens the crawlway (0x1367 to 0x1B71); a step onto it lands the killer at 5160,1163) failed every run
+- P100-6 (After [save and a restart, [VBuild undo still puts a wiped corner back) could not run
+
+What to do: look at the checks above on the play-test page and mark them.
+
+Details
+-------
+Overnight play tests: 41 pass, 12 fail, 4 flaky, 4 could not run.
+Code under test: commit 0290681 (-Commit, a worktree in D:\UO\bot-shard\src).
+
+FAIL P62-7 (0/3): refusal False; worn True; back in pack False; messages ['A monster looks at you menacingly but does not attack.  You would be under attack now if not for your status as a new citizen of Britannia.', 'Welcome to Shattered Legacy BOT.']
+FAIL T-039 (0/3): gargoyle female at (3634, 2586, 0): message None; welcome gump says 'The Guild Board in the town square lists every guild, what it teaches, and where its guildmaster stands.'; the board is 132 tiles away
+FLAKY P119-1 (2/3): IceHound: killed True, corpse True; OrcChopper: killed True, corpse True; Lifestealer: killed True, corpse True; EffeteUndeadGargoyle: killed True, corpse True; Wight: killed True, corpse True; player hits at the end 175/177
+FLAKY P140-1 (2/3): BurrowHog: killed True, corpse True; BurrowGrub: killed True, corpse True; BurrowScamp: killed True, corpse True; Rootling: killed True, corpse True; Sporecap: killed False, corpse False; Gloomling: killed True, corpse True; player hits at the end 175/175
+FAIL P70-2 (0/3): refusal without materials: True (pack had ingots 373, gears 0, bone 0); with them: made True, new tier-I harness []; notice ['You create the item.']
+FAIL P70-3 (0/3): fitted True (['You fit the Clockwork Load Harness I to the mule.']); mule lists it True, 'Module slots: 1 / 1'; Remove row True -> None; back in the pack False as None
+FAIL P70-5 (0/3): tier-I 0x404C01AB used (pack cleared of modules first, then one tier I added); craft: made True after 0 failed roll(s) (tier I kept through each failure: True), the tier I gone True, new tier II []; second try with no tier I: refused True
+FLAKY P70-8 (1/3): fitted True; pack before 'Contents: 1/211 items, 10/2263 stones'; killed (hits 0) True, ghost still in view True; corpse 0x404C0847 with 0 items; pack tooltip after 'Contents: 1/211 items, 10/2263 stones'; admin opening the pack sees graphics [7154]; resurrected by the owner's bandage: True (['You a
+ERROR P70-10 (0/3): AssertionError: the mule 0x2FCF2 gave no context menu
+ERROR P70-11 (0/3): AssertionError: the mule 0x2FCF2 gave no context menu
+FAIL P171-1 (0/3): 1 tries: 1 started the taming, 0 angered the beast (0%; 15% expected, 95% before cc-P171); busy 0, unanswered 31 (last: ['Tame which animal?', 'That is not accessible.']); S???????????????????????????????
+ERROR P142-1 (0/3): AssertionError: the thief did not arrive in Trammel Despise (at (3624, 2586, 59, 134))
+FAIL P142-3 (0/3): Den: already a member (Member. Rank: Initiate.); Initiate at (5200, 1200, 0) over 13 tries: {'nothing': 13} (rolled 0); non-member: 'nothing'; Mother at standing 0: 'nothing'; Set Bot Human F Aa's Thieves' Den standing to 15,000 (Master).; Mother at 15000: nothing
+FLAKY P142-4 (2/3): Den: already a member (Member. Rank: Initiate.); Felucca Shame at (5395, 126, 0), standing 0; 50 tries: {'caught': 46, 'minor': 4, 're-set': 6}; hauls ['gold', 'bandages', 'gold', 'lockpicks']; haul lines ['You lift 783 gold from the creature.', 'You lift 8 bandages from the creature.', 'You lift 56
+FAIL P142-5 (0/3): Den: already a member (Member. Rank: Initiate.); hidden before False; first steal caught (attempt 1); hidden after the miss False (pinned Stealing.cs:64 reveals at the cursor already); creature's Combatant None (the thief: False); at once wary; after 6 s caught; at Stealing 200.0: special then alrea
+FAIL P175-2 (0/3): warden found at the post (player moved there: True); already a member (Member. Rank: Junior Custodian.); Orc (body 17) by the player: lifted 3 out, 3 left; 'Corpse cleared (3 items inside went with it). +3.02 Clean Up points.' -> 3.02 (expected 1.5 plus what is inside); Dragon: no corpse (Dragon (bo
+FAIL P175-3 (0/3): warden none within 10 tiles of the post (3662, 2549, 0): the admin [add]ed a SanitationWarden beside the player; already a member (Member. Rank: Junior Custodian.); bag 'You receive a new trash bag. Your old one has been collected.'; None -> None; store: 125 rows on 25 pages, points label '48'; Bamb
+FAIL P141-2 (0/3): doorway z 0; skipper (reset True, enter False, skip True): stayed at (5179, 1137), said ['Bot Human F Bt has seen the end and politely declined it. Loop 1.', "You are able to customize your character's stats and skills at anytime to anything you wish."]; trainee (reset True, enter False): walked to 
+FAIL P141-3 (0/3): trainee (reset True, enter False); crawlway 0x404C543C added by the admin (none stood there); rocks before 0x1367, after the kill 0x1367; Overdraft: timed out; Echo on the kill None; after the step south at (5160, 1156) (want (5160, 1163)); crawl line None; doorway afterwards: ((5179, 1137), None) (
+ERROR P100-6 (0/3): RuntimeError: not run: this check restarts the test shard (sl-modernuo-test) and the run targets the scratch shard 127.0.0.1:2595
+Soak: 120 min, 0 loud log lines, memory 690.1 -> 766.1 MB.
+Archive: transcripts of 5 runs moved to D:\Cloud Drives\iCloudDrive\Shattered Legacy\bot-runs, verified (2026-10-15-0905, 2026-10-15-0955, 2026-10-15-1011, 2026-10-15-1016, 2026-10-16-0130).
+
+Report: D:\UO\shard-migration\testing\bot-runs\2026-10-30-0130\report.md

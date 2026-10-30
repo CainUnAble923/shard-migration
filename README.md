@@ -63,14 +63,14 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-25. Shard version 2026.10.30. Golem on, 6 queued, latest done P736. Play tests: 1411 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-25. Shard version 2026.10.30. Golem on, 6 queued, latest done P738. Play tests: 1412 open, 4 failed, 43 passed.
 
 ### Needs overseer review (4)
 
 - **gate The player package installs on a clean PC**: Waits on a confirmation: Chase: which package is published on get.shatteredlegacyuo.com (the one with the 10-24 launcher?), and has a package with our TazUO build passed a clean-PC install? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "The player package installs on a clean PC" --done no --detail "..."` or `python tools/judge.py confirm gate "The player package installs on a clean PC"`
 - **gate What is built is seen in a client, not only compiled**: Waits on a confirmation: Chase: deploy main (2026.10.25.7) to the test shard, and mark the bot's 10-25 evidence on the play-test page? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "What is built is seen in a client, not only compiled" --done yes --detail "..."` or `python tools/judge.py confirm gate "What is built is seen in a client, not only compiled"`
 - **gate Somewhere to go**: Waits on a confirmation: Chase: which of [GenWrongRevamp, [SetupNewCovetous, [GenExodusEncounter, [GenBlackthorn and [GenEodon have been run on the test world? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "Somewhere to go" --done yes --detail "..."` or `python tools/judge.py confirm gate "Somewhere to go"`
-- **play tests not sorted**: 968 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
+- **play tests not sorted**: 969 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
 
 ## Port list: 6 of 16 systems in. 833 of 983 files (85%).
 
@@ -230,17 +230,19 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 605 prompts done, 5 more stopped early and not counted)
+### Queue (Golem on; 607 prompts done, 5 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
-| P691 blackthorn-to-fold | queued |  |
+| P690 sos-s17-the-whole-swapped-world-played-through-t | queued |  |
 | P708 guild-hqs-on-sos | queued |  |
 | P714 gated-chivalry-necromancy-and-start-skills | queued |  |
 | P715 ask-expires-too-soon | queued |  |
 | P735 p688-leftovers-bot-proof-and-new-haven-start | queued |  |
 | P737 review-build-building-guide-and-build-review | queued |  |
+| P738 cont-fixup-building-guide-and-build-review | done | 2026-10-30 |
 | P736 deco-sources | done | 2026-10-30 |
+| P734 build-review | done | 2026-10-30 |
 | P733 isle-release-3 | done | 2026-10-29 |
 | P732 isle-wake-pose | done | 2026-10-28 |
 | P731 isle-release-2 | done | 2026-10-28 |
@@ -248,8 +250,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P729 no-tazuo-page | done | 2026-10-28 |
 | P728 isle-walkthrough-fixes-4 | done | 2026-10-28 |
 | P727 land-p721 | done | 2026-10-28 |
-| P726 isle-pet-reward | done | 2026-10-28 |
-| P725 isle-shore-tiles | done | 2026-10-29 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 180 patches, 12 replacements
 
@@ -286,7 +286,7 @@ What a MODERNUO_COMMIT bump must reconcile. Patches fail LOUDLY - apply-patches.
 - **S3 costed menu - declines upheld with their ratios recorded** — Measured 2026-09-07, notes/s3-decline-costs.md. Skill Masteries (45 files/8,542 lines, unblocks 14, patches 35 upstream files - fails the layering test). Vice vs Virtue (57/9,613, unblocks 5, patches 21). Exploring the Deep (70/10,292, unblocks 2 - structurally the safest build here and the worst ratio). Shadowguard (14/11,222, unblocks 8). City Loyalty (28/8,177, unblocks 15 - decline on ratio, not structure; revisit with Town Cryer). Instanced Peerless (13/1,543, unblocks 2, and BasePeerless and PeerlessAltar are both absent from ModernUO, so there is no base to instance - cost Services/Peerless first). ServUO's ML quest framework (22 files/6,269 lines, not the 21/5,625 the brief stated) - declined because ModernUO already ships the same OSI system. NOT declined and recommended instead: SAAbsorptionAttributes, the TribeType transformation, and a one-quest spike onto ModernUO's ML quest engine. Vendor Searching (4/2,545) is a player feature, not content; the unblock ratio is the wrong test and it is Chase's call.
 - **ServUO ML quest framework - decline REAFFIRMED by S5** — S5 translated one quest end to end and the objective mapping holds for 4 of 5 types, two of them pinned by tests. Porting ServUO's 22-file, 6,269-line framework would put a second engine in the tree to do a job the engine we already have does correctly. The decline was always on two-engines-for-one-job; it now rests on measurement rather than on principle alone. What is NOT declined: the 164 of 203 missing quests that use a single standard objective type. The 39 that hand-write a BaseObjective subclass (25 InternalObjective, 3 CollectionsObtain, 2 QuestionAndAnswer, ~9 one-offs) are per-quest work, not a framework port, and are the thing to cost before the next quest batch.
 
-Counted from the trees: 1699 customization files, 187 patch files, 1917 tests in 286 files.
+Counted from the trees: 1700 customization files, 187 patch files, 1920 tests in 287 files.
 Shard status: the test shard is the only shard: live was retired and deleted on 2026-10-14 until the fresh 1.0 world, and the launcher's Play button now connects to the test shard (2026.10.24.2); the test shard (2594, up) runs sl-modernuo:latest, built 2026-10-23 from main 0f1871f (version 2026.10.23.2), while main is 2026.10.25.7, 33 merges ahead; the overnight bot tests the newest main on its own world copy each night; which player package is published is not visible from the repos (confirmed 2026-10-25).
 <!-- PROGRESS:END -->
 

@@ -100,6 +100,8 @@ class Fences(unittest.TestCase):
                     bad.append(('spawner', os.path.basename(p), m[1], m[2]))
         deco = 0
         for p in glob.glob(os.path.join(data, 'Decoration', '**', '*.cfg'), recursive=True):
+            if os.path.basename(os.path.dirname(p)) == 'Builds':
+                continue   # cc-P734: saved builds, coordinates relative to their own corner, placed by [PlaceBuild
             for m in re.finditer(r'^(\d+)\s+(\d+)\s+-?\d+', open(p, encoding='utf-8', errors='replace').read(), re.M):
                 deco += 1
                 if in_fence(code, int(m[1]), int(m[2])):
