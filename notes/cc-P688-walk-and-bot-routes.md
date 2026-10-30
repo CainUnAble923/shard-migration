@@ -1,8 +1,8 @@
 # cc-P688: the walk between places, and the bot's routes (SoS swap S15)
 
 Iron Golem, 2026-10-29. Code copy `D:\UO\golems\Iron\ShatteredLegacy`, docs copy `D:\UO\golems\Iron\shard-migration`,
-both on `golem/Iron/P688` (main at the P686 merge). Not committed, nothing deployed. **Stopped before the end** (last
-section): one proof was cut off by the PC running out of memory, and the bot run is not green yet.
+both on `golem/Iron/P688` (main at the P686 merge). Not committed, nothing deployed. **Accepted by Chase as it stands** (2026-10-29 17:11): one proof was cut off by
+the PC running out of memory and the bot run is not green yet; both moved to P735, which runs after the reboot.
 
 ## In plain words
 
@@ -18,8 +18,8 @@ section): one proof was cut off by the PC running out of memory, and the bot run
   from the new board.
 - **New characters on the bot's shard now wake on the tutorial isle**, because the isle is ready in its world. Three
   checks (T-039, P64-1, P64-2) expect them to start in New Haven, so they fail.
-- **For you:** two choices on the Golem card. Shall I rerun the bot-point check the PC's low memory cut off? And should
-  the bot's New Haven checks pick the New Haven start at character creation? Nothing to deploy.
+- **Nothing for you to do.** You accepted this as it stands. The bot-point check that low memory cut off, and the
+  New Haven start for the bot's three checks, are in P735 after tonight's reboot. Nothing to deploy.
 
 ## 1. The walk between places (the reachability table)
 
@@ -133,7 +133,7 @@ The runner itself reads the real repo's test world and Configuration, another de
 - **Gated build** (`sl-modernuo:cc-P688`, 12:00, `docker-build` lock): 2,799 tests, 2,793 passed, 6 skipped, 0
   failed (`gated-build.log`). This prompt changes no server code.
 
-## Where it stopped, and how to finish
+## Left for P735 (where it stopped, and how to finish)
 
 1. **The bot-point proof.** At about 12:45 Claude Code stopped `bot_points.py`'s red run (and two wait loops) because
    Windows was out of memory. Windows had 0.5 to 4.6 GB free all day; its kernel pools held about 32 GB. The note
@@ -148,6 +148,11 @@ The runner itself reads the real repo's test world and Configuration, another de
    rerun `bot-run.ps1 -Only T-039,P64-1,P64-2` under the `test-shard` lock.
 
 ## Chase's decisions applied
+
+- **Accept as it is** (Iron-P688-20261029-125544-04f6, console, 2026-10-29 17:11): "The tower is out of memory until
+  Chase reboots it tonight; both items are in P735, which runs after the reboot." The Golem commits P688 as it stands;
+  the two items in the section above are P735's. The resumed session (2026-10-30) checked both repos' WIP commits
+  (9e4626a docs, 10ff404 code): they delete no file, and both trees were clean; only this notes file changed.
 
 - **A fresh test world on swap day:** no migration was planned here. The isle-start finding above comes from it: a
   fresh world has the isle ready.
@@ -165,4 +170,4 @@ The runner itself reads the real repo's test world and Configuration, another de
 - Outside the repos: `D:\UO\golems\Iron\p688-work\` (the SoS base and patched copies, the private bot world, its
   secrets and report) and `%TEMP%\p688-walkgrid*.npz` (the grid caches) can be deleted once this is finished.
 
-P688 STOPPED: asked Chase (Iron-P688-20261029-125544-04f6)
+P688 DONE
