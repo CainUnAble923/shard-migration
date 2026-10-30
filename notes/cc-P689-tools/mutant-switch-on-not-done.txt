@@ -1,0 +1,67 @@
+Map override facts (cc-P188)
+  PASS  TheEntryNameHashIsJenkinsLookup3AsTheClientAndTheServerKeyUopEntries
+  Shattered Legacy map: patched copies of map1LegacyMUL.uop (1 cells, 0 pieces added, 0 removed) in 0.2 s.
+  PASS  ALandLineWritesExactlyItsThreeBytesAndNothingElse
+  Shattered Legacy map: patched copies of map1LegacyMUL.uop (0 cells, 2 pieces added, 1 removed) in 0.1 s.
+  PASS  AddedStaticsGoAfterEaRowsAtTheEndAndARemovedOneGoesExactly
+  Shattered Legacy map: patched copies of map1LegacyMUL.uop (1 cells, 0 pieces added, 0 removed) in 0.0 s.
+  Shattered Legacy map: patched copies of map1LegacyMUL.uop (1 cells, 0 pieces added, 0 removed) in 0.0 s.
+  PASS  TheStampSkipsASecondRunAndANewPatchRebuilds
+  PASS  ADriftedBlockIsReportedAndStillPatchedAndAMovedRemovalIsLeft
+  PASS  NoPatchMeansNoLinesAndNoErrorFromTheBuilder
+  PASS  TheShippedPatchAppliesToASyntheticTrammelWithoutErrorWhenItsChunksExist
+  Shattered Legacy map: patched copies of map1LegacyMUL.uop (1 cells, 0 pieces added, 0 removed) in 0.1 s.
+  PASS  P674_AShippedBaseIsPatchedInsteadOfThePlayersFilesAndFeluccaGetsTheSameLand
+  Shattered Legacy map: patched copies of map1LegacyMUL.uop (1 cells, 0 pieces added, 0 removed) in 0.0 s.
+  Shattered Legacy map: patched copies of map1LegacyMUL.uop (1 cells, 0 pieces added, 0 removed) in 0.1 s.
+  Shattered Legacy map: patched copies of map1LegacyMUL.uop (1 cells, 0 pieces added, 0 removed) in 0.1 s.
+  Shattered Legacy map: patched copies of map1LegacyMUL.uop (1 cells, 0 pieces added, 0 removed) in 0.1 s.
+  PASS  P674_TheStampNamesTheBaseSoANewBaseRebuildsAndAnUnchangedOneDoesNot
+  PASS  P674_AFeluccaCopyRefusesAFileThatIsNotTrammelsMapAndAFacetOfAnotherSize
+  FAIL  P713_TheSwitchIsOffUntilTheSwapGoesLive
+        expected [off] but got [on]. switch.txt in the repo
+  PASS  P713_ASwitchThatIsNotOneWordOffOrOnStopsTheBuild
+  PASS  P713_SwitchedOffTheReadmeLosesOnlyItsAppMapEntry
+  PASS  P713_WithNoAppMapTheLauncherPatchesThePlayersOwnStockFilesAsBefore
+  FAIL  P713_Gate4SwitchedOffRefusesAnyAppMapFileAndTheCredit
+        not true: gate 4 ran: powershell.exe : 
+C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\6027951e-e3c1-4136-8445-9ba78bf064ab\scratch
+At C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\6027951e-e3c1-4136-8445-9ba78bf064ab\scra
+tchpad\mut689-on\player-package\tests\Map-Overrides.Tests.ps1:301 char:13
++     $text = & powershell.exe @a 2>&1 | Out-String
++             ~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C:\Users\ckfle\...bf064ab\scratch:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+pad\mut689-on\player-package\Build-PlayerPackage.ps1 : The term 'C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-
+Iron-shard-migration\6027951e-e3c1-4136-8445-9ba78bf064ab\scratchpad\mut689-on\player-package\PackageClient.ps1' is 
+not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or 
+if a path was included, verify that the path is correct and try again.
+    + CategoryInfo          : ObjectNotFound: (C:\Users\ckfle\...ckageClient.ps1:String) [Build-PlayerPackage.ps1], Co 
+   mmandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException,Build-PlayerPackage.ps1
+ 
+
+  FAIL  P713_Gate4SwitchedOnWantsTheThreeFilesAndTheCredit
+        not true: gate 4 ran: powershell.exe : 
+C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\6027951e-e3c1-4136-8445-9ba78bf064ab\scratch
+At C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\6027951e-e3c1-4136-8445-9ba78bf064ab\scra
+tchpad\mut689-on\player-package\tests\Map-Overrides.Tests.ps1:301 char:13
++     $text = & powershell.exe @a 2>&1 | Out-String
++             ~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C:\Users\ckfle\...bf064ab\scratch:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+pad\mut689-on\player-package\Build-PlayerPackage.ps1 : The term 'C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-
+Iron-shard-migration\6027951e-e3c1-4136-8445-9ba78bf064ab\scratchpad\mut689-on\player-package\PackageClient.ps1' is 
+not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or 
+if a path was included, verify that the path is correct and try again.
+    + CategoryInfo          : ObjectNotFound: (C:\Users\ckfle\...ckageClient.ps1:String) [Build-PlayerPackage.ps1], Co 
+   mmandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException,Build-PlayerPackage.ps1
+ 
+
+  FAIL  P689_TheSwapDaysCreditWaitsForTheSwitch
+        not true: switched on, the newest CHANGELOG section credits Zigholtul to players
+
+17 facts, 4 failed
