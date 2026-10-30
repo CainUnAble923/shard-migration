@@ -1,0 +1,19 @@
+# Decoration reference thumbnails
+
+Ten small screenshots of player builds, saved by cc-P736 (2026-10-30) for the building guide's section 9.4
+([Ideas from player builds](../building-and-decorating.md#94-ideas-from-player-builds)). Each is a resize (480 px at
+most, under 70 KB) of a public image. Credit goes to the named player and site. They are for inspiration only: never
+copy a build tile for tile, and never ship these pictures in a package or on a public page.
+
+| File | What it shows | Builder | Source page | Image URL |
+|---|---|---|---|---|
+| `castle-gothic-rose-walls.jpg` | Battlemented walls with a walkway round the inside of the wall top, a square tower at each corner, stained-glass windows, and a checker inlay framed in gold on the roof | Dot Warner, "The Gothic Rose Castle", Publish 101 winner | [UO.com contest-winning castles](https://uo.com/wiki/ultima-online-wiki/gameplay/houses-placing-a-house/contest-winning-castles/) | https://uo.com/wp-content/uploads/2018/09/101-dotwarner.jpg |
+| `castle-feudal-courtyard.jpg` | Japanese-style plaster and dark timber, a hipped black roof, a perimeter wall capped with roofing, a garden courtyard crossed by a stone path | Analaya, "The Feudal Castle", Publish 101 | same page | https://uo.com/wp-content/uploads/2018/09/101-analaya.jpg |
+| `castle-sandstone-symmetry.jpg` | A fully symmetric cross plan: four pyramid-roofed corner towers, four smaller diagonal roofs, an arcade of arches round the ground floor | Lex Anteris, "The Sandstone Castle", Publish 104 | same page | https://uo.com/wp-content/uploads/2019/02/17-sandstone-castle.jpg |
+| `castle-house-on-ruins-village.jpg` | A village inside the walls: small houses with different roofs, winding stone paths, a pond, ruined wall stubs with grass | Wendy, "The House Built on the Ruins", Publish 106 | same page | https://uo.com/wp-content/uploads/2019/09/6-house-on-ruins.jpg |
+| `castle-township-plaza.jpg` | Half-timbered houses round a grass square with a fountain, brick paving between them, flowering shrubs and red trees at the corners | Christmas Magic, "The Township", Publish 112 | same page | https://uo.com/wp-content/uploads/2022/01/thetownship5.jpg |
+| `castle-terrace-gardens-rooms.jpg` | A furnished floor: rows of seats facing a stage, paintings and banners on the back walls, rugs marking zones, a table set end to end | Violet, "The Terrace Gardens", Publish 106 (detail shot) | same page | https://uo.com/wp-content/uploads/2019/09/terace-gardens-a.jpg |
+| `castle-heorot-hall.jpg` | A Norse hall: a stone floor with a central fire pit, a long feast table, weapon racks and banners, timber palisade outside | Is'Madin, "The Heorot", Publish 112 (detail shot) | same page | https://uo.com/wp-content/uploads/2018/09/Heorot6a.jpg |
+| `uohd-bar.jpg` | A bar counter with mugs set along it, stools in a row, a mounted fish and a candelabra behind | unnamed, from the "Deco – Bars" gallery | [UO Home Decor: Deco – Bars](https://uohomedecor.com/photo-galleries/deco-bars/) | https://uohomedecor.com/wp-content/uploads/2014/02/Bar-7.jpg |
+| `uohd-keep-workroom.jpg` | A smithy and carpentry room in a keep: forge and anvil in the corner, tools and weapons on the back walls, a work table in the middle | Cassie Darksong (Kayhynn) | [UO Home Decor: Cassie Darksong's Keep](https://uohomedecor.com/2015/09/18/home-tours-cassie-darksongs-keep-aka-uohomedecors-keep/) | https://uohomedecor.com/wp-content/uploads/2015/09/keep-carp-blacksmith-room.png |
+| `uohd-farm.jpg` | A small farm: a one-room house with a bed, a fenced yard with crop rows, hay sheaves in a stall, a water trough | Lady Treasure Isle | [UO Home Decor: Lady Treasure Isle's Farm](https://uohomedecor.com/2016/04/20/home-tours-lady-treasure-isles-farm-photo-archive-edition/) | https://uohomedecor.com/wp-content/uploads/2016/01/lady-treasure-isle-farmnorth.jpg |
