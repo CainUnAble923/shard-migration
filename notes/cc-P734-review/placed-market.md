@@ -1,0 +1,192 @@
+## market: a market corner: a paved square, three full stalls, a stone fountain, lamps
+
+Relative to the plot corner; `[PlaceBuild practice-market` (176 pieces).
+
+
+### square
+
+- 0x051B paver, 2,2,0, mixed variants
+- 0x051E paver, 2,3,0, mixed variants
+- 0x051B paver, 2,4,0, mixed variants
+- 0x051E paver, 2,5,0, mixed variants
+- 0x051B paver, 2,6,0, mixed variants
+- 0x051E paver, 2,7,0, mixed variants
+- 0x051B paver, 2,8,0, mixed variants
+- 0x051E paver, 2,9,0, mixed variants
+- 0x051B paver, 2,10,0, mixed variants
+- 0x051E paver, 2,11,0, mixed variants
+- 0x051B paver, 2,12,0, mixed variants
+- 0x051C paver, 3,2,0, mixed variants
+- 0x0519 paver, 3,3,0, mixed variants
+- 0x051C paver, 3,4,0, mixed variants
+- 0x0519 paver, 3,5,0, mixed variants
+- 0x051C paver, 3,6,0, mixed variants
+- 0x0519 paver, 3,7,0, mixed variants
+- 0x051C paver, 3,8,0, mixed variants
+- 0x0519 paver, 3,9,0, mixed variants
+- 0x051C paver, 3,10,0, mixed variants
+- 0x0519 paver, 3,11,0, mixed variants
+- 0x051C paver, 3,12,0, mixed variants
+- 0x051D paver, 4,2,0, mixed variants
+- 0x051A paver, 4,3,0, mixed variants
+- 0x051D paver, 4,4,0, mixed variants
+- 0x051A paver, 4,5,0, mixed variants
+- 0x051D paver, 4,6,0, mixed variants
+- 0x051A paver, 4,7,0, mixed variants
+- 0x051D paver, 4,8,0, mixed variants
+- 0x051A paver, 4,9,0, mixed variants
+- 0x051D paver, 4,10,0, mixed variants
+- 0x051A paver, 4,11,0, mixed variants
+- 0x051D paver, 4,12,0, mixed variants
+- 0x051E paver, 5,2,0, mixed variants
+- 0x051B paver, 5,3,0, mixed variants
+- 0x051E paver, 5,4,0, mixed variants
+- 0x051B paver, 5,5,0, mixed variants
+- 0x051E paver, 5,6,0, mixed variants
+- 0x051B paver, 5,7,0, mixed variants
+- 0x051E paver, 5,8,0, mixed variants
+- 0x051B paver, 5,9,0, mixed variants
+- 0x051E paver, 5,10,0, mixed variants
+- 0x051B paver, 5,11,0, mixed variants
+- 0x051E paver, 5,12,0, mixed variants
+- 0x0519 paver, 6,2,0, mixed variants
+- 0x051C paver, 6,3,0, mixed variants
+- 0x0519 paver, 6,4,0, mixed variants
+- 0x051C paver, 6,5,0, mixed variants
+- 0x0519 paver, 6,6,0, mixed variants
+- 0x051C paver, 6,7,0, mixed variants
+- 0x0519 paver, 6,8,0, mixed variants
+- 0x051C paver, 6,9,0, mixed variants
+- 0x0519 paver, 6,10,0, mixed variants
+- 0x051C paver, 6,11,0, mixed variants
+- 0x0519 paver, 6,12,0, mixed variants
+- 0x051A paver, 7,2,0, mixed variants
+- 0x051D paver, 7,3,0, mixed variants
+- 0x051A paver, 7,4,0, mixed variants
+- 0x051D paver, 7,5,0, mixed variants
+- 0x051A paver, 7,6,0, mixed variants
+- 0x051D paver, 7,7,0, mixed variants
+- 0x051A paver, 7,8,0, mixed variants
+- 0x051D paver, 7,9,0, mixed variants
+- 0x051A paver, 7,10,0, mixed variants
+- 0x051D paver, 7,11,0, mixed variants
+- 0x051A paver, 7,12,0, mixed variants
+- 0x051B paver, 8,2,0, mixed variants
+- 0x051E paver, 8,3,0, mixed variants
+- 0x051B paver, 8,4,0, mixed variants
+- 0x051E paver, 8,5,0, mixed variants
+- 0x051B paver, 8,6,0, mixed variants
+- 0x051E paver, 8,7,0, mixed variants
+- 0x051B paver, 8,8,0, mixed variants
+- 0x051E paver, 8,9,0, mixed variants
+- 0x051B paver, 8,10,0, mixed variants
+- 0x051E paver, 8,11,0, mixed variants
+- 0x051B paver, 8,12,0, mixed variants
+- 0x051C paver, 9,2,0, mixed variants
+- 0x0519 paver, 9,3,0, mixed variants
+- 0x051C paver, 9,4,0, mixed variants
+- 0x0519 paver, 9,5,0, mixed variants
+- 0x051C paver, 9,6,0, mixed variants
+- 0x0519 paver, 9,7,0, mixed variants
+- 0x051C paver, 9,8,0, mixed variants
+- 0x0519 paver, 9,9,0, mixed variants
+- 0x051C paver, 9,10,0, mixed variants
+- 0x0519 paver, 9,11,0, mixed variants
+- 0x051C paver, 9,12,0, mixed variants
+- 0x051D paver, 10,2,0, mixed variants
+- 0x051A paver, 10,3,0, mixed variants
+- 0x051D paver, 10,4,0, mixed variants
+- 0x051A paver, 10,5,0, mixed variants
+- 0x051D paver, 10,6,0, mixed variants
+- 0x051A paver, 10,7,0, mixed variants
+- 0x051D paver, 10,8,0, mixed variants
+- 0x051A paver, 10,9,0, mixed variants
+- 0x051D paver, 10,10,0, mixed variants
+- 0x051A paver, 10,11,0, mixed variants
+- 0x051D paver, 10,12,0, mixed variants
+- 0x051E paver, 11,2,0, mixed variants
+- 0x051B paver, 11,3,0, mixed variants
+- 0x051E paver, 11,4,0, mixed variants
+- 0x051B paver, 11,5,0, mixed variants
+- 0x051E paver, 11,6,0, mixed variants
+- 0x051B paver, 11,7,0, mixed variants
+- 0x051E paver, 11,8,0, mixed variants
+- 0x051B paver, 11,9,0, mixed variants
+- 0x051E paver, 11,10,0, mixed variants
+- 0x051B paver, 11,11,0, mixed variants
+- 0x051E paver, 11,12,0, mixed variants
+- 0x0519 paver, 12,2,0, mixed variants
+- 0x051C paver, 12,3,0, mixed variants
+- 0x0519 paver, 12,4,0, mixed variants
+- 0x051C paver, 12,5,0, mixed variants
+- 0x0519 paver, 12,6,0, mixed variants
+- 0x051C paver, 12,7,0, mixed variants
+- 0x0519 paver, 12,8,0, mixed variants
+- 0x051C paver, 12,9,0, mixed variants
+- 0x0519 paver, 12,10,0, mixed variants
+- 0x051C paver, 12,11,0, mixed variants
+- 0x0519 paver, 12,12,0, mixed variants
+- 0x051A paver, 13,2,0, mixed variants
+- 0x051D paver, 13,3,0, mixed variants
+- 0x051A paver, 13,4,0, mixed variants
+- 0x051D paver, 13,5,0, mixed variants
+- 0x051A paver, 13,6,0, mixed variants
+- 0x051D paver, 13,7,0, mixed variants
+- 0x051A paver, 13,8,0, mixed variants
+- 0x051D paver, 13,9,0, mixed variants
+- 0x051A paver, 13,10,0, mixed variants
+- 0x051D paver, 13,11,0, mixed variants
+- 0x051A paver, 13,12,0, mixed variants
+- 0x051B paver, 14,2,0, mixed variants
+- 0x051E paver, 14,3,0, mixed variants
+- 0x051B paver, 14,4,0, mixed variants
+- 0x051E paver, 14,5,0, mixed variants
+- 0x051B paver, 14,6,0, mixed variants
+- 0x051E paver, 14,7,0, mixed variants
+- 0x051B paver, 14,8,0, mixed variants
+- 0x051E paver, 14,9,0, mixed variants
+- 0x051B paver, 14,10,0, mixed variants
+- 0x051E paver, 14,11,0, mixed variants
+- 0x051B paver, 14,12,0, mixed variants
+
+### stalls
+
+- 0x0B40 counter (fruit stall), 3,4,0, serving side south, to the square
+- 0x0993 fruit on the counter, 3,4,6
+- 0x0B40 counter (fruit stall), 4,4,0, serving side south, to the square
+- 0x09D2 fruit on the counter, 4,4,6
+- 0x0B40 counter (fruit stall), 5,4,0, serving side south, to the square
+- 0x09D1 fruit on the counter, 5,4,6
+- 0x0E3C crate, 3,3,0, behind the stall
+- 0x0E77 barrel, 5,3,0, behind the stall
+- 0x0B40 counter (fish stall), 7,4,0, serving side south, to the square
+- 0x097B fish on the counter, 7,4,6
+- 0x0B40 counter (fish stall), 8,4,0, serving side south, to the square
+- 0x0DD6 fish on the counter, 8,4,6
+- 0x0B40 counter (fish stall), 9,4,0, serving side south, to the square
+- 0x0DD7 fish on the counter, 9,4,6
+- 0x0E3C crate, 7,3,0, behind the stall
+- 0x0E77 barrel, 9,3,0, behind the stall
+- 0x0B40 counter (flour and ham stall), 11,4,0, serving side south, to the square
+- 0x1039 flour and ham on the counter, 11,4,6
+- 0x0B40 counter (flour and ham stall), 12,4,0, serving side south, to the square
+- 0x1039 flour and ham on the counter, 12,4,6
+- 0x0B40 counter (flour and ham stall), 13,4,0, serving side south, to the square
+- 0x09D3 flour and ham on the counter, 13,4,6
+- 0x0E3C crate, 11,3,0, behind the stall
+- 0x0E77 barrel, 13,3,0, behind the stall
+- 0x1036 hay, 13,2,0, behind the flour stall, on the ground
+- 0x1037 hay, 14,3,0, behind the flour stall, on the ground
+
+### middle
+
+- StoneFountainAddon (0x1731+0x1732+0x1733+0x1734+0x1735+0x1736+0x1737+0x1738+0x1739+0x173A+0x173B+0x173C+0x173D+0x173E+0x173F+0x1741), 9,8,0, round, no facing; x 7..10, y 6..9
+- 0x0B20 lamp post, 2,2,0, square corner
+- 0x0B20 lamp post, 14,12,0, square corner
+- 0x0B20 lamp post, 2,12,0, square corner
+- 0x0E3D crate, 13,7,0, stacked goods by the east edge
+- 0x0E3C crate, 13,7,3, stacked on the crate below
+
+### signpost
+
+- 0xA854 standing signpost, 0,13,0, beside the path, off the door line and the walk line
