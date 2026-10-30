@@ -1,0 +1,52 @@
+    FAIL (threw): The term 'Test-PromptForGolem' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again. at at <ScriptBlock>, C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\093f1692-454b-45e7-b367-a92ec4b086b0\scratchpad\kit\tests\Golem.Tests.ps1: line 4567 | At C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\093f1692-454b-45e7-b367-a92ec4b086b0\scratchpad\kit\tests\Golem.Tests.ps1:4567 char:23
++         Assert-True ((Test-PromptForGolem $pf 'Copper') -and (Test-Pr ...
++                       ~~~~~~~~~~~~~~~~~~~
+FAIL P734_TheReviewRulesAGolemLineListReviewersAndWhatNeedsAReview
+    FAIL: held, and one review queued: Merge round: P105 merged
+P105 from Bronze: merged / 2026-10-29 18:08:45  MergeRound   merge round (scheduled): merging 1 ticket(s), oldest first: P105
+2026-10-29 18:08:46  MergeRound   integrator: C:\Users\ckfle\AppData\Local\Temp\golem-test-051b4fb3\docs has no branch golem/Bronze/P105 (nothing from P105 there)
+2026-10-29 18:08:46  MergeRound   integrator: P105 changed the server: building sl-modernuo:cc-P105
+2026-10-29 18:08:47  MergeRound   integrator: build green for P105
+2026-10-29 18:08:48  MergeRound   integrator: merged golem/Bronze/P105 (P105 from Bronze, DONE) into main: 1 code file(s), 0 docs file(s)
+2026-10-29 18:08:48  MergeRound   folded into the next email: Merged P105 from Bronze into main
+2026-10-29 18:08:48  MergeRound   merge round (scheduled): P105 merged
+
+    FAIL: the review prompt: for another Claude Golem (not Bronze), reads the guide, says the verdict line: 
+    FAIL: nothing merged yet
+    FAIL: the next round still waits, and queues no second review: Merge round: nothing waiting
+    FAIL (threw): Cannot bind argument to parameter 'LiteralPath' because it is null. at at Send-P734Review, C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\093f1692-454b-45e7-b367-a92ec4b086b0\scratchpad\kit\tests\Golem.Tests.ps1: line 4557 | At C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\093f1692-454b-45e7-b367-a92ec4b086b0\scratchpad\kit\tests\Golem.Tests.ps1:4557 char:34
++         Remove-Item -LiteralPath $rf.FullName
++                                  ~~~~~~~~~~~~
+FAIL P734_AMapPromptWaitsForItsReviewAndMergesOnPass
+    FAIL (threw): Cannot bind argument to parameter 'LiteralPath' because it is null. at at Send-P734Review, C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\093f1692-454b-45e7-b367-a92ec4b086b0\scratchpad\kit\tests\Golem.Tests.ps1: line 4557 | At C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\093f1692-454b-45e7-b367-a92ec4b086b0\scratchpad\kit\tests\Golem.Tests.ps1:4557 char:34
++         Remove-Item -LiteralPath $rf.FullName
++                                  ~~~~~~~~~~~~
+FAIL P734_AFailBecomesAFixUpWithTheReviewersList
+    FAIL: skipped: merged with no review: Merge round: P105 merged
+P105 from Bronze: merged
+    FAIL: Skip-BuildReview.ps1 writes the marker: powershell.exe : The argument 'D:\UO\golem\Skip-BuildReview.ps1' to the -File parameter does not exist. Provide the 
+path to an existing '.ps1' file as an argument to the -File parameter.
+At C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\093f1692-454b-45e7-b367-a92ec4b086b0\scra
+tchpad\kit\tests\Golem.Tests.ps1:4637 char:16
++ ...      $so = (& powershell.exe -NoProfile -ExecutionPolicy Bypass -File ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (The argument 'D...File parameter.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+
+    FAIL (threw): Cannot find path 'C:\Users\ckfle\AppData\Local\Temp\golem-test-b2fadf45\root\merge-queue\review-P105.json' because it does not exist. at at <ScriptBlock>, C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\093f1692-454b-45e7-b367-a92ec4b086b0\scratchpad\kit\tests\Golem.Tests.ps1: line 4644 | At C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\093f1692-454b-45e7-b367-a92ec4b086b0\scratchpad\kit\tests\Golem.Tests.ps1:4644 char:16
++         $rec = Get-Content -LiteralPath $rf -Raw | ConvertFrom-Json;  ...
++                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+FAIL P734_TheOverseerSkipsAReviewAndALateReviewTimesOut
+    FAIL: Gold first
+    FAIL (threw): Cannot find path 'C:\Users\ckfle\AppData\Local\Temp\golem-test-c35f808d\root\merge-queue\review-P105.json' because it does not exist. at at <ScriptBlock>, C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\093f1692-454b-45e7-b367-a92ec4b086b0\scratchpad\kit\tests\Golem.Tests.ps1: line 4663 | At C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\093f1692-454b-45e7-b367-a92ec4b086b0\scratchpad\kit\tests\Golem.Tests.ps1:4663 char:16
++         $rec = Get-Content -LiteralPath $mf -Raw | ConvertFrom-Json;  ...
++                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+FAIL P734_AnUnclaimedReviewIsOpenedWiderAndTheSwitchTurnsItOff
+    FAIL: the hand-off: {"hookSpecificOutput":{"hookEventName":"UserPromptSubmit","additionalContext":"Golem hand-off. The Golem is starting the queue. The next task is a new, separate prompt: read C:\\Users\\ckfle\\AppData\\Local\\Temp\\golem-test-6f3a8260\\prompts\\claimed\\Bronze\\cc-P105-isle-dock.md in full and carry it out exactly as written, following its Finishing section (notes file last line, and end your final chat message with P105 DONE, or P105 STOPPED: \u003creason\u003e if you stop early). Do not commit; the Golem commits after P105 DONE. When you must stop for Chase, ask through Ask-Chase.ps1 with choices where you can: powershell -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\ckfle\\AppData\\Local\\Temp\\golem-test-6f3a8260\\root\\Ask-Chase.ps1 -Question \"\u003cthe whole question\u003e\" -Choice \"\u003clabel\u003e|\u003cwhat you will then do\u003e\" (-Choice2, -Choice3, -Choice4 for more; add -Irreversible when an answer cannot be undone), then end with P105 STOPPED: \u003creason\u003e. Chase answers on the console\u0027s Golem card or by email, and a new session gets the answer. Run subagents in the foreground (run_in_background: false) unless the prompt says otherwise. Start your notes file with a section ## In plain words: 2 to 4 short bullets a non-programmer would follow, each saying what changed, what Chase will notice and where (for example: The console opens in about 2 seconds now instead of 10), and a last bullet with anything he needs to try, deploy or decide, or Nothing for you to do. The Golem\u0027s done email copies that section to Chase. testing/play-tests.json and testing/SUMMARY.md and anything under testing/bot-runs/ in shard-migration are machine output from the play-test importer and the overnight bot: they are committed with each prompt and are not a reason to stop. Chase follows progress remotely through your task list: start by making one task per numbered part of the prompt, plus tests, notes and commit preflight, and keep each marked in progress and completed as you go. If this session has no task-list tool (TaskCreate, TaskUpdate or TodoWrite), instead run powershell -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\ckfle\\AppData\\Local\\Temp\\golem-test-6f3a8260\\root\\Set-Step.ps1 -Done \u003csteps done\u003e -Total \u003csteps in all\u003e -Now \"\u003cthe step you start\u003e\" at the start and at each step. You are the Bronze Golem (GOLEM_NAME=Bronze), one of several working the queue at once. Your work copies are C:\\Users\\ckfle\\AppData\\Local\\Temp\\golem-test-6f3a8260\\golems\\Bronze\\code (read it wherever the prompt says D:\\ShatteredLegacy) and C:\\Users\\ckfle\\AppData\\Local\\Temp\\golem-test-6f3a8260\\golems\\Bronze\\docs (wherever it says D:\\UO\\shard-migration), both on branch golem/Bronze/P105. Never read from or write to D:\\ShatteredLegacy or D:\\UO\\shard-migration themselves or to any other Golem\u0027s folder under D:\\UO\\golems: they are other people\u0027s desks, and the guard hook denies it. Do not commit, merge, rebase, push or switch branches; the Golem commits your branch after P105 DONE and the integrator merges it into main. Shared equipment is a sign-up sheet: before a Docker build, a test shard start, restart, rebuild or world command, a player package build or publish, or a Haven deploy, take the lock first: powershell -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\ckfle\\AppData\\Local\\Temp\\golem-test-6f3a8260\\root\\Use-GolemLock.ps1 -Take \u003ctest-shard|docker-build|package|haven\u003e -Minutes \u003chow long\u003e -Wait (it waits while another Golem holds it; say so in one line), and -Release \u003cresource\u003e when you are done. Use image tag sl-modernuo:cc-P105. Write your notes to your own docs copy\u0027s notes folder. If the Read tool is denied for the prompt file (an unattended run denies permission prompts), read it with Bash cat instead."}}
+FAIL P734_AMapPromptsHandOffSaysReadTheGuide
+
+1 checks passed, 13 failed (golem, D:\UO\golem\golem.ps1)
