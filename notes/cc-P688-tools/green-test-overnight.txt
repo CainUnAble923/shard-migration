@@ -1,0 +1,46 @@
+test_a_failed_verify_removes_nothing (test_overnight.Archive.test_a_failed_verify_removes_nothing) ... ok
+test_a_missing_root_removes_nothing (test_overnight.Archive.test_a_missing_root_removes_nothing) ... ok
+test_a_same_size_change_is_caught_by_the_hash (test_overnight.Archive.test_a_same_size_change_is_caught_by_the_hash) ... ok
+test_nothing_old_says_so (test_overnight.Archive.test_nothing_old_says_so) ... ok
+test_old_transcripts_are_copied_verified_then_removed (test_overnight.Archive.test_old_transcripts_are_copied_verified_then_removed) ... ok
+test_after_keeps_the_summary_and_adds_the_report_path_and_the_archive_line (test_overnight.Emails.test_after_keeps_the_summary_and_adds_the_report_path_and_the_archive_line) ... ok
+test_before (test_overnight.Emails.test_before) ... ok
+test_before_when_forced (test_overnight.Emails.test_before_when_forced) ... ok
+test_crash (test_overnight.Emails.test_crash) ... ok
+test_the_compose_file_mounts_the_map_overlay_read_only (test_overnight.MapOverlay.test_the_compose_file_mounts_the_map_overlay_read_only) ... ok
+test_the_runner_builds_the_overlay_before_the_shard_starts_and_refuses_without_it (test_overnight.MapOverlay.test_the_runner_builds_the_overlay_before_the_shard_starts_and_refuses_without_it) ... ok
+test_after_with_a_failure_lists_it_in_words_and_says_to_mark_it (test_overnight.PlainEmails.test_after_with_a_failure_lists_it_in_words_and_says_to_mark_it) ... ok
+test_after_with_everything_passing_has_nothing_to_do (test_overnight.PlainEmails.test_after_with_everything_passing_has_nothing_to_do) ... ok
+test_before_says_what_it_checks_and_how_long_in_words (test_overnight.PlainEmails.test_before_says_what_it_checks_and_how_long_in_words) ... ok
+test_crash_says_it_stopped_and_what_to_do (test_overnight.PlainEmails.test_crash_says_it_stopped_and_what_to_do) ... ok
+test_installer_dry_run_prints_the_call_and_registers_nothing (test_overnight.Scripts.test_installer_dry_run_prints_the_call_and_registers_nothing) ... FAIL
+test_installer_uninstall_dry_run (test_overnight.Scripts.test_installer_uninstall_dry_run) ... ok
+test_runner_crash_sends_the_after_email_with_the_log_tail (test_overnight.Scripts.test_runner_crash_sends_the_after_email_with_the_log_tail) ... ok
+test_runner_with_no_work_writes_one_line_and_exits_0 (test_overnight.Scripts.test_runner_with_no_work_writes_one_line_and_exits_0) ... ok
+test_a_change_to_the_checks_themselves_counts (test_overnight.WorkCheck.test_a_change_to_the_checks_themselves_counts) ... ok
+test_a_new_item_counts (test_overnight.WorkCheck.test_a_new_item_counts) ... ok
+test_a_reopened_item_counts_when_reopened_after_its_last_run (test_overnight.WorkCheck.test_a_reopened_item_counts_when_reopened_after_its_last_run) ... ok
+test_a_run_on_older_code_counts_but_a_docs_only_commit_does_not (test_overnight.WorkCheck.test_a_run_on_older_code_counts_but_a_docs_only_commit_does_not) ... ok
+test_a_target_commit_is_resolved_and_reported (test_overnight.WorkCheck.test_a_target_commit_is_resolved_and_reported) ... ok
+test_an_error_result_is_not_a_run (test_overnight.WorkCheck.test_an_error_result_is_not_a_run) ... ok
+test_force_runs_with_no_work_and_says_so (test_overnight.WorkCheck.test_force_runs_with_no_work_and_says_so) ... ok
+test_items_without_a_check_and_closed_items_never_count (test_overnight.WorkCheck.test_items_without_a_check_and_closed_items_never_count) ... ok
+test_none_when_every_open_item_ran_on_this_code (test_overnight.WorkCheck.test_none_when_every_open_item_ran_on_this_code) ... ok
+test_old_runs_without_commitSha_are_read_from_their_code_line (test_overnight.WorkCheck.test_old_runs_without_commitSha_are_read_from_their_code_line) ... ok
+test_the_estimate_uses_the_last_seconds_and_the_soak (test_overnight.WorkCheck.test_the_estimate_uses_the_last_seconds_and_the_soak) ... ok
+
+======================================================================
+FAIL: test_installer_dry_run_prints_the_call_and_registers_nothing (test_overnight.Scripts.test_installer_dry_run_prints_the_call_and_registers_nothing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UO\golems\Iron\ShatteredLegacy\tools\playtest-bot\tests\test_overnight.py", line 397, in test_installer_dry_run_prints_the_call_and_registers_nothing
+    self.assertNotEqual(0, q.returncode, "the dry run registered the task")
+AssertionError: 0 == 0 : the dry run registered the task
+
+----------------------------------------------------------------------
+Ran 30 tests in 11.312s
+
+FAILED (failures=1)
+Overnight play tests: 1 pass, 0 fail, 0 flaky
+Overnight play tests: 1 pass, 1 fail, 0 flaky
+Overnight play tests: 1 pass, 0 fail, 0 flaky
