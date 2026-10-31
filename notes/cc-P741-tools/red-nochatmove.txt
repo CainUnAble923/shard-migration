@@ -1,0 +1,51 @@
+  Logger -> /build/modernuo/Distribution/Assemblies/Logger.dll
+  Server -> /build/modernuo/Distribution/Server.dll
+  UOContent -> /build/modernuo/Distribution/Assemblies/UOContent.dll
+  Application -> /build/modernuo/Distribution/ModernUO.dll
+  Server.Tests -> /build/modernuo/Projects/Server.Tests/bin/Release/net10.0/Server.Tests.dll
+  UOContent.Tests -> /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll
+Test run for /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.0+05679a7ab5 (64-bit .NET 10.0.7)
+[xUnit.net 00:00:00.18]   Discovering: UOContent.Tests
+[xUnit.net 00:00:00.60]   Discovered:  UOContent.Tests
+[xUnit.net 00:00:00.62]   Starting:    UOContent.Tests
+[03:28:14 INF] Loading world <s:Server.World>
+[03:28:14 INF] Loading world done (0 items, 0 mobiles) (0.01 seconds) <s:Server.World>
+[03:28:15 INF] Discovered 3 spawner JSON type(s) <s:Server.Engines.Spawners.SpawnerJsonSerializer>
+[03:28:15 INF] The Fold: registered 17 maps (32-48) on Trammel's files <s:Server.FoldMaps>
+[03:28:15 WRN] map1.mul was not found. <s:Server.TileMatrix>
+[03:28:15 WRN] staidx1.mul was not found. <s:Server.TileMatrix>
+[03:28:15 WRN] statics1.mul was not found. <s:Server.TileMatrix>
+[03:28:15 WRN] map1.mul was not found. <s:Server.TileMatrix>
+[03:28:15 WRN] staidx1.mul was not found. <s:Server.TileMatrix>
+[03:28:15 WRN] statics1.mul was not found. <s:Server.TileMatrix>
+[xUnit.net 00:00:01.44]     ShatteredLegacy.Tests.TutorialIsleCoastVerification.TheChatSignpostIsMovedNorthOfTheRoadNotDoubled [FAIL]
+[xUnit.net 00:00:01.44]       Assert.Single() Failure: The collection contained 2 matching items
+[xUnit.net 00:00:01.44]       Expected:      (predicate expression)
+[xUnit.net 00:00:01.44]       Collection:    [0x40000658 "Static", 0x40000657 "Static", 0x40000656 "Static", 0x40000655 "Static", 0x40000654 "Static", ···]
+[xUnit.net 00:00:01.44]       Match indices: 1, 13
+[xUnit.net 00:00:01.44]       Stack Trace:
+[xUnit.net 00:00:01.44]         /build/modernuo/Projects/UOContent.Tests/Tests/Tutorial/TutorialIsleCoastVerification.cs(194,0): at ShatteredLegacy.Tests.TutorialIsleCoastVerification.TheChatSignpostIsMovedNorthOfTheRoadNotDoubled()
+[xUnit.net 00:00:01.44]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.44]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.44]   Finished:    UOContent.Tests
+  Passed ShatteredLegacy.Tests.TutorialIsleCoastVerification.TheFarmhouseStandsEastOfTheFieldAndTheCropsAreSparse [23 ms]
+  Passed ShatteredLegacy.Tests.TutorialIsleCoastVerification.AFarmLaidBeforeTheMoveIsMovedInPlace [154 ms]
+  Passed ShatteredLegacy.Tests.TutorialIsleCoastVerification.TheWreckIsTheWholeShipAndP724sHalfIsSwapped [4 ms]
+  Failed ShatteredLegacy.Tests.TutorialIsleCoastVerification.TheChatSignpostIsMovedNorthOfTheRoadNotDoubled [24 ms]
+  Error Message:
+   Assert.Single() Failure: The collection contained 2 matching items
+Expected:      (predicate expression)
+Collection:    [0x40000658 "Static", 0x40000657 "Static", 0x40000656 "Static", 0x40000655 "Static", 0x40000654 "Static", ···]
+Match indices: 1, 13
+  Stack Trace:
+     at ShatteredLegacy.Tests.TutorialIsleCoastVerification.TheChatSignpostIsMovedNorthOfTheRoadNotDoubled() in /build/modernuo/Projects/UOContent.Tests/Tests/Tutorial/TutorialIsleCoastVerification.cs:line 194
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+Test Run Failed.
+Total tests: 4
+     Passed: 3
+     Failed: 1
+ Total time: 1.7462 Seconds
