@@ -1,0 +1,27 @@
+# cc-P690 gated build 1 (gated-build.ps1, tag sl-modernuo:cc-P690): the failure and the totals; the full log was 6,606 lines
+[xUnit.net 00:00:09.94]     ShatteredLegacy.Tests.CovetousVoidSpawnVerification.SetupPlacesTheControllersThePoolTheSpawnersAndThePaths [FAIL]
+[xUnit.net 00:00:09.94]       Assert.All() Failure: 1 out of 86 items in the collection did not pass.
+[xUnit.net 00:00:09.94]       [8]: Item:  0x00001B07 "an angered spirit"
+[xUnit.net 00:00:09.94]            Error: 0x00001B07 "an angered spirit" at (5500, 1809, 0)
+[xUnit.net 00:00:09.94]       Stack Trace:
+[xUnit.net 00:00:09.94]         /build/modernuo/Projects/UOContent.Tests/Tests/Services/Revamped Dungeons/Covetous Void Spawn/CovetousVoidSpawnVerification.cs(248,0): at ShatteredLegacy.Tests.CovetousVoidSpawnVerification.SetupPlacesTheControllersThePoolTheSpawnersAndThePaths()
+[xUnit.net 00:00:09.94]            at System.RuntimeMethodHandle.InvokeMethod(ObjectHandleOnStack target, Void** arguments, ObjectHandleOnStack sig, BOOL isConstructor, ObjectHandleOnStack result)
+[xUnit.net 00:00:09.94]            at System.RuntimeMethodHandle.InvokeMethod(ObjectHandleOnStack target, Void** arguments, ObjectHandleOnStack sig, BOOL isConstructor, ObjectHandleOnStack result)
+[xUnit.net 00:00:09.94]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:09.94]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[15:58:56 INF] Client: 127.0.0.1: Connected. [21 Online] <s:Server.Network.NetState>
+[15:58:56 INF] Client: 127.0.0.1: Connected. [22 Online] <s:Server.Network.NetState>
+[15:58:57 WRN] Duplicate region name 'Void Pool' for map 'Trammel' <s:Server.Map>
+  Passed ShatteredLegacy.Tests.CovetousVoidSpawnVerification.CorasDeathGivesAnArtifactToAPlayerWithLootingRightsInThePackOrTheBank [14 ms]
+  Passed ShatteredLegacy.Tests.CovetousVoidSpawnVerification.EveryPlayerWhoImprovesGetsTheirBestSingleBattle [7 ms]
+  Failed ShatteredLegacy.Tests.CovetousVoidSpawnVerification.SetupPlacesTheControllersThePoolTheSpawnersAndThePaths [62 ms]
+  Error Message:
+   Assert.All() Failure: 1 out of 86 items in the collection did not pass.
+[8]: Item:  0x00001B07 "an angered spirit"
+     Error: 0x00001B07 "an angered spirit" at (5500, 1809, 0)
+  Stack Trace:
+Total tests: 2831
+     Passed: 2824
+     Failed: 1
+BUILD FAILED: ShatteredLegacy.Tests tests did not pass. No image was built.
+EXIT=1
