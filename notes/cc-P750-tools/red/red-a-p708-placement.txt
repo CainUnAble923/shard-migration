@@ -1,0 +1,55 @@
+  Logger -> /build/modernuo/Distribution/Assemblies/Logger.dll
+  Server -> /build/modernuo/Distribution/Server.dll
+  UOContent -> /build/modernuo/Distribution/Assemblies/UOContent.dll
+  Application -> /build/modernuo/Distribution/ModernUO.dll
+  Server.Tests -> /build/modernuo/Projects/Server.Tests/bin/Release/net10.0/Server.Tests.dll
+  UOContent.Tests -> /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll
+Test run for /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.0+05679a7ab5 (64-bit .NET 10.0.7)
+[xUnit.net 00:00:00.12]   Discovering: UOContent.Tests
+[xUnit.net 00:00:00.40]   Discovered:  UOContent.Tests
+[xUnit.net 00:00:00.41]   Starting:    UOContent.Tests
+[22:12:25 INF] Loading world <s:Server.World>
+[22:12:25 INF] Loading world done (0 items, 0 mobiles) (0.01 seconds) <s:Server.World>
+[22:12:25 INF] Discovered 3 spawner JSON type(s) <s:Server.Engines.Spawners.SpawnerJsonSerializer>
+[xUnit.net 00:00:01.04]     ShatteredLegacy.Tests.GuildHallSosMovesVerification.PlaceTakesTheRangersP708PostAwayInViridian [FAIL]
+[xUnit.net 00:00:01.04]       Assert.Contains() Failure: Filter not matched in collection
+[xUnit.net 00:00:01.05]       Collection: ["rangers (Fort Viridian, Fort Viridian, the inner c"···, "Guild halls dry run: would place 2 thing(s), 0 alr"···]
+[xUnit.net 00:00:01.05]       Stack Trace:
+[xUnit.net 00:00:01.05]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GuildHallSosMovesVerification.cs(232,0): at ShatteredLegacy.Tests.GuildHallSosMovesVerification.PlaceTakesTheRangersP708PostAwayInViridian()
+[xUnit.net 00:00:01.05]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.05]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.07]     ShatteredLegacy.Tests.GuildHallSosMovesVerification.PlaceTakesAMovedHallsOldSiteAwayAndClearDoesToo [FAIL]
+[xUnit.net 00:00:01.07]       Assert.Contains() Failure: Filter not matched in collection
+[xUnit.net 00:00:01.07]       Collection: ["tinkers (Hammerhill, Hammerhill, the stone worksho"···, "Guild halls done: placed 4 thing(s), 0 already sta"···]
+[xUnit.net 00:00:01.07]       Stack Trace:
+[xUnit.net 00:00:01.07]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GuildHallSosMovesVerification.cs(169,0): at ShatteredLegacy.Tests.GuildHallSosMovesVerification.PlaceTakesAMovedHallsOldSiteAwayAndClearDoesToo()
+[xUnit.net 00:00:01.07]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.07]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.07]   Finished:    UOContent.Tests
+  Passed ShatteredLegacy.Tests.GuildHallSosMovesVerification.TheLeagueHeadquartersHasItsOwnStewardAndElaraStaysInNewHaven [44 ms]
+  Passed ShatteredLegacy.Tests.GuildHallSosMovesVerification.JoiningAMovedGuildNeedsNoHeadquarters [49 ms]
+  Failed ShatteredLegacy.Tests.GuildHallSosMovesVerification.PlaceTakesTheRangersP708PostAwayInViridian [7 ms]
+  Error Message:
+   Assert.Contains() Failure: Filter not matched in collection
+Collection: ["rangers (Fort Viridian, Fort Viridian, the inner c"···, "Guild halls dry run: would place 2 thing(s), 0 alr"···]
+  Stack Trace:
+     at ShatteredLegacy.Tests.GuildHallSosMovesVerification.PlaceTakesTheRangersP708PostAwayInViridian() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GuildHallSosMovesVerification.cs:line 232
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed ShatteredLegacy.Tests.GuildHallSosMovesVerification.EachMovedHallStandsInTheTownChasePicked [5 ms]
+  Failed ShatteredLegacy.Tests.GuildHallSosMovesVerification.PlaceTakesAMovedHallsOldSiteAwayAndClearDoesToo [18 ms]
+  Error Message:
+   Assert.Contains() Failure: Filter not matched in collection
+Collection: ["tinkers (Hammerhill, Hammerhill, the stone worksho"···, "Guild halls done: placed 4 thing(s), 0 already sta"···]
+  Stack Trace:
+     at ShatteredLegacy.Tests.GuildHallSosMovesVerification.PlaceTakesAMovedHallsOldSiteAwayAndClearDoesToo() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GuildHallSosMovesVerification.cs:line 169
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+Test Run Failed.
+Total tests: 5
+     Passed: 3
+     Failed: 2
+ Total time: 1.3138 Seconds
