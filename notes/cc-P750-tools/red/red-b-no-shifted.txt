@@ -1,0 +1,41 @@
+  Logger -> /build/modernuo/Distribution/Assemblies/Logger.dll
+  Server -> /build/modernuo/Distribution/Server.dll
+  UOContent -> /build/modernuo/Distribution/Assemblies/UOContent.dll
+  Application -> /build/modernuo/Distribution/ModernUO.dll
+  Server.Tests -> /build/modernuo/Projects/Server.Tests/bin/Release/net10.0/Server.Tests.dll
+  UOContent.Tests -> /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll
+Test run for /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.0+05679a7ab5 (64-bit .NET 10.0.7)
+[xUnit.net 00:00:00.13]   Discovering: UOContent.Tests
+[xUnit.net 00:00:00.42]   Discovered:  UOContent.Tests
+[xUnit.net 00:00:00.44]   Starting:    UOContent.Tests
+[22:12:48 INF] Loading world <s:Server.World>
+[22:12:48 INF] Loading world done (0 items, 0 mobiles) (0.01 seconds) <s:Server.World>
+[22:12:49 INF] Discovered 3 spawner JSON type(s) <s:Server.Engines.Spawners.SpawnerJsonSerializer>
+[xUnit.net 00:00:01.12]     ShatteredLegacy.Tests.GuildHallSosMovesVerification.PlaceTakesTheRangersP708PostAwayInViridian [FAIL]
+[xUnit.net 00:00:01.12]       Assert.Contains() Failure: Filter not matched in collection
+[xUnit.net 00:00:01.12]       Collection: ["rangers (Fort Viridian, Fort Viridian, the inner c"···, "Guild halls dry run: would place 2 thing(s), 0 alr"···]
+[xUnit.net 00:00:01.12]       Stack Trace:
+[xUnit.net 00:00:01.12]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GuildHallSosMovesVerification.cs(232,0): at ShatteredLegacy.Tests.GuildHallSosMovesVerification.PlaceTakesTheRangersP708PostAwayInViridian()
+[xUnit.net 00:00:01.12]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.12]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.15]   Finished:    UOContent.Tests
+  Passed ShatteredLegacy.Tests.GuildHallSosMovesVerification.TheLeagueHeadquartersHasItsOwnStewardAndElaraStaysInNewHaven [53 ms]
+  Passed ShatteredLegacy.Tests.GuildHallSosMovesVerification.JoiningAMovedGuildNeedsNoHeadquarters [57 ms]
+  Failed ShatteredLegacy.Tests.GuildHallSosMovesVerification.PlaceTakesTheRangersP708PostAwayInViridian [7 ms]
+  Error Message:
+   Assert.Contains() Failure: Filter not matched in collection
+Collection: ["rangers (Fort Viridian, Fort Viridian, the inner c"···, "Guild halls dry run: would place 2 thing(s), 0 alr"···]
+  Stack Trace:
+     at ShatteredLegacy.Tests.GuildHallSosMovesVerification.PlaceTakesTheRangersP708PostAwayInViridian() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GuildHallSosMovesVerification.cs:line 232
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed ShatteredLegacy.Tests.GuildHallSosMovesVerification.EachMovedHallStandsInTheTownChasePicked [8 ms]
+  Passed ShatteredLegacy.Tests.GuildHallSosMovesVerification.PlaceTakesAMovedHallsOldSiteAwayAndClearDoesToo [20 ms]
+
+Test Run Failed.
+Total tests: 5
+     Passed: 4
+     Failed: 1
+ Total time: 1.4032 Seconds

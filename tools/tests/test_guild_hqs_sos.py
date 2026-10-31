@@ -15,6 +15,15 @@ in the P708 copy, sloped land climbed as pinned Movement.Check climbs it).
   3. Each moved hall's guildmaster is reached on foot from its travel stop, and the travel stop is reached on foot from
      the town's bank (Valunstead's and Hammerhill's, the author's Bank points) or, for the two forts, from the author's
      Yew Forest Guardpost (1047,1080), so a player walks in from the land around.
+  4. (cc-P750) Each moved hall's guildmaster shows in the game's camera: at most a quarter of a standing figure's screen
+     box (20 by 60 pixels above his tile) is covered by the art drawn after his tile (larger x + y), from the art's own
+     pixels. As the client does, a static at or above the first one over his head on his tile (a roof, a floor above) is
+     left out. P708's Rangers post in Fort Viridian's south court (1003,1004) was wholly covered by the rampart in front
+     of it; neither the guildmaster nor the Tester showed in P708's shots.
+  5. (cc-P750) Each moved hall's sign shows: at most a quarter of its own art's pixels (the board the server places,
+     0x0B95 + 2 x SignType + facing) is covered by the art drawn after it (a larger x + y, or a higher piece on its own
+     tile). P708's League sign beside the keep's steps (566,321) was wholly covered by them, and the Tinkers' (1494,1026)
+     half covered by the house south-east of it; neither showed in P708's shots.
 """
 import json
 import os
@@ -40,6 +49,9 @@ BOX = {'Valunstead': (234, 180, 655, 499), 'Hammerhill': (1470, 950, 1630, 1080)
 
 def halls():
     return {h['key']: h for h in json.load(open(PLAN, encoding='utf-8'))['halls']}
+
+
+SHOWS = 0.25   # fact 4: the most of a guildmaster's figure the art in front of him may cover
 
 
 def pt(d):
@@ -116,6 +128,95 @@ class GuildHqsOnSos(unittest.TestCase):
                 bad.append('%s: the stop %s and %s (%s) are not joined on foot' % (key, stop, start, town))
             print('  %-10s stop %s: %d tiles reached; guildmaster and %s reached' % (key, stop, len(reach), town))
         self.assertEqual([], bad)
+
+
+    def test_4_guildmaster_shows_in_the_camera(self):
+        import numpy as np
+        # hallbase (imported in setUpClass) has pointed uofiles.CLIENT at the SoS client folder; isorender reads its
+        # tiledata from there, and the art too
+        os.environ.setdefault('MAPBUILD_ART', H.CLIENT)
+        from mapbuild import isorender as iso
+        art = iso.Art(art_folder=H.CLIENT, client=H.CLIENT)
+        bad = []
+        for key in PICKS:
+            x, y, z = pt(self.H[key]['npc'])
+            covered = figure_covered(iso, art, np, x, y, z)
+            print('  %-10s guildmaster %s: %.0f%% covered' % (key, (x, y, z), covered * 100))
+            if covered > SHOWS:
+                bad.append('%s: the guildmaster at %s is %.0f%% covered by the art in front of him' % (key, (x, y, z), covered * 100))
+        self.assertEqual([], bad)
+
+
+    def test_5_sign_shows_in_the_camera(self):
+        import re
+        import numpy as np
+        os.environ.setdefault('MAPBUILD_ART', H.CLIENT)
+        from mapbuild import isorender as iso
+        art = iso.Art(art_folder=H.CLIENT, client=H.CLIENT)
+        src = open(os.path.join(H.PINNED, 'Projects', 'UOContent', 'Items', 'Construction', 'Signs', 'Sign.cs'),
+                   encoding='utf-8').read()
+        body = src[src.index('enum SignType'):]
+        body = re.sub(r'//.*', '', body[body.index('{') + 1:body.index('}')])
+        names = [n.strip() for n in body.split(',') if n.strip()]
+        bad = []
+        for key in PICKS:
+            s = self.H[key]['sign']
+            tid = 0xB95 + 2 * names.index(s['type']) + (1 if s['facing'] == 'West' else 0)
+            board = np.array(art.static(tid))[:, :, 3] > 0
+            covered = covered_share(iso, art, np, s['x'], s['y'], s['z'], board, same_tile_above=True)
+            print('  %-10s sign %s 0x%04X: %.0f%% covered' % (key, (s['x'], s['y'], s['z']), tid, covered * 100))
+            if covered > SHOWS:
+                bad.append('%s: the sign at %s is %.0f%% covered by the art in front of it' % (key, (s['x'], s['y'], s['z']), covered * 100))
+        self.assertEqual([], bad)
+
+
+def covered_share(iso, art, np, x, y, z, mask, same_tile_above=False, roof=None):
+    """The share of mask's pixels (an art-sized picture standing on (x, y, z), anchored as the client anchors art) that
+    the art drawn after it covers: a larger x + y, or (same_tile_above) a higher piece on its own tile. Pieces at or
+    above roof are left out, as the client leaves a roof out over the player."""
+    sc = iso.Scene.from_map(H.CLIENT, 1, x - 1, y - 1, x + 16, y + 16)
+    mh0, mw0 = mask.shape
+    left0, top0 = (x - y) * 22 + 22 - mw0 // 2, (x + y) * 22 + 44 - mh0 - z * 4
+    cov = np.zeros_like(mask)
+    for sx, sy, sz, tid in sc.statics:
+        later = sx + sy > x + y or (same_tile_above and (sx, sy) == (x, y) and sz > z)
+        if not later or (roof is not None and sz >= roof):
+            continue
+        im = art.static(tid)
+        if im is None:
+            continue
+        m = np.array(im)[:, :, 3] > 0
+        mh, mw = m.shape
+        left, top = (sx - sy) * 22 + 22 - mw // 2, (sx + sy) * 22 + 44 - mh - sz * 4
+        a0, b0 = max(left0, left), max(top0, top)
+        a1, b1 = min(left0 + mw0, left + mw), min(top0 + mh0, top + mh)
+        if a0 < a1 and b0 < b1:
+            cov[b0 - top0:b1 - top0, a0 - left0:a1 - left0] |= m[b0 - top:b1 - top, a0 - left:a1 - left]
+    return float((cov & mask).sum()) / float(mask.sum())
+
+
+def figure_covered(iso, art, np, x, y, z):
+    """The share of a standing figure's 20 x 60 pixel box at (x, y, z) that the art drawn after it covers."""
+    sc = iso.Scene.from_map(H.CLIENT, 1, x - 1, y - 1, x + 16, y + 16)
+    over = [s[2] for s in sc.statics if (s[0], s[1]) == (x, y) and s[2] > z + 10]
+    roof = min(over) if over else None
+    cx, feet = (x - y) * 22 + 22, (x + y) * 22 + 22 - z * 4
+    left0, top0, w, h = cx - 10, feet - 60, 20, 60
+    cov = np.zeros((h, w), bool)
+    for sx, sy, sz, tid in sc.statics:
+        if sx + sy <= x + y or (roof is not None and sz >= roof):
+            continue
+        im = art.static(tid)
+        if im is None:
+            continue
+        m = np.array(im)[:, :, 3] > 0
+        mh, mw = m.shape
+        left, top = (sx - sy) * 22 + 22 - mw // 2, (sx + sy) * 22 + 44 - mh - sz * 4
+        a0, b0 = max(left0, left), max(top0, top)
+        a1, b1 = min(left0 + w, left + mw), min(top0 + h, top + mh)
+        if a0 < a1 and b0 < b1:
+            cov[b0 - top0:b1 - top0, a0 - left0:a1 - left0] |= m[b0 - top:b1 - top, a0 - left:a1 - left]
+    return float(cov.mean())
 
 
 if __name__ == '__main__':
