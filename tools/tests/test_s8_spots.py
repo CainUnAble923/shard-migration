@@ -13,14 +13,17 @@ static; Bridge items at half height), nothing impassable or solid in the 16 Z ab
      - a corner of an area (Rectangle2D/3D, or a Point3D pair with MinZ/MaxZ): it bounds an area, nothing stands there;
      - the spot an old world's NPC is moved FROM (wasAt, .WasAt(, the first point of a mine camp NPC move): a fresh world
        (Chase 10-27) has nobody there;
-     - Blackthorn's files, while its switch is off (fact 2): P691 moves it into the Fold with new coordinates;
+     - Blackthorn's files: their literals are ServUO's stock spots, which BlackthornFold.Move puts on the Fold (cc-P691;
+       the dungeon is its map patch's copy, checked by the shard's BlackthornDungeonVerification and P691's TazUO walks);
      - the guild hall table, whose halls fact 3 checks with their own walk checks;
      - a test patch's fixture spot (ImportCleanupTests-guid-key.patch): the test host has no map.
-  2. Blackthorn is off on this land: BlackthornRegions.OnThisLand defaults to false, and [GenBlackthorn refuses while off.
+  2. cc-P691: Blackthorn is on the Fold, not on this land: its region registers on the Fold only, and [GenBlackthorn
+     refuses while the Fold's copy is missing (BlackthornFold.MapReady). (cc-P677's fact was that it was off.)
   3. The guild halls on SoS: P281's check.py, run with its client folder on the SoS land (notes/cc-P677-tools/p281sos,
      made by make_p281sos.py), passes every hall but the two P708 moves (Merchants, Custodians).
-  4. The stealable artifacts whose land is gone are parked: the patch's Ararat and Castle Blackthorne entries are on
-     Map.Internal, and CheckRespawn never spawns a parked entry.
+  4. The stealable artifacts whose land is gone are parked: the patch's Ararat entries and the second set of Castle
+     Blackthorne's are on Map.Internal, and CheckRespawn never spawns a parked entry. cc-P691: the first set of three
+     stands in the dungeon on the Fold (FoldMaps.Fold, parked if the Fold is not registered yet).
 """
 import os
 import re
@@ -57,7 +60,7 @@ def exempt(row):
     if verdict == 'area corner':
         return 'area corner'
     if rel.startswith(BLACKTHORN):
-        return 'Blackthorn (off; P691)'
+        return 'Blackthorn (stock spots, moved to the Fold; P691)'
     if rel == HALLS:
         return 'guild hall (fact 3)'
     if rel in TEST_PATCHES:
@@ -77,22 +80,28 @@ def read(rel):
 
 
 class Code(unittest.TestCase):
-    def test_2_blackthorn_is_off_on_this_land(self):
+    def test_2_blackthorn_is_on_the_fold_not_this_land(self):
         region = read(BLACKTHORN + 'Region.cs')
         gen = read(BLACKTHORN + 'Generate.cs')
-        self.assertRegex(region, r'public static bool OnThisLand \{ get; set; \}\s')  # no initializer: false
-        self.assertRegex(region, r'public static void Initialize\(\)\s*\{\s*if \(!OnThisLand\)\s*\{\s*return;')
-        self.assertRegex(gen, r'Generate_OnCommand\(CommandEventArgs e\)\s*\{\s*if \(!BlackthornRegions\.OnThisLand\)')
+        fold = read(BLACKTHORN + 'BlackthornFold.cs')
+        self.assertRegex(region, r'public static void Initialize\(\) => Register\(BlackthornFold\.Map\);')
+        self.assertNotRegex(region, r'Register\(Map\.(Trammel|Felucca)\)')
+        self.assertRegex(fold, r'public static Map Map => FoldMaps\.Fold;')
+        self.assertRegex(gen, r'Generate_OnCommand\(CommandEventArgs e\)\s*\{\s*if \(!BlackthornFold\.MapReady\(\)\)')
 
     def test_4_the_lost_stealables_are_parked(self):
         text = read('server/patches/StealableArtifacts-servuo-entries.patch')
-        added = [l for l in text.splitlines() if l.startswith('+') and 'new(Map.' in l]
-        for name in ('SternAnchorOfBmvArarat', 'ShipsBellOfBmvArarat', 'FigureheadOfBmvArarat', 'KingsGildedStatue',
-                     'KingsPainting1', 'KingsPainting2'):
+        added = [l for l in text.splitlines() if l.startswith('+') and ('new(Map.' in l or 'new(FoldMaps.' in l)]
+        for name in ('SternAnchorOfBmvArarat', 'ShipsBellOfBmvArarat', 'FigureheadOfBmvArarat'):
             rows = [l for l in added if 'typeof(%s)' % name in l]
             self.assertTrue(rows, name)
             self.assertTrue(all('new(Map.Internal,' in l for l in rows), rows)
-        self.assertEqual(9, sum(1 for l in added if 'new(Map.Internal,' in l))
+        for name in ('KingsGildedStatue', 'KingsPainting1', 'KingsPainting2'):
+            rows = [l for l in added if 'typeof(%s)' % name in l]
+            self.assertEqual(2, len(rows), name)
+            self.assertEqual(1, sum('new(FoldMaps.Fold ?? Map.Internal,' in l for l in rows), rows)
+            self.assertEqual(1, sum('new(Map.Internal,' in l for l in rows), rows)
+        self.assertEqual(6, sum(1 for l in added if 'new(Map.Internal,' in l))
         self.assertIn('+            if (Entry.Map == Map.Internal)', text)
 
 
