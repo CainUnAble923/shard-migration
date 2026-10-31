@@ -29,6 +29,10 @@ Facts, on a synthetic facet (the real layout, one chunk, no EA bytes):
   9. cc-P674: the PowerShell applier on a shipped base (-BaseDir, base-<name> files) patches the base, not the player's
      own files, writes Felucca's copy (-AlsoAs 0) and its three override lines, all the same bytes as the Python apply
      and rename; its stamp names the base, so a changed base rebuilds and an unchanged one skips.
+ 12. cc-P691: Blackthorn's dungeon, copied from stock Trammel into site A in two pieces (notes/cc-P691-tools/
+     build_fold.py): fact 4 allows its two boxes (EA's hues kept there); every L and S+ line in them is stock Trammel's
+     own cell or static at the line's spot less its piece's offset, and every stock cell and static of the two pieces
+     is there (needs D:/UO/UltimaOnlineVanilla, or MAPBUILD_STOCK).
  10. cc-P674: vendor/sos-trammel-map/manifest.csv is the author's download (sizes and SHA-256 of the files in
      D:/UO/third-party/sos-trammel-map), and packing his Map1.mul gives exactly the manifest's shipped UOP (the pack is deterministic).
 ASCII only. Temporary folders only.
@@ -61,6 +65,12 @@ WAY_IN_BLOCKS = (3608, 2616, 3623, 2623)
 FARM_BLOCKS = (3384, 2600, 3399, 2623)
 # cc-P662: the Wakening Isle's drawn area with its sea (P481 11.2 shifted to site A, P673 1.4).
 ISLE = (6594, 3905, 6865, 4049)
+# cc-P691: Blackthorn's two pieces on the Fold: (box, offset from stock Trammel, the stock source box).
+BLACKTHORN = {
+    "dungeon": ((6217, 3805, 6511, 4051), (40, 1248), (6177, 2557, 6471, 2803)),
+    "invasion": ((6904, 3795, 7146, 4067), (656, 1480), (6248, 2315, 6490, 2587)),
+}
+STOCK = Path(os.environ.get("MAPBUILD_STOCK", r"D:/UO/UltimaOnlineVanilla"))
 SEAM_BOULDERS = range(0x1357, 0x135D)   # cc-P687: S14's seam dressing (notes/cc-P687-tools/dress.py)
 ISLE_TOOLS = DOCS / "notes" / "cc-P662-tools"
 # cc-P276: the two trees inside the tutorial farm's fence, trunk and foliage (design/tutorial-farm/west_v3_layout.json).
@@ -174,17 +184,50 @@ class Shipped(unittest.TestCase):
         self.assertEqual(1, facet)
         self.assertEqual(int([l for l in text.splitlines() if l.startswith("F ")][0].split()[2]), len(fps))
         self.assertGreater(len(land), 11000)
+        bt = [box for box, _, _ in BLACKTHORN.values()]
         for x, y, t, z in land:
-            self.assertTrue(inside(x, y, BURROWS) or inside(x, y, ISLE), (x, y))
+            self.assertTrue(inside(x, y, BURROWS) or inside(x, y, ISLE) or any(inside(x, y, b) for b in bt), (x, y))
         for b, rows in adds.items():
             bx, by = divmod(b, 512)
             for tid, cx, cy, z, hue in rows:
                 x, y = bx * 8 + cx, by * 8 + cy
                 seam = x < 5120 and tid in SEAM_BOULDERS
-                self.assertTrue(inside(x, y, BURROWS) or inside(x, y, ISLE) or seam, (x, y, hex(tid)))
-                self.assertEqual(0, hue)
+                blackthorn = any(inside(x, y, b) for b in bt)
+                self.assertTrue(inside(x, y, BURROWS) or inside(x, y, ISLE) or seam or blackthorn, (x, y, hex(tid)))
+                if not blackthorn:
+                    self.assertEqual(0, hue)
         self.assertEqual(0, sum(len(r) for r in removes.values()))
         self.assertTrue(all(b in fps for b in set(adds)))
+
+    @unittest.skipUnless(SHIPPED.exists() and (STOCK / "statics1.mul").exists(), "needs the shard repo and stock Trammel")
+    def test_12_blackthorn_is_stock_trammels_copied_by_its_offsets(self):
+        import collections
+        from mapbuild import uofiles
+        facet, fps, land, adds, removes = mapops.parse(SHIPPED.read_text())
+        ids, zs = uofiles.load_land(str(STOCK), 1)
+        for name, (box, (dx, dy), src) in BLACKTHORN.items():
+            lines = [(x, y, t, z) for x, y, t, z in land if inside(x, y, box)]
+            self.assertGreater(len(lines), 20000, name)
+            for x, y, t, z in lines:
+                self.assertEqual((int(ids[x - dx, y - dy]), int(zs[x - dx, y - dy])), (t, z), (name, x, y))
+            have = collections.Counter()
+            for b, rows in adds.items():
+                bx, by = divmod(b, 512)
+                for tid, cx, cy, z, hue in rows:
+                    x, y = bx * 8 + cx, by * 8 + cy
+                    if inside(x, y, box):
+                        have[(x - dx, y - dy, z, tid, hue)] += 1
+            # the stock statics of the piece: every one in the source box (the dungeon's box excludes the invasion block)
+            idx, sta = uofiles.load_statics_index(str(STOCK), 1)
+            want = collections.Counter()
+            other = BLACKTHORN["invasion"][2]
+            for bx in range(src[0] >> 3, (src[2] >> 3) + 1):
+                for by in range(src[1] >> 3, (src[3] >> 3) + 1):
+                    for tid, cx, cy, z, hue in uofiles.block_statics(idx, sta, bx * 512 + by):
+                        x, y = bx * 8 + cx, by * 8 + cy
+                        if inside(x, y, src) and (name == "invasion" or not inside(x, y, other)):
+                            want[(x, y, z, tid, hue)] += 1
+            self.assertEqual(want, have, name)
 
     @unittest.skipUnless(SHIPPED.exists() and (SOS_VENDOR / "files" / "base-map1legacymul.uop").exists(),
                          "needs the shard repo and its SoS map files (vendor/sos-trammel-map/Add-SosMap.ps1)")
