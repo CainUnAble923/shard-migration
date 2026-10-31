@@ -175,10 +175,11 @@ purpose, so a player knows what it is from outside and from inside.
 - **House sign:** brass sign 0x0BD2 by the door, named ("Wren's farmhouse").
 - **Signpost on open ground:** stock 0xA854, named so a single click reads it (section 6).
 - **Furnishing that worked (Chase accepted, P720/P722):**
-  - Farmhouse: fireplace 0x0959 + 0x0953 on the west wall (StoneFireplaceEast), bed 0x0A63 + 0x0A5C along the east
-    wall (SmallBedSouth), table 0x0B90 with chairs (P720 used 0x0B4E north and 0x0B4F south of it; by the art the
-    north chair should be 0x0B4F and the south one 0x0B50, section 3), barrel 0x0E77,
-    wooden box 0x0E7D, wall torch 0x0A0C on the north wall at floor + 13.
+  - Farmhouse (cc-P751, after P748's review): fireplace 0x0967 + 0x0961 (StoneFireplaceSouth) on the **north** wall
+    under the roof's ridge (P720's west-wall 0x0959 + 0x0953 put its chimney through the eaves and stood before a
+    window, 11.3), bed 0x0A5D + 0x0A62 (SmallBedEast) in the north-west corner, table 0x0B90 with chairs 0x0B4F north
+    and 0x0B50 south of it (section 3), barrel 0x0E77 and wooden box 0x0E7D off the windows, wall torch 0x0A07 on the
+    west wall's plain piece at floor + 13, the door WestCCW (2.4).
   - Bank: counter 0x0B40 in a row with the banker behind it and a gap at one end; vault chests 0x0E41/0x0E40 behind;
     candelabras 0x0B26; torches 0x0A0C (north wall) and 0x0A07 (west wall) at Z 13; a bench 0x0B2C for waiting; a red
     carpet built from corners, edges and centre 0x0AC8. By the art (P734 reviews, both ways rendered): edges **north
@@ -219,7 +220,11 @@ decoration directions, walls, stairs". The rules:
   serving side toward the door, the keeper behind it.
 - **Stairs** climb toward the floor they serve (section 4.2); the bottom step faces the room or door it is entered from.
 - **Multi-part addons:** pick the **variant** that fits the place instead of turning pieces: the shipwreck's West
-  variant on a west-facing beach, bow to the sea (P724). Add-on deeds in UO come as East and South versions; an
+  variant on a west-facing beach, bow to the sea (P724). And place the **whole** thing: Celestial's wrecks are each one
+  half of a ship. OSI lays the ShipwreckBow art once (Malas 1693-1708, 1635-1640): the "West" set's 30 pieces and the
+  "East" set's 30, broken open toward each other across a swirl of water, driftwood round them. The isle uses that
+  whole ship across the waterline, one half in the shallows and one up the beach (P741, Chase 10-30: "both ship
+  halves"). Add-on deeds in UO come as East and South versions; an
   east-facing add-on spreads south from its target tile and a south-facing one spreads east (uo.com, section 9).
 - **Check every piece from the default camera** in the shots and list any piece you turned in `placed.md`.
 
@@ -286,6 +291,23 @@ of a dock or bridge sits within 2 of the deck; lower the deck or raise the bank,
   0x17A9 (NE), 0x17AB (SW), 0x17AC (NW); last sand tile small surf 0x17A5, 0x17A8, 0x17AD, 0x17AE, 0x17B0, 0x17B2.
   First sand ring at -4, then -3, -1, 0; sea land at -5 (OSI's -15 makes every coast a cliff). The north and south
   shores still show a small stepped edge (P733): fully hiding it needs new art, so do not claim it is gone.
+  **P741 replaced that rule** (Chase 10-30: "shoreline is not fluid, it's choppy and directions are incorrect"), after
+  surveying 704 sand cells of OSI's gentle sandy coasts (`notes/cc-P741-tools/survey_shore741.py`,
+  `shore-survey741.json`):
+  - **On the near coasts (sea west or south of the sand) the surf goes on the first sand tile, not on the sea.** That
+    sand stands at the sea's height (-5) and takes the piece for its edge pattern: sea west 0x179D/0x179E, sea south
+    0x179F/0x17A0, the inside corner of a stair (sea south and west) 0x17A9, sea only on the south-west diagonal
+    0x17A5. Never 0x1797 on sand, and never leave such an edge bare (OSI leaves a third of them bare; on a small isle
+    each bare one reads as a tooth).
+  - **On the far coasts (sea north or east only) OSI puts nothing on the sand.** Its one-tile stairs read as teeth
+    there, so the sea cell beside the sand takes a surf-edged piece over its own water (land south of it
+    0x17A1/0x17A2, land west 0x17A3/0x17A4, the inside corner 0x17AB, chosen by render in
+    `notes/cc-P741-tools/stair_test.py`). The surf then runs along the sand's tips. Never fill such a cell with
+    impassable sand under the piece (P725 did; it drew the sand-coloured lumps).
+  - **No one-tile notch or spur** in the coast (`build_isle.smooth_coast`). Evening the stairs into 3-tile runs was tried
+    and drew square bays: do not.
+  - A **strand line** on the second sand ring: seaweed 0x0DBA/0x0DBB, driftwood 0x0C2D-0x0C30, shells 0x0FC4-0x0FCA,
+    small rocks 0x1773/0x1774.
 - **Foliage in clusters, denser inland.** Seeded round clumps (about 1 per 28 land tiles, radius 2.5-5.5), not a grid
   and not an even sprinkle; tiers by distance from the sand: beach (sparse, low), edge, middle, deep (trees). Multi-tile
   trees are laid as OSI's whole compositions (the jungle trees 0x0D41-0x0D93 along the north-east diagonal, P725).
@@ -304,6 +326,16 @@ of a dock or bridge sits within 2 of the deck; lower the deck or raise the bank,
   ground. Use the standing signpost 0xA854, named ("Lesson 3: Healing"), **beside** the stop (within 2, never on it),
   off the walked route, the road, door lines and gates. A signpost is impassable. When you change a marker's art,
   update every tool that finds it by art ID (the bot's route still searched for 0x1F14, Codex P720).
+- **Every sign stands north of its path, facing it.** Chase 10-30 ("lesson 1 sign needs to go to north side of path",
+  "all signs should be north of path"): lesson signs, direction signs and building signs all go on the **north side**
+  of the road or walk they mark, beside it (road within 3 tiles south of the sign, none north of it or beside it), so
+  the board faces the path and reads as a player walks up. The standing signpost **0xA854** is the face that reads
+  from the south, so north of an east-west path it faces the path (0xA855 is the face that reads from the east). Where
+  a stop is south of the road (a yard gate), its sign stands across the road on the north side. A shop sign on a
+  south wall is north of the street by itself. P741's chooser is `notes/cc-P741-tools/sign_spots741.py`.
+- **A sign at a glowing landmark** (a moongate, a brazier) stands clear of the glow and the landmark's addon, where
+  the path reaches it, not beside the landmark itself: the isle's travel sign stands where the road meets the dock,
+  not on the moongate's frame (Chase 10-30: "sign next to moongate at end is hard to see").
 - **A hurt NPC on a bench with blood.** Chase 10-28 12:24-12:26: the injured farmhand "sits or lies on a bench with
   blood on the ground around". Pip: bench 0x0B2D against the farmhouse's east wall, blood decals 0x122A, 0x122D, 0x122C
   (stock 0x122A-0x122E) around it, NPC facing into the room, `RangeHome = 0`. (The bench's art facing and the seated
@@ -703,7 +735,8 @@ I write that as **"community terms"** below. Anything stricter or looser is quot
 
 - **Wakening Isle (P724, merged; in isle release 3 by P733).** `server/customizations/Tutorial/TutorialIsleAddons.cs`,
   credits in `Tutorial/IsleAddons-SOURCE.txt`. All four are stock art:
-  - `celestial-shipwrecks` (West variant, 20 pieces) on the wake beach;
+  - the wreck on the wake beach: P724 placed `celestial-shipwrecks` (West variant, 20 pieces, one half of a ship);
+    P741 replaced it with OSI's own whole ship (both halves, 110 pieces with the debris, `notes/cc-P741-tools/gen_wreck.py`);
   - `new-lighthouse` (3 pieces) by the dock;
   - `moongate-structure` (88 pieces and 3 lanterns) round the dock's gate;
   - `lagatha-brass-fountains` (art 0xA62A/0xA62B) on the bank square.
@@ -800,7 +833,7 @@ from them.
 **Packs**
 
 - **Usable now (stock-art server addons):**
-  - `code\celestial-shipwrecks`: 3 `.cs`, East, West and North wrecks. The West one is on the isle; East and North
+  - `code\celestial-shipwrecks`: 3 `.cs`, East, West and North wrecks. Each is one half of a ship (P741: the isle now has OSI's whole wreck instead); East, West and North
     are free. Community terms, credit Celestial.
   - `code\shipwreck-addon-70`: 1 `.cs`, a replica beach wreck: hull pieces (0x0C2D, 0x1FBC, 0x1FC5, 0x3492...) with shore water tiles 0x179E-0x17A8 under it. Community terms,
     credit Zero.
@@ -1160,7 +1193,7 @@ Keep 3 tiles clear of roads and stops, and 4 round buildings.
 **Packs**
 
 - **Usable now (already placed on the isle):**
-  - `celestial-shipwrecks` (West);
+  - the wreck (P741: OSI's whole ship, both halves; P724 had `celestial-shipwrecks` West, one half);
   - `new-lighthouse`;
   - `moongate-structure` (credit Carl Hamilton);
   - `lagatha-brass-fountains`.
@@ -1283,3 +1316,18 @@ caught, and the rule each one became:
    `Spawner (Spawn=Banker; Count=1; HomeRange=0; WalkingRange=0)` on the keeper's tile.
 11. **What a reviewer needs:** the cut-away renders (roof off, each storey), the outside shot from the door side (the
     north-west view shows only roofs), `placed.md` with the wall each piece hangs on, and the walk logs.
+12. **A wall sign hangs only from a wall to its north** (cc-P751, rendered against a wall on both sides): every hanger
+    (0x0B97-0x0B9A) and its board hang off the wall north of their tile, so they fit outside a **south** wall only. A
+    building whose door is in its north wall (the isle's lodge) gets a named standing signpost 0xA854 two tiles east of
+    the door instead, and from the default camera the north eave can hide it: check the door-side shot.
+13. **Check every window's floor tile, all of them.** P751's fact found a bed foot, a barrel and a box in front of the
+    farmhouse's windows, none caught in P741's or P748's review. A fact over the layout (no furniture on the floor
+    tile inside any window piece) catches them all.
+14. **Near coasts: a straight run beats a stair.** A diagonal coast with sea south-west of the sand steps one tile at a
+    time, and its outer tips draw teeth whatever surf piece is chosen. Where the land allows, lay the beach as straight
+    runs along x and y (the yard's south-west beach, isle-sets.json "straightCoast"), and keep such a change local:
+    `build_isle.plan_spliced` plans the isle with and without it and takes only its window, because any change to the
+    land's tile count re-rolls every seeded palm and tree on the isle.
+15. **The builder's walker never entered a house.** Its gate drops every piece on a farmhouse door tile, floor
+    included, so a path through the door fails there; and `Walker.path` starts at the land's Z, which inside a house is
+    under the floor. `notes/cc-P751-tools/walk_paths.py` keeps the floor and chains each leg from the last real spot.
