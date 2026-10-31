@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-25. Shard version 2026.10.31. Golem on, 8 queued, latest done P740. Play tests: 1417 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-25. Shard version 2026.10.31. Golem on, 7 queued, latest done P748. Play tests: 1417 open, 4 failed, 43 passed.
 
 ### Needs overseer review (4)
 
@@ -230,7 +230,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 610 prompts done, 5 more stopped early and not counted)
+### Queue (Golem on; 611 prompts done, 5 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -240,8 +240,8 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P742 isle-vision-chamber | queued |  |
 | P743 new-haven-tutorial-fixes | queued |  |
 | P747 review-fallback-to-iron | queued |  |
-| P749 isle-release-branch-4 | queued |  |
 | P750 cont-guild-hqs-on-sos | queued |  |
+| P748 review-build-isle-coast-and-wreck | done | 2026-10-31 |
 | P740 isle-wake-visible | done | 2026-10-31 |
 | P738 cont-fixup-building-guide-and-build-review | done | 2026-10-30 |
 | P736 deco-sources | done | 2026-10-30 |
@@ -251,7 +251,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P731 isle-release-2 | done | 2026-10-28 |
 | P730 cont-fixup-isle-pet-reward-and-pet-info | done | 2026-10-28 |
 | P729 no-tazuo-page | done | 2026-10-28 |
-| P728 isle-walkthrough-fixes-4 | done | 2026-10-28 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 180 patches, 12 replacements
 
