@@ -263,12 +263,57 @@ class Shipped(unittest.TestCase):
         back = [c for c in sea if (c[0], c[1] - 1) in land and (c[0], c[1] - 1) not in sea
                 and (c[0] + 1, c[1]) in sea and (c[0], c[1] + 1) in sea]
         self.assertGreater(len(back), 50)
-        self.assertEqual([], sorted(c for c in back if not surf & set(pieces.get(c, []))), "north coast without surf")
+        # cc-P741: OSI lays the surf of these coasts on the first sand tile (north of the sea cell), not on the sea cell
+        self.assertEqual([], sorted(c for c in back if not surf & set(pieces.get(c, []) + pieces.get((c[0], c[1] - 1), []))),
+                         "north coast without surf")
         tropical = {0x0C95, 0x0C96, 0x0C99, 0x0C9A, 0x0C9B, 0x0C9C, 0x0C9D, 0x0C9E, 0x0CA8, 0x0CAA, 0x0CAB}
         jungle = set(range(0x0D41, 0x0D94))
         self.assertGreater(sum(1 for ids in pieces.values() for t in ids if t in tropical), 100, "palms, banana, o'hii")
         self.assertGreater(sum(1 for ids in pieces.values() for t in ids if t in jungle), 40, "OSI's jungle trees")
 
+
+    def test_12_the_coast_has_no_bare_edge_or_notch_and_the_beach_and_field_are_dressed(self):
+        """cc-P741 (Chase 10-30: "shoreline is not fluid, it's choppy and directions are incorrect"; "add dirt/field
+        tiles to farm"): every sand tile with sea west or south of it carries OSI's surf piece for its edge, every sea
+        tile with sand only west or south of it carries a surf-edged piece over its water, no sea tile under a surf
+        piece is filled with sand (P725's lumps), the coast has no one-tile notch or spur, a strand line of driftwood,
+        seaweed and shells lies on the beach, and the farm's beds are OSI's furrowed field land."""
+        lines = SHIPPED.read_text().splitlines()
+        isle = [l.split() for l in lines if l.split() and l.split()[0] in ("L", "S+")
+                and inside(int(l.split()[1]), int(l.split()[2]), ISLE)]
+        land = {(int(f[1]), int(f[2])): int(f[3]) for f in isle if f[0] == "L"}
+        pieces = {}
+        for f in isle:
+            if f[0] == "S+":
+                pieces.setdefault((int(f[1]), int(f[2])), []).append(int(f[4]))
+        water = (0x00A8, 0x00A9, 0x00AA, 0x00AB)
+        sea = lambda c: land.get(c, 0x00A8) in water
+        sand = set(range(0x0016, 0x001A)) | set(range(0x0033, 0x003D))
+        surf = set(range(0x179D, 0x17B3))
+        dock = {c for c, ids in pieces.items() if set(ids) & {0x07C9, 0x07CD, 0x03A5, 0x03AE}}
+        near_dock = {(c[0] + a, c[1] + b) for c in dock for a in range(-2, 3) for b in range(-2, 3)}
+        bare_near = sorted(c for c, t in land.items() if t in sand and c not in near_dock
+                           and (sea((c[0] - 1, c[1])) or sea((c[0], c[1] + 1)))
+                           and not surf & set(pieces.get(c, [])))
+        self.assertEqual([], bare_near, "sand with the sea west or south of it and no surf on it")
+        bare_far = sorted(c for c in land if sea(c) and c not in near_dock
+                          and ((c[0] - 1, c[1]) in land and not sea((c[0] - 1, c[1])) or
+                               (c[0], c[1] + 1) in land and not sea((c[0], c[1] + 1)))
+                          and not any((c[0] + a, c[1] + b) in land and not sea((c[0] + a, c[1] + b))
+                                      for a, b in ((1, 0), (0, -1), (1, -1)))
+                          and not surf & set(pieces.get(c, [])))
+        self.assertEqual([], bare_far, "a far coast's sea tile beside the sand with no surf")
+        self.assertEqual([], sorted(c for c, t in land.items() if t == 0x001A), "a sea tile filled with sand (P725)")
+        n4 = ((1, 0), (-1, 0), (0, 1), (0, -1))
+        inner = lambda c: ISLE[0] < c[0] < ISLE[2] and ISLE[1] < c[1] < ISLE[3]
+        notches = [c for c in land if inner(c) and sea(c) and sum(sea((c[0] + a, c[1] + b)) for a, b in n4) <= 1]
+        spurs = [c for c in land if inner(c) and not sea(c) and sum(sea((c[0] + a, c[1] + b)) for a, b in n4) >= 3]
+        self.assertEqual(([], []), (notches, spurs), "a one-tile notch or spur in the coast")
+        strand = {0x0DBA, 0x0DBB, 0x0C2D, 0x0C2E, 0x0C2F, 0x0C30, 0x0FC4, 0x0FC5, 0x0FC6, 0x0FC7, 0x0FC9, 0x0FCA}
+        self.assertGreater(sum(1 for ids in pieces.values() for t in ids if t in strand), 40, "the strand line")
+        furrows = [c for c, t in land.items() if t in range(0x0009, 0x0016)]
+        self.assertGreater(len(furrows), 100, "the field's furrowed beds")
+        self.assertTrue(all(6678 <= c[0] <= 6694 and 3968 <= c[1] <= 3982 for c in furrows), "beds inside the field")
 
 
 def blocks(n, seed):

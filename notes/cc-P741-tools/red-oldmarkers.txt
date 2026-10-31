@@ -1,0 +1,50 @@
+  Logger -> /build/modernuo/Distribution/Assemblies/Logger.dll
+  Server -> /build/modernuo/Distribution/Server.dll
+  UOContent -> /build/modernuo/Distribution/Assemblies/UOContent.dll
+  Application -> /build/modernuo/Distribution/ModernUO.dll
+  Server.Tests -> /build/modernuo/Projects/Server.Tests/bin/Release/net10.0/Server.Tests.dll
+  UOContent.Tests -> /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll
+Test run for /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.0+05679a7ab5 (64-bit .NET 10.0.7)
+[xUnit.net 00:00:00.18]   Discovering: UOContent.Tests
+[xUnit.net 00:00:00.52]   Discovered:  UOContent.Tests
+[xUnit.net 00:00:00.55]   Starting:    UOContent.Tests
+[03:35:54 INF] Loading world <s:Server.World>
+[03:35:54 INF] Loading world done (0 items, 0 mobiles) (0.01 seconds) <s:Server.World>
+[03:35:54 INF] Discovered 3 spawner JSON type(s) <s:Server.Engines.Spawners.SpawnerJsonSerializer>
+[03:35:54 INF] The Fold: registered 17 maps (32-48) on Trammel's files <s:Server.FoldMaps>
+[03:35:54 WRN] map1.mul was not found. <s:Server.TileMatrix>
+[03:35:54 WRN] staidx1.mul was not found. <s:Server.TileMatrix>
+[03:35:54 WRN] statics1.mul was not found. <s:Server.TileMatrix>
+[03:35:54 WRN] map1.mul was not found. <s:Server.TileMatrix>
+[03:35:54 WRN] staidx1.mul was not found. <s:Server.TileMatrix>
+[03:35:54 WRN] statics1.mul was not found. <s:Server.TileMatrix>
+[xUnit.net 00:00:01.44]     ShatteredLegacy.Tests.TutorialIsleCoastVerification.ALessonSignFromBeforeIsMovedNorthOfItsPathNotDoubled [FAIL]
+[xUnit.net 00:00:01.44]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.44]       Expected: 11
+[xUnit.net 00:00:01.44]       Actual:   13
+[xUnit.net 00:00:01.44]       Stack Trace:
+[xUnit.net 00:00:01.44]         /build/modernuo/Projects/UOContent.Tests/Tests/Tutorial/TutorialIsleCoastVerification.cs(199,0): at ShatteredLegacy.Tests.TutorialIsleCoastVerification.ALessonSignFromBeforeIsMovedNorthOfItsPathNotDoubled()
+[xUnit.net 00:00:01.44]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.44]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed ShatteredLegacy.Tests.TutorialIsleCoastVerification.TheFarmhouseStandsEastOfTheFieldAndTheCropsAreSparse [26 ms]
+  Passed ShatteredLegacy.Tests.TutorialIsleCoastVerification.AFarmLaidBeforeTheMoveIsMovedInPlace [165 ms]
+  Failed ShatteredLegacy.Tests.TutorialIsleCoastVerification.ALessonSignFromBeforeIsMovedNorthOfItsPathNotDoubled [34 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 11
+Actual:   13
+  Stack Trace:
+     at ShatteredLegacy.Tests.TutorialIsleCoastVerification.ALessonSignFromBeforeIsMovedNorthOfItsPathNotDoubled() in /build/modernuo/Projects/UOContent.Tests/Tests/Tutorial/TutorialIsleCoastVerification.cs:line 199
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.46]   Finished:    UOContent.Tests
+  Passed ShatteredLegacy.Tests.TutorialIsleCoastVerification.TheWreckIsTheWholeShipAndP724sHalfIsSwapped [11 ms]
+  Passed ShatteredLegacy.Tests.TutorialIsleCoastVerification.TheChatSignpostIsMovedNorthOfTheRoadNotDoubled [2 ms]
+
+Test Run Failed.
+Total tests: 5
+     Passed: 4
+     Failed: 1
+ Total time: 1.8755 Seconds

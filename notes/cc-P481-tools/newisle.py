@@ -48,7 +48,7 @@ STOPS = [  # num, label, x, y
     (2, 'camp: backpack', 6232, 1998),
     (3, 'rack: paperdoll', 6241, 2000),
     (4, 'signpost: chat', 6268, 1998),
-    (5, 'farm gate: Wren, Tobin', 6290, 1987),
+    (5, 'farm gate: Wren, Tobin', 6272, 1987),     # cc-P741: the field moved west (was 6290, 1987)
     (6, 'yard: echo, Sera', 6312, 2003),
     (7, 'bank: Merrin', 6338, 1989),
     (8, 'lodge: Elara', 6358, 2002),
@@ -56,8 +56,10 @@ STOPS = [  # num, label, x, y
     (10, 'moongate to New Haven', 6407, 1999),
 ]
 # The road's own line (the stops sit on it or at a door beside it); the dock is planks after the last point.
-ROAD = [(6211, 2001), (6222, 2000), (6232, 1998), (6241, 1999), (6250, 1998), (6270, 1997), (6286, 1995),
-        (6292, 1990), (6299, 1995), (6312, 2000), (6326, 1996), (6338, 1991), (6350, 1996), (6358, 2001),
+# cc-P741: the jog north leads to the field's gate (moved west) and runs on past the farmhouse's steps (it went to
+# the old gate at 6292, 1990, by way of 6286, 1995)
+ROAD = [(6211, 2001), (6222, 2000), (6232, 1998), (6241, 1999), (6250, 1998), (6270, 1997), (6273, 1990),
+        (6283, 1992), (6299, 1995), (6312, 2000), (6326, 1996), (6338, 1991), (6350, 1996), (6358, 2001),
         (6364, 1996), (6370, 1991), (6378, 1997), (6398, 1999)]
 # Inside the farm, the lesson loop from the gate and back to it (pen, crop rows, the vet).
 FARM_LOOP = [(6291, 1986), (6286, 1982), (6278, 1985), (6286, 1988), (6291, 1986)]

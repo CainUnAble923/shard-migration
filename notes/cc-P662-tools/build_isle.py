@@ -117,6 +117,9 @@ def server_items():
     # cc-P720: each lesson's signpost beside its stop (SignPoint) and the League's notice board in the lodge
     for m in re.finditer(r'"(core\.\w+)" => new Point2D\((\d+), (\d+)\),', cp):
         props.append((int(m.group(2)), int(m.group(3)), None, 0xA854, 'sign ' + m.group(1)))
+    m = re.search(r'HealingSign = new\((\d+), (\d+)\)', cp)          # cc-P741: the healing lesson's sign is named
+    if m:
+        props.append((int(m.group(1)), int(m.group(2)), None, 0xA854, 'sign core.healing'))
     m = re.search(r'LeagueBoard = new\((\d+), (\d+)\)', cp)
     if m:
         props.append((int(m.group(1)), int(m.group(2)), None, 0x1E5E, 'League notice board'))
@@ -200,6 +203,142 @@ def check_pitched_roof():
     assert got == want, ('pitched roof rule differs from multi 0x00A0', [g for g in got if g not in want][:6],
                          [w for w in want if w not in got][:6])
     return len(want)
+
+
+# ------------------------------------------------------------------------------------------------ cc-P741: the signs
+
+def signs_off_path(props, road):
+    """cc-P741 item 3 (Chase 10-30: "all signs should be north of path"): every lesson signpost stands north of its
+    path, beside it: road within 3 tiles south of it, none north of it in its column or either side within 3, and not
+    on the road (notes/cc-P741-tools/sign_spots741.py chose them by the same rule). Returns the signs that are not."""
+    bad = []
+    for (x, y, z, tid, what) in props:
+        if not what.startswith('sign core.'):
+            continue
+        south = any((x, y + k) in road for k in range(1, 4))
+        north = any((x + a, y - k) in road for a in (-1, 0, 1) for k in range(0 if a else 1, 4))
+        if not south or north or (x, y) in road:
+            bad.append((what[5:], x, y))
+    return bad
+
+
+# ------------------------------------------------------------------------------------------------ cc-P741: the coast
+
+NB8 = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
+FAR_SHORE = {'S': [0x17A1, 0x17A2], 'W': [0x17A3, 0x17A4], 'SW': [0x17AB]}
+N4 = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+
+
+def smooth_coast(water, area, R):
+    """No one-tile notch or spur: flip a cell that has the other kind on 3 or 4 of its 4 sides, and (R['stairs'])
+    fill the inside corner of a one-tile stair step, so a diagonal coast takes OSI's look of short runs, until stable.
+    The cells R['keepLand'] (the buildings' margins are forced land in shape()) are never made sea."""
+    water = set(water)
+    for _ in range(50):
+        flip_land, flip_sea = set(), set()
+        for c in area:
+            k = sum((c[0] + a, c[1] + b) in water or (c[0] + a, c[1] + b) not in area for a, b in N4)
+            if c in water and k <= 1:
+                flip_land.add(c)
+            elif c not in water and k >= 3:
+                flip_sea.add(c)
+        if not flip_land and not flip_sea:
+            break
+        water -= flip_land
+        water |= flip_sea
+    return water
+
+
+def osi_shore_table():
+    """notes/cc-P741-tools/shore-survey741.json: OSI's gentle sandy coasts on stock Trammel (survey_shore741.py)."""
+    t = json.load(open(os.path.join(REPO, 'notes', 'cc-P741-tools', 'shore-survey741.json')))
+    return t['land'], t['sea']
+
+
+def osi_land_shore(cls, land, put, rng, no_shore, sea_z):
+    """cc-P741: the shore as OSI lays its gentle sandy coasts (survey_shore741.py, 704 sand cells on stock
+    Trammel): the first sand tiles beside the sea stand at the sea's height (land Z -5, beachZ '1') and carry the surf
+    piece for their edge, chosen by the cell's 8-neighbour sea pattern: sea to the west 0x179D/0x179E, sea to the
+    south 0x179F/0x17A0, the inside corner (sea south and west) 0x17A9, sea only on the south-west diagonal 0x17A5,
+    and so on; sea to the north or east only gets nothing, as on OSI's coasts (the sand meets the water). The sea's
+    cells keep their water land and take OSI's plain water static where OSI lays one. A pattern OSI shows fewer than
+    5 times falls back to the piece for its sea side. Returns the log."""
+    land_t, sea_t = osi_shore_table()
+    log = collections.Counter()
+    sea = lambda c: cls.get(c, 'w') == 'w'
+    pattern = lambda c: ''.join('S' if sea((c[0] + a, c[1] + b)) else '.' for a, b in NB8)
+
+    def pick(options, total):
+        top = options[0][1]
+        keep = [(comp, n) for comp, n in options if n * 4 >= top]
+        r = rng.uniform(0, sum(n for _, n in keep))
+        for comp, n in keep:
+            r -= n
+            if r <= 0:
+                return comp
+        return keep[-1][0]
+
+    fallback = {'W': ['179D', '179E'], 'S': ['179F', '17A0'], 'SW': ['17A9'], 'dSW': ['17A5']}
+    for c in sorted(cls):
+        if c in no_shore:
+            continue
+        pat = pattern(c)
+        if 'S' not in pat or pat == 'SSSSSSSS':
+            continue
+        if sea(c):
+            # the far coasts (the land only west and/or south of the sea cell, so the sea is north or east of the
+            # sand): OSI leaves that sand bare, and on a one-tile stair its corners read as teeth. The sea cell takes
+            # the surf-edged piece for its land side, over its own water (P725 measured these on stock Trammel:
+            # land south 0x17A1/0x17A2, land west 0x17A3/0x17A4; the inside corner 0x17AB, chosen by render in
+            # notes/cc-P741-tools/stair_test.py), so the surf runs along the sand's tips
+            sides = {k for k, ch in zip(('N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'), pat) if ch == '.'}
+            if sides and sides <= {'S', 'SW', 'W', 'NW', 'SE'} and sides & {'S', 'SW', 'W'}:
+                w_, s_ = 'W' in sides, 'S' in sides
+                pool = FAR_SHORE['SW' if (w_ and s_) or sides & {'S', 'W'} == set() else 'W' if w_ else 'S']
+                put(c[0], c[1], sea_z, rng.choice(pool), 'shore water far ' + pat)
+                log['sea far piece'] += 1
+                continue
+            # land that is not sand north or west of the sea cell (the moongate's paved landing): OSI's surf edge for
+            # that side on the sea cell (P725's measured fallback: north 0x179F/0x17A0, west 0x17A3/0x17A4, both
+            # 0x17A6/0x17AF), as no sand tile there carries the surf
+            hard = {k for k, (a, b) in (('N', (0, -1)), ('W', (-1, 0))) if cls.get((c[0] + a, c[1] + b), 'w') not in ('w', 's')}
+            if hard:
+                fb = RULES['shoreFallback']
+                put(c[0], c[1], sea_z, hx(rng.choice(fb['northWest' if len(hard) == 2 else 'north' if 'N' in hard else 'west'])),
+                    'shore water edge ' + pat)
+                log['sea edge piece'] += 1
+                continue
+            opts = sea_t.get(pat)
+            if opts and sum(n for _, n in opts) >= 5:
+                comp = pick(opts, None)
+                for p in [q for q in comp.split('+') if q][:1]:
+                    tid, dz = p.split('@')
+                    put(c[0], c[1], sea_z + int(dz) - (-5), int(tid, 16), 'shore water sea ' + pat)
+                    log['sea ' + ('static' if comp else 'none')] += 1
+            continue
+        if cls[c] != 's':
+            continue
+        opts = land_t.get(pat)
+        # on sand: never OSI's plain water diamond 0x1797 (P662's sawtooth), and a surf piece wherever OSI has one
+        # for the pattern (OSI leaves about a third of its edges bare; on the isle a bare edge is a tooth)
+        if opts:
+            opts = [(comp, n) for comp, n in opts if '1797' not in comp] or [('', 1)]
+            if any(comp for comp, _ in opts):
+                opts = [(comp, n) for comp, n in opts if comp]
+        if opts and sum(n for _, n in opts) >= 5:
+            comp = pick(opts, None)
+            src = 'osi'
+        else:
+            w = pat[6] == 'S' or (pat[5] == 'S' and pat[7] == 'S')
+            s_ = pat[4] == 'S' or (pat[3] == 'S' and pat[5] == 'S')
+            side = 'SW' if (w and s_) else 'W' if w else 'S' if s_ else 'dSW' if pat[5] == 'S' else None
+            comp = (rng.choice(fallback[side]) + '@-5') if side else ''
+            src = 'fallback'
+        for p in [q for q in comp.split('+') if q]:
+            tid, dz = p.split('@')
+            put(c[0], c[1], sea_z + int(dz) - (-5), int(tid, 16), 'shore water land ' + pat)
+        log['land %s %s' % (src, 'piece' if comp else 'none')] += 1
+    return log
 
 
 # ------------------------------------------------------------------------------------------------ the plan
@@ -287,6 +426,19 @@ def plan(farm, props, pts, quiet=False):
     report = collections.OrderedDict()
     d, blobs = shape()
     water = {c for c, v in d.items() if v > 0}
+    # cc-P741 (Chase 10-30: "shoreline is not fluid, it's choppy"): no one-tile notch or spur. A sea cell with land
+    # on 3 or 4 of its sides becomes land, a land cell with sea on 3 or 4 sides becomes sea, until none is left; and
+    # the coast's stairs are evened (smooth_coast), so the shore runs in whole runs, not single-tile teeth
+    if RULES.get('coastSmooth'):
+        n = RULES['coastSmooth'].get('block', 1)
+        if n > 1:
+            # whole runs: the sea is where the shape's field, averaged over the n x n block a cell sits in, is above 0
+            avg = {}
+            for c in d:
+                k = (c[0] // n, c[1] // n)
+                avg.setdefault(k, []).append(d[c])
+            water = {c for c in d if sum(avg[(c[0] // n, c[1] // n)]) > 0}
+        water = smooth_coast(water, set(d), RULES['coastSmooth'])
     dry = set(d) - water
     dw = chebyshev(water, set(d))
     # 1. classes: sand rim (P481: 4 tiles, and never less than 3 from the sea so a transition never touches water),
@@ -299,6 +451,13 @@ def plan(farm, props, pts, quiet=False):
             cls[c] = 's'
         else:
             cls[c] = 'g'
+    # cc-P741: the beach runs up under the wreck's beached half: its tiles and their neighbours are sand
+    wreck_tiles = {(s[0] - DX, s[1] - DY) for s in props if 'Shipwreck' in s[4]}
+    for (x, y) in wreck_tiles:
+        for a in (-1, 0, 1):
+            for b in (-1, 0, 1):
+                if cls.get((x + a, y + b)) == 'g':
+                    cls[(x + a, y + b)] = 's'
     road = road_tiles(dry)
     ds = chebyshev({c for c in cls if cls[c] == 's'}, set(d))
     laid = set()
@@ -308,12 +467,32 @@ def plan(farm, props, pts, quiet=False):
             laid.add(c)
     # the transition pass may grow the road only this far (render round 3: unbounded, it wandered into the meadow)
     may_grow = {(c[0] + a, c[1] + b) for c in laid for a in (-1, 0, 1) for b in (-1, 0, 1)}
-    for c in cells(P.SQUARE):
-        cls[c] = 'p'
     bank_floor = set(cells(P.BANK))
     lodge_floor = set(cells(P.LODGE))
     bank_ring = W.ring_of(bank_floor)
     lodge_ring = W.ring_of(lodge_floor)
+    Sq = RULES['square']
+    if Sq.get('paved'):
+        # cc-P741 item 5 (Chase 10-30: "sandstone pavement around bank is a lot and unnatural"): only the bank's
+        # footprint, the apron before its door and the fountain's pad are paved; each paved patch is edged with worn
+        # dirt, which blends into the grass by the dirt-grass transitions; the smithy corner stands on dirt. The rest of
+        # the old square is grass, and the road's dirt runs up to the apron.
+        paved = set(bank_floor | bank_ring)
+        for r in Sq['paved']:
+            paved |= set(cells((r[0] - DX, r[1] - DY, r[2] - DX, r[3] - DY)))
+        for c in paved:
+            cls[c] = 'p'
+        worn = {(c[0] + a, c[1] + b) for c in paved for a in (-1, 0, 1) for b in (-1, 0, 1)} - paved
+        for r in Sq.get('dirt', []):
+            worn |= set(cells((r[0] - DX, r[1] - DY, r[2] - DX, r[3] - DY)))
+        for c in worn:
+            if cls.get(c) == 'g':
+                cls[c] = 'd'
+                laid.add(c)
+        may_grow |= {(c[0] + a, c[1] + b) for c in worn for a in (-1, 0, 1) for b in (-1, 0, 1)}
+    else:
+        for c in cells(P.SQUARE):
+            cls[c] = 'p'
     for c in lodge_floor | lodge_ring:
         cls[c] = 'd'
     yard = set(cells(P.YARD))
@@ -364,6 +543,7 @@ def plan(farm, props, pts, quiet=False):
                 else:
                     pat[c] = p
     report['transition rounds'] = rounds
+    report['shore cells not sand'] = sorted(c for c in cls if cls[c] not in ('w', 's') and dw.get(c) == 1)
     rng = stream('land')
     land = {}
     tcount = collections.Counter()
@@ -402,6 +582,21 @@ def plan(farm, props, pts, quiet=False):
             # tapered to 0 two tiles from the sand (render round 3: the rise met the beach's dip under the shore
             # water and left a black wedge at the knoll's north shore)
             land[c] = (land[c][0], int(max(0, min(8, (kr + 5 - dd) * 2, 2 * (ds[c] - 2)))))
+
+    # cc-P741 item 4 (Chase 10-30: "add dirt/field tiles to farm"): the field's beds are furrowed land, laid as OSI
+    # lays its fields west of Britain (notes/cc-P741-tools/survey_furrows.py: 0x0009 inside, a border piece on each
+    # edge and corner); the crops on them are the farm addon's (TutorialIsleFarmLayout)
+    bed_tiles = set()
+    Fb = RULES.get('fieldBeds')
+    for r in (Fb['rects'] if Fb else []):
+        bx1, by1 = r[0] - DX, r[1] - DY
+        bx2, by2 = r[2] - DX, r[3] - DY
+        for c in cells((bx1, by1, bx2, by2)):
+            x, y = c
+            k = ('n' if y == by1 else 's' if y == by2 else '') + ('w' if x == bx1 else 'e' if x == bx2 else '')
+            land[c] = (hx(Fb[k or 'inner']), land[c][1])
+            bed_tiles.add(c)
+    report['field beds'] = len(bed_tiles)
 
     statics = []
     by_tile = collections.defaultdict(list)
@@ -446,7 +641,13 @@ def plan(farm, props, pts, quiet=False):
                 put(x, y, 0, tid, '%s wall %s' % (name, role))
             wall_tiles[(x, y)] = 'stone'
         rf = stream('floor ' + name)
-        for (x, y) in sorted(floor | {door}):
+        under = set()
+        if RULES.get('floorUnderSouthEast'):
+            # cc-P741 item 6 (guide 2.2): the floor also lies under the south row and the east column of the walls, as
+            # in OSI's house multis, so no land shows at the room's edges
+            ry2 = max(c[1] for c in ring | {door}); rx2 = max(c[0] for c in ring | {door})
+            under = {c for c in ring if c[1] == ry2 or c[0] == rx2}
+        for (x, y) in sorted(floor | {door} | under):
             put(x, y, 0, S.pick_unlike(rf, table(ftable), (x, y), by_tile), '%s floor' % name)
         xs = [c[0] for c in floor]; ys = [c[1] for c in floor]
         x1, x2, y1, y2 = min(xs), max(xs), min(ys), max(ys)
@@ -556,7 +757,7 @@ def plan(farm, props, pts, quiet=False):
     for r in (P.YARD, P.SQUARE, P.LODGE, P.BANK):
         keepout |= set(cells((r[0] - 3, r[1] - 3, r[2] + 3, r[3] + 3)))
     keepout |= set(cells((kx - kr - 3, ky - kr - 3, kx + kr + 3, ky + kr + 3)))
-    keepout |= set(cells(P.MEADOW))
+    keepout |= set(cells(P.MEADOW)) | bed_tiles
     keepout |= {(c[0] + a, c[1] + b) for c in road for a in (-2, -1, 0, 1, 2) for b in (-2, -1, 0, 1, 2)}
     keepout |= {c for c in fence_lines['meadow'] | fence_lines['yard']}
     woods = [(6300, 1962, 22), (6330, 1965, 18)]
@@ -660,12 +861,16 @@ def plan(farm, props, pts, quiet=False):
         plant_log['under ' + t] += 1
     report['tropics'] = dict(plant_log)
     rf = stream('flowers')
+    # cc-P741: no flowers inside the farm's field fence (a white clump stood in the field's lane)
+    fence_xy = [(x, y) for (x, y, z, t, w) in farm if t in (0x0835, 0x0836, 0x0837)]
+    field_area = set(cells((min(c[0] for c in fence_xy) - DX, min(c[1] for c in fence_xy) - DY,
+                            max(c[0] for c in fence_xy) - DX, max(c[1] for c in fence_xy) - DY))) if fence_xy else set()
     for zone, share, tab in (('meadow', De['meadow']['share'], De['meadow']['flowers']),
                              ('grass', De['grass']['flowers'], De['meadow']['flowers'])):
         for c in sorted(zones[zone]):
             # cc-P720: no flowers within 2 of the road (a red bush, 0x0C86, stood on the lodge's road: Chase 10-28 "a
             # stray red animal-like object")
-            if rf.random() < share and c not in keep_clear and not by_tile.get(c) and cls.get(c) == 'g' \
+            if rf.random() < share and c not in keep_clear and not by_tile.get(c) and cls.get(c) == 'g'                     and c not in field_area \
                     and c not in road and c not in server_tiles and \
                     not any((c[0] + a, c[1] + b) in road for a in range(-2, 3) for b in range(-2, 3)):
                 put(c[0], c[1], land[c][1], S.pick_unlike(rf, table(tab), c, by_tile), zone + ' flowers')
@@ -673,72 +878,84 @@ def plan(farm, props, pts, quiet=False):
     for c in sorted(zones['beach']):
         if rb.random() < De['beach']['share'] and c not in keepout and not by_tile.get(c) and c not in road:
             put(c[0], c[1], land[c][1], S.pick_unlike(rb, table(De['beach']['pieces']), c, by_tile), 'beach')
+    # cc-P741 (P741 item 1: "use the beach dressing from the art library"): a strand line just above the surf, the
+    # second sand ring: seaweed, driftwood, shells and small rocks, as OSI dresses its wreck beach on Malas
+    # (notes/cc-P741-tools/osi-malas-wreck.txt: debris 0x0C2D-0x0C30 round the hull). Its own stream, so nothing else
+    # moves; kept off the road, the spots and every kept-clear tile.
+    if De.get('strand'):
+        rsd = stream('strand')
+        for c in sorted(zones['beach']):
+            if dw.get(c) == 2 and rsd.random() < De['strand']['share'] and c not in keepout and not by_tile.get(c)                     and c not in road and c not in wake_plants:
+                put(c[0], c[1], land[c][1], S.pick_unlike(rsd, table(De['strand']['pieces']), c, by_tile), 'beach strand')
     # cc-P725: the shoreline as OSI draws its sandy coasts (Chase 10-28: "island needs shore tiles"; P662's plain
     # water diamond on every first sand tile drew the coast as a sawtooth). shore-rule.json is learned from stock
     # Trammel by notes/cc-P725-tools/survey_rule.py: for each cell beside the sea/land line, by its own class and its
     # 8-neighbour sea pattern, the water pieces OSI lays there (surf-edged pieces on the sea cells, small surf pieces on
     # the last sand cell). A cell takes one of the compositions OSI uses for its pattern at least a quarter as often as
     # the commonest; a pattern OSI's gentle beaches never show gets none (plain sea, or bare sand).
-    shore_rule = json.load(open(os.path.join(HERE, 'shore-rule.json')))
-    rs2 = stream('shore')
-    nb8 = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
-    sea = lambda c: cls.get(c, 'w') == 'w'
-    no_shore = deck_set | landing | dock_dry
-    shore_log = collections.Counter()
-    names8 = ('N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW')
-    pattern = lambda c, wet: ''.join('S' if wet((c[0] + a, c[1] + b)) else '.' for a, b in nb8)
-    # pass 1, the front coasts (land only east and/or south of a sea cell, the sides the camera faces): OSI's
-    # half-tile surf pieces over shore land, so the sand fills the notch and the surf runs along it (surf-survey.json:
-    # 0x179D/0x179E land east, 0x17A1/0x17A2 land south, 0x17A7 both); the land under them is impassable sand
-    front = RULES['shoreFront']
-    front_cells = {}
-    for c in sorted(cls):
-        if c in no_shore or not sea(c):
-            continue
-        dry = {d for d, ch in zip(names8, pattern(c, sea)) if ch == '.'}
-        if dry and 'E' in dry and 'S' in dry and dry <= {'NE', 'E', 'SE', 'S', 'SW'}:
-            front_cells[c] = 'eastSouth'
-        elif 'E' in dry and dry <= {'NE', 'E', 'SE'}:
-            front_cells[c] = 'east'
-        elif 'S' in dry and dry <= {'SE', 'S', 'SW'}:
-            front_cells[c] = 'south'
-    for c, side in sorted(front_cells.items()):
-        land[c] = (hx(front['land']), L['seaZ'])
-        put(c[0], c[1], L['seaZ'], hx(rs2.choice(front[side])), 'shore water front ' + side)
-        shore_log['S front ' + side] += 1
-    # pass 2, every other cell beside the line, by OSI's table; a filled notch counts as land for its neighbours (it is
-    # mostly sand on screen). A pattern OSI's gentle beaches show fewer than shoreRuleMin times falls back to the
-    # surf edge for the side the land is on (north 0x179F/0x17A0, west 0x17A3/0x17A4, both the corner 0x17A6/0x17AF)
-    wet2 = lambda c: sea(c) and c not in front_cells
-    fallback = RULES['shoreFallback']
-    for c in sorted(cls):
-        if c in no_shore or c in front_cells:
-            continue
-        pat = pattern(c, wet2)
-        if pat in ('SSSSSSSS', '........'):
-            continue
-        if not sea(c) and cls[c] != 's':
-            continue
-        key = ('S' if sea(c) else 'L') + ':' + pat
-        r = shore_rule.get(key)
-        if (not r or r['n'] < fallback['min']) and sea(c):
-            dry = {d for d, ch in zip(names8, pat) if ch == '.'}
-            side = 'northWest' if {'N', 'W'} <= dry else 'north' if 'N' in dry else 'west' if 'W' in dry else None
-            if side:
-                put(c[0], c[1], L['seaZ'], hx(rs2.choice(fallback[side])), 'shore water fallback ' + side)
-                shore_log['S fallback ' + side] += 1
+    if RULES.get('shoreRule') == 'osi-land':
+        shore_log = osi_land_shore(cls, land, put, stream('shore'), deck_set | landing | dock_dry, L['seaZ'])
+    else:
+        shore_rule = json.load(open(os.path.join(HERE, 'shore-rule.json')))
+        rs2 = stream('shore')
+        nb8 = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
+        sea = lambda c: cls.get(c, 'w') == 'w'
+        no_shore = deck_set | landing | dock_dry
+        shore_log = collections.Counter()
+        names8 = ('N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW')
+        pattern = lambda c, wet: ''.join('S' if wet((c[0] + a, c[1] + b)) else '.' for a, b in nb8)
+        # pass 1, the front coasts (land only east and/or south of a sea cell, the sides the camera faces): OSI's
+        # half-tile surf pieces over shore land, so the sand fills the notch and the surf runs along it (surf-survey.json:
+        # 0x179D/0x179E land east, 0x17A1/0x17A2 land south, 0x17A7 both); the land under them is impassable sand
+        front = RULES['shoreFront']
+        front_cells = {}
+        for c in sorted(cls):
+            if c in no_shore or not sea(c):
                 continue
-        if not r:
-            shore_log['unknown ' + key[0]] += 1
-            continue
-        top = r['top'][0][1]
-        options = {i: n for i, (p, n) in enumerate(r['top']) if n * 4 >= top}
-        pieces = r['top'][S.weighted(rs2, options)][0]
-        shore_log[key[0] + (' pieces' if pieces else ' none')] += 1
-        base_z = L['seaZ']
-        for p in pieces:
-            tid, dz = p.split('@')
-            put(c[0], c[1], base_z + int(dz), hx(tid), 'shore water ' + key)
+            dry = {d for d, ch in zip(names8, pattern(c, sea)) if ch == '.'}
+            if dry and 'E' in dry and 'S' in dry and dry <= {'NE', 'E', 'SE', 'S', 'SW'}:
+                front_cells[c] = 'eastSouth'
+            elif 'E' in dry and dry <= {'NE', 'E', 'SE'}:
+                front_cells[c] = 'east'
+            elif 'S' in dry and dry <= {'SE', 'S', 'SW'}:
+                front_cells[c] = 'south'
+        for c, side in sorted(front_cells.items()):
+            land[c] = (hx(front['land']), L['seaZ'])
+            put(c[0], c[1], L['seaZ'], hx(rs2.choice(front[side])), 'shore water front ' + side)
+            shore_log['S front ' + side] += 1
+        # pass 2, every other cell beside the line, by OSI's table; a filled notch counts as land for its neighbours (it is
+        # mostly sand on screen). A pattern OSI's gentle beaches show fewer than shoreRuleMin times falls back to the
+        # surf edge for the side the land is on (north 0x179F/0x17A0, west 0x17A3/0x17A4, both the corner 0x17A6/0x17AF)
+        wet2 = lambda c: sea(c) and c not in front_cells
+        fallback = RULES['shoreFallback']
+        for c in sorted(cls):
+            if c in no_shore or c in front_cells:
+                continue
+            pat = pattern(c, wet2)
+            if pat in ('SSSSSSSS', '........'):
+                continue
+            if not sea(c) and cls[c] != 's':
+                continue
+            key = ('S' if sea(c) else 'L') + ':' + pat
+            r = shore_rule.get(key)
+            if (not r or r['n'] < fallback['min']) and sea(c):
+                dry = {d for d, ch in zip(names8, pat) if ch == '.'}
+                side = 'northWest' if {'N', 'W'} <= dry else 'north' if 'N' in dry else 'west' if 'W' in dry else None
+                if side:
+                    put(c[0], c[1], L['seaZ'], hx(rs2.choice(fallback[side])), 'shore water fallback ' + side)
+                    shore_log['S fallback ' + side] += 1
+                    continue
+            if not r:
+                shore_log['unknown ' + key[0]] += 1
+                continue
+            top = r['top'][0][1]
+            options = {i: n for i, (p, n) in enumerate(r['top']) if n * 4 >= top}
+            pieces = r['top'][S.weighted(rs2, options)][0]
+            shore_log[key[0] + (' pieces' if pieces else ' none')] += 1
+            base_z = L['seaZ']
+            for p in pieces:
+                tid, dz = p.split('@')
+                put(c[0], c[1], base_z + int(dz), hx(tid), 'shore water ' + key)
     report['shore'] = dict(shore_log)
 
     # 9. checks of the plan: nothing outside the area, nothing impassable on a kept-clear tile, one wall piece a tile
@@ -1080,6 +1297,9 @@ def main():
     print(audit.summary(report['slope audit']))
     counts = collections.Counter(s[4].split(' ')[0] + ' ' + s[4].split(' ')[1] if ' ' in s[4] else s[4] for s in statics)
     print('statics', len(statics), dict(sorted(counts.items())))
+    off = signs_off_path(props, {shifted(*c) for c in info['road']})
+    print('lesson signs not north of their path (cc-P741):', off)
+    assert not off, 'a lesson sign is not north of its path (cc-P741 item 3)'
     L = shift_land(land)
     St = shift_statics(statics)
     with open(os.path.join(HERE, 'statics-placed.csv'), 'w', newline='') as f:
