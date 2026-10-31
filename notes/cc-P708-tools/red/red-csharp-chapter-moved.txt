@@ -1,0 +1,38 @@
+  Logger -> /build/modernuo/Distribution/Assemblies/Logger.dll
+  Server -> /build/modernuo/Distribution/Server.dll
+  UOContent -> /build/modernuo/Distribution/Assemblies/UOContent.dll
+  Application -> /build/modernuo/Distribution/ModernUO.dll
+  Server.Tests -> /build/modernuo/Projects/Server.Tests/bin/Release/net10.0/Server.Tests.dll
+  UOContent.Tests -> /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll
+Test run for /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.0+05679a7ab5 (64-bit .NET 10.0.7)
+[xUnit.net 00:00:00.13]   Discovering: UOContent.Tests
+[xUnit.net 00:00:00.41]   Discovered:  UOContent.Tests
+[xUnit.net 00:00:00.43]   Starting:    UOContent.Tests
+[19:03:26 INF] Loading world <s:Server.World>
+[19:03:26 INF] Loading world done (0 items, 0 mobiles) (0.01 seconds) <s:Server.World>
+[19:03:26 INF] Discovered 3 spawner JSON type(s) <s:Server.Engines.Spawners.SpawnerJsonSerializer>
+[xUnit.net 00:00:01.01]     ShatteredLegacy.Tests.GuildHallSosMovesVerification.JoiningAMovedGuildNeedsNoHeadquarters [FAIL]
+[xUnit.net 00:00:01.01]       healers: no New Haven chapter
+[xUnit.net 00:00:01.01]       Stack Trace:
+[xUnit.net 00:00:01.01]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GuildHallSosMovesVerification.cs(219,0): at ShatteredLegacy.Tests.GuildHallSosMovesVerification.JoiningAMovedGuildNeedsNoHeadquarters()
+[xUnit.net 00:00:01.01]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.01]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.05]   Finished:    UOContent.Tests
+  Passed ShatteredLegacy.Tests.GuildHallSosMovesVerification.TheLeagueHeadquartersHasItsOwnStewardAndElaraStaysInNewHaven [44 ms]
+  Failed ShatteredLegacy.Tests.GuildHallSosMovesVerification.JoiningAMovedGuildNeedsNoHeadquarters [7 ms]
+  Error Message:
+   healers: no New Haven chapter
+  Stack Trace:
+     at ShatteredLegacy.Tests.GuildHallSosMovesVerification.JoiningAMovedGuildNeedsNoHeadquarters() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GuildHallSosMovesVerification.cs:line 219
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed ShatteredLegacy.Tests.GuildHallSosMovesVerification.EachMovedHallStandsInTheTownChasePicked [6 ms]
+  Passed ShatteredLegacy.Tests.GuildHallSosMovesVerification.PlaceTakesAMovedHallsOldSiteAwayAndClearDoesToo [38 ms]
+
+Test Run Failed.
+Total tests: 4
+     Passed: 3
+     Failed: 1
+ Total time: 1.2953 Seconds
