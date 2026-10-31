@@ -1,0 +1,68 @@
+  Logger -> /build/modernuo/Distribution/Assemblies/Logger.dll
+  Server -> /build/modernuo/Distribution/Server.dll
+  UOContent -> /build/modernuo/Distribution/Assemblies/UOContent.dll
+  Application -> /build/modernuo/Distribution/ModernUO.dll
+  Server.Tests -> /build/modernuo/Projects/Server.Tests/bin/Release/net10.0/Server.Tests.dll
+  UOContent.Tests -> /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll
+Test run for /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.0+05679a7ab5 (64-bit .NET 10.0.7)
+[xUnit.net 00:00:00.14]   Discovering: UOContent.Tests
+[xUnit.net 00:00:00.43]   Discovered:  UOContent.Tests
+[xUnit.net 00:00:00.44]   Starting:    UOContent.Tests
+[19:03:02 INF] Loading world <s:Server.World>
+[19:03:02 INF] Loading world done (0 items, 0 mobiles) (0.01 seconds) <s:Server.World>
+[19:03:03 INF] Discovered 3 spawner JSON type(s) <s:Server.Engines.Spawners.SpawnerJsonSerializer>
+[xUnit.net 00:00:00.97]     ShatteredLegacy.Tests.GuildHallSosMovesVerification.TheLeagueHeadquartersHasItsOwnStewardAndElaraStaysInNewHaven [FAIL]
+[xUnit.net 00:00:00.97]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:00.97]       Expected: typeof(Server.Mobiles.LeagueSteward)
+[xUnit.net 00:00:00.97]       Actual:   typeof(Server.Mobiles.LeagueRegistrar)
+[xUnit.net 00:00:00.98]       Stack Trace:
+[xUnit.net 00:00:00.98]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GuildHallSosMovesVerification.cs(107,0): at ShatteredLegacy.Tests.GuildHallSosMovesVerification.TheLeagueHeadquartersHasItsOwnStewardAndElaraStaysInNewHaven()
+[xUnit.net 00:00:00.98]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:00.98]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.06]     ShatteredLegacy.Tests.GuildHallSosMovesVerification.EachMovedHallStandsInTheTownChasePicked [FAIL]
+[xUnit.net 00:00:01.06]       league: in Britain, not Valunstead
+[xUnit.net 00:00:01.06]       Stack Trace:
+[xUnit.net 00:00:01.06]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GuildHallSosMovesVerification.cs(76,0): at ShatteredLegacy.Tests.GuildHallSosMovesVerification.EachMovedHallStandsInTheTownChasePicked()
+[xUnit.net 00:00:01.06]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.06]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.09]     ShatteredLegacy.Tests.GuildHallSosMovesVerification.PlaceTakesAMovedHallsOldSiteAwayAndClearDoesToo [FAIL]
+[xUnit.net 00:00:01.09]       Assert.Contains() Failure: Filter not matched in collection
+[xUnit.net 00:00:01.09]       Collection: ["tinkers (Vesper): already standing.", "Guild halls dry run: would place 0 thing(s), 2 alr"···]
+[xUnit.net 00:00:01.09]       Stack Trace:
+[xUnit.net 00:00:01.09]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GuildHallSosMovesVerification.cs(165,0): at ShatteredLegacy.Tests.GuildHallSosMovesVerification.PlaceTakesAMovedHallsOldSiteAwayAndClearDoesToo()
+[xUnit.net 00:00:01.09]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.09]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.09]   Finished:    UOContent.Tests
+  Failed ShatteredLegacy.Tests.GuildHallSosMovesVerification.TheLeagueHeadquartersHasItsOwnStewardAndElaraStaysInNewHaven [5 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: typeof(Server.Mobiles.LeagueSteward)
+Actual:   typeof(Server.Mobiles.LeagueRegistrar)
+  Stack Trace:
+     at ShatteredLegacy.Tests.GuildHallSosMovesVerification.TheLeagueHeadquartersHasItsOwnStewardAndElaraStaysInNewHaven() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GuildHallSosMovesVerification.cs:line 107
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed ShatteredLegacy.Tests.GuildHallSosMovesVerification.JoiningAMovedGuildNeedsNoHeadquarters [84 ms]
+  Failed ShatteredLegacy.Tests.GuildHallSosMovesVerification.EachMovedHallStandsInTheTownChasePicked [< 1 ms]
+  Error Message:
+   league: in Britain, not Valunstead
+  Stack Trace:
+     at ShatteredLegacy.Tests.GuildHallSosMovesVerification.EachMovedHallStandsInTheTownChasePicked() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GuildHallSosMovesVerification.cs:line 76
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed ShatteredLegacy.Tests.GuildHallSosMovesVerification.PlaceTakesAMovedHallsOldSiteAwayAndClearDoesToo [29 ms]
+  Error Message:
+   Assert.Contains() Failure: Filter not matched in collection
+Collection: ["tinkers (Vesper): already standing.", "Guild halls dry run: would place 0 thing(s), 2 alr"···]
+  Stack Trace:
+     at ShatteredLegacy.Tests.GuildHallSosMovesVerification.PlaceTakesAMovedHallsOldSiteAwayAndClearDoesToo() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GuildHallSosMovesVerification.cs:line 165
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+Test Run Failed.
+Total tests: 4
+     Passed: 1
+     Failed: 3
+ Total time: 1.3528 Seconds

@@ -20,7 +20,7 @@ static; Bridge items at half height), nothing impassable or solid in the 16 Z ab
   2. cc-P691: Blackthorn is on the Fold, not on this land: its region registers on the Fold only, and [GenBlackthorn
      refuses while the Fold's copy is missing (BlackthornFold.MapReady). (cc-P677's fact was that it was off.)
   3. The guild halls on SoS: P281's check.py, run with its client folder on the SoS land (notes/cc-P677-tools/p281sos,
-     made by make_p281sos.py), passes every hall but the two P708 moves (Merchants, Custodians).
+     made by make_p281sos.py), passes every hall. P677 left two failing (Merchants, Custodians); cc-P708 moved them.
   4. The stealable artifacts whose land is gone are parked: the patch's Ararat entries and the second set of Castle
      Blackthorne's are on Map.Internal, and CheckRespawn never spawns a parked entry. cc-P691: the first set of three
      stands in the dungeon on the Fold (FoldMaps.Fold, parked if the Fold is not registered yet).
@@ -41,7 +41,7 @@ FILES = [l.strip() for l in open(os.path.join(TOOLS, 'files-all30.txt')) if l.st
 BLACKTHORN = 'server/customizations/Services/Revamped Dungeons/BlackthornDungeon/'
 HALLS = 'server/customizations/ClusterFGuildHallPlacementData.cs'
 TEST_PATCHES = ('server/patches/ImportCleanupTests-guid-key.patch',)
-P708 = {'merchants', 'custodians'}
+P708 = set()  # cc-P708 moved the two halls P677 left failing (Merchants, Custodians); none may fail now
 
 
 def moved_from(text, kind_of_file):
