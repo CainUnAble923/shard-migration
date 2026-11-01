@@ -745,6 +745,10 @@ I write that as **"community terms"** below. Anything stricter or looser is quot
   - palms, ferns and the jungle trees listed under "Tropical isle" below.
 - **Tutorial farm fences (`TutorialFarmLayout.cs`).** Stock wooden fence 0x0835-0x0837.
 - **Alembic guild hall (`ClusterFAlembicGuild.cs`).** Stock art only. Third-party pieces wait for an art prompt.
+- **The isle's vision chamber (cc-P742, `TutorialVisionChamber.cs`).** A 9 x 9 dungeon shrine of stock art (OSI's
+  dungeon brick 0x0241-0x0244, grey pavers and cave floor, the pedestal 0x1223, glowing runes, braziers, torches,
+  broken pillars 0x45B4/0x45B5, bones, stalagmites), placed per scene in the void strip of site A (x 6170-6570,
+  y 3752-3760) and taken away after. A room nobody walks to can be built this way, as scene props, with no map patch.
 - **Registered new art.** `animated-runestone` (0x3C10-0x3C3B) and `animated-mimic` are REG.
 - **Looked at and not placed.** P724 looked at these and did not place them (reasons in
   `notes\cc-P724-isle-addons.md`); they are free for other places:
