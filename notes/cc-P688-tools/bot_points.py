@@ -21,14 +21,31 @@ sys.path.insert(0, HERE)
 import walkgrid  # noqa: E402
 import islands  # noqa: E402  (walkgrid put cc-P481-tools on the path)
 
-ISLE_ROUTE = os.path.join(walkgrid.NOTES, "cc-P732-tools", "isle.py")   # main's (SoS New Haven) isle route
+# cc-P735: main's newest isle route (P741's: P732's with the farm turned round, SoS New Haven)
+ISLE_ROUTE = os.path.join(walkgrid.NOTES, "cc-P741-tools", "isle.py")
 
 
 def literal(path, name):
-    """A tuple constant from a source file, by name (the file is read, never imported: the bot needs its client)."""
+    """A tuple constant from a source file, by name (the file is read, never imported: the bot needs its client).
+    cc-P735: also a bare one-line value ("BOX_DX, BOX_DY = 6, 4") and one name of several assigned together
+    ("BEACH, TAMSIN = (6638, 3993), (6640, 3992)"); P688's run stopped before it reached either."""
     s = open(path, encoding="utf-8").read()
     m = re.search(r"^%s\s*=\s*(\(.*?\))\s*(#.*)?$" % re.escape(name), s, re.M | re.S)
-    return eval(m.group(1), {})
+    if m is not None:
+        return eval(m.group(1), {})
+    for line in s.splitlines():
+        mm = re.match(r"^([A-Z_][A-Z0-9_]*(?:\s*,\s*[A-Z_][A-Z0-9_]*)*)\s*=\s*([^#]+?)\s*(#.*)?$", line)
+        if mm is None:
+            continue
+        names = [n.strip() for n in mm.group(1).split(",")]
+        if name in names:
+            value = eval(mm.group(2), {})
+            return value if len(names) == 1 else value[names.index(name)]
+    if "," in name:   # the names asked for together ("BOX_DX, BOX_DY")
+        for line in s.splitlines():
+            if re.match(r"^%s\s*=" % re.escape(name), line):
+                return eval(line.split("=", 1)[1].split("#")[0], {})
+    raise KeyError("%s not found in %s" % (name, path))
 
 
 def points(code):
@@ -63,11 +80,11 @@ def points(code):
         out.append(("checks_p224_rootdeep", name, "Trammel", x, y, "rootdeep"))
     for name in ("ROOK_EXIT", "HAVEN_START"):
         x, y = literal(ISLE_ROUTE, name)
-        out.append(("isle route (P732)", name, "Trammel", x, y, "haven"))
+        out.append(("isle route (P741)", name, "Trammel", x, y, "haven"))
     for name in ("BEACH", "BLUE_TILE", "CAMP", "SIGN", "WREN", "RAT", "BANK_STOP", "LODGE", "STONES", "BANK_FLOOR",
                  "GATE"):
         x, y = literal(ISLE_ROUTE, name)
-        out.append(("isle route (P732)", name, "Trammel", x, y, "isle"))
+        out.append(("isle route (P741)", name, "Trammel", x, y, "isle"))
     # the places the bot's own Haven steps lean on (HavenSpots.cs): the bank and the healer
     hs = open(os.path.join(code, "server", "customizations", "Tutorial", "HavenSpots.cs"), encoding="utf-8").read()
     for name in ("Bank", "Healer", "Rook", "QuestBoard"):
