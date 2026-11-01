@@ -1,0 +1,5 @@
+cc-P761 mutants (mutate761.py, probe.sh on sl-uo-builder:cc-P761, logs in mutant-logs\); filter: TutorialVisionStranger + TutorialVisionSceneVerification
+named     (the Stranger keeps its name)          -> fails 1 TheStrangerHasNoName
+nocowl    (no cowl on the helm layer)            -> fails 2 TheStrangerWearsACowlRobeAndCloakInOneHueAndHoldsTheSword (and 3, which reads the helm)
+fixedhue  (the cloak ignores the hue argument)   -> fails 3 OneHueDressesEveryClothPiece
+green: the gated build (sl-modernuo:cc-P761), all three pass, 2,881 passed, 6 skipped, 0 failed

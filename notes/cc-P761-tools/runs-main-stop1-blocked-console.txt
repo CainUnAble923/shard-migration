@@ -1,0 +1,50 @@
+[    0.0] P707 Wakening Isle play-through on 127.0.0.1:2596, parts ['seed', 'isle']
+[    1.3] walk grid (6594, 3905, 6865, 4049): 8372 standable tiles
+[    3.5] === seed (the Admin)
+[    3.5]   admin types [ClusterFSeedTutorial dryrun
+[    7.5]     Tutorial dry run: would place 0 station markers, 0 NPCs/echo/vets, 0 moongate, 0 walking tiles, 0 doors, 0 props. Tutorial farm on the isle (dry run): would place 0 farm addon, 0 door, 0 Farmhand, 0 spawners; already there 8. Isle addons: would place 0. New Haven (cc-P743) dry run: would place 0 pieces (took away 0 from old spots), moved 0 Rook, old New Haven farm: would take away 0 thing(s).
+[    7.5]     System: Achievement unlocked. Lower your expectations accordingly.
+[    7.5]     System: Shake it if you want. It won't tell you anything.
+[    7.5]     System: A small step for you. An even smaller one for Britannia.
+[    7.5]     System: Open it somewhere safe. I mean it.
+[    7.5]     Achievement unlocked. Lower your expectations accordingly.
+[    7.5]     Shake it if you want. It won't tell you anything.
+[    7.5]     A small step for you. An even smaller one for Britannia.
+[    7.5]     Open it somewhere safe. I mean it.
+[    7.5]   admin types [ClusterFSeedTutorial
+[   11.5]     Tutorial: placed 0 station markers, 0 NPCs/echo/vets, 0 moongate, 0 walking tiles, 0 doors, 0 props. Tutorial farm on the isle: placed 0 farm addon, 0 door, 0 Farmhand, 0 spawners; already there 8. Isle addons: placed 0. New Haven (cc-P743): placed 0 pieces (took away 0 from old spots), moved 0 Rook, old New Haven farm: took away 0 thing(s).
+[   11.5]   admin types [ClusterFSeedTutorial
+[   15.5]     Tutorial: placed 0 station markers, 0 NPCs/echo/vets, 0 moongate, 0 walking tiles, 0 doors, 0 props. Tutorial farm on the isle: placed 0 farm addon, 0 door, 0 Farmhand, 0 spawners; already there 8. Isle addons: placed 0. New Haven (cc-P743): placed 0 pieces (took away 0 from old spots), moved 0 Rook, old New Haven farm: took away 0 thing(s).
+[   15.5]   admin types [Tutorial copies
+[   19.5]     Copy 1 (map 33): free, not seeded, generation 7
+[   19.5]     Copy 2 (map 34): free, not seeded, generation 2
+[   19.5]     Copy 3 (map 35): free, not seeded, generation 1
+[   19.5]     Copy 4 (map 36): free, not seeded, generation 1
+[   19.5]     Copy 5 (map 37): free, not seeded, generation 1
+[   19.5]     Copy 6 (map 38): free, not seeded, generation 1
+[   19.5]     Copy 7 (map 39): free, not seeded, generation 0
+[   19.5]     Copy 8 (map 40): free, not seeded, generation 0
+[   19.5]     Copy 9 (map 41): free, not seeded, generation 0
+[   19.5]     Copy 10 (map 42): free, not seeded, generation 0
+[   19.5]     Copy 11 (map 43): free, not seeded, generation 0
+[   19.5]     Copy 12 (map 44): free, not seeded, generation 0
+[   19.5]     Copy 13 (map 45): free, not seeded, generation 0
+[   19.5]     Copy 14 (map 46): free, not seeded, generation 0
+[   19.5]     Copy 15 (map 47): free, not seeded, generation 0
+[   19.5]     Copy 16 (map 48): free, not seeded, generation 0
+[   19.5]     Waiting on the Fold's beach: 0.
+[   19.5] === isle: a fresh character on Iron's Player account, Tutorial Island at creation
+[   20.4]   the account's characters: ['Iron the Tester']
+[   20.4]   the city list the server sent: [(0, 'Tutorial Island', 'The Wakening Isle'), (1, 'New Haven (locked)', 'The Bountiful Harvest Inn')]
+Traceback (most recent call last):
+  File "D:\UO\golems\Iron\shard-migration\notes\cc-P761-tools\isle.py", line 796, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "D:\UO\golems\Iron\shard-migration\notes\cc-P761-tools\isle.py", line 745, in main
+    pc.create(a.name, stats=(45, 35, 10), skills=((0, 30), (17, 30), (40, 30), (43, 30)), city=0)
+  File "D:\UO/golems/Iron/p758-proof/bot\uobot\client.py", line 276, in create
+    return self._after_enter()
+           ^^^^^^^^^^^^^^^^^^^
+  File "D:\UO/golems/Iron/p758-proof/bot\uobot\client.py", line 287, in _after_enter
+    raise LoginFailed("not in the world (%s)" % (self.closed or "no 0x55 login complete"))
+uobot.client.LoginFailed: not in the world (the server closed the connection)
