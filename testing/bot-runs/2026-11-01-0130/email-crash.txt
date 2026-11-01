@@ -1,0 +1,55 @@
+Overnight play tests stopped early: Build-MapOverlay.ps1 failed (1): the scratch shard would read EA's Trammel
+
+The overnight test bot stopped before it finished: Build-MapOverlay.ps1 failed (1): the scratch shard would read EA's Trammel. Nothing was marked on the play-test page.
+
+What to do: if it happens again tomorrow night, ask CC on the game PC to look at the run log (Details say where it is).
+
+Details
+-------
+Code under test: 05b0190.
+Run folder: D:\UO\shard-migration\testing\bot-runs\2026-11-01-0130
+
+Archive: transcripts of 5 runs moved to D:\Cloud Drives\iCloudDrive\Shattered Legacy\bot-runs, verified (2026-10-17-2347, 2026-10-18-0042, 2026-10-18-0047, 2026-10-18-0129, 2026-10-18-0130).
+
+The last 40 lines of run.log:
+
+
+#33 [stage-1  8/11] RUN mkdir -p     /var/lib/uo/modernuo/Saves     /var/lib/uo/modernuo/Backups     /var/lib/uo/modernuo/Archives     /var/lib/uo/modernuo/temp     /var/lib/uo/client-data/classic-client
+#33 DONE 0.3s
+
+#34 [stage-1  9/11] COPY docker/uo/entrypoint.sh /entrypoint.sh
+#34 DONE 0.1s
+
+#35 [stage-1 10/11] RUN chmod +x /entrypoint.sh
+#35 DONE 0.3s
+
+#36 [stage-1 11/11] WORKDIR /modernuo
+#36 DONE 0.1s
+
+#37 exporting to image
+#37 exporting layers
+#37 exporting layers 2.3s done
+#37 exporting manifest sha256:e553f8b69ea13fe1c0ae92462969470da88ee153222c0a98fc4433ce21db1e26 0.0s done
+#37 exporting config sha256:22ef10ee045124a7828e44f9a12b11f244b69d62825b5df167c7d64b2e848587 0.0s done
+#37 exporting attestation manifest sha256:3a03a53831dd6f592ebf7aba492e43513345b98e3a6c91ebf51196507fec162a 0.1s done
+#37 exporting manifest list sha256:c34a35df7bf52fe9a79bc49077d8ba2a79afed6aa1269f564266fa5855c2d927
+#37 exporting manifest list sha256:c34a35df7bf52fe9a79bc49077d8ba2a79afed6aa1269f564266fa5855c2d927 0.0s done
+#37 naming to docker.io/library/sl-modernuo:bot done
+#37 unpacking to docker.io/library/sl-modernuo:bot
+#37 unpacking to docker.io/library/sl-modernuo:bot 0.5s done
+#37 DONE 3.0s
+
+Built sl-modernuo:bot with patches applied and 2860 shard test(s) passing.
+01:32:46  == making the scratch world
+01:32:47    the Siege of Sosaria map: D:\ShatteredLegacy\player-package\vendor\sos-trammel-map\files\base-map1legacymul.uop is 
+01:32:47    missing. Run player-package\vendor\sos-trammel-map\Add-SosMap.ps1.
+01:32:47    At D:\ShatteredLegacy\docker\uo\Build-MapOverlay.ps1:63 char:49
+01:32:47    + ... Path $f)) { throw "the Siege of Sosaria map: $f is missing. Run playe ...
+01:32:47    +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+01:32:47        + CategoryInfo          : OperationStopped: (the Siege of So...Add-SosMap.ps1.:String) [], RuntimeException
+01:32:47        + FullyQualifiedErrorId : the Siege of Sosaria map: D:\ShatteredLegacy\player-package\vendor\sos-trammel-map\files 
+01:32:47       \base-map1legacymul.uop is missing. Run player-package\vendor\sos-trammel-map\Add-SosMap.ps1.
+01:32:47     
+01:32:47  == FAILED: Build-MapOverlay.ps1 failed (1): the scratch shard would read EA's Trammel
+01:32:47    rule 1 held
+01:32:49    Archive: transcripts of 5 runs moved to D:\Cloud Drives\iCloudDrive\Shattered Legacy\bot-runs, verified (2026-10-17-2347, 2026-10-18-0042, 2026-10-18-0047, 2026-10-18-0129, 2026-10-18-0130).
