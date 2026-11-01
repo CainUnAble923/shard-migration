@@ -1,0 +1,360 @@
+--- pristine/golem.ps1	2026-11-01 05:23:50.111420900 -0600
++++ kit/golem.ps1	2026-11-01 05:22:12.539929400 -0600
+@@ -637,7 +637,9 @@
+     $u = $null
+     if (Test-Path -LiteralPath $UsageFile) { try { $u = Get-Content -LiteralPath $UsageFile -Raw | ConvertFrom-Json } catch { $u = $null } }
+     if (-not $u -and (-not $plan -or $plan.stale)) { return $null }
+-    $o = [ordered]@{ updatedUtc = [datetime]::MinValue; ageMin = [double]::MaxValue; fiveHour = $null; sevenDay = $null; fable = $null; fableSource = ''; fableHitAt = ''; plan = $plan; source = '' }
++    # cc-P757: fiveHourSource and sevenDaySource say where each window came from ('status line', 'plan usage page', or
++    # '' when neither has it).
++    $o = [ordered]@{ updatedUtc = [datetime]::MinValue; ageMin = [double]::MaxValue; fiveHour = $null; sevenDay = $null; fable = $null; fableSource = ''; fableHitAt = ''; plan = $plan; source = ''; fiveHourSource = ''; sevenDaySource = '' }
+     if ($u) {
+         $upd = [datetime]::MinValue
+         try { $upd = [datetime]::SpecifyKind([datetime]::Parse([string](Get-Prop $u 'updatedUtc' '')), 'Utc') } catch {}
+@@ -652,17 +654,23 @@
+             $ra = [long](Get-Prop $x 'resetsAt' 0)
+             if ($ra -gt 0) { $at = [DateTimeOffset]::FromUnixTimeSeconds($ra).LocalDateTime; if ($at -le $NowTime) { $pct = 0 } }
+             $o[$k] = [pscustomobject]@{ pct = $pct; resetsAt = $at }
++            $o[$k + 'Source'] = 'status line'
+         }
+     }
+     if ($plan -and -not $plan.stale -and $plan.readAt) {
+         $pUtc = $plan.readAt.ToUniversalTime()
+         if (-not $u -or $pUtc -gt $o.updatedUtc) {
+-            if ($plan.session) { $o.fiveHour = $plan.session }
+-            if ($plan.week) { $o.sevenDay = $plan.week }
++            if ($plan.session) { $o.fiveHour = $plan.session; $o.fiveHourSource = 'plan usage page' }
++            if ($plan.week) { $o.sevenDay = $plan.week; $o.sevenDaySource = 'plan usage page' }
+             $o.updatedUtc = $pUtc
+             $o.ageMin = ($NowTime.ToUniversalTime() - $pUtc).TotalMinutes
+             $o.source = 'plan usage page'
+         }
++        # cc-P757: the status line now often writes only sevenDay (no 5-hour window), and the night check then said
++        # "usage unknown" all night (11-01). A window the newer source lacks comes from the other, while the plan page
++        # is within planUsageMaxAgeHours.
++        if (-not $o.fiveHour -and $plan.session) { $o.fiveHour = $plan.session; $o.fiveHourSource = 'plan usage page' }
++        if (-not $o.sevenDay -and $plan.week) { $o.sevenDay = $plan.week; $o.sevenDaySource = 'plan usage page' }
+         if ($plan.fableWeek) { $o.fable = $plan.fableWeek; $o.fableSource = 'plan usage page' }
+     }
+     # cc-P274: claude.ai has shown no separate Fable line since 10-20, so usage.json's own Fable window stands in: a
+@@ -2027,27 +2035,68 @@
+ 
+ # The usage check the night shift makes. Ok, or Why. Also the figures for the starting email.
+ # cc-P156: also away mode's rule (Get-PaceCheck), and the gate under each night batch's budget (Get-NightBudget).
+-function Test-NightUsage($set, [string]$model) {
++# cc-P757: the last week figure on disk, whatever its age: usage.json's sevenDay or plan-usage.json's week, the one
++# written last of those whose reset is still ahead. { pct, resetsAt, source, at (local) }, or $null.
++function Get-LastKnownWeek {
++    $c = @()
++    if (Test-Path -LiteralPath $UsageFile) {
++        try {
++            $j = Get-Content -LiteralPath $UsageFile -Raw | ConvertFrom-Json
++            $x = Get-Prop $j 'sevenDay' $null; $ra = [long](Get-Prop $x 'resetsAt' 0)
++            if ($x -and $ra -gt 0) {
++                $at = [datetime]::SpecifyKind([datetime]::Parse([string](Get-Prop $j 'updatedUtc' '')), 'Utc').ToLocalTime()
++                $c += [pscustomobject]@{ pct = [double](Get-Prop $x 'pct' 0); resetsAt = [DateTimeOffset]::FromUnixTimeSeconds($ra).LocalDateTime; source = 'status line'; at = $at }
++            }
++        } catch {}
++    }
++    $pl = Get-PlanUsage (Get-Settings)
++    if ($pl -and $pl.week -and $pl.week.resetsAt -and $pl.readAt) { $c += [pscustomobject]@{ pct = [double]$pl.week.pct; resetsAt = $pl.week.resetsAt; source = 'plan usage page'; at = $pl.readAt } }
++    @($c | Where-Object { $_.resetsAt -gt $NowTime -and $_.at -le $NowTime } | Sort-Object at -Descending) | Select-Object -First 1
++}
++# cc-P757: also WeekPct and SessionPct (unrounded; SessionPct $null when no source reports a 5-hour window), Source (where
++# the figures came from, for the log) and Fallback (the week is the last known figure, see -AllowFallback).
++# -AllowFallback (the night check only): when neither usage.json nor plan-usage.json is usable for the week, the last
++# week figure either file holds (any age, its reset still ahead) decides instead, for one batch a night: the batch's
++# own session then reports fresh usage, which its budget is checked against. 11-01: Iron idled 00:11-05:13 with work
++# queued because both files lacked a window.
++function Test-NightUsage($set, [string]$model, [switch]$AllowFallback) {
+     $u = Get-Usage
+-    $r = [pscustomobject]@{ Ok = $false; Why = ''; Session = $null; Week = $null; Allowed = $null }
+-    if (-not $u) { $r.Why = 'usage unknown (no usage.json: no CLI session has reported plan usage yet)'; return $r }
+-    if ($u.ageMin -gt [double]$set.nightUsageMaxAgeHours * 60) { $r.Why = ('usage unknown (last reported ' + [int]($u.ageMin / 60) + ' h ago, over nightUsageMaxAgeHours ' + $set.nightUsageMaxAgeHours + ')'); return $r }
+-    if (-not $u.fiveHour -or -not $u.sevenDay) { $r.Why = 'usage unknown (usage.json has no 5-hour or 7-day window)'; return $r }
+-    $r.Session = [int][Math]::Round($u.fiveHour.pct, [MidpointRounding]::AwayFromZero)
+-    $r.Week = [int][Math]::Round($u.sevenDay.pct, [MidpointRounding]::AwayFromZero)
++    $r = [pscustomobject]@{ Ok = $false; Why = ''; Session = $null; Week = $null; Allowed = $null; WeekPct = $null; SessionPct = $null; Source = ''; Fallback = $false }
++    $unknown = ''
++    if (-not $u) { $unknown = 'usage unknown (no usage.json: no CLI session has reported plan usage yet)' }
++    elseif ($u.ageMin -gt [double]$set.nightUsageMaxAgeHours * 60) { $unknown = ('usage unknown (last reported ' + [int]($u.ageMin / 60) + ' h ago, over nightUsageMaxAgeHours ' + $set.nightUsageMaxAgeHours + ')') }
++    elseif (-not $u.sevenDay) { $unknown = 'usage unknown (neither usage.json nor a plan usage page within planUsageMaxAgeHours has the 7-day window)' }
++    $week = $null; $five = $null; $fable = $null
++    if ($unknown) {
++        if (-not $AllowFallback) { $r.Why = $unknown; return $r }
++        $lk = Get-LastKnownWeek
++        if (-not $lk) { $r.Why = ($unknown + '; no week figure with its reset still ahead in usage.json or plan-usage.json'); return $r }
++        $done = @(@(Get-Prop (Get-Prop (Get-State) 'nightShift' $null) 'batches' @()) | Where-Object { $_ -and [bool](Get-Prop $_ 'usageFallback' $false) })
++        if ($done.Count) { $r.Why = ($unknown + '; the one batch a night on the last known week figure has run (batch ' + $done[0].n + ')'); return $r }
++        $week = [pscustomobject]@{ pct = $lk.pct; resetsAt = $lk.resetsAt }
++        $r.Fallback = $true
++        $r.Source = ('fallback: ' + ($unknown -replace '^usage unknown \((.*)\)$', '$1') + '; the week is the last known figure, ' + ([double]$lk.pct).ToString('0.#', [Globalization.CultureInfo]::InvariantCulture) + '% from the ' + $lk.source + ' at ' + $lk.at.ToString('HH:mm') + ', the 5-hour window not known; one batch, its session reports fresh usage')
++    } else {
++        $week = $u.sevenDay; $five = $u.fiveHour; $fable = $u.fable
++        $r.Source = ('the week from the ' + $u.sevenDaySource + $(if ($five) { ', the 5-hour window from the ' + $u.fiveHourSource } else { ', the 5-hour window not reported by the status line or the plan usage page (not held for)' }))
++    }
++    $r.WeekPct = [double]$week.pct
++    $r.Week = [int][Math]::Round($week.pct, [MidpointRounding]::AwayFromZero)
++    if ($five) { $r.SessionPct = [double]$five.pct; $r.Session = [int][Math]::Round($five.pct, [MidpointRounding]::AwayFromZero) }
+     # cc-P200: marathon mode runs the night shift at full: the plan limit (usageLimitPct) instead of nightSessionMaxPct and
+     # the reserves (nightWeekReservePct, nightFableReservePct).
+     if (Test-MarathonOn $set) {
+         $lim = [double]$set.usageLimitPct
+-        if ($lim -gt 0 -and $u.fiveHour.pct -ge $lim) { $r.Why = ('the session window is at ' + $r.Session + '% (usageLimitPct ' + $lim + '; marathon on)'); return $r }
+-        if ($lim -gt 0 -and $u.sevenDay.pct -ge $lim) { $r.Why = ('the week is at ' + $r.Week + '% (usageLimitPct ' + $lim + '; marathon on)'); return $r }
+-        if ((Get-ModelFamily $model) -eq 'Fable' -and $u.fable -and $lim -gt 0 -and $u.fable.pct -ge $lim) { $r.Why = ('the Fable week is at ' + [int]$u.fable.pct + '% (usageLimitPct ' + $lim + '; marathon on)'); return $r }
++        if ($lim -gt 0 -and $five -and $five.pct -ge $lim) { $r.Why = ('the session window is at ' + $r.Session + '% (usageLimitPct ' + $lim + '; marathon on)'); return $r }
++        if ($lim -gt 0 -and $week.pct -ge $lim) { $r.Why = ('the week is at ' + $r.Week + '% (usageLimitPct ' + $lim + '; marathon on)'); return $r }
++        if ((Get-ModelFamily $model) -eq 'Fable' -and $fable -and $lim -gt 0 -and $fable.pct -ge $lim) { $r.Why = ('the Fable week is at ' + [int]$fable.pct + '% (usageLimitPct ' + $lim + '; marathon on)'); return $r }
+         $r.Allowed = $lim
+         $r.Ok = $true
+         return $r
+     }
+-    if ($u.fiveHour.pct -ge [double]$set.nightSessionMaxPct) { $r.Why = ('the session window is at ' + $r.Session + '% (nightSessionMaxPct ' + $set.nightSessionMaxPct + ')'); return $r }
+-    if (-not $u.sevenDay.resetsAt) { $r.Why = 'usage unknown (the 7-day window has no reset time)'; return $r }
++    if ($five -and $five.pct -ge [double]$set.nightSessionMaxPct) { $r.Why = ('the session window is at ' + $r.Session + '% (nightSessionMaxPct ' + $set.nightSessionMaxPct + ')'); return $r }
++    if (-not $week.resetsAt) { $r.Why = 'usage unknown (the 7-day window has no reset time)'; return $r }
++    $u = [pscustomobject]@{ sevenDay = $week; fable = $fable }
+     $r.Allowed = Get-WeekAllowance $u.sevenDay.resetsAt $NowTime ([double]$set.nightWeekReservePct)
+     if ($u.sevenDay.pct -gt $r.Allowed) { $r.Why = ('the week is at ' + $r.Week + '%, ahead of its pace (' + $r.Allowed + '% allowed tonight: days so far / 7, minus ' + $set.nightWeekReservePct + '% reserve)'); return $r }
+     if ((Get-ModelFamily $model) -eq 'Fable' -and $u.fable -and $u.fable.resetsAt) {
+@@ -2135,7 +2184,7 @@
+     $inv = [Globalization.CultureInfo]::InvariantCulture
+     $n1 = { param($x) ([double]$x).ToString('0.#', $inv) }
+     $min = [double]$set.nightMinBatchPct
+-    $r = [ordered]@{ Ok = $false; Why = ''; Week = $null; WeekLimit = $null; WeekBudget = $null; Session = $null; SessionMax = $null; SessionBudget = $null; FableLimit = $null; Inferred = ''; Text = '' }
++    $r = [ordered]@{ Ok = $false; Why = ''; Week = $null; WeekLimit = $null; WeekBudget = $null; Session = $null; SessionMax = $null; SessionBudget = $null; FableLimit = $null; Inferred = ''; Text = ''; Source = ''; Fallback = $false }
+     $u = Get-Usage
+     $f = Get-ForeignSession
+     if ($u -and $f -and $f.at -gt $u.updatedUtc) {
+@@ -2147,14 +2196,19 @@
+         if ($u.fiveHour -and $u.fiveHour.resetsAt -and $u.fiveHour.resetsAt -le $NowTime) { $inf += ' and the 5-hour window as 0% (it reset at ' + $u.fiveHour.resetsAt.ToString('HH:mm') + ')' }
+         $r.Inferred = 'inferred: ' + $inf
+     }
+-    $nu = Test-NightUsage $set $model
++    # cc-P757: the figures come from Test-NightUsage (a window the status line lacks taken from the plan page, a 5-hour
++    # window neither reports taken as 0, or one batch on the last known week); Source says which, for the log.
++    $nu = Test-NightUsage $set $model -AllowFallback
++    $r.Source = [string]$nu.Source; $r.Fallback = [bool]$nu.Fallback
+     if (-not $nu.Ok) { $r.Why = $nu.Why; return [pscustomobject]$r }
++    if ($nu.Fallback) { $r.Inferred = 'usage ' + $nu.Source }
+     $mar = Test-MarathonOn $set
+-    $r.Week = [double]$u.sevenDay.pct; $r.WeekLimit = [double]$nu.Allowed
+-    $r.Session = [double]$u.fiveHour.pct; $r.SessionMax = $(if ($mar) { [double]$set.usageLimitPct } else { [double]$set.nightSessionMaxPct })
++    $r.Week = [double]$nu.WeekPct; $r.WeekLimit = [double]$nu.Allowed
++    $sessKnown = ($null -ne $nu.SessionPct)
++    $r.Session = $(if ($sessKnown) { [double]$nu.SessionPct } else { 0.0 }); $r.SessionMax = $(if ($mar) { [double]$set.usageLimitPct } else { [double]$set.nightSessionMaxPct })
+     $r.WeekBudget = [Math]::Round($r.WeekLimit - $r.Week, 1); $r.SessionBudget = [Math]::Round($r.SessionMax - $r.Session, 1)
+     $fableText = ''
+-    if ((Get-ModelFamily $model) -eq 'Fable' -and $u.fable -and $u.fable.resetsAt) {
++    if ((Get-ModelFamily $model) -eq 'Fable' -and -not $nu.Fallback -and $u -and $u.fable -and $u.fable.resetsAt) {
+         $r.FableLimit = $(if ($mar) { [double]$set.usageLimitPct } else { Get-WeekAllowance $u.fable.resetsAt $NowTime ([double]$set.nightFableReservePct) })
+         $fb = [Math]::Round($r.FableLimit - [double]$u.fable.pct, 1)
+         if ($fb -lt $min) { $r.Why = ('the Fable week is at ' + (& $n1 $u.fable.pct) + '% of ' + (& $n1 $r.FableLimit) + '% allowed now: ' + (& $n1 $fb) + ' points left, a batch needs ' + (& $n1 $min) + ' (nightMinBatchPct)'); return [pscustomobject]$r }
+@@ -2162,7 +2216,7 @@
+     }
+     if ($r.WeekBudget -lt $min) { $r.Why = ('the week is at ' + (& $n1 $r.Week) + '% of ' + (& $n1 $r.WeekLimit) + '% allowed now: ' + (& $n1 $r.WeekBudget) + ' points left, a batch needs ' + (& $n1 $min) + ' (nightMinBatchPct)'); return [pscustomobject]$r }
+     if ($r.SessionBudget -le 0) { $r.Why = ('the session window is at ' + (& $n1 $r.Session) + '% (nightSessionMaxPct ' + $r.SessionMax + ')'); return [pscustomobject]$r }
+-    $r.Text = 'the week to ' + (& $n1 $r.WeekLimit) + '% (' + (& $n1 $r.WeekBudget) + ' points from ' + (& $n1 $r.Week) + '%), the 5-hour window to ' + (& $n1 $r.SessionMax) + '% (from ' + (& $n1 $r.Session) + '%)' + $fableText
++    $r.Text = 'the week to ' + (& $n1 $r.WeekLimit) + '% (' + (& $n1 $r.WeekBudget) + ' points from ' + (& $n1 $r.Week) + '%), the 5-hour window to ' + (& $n1 $r.SessionMax) + '% (' + $(if ($sessKnown) { 'from ' + (& $n1 $r.Session) + '%' } else { 'its figure not known' }) + ')' + $fableText
+     $r.Ok = $true
+     [pscustomobject]$r
+ }
+@@ -2280,7 +2334,7 @@
+         $lastP = $(if ($q.Count) { 'P' + [regex]::Match([string]$q[$q.Count - 1], '^cc-P(\d+)-').Groups[1].Value } else { '' })
+         $rec = [pscustomobject]@{ n = $n; startedAt = $NowTime.ToString('s'); endedAt = ''; weekAtStart = $nb.Week; weekLimit = $nb.WeekLimit; budget = $nb.WeekBudget
+             sessionAtStart = $nb.Session; sessionMax = $nb.SessionMax; fableLimit = $nb.FableLimit; inferred = [string]$nb.Inferred; text = $nb.Text; finished = @(); stopAsked = $false
+-            endWeek = $null; endSession = $null; endWhy = ''; overrun = 0; sessionOver = 0 }
++            endWeek = $null; endSession = $null; endWhy = ''; overrun = 0; sessionOver = 0; usageFallback = [bool]$nb.Fallback; usageSource = [string]$nb.Source }
+         $ns | Add-Member -NotePropertyName batches -NotePropertyValue (@(@(Get-Prop $ns 'batches' @()) | Where-Object { $_ }) + $rec) -Force
+         $ns | Add-Member -NotePropertyName batch -NotePropertyValue $n -Force
+         $ns | Add-Member -NotePropertyName whyNot -NotePropertyValue '' -Force
+@@ -2291,7 +2345,7 @@
+         $st | Add-Member -NotePropertyName longRun -NotePropertyValue ([pscustomobject]@{ cap = 0; until = $until.ToString('s'); startedAt = $NowTime.ToString('s'); startRunDone = [int](Get-Prop $st 'runDone' 0) }) -Force
+         if ([string](Get-Prop $st 'restReason' '') -in @('run cap', 'night shift ended', 'long run ended', 'night batch')) { $st | Add-Member -NotePropertyName runDone -NotePropertyValue 0 -Force; $st | Add-Member -NotePropertyName runStarted -NotePropertyValue $NowTime.ToString('s') -Force }
+         Save-State $st
+-        Log ('night batch {0} started ({1}): budget {2}{3}; waking for {4}' -f $n, $by, $nb.Text, $(if ($nb.Inferred) { '; ' + $nb.Inferred } else { '' }), $firstP)
++        Log ('night batch {0} started ({1}): budget {2}{3}{5}; waking for {4}' -f $n, $by, $nb.Text, $(if ($nb.Inferred) { '; ' + $nb.Inferred } else { '' }), $firstP, $(if ($nb.Source -and -not $nb.Fallback) { '; usage: ' + $nb.Source } else { '' }))   # cc-P757: which source
+         $r = Invoke-SelfWake $st 'night shift' $firstP $nmodel -UsageChecked
+         if ($r.Ok) {
+             $st = Get-State; $ns = $st.nightShift
+@@ -2314,7 +2368,7 @@
+     $ns | Add-Member -NotePropertyName whyNot -NotePropertyValue $why -Force
+     [void](Set-NightNext $set $ns)
+     Save-State $st
+-    Log ('night check ({0}): no batch: {1}; {2}' -f $by, $why, (Format-NightNext $ns))
++    Log ('night check ({0}): no batch: {1}; {2}{3}' -f $by, $why, (Format-NightNext $ns), $(if ($nb -and $nb.Source -and -not $nb.Fallback) { ' (usage: ' + $nb.Source + ')' } else { '' }))   # cc-P757: which source
+     Write-Status
+     $false
+ }
+--- pristine/Golems.ps1	2026-11-01 05:23:48.068435400 -0600
++++ kit/Golems.ps1	2026-11-01 05:22:32.190543500 -0600
+@@ -458,6 +458,16 @@
+     $codexMe = ([string](Get-GolemProp $me 'engine' 'claude') -eq 'codex')   # cc-P158
+     $laneOn = (-not $codexMe) -and (Test-CodexLaneOn $reg)
+     $picks = Get-OtherRunNextPicks $me $reg (Split-Path -Parent $LockDir)   # cc-P370
++    # cc-P757: this Golem's own Run next pick (and the one waiting behind an answered prompt). Someone chose it for this
++    # Golem, so it is not left for a Codex lane (11-01 03:27: Iron rested with P715, its pick, queued, because P715 was
++    # marked Codex OK and a lane was enabled; nothing took it for 2 hours).
++    $mine = @{}
++    $mf = Join-Path (Split-Path -Parent $LockDir) (Get-GolemFileName $me 'RUN-NEXT' '')
++    foreach ($x in @($mf, ($mf + '.after'))) {
++        if (-not (Test-Path -LiteralPath $x)) { continue }
++        $n = ''; try { $n = ([string](Get-Content -LiteralPath $x -Raw -ErrorAction Stop)).Trim() } catch {}
++        if ($n) { $mine[$n] = $true }
++    }
+     foreach ($it in @($Items)) {
+         $num = [regex]::Match($it.Name, '^cc-P(\d+)-').Groups[1].Value
+         $model = $(if (Get-Command Get-PromptModel -ErrorAction SilentlyContinue) { Get-PromptModel $it.FullName } else { '' })
+@@ -473,7 +483,10 @@
+             if (-not @(Get-LaneTests $it.FullName).Count) { Write-GolemLog ("claim: P$num has no **Lane tests:** line (the tests the Golem runs after Codex; none if there are none): skipped"); continue }
+             $rf = Get-LaneRefusal $it.FullName   # cc-P159: whatever its Codex OK line says
+             if ($rf) { Write-GolemLog ("claim: P$num is not for a Codex lane: $rf"); continue }
+-        } elseif ($cx -and $laneOn) { Write-GolemLog ("claim: P$num is marked Codex OK and a Codex lane is on: left for it"); continue }
++        } elseif ($cx -and $laneOn) {
++            if ($mine.ContainsKey($it.Name)) { Write-GolemLog ("claim: P$num is marked Codex OK, but it is " + [string]$me.name + "'s own run next pick: taken, not left for the Codex lane") }
++            else { Write-GolemLog ("claim: P$num is marked Codex OK and a Codex lane is on: left for it"); continue }
++        }
+         $t = Get-PromptTouches $it.FullName
+         if ($codexMe -and $t.Guessed) { Write-GolemLog ("claim: P$num has no Touches line: a Codex lane waits when unsure (" + $t.Why + ")"); continue }
+         if ($t.Guessed -or $t.Why) { Write-GolemLog ("claim: P$num touches " + ($t.Areas -join ', ') + ' (' + $t.Why + ')') }
+--- live/Golem.Tests.ps1	2026-11-01 05:19:14.626185300 -0600
++++ kit/tests/Golem.Tests.ps1	2026-11-01 05:45:59.861089400 -0600
+@@ -897,7 +897,8 @@
+             @{ Name = 'stopped';         Prep = { param($w) $s = Get-WState $w; $s | Add-Member stoppedPrompt 'P100' -Force; $s | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $w.Root 'state.json') -Encoding ASCII }; Want = 'P100 is STOPPED and waits for you' },
+             @{ Name = 'by hand';         Prep = { param($w) $s = Get-WState $w; $s | Add-Member stoppedByHand $true -Force; $s | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $w.Root 'state.json') -Encoding ASCII }; Want = 'the Golem was rested by hand' },
+             @{ Name = 'usage unknown';   Prep = { param($w) Remove-Item -LiteralPath (Join-Path $w.Root 'usage.json') };                                                                   Want = 'usage unknown (no usage.json' },
+-            @{ Name = 'usage old';       Prep = { param($w) Set-Usage $w -FiveHour 20 -SevenDay 30 -AgeMin 1500 -Now ([datetime]$night) };                                              Want = 'usage unknown (last reported 25 h ago' },
++            # cc-P757: old figures whose week has reset since (no figure with its reset ahead); old figures still in their week get one batch (P757_3).
++            @{ Name = 'usage old';       Prep = { param($w) Set-Usage $w -FiveHour 20 -SevenDay 30 -AgeMin 1500 -WeekResetInDays 0 -Now ([datetime]$night) };                          Want = 'usage unknown (last reported 25 h ago' },
+             @{ Name = 'session 55%';     Prep = { param($w) Set-Usage $w -FiveHour 55 -SevenDay 30 -Now ([datetime]$night) };                                                             Want = 'the session window is at 55% (nightSessionMaxPct 50)' },
+             @{ Name = 'week over pace';  Prep = { param($w) Set-Usage $w -FiveHour 20 -SevenDay 60 -WeekResetInDays 3 -Now ([datetime]$night) };                                          Want = 'the week is at 60%, ahead of its pace (47.1% allowed tonight' },
+             @{ Name = 'cli not signed';  Prep = { param($w) Remove-Item -LiteralPath (Join-Path $w.Dir 'cli-signed-in.txt') };                                                            Want = 'the Claude Code CLI is not signed in' }
+@@ -4807,6 +4808,127 @@
+     }
+ }
+ 
++# ---- cc-P757: the night check falls back to plan-usage.json, one batch on the last known week, a Golem's own pick ------
++# Spliced into tests\Golem.Tests.ps1 before its summary lines. Uses P156's night world (New-Night156, $p156Night,
++# $p156WeekReset: at 22:30 on 10-17, 47.1% of the week is allowed tonight) and P158's lane world (New-LaneWorld).
++# Every usage file here is a copy in the test world's root, in the shapes the live files had on 11-01: usage.json with
++# sevenDay only (no fiveHour), plan-usage.json with "session": null.
++if ($Kind -eq 'golem') {
++    # usage.json as the status line wrote it on 11-01 05:17: the week only.
++    function Set-UsageWeekOnly757($w, [double]$SevenDay, [datetime]$At) {
++        @{ updatedUtc = $At.ToUniversalTime().ToString('s'); sessionId = 's'; model = 'claude-opus-5-5'
++           sevenDay = @{ pct = $SevenDay; resetsAt = [DateTimeOffset]::new($p156WeekReset).ToUnixTimeSeconds() } } | ConvertTo-Json -Depth 4 |
++            Set-Content -LiteralPath (Join-Path $w.Root 'usage.json') -Encoding ASCII
++    }
++    # plan-usage.json as the overseer's reader writes it; -Session -1 writes "session": null (as on 11-01).
++    function Set-Plan757($w, [double]$Week, [datetime]$ReadAt, [double]$Session = -1) {
++        $fmt = { param($t) [DateTimeOffset]::new($t).ToString('yyyy-MM-ddTHH:mm:sszzz') }
++        $j = [ordered]@{ schema = 1; readAt = (& $fmt $ReadAt); readBy = 'test'; plan = 'Ultra'
++            session = $(if ($Session -ge 0) { @{ pct = $Session; resets = (& $fmt $ReadAt.AddHours(3)) } } else { $null })
++            week = @{ pct = $Week; resets = (& $fmt $p156WeekReset); note = 'all models' }; fableWeek = $null; paceWarning = ''
++            limitResets = @{ full = @{ available = $false; expires = '' }; fiveHour = @{ available = $false } } }
++        $j | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $w.Root 'plan-usage.json') -Encoding ASCII
++    }
++
++    Fact 'P757_1_TheNightCheckTakesTheWindowUsageJsonLacksFromThePlanPage' {
++        # 11-01: usage.json has the week only; the plan page (read 40 minutes ago, within planUsageMaxAgeHours) has both.
++        $w = New-Night156
++        Set-UsageWeekOnly757 $w 30 $p156Night.AddMinutes(-15)
++        Set-Plan757 $w 30 $p156Night.AddMinutes(-40) -Session 12
++        [void](Invoke-At156 $w 'NightShift' $p156Night)
++        Assert-True ((Wait-CliCalls156 $w 1) -eq 1) ('a batch starts: ' + (Get-WLog $w))
++        $l = Get-WLog $w
++        Assert-True ($l -match 'night batch 1 started \(the night shift task\): budget the week to 47\.1% \(17\.1 points from 30%\), the 5-hour window to 50% \(from 12%\)') ('the 5-hour figure is the plan page''s: ' + $l)
++        Assert-True ($l -match 'usage: the week from the status line, the 5-hour window from the plan usage page') ('the log says which source: ' + $l)
++        Assert-True ($l -notmatch 'usage unknown') ('never "usage unknown": ' + $l)
++        # The plan page too old (over planUsageMaxAgeHours 4): not used for the 5-hour window.
++        $w2 = New-Night156
++        Set-UsageWeekOnly757 $w2 30 $p156Night.AddMinutes(-15)
++        Set-Plan757 $w2 30 $p156Night.AddHours(-6) -Session 12
++        [void](Invoke-At156 $w2 'NightShift' $p156Night)
++        Assert-True ((Get-WLog $w2) -match 'usage: the week from the status line, the 5-hour window not reported by the status line or the plan usage page') ('a stale plan page is not used: ' + (Get-WLog $w2))
++        # usage.json gone, the plan page fresh: the plan page alone.
++        $w3 = New-Night156
++        Remove-Item -LiteralPath (Join-Path $w3.Root 'usage.json')
++        Set-Plan757 $w3 30 $p156Night.AddMinutes(-20) -Session 12
++        [void](Invoke-At156 $w3 'NightShift' $p156Night)
++        Assert-True ((Wait-CliCalls156 $w3 1) -eq 1 -and (Get-WLog $w3) -match 'usage: the week from the plan usage page, the 5-hour window from the plan usage page') ('from the plan page alone: ' + (Get-WLog $w3))
++    }
++
++    Fact 'P757_2_AFiveHourWindowNeitherSourceReportsIsNotHeldFor' {
++        # The live shapes of 11-01: usage.json week only, the plan page "session": null. The week decides.
++        $w = New-Night156
++        Set-UsageWeekOnly757 $w 30 $p156Night.AddMinutes(-15)
++        Set-Plan757 $w 30 $p156Night.AddMinutes(-5)
++        [void](Invoke-At156 $w 'NightShift' $p156Night)
++        Assert-True ((Wait-CliCalls156 $w 1) -eq 1) ('a batch starts on the week alone: ' + (Get-WLog $w))
++        $l = Get-WLog $w
++        Assert-True ($l -match 'the 5-hour window to 50% \(its figure not known\)' -and $l -match 'the 5-hour window not reported by the status line or the plan usage page \(not held for\)') ('said: ' + $l)
++        $b = @((Get-Night156 $w).batches)[0]
++        Assert-True ([double]$b.weekLimit -eq 47.1 -and -not [bool]$b.usageFallback) ('an ordinary batch, the week''s budget: ' + ($b | ConvertTo-Json -Compress))
++        # The pace gate still holds: the week at 60% starts nothing, and the log names the source.
++        $w2 = New-Night156
++        Set-UsageWeekOnly757 $w2 60 $p156Night.AddMinutes(-15)
++        Set-Plan757 $w2 60 $p156Night.AddMinutes(-5)
++        [void](Invoke-At156 $w2 'NightShift' $p156Night)
++        Assert-True (@(Get-CliCalls $w2).Count -eq 0) 'over pace: no batch'
++        Assert-True ((Get-WLog $w2) -match 'no batch: the week is at 60%, ahead of its pace \(47\.1% allowed tonight.*\(usage: the week from the plan usage page') ('why, and the source: ' + (Get-WLog $w2))
++    }
++
++    Fact 'P757_3_NeitherSourceUsableStartsOneBatchWhenTheLastKnownWeekIsUnderPace' {
++        # usage.json 30 hours old (over nightUsageMaxAgeHours 24), the plan page 6 hours old (over planUsageMaxAgeHours 4).
++        $w = New-Night156
++        Set-UsageWeekOnly757 $w 30 $p156Night.AddHours(-30)
++        Set-Plan757 $w 31 $p156Night.AddHours(-6)
++        [void](Invoke-At156 $w 'NightShift' $p156Night)
++        Assert-True ((Wait-CliCalls156 $w 1) -eq 1) ('one batch starts: ' + (Get-WLog $w))
++        $l = Get-WLog $w
++        Assert-True ($l -match 'night batch 1 started.*usage fallback: .*the week is the last known figure, 31% from the plan usage page at 16:30') ('the newest figure (the plan page''s), said: ' + $l)
++        $b = @((Get-Night156 $w).batches)[0]
++        Assert-True ([bool]$b.usageFallback -and [double]$b.weekLimit -eq 47.1 -and [double]$b.weekAtStart -eq 31) ('the batch is marked: ' + ($b | ConvertTo-Json -Compress))
++        # The batch ends; the files are still stale at the 23:30 check: no second batch on old figures.
++        $s = Get-WState $w
++        $s.nightShift.batch = 0
++        $s.nightShift | Add-Member -NotePropertyName nextCheck -NotePropertyValue '2026-10-17T23:30:00' -Force   # as Close-NightBatch sets it
++        foreach ($k in @('longRun', 'wakePending')) { if ($s.PSObject.Properties.Name -contains $k) { $s.PSObject.Properties.Remove($k) } }
++        $s | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $w.Root 'state.json') -Encoding ASCII
++        [void](Invoke-At156 $w 'Watch' $p156Night.AddMinutes(60))
++        Assert-True (@(Get-CliCalls $w).Count -eq 1) ('one batch a night on old figures: ' + (Get-WLog $w))
++        Assert-True ((Get-WStatus $w).nightShift.whyNot -match 'the one batch a night on the last known week figure has run \(batch 1\)') ('why: ' + (Get-WStatus $w).nightShift.whyNot)
++        # The last known week over pace: nothing.
++        $w2 = New-Night156
++        Set-UsageWeekOnly757 $w2 60 $p156Night.AddHours(-30)
++        Remove-Item -LiteralPath (Join-Path $w2.Root 'plan-usage.json') -ErrorAction SilentlyContinue
++        [void](Invoke-At156 $w2 'NightShift' $p156Night)
++        Assert-True (@(Get-CliCalls $w2).Count -eq 0 -and (Get-WStatus $w2).nightShift.whyNot -match 'the week is at 60%, ahead of its pace') ('over pace: ' + (Get-WStatus $w2).nightShift.whyNot)
++        # No figure at all: still unknown, nothing started.
++        $w3 = New-Night156
++        Remove-Item -LiteralPath (Join-Path $w3.Root 'usage.json')
++        [void](Invoke-At156 $w3 'NightShift' $p156Night)
++        Assert-True (@(Get-CliCalls $w3).Count -eq 0 -and (Get-WStatus $w3).nightShift.whyNot -match 'usage unknown \(no usage\.json.*no week figure') ('no figure: ' + (Get-WStatus $w3).nightShift.whyNot)
++        # Away mode's rule (the same Test-NightUsage) does not take the fallback.
++        $ast = [System.Management.Automation.Language.Parser]::ParseFile($Hook, [ref]$null, [ref]$null)
++        $calls = @($ast.FindAll({ param($a) $a -is [System.Management.Automation.Language.CommandAst] -and $a.GetCommandName() -eq 'Test-NightUsage' }, $true))
++        Assert-True ($calls.Count -eq 2 -and @($calls | Where-Object { $_.Extent.Text -match '-AllowFallback' }).Count -eq 1) ('only the night budget allows the fallback: ' + (@($calls | ForEach-Object { $_.Extent.Text }) -join ' | '))
++    }
++
++    Fact 'P757_4_AGolemsOwnRunNextPickIsTakenEvenWhenMarkedCodexOk' {
++        $w = New-LaneWorld
++        Add-PromptText $w 'cc-P105-forcodex.md' ("# CC task P105: for codex`n`n**Touches:** docs-only`n" + $laneOk)
++        Add-PromptText $w 'cc-P106-plain.md' "# CC task P106: plain`n`n**Touches:** docs-only`n"
++        Set-Content -LiteralPath (Join-Path $w.Root 'RUN-NEXT-Bronze') -Value 'cc-P105-forcodex.md' -Encoding ASCII
++        [void](Invoke-Team $w 'Bronze' 'Stop' @{ last_assistant_message = 'go'; session_id = 'sess-b' })
++        Assert-True ((Get-TeamState $w 'Bronze').current -eq 'P105') ('Bronze takes its own pick: ' + (Get-TeamState $w 'Bronze').current + ' / ' + (Get-TeamLog $w 'Bronze'))
++        Assert-True ((Get-TeamLog $w 'Bronze') -match "claim: P105 is marked Codex OK, but it is Bronze's own run next pick: taken") ('said: ' + (Get-TeamLog $w 'Bronze'))
++        # Another Golem's pick, or no pick: still left for the lane.
++        $w2 = New-LaneWorld
++        Add-PromptText $w2 'cc-P105-forcodex.md' ("# CC task P105: for codex`n`n**Touches:** docs-only`n" + $laneOk)
++        Add-PromptText $w2 'cc-P106-plain.md' "# CC task P106: plain`n`n**Touches:** docs-only`n"
++        [void](Invoke-Team $w2 'Bronze' 'Stop' @{ last_assistant_message = 'go'; session_id = 'sess-b' })
++        Assert-True ((Get-TeamState $w2 'Bronze').current -eq 'P106' -and (Get-TeamLog $w2 'Bronze') -match 'claim: P105 is marked Codex OK and a Codex lane is on: left for it') ('no pick: left for the lane: ' + (Get-TeamState $w2 'Bronze').current)
++    }
++}
++
+ Write-Host ''
+ Write-Host ('{0} checks passed, {1} failed ({2}, {3})' -f $script:passes, $script:fails, $Kind, $Hook)
+ exit $script:fails
