@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-25. Shard version 2026.10.31.9. Golem off, 1 queued, latest done P754. Play tests: 1427 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-25. Shard version 2026.10.31.10. Golem off, 2 queued, latest done P754. Play tests: 1427 open, 4 failed, 43 passed.
 
 ### Needs overseer review (4)
 
@@ -230,21 +230,22 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem off; 621 prompts done, 5 more stopped early and not counted)
+### Queue (Golem off; 622 prompts done, 5 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
 | P715 ask-expires-too-soon | queued |  |
+| P755 cont-fixup-new-haven-tutorial-fixes | queued |  |
 | P754 review-build-new-haven-tutorial-fixes | done | 2026-11-01 |
 | P753 cont-guild-hqs-live-shots | done | 2026-10-31 |
 | P752 review-build-isle-round-review-fixes | done | 2026-10-31 |
 | P751 isle-round-review-fixes | done | 2026-10-31 |
 | P749 isle-release-4 | done | 2026-10-31 |
 | P748 review-build-isle-coast-and-wreck | done | 2026-10-31 |
+| P747 review-fallback-to-iron | done | 2026-11-01 |
 | P746 cont-fixup-isle-coast-and-wreck | done | 2026-10-31 |
 | P742 isle-vision-chamber | done | 2026-10-31 |
 | P741 isle-coast-and-wreck | done | 2026-10-31 |
-| P740 isle-wake-visible | done | 2026-10-31 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 182 patches, 12 replacements
 
