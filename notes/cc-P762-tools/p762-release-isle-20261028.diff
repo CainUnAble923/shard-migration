@@ -1,0 +1,1581 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index c096ec7..3974139 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -29,6 +29,17 @@ Example:
+ - Restoring a Jacob's Pickaxe no longer refuses ingots kept in your bank.
+ -->
+ 
++## 2026.11.01.4
++
++### Added
++- Test shard: a new character who runs straight past the isle's lessons and through the moongate earns "Didn't Read the Sign" and a reward box holding a pet choice scroll: a dog or a cat that follows you. There is no going back to the isle for that character.
++
++### Changed
++- New characters start on the Wakening Isle and are Human for now. New Haven shows as locked on the character screen until the isle is finished; an Elf or Gargoyle you pick is made Human, and you are told why.
++
++### Staff
++- Two switches in the shard's configuration reopen these: newCharacters.newHavenStart (false for now) and newCharacters.races ("Human" for now). Staff accounts are not locked. The account reset's flags option now also clears the tutorial record, so the next character takes the lessons from the start.
++
+ ## 2026.11.01.3
+ 
+ ### Changed
+diff --git a/VERSION b/VERSION
+index 97e0c25..612b39b 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-2026.11.01.3
++2026.11.01.4
+diff --git a/player-package/tests/Cliloc-Overrides.Tests.ps1 b/player-package/tests/Cliloc-Overrides.Tests.ps1
+index 1e76e11..2e47b43 100644
+--- a/player-package/tests/Cliloc-Overrides.Tests.ps1
++++ b/player-package/tests/Cliloc-Overrides.Tests.ps1
+@@ -264,8 +264,10 @@ Fact 'TheServerAndThePackageAgreeOnEveryNumber' {
+     # cc-P663: the start choice's two city descriptions.
+     $want['Start with the tutorial (recommended): wake on the Wakening Isle, learn the basics along one road, then take the moongate to New Haven.'] = (& $num 'TutorialIslandCity')
+     $want['Skip the tutorial: start in New Haven.'] = (& $num 'NewHavenSkipCity')
+-    # cc-P717: New Haven shown locked until the account graduates or skips.
+-    $want["Locked: your account's first character starts on Tutorial Island. New Haven opens once a character finishes or skips the tutorial."] = (& $num 'NewHavenLockedCity')
++    # cc-P717, text cc-P762: New Haven shown locked while its switch is off.
++    $want["Locked for now: New Haven opens once the Wakening Isle is finished."] = (& $num 'NewHavenLockedCity')
++    # cc-P726 (added to this list by cc-P762): an evo pet's context menu entry.
++    $want['Pet Info'] = (& $num 'PetInfo')
+     Assert-Equal $want.Count $ours.Count 'one entry per server constant'
+     foreach ($e in $ours) { Assert-Equal $want["$($e.text)"] ([int]$e.number) "$($e.text)" }
+     Assert-Equal $ours.Count $slClilocRegistry.Count 'registry rows'
+diff --git a/player-package/vendor/shattered-legacy-cliloc/entries.json b/player-package/vendor/shattered-legacy-cliloc/entries.json
+index 59307d2..54460e7 100644
+--- a/player-package/vendor/shattered-legacy-cliloc/entries.json
++++ b/player-package/vendor/shattered-legacy-cliloc/entries.json
+@@ -17,7 +17,7 @@
+     { "number": 1900013, "text": "Clear corpses nearby" },
+     { "number": 1900014, "text": "Start with the tutorial (recommended): wake on the Wakening Isle, learn the basics along one road, then take the moongate to New Haven." },
+     { "number": 1900015, "text": "Skip the tutorial: start in New Haven." },
+-    { "number": 1900016, "text": "Locked: your account's first character starts on Tutorial Island. New Haven opens once a character finishes or skips the tutorial." },
++    { "number": 1900016, "text": "Locked for now: New Haven opens once the Wakening Isle is finished." },
+     { "number": 1900017, "text": "Pet Info" }
+   ]
+ }
+diff --git a/player-package/vendor/shattered-legacy-cliloc/registry.csv b/player-package/vendor/shattered-legacy-cliloc/registry.csv
+index 8061553..4fa1af2 100644
+--- a/player-package/vendor/shattered-legacy-cliloc/registry.csv
++++ b/player-package/vendor/shattered-legacy-cliloc/registry.csv
+@@ -19,5 +19,5 @@ number,text,used_by,added
+ 1900013,Clear corpses nearby,"trash bag context menu, clear every monster corpse in reach (TrashBag.ClearCorpsesNearbyEntry)",cc-P415
+ 1900014,"Start with the tutorial (recommended): wake on the Wakening Isle, learn the basics along one road, then take the moongate to New Haven.","character creation city list, Tutorial Island description (TutorialStart.Cities)",cc-P663
+ 1900015,Skip the tutorial: start in New Haven.,"character creation city list, New Haven (skip) description (TutorialStart.Cities)",cc-P663
+-1900016,"Locked: your account's first character starts on Tutorial Island. New Haven opens once a character finishes or skips the tutorial.","character creation city list, New Haven shown locked until the account graduates or skips (TutorialStart.Cities)",cc-P717
++1900016,"Locked for now: New Haven opens once the Wakening Isle is finished.","character creation city list, New Haven shown locked while newCharacters.newHavenStart is off (TutorialStart.Cities)",cc-P762
+ 1900017,Pet Info,"evo pet context menu for its owner (EvoPetInfo.PetInfoEntry)",cc-P726
+diff --git a/server/customizations/CharacterCreation.cs b/server/customizations/CharacterCreation.cs
+index 36381ae..241ef27 100644
+--- a/server/customizations/CharacterCreation.cs
++++ b/server/customizations/CharacterCreation.cs
+@@ -127,7 +127,7 @@ public static partial class CharacterCreation
+         _availableStartingCities ??= ConstructAvailableStartingCities();
+ 
+     // cc-P717: the list one account sees (AccountHandler, AccountHandler-per-account-start-cities.patch). With the tutorial
+-    // on, New Haven shows locked until the account graduates or skips (TutorialStart.Cities); otherwise the shared list.
++    // on, New Haven shows locked while its switch is off (cc-P762, TutorialStart.Cities); otherwise the shared list.
+     public static CityInfo[] GetStartingCities(IAccount account) =>
+         Server.Tutorial.ClusterFTutorial.Enabled ? Server.Tutorial.TutorialStart.Cities(account) : GetStartingCities();
+ 
+@@ -206,6 +206,11 @@ public static partial class CharacterCreation
+             return;
+         }
+ 
++        // cc-P762: only the races newCharacters.races allows (Human, for now); any other is made Human, with a line once
++        // the character is in the world. Staff are exempt (and the staff branch below makes every staff character Human).
++        var askedRace = Core.Expansion >= args.Race.RequiredExpansion ? args.Race : Race.DefaultRace;
++        var playerRace = Server.Tutorial.NewCharacterRules.RaceFor(args.Account, askedRace, out var raceRefused);
++
+         var newChar = CreateMobile(args.Account as Account);
+ 
+         if (newChar == null)
+@@ -227,8 +232,22 @@ public static partial class CharacterCreation
+ 
+         if (newChar.AccessLevel == AccessLevel.Player)
+         {
+-            var race = Core.Expansion >= args.Race.RequiredExpansion ? args.Race : Race.DefaultRace;
++            var race = playerRace; // cc-P762
+             newChar.Race = race;
++            newChar.Hue = race.ClipSkinHue(args.Hue & 0x3FFF) | 0x8000;
++            if (raceRefused)
++            {
++                logger.Information("Login: {NetState}: {Race} refused at creation (account={Account}); made {Made}", state, askedRace.Name,
++                    args.Account.Username, race.Name);
++                var told = newChar;
++                Timer.DelayCall(TimeSpan.FromSeconds(4), () =>
++                {
++                    if (!told.Deleted && told.NetState != null)
++                    {
++                        told.SendMessage(0x3B2, Server.Tutorial.NewCharacterRules.RaceRefusedLine);
++                    }
++                });
++            }
+ 
+             if (newChar is PlayerMobile pm)
+             {
+diff --git a/server/customizations/ClusterFAchievements.cs b/server/customizations/ClusterFAchievements.cs
+index 8250190..f1676d7 100644
+--- a/server/customizations/ClusterFAchievements.cs
++++ b/server/customizations/ClusterFAchievements.cs
+@@ -119,6 +119,9 @@ public enum TriggerKind
+     ProcrastinatedDays,
+     LoopBackedOut,
+     CommissionsExpired,
++    // cc-P762: ran for the Wakening Isle's moongate before its lessons (Tutorial/TutorialGateSkip.cs). Last, so no saved
++    // value moves.
++    TutorialGateSkip,
+ }
+ 
+ public sealed class AchievementTrigger
+@@ -195,6 +198,7 @@ public sealed class AchievementTrigger
+             TriggerKind.Logins             => $"logged in {n:N0} times",
+             TriggerKind.TutorialSkipped    => "skipped the New Haven tutorial",
+             TriggerKind.TutorialRemedial   => "completed the tutorial after skipping it",
++            TriggerKind.TutorialGateSkip   => "ran for the Wakening Isle's moongate before its lessons",
+             TriggerKind.FountainOfYouth    => "drank from the Fountain of Youth",
+             TriggerKind.ScissorsRunning    => n == 1
+                 ? "tried to use scissors while running"
+@@ -1184,6 +1188,16 @@ public static partial class ClusterFAchievementSystem // partial: cc-P231's joke
+             itemGumpId:      0x0FF4,
+             prerequisiteKey: "tutorial.skipped");
+ 
++        // cc-P762 (Chase 2026-11-01: "a snarky achievement"): granted by TutorialGateSkip, once per account, to a new
++        // character that runs straight for the Wakening Isle's moongate.
++        Reg("tutorial.gateSkip",
++            "Didn't Read the Sign",
++            "Ran past every lesson on the Wakening Isle and straight through the moongate.",
++            AchievementCategory.League, ap: 5, renown: 0,
++            trigger:    T.Event(TriggerKind.TutorialGateSkip),
++            flavor:     "The sign said \"Lessons this way.\" You read \"Exit.\"",
++            itemGumpId: 0x0FF4);
++
+         // cc-P192 (Chase 2026-10-19 15:03: "a silly easter egg"): SECRET. Hidden until earned; granted by
+         // FountainOfYouthSystem.Drink the first time an account drinks from the roaming (live) fountain. No text names a
+         // place. Never document it on the wiki (admin notes: shard-migration notes/admin/secrets.md).
+diff --git a/server/customizations/ClusterFDevTools.cs b/server/customizations/ClusterFDevTools.cs
+index 72c712e..e800e4e 100644
+--- a/server/customizations/ClusterFDevTools.cs
++++ b/server/customizations/ClusterFDevTools.cs
+@@ -205,15 +205,21 @@ public static class ClusterFDevTools
+         if (opts.Flags)
+         {
+             // cc-P48: registration is the "league.joined" flag; every character's League rank goes with it.
+-            data.Flags.Clear(); // cc-P717: with it TutorialStart.HavenUnlockedFlag, so New Haven is locked again
++            data.Flags.Clear();
+             data.FlagValues.Clear();
+             data.ClearLeagueData();
+ 
++            // cc-P762 (P717's Codex P2): the tutorial record too, so the next character takes the lessons from the start.
++            for (var i = 0; i < account.Length; i++)
++                if (account[i] is PlayerMobile trainee)
++                    Server.Tutorial.TutorialCoreTrials.Cancel(trainee);
++            data.ResetTutorial();
++
+             for (var i = 0; i < account.Length; i++)
+                 if (account[i] is PlayerMobile ranked)
+                     ClusterFBankLimit.Apply(ranked, false);
+ 
+-            admin.SendMessage("League registration, every character's League rank, and every account flag cleared. New Haven is locked at character creation until a character finishes or skips the tutorial.");
++            admin.SendMessage("League registration, every character's League rank, and every account flag and the tutorial record cleared. The next new character takes the Wakening Isle's lessons from the start.");
+         }
+ 
+         if (opts.Bulletins)
+diff --git a/server/customizations/ShardClilocs.cs b/server/customizations/ShardClilocs.cs
+index 804d421..e30c08c 100644
+--- a/server/customizations/ShardClilocs.cs
++++ b/server/customizations/ShardClilocs.cs
+@@ -78,7 +78,7 @@ public static class ShardClilocs
+     /// <summary>"Skip the tutorial: start in New Haven."</summary>
+     public const int NewHavenSkipCity = 1_900_015;
+ 
+-    /// <summary>cc-P717: "Locked: your account's first character starts on Tutorial Island. New Haven opens once a character finishes or skips the tutorial."</summary>
++    /// <summary>cc-P717, text cc-P762: "Locked for now: New Haven opens once the Wakening Isle is finished."</summary>
+     public const int NewHavenLockedCity = 1_900_016;
+ 
+     /// <summary>cc-P726: "Pet Info", an evo pet's context menu entry for its owner (EvoPetInfo).</summary>
+diff --git a/server/customizations/Tutorial/ClusterFTutorial.cs b/server/customizations/Tutorial/ClusterFTutorial.cs
+index 4351626..c716322 100644
+--- a/server/customizations/Tutorial/ClusterFTutorial.cs
++++ b/server/customizations/Tutorial/ClusterFTutorial.cs
+@@ -52,6 +52,7 @@ public static class ClusterFTutorial
+ 
+     public const string SkippedAchievement = "tutorial.skipped";
+     public const string RemedialAchievement = "tutorial.remedial";
++    public const string GateSkipAchievement = "tutorial.gateSkip"; // cc-P762: "Didn't Read the Sign" (TutorialGateSkip)
+ 
+     public static void Configure()
+     {
+@@ -271,7 +272,15 @@ public static class ClusterFTutorial
+     // -- Skip and remedial --
+ 
+     /// <summary>The skip, after both confirmations. Grants "Didn't Read the Manual" once.</summary>
+-    public static bool Skip(PlayerMobile pm)
++    public static bool Skip(PlayerMobile pm) => Skip(pm, byGate: false);
++
++    /// <summary>
++    /// cc-P762: the skip by running for the dock's moongate (TutorialGateSkip), after the crossing: the record as the skip
++    /// leaves it, without the skip's achievement (the gate grants its own) or Rook's offer (no going back).
++    /// </summary>
++    public static bool SkipByGate(PlayerMobile pm) => Skip(pm, byGate: true);
++
++    private static bool Skip(PlayerMobile pm, bool byGate)
+     {
+         if (!IsParticipant(pm) || RecordOf(pm) is not { } record || record.State is not (TutorialState.InCore or TutorialState.InWings))
+         {
+@@ -282,13 +291,16 @@ public static class ClusterFTutorial
+         record.State = TutorialState.Skipped;
+         record.WasSkipped = true;
+         record.FinishedAt = Core.Now;
+-        if (pm.Account is IAccount skipper)
++        if (byGate)
+         {
+-            TutorialStart.Unlock(skipper); // cc-P717: New Haven is a start for the account's next characters
++            SystemLine(pm, "You left the Wakening Isle before finishing its lessons. There is no going back for this character.");
++        }
++        else
++        {
++            TutorialStart.MarkIsleExit(pm, TutorialStart.ExitLeft); // cc-P762: not the gate's skip
++            TutorialStart.SendHome(pm); // cc-P663: a skip on the isle wakes in New Haven, pets and all
++            SystemLine(pm, "You skipped the tutorial. Double-click Rook if you want to take the lessons and earn their rewards later.");
+         }
+-
+-        TutorialStart.SendHome(pm); // cc-P663: a skip on the isle wakes in New Haven, pets and all
+-        SystemLine(pm, "You skipped the tutorial. Double-click Rook if you want to take the lessons and earn their rewards later.");
+ 
+         if (SkipCountsAsGraduation)
+         {
+@@ -300,7 +312,7 @@ public static class ClusterFTutorial
+             SystemLine(pm, "Double-click Rook to restart the tutorial. Finish the main lessons and graduate to leave Haven Island.");
+         }
+ 
+-        if (pm.Account is IAccount acct)
++        if (!byGate && pm.Account is IAccount acct)
+         {
+             ClusterFAchievementSystem.TryGrant(acct, SkippedAchievement);
+         }
+@@ -316,6 +328,13 @@ public static class ClusterFTutorial
+             return false;
+         }
+ 
++        // cc-P762: a character that ran for the isle's moongate never goes back.
++        if (TutorialStart.GateSkipped(pm))
++        {
++            SystemLine(pm, "You ran for the moongate instead of taking the lessons. There is no going back to the Wakening Isle for this character.");
++            return false;
++        }
++
+         record.State = TutorialState.Remedial;
+         TutorialCoreTrials.Cancel(pm);
+         record.CharacterSerial = (uint)pm.Serial;
+@@ -393,11 +412,6 @@ public static class ClusterFTutorial
+         var remedial = record.State == TutorialState.Remedial;
+         record.State = TutorialState.Graduated;
+         record.FinishedAt = Core.Now;
+-        if (pm.Account is IAccount graduate)
+-        {
+-            TutorialStart.Unlock(graduate); // cc-P717
+-        }
+-
+         ClusterFLoops.Graduate(pm);
+         GraduationRewards(pm);
+ 
+diff --git a/server/customizations/Tutorial/NewCharacterRules.cs b/server/customizations/Tutorial/NewCharacterRules.cs
+new file mode 100644
+index 0000000..ab11126
+--- /dev/null
++++ b/server/customizations/Tutorial/NewCharacterRules.cs
+@@ -0,0 +1,137 @@
++// cc-P762 (Chase, 2026-11-01: "Haven should not be choosable at all on new character until we have tutorial island 100%",
++// and "humans should be only race choosable for now"): the two new-character locks, one switch each, read live from
++// modernuo.json so Chase reopens either without a code change. Notes: shard-migration notes/cc-P762-new-character-lockdown.md.
++//
++//   newCharacters.newHavenStart  false (locked): every new player character starts on the Wakening Isle, whatever the
++//                                creation screen sends (TutorialStart.Decide). true: New Haven is a start again, as before
++//                                cc-P717 (the isle first, New Haven the skip).
++//   newCharacters.races          "Human" (locked): the races a player can create, comma separated (Human, Elf, Gargoyle;
++//                                see the project doc claude/race-design-decisions.md before adding one). Any other race is
++//                                created as Human with a short message (CharacterCreation.OnCharacterCreated). The creation
++//                                screen still shows every race: TazUO greys Elf's Next button only without the character
++//                                list's ML flag (a core packet patch, not made in cc-P762), and Gargoyle only without the
++//                                SA feature flag, which the whole client uses.
++//
++// Staff accounts (GameMaster and up) are exempt from both. Existing characters are never touched.
++//
++// [BotStaffAccount <slbot-staff...> (test worlds only, the account wipe's guard): the playtest bot's New Haven checks
++// (T-039, P64-1, P64-2) start in New Haven through a staff account, so its Admin makes a bot staff pool account
++// GameMaster (tools/playtest-bot/uobot/run.py, make_staff). Only accounts named slbot-staff*, and only on a test world.
++
++#nullable enable
++
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using Server.Accounting;
++using Server.Commands;
++using Server.Misc;
++
++namespace Server.Tutorial;
++
++public static class NewCharacterRules
++{
++    public const string HavenStartKey = "newCharacters.newHavenStart";
++    public const string RacesKey = "newCharacters.races";
++    public const string DefaultRaces = "Human";
++
++    public const string RaceRefusedLine =
++        "Only Humans can be made for now; Elves and Gargoyles come later. This character was made Human.";
++
++    public const string BotStaffPrefix = "slbot-staff";
++    public const string BotStaffDone = "is a GameMaster account now";
++
++    public static void Configure()
++    {
++        // Written into modernuo.json at first start, locked, so the switches are there to find.
++        ServerConfiguration.GetOrUpdateSetting(HavenStartKey, false);
++        ServerConfiguration.GetOrUpdateSetting(RacesKey, DefaultRaces);
++        CommandSystem.Register("BotStaffAccount", AccessLevel.Administrator, OnBotStaffAccount);
++    }
++
++    /// <summary>The bot staff pool account made GameMaster, or why not. Pure but for the account; for the tests.</summary>
++    public static string MakeBotStaff(string? username, string? refusal)
++    {
++        if (refusal != null)
++        {
++            return $"Refused: {refusal}.";
++        }
++
++        if (username == null || !username.StartsWith(BotStaffPrefix, StringComparison.OrdinalIgnoreCase))
++        {
++            return $"Only the playtest bot's {BotStaffPrefix} accounts can be made staff this way.";
++        }
++
++        if (Accounts.GetAccount(username) is not Account account)
++        {
++            return $"No account named {username}. Log in to it once first.";
++        }
++
++        if (account.AccessLevel < AccessLevel.GameMaster)
++        {
++            account.AccessLevel = AccessLevel.GameMaster;
++        }
++
++        return $"{account.Username} {BotStaffDone}.";
++    }
++
++    [Usage("BotStaffAccount <slbot-staff account>")]
++    [Description("Test shard only: makes one of the playtest bot's slbot-staff accounts a GameMaster account, so its new characters may start in New Haven (staff are exempt from the new-character lock). Touches no other account.")]
++    [ShardCommand(CommandCategory.DevTool, Shard = CommandShard.TestOnly, Summary = "Makes a playtest bot slbot-staff account GameMaster for the bot's New Haven checks. Refuses anywhere but a test shard and any other account.")]
++    private static void OnBotStaffAccount(CommandEventArgs e) =>
++        e.Mobile.SendMessage(MakeBotStaff(e.Length > 0 ? e.GetString(0) : null, GolemTestAccounts.CurrentRefusal()));
++
++    /// <summary>GameMaster and up: neither lock applies.</summary>
++    public static bool IsExempt(IAccount? account) => account?.AccessLevel >= AccessLevel.GameMaster;
++
++    /// <summary>New Haven is a start choice for players (the switch is on).</summary>
++    public static bool HavenStartOpen => ServerConfiguration.GetSetting(HavenStartKey, false);
++
++    /// <summary>New Haven is a start for this account: the switch is on, or the account is staff.</summary>
++    public static bool HavenStartOpenFor(IAccount? account) => HavenStartOpen || IsExempt(account);
++
++    /// <summary>The races players may create, from the setting; Human when it names none this build knows.</summary>
++    public static IReadOnlyList<Race> AllowedRaces
++    {
++        get
++        {
++            var list = new List<Race>();
++            var text = ServerConfiguration.GetSetting(RacesKey, DefaultRaces) ?? DefaultRaces;
++            foreach (var part in text.Split([',', ';', ' ', '[', ']', '"'], StringSplitOptions.RemoveEmptyEntries))
++            {
++                foreach (var race in Race.AllRaces)
++                {
++                    if (race != null && string.Equals(race.Name, part, StringComparison.OrdinalIgnoreCase) && !list.Contains(race))
++                    {
++                        list.Add(race);
++                    }
++                }
++            }
++
++            if (list.Count == 0)
++            {
++                list.Add(Race.Human);
++            }
++
++            return list;
++        }
++    }
++
++    public static bool RaceAllowed(IAccount? account, Race race) => IsExempt(account) || AllowedRaces.Contains(race);
++
++    /// <summary>
++    /// The race a new character of this account is made as: the one asked for when allowed, otherwise Human (or the first
++    /// allowed race, if Human is off). <paramref name="refused"/> says the request was turned down.
++    /// </summary>
++    public static Race RaceFor(IAccount? account, Race requested, out bool refused)
++    {
++        refused = !RaceAllowed(account, requested);
++        if (!refused)
++        {
++            return requested;
++        }
++
++        var allowed = AllowedRaces;
++        return allowed.Contains(Race.Human) ? Race.Human : allowed[0];
++    }
++}
+diff --git a/server/customizations/Tutorial/TutorialCopies.cs b/server/customizations/Tutorial/TutorialCopies.cs
+index 53ea1f4..87de32f 100644
+--- a/server/customizations/Tutorial/TutorialCopies.cs
++++ b/server/customizations/Tutorial/TutorialCopies.cs
+@@ -213,6 +213,10 @@ public static class TutorialCopies
+                 ClusterFTutorial.SystemLine(pm, FreshCopyLine);
+             }
+         }
++        else if (TutorialStart.StillOnFirstVisit(pm))
++        {
++            TutorialStart.SendToIsle(pm); // cc-P762: a new character visiting the isle keeps visiting, to the moongate
++        }
+         else
+         {
+             TutorialStart.SendHome(pm);
+diff --git a/server/customizations/Tutorial/TutorialCorePlacement.cs b/server/customizations/Tutorial/TutorialCorePlacement.cs
+index 3869aba..73042b1 100644
+--- a/server/customizations/Tutorial/TutorialCorePlacement.cs
++++ b/server/customizations/Tutorial/TutorialCorePlacement.cs
+@@ -449,7 +449,8 @@ public partial class TutorialBlueWalkTile : Item
+ /// cc-P663: the dock's moongate out to New Haven, the last core lesson. Walk into it or double-click it (P605 risk 3). It
+ /// takes the trainee's pets with them (TutorialWorld.Cross) and sets them down beside Rook. It lets through a trainee on
+ /// the travel lesson, one whose core is done, and anyone not in the tutorial; a trainee with earlier lessons left is told
+-/// which one comes next.
++/// which one comes next. cc-P762: except a new character (TutorialStart.IsIsleStarter) on its first visit, who goes
++/// through as a skip, once and for good (TutorialGateSkip).
+ /// </summary>
+ [SerializationGenerator(0, false)]
+ public partial class TutorialTravelGate : Item
+@@ -476,8 +477,11 @@ public partial class TutorialTravelGate : Item
+         if (!pm.Alive || pm.Deleted || pm.Map == null || !pm.InRange(gate, 3)) { return false; }
+         var record = ClusterFTutorial.RecordOf(pm);
+         var doing = TutorialCoreTrials.IsDoing(pm, "core.travel");
+-        if (!doing && ClusterFTutorial.IsParticipant(pm) && record != null && !ClusterFTutorial.CoreDone(record) &&
+-            ClusterFTutorial.CoreLeft(record).FirstOrDefault() is { } next && next.Key != "core.travel")
++        var early = !doing && ClusterFTutorial.IsParticipant(pm) && record != null && !ClusterFTutorial.CoreDone(record) &&
++            ClusterFTutorial.CoreLeft(record).FirstOrDefault() is { } first && first.Key != "core.travel";
++        // cc-P762: a new character on its first visit, ahead of its lessons or visiting, runs through as a skip.
++        var skip = TutorialGateSkip.Eligible(pm, early);
++        if (early && !skip && ClusterFTutorial.CoreLeft(record!).FirstOrDefault() is { } next)
+         {
+             ClusterFTutorial.SystemLine(pm, $"The moongate is your last lesson. Finish {next.Title} first.");
+             return false;
+@@ -486,6 +490,13 @@ public partial class TutorialTravelGate : Item
+         { ClusterFTutorial.SystemLine(pm, "The place where this gate sends you is blocked. Ask a staff member for help."); return false; }
+         if (!TutorialWorld.Cross(pm, TutorialCorePlacement.GateExit, HavenSpots.Map)) { return false; }
+         pm.PlaySound(0x1FE);
++        if (skip)
++        {
++            TutorialGateSkip.Grant(pm);
++            return true;
++        }
++
++        TutorialStart.MarkIsleExit(pm, TutorialStart.ExitLeft); // cc-P762: the normal way out
+         if (doing || ClusterFTutorial.IsParticipant(pm) && record != null && !ClusterFTutorial.IsDone(record, "core.travel"))
+         {
+             if (!doing) { ClusterFTutorial.RunStation(pm, TutorialStations.Find("core.travel")!); }
+diff --git a/server/customizations/Tutorial/TutorialGateSkip.cs b/server/customizations/Tutorial/TutorialGateSkip.cs
+new file mode 100644
+index 0000000..e8166ce
+--- /dev/null
++++ b/server/customizations/Tutorial/TutorialGateSkip.cs
+@@ -0,0 +1,188 @@
++// cc-P762 part 5 (Chase, 2026-11-01: "All new characters go to tutorial island. if they want to skip they could run
++// straight for moon gate. They get a snarky achievement/loot box with pet choice scroll (dog/cat) and can get to haven."):
++// a new character (TutorialStart.IsIsleStarter) that walks into the dock's moongate on its first visit, before its lessons
++// are done (or visiting, not in them), crosses to New Haven the normal way and gets, once per character:
++//   - "Didn't Read the Sign" (tutorial.gateSkip, ClusterFAchievements), once per account as every achievement is;
++//   - a loot box (ClusterFLootBoxes, source "tutorial:gateSkip", once per character) holding a pet choice scroll: Dog or
++//     Cat, a stock town dog or cat that follows, guards and takes orders like a tamed pet. Not a combat pet, no taming
++//     skill gained, and it uses a follower slot.
++// A trainee in the lessons is skipped as the skip does it (ClusterFTutorial.SkipByGate); a visitor's account record is
++// left alone. The skip is final: IsleExit "skipped", and Rook's remedial training refuses that character. A character
++// that finishes the lessons leaves with its normal rewards and never gets this one. A remedial trainee (not a new
++// character) is still told to finish its lessons first. Notes: shard-migration notes/cc-P762-new-character-lockdown.md.
++
++#nullable enable
++
++using System;
++using ModernUO.Serialization;
++using Server.Accounting;
++using Server.Gumps;
++using Server.Items;
++using Server.LootBoxes;
++using Server.Mobiles;
++using Server.Network;
++
++namespace Server.Tutorial;
++
++public static class TutorialGateSkip
++{
++    public const string BoxSource = "tutorial:gateSkip";
++    public const string BoxLabel = "running for the moongate";
++
++    public const string SnarkLine =
++        "You ran straight past every lesson and through the moongate. The sign said \"Lessons this way.\" Bold choice.";
++
++    /// <summary>
++    /// The moongate counts this crossing as the skip: a new character on its first visit, either ahead of its lessons
++    /// (<paramref name="earlyInLessons"/>) or visiting, not in them. Staff never.
++    /// </summary>
++    public static bool Eligible(PlayerMobile pm, bool earlyInLessons)
++    {
++        if (pm.AccessLevel > AccessLevel.Player || pm.Account?.AccessLevel > AccessLevel.Player || !TutorialStart.StillOnFirstVisit(pm))
++        {
++            return false;
++        }
++
++        return earlyInLessons || !ClusterFTutorial.IsParticipant(pm);
++    }
++
++    /// <summary>After the crossing: the skip recorded, the achievement and the box with the scroll.</summary>
++    public static void Grant(PlayerMobile pm)
++    {
++        TutorialStart.MarkIsleExit(pm, TutorialStart.ExitSkipped);
++        if (ClusterFTutorial.IsParticipant(pm))
++        {
++            ClusterFTutorial.SkipByGate(pm);
++        }
++        else
++        {
++            ClusterFTutorial.SystemLine(pm, "You left the Wakening Isle. There is no going back for this character.");
++        }
++
++        ClusterFTutorial.SystemLine(pm, SnarkLine);
++        if (pm.Account is IAccount acct)
++        {
++            ClusterFAchievementSystem.TryGrant(acct, ClusterFTutorial.GateSkipAchievement);
++        }
++
++        Rewards(pm);
++    }
++
++    /// <summary>The box with the pet choice scroll. Replaceable for facts that do not roll boxes.</summary>
++    public static Action<PlayerMobile> Rewards { get; set; } = pm =>
++    {
++        if (ClusterFLootBoxes.Award(pm, BoxSource, BoxTheme.Explorer, 1, null, BoxLabel, out var box) != ClusterFLootBoxes.AwardResult.Box ||
++            box == null)
++        {
++            return;
++        }
++
++        var scroll = new PetChoiceScroll();
++        scroll.Internalize();
++        box.Contents.Add(scroll);
++        box.MarkDirty();
++        ClusterFTutorial.SystemLine(pm, "Your box holds a pet choice scroll: a dog or a cat. Double-click the box here in town to open it; boxes open only in guarded towns or your own house.");
++    };
++
++    /// <summary>The pet the scroll gives: a stock dog or cat, tamed to the owner, following them.</summary>
++    public static BaseCreature? GivePet(PlayerMobile pm, bool dog)
++    {
++        BaseCreature pet = dog ? new Dog() : new Cat();
++        if (!pet.SetControlMaster(pm))
++        {
++            pet.Delete();
++            return null;
++        }
++
++        pet.IsBonded = false;
++        pet.ControlTarget = pm;
++        pet.ControlOrder = OrderType.Follow;
++        pet.MoveToWorld(pm.Location, pm.Map);
++        return pet;
++    }
++}
++
++/// <summary>cc-P762: the moongate skipper's scroll. Double-click it in your backpack: Dog or Cat.</summary>
++[SerializationGenerator(0, false)]
++public partial class PetChoiceScroll : Item
++{
++    [Constructible]
++    public PetChoiceScroll() : base(0x0E34)
++    {
++        Name = "a pet choice scroll";
++        Hue = TutorialStyle.SupplyHue;
++        Weight = 1.0;
++    }
++
++    public override void GetProperties(IPropertyList list)
++    {
++        base.GetProperties(list);
++        list.Add("Double-click: choose a dog or a cat");
++    }
++
++    public override void OnDoubleClick(Mobile from)
++    {
++        if (from is not PlayerMobile pm)
++        {
++            return;
++        }
++
++        if (!IsChildOf(pm.Backpack))
++        {
++            pm.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
++            return;
++        }
++
++        pm.CloseGump<PetChoiceGump>();
++        pm.SendGump(new PetChoiceGump(this));
++    }
++
++    /// <summary>The choice: the pet given and the scroll used up, or the scroll kept when there is no follower slot.</summary>
++    public BaseCreature? Choose(PlayerMobile pm, bool dog)
++    {
++        if (Deleted || !IsChildOf(pm.Backpack))
++        {
++            return null;
++        }
++
++        var pet = TutorialGateSkip.GivePet(pm, dog);
++        if (pet == null)
++        {
++            pm.SendMessage(0x3B2, "You have no room for another pet. Free a follower slot, then use the scroll again.");
++            return null;
++        }
++
++        pm.SendMessage(0x3B2, $"Your new {(dog ? "dog" : "cat")} follows you. Say \"all follow\", \"all guard\" or \"all stay\", or click it for its orders.");
++        Delete();
++        return pet;
++    }
++}
++
++/// <summary>cc-P762: two buttons, Dog and Cat.</summary>
++public class PetChoiceGump : Gump
++{
++    private readonly PetChoiceScroll _scroll;
++
++    public PetChoiceGump(PetChoiceScroll scroll) : base(160, 120)
++    {
++        _scroll = scroll;
++        AddPage(0);
++        TutorialStyle.Panel(this, 360, 190);
++        AddLabel(24, 18, TutorialStyle.HeadingHue, "Choose your pet");
++        AddLabel(24, 40, TutorialStyle.TextHue, "It follows you, guards you and takes your orders.");
++        AddItem(30, 80, 0x2588);
++        AddButton(110, 90, 4005, 4007, 1);
++        AddLabel(146, 92, TutorialStyle.ActionHue, "Dog");
++        AddItem(30, 130, 0x211B);
++        AddButton(110, 140, 4005, 4007, 2);
++        AddLabel(146, 142, TutorialStyle.ActionHue, "Cat");
++    }
++
++    public override void OnResponse(NetState sender, in RelayInfo info)
++    {
++        if (sender.Mobile is PlayerMobile pm && info.ButtonID is 1 or 2)
++        {
++            _scroll.Choose(pm, info.ButtonID == 1);
++        }
++    }
++}
+diff --git a/server/customizations/Tutorial/TutorialStart.cs b/server/customizations/Tutorial/TutorialStart.cs
+index d957ee6..6404b6a 100644
+--- a/server/customizations/Tutorial/TutorialStart.cs
++++ b/server/customizations/Tutorial/TutorialStart.cs
+@@ -19,15 +19,27 @@
+ //   | Tutorial character deleted mid-way| isle, re-bound to this one, done keys kept    | skip (an orphaned core or wings)     |
+ //   | Created before go-live (no choice)| never entered or moved (P80 item 1)           | -                                    |
+ //
+-// cc-P717 (Chase, 2026-10-28): the account's first character must take the isle. Until a character of the account
+-// graduates or skips (the account flag HavenUnlockedFlag, set by ClusterFTutorial.Graduate and Skip and kept when that
+-// character is deleted), the list's second entry is "New Haven (locked)" with a one-line reason, and any New Haven pick
+-// counts as the isle (Decide), so a client that sends New Haven anyway starts on the isle. Staff accounts always see
+-// both. The list is built per account at login (CharacterCreation.GetStartingCities(account), from AccountHandler by
+-// AccountHandler-per-account-start-cities.patch). The reset's account flags ([ResetMyAccount, [ClusterFReset) clear the
+-// flag, which locks it again. An account that graduated or skipped before cc-P717 has no flag: its list shows New Haven
+-// locked, and either pick starts in New Haven as before (Decide's "finished" row), until the flag is earned again.
+-// (Counting a finished record as unlocked instead would survive the reset, which clears flags but not the record.)
++// cc-P717 (Chase, 2026-10-28) made the account's first character take the isle, with New Haven unlocked per account.
++// cc-P762 (Chase, 2026-11-01) replaced that with a shard-wide lock, one switch (NewCharacterRules, newCharacters.newHavenStart,
++// false): while it is off, every new player character starts on the Wakening Isle, on every account, whatever the screen
++// sends. The list's second entry is "New Haven (locked)" with its one line ("New Haven opens once the Wakening Isle is
++// finished"), and Decide turns any pick into the isle. The account's tutorial record still runs once per account, so the
++// isle start has two kinds:
++//
++//   | Account state (switch off)                         | Outcome                                                        |
++//   | Fresh (NotStarted), or its tutorial character gone | Isle: entered (or re-bound) on this character, in the lessons  |
++//   | InCore, InWings or Remedial on a living character  | Visit: wakes on its own copy of the isle, not in the lessons,  |
++//   | Graduated or Skipped                               |   and leaves by the dock's moongate (P717's Codex P1 closed)   |
++//
++// With the switch on, the table above (the file's first) applies again, New Haven open to everyone. Staff accounts
++// (GameMaster and up) always see both and are never entered or moved. The reset's account flags ([ResetMyAccount,
++// [ClusterFReset) clear the tutorial record too, so the next character after a reset takes the lessons from the start
++// (P717's Codex P2 closed).
++//
++// cc-P762 part 5 (Chase: "if they want to skip they could run straight for moon gate"): a character that started on the
++// isle (IsleStartKey) and walks into the dock's moongate before its lessons are done leaves the normal way, once and for
++// good (IsleExitKey "skipped"; Rook will not send it back), with the "Didn't Read the Sign" achievement and a loot box
++// holding a pet choice scroll (TutorialGateSkip). A character that finishes the lessons leaves with its normal rewards.
+ //
+ // Creation already places an isle pick on the isle when Decide says so then; the login decides again, since another
+ // character of the account may have entered in between, and moves the character if the answer changed. Staff are
+@@ -46,12 +58,6 @@ public static class TutorialStart
+     public const string HavenCity = "New Haven";
+     public const string LockedHavenCity = "New Haven (locked)";
+ 
+-    /// <summary>
+-    /// cc-P717: an account flag, set once a character of the account graduates or skips; New Haven is a start from then
+-    /// on. The reset's account flags clear it.
+-    /// </summary>
+-    public const string HavenUnlockedFlag = "tutorial.havenUnlocked";
+-
+     /// <summary>The isle entry's button on TazUO's Trammel picture: sea south of the new New Haven. Display only.</summary>
+     public static readonly Point3D IsleDisplay = new(3650, 2932, -5);
+ 
+@@ -72,7 +78,12 @@ public static class TutorialStart
+         /// <summary>New Haven, nothing else.</summary>
+         Haven,
+         /// <summary>cc-P705: chose the isle, but the isle's land is not on this server's map yet; New Haven, tutorial unused.</summary>
+-        IsleMissing
++        IsleMissing,
++        /// <summary>
++        /// cc-P762: the isle, not in the lessons (the account's tutorial is with another living character, or finished); the
++        /// character wakes on its own copy and leaves by the moongate.
++        /// </summary>
++        Visit
+     }
+ 
+     /// <summary>The two entries, in order: the isle (index 0, the default) and New Haven.</summary>
+@@ -83,13 +94,13 @@ public static class TutorialStart
+     ];
+ 
+     /// <summary>
+-    /// cc-P717: the list for this account: both entries for staff and for an account that has unlocked New Haven,
+-    /// otherwise the isle and New Haven shown locked.
++    /// cc-P762: the list for this account: both entries while New Haven's switch is on and for staff, otherwise the isle
++    /// and New Haven shown locked with its one line.
+     /// </summary>
+     public static CityInfo[] Cities(IAccount? account)
+     {
+         var cities = Cities();
+-        if (account == null || account.AccessLevel >= AccessLevel.GameMaster || IsHavenUnlocked(account))
++        if (NewCharacterRules.HavenStartOpenFor(account))
+         {
+             return cities;
+         }
+@@ -99,13 +110,6 @@ public static class TutorialStart
+         return cities;
+     }
+ 
+-    /// <summary>cc-P717: a character of this account has graduated or skipped since the account's last flag reset.</summary>
+-    public static bool IsHavenUnlocked(IAccount account) =>
+-        ClusterFAccountPersistence.Get(account)?.HasFlag(HavenUnlockedFlag) == true;
+-
+-    /// <summary>cc-P717: graduation and the skip (ClusterFTutorial) open New Haven for the whole account.</summary>
+-    public static void Unlock(IAccount account) => ClusterFAccountPersistence.GetOrCreate(account).SetFlag(HavenUnlockedFlag);
+-
+     public static Choice ChoiceOf(CityInfo? city) => city?.City switch
+     {
+         IsleCity or LockedHavenCity => Choice.Isle,
+@@ -115,6 +119,47 @@ public static class TutorialStart
+ 
+     private static string Key(Mobile m) => $"character:{(uint)m.Serial}:start";
+ 
++    /// <summary>cc-P762: set when a character's first login put it on the isle (in the lessons or visiting).</summary>
++    private static string IsleStartKey(Mobile m) => $"character:{(uint)m.Serial}:isleStart";
++
++    /// <summary>cc-P762: how a character that started on the isle left it: "skipped" (ran for the moongate) or "left".</summary>
++    private static string IsleExitKey(Mobile m) => $"character:{(uint)m.Serial}:isleExit";
++
++    public const string ExitSkipped = "skipped";
++    public const string ExitLeft = "left";
++
++    private static string? FlagValue(Mobile m, string key) =>
++        m.Account is IAccount acct && ClusterFAccountPersistence.Get(acct) is { } data && data.FlagValues.TryGetValue(key, out var v) ? v : null;
++
++    /// <summary>cc-P762: this character's first login put it on the Wakening Isle.</summary>
++    public static bool IsIsleStarter(Mobile m) => FlagValue(m, IsleStartKey(m)) != null;
++
++    /// <summary>cc-P762: how this character left the isle it started on (ExitSkipped, ExitLeft), or null while it has not.</summary>
++    public static string? IsleExit(Mobile m) => FlagValue(m, IsleExitKey(m));
++
++    /// <summary>cc-P762: this character ran for the moongate before its lessons were done; it never goes back.</summary>
++    public static bool GateSkipped(Mobile m) => IsleExit(m) == ExitSkipped;
++
++    /// <summary>cc-P762: started on the isle and has not left it yet.</summary>
++    public static bool StillOnFirstVisit(Mobile m) => IsIsleStarter(m) && IsleExit(m) == null;
++
++    public static void MarkIsleStart(Mobile m)
++    {
++        if (m.Account is IAccount acct)
++        {
++            ClusterFAccountPersistence.GetOrCreate(acct).FlagValues[IsleStartKey(m)] = "1";
++        }
++    }
++
++    /// <summary>cc-P762: records how a character that started on the isle left it; the first way out counts.</summary>
++    public static void MarkIsleExit(Mobile m, string how)
++    {
++        if (m.Account is IAccount acct && IsIsleStarter(m) && IsleExit(m) == null)
++        {
++            ClusterFAccountPersistence.GetOrCreate(acct).FlagValues[IsleExitKey(m)] = how;
++        }
++    }
++
+     private static string Text(Choice c) => c == Choice.Isle ? "isle" : "haven";
+ 
+     /// <summary>The choice waiting for this character's first login, or None.</summary>
+@@ -140,13 +185,15 @@ public static class TutorialStart
+             return Outcome.None;
+         }
+ 
+-        // cc-P717: New Haven is not a start until the account has unlocked it; the pick is the isle's.
+-        if (c == Choice.Haven && pm.Account is IAccount acct && !IsHavenUnlocked(acct))
++        var orphaned = record.IsActive && ClusterFTutorial.IsRecordedCharacter(pm, record);
++
++        // cc-P762: while New Haven's switch is off, every pick is the isle's, and every new character wakes there: in the
++        // lessons when the account's tutorial is free for it, visiting otherwise.
++        if (!NewCharacterRules.HavenStartOpenFor(pm.Account))
+         {
+-            c = Choice.Isle;
++            return record.State == TutorialState.NotStarted || orphaned ? Outcome.Isle : Outcome.Visit;
+         }
+ 
+-        var orphaned = record.IsActive && ClusterFTutorial.IsRecordedCharacter(pm, record);
+         return (record.State, c) switch
+         {
+             (TutorialState.NotStarted, Choice.Isle) => Outcome.Isle,
+@@ -175,7 +222,7 @@ public static class TutorialStart
+         }
+ 
+         Record(pm, choice);
+-        return Decide(pm, choice) == Outcome.Isle && TutorialWorld.Isle != null && TutorialWorld.IsleReady()
++        return Decide(pm, choice) is Outcome.Isle or Outcome.Visit && TutorialWorld.Isle != null && TutorialWorld.IsleReady()
+             ? (TutorialWorld.Arrival, TutorialWorld.Isle)
+             : (HavenSpots.Start, HavenSpots.Map);
+     }
+@@ -186,7 +233,7 @@ public static class TutorialStart
+     /// </summary>
+     public static bool WillWake(PlayerMobile pm) =>
+         ClusterFTutorial.Enabled && Pending(pm) is var choice && choice != Choice.None &&
+-        Decide(pm, choice) == Outcome.Isle && TutorialWorld.IsleReady();
++        Decide(pm, choice) is Outcome.Isle or Outcome.Visit && TutorialWorld.IsleReady();
+ 
+     /// <summary>
+     /// The first login: consumes this character's choice (only its own) and carries out the table. None when it had none.
+@@ -202,7 +249,7 @@ public static class TutorialStart
+         ClusterFAccountPersistence.GetOrCreate(acct).FlagValues.Remove(Key(pm));
+         var outcome = Decide(pm, choice);
+         // cc-P705: a release with the start choice but without the isle's map patch never strands anyone in the void.
+-        if (outcome == Outcome.Isle && !TutorialWorld.IsleReady())
++        if (outcome is Outcome.Isle or Outcome.Visit && !TutorialWorld.IsleReady())
+         {
+             outcome = Outcome.IsleMissing;
+         }
+@@ -215,8 +262,14 @@ public static class TutorialStart
+                     ClusterFTutorial.AdoptOrphanedRecord(pm);
+                 }
+ 
++                MarkIsleStart(pm); // cc-P762
+                 SendToIsle(pm, atNextLesson: false, wake: true); // cc-P721: the first arrival wakes on the sand
+                 break;
++            case Outcome.Visit:
++                // cc-P762: on the isle, not in the lessons; the moongate is the way out.
++                MarkIsleStart(pm);
++                SendToIsle(pm, atNextLesson: false, wake: true, visitor: true);
++                break;
+             case Outcome.Skip:
+                 ClusterFTutorial.AdoptOrphanedRecord(pm);
+                 ClusterFTutorial.TryEnter(pm, quiet: true);
+@@ -263,7 +316,10 @@ public static class TutorialStart
+     public static void SendToIsle(PlayerMobile pm, bool atNextLesson) => SendToIsle(pm, atNextLesson, wake: false);
+ 
+     /// <summary>cc-P721: <paramref name="wake"/> plays the washed-ashore wake-up (TutorialWake) before the first lines.</summary>
+-    public static void SendToIsle(PlayerMobile pm, bool atNextLesson, bool wake)
++    public static void SendToIsle(PlayerMobile pm, bool atNextLesson, bool wake) => SendToIsle(pm, atNextLesson, wake, visitor: false);
++
++    /// <summary>cc-P762: <paramref name="visitor"/> says the visitor's first lines (not in the lessons; the moongate out).</summary>
++    public static void SendToIsle(PlayerMobile pm, bool atNextLesson, bool wake, bool visitor)
+     {
+         if (TutorialCopies.Claim(pm) is not { } copy)
+         {
+@@ -286,6 +342,14 @@ public static class TutorialStart
+         void FirstLines()
+         {
+             ClusterFTutorial.SystemLine(pm, "You wake on a quiet shore: the Wakening Isle.");
++            if (visitor)
++            {
++                ClusterFTutorial.SystemLine(pm, VisitorLine(pm));
++                ClusterFTutorial.SystemLine(pm, "Follow the road east to the moongate at the end of the dock; it takes you to New Haven.");
++                TutorialGuide.PointTo(pm);
++                return;
++            }
++
+             ClusterFTutorial.SystemLine(pm, "Follow the arrow and double-click Tamsin, your guide, with two quick left clicks. Tamsin's window starts each lesson.");
+             TutorialGuide.PointTo(pm);
+         }
+@@ -300,6 +364,21 @@ public static class TutorialStart
+         }
+     }
+ 
++    /// <summary>cc-P762: why a visitor is not in the lessons.</summary>
++    public static string VisitorLine(PlayerMobile pm)
++    {
++        var record = ClusterFTutorial.RecordOf(pm);
++        if (record is { IsActive: true })
++        {
++            var name = World.FindMobile((Serial)record.CharacterSerial)?.Name;
++            return $"Your account's lessons are with {name ?? "another character"}; log in as that character to take them. This character is visiting.";
++        }
++
++        return record?.State == TutorialState.Skipped
++            ? "Your account skipped the lessons, so this character is visiting."
++            : "Your account has finished the lessons, so this character is visiting.";
++    }
++
+     /// <summary>Sets a character down at the New Haven start if they are on the Fold.</summary>
+     public static void SendHome(PlayerMobile pm)
+     {
+diff --git a/server/tests/Engines/CharacterCreation/GargoyleStartingClothesVerification.cs b/server/tests/Engines/CharacterCreation/GargoyleStartingClothesVerification.cs
+index d90ffeb..9423deb 100644
+--- a/server/tests/Engines/CharacterCreation/GargoyleStartingClothesVerification.cs
++++ b/server/tests/Engines/CharacterCreation/GargoyleStartingClothesVerification.cs
+@@ -79,6 +79,9 @@ public class GargoyleStartingClothesVerification
+             TileRows.GargishClothLegsType1, TileRows.GargishClothLegsType2
+         );
+ 
++        // cc-P762: players make Humans only for now (newCharacters.races); this fact opens the switch for gargoyles.
++        var races = ServerConfiguration.GetSetting(Server.Tutorial.NewCharacterRules.RacesKey, (string)null);
++        ServerConfiguration.SetSetting(Server.Tutorial.NewCharacterRules.RacesKey, "Human, Elf, Gargoyle");
+         try
+         {
+             // SetStats falls back to 10/10/10 on an invalid spread, and 10 Str is under the cloth pieces' AosStrReq 20,
+@@ -137,6 +140,7 @@ public class GargoyleStartingClothesVerification
+         }
+         finally
+         {
++            ServerConfiguration.SetSetting(Server.Tutorial.NewCharacterRules.RacesKey, races ?? Server.Tutorial.NewCharacterRules.DefaultRaces);
+             m?.Delete();
+             Accounts.Remove(account);
+         }
+diff --git a/server/tests/Engines/CharacterCreation/NewCharacterRaceLockVerification.cs b/server/tests/Engines/CharacterCreation/NewCharacterRaceLockVerification.cs
+new file mode 100644
+index 0000000..c9ece3b
+--- /dev/null
++++ b/server/tests/Engines/CharacterCreation/NewCharacterRaceLockVerification.cs
+@@ -0,0 +1,110 @@
++// cc-P762 (Chase, 2026-11-01: "humans should be only race choosable for now"): the race lock on the real creation path,
++// CharacterCreation.CharacterCreatedEvent with a real Account and a test NetState, as GargoyleStartingClothesVerification
++// drives it. A player account asking for an Elf or a Gargoyle gets a Human (the human body, 400 or 401); the setting
++// newCharacters.races reopens a race. Notes: shard-migration notes/cc-P762-new-character-lockdown.md.
++
++using System;
++using Server;
++using Server.Accounting;
++using Server.Accounting.Security;
++using Server.Engines.CharacterCreation;
++using Server.Misc;
++using Server.Tests.Network;
++using Server.Tutorial;
++using Xunit;
++
++namespace ShatteredLegacy.Tests;
++
++[Collection("Sequential UOContent Tests")]
++public class NewCharacterRaceLockVerification
++{
++    private static bool _startupHooksRun;
++
++    // The same three startup hooks GargoyleStartingClothesVerification needs, for the same reasons.
++    private static void EnsureStartupHooks()
++    {
++        if (!_startupHooksRun)
++        {
++            Accounts.Configure();
++            WelcomeTimer.Initialize();
++            _startupHooksRun = true;
++        }
++
++        if (AccountSecurity.CurrentAlgorithm == PasswordProtectionAlgorithm.None)
++        {
++            AccountSecurity.CurrentAlgorithm = PasswordProtectionAlgorithm.PBKDF2;
++        }
++    }
++
++    private static Mobile Make(Race race, bool female, string races, out Account account)
++    {
++        EnsureStartupHooks();
++        account = new Account($"p762race{Guid.NewGuid():N}"[..16], "p762-test-only");
++        var ns = PacketTestUtilities.CreateTestNetState();
++        var kept = ServerConfiguration.GetSetting(NewCharacterRules.RacesKey, (string)null);
++        ServerConfiguration.SetSetting(NewCharacterRules.RacesKey, races);
++        try
++        {
++            var stats = ns.NewCharacterCreation ? new byte[] { 30, 30, 30 } : new byte[] { 30, 25, 25 };
++            var city = new CityInfo("New Haven", "The Bountiful Harvest Inn", 1150168, 3503, 2574, 14, Map.Trammel);
++            var args = new CharacterCreatedEventArgs(ns, account, "Racelock", female, 0, stats, city, [], 0, 0, 0, 0, 0, 0, 0, race);
++            CharacterCreation.CharacterCreatedEvent(args);
++            return args.Mobile;
++        }
++        finally
++        {
++            ServerConfiguration.SetSetting(NewCharacterRules.RacesKey, kept ?? NewCharacterRules.DefaultRaces);
++        }
++    }
++
++    [Theory]
++    [InlineData("Elf", false)]
++    [InlineData("Elf", true)]
++    [InlineData("Gargoyle", false)]
++    [InlineData("Gargoyle", true)]
++    public void APlayerAskingForAnotherRaceIsMadeHuman(string asked, bool female)
++    {
++        var m = Make(asked == "Elf" ? Race.Elf : Race.Gargoyle, female, NewCharacterRules.DefaultRaces, out var account);
++        try
++        {
++            Assert.NotNull(m);
++            Assert.Same(Race.Human, m.Race);
++            Assert.Equal(female ? 0x191 : 0x190, m.Body.BodyID);
++        }
++        finally
++        {
++            m?.Delete();
++            Accounts.Remove(account);
++        }
++    }
++
++    [Fact]
++    public void AHumanIsMadeHuman()
++    {
++        var m = Make(Race.Human, false, NewCharacterRules.DefaultRaces, out var account);
++        try
++        {
++            Assert.Same(Race.Human, m.Race);
++        }
++        finally
++        {
++            m?.Delete();
++            Accounts.Remove(account);
++        }
++    }
++
++    [Fact]
++    public void TheSwitchReopensARace()
++    {
++        var m = Make(Race.Elf, true, "Human, Elf", out var account);
++        try
++        {
++            Assert.Same(Race.Elf, m.Race);
++        }
++        finally
++        {
++            m?.Delete();
++            Accounts.Remove(account);
++        }
++    }
++}
+diff --git a/server/tests/Misc/AchievementEarnedLineVerification.cs b/server/tests/Misc/AchievementEarnedLineVerification.cs
+index 95dddec..1a3c766 100644
+--- a/server/tests/Misc/AchievementEarnedLineVerification.cs
++++ b/server/tests/Misc/AchievementEarnedLineVerification.cs
+@@ -97,7 +97,7 @@ public class AchievementEarnedLineVerification
+     public void EveryRegisteredAchievementHasAnEarnedLine()
+     {
+         var defs = ClusterFAchievementSystem.Definitions.Values.ToList();
+-        Assert.Equal(145, defs.Count); // cc-P80: the two tutorial achievements; cc-P82: the two Fortune's Favor ones; cc-P192: Second Childhood; cc-P231: the 16 joke achievements; cc-P262: the 5 accessory ones; cc-P263: the 45 Noted by the System ones
++        Assert.Equal(146, defs.Count); // cc-P762: Didn't Read the Sign; cc-P80: the two tutorial achievements; cc-P82: the two Fortune's Favor ones; cc-P192: Second Childhood; cc-P231: the 16 joke achievements; cc-P262: the 5 accessory ones; cc-P263: the 45 Noted by the System ones
+ 
+         foreach (var def in defs.OrderBy(d => d.Key))
+         {
+@@ -320,7 +320,7 @@ public class AchievementEarnedLineVerification
+             var (count, total) = ClusterFAchievementSystem.ProgressCount(p.Account.Username);
+             _out.WriteLine($"holder: earned {count} of {total} (retired held, not counted)");
+             Assert.Equal(2, count);
+-            Assert.Equal(145 - RetiredKeys.Length, total); // cc-P82: 78 registered; cc-P192: 79; cc-P231: 95; cc-P262: 100; cc-P263: 145
++            Assert.Equal(146 - RetiredKeys.Length, total); // cc-P82: 78 registered; cc-P192: 79; cc-P231: 95; cc-P262: 100; cc-P263: 145; cc-P762: 146
+ 
+             // Every page of the Skills tab (five rows a page; the Retired section is last).
+             var pages = Enumerable.Range(0, 20).Select(i => new AchievementsGump(p.Pm, AchievementCategory.Skills, false, i)).ToList();
+diff --git a/server/tests/Tutorial/TutorialIsleVerification.cs b/server/tests/Tutorial/TutorialIsleVerification.cs
+index 425f9f7..598476d 100644
+--- a/server/tests/Tutorial/TutorialIsleVerification.cs
++++ b/server/tests/Tutorial/TutorialIsleVerification.cs
+@@ -15,9 +15,8 @@
+ //   7. A reconnect regenerates the current lesson's practice item.
+ //   8. Remedial: Rook's button sends a skipper (and the pet) to the isle's beach past the island gate; the moongate
+ //      brings them back beside Rook, who graduates them with the second achievement.
+-//   cc-P717 (Chase, 2026-10-28): the account's first character must take the isle. A new account's list shows New Haven
+-//   locked; graduating or skipping unlocks it for the whole account, kept after that character is deleted; staff see
+-//   both; a New Haven pick while locked starts on the isle; the reset's account flags lock it again.
++//   cc-P717 (Chase, 2026-10-28) locked New Haven per account; cc-P762 (Chase, 2026-11-01) replaced it with a shard-wide
++//   lock (NewCharacterRules): see the cc-P762 section at the end. The eligibility table (3) is the switch-on table.
+ //   And: the city list offers the isle first and New Haven second, both as Trammel, with our cliloc descriptions; with
+ //   the tutorial off (live), creation records no choice, so turning it on later skips nobody.
+ 
+@@ -263,23 +262,24 @@ public class TutorialIsleVerification : IDisposable
+ 
+     public static IEnumerable<object[]> Rows() =>
+     [
++        // cc-P762: these rows are New Haven's switch on (newCharacters.newHavenStart); locked, see the cc-P762 section.
+         [Before.Fresh, TutorialStart.Choice.Isle, TutorialStart.Outcome.Isle],
+-        // cc-P717: New Haven is locked until the account graduates or skips; a locked pick of it is the isle's row.
+-        [Before.Fresh, TutorialStart.Choice.Haven, TutorialStart.Outcome.Isle],
++        [Before.Fresh, TutorialStart.Choice.Haven, TutorialStart.Outcome.Skip],
+         [Before.InCoreElsewhere, TutorialStart.Choice.Isle, TutorialStart.Outcome.Elsewhere],
+-        [Before.InCoreElsewhere, TutorialStart.Choice.Haven, TutorialStart.Outcome.Elsewhere],
++        [Before.InCoreElsewhere, TutorialStart.Choice.Haven, TutorialStart.Outcome.Haven],
+         [Before.Graduated, TutorialStart.Choice.Isle, TutorialStart.Outcome.Finished],
+         [Before.Graduated, TutorialStart.Choice.Haven, TutorialStart.Outcome.Haven],
+         [Before.Skipped, TutorialStart.Choice.Isle, TutorialStart.Outcome.Finished],
+         [Before.Skipped, TutorialStart.Choice.Haven, TutorialStart.Outcome.Haven],
+         [Before.DeletedMidCore, TutorialStart.Choice.Isle, TutorialStart.Outcome.Isle],
+-        [Before.DeletedMidCore, TutorialStart.Choice.Haven, TutorialStart.Outcome.Isle]
++        [Before.DeletedMidCore, TutorialStart.Choice.Haven, TutorialStart.Outcome.Skip]
+     ];
+ 
+     [Theory]
+     [MemberData(nameof(Rows))]
+     public void EachRowOfTheEligibilityTable(Before before, TutorialStart.Choice choice, TutorialStart.Outcome expected)
+     {
++        using var open = new Switches(havenStart: true);
+         using var t = new Trainees();
+         PlayerMobile? first = null;
+         if (before != Before.Fresh)
+@@ -290,7 +290,7 @@ public class TutorialIsleVerification : IDisposable
+             switch (before)
+             {
+                 case Before.Graduated:
+-                    FinishCore(t.Record); // cc-P717: a real graduation, which unlocks New Haven
++                    FinishCore(t.Record);
+                     Assert.Null(ClusterFTutorial.Graduate(first));
+                     break;
+                 case Before.Skipped:
+@@ -418,8 +418,10 @@ public class TutorialIsleVerification : IDisposable
+     {
+         using var t = new Trainees();
+         var pm = t.Add();
+-        Create(pm, TutorialStart.Choice.Isle);
+-        ClusterFTutorial.OnLogin(pm);
++        // cc-P762: entered by staff ([Tutorial enter), not a new character, so lessons left are still refused; a new
++        // character runs through as the gate's skip (the cc-P762 section).
++        Assert.True(ClusterFTutorial.TryEnter(pm, quiet: true));
++        TutorialStart.SendToIsle(pm);
+         var gate = Gate(t);
+         pm.MoveToWorld(TutorialWorld.Ground(TutorialWorld.DockEnd), TutorialWorld.Isle);
+ 
+@@ -486,7 +488,7 @@ public class TutorialIsleVerification : IDisposable
+     {
+         using var t = new Trainees();
+         var pm = t.Add();
+-        // cc-P717: a fresh account cannot skip at creation (New Haven is locked); it skips from the isle.
++        // cc-P717, cc-P762: a fresh account cannot skip at creation (New Haven is locked); it skips from the isle.
+         Create(pm, TutorialStart.Choice.Isle);
+         ClusterFTutorial.OnLogin(pm);
+         Assert.True(ClusterFTutorial.Skip(pm));
+@@ -634,7 +636,7 @@ public class TutorialIsleVerification : IDisposable
+         Assert.True(TutorialWorld.IsOnIsle(next));
+     }
+ 
+-    // ---------------------------------------------------------------- cc-P717: the isle first, New Haven after
++    // ---------------------------------------------------------------- helpers
+ 
+     private static string[] CityNames(IAccount account) =>
+         Server.Engines.CharacterCreation.CharacterCreation.GetStartingCities(account).Select(c => c.City).ToArray();
+@@ -647,28 +649,88 @@ public class TutorialIsleVerification : IDisposable
+         }
+     }
+ 
++    /// <summary>cc-P762: sets the two new-character switches for one fact, and puts them back.</summary>
++    private sealed class Switches : IDisposable
++    {
++        private readonly string? _haven = ServerConfiguration.GetSetting(NewCharacterRules.HavenStartKey, (string?)null);
++        private readonly string? _races = ServerConfiguration.GetSetting(NewCharacterRules.RacesKey, (string?)null);
++
++        public Switches(bool havenStart = false, string races = NewCharacterRules.DefaultRaces)
++        {
++            ServerConfiguration.SetSetting(NewCharacterRules.HavenStartKey, havenStart);
++            ServerConfiguration.SetSetting(NewCharacterRules.RacesKey, races);
++        }
++
++        public void Dispose()
++        {
++            ServerConfiguration.SetSetting(NewCharacterRules.HavenStartKey, _haven ?? "False");
++            ServerConfiguration.SetSetting(NewCharacterRules.RacesKey, _races ?? NewCharacterRules.DefaultRaces);
++        }
++    }
++
++    // ---------------------------------------------------------------- cc-P762: the new-character lockdown
++
+     [Fact]
+-    public void ANewAccountSeesNewHavenLockedWithItsReason()
++    public void P762_APlayerAccountSeesNewHavenLockedWithItsOneLine()
+     {
++        using var locked = new Switches();
+         using var t = new Trainees();
+-        Assert.False(TutorialStart.IsHavenUnlocked(t.Account));
+         var cities = Server.Engines.CharacterCreation.CharacterCreation.GetStartingCities(t.Account);
+         Assert.Equal([TutorialStart.IsleCity, TutorialStart.LockedHavenCity], cities.Select(c => c.City).ToArray());
+         Assert.Equal([ShardClilocs.TutorialIslandCity, ShardClilocs.NewHavenLockedCity], cities.Select(c => c.Description).ToArray());
+         Assert.Equal(TutorialStart.Choice.Isle, TutorialStart.ChoiceOf(cities[1])); // the locked entry is the isle
+     }
+ 
++    [Fact]
++    public void P762_NewHavenSelectedStartsOnTheIsleInTheLessons()
++    {
++        using var locked = new Switches();
++        using var t = new Trainees();
++        var pm = t.Add();
++        Create(pm, TutorialStart.Choice.Haven); // a client that sends the unlocked list's "New Haven" anyway
++        Assert.True(TutorialWorld.IsOnIsle(pm));
++        Assert.Equal(TutorialStart.Outcome.Isle, TutorialStart.ConsumeAtLogin(pm));
++        Assert.True(TutorialCopies.IsCopy(pm.Map));
++        Assert.Equal(TutorialState.InCore, t.Record.State);
++        Assert.False(t.Record.WasSkipped);
++        Assert.True(ClusterFTutorial.IsParticipant(pm));
++        Assert.True(TutorialStart.IsIsleStarter(pm));
++    }
++
++    [Theory]
++    [InlineData(TutorialStart.Choice.Isle)]
++    [InlineData(TutorialStart.Choice.Haven)]
++    public void P762_ASecondCharacterWhileTheFirstIsInTheTutorialStartsOnTheIsle(TutorialStart.Choice choice)
++    {
++        using var locked = new Switches();
++        using var t = new Trainees();
++        var first = t.Add();
++        Create(first, TutorialStart.Choice.Isle);
++        ClusterFTutorial.OnLogin(first);
++        Assert.Equal(TutorialState.InCore, t.Record.State);
++
++        var second = t.Add();
++        Create(second, choice);
++        Assert.True(TutorialWorld.IsOnIsle(second)); // placed on the isle at creation
++        Assert.Equal(TutorialStart.Outcome.Visit, TutorialStart.ConsumeAtLogin(second));
++        Assert.True(TutorialCopies.IsCopy(second.Map)); // its own copy, not New Haven
++        Assert.Equal(TutorialWorld.Arrival, second.Location);
++        Assert.False(ClusterFTutorial.IsParticipant(second)); // visiting: the lessons stay with the first
++        Assert.Equal((uint)first.Serial, t.Record.CharacterSerial);
++        Assert.Equal(TutorialState.InCore, t.Record.State);
++        Assert.True(TutorialStart.StillOnFirstVisit(second));
++    }
++
+     [Theory]
+     [InlineData(true)]
+     [InlineData(false)]
+-    public void GraduatingOrSkippingUnlocksNewHavenForTheWholeAccount(bool graduate)
++    public void P762_AfterAnAccountResetTheNextCharacterTakesTheLessonsOnTheIsle(bool graduate)
+     {
++        using var locked = new Switches();
+         using var t = new Trainees();
+         var first = t.Add();
+         Create(first, TutorialStart.Choice.Isle);
+         ClusterFTutorial.OnLogin(first);
+-        Assert.False(TutorialStart.IsHavenUnlocked(t.Account));
+-
+         if (graduate)
+         {
+             FinishCore(t.Record);
+@@ -679,74 +741,267 @@ public class TutorialIsleVerification : IDisposable
+             Assert.True(ClusterFTutorial.Skip(first));
+         }
+ 
+-        Assert.True(TutorialStart.IsHavenUnlocked(t.Account));
+-        Assert.Equal([TutorialStart.IsleCity, TutorialStart.HavenCity], CityNames(t.Account));
++        // [ResetMyAccount and [ClusterFReset both run ExecuteReset; its "account flags" box clears the tutorial record too.
++        ClusterFDevTools.ExecuteReset(first, first, t.Account, new ResetOptions { Flags = true });
++        Assert.Equal(TutorialState.NotStarted, t.Record.State);
++        Assert.Equal([TutorialStart.IsleCity, TutorialStart.LockedHavenCity], CityNames(t.Account));
+ 
+-        // Kept after the character who earned it is deleted; the account's next character may start in New Haven.
+-        first.Delete();
+-        Assert.True(TutorialStart.IsHavenUnlocked(t.Account));
+         var next = t.Add();
+         Create(next, TutorialStart.Choice.Haven);
+-        Assert.Equal(TutorialStart.Outcome.Haven, TutorialStart.ConsumeAtLogin(next));
+-        Assert.Same(HavenSpots.Map, next.Map);
+-        Assert.Equal(HavenSpots.Start, next.Location);
++        Assert.Equal(TutorialStart.Outcome.Isle, TutorialStart.ConsumeAtLogin(next));
++        Assert.True(TutorialWorld.IsOnIsle(next));
++        Assert.Equal(TutorialState.InCore, t.Record.State);
++        Assert.Equal((uint)next.Serial, t.Record.CharacterSerial);
++    }
++
++    [Theory]
++    [InlineData(TutorialState.Graduated)]
++    [InlineData(TutorialState.Skipped)]
++    public void P762_AFinishedAccountsNewCharacterVisitsTheIsle(TutorialState finished)
++    {
++        using var locked = new Switches();
++        using var t = new Trainees();
++        t.Record.State = finished;
++        var pm = t.Add();
++        Create(pm, TutorialStart.Choice.Haven);
++        Assert.Equal(TutorialStart.Outcome.Visit, TutorialStart.ConsumeAtLogin(pm));
++        Assert.True(TutorialWorld.IsOnIsle(pm));
++        Assert.Equal(finished, t.Record.State);
+     }
+ 
+     [Fact]
+-    public void StaffAccountsAlwaysSeeBoth()
++    public void P762_ElfAndGargoyleAreMadeHumanForPlayers()
+     {
++        using var locked = new Switches();
++        using var t = new Trainees();
++        Assert.Same(Race.Human, NewCharacterRules.RaceFor(t.Account, Race.Elf, out var elfRefused));
++        Assert.True(elfRefused);
++        Assert.Same(Race.Human, NewCharacterRules.RaceFor(t.Account, Race.Gargoyle, out var gargRefused));
++        Assert.True(gargRefused);
++        Assert.Same(Race.Human, NewCharacterRules.RaceFor(t.Account, Race.Human, out var humanRefused));
++        Assert.False(humanRefused);
++        Assert.Equal([Race.Human], NewCharacterRules.AllowedRaces.ToArray());
++    }
++
++    [Fact]
++    public void P762_StaffAreExemptFromBothLocks()
++    {
++        using var locked = new Switches();
+         using var t = new Trainees();
+         t.Account.AccessLevel = AccessLevel.GameMaster;
+         Assert.Equal([TutorialStart.IsleCity, TutorialStart.HavenCity], CityNames(t.Account));
++        Assert.Same(Race.Elf, NewCharacterRules.RaceFor(t.Account, Race.Elf, out var refused));
++        Assert.False(refused);
++        Assert.Same(Race.Gargoyle, NewCharacterRules.RaceFor(t.Account, Race.Gargoyle, out _));
++
++        var gm = t.Add();
++        gm.AccessLevel = AccessLevel.GameMaster;
++        var (at, map) = TutorialStart.OnCreated(gm, TutorialStart.Cities()[1]);
++        Assert.Equal((HavenSpots.Start, HavenSpots.Map), (at, map)); // New Haven, as asked
++        Assert.Equal(TutorialStart.Choice.None, TutorialStart.Pending(gm));
+     }
+ 
+     [Fact]
+-    public void ANewHavenPickWhileLockedStartsOnTheIsle()
++    public void P762_EachSwitchReopensItsLock()
+     {
+         using var t = new Trainees();
+-        var pm = t.Add();
+-        Create(pm, TutorialStart.Choice.Haven); // a client that sends the unlocked list's "New Haven" anyway
+-        Assert.True(TutorialWorld.IsOnIsle(pm));
+-        Assert.Equal(TutorialStart.Outcome.Isle, TutorialStart.ConsumeAtLogin(pm));
+-        Assert.Equal(TutorialState.InCore, t.Record.State);
+-        Assert.False(t.Record.WasSkipped);
+-        Assert.Equal(0, ClusterFLoops.LoopOf(pm));
++        using (new Switches(havenStart: true))
++        {
++            Assert.Equal([TutorialStart.IsleCity, TutorialStart.HavenCity], CityNames(t.Account));
++            var pm = t.Add();
++            Create(pm, TutorialStart.Choice.Haven);
++            Assert.Equal(TutorialStart.Outcome.Skip, TutorialStart.ConsumeAtLogin(pm));
++            Assert.Same(HavenSpots.Map, pm.Map);
++            Assert.Equal(HavenSpots.Start, pm.Location);
++            // the race lock is the other switch: still Human only
++            Assert.Same(Race.Human, NewCharacterRules.RaceFor(t.Account, Race.Elf, out _));
++        }
++
++        using (new Switches(races: "Human, Elf"))
++        {
++            Assert.Equal([TutorialStart.IsleCity, TutorialStart.LockedHavenCity], CityNames(t.Account));
++            Assert.Same(Race.Elf, NewCharacterRules.RaceFor(t.Account, Race.Elf, out var refused));
++            Assert.False(refused);
++            Assert.Same(Race.Human, NewCharacterRules.RaceFor(t.Account, Race.Gargoyle, out _));
++        }
+     }
+ 
+     [Fact]
+-    public void TheResetsAccountFlagsLockNewHavenAgain()
++    public void P762_SwitchesDefaultToLocked()
+     {
++        var haven = ServerConfiguration.GetSetting(NewCharacterRules.HavenStartKey, (string?)null);
++        var races = ServerConfiguration.GetSetting(NewCharacterRules.RacesKey, (string?)null);
++        try
++        {
++            // not set to anything this build reads (as when absent from modernuo.json): locked
++            ServerConfiguration.SetSetting(NewCharacterRules.HavenStartKey, "");
++            ServerConfiguration.SetSetting(NewCharacterRules.RacesKey, "");
++            Assert.False(NewCharacterRules.HavenStartOpen);
++            Assert.Equal([Race.Human], NewCharacterRules.AllowedRaces.ToArray());
++            NewCharacterRules.Configure(); // writes the defaults where absent, never opens them
++            Assert.False(NewCharacterRules.HavenStartOpen);
++            Assert.Equal([Race.Human], NewCharacterRules.AllowedRaces.ToArray());
++        }
++        finally
++        {
++            ServerConfiguration.SetSetting(NewCharacterRules.HavenStartKey, haven ?? "False");
++            ServerConfiguration.SetSetting(NewCharacterRules.RacesKey, races ?? NewCharacterRules.DefaultRaces);
++        }
++    }
++
++    private static List<PetChoiceScroll> ScrollsIn(PlayerMobile pm) =>
++        pm.Backpack!.Items.OfType<LootBox>().SelectMany(b => (IEnumerable<Item>?)b.Contents ?? Array.Empty<Item>()).OfType<PetChoiceScroll>().ToList();
++
++    private static PetChoiceScroll? ScrollIn(PlayerMobile pm) => ScrollsIn(pm).FirstOrDefault();
++
++    [Theory]
++    [InlineData(true)]
++    [InlineData(false)]
++    public void P762_RunningForTheMoongateBeforeTheLessonsGivesTheAchievementAndTheBoxOnce(bool step)
++    {
++        using var locked = new Switches();
+         using var t = new Trainees();
+         var pm = t.Add();
+         Create(pm, TutorialStart.Choice.Isle);
+         ClusterFTutorial.OnLogin(pm);
+-        Assert.True(ClusterFTutorial.Skip(pm));
+-        Assert.True(TutorialStart.IsHavenUnlocked(t.Account));
++        Play(pm, "core.movement"); // one lesson in, ten left
++        var gate = Gate(t);
++        pm.MoveToWorld(TutorialWorld.Ground(TutorialWorld.DockEnd), TutorialWorld.Isle);
+ 
+-        // [ResetMyAccount and [ClusterFReset both run ExecuteReset; its "account flags" box clears the unlock.
+-        ClusterFDevTools.ExecuteReset(pm, pm, t.Account, new ResetOptions { Flags = true });
+-        Assert.False(TutorialStart.IsHavenUnlocked(t.Account));
+-        Assert.Equal([TutorialStart.IsleCity, TutorialStart.LockedHavenCity], CityNames(t.Account));
++        if (step)
++        {
++            Assert.True(gate.OnMoveOver(pm));
++            ShardTestClock.Advance(TimeSpan.FromMilliseconds(100));
++        }
++        else
++        {
++            Assert.True(TutorialTravelGate.Use(pm, gate.Location));
++        }
+ 
+-        // Earned again by the next skip or graduation.
+-        t.Record.State = TutorialState.InCore;
+-        Assert.True(ClusterFTutorial.Skip(pm));
+-        Assert.True(TutorialStart.IsHavenUnlocked(t.Account));
++        Assert.Same(HavenSpots.Map, pm.Map); // the normal way out
++        Assert.Equal(HavenSpots.MoongateExit, pm.Location);
++        Assert.True(ClusterFAchievementSystem.HasEarned(t.Account, ClusterFTutorial.GateSkipAchievement));
++        Assert.False(ClusterFAchievementSystem.HasEarned(t.Account, ClusterFTutorial.SkippedAchievement));
++        Assert.Equal(TutorialState.Skipped, t.Record.State);
++        Assert.True(TutorialStart.GateSkipped(pm));
++        Assert.Equal(1, ClusterFLoops.LoopOf(pm)); // can get to Haven and past it, as a skip
++        var scroll = ScrollIn(pm);
++        Assert.NotNull(scroll);
++
++        // Once: not eligible again, and the box's source is recorded on the character.
++        Assert.False(TutorialGateSkip.Eligible(pm, earlyInLessons: true));
++        TutorialGateSkip.Rewards(pm);
++        Assert.Single(ScrollsIn(pm));
++
++        // Final: Rook will not send this character back.
++        Assert.False(ClusterFTutorial.StartRemedial(pm));
++        Assert.Same(HavenSpots.Map, pm.Map);
+     }
+ 
+-    // Only the flag unlocks: a finished record would survive the reset, which clears flags but not the record. An account
+-    // that finished before cc-P717 sees New Haven locked, and either pick still starts in New Haven.
+     [Fact]
+-    public void AnAccountThatFinishedBeforeThisBuildSeesItLockedAndStartsInNewHaven()
++    public void P762_AVisitorRunningForTheMoongateGetsItsOwnBox()
++    {
++        using var locked = new Switches();
++        using var t = new Trainees();
++        var first = t.Add();
++        Create(first, TutorialStart.Choice.Isle);
++        ClusterFTutorial.OnLogin(first);
++        var visitor = t.Add();
++        Create(visitor, TutorialStart.Choice.Isle);
++        Assert.Equal(TutorialStart.Outcome.Visit, TutorialStart.ConsumeAtLogin(visitor));
++        var gate = Gate(t);
++        visitor.MoveToWorld(TutorialWorld.Ground(TutorialWorld.DockEnd), TutorialWorld.Isle);
++        Assert.True(TutorialTravelGate.Use(visitor, gate.Location));
++        Assert.Same(HavenSpots.Map, visitor.Map);
++        Assert.NotNull(ScrollIn(visitor));
++        Assert.True(TutorialStart.GateSkipped(visitor));
++        Assert.Equal(TutorialState.InCore, t.Record.State); // the first character's lessons are untouched
++        Assert.Equal((uint)first.Serial, t.Record.CharacterSerial);
++    }
++
++    [Theory]
++    [InlineData(true)]
++    [InlineData(false)]
++    public void P762_TheScrollGivesADogOrACatThatFollowsWithoutTaming(bool dog)
+     {
+         using var t = new Trainees();
+-        t.Record.State = TutorialState.Graduated; // no unlock flag: saved before cc-P717
+-        Assert.False(TutorialStart.IsHavenUnlocked(t.Account));
+         var pm = t.Add();
+-        Create(pm, TutorialStart.Choice.Haven);
+-        Assert.Equal(TutorialStart.Outcome.Finished, TutorialStart.ConsumeAtLogin(pm));
++        var taming = pm.Skills.AnimalTaming.Base;
++        var scroll = new PetChoiceScroll();
++        pm.Backpack!.DropItem(scroll);
++
++        var pet = scroll.Choose(pm, dog);
++        Assert.NotNull(pet);
++        t.Litter.Add(pet!);
++        Assert.IsType(dog ? typeof(Dog) : typeof(Cat), pet);
++        Assert.True(pet!.Controlled);
++        Assert.Same(pm, pet.ControlMaster);
++        Assert.Equal(OrderType.Follow, pet.ControlOrder);
++        Assert.False(pet.IsBonded);
++        Assert.True(scroll.Deleted);
++        Assert.Equal(taming, pm.Skills.AnimalTaming.Base);
++        Assert.Equal(1, pm.Followers);
++    }
++
++    [Fact]
++    public void P762_TheChoiceWindowHasTwoButtonsDogAndCat()
++    {
++        using var t = new Trainees();
++        var pm = t.Add();
++        var scroll = new PetChoiceScroll();
++        pm.Backpack!.DropItem(scroll);
++        var g = new PetChoiceGump(scroll);
++        Assert.Equal([1, 2], g.Entries.OfType<GumpButton>().Select(b => b.ButtonID).OrderBy(x => x).ToArray());
++        g.OnResponse(pm.NetState!, new RelayInfo(2, default, default, default, default));
++        Assert.True(scroll.Deleted);
++        var cat = pm.AllFollowers.OfType<Cat>().Single();
++        t.Litter.Add(cat);
++    }
++
++    [Fact]
++    public void P762_AFinisherDoesNotGetTheSkipReward()
++    {
++        using var locked = new Switches();
++        using var t = new Trainees();
++        var pm = t.Add();
++        Create(pm, TutorialStart.Choice.Isle);
++        ClusterFTutorial.OnLogin(pm);
++        foreach (var key in TutorialStations.Core.Select(s => s.Key).TakeWhile(k => k != "core.travel"))
++        {
++            Play(pm, key);
++        }
++
++        var gate = Gate(t);
++        pm.MoveToWorld(TutorialWorld.Ground(TutorialWorld.DockEnd), TutorialWorld.Isle);
++        ClusterFTutorial.RunStation(pm, TutorialStations.Find("core.travel")!);
++        Assert.True(TutorialTravelGate.Use(pm, gate.Location));
+         Assert.Same(HavenSpots.Map, pm.Map);
+-        Assert.Equal(HavenSpots.Start, pm.Location);
+-        Assert.Equal(TutorialState.Graduated, t.Record.State);
++        Assert.Equal(TutorialState.InWings, t.Record.State); // the lessons finished, graduation waits at Rook
++        Assert.False(ClusterFAchievementSystem.HasEarned(t.Account, ClusterFTutorial.GateSkipAchievement));
++        Assert.Null(ScrollIn(pm));
++        Assert.False(TutorialStart.GateSkipped(pm));
++        Assert.Equal(TutorialStart.ExitLeft, TutorialStart.IsleExit(pm));
++    }
++
++    [Fact]
++    public void P762_TheBotsStaffCommandMakesOnlyBotStaffAccountsGameMaster()
++    {
++        var name = $"slbot-staff{Guid.NewGuid():N}"[..20];
++        var bot = new Account(name, "p762-test-only");
++        var other = new Account($"p762{Guid.NewGuid():N}"[..16], "p762-test-only");
++        try
++        {
++            Assert.StartsWith("Refused", NewCharacterRules.MakeBotStaff(name, "not a test shard"));
++            Assert.Equal(AccessLevel.Player, bot.AccessLevel);
++            Assert.Contains("Only the playtest bot", NewCharacterRules.MakeBotStaff(other.Username, null));
++            Assert.Equal(AccessLevel.Player, other.AccessLevel);
++            Assert.Equal($"{name} {NewCharacterRules.BotStaffDone}.", NewCharacterRules.MakeBotStaff(name, null));
++            Assert.Equal(AccessLevel.GameMaster, bot.AccessLevel);
++        }
++        finally
++        {
++            Accounts.Remove(bot);
++            Accounts.Remove(other);
++        }
+     }
+ }
