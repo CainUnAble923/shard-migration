@@ -1,0 +1,87 @@
+test_a_player_pool_character_wakes_on_the_isle (__main__.HavenStart.test_a_player_pool_character_wakes_on_the_isle) ... ok
+test_a_raise_that_does_not_happen_is_an_error_not_a_player_start (__main__.HavenStart.test_a_raise_that_does_not_happen_is_an_error_not_a_player_start) ... ERROR
+test_a_staff_account_is_raised_once_per_run (__main__.HavenStart.test_a_staff_account_is_raised_once_per_run) ... ERROR
+test_create_expects_human_for_every_race_a_player_asks_for (__main__.HavenStart.test_create_expects_human_for_every_race_a_player_asks_for) ... FAIL
+test_new_haven_comes_from_a_staff_account_made_gamemaster_first (__main__.HavenStart.test_new_haven_comes_from_a_staff_account_made_gamemaster_first) ... ERROR
+test_p64_1_prefers_an_account_without_a_first_login (__main__.HavenStart.test_p64_1_prefers_an_account_without_a_first_login) ... ERROR
+test_t039_and_p64_1_ask_for_new_haven (__main__.HavenStart.test_t039_and_p64_1_ask_for_new_haven) ... <frozen importlib._bootstrap>:128: ResourceWarning: unclosed file <_io.FileIO name='nul' mode='ab' closefd=True>
+C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\8ec2caf8-8b86-4c6e-9bc0-fc83da7593f4\scratchpad\oldbot\tests\test_haven_start.py:155: ResourceWarning: unclosed file <_io.TextIOWrapper name='C:\\Users\\ckfle\\AppData\\Local\\Temp\\claude\\D--UO-golems-Iron-shard-migration\\8ec2caf8-8b86-4c6e-9bc0-fc83da7593f4\\scratchpad\\oldbot\\uobot\\checks.py' mode='r' encoding='utf-8'>
+  src = open(C.__file__, encoding="utf-8").read()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_the_shard_line_and_the_bot_agree (__main__.HavenStart.test_the_shard_line_and_the_bot_agree) ... ERROR
+
+======================================================================
+ERROR: test_a_raise_that_does_not_happen_is_an_error_not_a_player_start (__main__.HavenStart.test_a_raise_that_does_not_happen_is_an_error_not_a_player_start)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\8ec2caf8-8b86-4c6e-9bc0-fc83da7593f4\scratchpad\oldbot\tests\test_haven_start.py", line 142, in test_a_raise_that_does_not_happen_is_an_error_not_a_player_start
+    ctx.fresh(city=R.HAVEN_CITY)
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\8ec2caf8-8b86-4c6e-9bc0-fc83da7593f4\scratchpad\oldbot\uobot\run.py", line 159, in fresh
+    self.unlock_haven(c)   # rests this account; take the next ready one
+    ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\8ec2caf8-8b86-4c6e-9bc0-fc83da7593f4\scratchpad\oldbot\uobot\run.py", line 223, in unlock_haven
+    if a.wait_target(6):
+       ^^^^^^^^^^^^^
+AttributeError: 'FakeClient' object has no attribute 'wait_target'
+
+======================================================================
+ERROR: test_a_staff_account_is_raised_once_per_run (__main__.HavenStart.test_a_staff_account_is_raised_once_per_run)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\8ec2caf8-8b86-4c6e-9bc0-fc83da7593f4\scratchpad\oldbot\tests\test_haven_start.py", line 131, in test_a_staff_account_is_raised_once_per_run
+    a = ctx.fresh(city=R.HAVEN_CITY)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\8ec2caf8-8b86-4c6e-9bc0-fc83da7593f4\scratchpad\oldbot\uobot\run.py", line 159, in fresh
+    self.unlock_haven(c)   # rests this account; take the next ready one
+    ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\8ec2caf8-8b86-4c6e-9bc0-fc83da7593f4\scratchpad\oldbot\uobot\run.py", line 223, in unlock_haven
+    if a.wait_target(6):
+       ^^^^^^^^^^^^^
+AttributeError: 'FakeClient' object has no attribute 'wait_target'
+
+======================================================================
+ERROR: test_new_haven_comes_from_a_staff_account_made_gamemaster_first (__main__.HavenStart.test_new_haven_comes_from_a_staff_account_made_gamemaster_first)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\8ec2caf8-8b86-4c6e-9bc0-fc83da7593f4\scratchpad\oldbot\tests\test_haven_start.py", line 120, in test_new_haven_comes_from_a_staff_account_made_gamemaster_first
+    c = ctx.fresh(city=R.HAVEN_CITY)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\8ec2caf8-8b86-4c6e-9bc0-fc83da7593f4\scratchpad\oldbot\uobot\run.py", line 159, in fresh
+    self.unlock_haven(c)   # rests this account; take the next ready one
+    ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\8ec2caf8-8b86-4c6e-9bc0-fc83da7593f4\scratchpad\oldbot\uobot\run.py", line 223, in unlock_haven
+    if a.wait_target(6):
+       ^^^^^^^^^^^^^
+AttributeError: 'FakeClient' object has no attribute 'wait_target'
+
+======================================================================
+ERROR: test_p64_1_prefers_an_account_without_a_first_login (__main__.HavenStart.test_p64_1_prefers_an_account_without_a_first_login)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\8ec2caf8-8b86-4c6e-9bc0-fc83da7593f4\scratchpad\oldbot\tests\test_haven_start.py", line 147, in test_p64_1_prefers_an_account_without_a_first_login
+    ctx.first_logins = {R.STAFF_POOL[0]: {}, R.STAFF_POOL[1]: {}}
+                        ^^^^^^^^^^^^
+AttributeError: module 'uobot.run' has no attribute 'STAFF_POOL'
+
+======================================================================
+ERROR: test_the_shard_line_and_the_bot_agree (__main__.HavenStart.test_the_shard_line_and_the_bot_agree)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\8ec2caf8-8b86-4c6e-9bc0-fc83da7593f4\scratchpad\oldbot\tests\test_haven_start.py", line 152, in test_the_shard_line_and_the_bot_agree
+    self.assertEqual(R.STAFF_MADE, MADE)
+                     ^^^^^^^^^^^^
+AttributeError: module 'uobot.run' has no attribute 'STAFF_MADE'
+
+======================================================================
+FAIL: test_create_expects_human_for_every_race_a_player_asks_for (__main__.HavenStart.test_create_expects_human_for_every_race_a_player_asks_for)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\8ec2caf8-8b86-4c6e-9bc0-fc83da7593f4\scratchpad\oldbot\tests\test_haven_start.py", line 169, in test_create_expects_human_for_every_race_a_player_asks_for
+    self.assertTrue(all(ok for ok, _ in results), results)
+AssertionError: False is not true : [(True, "human male: body 400 (want 400), status name 'Bot Human M Ab' (asked for 'Bot Human M Ab'), at (6638, 3993, 0)"), (False, "elf female: body 401 (want 606), status name 'Bot Elf F Ac' (asked for 'Bot Elf F Ac'), at (6638, 3993, 0)"), (False, "gargoyle male: body 400 (want 666), status name 'Bot Gargoyle M A' (asked for 'Bot Gargoyle M A'), at (6638, 3993, 0)"), (True, "human female: body 401 (want 401), status name 'Bot Human F Ae' (asked for 'Bot Human F Ae'), at (6638, 3993, 0)"), (False, "elf male: body 400 (want 605), status name 'Bot Elf M Af' (asked for 'Bot Elf M Af'), at (6638, 3993, 0)"), (False, "gargoyle female: body 401 (want 667), status name 'Bot Gargoyle F A' (asked for 'Bot Gargoyle F A'), at (6638, 3993, 0)")]
+
+----------------------------------------------------------------------
+Ran 8 tests in 18.103s
+
+FAILED (failures=1, errors=5)
