@@ -1,0 +1,38 @@
+{
+ "checks": [
+  {
+   "id": "P64-1",
+   "title": "Fresh account login: bulletin with the current version, All patch notes, no wiki button",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "ERROR",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "error",
+     "evidence": "LoginFailed: login refused, reason 3",
+     "seconds": 343.2,
+     "transcript": "transcripts/P64-1-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P64-2",
+   "title": "All patch notes opens the history; a relog shows no bulletin",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "ERROR",
+   "passes": 0,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "error",
+     "evidence": "RuntimeError: P64-1 did not run first",
+     "seconds": 0.0,
+     "transcript": "transcripts/P64-2-run1.txt"
+    }
+   ]
+  }
+ ]
+}

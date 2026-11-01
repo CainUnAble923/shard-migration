@@ -1,0 +1,110 @@
+test_a_locked_account_is_not_unlocked_while_another_may_be_open (__main__.HavenStart.test_a_locked_account_is_not_unlocked_while_another_may_be_open) ... ERROR
+test_a_locked_account_is_opened_by_a_skipped_throwaway_first (__main__.HavenStart.test_a_locked_account_is_opened_by_a_skipped_throwaway_first) ... ERROR
+test_a_skip_that_does_not_happen_is_an_error_not_an_isle_start (__main__.HavenStart.test_a_skip_that_does_not_happen_is_an_error_not_an_isle_start) ... ERROR
+test_an_open_account_creates_in_new_haven_at_once (__main__.HavenStart.test_an_open_account_creates_in_new_haven_at_once) ... ERROR
+test_p64_1_prefers_an_account_without_a_first_login (__main__.HavenStart.test_p64_1_prefers_an_account_without_a_first_login) ... ERROR
+test_t039_and_p64_1_ask_for_new_haven (__main__.HavenStart.test_t039_and_p64_1_ask_for_new_haven) ... C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\4b357bb5-5c17-4376-9a66-f3cae4f4a31e\scratchpad\red735\tests\test_haven_start.py:174: ResourceWarning: unclosed file <_io.TextIOWrapper name='C:\\Users\\ckfle\\AppData\\Local\\Temp\\claude\\D--UO-golems-Iron-shard-migration\\4b357bb5-5c17-4376-9a66-f3cae4f4a31e\\scratchpad\\red735\\uobot\\checks.py' mode='r' encoding='utf-8'>
+  src = open(C.__file__, encoding="utf-8").read()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+FAIL
+test_the_isle_is_still_the_default (__main__.HavenStart.test_the_isle_is_still_the_default) ... ERROR
+test_with_an_open_account_resting_no_locked_account_is_logged_into (__main__.HavenStart.test_with_an_open_account_resting_no_locked_account_is_logged_into)
+run1: T-039 unlocked a second account while the one it had just opened was resting. ... ERROR
+
+======================================================================
+ERROR: test_a_locked_account_is_not_unlocked_while_another_may_be_open (__main__.HavenStart.test_a_locked_account_is_not_unlocked_while_another_may_be_open)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\4b357bb5-5c17-4376-9a66-f3cae4f4a31e\scratchpad\red735\tests\test_haven_start.py", line 139, in test_a_locked_account_is_not_unlocked_while_another_may_be_open
+    ctx, shard = self.ctx(open_accounts=[R.POOL[2]])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\4b357bb5-5c17-4376-9a66-f3cae4f4a31e\scratchpad\red735\tests\test_haven_start.py", line 92, in ctx
+    self._look, R.LOOK_PAUSE = R.LOOK_PAUSE, 0
+                               ^^^^^^^^^^^^
+AttributeError: module 'uobot.run' has no attribute 'LOOK_PAUSE'
+
+======================================================================
+ERROR: test_a_locked_account_is_opened_by_a_skipped_throwaway_first (__main__.HavenStart.test_a_locked_account_is_opened_by_a_skipped_throwaway_first)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\4b357bb5-5c17-4376-9a66-f3cae4f4a31e\scratchpad\red735\tests\test_haven_start.py", line 124, in test_a_locked_account_is_opened_by_a_skipped_throwaway_first
+    ctx, shard = self.ctx()
+                 ^^^^^^^^^^
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\4b357bb5-5c17-4376-9a66-f3cae4f4a31e\scratchpad\red735\tests\test_haven_start.py", line 92, in ctx
+    self._look, R.LOOK_PAUSE = R.LOOK_PAUSE, 0
+                               ^^^^^^^^^^^^
+AttributeError: module 'uobot.run' has no attribute 'LOOK_PAUSE'
+
+======================================================================
+ERROR: test_a_skip_that_does_not_happen_is_an_error_not_an_isle_start (__main__.HavenStart.test_a_skip_that_does_not_happen_is_an_error_not_an_isle_start)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\4b357bb5-5c17-4376-9a66-f3cae4f4a31e\scratchpad\red735\tests\test_haven_start.py", line 162, in test_a_skip_that_does_not_happen_is_an_error_not_an_isle_start
+    ctx, shard = self.ctx(skip_works=False)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\4b357bb5-5c17-4376-9a66-f3cae4f4a31e\scratchpad\red735\tests\test_haven_start.py", line 92, in ctx
+    self._look, R.LOOK_PAUSE = R.LOOK_PAUSE, 0
+                               ^^^^^^^^^^^^
+AttributeError: module 'uobot.run' has no attribute 'LOOK_PAUSE'
+
+======================================================================
+ERROR: test_an_open_account_creates_in_new_haven_at_once (__main__.HavenStart.test_an_open_account_creates_in_new_haven_at_once)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\4b357bb5-5c17-4376-9a66-f3cae4f4a31e\scratchpad\red735\tests\test_haven_start.py", line 116, in test_an_open_account_creates_in_new_haven_at_once
+    ctx, shard = self.ctx(open_accounts=[R.POOL[1]])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\4b357bb5-5c17-4376-9a66-f3cae4f4a31e\scratchpad\red735\tests\test_haven_start.py", line 92, in ctx
+    self._look, R.LOOK_PAUSE = R.LOOK_PAUSE, 0
+                               ^^^^^^^^^^^^
+AttributeError: module 'uobot.run' has no attribute 'LOOK_PAUSE'
+
+======================================================================
+ERROR: test_p64_1_prefers_an_account_without_a_first_login (__main__.HavenStart.test_p64_1_prefers_an_account_without_a_first_login)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\4b357bb5-5c17-4376-9a66-f3cae4f4a31e\scratchpad\red735\tests\test_haven_start.py", line 168, in test_p64_1_prefers_an_account_without_a_first_login
+    ctx, shard = self.ctx(open_accounts=R.POOL)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\4b357bb5-5c17-4376-9a66-f3cae4f4a31e\scratchpad\red735\tests\test_haven_start.py", line 92, in ctx
+    self._look, R.LOOK_PAUSE = R.LOOK_PAUSE, 0
+                               ^^^^^^^^^^^^
+AttributeError: module 'uobot.run' has no attribute 'LOOK_PAUSE'
+
+======================================================================
+ERROR: test_the_isle_is_still_the_default (__main__.HavenStart.test_the_isle_is_still_the_default)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\4b357bb5-5c17-4376-9a66-f3cae4f4a31e\scratchpad\red735\tests\test_haven_start.py", line 111, in test_the_isle_is_still_the_default
+    ctx, shard = self.ctx()
+                 ^^^^^^^^^^
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\4b357bb5-5c17-4376-9a66-f3cae4f4a31e\scratchpad\red735\tests\test_haven_start.py", line 92, in ctx
+    self._look, R.LOOK_PAUSE = R.LOOK_PAUSE, 0
+                               ^^^^^^^^^^^^
+AttributeError: module 'uobot.run' has no attribute 'LOOK_PAUSE'
+
+======================================================================
+ERROR: test_with_an_open_account_resting_no_locked_account_is_logged_into (__main__.HavenStart.test_with_an_open_account_resting_no_locked_account_is_logged_into)
+run1: T-039 unlocked a second account while the one it had just opened was resting.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\4b357bb5-5c17-4376-9a66-f3cae4f4a31e\scratchpad\red735\tests\test_haven_start.py", line 148, in test_with_an_open_account_resting_no_locked_account_is_logged_into
+    ctx, shard = self.ctx(open_accounts=[R.POOL[1]])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\4b357bb5-5c17-4376-9a66-f3cae4f4a31e\scratchpad\red735\tests\test_haven_start.py", line 92, in ctx
+    self._look, R.LOOK_PAUSE = R.LOOK_PAUSE, 0
+                               ^^^^^^^^^^^^
+AttributeError: module 'uobot.run' has no attribute 'LOOK_PAUSE'
+
+======================================================================
+FAIL: test_t039_and_p64_1_ask_for_new_haven (__main__.HavenStart.test_t039_and_p64_1_ask_for_new_haven)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\4b357bb5-5c17-4376-9a66-f3cae4f4a31e\scratchpad\red735\tests\test_haven_start.py", line 177, in test_t039_and_p64_1_ask_for_new_haven
+    self.assertRegex(body, r"ctx\.fresh\([^)]*city=HAVEN_CITY", fn)
+AssertionError: Regex didn't match: 'ctx\\.fresh\\([^)]*city=HAVEN_CITY' not found in 'def t_039(ctx):\n    # ClusterFGuildStarterPath.cs:768-780: "Follow the arrow to the Guild Board in New Haven\'s square." (same map), or\n    # "The Guild Board stands in ...". The board\'s spot: NewHavenQuestBoard.HomeLocation (HavenSpots.QuestBoard,\n    # 3633, 2585, 0; cc-P678).\n    race, female = RACES[SHARED.setdefault("t039", 0) % len(RACES)]\n    SHARED["t039"] += 1\n    c = ctx.fresh(race=race, female=female)\n    try:\n        m = c.find_text(r"Guild Board", timeout=12)\n        line = c.wait(lambda: next((t for g in c.gumps for t in all_text(c, g) if "Guild Board" in t), None), 3)\n        # Quote only the sentence that names the board.\n        board = next((s.strip() for s in re.split(r"(?<=[.!?])", line or "") if "Guild Board" in s), None)\n        x, y = (c.pos or (0, 0))[:2]\n        # cc-P688 (SoS swap S15): from the board\'s spot (HavenSpots.QuestBoard, 3633,2585), not stock New Haven\'s 3502,2573\n        dist = max(abs(x - 3633), abs(y - 2585))\n        ok = bool(m or board) and dist <= 40\n        return ok, "%s %s at %s: message %r; welcome gump says %r; the board is %d tiles away" % (\n            race, "female" if female else "male", (c.pos or ())[:3], m["text"] if m else None, board, dist)\n    finally:\n        ctx.done(c)\n\n' : def t_039
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.006s
+
+FAILED (failures=1, errors=7)

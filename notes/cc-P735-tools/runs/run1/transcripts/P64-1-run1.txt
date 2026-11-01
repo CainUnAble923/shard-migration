@@ -1,0 +1,28 @@
+    0.00 harness  == P64-1 run 1: Fresh account login: bulletin with the current version, All patch notes, no wiki button
+    0.00 fresh    -> 0xEF seed, client 7.0.117.0; 0x80 login as slbot-player2
+    0.01 fresh    <- 0xA8 servers [(0, 'Shattered Legacy BOT (P735 priva')]
+    0.01 fresh    <- 0x8C relay 127.0.0.1:2595 (checked: the scratch shard 127.0.0.1:2595; reconnecting to 127.0.0.1:2595)
+    0.01 fresh    <- 0xA9 characters ['', '', '', '', '', '', '']; 2 cities ['Tutorial Island', 'New Haven (locked)']
+    0.01 fresh    -> 0xEF seed, client 7.0.117.0; 0x80 login as slbot-player3
+    0.02 fresh    <- 0xA8 servers [(0, 'Shattered Legacy BOT (P735 priva')]
+    0.02 fresh    <- 0x8C relay 127.0.0.1:2595 (checked: the scratch shard 127.0.0.1:2595; reconnecting to 127.0.0.1:2595)
+    0.03 fresh    <- 0xA9 characters ['', '', '', '', '', '', '']; 2 cities ['Tutorial Island', 'New Haven (locked)']
+    0.03 fresh    -> 0xEF seed, client 7.0.117.0; 0x80 login as slbot-player4
+    0.04 fresh    <- 0xA8 servers [(0, 'Shattered Legacy BOT (P735 priva')]
+    0.04 fresh    <- 0x8C relay 127.0.0.1:2595 (checked: the scratch shard 127.0.0.1:2595; reconnecting to 127.0.0.1:2595)
+    5.04 fresh    DISCONNECTED: the server closed the connection
+    5.05 harness  Traceback (most recent call last):
+  File "D:\UO\golems\Iron\ShatteredLegacy\tools\playtest-bot\uobot\run.py", line 252, in run_checks
+    ok, evidence = chk.fn(ctx)
+                   ^^^^^^^^^^^
+  File "D:\UO\golems\Iron\ShatteredLegacy\tools\playtest-bot\uobot\checks.py", line 160, in p64_1
+    c = ctx.fresh(race="human", female=False, label="fresh", city=HAVEN_CITY, first_login=True)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\UO\golems\Iron\ShatteredLegacy\tools\playtest-bot\uobot\run.py", line 135, in fresh
+    chars = c.login()
+            ^^^^^^^^^
+  File "D:\UO\golems\Iron\ShatteredLegacy\tools\playtest-bot\uobot\client.py", line 266, in login
+    raise LoginFailed("no character list after the game login (%s)" % (self.closed or "timeout"))
+uobot.client.LoginFailed: no character list after the game login (the server closed the connection)
+
+    5.05 harness  == P64-1 run 1: ERROR (LoginFailed: no character list after the game login (the server closed the connection))

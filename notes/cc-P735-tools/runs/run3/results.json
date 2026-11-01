@@ -1,0 +1,59 @@
+{
+ "checks": [
+  {
+   "id": "P64-1",
+   "title": "Fresh account login: bulletin with the current version, All patch notes, no wiki button",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "title 'Shattered Legacy 2026.10.31.5'; All patch notes button yes; wiki text none",
+     "seconds": 347.2,
+     "transcript": "transcripts/P64-1-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "P64-2",
+   "title": "All patch notes opens the history; a relog shows no bulletin",
+   "kind": "BOT",
+   "left_for_chase": "",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "history gump after All patch notes: yes; bulletin on relog: none (observed during the matching P64-1 run)",
+     "seconds": 0.0,
+     "transcript": "transcripts/P64-2-run1.txt"
+    }
+   ]
+  },
+  {
+   "id": "T-039",
+   "title": "A new character is pointed at the board",
+   "kind": "BOT-PARTIAL",
+   "left_for_chase": "T-039: a new player can find the board by eye",
+   "result": "PASS",
+   "passes": 1,
+   "runs": [
+    {
+     "run": 1,
+     "verdict": "pass",
+     "evidence": "human female at (3634, 2586, 0): message None; welcome gump says 'The Guild Board in the town square lists every guild, what it teaches, and where its guildmaster stands.'; the board is 1 tiles away",
+     "seconds": 343.1,
+     "transcript": "transcripts/T-039-run1.txt"
+    }
+   ]
+  }
+ ],
+ "soak": null,
+ "firstLogins": [
+  "slbot-player4"
+ ]
+}
