@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-01T06:22:02-06:00",
+  "generated": "2026-11-01T07:52:18-06:00",
   "direction": {
     "eyebrow": "Direction",
     "title": "Our own shard on ModernUO, OSI where OSI has an answer",
@@ -778,7 +778,7 @@
     {
       "kind": "play tests",
       "item": "not sorted",
-      "check": "989 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check.",
+      "check": "990 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check.",
       "cmd": [
         "python -m unittest tools/tests/test_play_who.py"
       ]
@@ -1306,26 +1306,44 @@
   "derived": {
     "version": "2026.11.01.2",
     "playtests": {
-      "open": 1432,
+      "open": 1433,
       "failed": 4,
       "passed": 43,
       "later": 8,
       "blocked": 1,
-      "total": 1479,
+      "total": 1480,
       "unloggedFails": 3,
-      "generatedAt": "2026-11-01T12:21:10Z"
+      "generatedAt": "2026-11-01T13:51:49Z"
     },
     "queue": {
-      "autopilot": "off",
+      "autopilot": "on",
       "running": null,
       "queued": [
         {
           "n": 715,
           "slug": "ask-expires-too-soon",
           "state": "queued"
+        },
+        {
+          "n": 759,
+          "slug": "loot-boxes-diversified",
+          "state": "queued"
+        },
+        {
+          "n": 760,
+          "slug": "reward-stores",
+          "state": "queued"
         }
       ],
       "finished": [
+        {
+          "n": 758,
+          "slug": "isle-release-5",
+          "state": "done",
+          "why": "",
+          "date": "2026-11-01",
+          "notes": "notes/cc-P758-isle-release-5.md"
+        },
         {
           "n": 757,
           "slug": "night-usage-fallback",
@@ -1397,26 +1415,18 @@
           "why": "",
           "date": "2026-10-31",
           "notes": "notes/cc-P748-review-build-isle-coast-and-wreck.md"
-        },
-        {
-          "n": 747,
-          "slug": "review-fallback-to-iron",
-          "state": "done",
-          "why": "",
-          "date": "2026-11-01",
-          "notes": "notes/cc-P747-review-fallback-to-iron.md"
         }
       ],
-      "finished_total": 631,
-      "done_total": 626,
+      "finished_total": 632,
+      "done_total": 627,
       "stopped_total": 5,
       "latest_done": {
-        "n": 757,
-        "slug": "night-usage-fallback",
+        "n": 758,
+        "slug": "isle-release-5",
         "state": "done",
         "why": "",
         "date": "2026-11-01",
-        "notes": "notes/cc-P757-night-usage-fallback.md"
+        "notes": "notes/cc-P758-isle-release-5.md"
       }
     },
     "reviewed": "2026-10-25",
