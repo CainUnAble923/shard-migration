@@ -1,0 +1,362 @@
+--- orig/Golems.ps1	2026-10-31 23:14:15.760752000 -0500
++++ Golems.ps1	2026-10-31 23:21:18.630044100 -0500
+@@ -435,9 +435,12 @@
+     foreach ($g in @($reg.Golems)) {
+         if ([string]$g.name -ieq [string]$me.name -or -not [bool]$g.enabled) { continue }
+         $f = Join-Path $Root (Get-GolemFileName $g 'RUN-NEXT' '')
+-        if (-not (Test-Path -LiteralPath $f)) { continue }
+-        $n = ''; try { $n = ([string](Get-Content -LiteralPath $f -Raw -ErrorAction Stop)).Trim() } catch {}
+-        if ($n) { $h[$n] = [string]$g.name }
++        # cc-P747: and the pick waiting behind an answered prompt (RUN-NEXT.after).
++        foreach ($x in @($f, ($f + '.after'))) {
++            if (-not (Test-Path -LiteralPath $x)) { continue }
++            $n = ''; try { $n = ([string](Get-Content -LiteralPath $x -Raw -ErrorAction Stop)).Trim() } catch {}
++            if ($n) { $h[$n] = [string]$g.name }
++        }
+     }
+     $h
+ }
+@@ -1222,12 +1225,17 @@
+ # "BUILD REVIEW P<nn>: PASS" or "BUILD REVIEW P<nn>: FAIL" and a numbered list; the integrator reads that line when the
+ # review's ticket comes in. PASS merges; FAIL is a fix-up for the builder with the list (a fix-up's FAIL is Chase's).
+ # Kept light: one review per prompt, merge-queue\review-P<nn>.json its record; after buildReviewWidenMinutes unclaimed the
+-# review is opened to every other Claude Golem; after buildReviewHours with no verdict the ticket merges anyway and says so.
++# review is opened to every other Claude Golem; after buildReviewHours with no verdict the log says so (cc-P747: it waits on).
+ # The overseer skips one with Skip-BuildReview.ps1 (merge-queue\review-skip-P<nn>) or a "**Build review:** skip" line in
+ # the prompt; settings.json buildReview false turns the step off.
++# cc-P747 (Chase 10-30, after P737 timed out and merged unreviewed): a review still unclaimed buildReviewFallbackMinutes
++# (120) after it opened is assigned to buildReviewFallbackGolem (Iron) with Assign-Prompt.ps1 -RunNext, its next
++# hand-off; golem.ps1 hands a review only to a fresh session (never one that has just finished a prompt). A time-out never
++# merges any more: past buildReviewHours the ticket is still held and the log says so once; only a verdict or
++# Skip-BuildReview.ps1 (or the prompt's skip line) lets it through.
+ $script:BuildGuide = 'notes\guides\building-and-decorating.md'
+ function Get-BuildReviewSettings([string]$Root) {
+-    $o = [pscustomobject]@{ Enabled = $true; Hours = 8.0; WidenMinutes = 60.0; First = @('Gold', 'Copper') }
++    $o = [pscustomobject]@{ Enabled = $true; Hours = 8.0; WidenMinutes = 60.0; First = @('Gold', 'Copper'); FallbackMinutes = 120.0; FallbackGolem = 'Iron' }
+     try {
+         $sf = Join-Path $Root 'settings.json'
+         if (Test-Path -LiteralPath $sf) {
+@@ -1236,6 +1244,8 @@
+             if ($null -ne (Get-GolemProp $s 'buildReviewHours' $null)) { $o.Hours = [double]$s.buildReviewHours }
+             if ($null -ne (Get-GolemProp $s 'buildReviewWidenMinutes' $null)) { $o.WidenMinutes = [double]$s.buildReviewWidenMinutes }
+             if ($null -ne (Get-GolemProp $s 'buildReviewFirst' $null)) { $o.First = @($s.buildReviewFirst | ForEach-Object { [string]$_ }) }
++            if ($null -ne (Get-GolemProp $s 'buildReviewFallbackMinutes' $null)) { $o.FallbackMinutes = [double]$s.buildReviewFallbackMinutes }   # cc-P747
++            if ($null -ne (Get-GolemProp $s 'buildReviewFallbackGolem' $null)) { $o.FallbackGolem = [string]$s.buildReviewFallbackGolem }
+         }
+     } catch {}
+     $o
+@@ -1316,7 +1326,7 @@
+     [pscustomobject]@{ Verdict = $m.Groups[1].Value; Fixes = @($fixes) }
+ }
+ # The review prompt for ticket $t, in the queue. Returns { Path; Name; Number }.
+-function New-BuildReviewPrompt([string]$PromptDir, $t, [string[]]$reviewers, [string]$Why, [double]$Hours, [datetime]$now) {
++function New-BuildReviewPrompt([string]$PromptDir, $t, [string[]]$reviewers, [string]$Why, [double]$Hours, [datetime]$now, [double]$FallbackMinutes = 120, [string]$FallbackGolem = 'Iron') {
+     $q = Join-Path $PromptDir 'queue'
+     $p = [string]$t.prompt; $br = [string]$t.branch
+     $slug = $(if ([string]$t.file -match '^cc-P\d+-(.+)\.md$') { $Matches[1] } else { $p })
+@@ -1331,7 +1341,7 @@
+         '**Touches:** docs-only',
+         ('**Golem:** ' + ($reviewers -join ', ')),
+         '',
+-        ('Written {0} by the integrator. {1} (by the {2} Golem, branch `{3}`) is map or decoration work ({4}), so it waits for this review before it merges. You did not build it; look at it with fresh eyes. Time limit: 45 minutes. One review, no rebuilding.' -f $now.ToString('yyyy-MM-dd HH:mm'), $p, [string]$t.golem, $br, $Why),
++        ('Written {0} by the integrator. {1} (by the {2} Golem, branch `{3}`) is map or decoration work ({4}), so it waits for this review before it merges. You did not build it (if your Golem did, you are a fresh session that has not seen it); look at it with fresh eyes. Time limit: 45 minutes. One review, no rebuilding.' -f $now.ToString('yyyy-MM-dd HH:mm'), $p, [string]$t.golem, $br, $Why),
+         '',
+         '## Do',
+         '',
+@@ -1343,7 +1353,7 @@
+         '## Finishing',
+         '',
+         ('Notes: `notes\{0}`. Put the verdict on a line of its own, exactly `BUILD REVIEW {1}: PASS` or `BUILD REVIEW {1}: FAIL`, and after a FAIL the fixes as a numbered list (1. 2. 3.), each naming the piece (item ID, place) and what is wrong and what the guide wants instead. Do not edit the build''s own files. Last line `P{2} DONE`.' -f $name, $p, $n),
+-        ('The integrator reads that line when this branch comes in: PASS merges {0}, FAIL sends your list to the {1} Golem as a fix-up. With no verdict line in {2} hours, {0} merges anyway.' -f $p, [string]$t.golem, $Hours)
++        ('The integrator reads that line when this branch comes in: PASS merges {0}, FAIL sends your list to the {1} Golem as a fix-up. Without a verdict line {0} does not merge (only the overseer''s Skip-BuildReview.ps1 lets it through); a review still unclaimed after {2} minutes goes to the {3} Golem, in a fresh session.' -f $p, [string]$t.golem, $FallbackMinutes, $FallbackGolem)
+     )
+     if (-not (Test-Path -LiteralPath $q)) { New-Item -ItemType Directory -Path $q -Force | Out-Null }
+     $path = Join-Path $q $name
+@@ -1360,6 +1370,28 @@
+     [IO.File]::WriteAllText($f, $new, [Text.Encoding]::ASCII)
+     $true
+ }
++# cc-P747: a review still unclaimed (its file still in queue\) after buildReviewFallbackMinutes goes to $golem (Iron) as its
++# next hand-off: Assign-Prompt.ps1 -Prompt <review> -Golem <golem> -RunNext, the overseer's own way. Returns what the record
++# keeps ('Iron'; 'claimed' when a Golem took it meanwhile; 'refused: <why>' when Assign-Prompt refused), '' to try again.
++function Invoke-BuildReviewFallback([string]$Root, [string]$PromptDir, $rec, [string]$golem, [double]$age) {
++    $file = [string](Get-GolemProp $rec 'reviewFile' '')
++    if (-not $file) { return '' }
++    if (-not (Test-Path -LiteralPath (Join-Path (Join-Path $PromptDir 'queue') $file))) { return 'claimed' }
++    $ap = Join-Path $PSScriptRoot 'Assign-Prompt.ps1'
++    if (-not (Test-Path -LiteralPath $ap)) { Write-GolemLog ("build review: $file unclaimed for " + [int]$age + " minutes, but there is no Assign-Prompt.ps1 beside Golems.ps1: not assigned"); return '' }
++    $eap = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
++    $out = (& powershell.exe -NoProfile -ExecutionPolicy Bypass -File $ap -Prompt ([string]$rec.reviewPrompt) -Golem $golem -RunNext -Root $Root -PromptDir $PromptDir 2>&1 | Out-String).Trim()
++    $code = $LASTEXITCODE
++    $ErrorActionPreference = $eap
++    $last = (@($out -split "`r?`n" | Where-Object { $_.Trim() }) | Select-Object -Last 1)
++    if ($code -eq 0) {
++        Write-GolemLog ("build review: $file unclaimed for " + [int]$age + " minutes: assigned to $golem with Assign-Prompt.ps1 -RunNext (its next hand-off, in a fresh session)")
++        return $golem
++    }
++    Write-GolemLog ("build review: $file unclaimed for " + [int]$age + " minutes: Assign-Prompt.ps1 could not give it to $golem (exit $code): " + [string]$last)
++    if ($code -eq 2) { return ('refused: ' + [string]$last) }
++    ''
++}
+ # The gate, per ticket, before the merge. { Action ('merge', 'wait', 'fail'); Why; Detail; Note }.
+ function Invoke-BuildReviewGate($me, [string]$Root, [string]$PromptDir, $t, [string]$code, [string]$docs, [datetime]$now, [string]$QueueMode = 'folder') {
+     $go = [pscustomobject]@{ Action = 'merge'; Why = ''; Detail = ''; Note = '' }
+@@ -1393,14 +1425,15 @@
+         $reg = $null; try { $reg = Read-GolemRegistry (Join-Path $Root 'golems.json') } catch {}
+         $who = @(); if ($reg) { $who = @(Get-BuildReviewers $reg ([string]$t.golem) $cfg.First) }
+         if (-not $who.Count) { Write-GolemLog ("build review: $p needs one ($($need.Why)) but no other Claude Golem can review: merged without one"); $go.Note = 'no reviewer'; return $go }
+-        $rp = New-BuildReviewPrompt $PromptDir $t $who $need.Why $cfg.Hours $now
++        $rp = New-BuildReviewPrompt $PromptDir $t $who $need.Why $cfg.Hours $now $cfg.FallbackMinutes $cfg.FallbackGolem
+         if ($QueueMode -eq 'git') { [void](Invoke-PromptsGit $PromptDir ("build review " + $rp.Name + " for $p")) }
+         Save-BuildReview $Root ([pscustomobject][ordered]@{ prompt = $p; branch = $br; golem = [string]$t.golem; why = $need.Why; reviewPrompt = ('P' + $rp.Number); reviewFile = $rp.Name; reviewers = @($who); widened = $false; queuedAt = $now.ToString('s'); verdict = 'pending' })
+         Write-GolemLog ("build review: $p held ($($need.Why)); review " + $rp.Name + ' queued for ' + ($who -join ', '))
+         return [pscustomobject]@{ Action = 'wait'; Why = ('build review P' + $rp.Number + ' queued for ' + ($who -join ', ')); Detail = ''; Note = '' }
+     }
+     $vd = [string](Get-GolemProp $rec 'verdict' 'pending')
+-    if ($vd -in @('PASS', 'skipped', 'timeout')) { if ($vd -eq 'PASS') { Write-GolemLog ("build review: $p passed (" + [string]$rec.reviewPrompt + ' by ' + [string](Get-GolemProp $rec 'by' '') + ')') }; return $go }
++    # cc-P747: 'timeout' (an older kit's mark) no longer lets a ticket through; only a verdict or a skip does.
++    if ($vd -in @('PASS', 'skipped')) { if ($vd -eq 'PASS') { Write-GolemLog ("build review: $p passed (" + [string]$rec.reviewPrompt + ' by ' + [string](Get-GolemProp $rec 'by' '') + ')') }; return $go }
+     if ($vd -eq 'FAIL') {
+         $fx = @(Get-GolemProp $rec 'fixes' @())
+         $rec.verdict = 'FAIL-sent'; Save-BuildReview $Root $rec
+@@ -1409,10 +1442,10 @@
+     if ($vd -eq 'FAIL-sent') { return [pscustomobject]@{ Action = 'wait'; Why = 'its build review failed and a fix-up was sent'; Detail = ''; Note = '' } }
+     if (Test-BuildReviewSkipped $Root $p $pf) { $rec.verdict = 'skipped'; Save-BuildReview $Root $rec; Write-GolemLog ("build review: $p skipped by the overseer while it waited"); return $go }
+     $age = ($now - [datetime][string]$rec.queuedAt).TotalMinutes
+-    if ($age -ge ($cfg.Hours * 60)) {
+-        $rec.verdict = 'timeout'; Save-BuildReview $Root $rec
+-        Write-GolemLog ("build review: $p waited " + [int]$age + " minutes with no verdict (" + [string]$rec.reviewPrompt + ", " + $vd + "): merged without one")
+-        $go.Note = 'review timed out'; return $go
++    if ($age -ge ($cfg.Hours * 60) -and -not [bool](Get-GolemProp $rec 'overdueLogged' $false)) {
++        # cc-P747: never merged on a time-out; said once.
++        $rec | Add-Member -NotePropertyName overdueLogged -NotePropertyValue $true -Force; Save-BuildReview $Root $rec
++        Write-GolemLog ("build review: $p has waited " + [int]$age + " minutes with no verdict (" + [string]$rec.reviewPrompt + ", " + $vd + "): still held; only a verdict or Skip-BuildReview.ps1 -Prompt " + ($p -replace '^P', '') + " lets it through")
+     }
+     if (-not [bool](Get-GolemProp $rec 'widened' $false) -and $age -ge $cfg.WidenMinutes) {
+         $reg = $null; try { $reg = Read-GolemRegistry (Join-Path $Root 'golems.json') } catch {}
+@@ -1424,6 +1457,10 @@
+         }
+         $rec.widened = $true; Save-BuildReview $Root $rec
+     }
++    if (-not [string](Get-GolemProp $rec 'fallback' '') -and $cfg.FallbackGolem -and $age -ge $cfg.FallbackMinutes) {
++        $fb = Invoke-BuildReviewFallback $Root $PromptDir $rec $cfg.FallbackGolem $age
++        if ($fb) { $rec | Add-Member -NotePropertyName fallback -NotePropertyValue $fb -Force; $rec | Add-Member -NotePropertyName fallbackAt -NotePropertyValue $now.ToString('s') -Force; Save-BuildReview $Root $rec }
++    }
+     [pscustomobject]@{ Action = 'wait'; Why = ('waits for its build review ' + [string]$rec.reviewPrompt + $(if ($vd -eq 'none') { ' (it gave no verdict line)' } else { '' })); Detail = ''; Note = '' }
+ }
+ 
+--- orig/golem.ps1	2026-10-31 23:14:15.875625300 -0500
++++ golem.ps1	2026-10-31 23:21:02.379254400 -0500
+@@ -515,6 +515,9 @@
+         @{ Expression = { [int]([regex]::Match($_.Name, '^cc-P(\d+)-').Groups[1].Value) } })
+     # cc-P182: Run next (RUN-NEXT names one queued file) puts it first, ahead of continuations; a name no longer queued is ignored.
+     $pick = Get-RunNextName
++    # cc-P747: a pick made while an answered prompt held RUN-NEXT waits in RUN-NEXT.after, second.
++    $after = Get-RunNextAfterName
++    if ($after -and $after -ne $pick) { $sorted = @(@($sorted | Where-Object { $_.Name -eq $after }) + @($sorted | Where-Object { $_.Name -ne $after })) }
+     if ($pick) { $sorted = @(@($sorted | Where-Object { $_.Name -eq $pick }) + @($sorted | Where-Object { $_.Name -ne $pick })) }
+     $sorted
+ }
+@@ -522,6 +525,35 @@
+     if (-not (Test-Path -LiteralPath $RunNextFile)) { return '' }
+     try { return ([string](Get-Content -LiteralPath $RunNextFile -Raw -ErrorAction Stop)).Trim() } catch { return '' }
+ }
++# cc-P747 (10-30: a Run next set 16 seconds after Chase answered P740's question took P741 ahead of it): a prompt put back
++# by an answered question holds RUN-NEXT (RUN-NEXT.answered names it) until it is handed; a pick made meanwhile waits in
++# RUN-NEXT.after and becomes the pick when the answered prompt is handed.
++function Get-RunNextAfterName {
++    $f = $RunNextFile + '.after'
++    if (-not (Test-Path -LiteralPath $f)) { return '' }
++    try { return ([string](Get-Content -LiteralPath $f -Raw -ErrorAction Stop)).Trim() } catch { return '' }
++}
++# The answered prompt holding RUN-NEXT (its file name), or '' when RUN-NEXT is an ordinary pick.
++function Get-RunNextHeld {
++    $f = $RunNextFile + '.answered'
++    if (-not (Test-Path -LiteralPath $f)) { return '' }
++    $h = ''; try { $h = ([string](Get-Content -LiteralPath $f -Raw -ErrorAction Stop)).Trim() } catch {}
++    if ($h -and $h -eq (Get-RunNextName) -and (Test-Path -LiteralPath (Join-Path $QueueDir $h))) { return $h }
++    ''
++}
++# The pick $name was handed: RUN-NEXT is cleared, and a pick waiting behind it (RUN-NEXT.after) becomes the pick.
++function Complete-RunNextPick([string]$name, [int]$num) {
++    if ((Get-RunNextName) -ne $name) { return }
++    Log "run next: P$num handed as picked"
++    if ($DryRun) { return }
++    Remove-Item -LiteralPath $RunNextFile, ($RunNextFile + '.answered') -Force -ErrorAction SilentlyContinue
++    $after = Get-RunNextAfterName
++    Remove-Item -LiteralPath ($RunNextFile + '.after') -Force -ErrorAction SilentlyContinue
++    if ($after -and $after -ne $name -and (Test-Path -LiteralPath (Join-Path $QueueDir $after))) {
++        [IO.File]::WriteAllText($RunNextFile, $after + "`r`n", [Text.Encoding]::ASCII)
++        Log ("run next: P" + [regex]::Match($after, '^cc-P(\d+)-').Groups[1].Value + " goes next now (it waited behind P$num)")
++    }
++}
+ function Find-PromptFile([string]$dir, [string]$p) {
+     # cc-P182: the cc-P<nn>-*.md file for 'P<nn>' in $dir, or $null.
+     if ($p -notmatch '^(?i)P?(\d+)$') { return $null }
+@@ -1453,7 +1485,7 @@
+     $quiet = [double]$set.closeQuietMinutes; $after = [double]$set.closeFinishedAfterMinutes
+     $cur = [string](Get-Prop $st 'current' ''); $curSid = [string](Get-Prop $st 'currentSession' '')
+     $rr = [string](Get-Prop $st 'restReason' '')
+-    $resting = (-not $cur) -and (($rr -and $rr -notin @('context', 'model', 'bot window')) -or -not (Test-Path -LiteralPath $Enabled)) -and -not (Get-Prop $st 'wakePending' $null)
++    $resting = (-not $cur) -and (($rr -and $rr -notin @('context', 'review', 'model', 'bot window')) -or -not (Test-Path -LiteralPath $Enabled)) -and -not (Get-Prop $st 'wakePending' $null)
+     $closed = Use-Lock {
+         $b = Get-SessionBook
+         $done = @(); $changed = $false
+@@ -1627,6 +1659,12 @@
+             elseif ($wp) { $o.How = Get-PendingHow $wp }
+             else { $o.How = 'Ready now: ' + $phrase }
+         }
++        'review' {
++            # cc-P747: a build review waits for a fresh session.
++            if ($fresh) { $o.How = 'Waking itself: a new session was opened ' + (Format-Clock ([datetime]::Parse([string]$lw.at)) $NowTime) + ' for the build review' }
++            elseif ($wp) { $o.How = Get-PendingHow $wp }
++            else { $o.How = 'Ready now: ' + $phrase + ' (the build review needs a fresh session)' }
++        }
+         'model' {
+             $m = [string](Get-Prop $st 'waitingForModel' '')
+             $wf = [string](Get-Prop $st 'waitingFor' '')
+@@ -1695,6 +1733,7 @@
+ function Format-RestSubject([string]$reason, [string]$after, [string]$detail, $ready, [int]$queued) {
+     $what = switch ($reason) {
+         'context'           { 'session full' }
++        'review'            { 'a build review needs a fresh session' }
+         'model'             { 'waiting for a ' + $detail + ' session' }
+         'run cap'           { 'run cap' }
+         'usage limit'       { 'usage limit' }
+@@ -3220,7 +3259,7 @@
+     if (-not (Invoke-Claim $script:Me $PromptDir $next $cand.Areas 'codex-lane' $branch $NowTime -DryRun:$DryRun -QueueMode $script:QueueMode)) { Log "lane: P$num went to another Golem first"; return }
+     Log ("claimed P$num (" + $next.Name + ") for $name (Codex lane): areas " + (@($cand.Areas) -join ', ') + ", branch $branch" + $(if ($rn) { '; outside its window: a Send to the second PC holds until ' + $rn.ToString('HH:mm') } else { '' }))
+     # cc-P373: Run next for a lane is used up like a CC Golem's (Hand-Off), not left to pick the same file again.
+-    if ((Get-RunNextName) -eq $next.Name) { Log "run next: P$num handed as picked"; if (-not $DryRun) { Remove-Item -LiteralPath $RunNextFile -Force -ErrorAction SilentlyContinue } }
++    Complete-RunNextPick $next.Name $num   # cc-P747 (cc-P182: a Run next pick is used once)
+     $base = $(if (Test-GolemLocal $script:Reg.Integrator) { 'main' } else { 'origin/main' })
+     foreach ($wt in @([string]$script:Me.work.code, [string]$script:Me.work.docs)) {
+         $rb = Reset-GolemBranch $wt $branch $base
+@@ -3496,6 +3535,13 @@
+             Invoke-KeepRest $state 'context' $finished 'a Large prompt' ("$finished is done, committed and pushed. Its Kind line says Large and this session's context fill is not reported (the desktop app has no status line), so P$num was not handed into it (restAfterLarge in settings.json).`r`n`r`nStill queued:`r`n  $left`r`n`r`n$how") -WakeFor "P$num" -WakeModel $wantNext
+             return $true
+         }
++        # cc-P747: a build review runs in a fresh session, never in one that has just finished a prompt (it may have built
++        # the very work under review). The Golem opens a new session for it, as for a full one.
++        if ($next.Name -match '^cc-P\d+-review-build-') {
++            Log ("P$num is a build review: not handed into this session (it has just finished $finished); a fresh session takes it")
++            Invoke-KeepRest $state 'review' $finished '' ("$finished is done, committed and pushed. The next prompt, P$num, is a build review, and a review never runs in the session that may have built the work, so a fresh session takes it.`r`n`r`nStill queued:`r`n  $left`r`n`r`n$how") -WakeFor "P$num" -WakeModel $wantNext
++            return $true
++        }
+     }
+     # cc-P125: the overnight play-test bot builds D:\ShatteredLegacy's working tree; no new prompt starts in its window.
+     # cc-P131: a rest with a known end (restReason 'bot window', restUntil): the idle stop after CC's wait hands on.
+@@ -3595,7 +3641,7 @@
+     elseif ($DryRun) { Log "dry run: would move $($next.FullName) -> $dest" }
+     else { Move-Item -LiteralPath $next.FullName -Destination $dest }
+     # cc-P182: a Run next pick is used once.
+-    if ((Get-RunNextName) -eq $next.Name) { Log "run next: P$num handed as picked"; if (-not $DryRun) { Remove-Item -LiteralPath $RunNextFile -Force -ErrorAction SilentlyContinue } }
++    Complete-RunNextPick $next.Name $num   # cc-P747 (cc-P182: a Run next pick is used once)
+ 
+     $state.current     = "P$num"
+     $state.currentFile = $next.Name
+@@ -3948,8 +3994,17 @@
+ # is renamed or renumbered, so a hand-off at the same moment takes either the old first or the pick, never half a rename.
+ # -Cancel clears the pick. The running prompt and a finished one are refused: only a file in queue\ can be picked.
+ if ($Event -eq 'RunNext') {
++    $held = Get-RunNextHeld   # cc-P747: an answered prompt keeps its place
++    $heldN = $(if ($held) { [regex]::Match($held, '^cc-P(\d+)-').Groups[1].Value } else { '' })
+     if ($Cancel) {
+-        if (-not $DryRun) { Remove-Item -LiteralPath $RunNextFile -Force -ErrorAction SilentlyContinue }
++        if ($held) {
++            if (-not $DryRun) { Remove-Item -LiteralPath ($RunNextFile + '.after') -Force -ErrorAction SilentlyContinue }
++            Log ("run next: pick cleared; P$heldN stays first (it resumes after Chase's answer)")
++            Write-Status
++            [Console]::Out.Write(("Run next cleared. P{0} still goes first: it resumes after Chase's answer." -f $heldN))
++            exit 0
++        }
++        if (-not $DryRun) { Remove-Item -LiteralPath $RunNextFile, ($RunNextFile + '.after'), ($RunNextFile + '.answered') -Force -ErrorAction SilentlyContinue }
+         Log 'run next: pick cleared'
+         Write-Status
+         [Console]::Out.Write('Run next cleared: the queue goes in its own order again.')
+@@ -3958,7 +4013,14 @@
+     $pf = $(if ($Prompt) { Find-PromptFile $QueueDir $Prompt } else { $null })
+     if (-not $pf) { [Console]::Out.Write(("Not changed: '{0}' is not in the queue ({1}). Only a queued prompt can go next; the running one and finished ones cannot." -f $Prompt, $QueueDir)); exit 1 }
+     $n = [regex]::Match($pf.Name, '^cc-P(\d+)-').Groups[1].Value
+-    if (-not $DryRun) { Use-Lock { [IO.File]::WriteAllText($RunNextFile, $pf.Name + "`r`n", [Text.Encoding]::ASCII) } }
++    if ($held -and $held -ne $pf.Name) {
++        if (-not $DryRun) { Use-Lock { [IO.File]::WriteAllText($RunNextFile + '.after', $pf.Name + "`r`n", [Text.Encoding]::ASCII) } }
++        Log "run next: P$n ($($pf.Name)) picked to go after P$heldN, which resumes after Chase's answer"
++        Write-Status
++        [Console]::Out.Write(("P{0} goes next after P{1}: P{1} resumes after Chase's answer and keeps its place; P{0} is handed at the hand-off after it. Nothing was renamed." -f $n, $heldN))
++        exit 0
++    }
++    if (-not $DryRun -and -not $held) { Use-Lock { [IO.File]::WriteAllText($RunNextFile, $pf.Name + "`r`n", [Text.Encoding]::ASCII); Remove-Item -LiteralPath ($RunNextFile + '.after'), ($RunNextFile + '.answered') -Force -ErrorAction SilentlyContinue } }
+     Log "run next: P$n ($($pf.Name)) picked"
+     Write-Status
+     $cur = [string](Get-Prop (Get-State) 'current' '')
+@@ -3970,7 +4032,7 @@
+ # next (RUN-NEXT). Retry-Stopped.ps1 then wakes a session on the prompt's own model. The session kept open for the
+ # STOPPED (cc-P161) is released to the usual closing rules.
+ # cc-P216: the body of Retry stopped prompt, for the RetryStopped event and an answered question. { Ok, Text }.
+-function Invoke-RetryStoppedCore([string]$want) {
++function Invoke-RetryStoppedCore([string]$want, [switch]$Answered) {
+     $no = { param($t) [pscustomobject]@{ Ok = $false; Text = $t } }
+     $st = Get-State
+     $sp = [string](Get-Prop $st 'stoppedPrompt' '')
+@@ -3996,7 +4058,15 @@
+         if ([string](Get-Prop $sx 'current' '') -eq $sp) { $sx.current = ''; $sx.currentFile = '' }
+         if (-not $DryRun) { Save-State $sx }
+     }
+-    if (-not $DryRun) { [IO.File]::WriteAllText($RunNextFile, $pf.Name + "`r`n", [Text.Encoding]::ASCII) }
++    if (-not $DryRun) {
++        # cc-P747: after an answer the prompt holds RUN-NEXT (RUN-NEXT.answered); an earlier pick waits behind it.
++        $was = Get-RunNextName
++        [IO.File]::WriteAllText($RunNextFile, $pf.Name + "`r`n", [Text.Encoding]::ASCII)
++        if ($Answered) {
++            [IO.File]::WriteAllText($RunNextFile + '.answered', $pf.Name + "`r`n", [Text.Encoding]::ASCII)
++            if ($was -and $was -ne $pf.Name -and (Test-Path -LiteralPath (Join-Path $QueueDir $was))) { [IO.File]::WriteAllText($RunNextFile + '.after', $was + "`r`n", [Text.Encoding]::ASCII) }
++        } else { Remove-Item -LiteralPath ($RunNextFile + '.answered') -Force -ErrorAction SilentlyContinue }
++    }
+     if (-not $DryRun -and (Test-Path -LiteralPath $SessBook)) {
+         Use-Lock {
+             $b = Get-SessionBook
+@@ -4050,7 +4120,7 @@
+     $cur = [string](Get-Prop $st 'current' '')
+     $p = [string]$q.prompt
+     if ($sp -and $sp -ieq $p) {
+-        $r = Invoke-RetryStoppedCore $p
++        $r = Invoke-RetryStoppedCore $p -Answered
+         if (-not $r.Ok) { [Console]::Out.Write('Answer saved, but ' + $r.Text); exit 1 }
+         [Console]::Out.Write($r.Text + ' The new session is given the answer first.')
+         exit 0
+--- orig/Assign-Prompt.ps1	2026-10-31 23:14:15.990722500 -0500
++++ Assign-Prompt.ps1	2026-10-31 23:19:13.063443200 -0500
+@@ -20,8 +20,11 @@
+ param([string]$Prompt, [string]$Golem, [switch]$RunNext, [switch]$DryRun, [string]$Root = '', [string]$PromptDir = 'D:\UO\cc-prompts')
+ $ErrorActionPreference = 'Stop'
+ # Resolved here, not as a parameter default (cc-P184: an empty $PSScriptRoot while defaults bind under CmdletBinding).
+-if (-not $Root) { $Root = Split-Path -Parent $MyInvocation.MyCommand.Path }
+-. (Join-Path $Root 'Golems.ps1')
++# cc-P747: the scripts come from this script's own folder; -Root is the Golem folder whose golems.json, settings.json and
++# RUN-NEXT are used (the same folder on every PC; a test copy of it in the facts).
++$Kit = Split-Path -Parent $MyInvocation.MyCommand.Path
++if (-not $Root) { $Root = $Kit }
++. (Join-Path $Kit 'Golems.ps1')
+ # golem.ps1's two readers of a Model line (it is the hook, so it is not dot-sourced here); the same text.
+ if (-not (Get-Command Get-ModelFamily -ErrorAction SilentlyContinue)) {
+     function Get-ModelFamily([string]$m) {
+@@ -108,7 +111,7 @@
+ }
+ if ($DryRun) { Write-Host ('DRY RUN: nothing was changed' + $(if ($RunNext) { '; Run next would pick P' + $num + ' for ' + $name } else { '' }) + '.') -ForegroundColor Yellow; exit 0 }
+ if ($RunNext) {
+-    $a = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', (Join-Path $Root 'golem.ps1'), '-Event', 'RunNext', '-Root', $Root, '-Prompt', ('P' + $num), '-PromptDir', $PromptDir)
++    $a = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', (Join-Path $Kit 'golem.ps1'), '-Event', 'RunNext', '-Root', $Root, '-Prompt', ('P' + $num), '-PromptDir', $PromptDir)
+     if (-not $isInt) { $a += @('-Golem', $name) }
+     $r = & powershell.exe @a
+     $code = $LASTEXITCODE
+--- orig/GolemMail.ps1	2026-10-31 23:21:18.865303400 -0500
++++ GolemMail.ps1	2026-10-31 23:21:18.631043700 -0500
+@@ -280,6 +280,7 @@
+             $subj = ''; $l = ''
+             switch ($reason) {
+                 'context' { $subj = 'Resting' + $aft + ': the Claude Code session was full'; $l = 'The Claude Code session filled up' + $(if ($after) { ' during ' + $after } else { '' }) + '. That is a normal pause, not a failure.' }
++                'review' { $subj = 'Resting' + $aft + ': a build review needs a fresh session'; $l = 'The next prompt is a build review, and a review never runs in the session that may have built the work, so it goes to a new Claude Code session.' }   # cc-P747
+                 'model' { $m = [string](& $g 'Model' 'another'); $f = [string](& $g 'For' ''); $subj = 'Waiting for a ' + $m + ' session' + $(if ($f) { ' for ' + $f } else { '' }); $l = 'The next prompt' + $(if ($f) { ', ' + $f + ',' } else { '' }) + ' wants ' + $m + ', and this Claude Code session runs another model.' }
+                 'run cap' { $subj = 'Resting' + $aft + ': this run reached its limit'; $l = 'This run did as many prompts as you allow in one go' + $(if (& $g 'Cap' '') { ' (' + (& $g 'Cap') + ')' } else { '' }) + ', so I paused.' }
+                 'usage limit' { $subj = $(if ($at) { 'Paused until ' + $at + ': usage limit' } else { 'Paused: usage limit' }); $l = "Claude Code hit your Claude plan's usage limit" + $(if ($after) { ' during ' + $after } else { '' }) + '. It picks up where it left off' + $(if ($at) { ' once the limit resets at ' + $at } else { ' once the limit resets' }) + '.' }

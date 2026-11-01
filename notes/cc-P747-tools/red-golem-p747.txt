@@ -1,0 +1,93 @@
+    FAIL: the review is Iron's now: # CC task P106: build review of P105 (isle-dock)
+
+**Model:** Opus
+**Touches:** docs-only
+**Golem:** Gold, Iron
+
+Written 2026-10-31 23:16 by the integrator. P105 (by the Bronze Golem, branch `golem/Bronze/P105`) is map or decoration work (it changes server/data/Decoration/Britannia/dock.cfg), so it waits for this review before it merges. You did not build it; look at it with fresh eyes. Time limit: 45 minutes. One review, no rebuilding.
+
+## Do
+
+1. Read `notes\guides\building-and-decorating.md` in your docs copy in full: its rules, the Stratics-learned wall, stair and roof rules and examples, and its What to use where section.
+2. Fetch the work without changing your branch: `git fetch origin golem/Bronze/P105` in both copies. List its renders, shots and placed list with `git ls-tree -r --name-only origin/golem/Bronze/P105 -- notes/cc-P105-review` (docs copy), and copy them to your scratchpad with `git archive origin/golem/Bronze/P105 notes/cc-P105-review | tar -x -C <scratchpad>`. Read `notes/cc-P105-review/placed.md` and the notes `notes/cc-P105-isle-dock.md`. Read the diff (`git diff main...origin/golem/Bronze/P105`) for what was placed in code.
+3. Look at every render and shot. Check one by one, against the guide and the placed list: every wall and corner (whole corners, the east/south rule), every door (hung in the wall line, opening onto its room), every stair (climbs the right way, one step per piece), every wall-mounted item (on its wall, facing the walk side), roofs (sitting on the walls, nothing stray on top), signs (a sign, not a rune marker), shores, heights of bridges and docks, foliage, and a piece where a better one from What to use where is on disk.
+4. If the folder `notes/cc-P105-review` or its placed.md is missing, the verdict is FAIL with item 1: "no renders or placed list left for review".
+
+## Finishing
+
+Notes: `notes\cc-P106-review-build-isle-dock.md`. Put the verdict on a line of its own, exactly `BUILD REVIEW P105: PASS` or `BUILD REVIEW P105: FAIL`, and after a FAIL the fixes as a numbered list (1. 2. 3.), each naming the piece (item ID, place) and what is wrong and what the guide wants instead. Do not edit the build's own files. Last line `P106 DONE`.
+The integrator reads that line when this branch comes in: PASS merges P105, FAIL sends your list to the Bronze Golem as a fix-up. With no verdict line in 8 hours, P105 merges anyway.
+
+    FAIL: and Iron's run next pick (RUN-NEXT): 
+    FAIL: logged: 2026-10-31 23:16:19  MergeRound   merge round (scheduled): merging 1 ticket(s), oldest first: P105
+2026-10-31 23:16:20  MergeRound   build review: P105 held (it changes server/data/Decoration/Britannia/dock.cfg); review cc-P106-review-build-isle-dock.md queued for Gold
+2026-10-31 23:16:20  MergeRound   merge round (scheduled): P105 review
+2026-10-31 23:16:22  MergeRound   merge round (scheduled): merging 1 ticket(s), oldest first: P105
+2026-10-31 23:16:22  MergeRound   build review: cc-P106-review-build-isle-dock.md unclaimed for 70 minutes: opened to Gold, Iron
+2026-10-31 23:16:22  MergeRound   merge round (scheduled): P105 review
+2026-10-31 23:16:24  MergeRound   merge round (scheduled): merging 1 ticket(s), oldest first: P105
+2026-10-31 23:16:24  MergeRound   merge round (scheduled): P105 review
+
+    FAIL: the record says so: {"prompt":"P105","branch":"golem/Bronze/P105","golem":"Bronze","why":"it changes server/data/Decoration/Britannia/dock.cfg","reviewPrompt":"P106","reviewFile":"cc-P106-review-build-isle-dock.md","reviewers":["Gold","Iron"],"widened":true,"queuedAt":"2026-10-31T21:11:22","verdict":"pending"}
+    FAIL: done once, not every round
+    FAIL: buildReviewFallbackMinutes 30: Iron's after 40 minutes: 
+FAIL P747_1_AnUnclaimedReviewGoesToIronAfterTwoHoursAsItsNextHandOff
+    FAIL: nine hours, no verdict: still held, nothing merged: Merge round: P105 merged
+P105 from Bronze: merged
+    FAIL: logged as held: 2026-10-31 23:16:44  MergeRound   merge round (scheduled): merging 1 ticket(s), oldest first: P105
+2026-10-31 23:16:45  MergeRound   build review: P105 held (it changes server/data/Decoration/Britannia/dock.cfg); review cc-P106-review-build-isle-dock.md queued for Gold
+2026-10-31 23:16:45  MergeRound   merge round (scheduled): P105 review
+2026-10-31 23:16:47  MergeRound   merge round (scheduled): merging 1 ticket(s), oldest first: P105
+2026-10-31 23:16:47  MergeRound   build review: P105 waited 540 minutes with no verdict (P106, pending): merged without one
+2026-10-31 23:16:47  MergeRound   integrator: C:\Users\ckfle\AppData\Local\Temp\golem-test-7141e330\docs has no branch golem/Bronze/P105 (nothing from P105 there)
+2026-10-31 23:16:47  MergeRound   integrator: P105 changed the server: building sl-modernuo:cc-P105
+2026-10-31 23:16:48  MergeRound   integrator: build green for P105
+2026-10-31 23:16:50  MergeRound   integrator: merged golem/Bronze/P105 (P105 from Bronze, DONE) into main: 1 code file(s), 0 docs file(s)
+2026-10-31 23:16:50  MergeRound   folded into the next email: Merged P105 from Bronze into main
+2026-10-31 23:16:50  MergeRound   merge round (scheduled): P105 merged
+
+    FAIL: an old timeout record does not let it through
+    FAIL: Skip-BuildReview.ps1 lets it through
+    FAIL: the review prompt: # CC task P106: build review of P105 (isle-dock)
+
+**Model:** Opus
+**Touches:** docs-only
+**Golem:** Gold
+
+Written 2026-10-31 23:16 by the integrator. P105 (by the Bronze Golem, branch `golem/Bronze/P105`) is map or decoration work (it changes server/data/Decoration/Britannia/dock.cfg), so it waits for this review before it merges. You did not build it; look at it with fresh eyes. Time limit: 45 minutes. One review, no rebuilding.
+
+## Do
+
+1. Read `notes\guides\building-and-decorating.md` in your docs copy in full: its rules, the Stratics-learned wall, stair and roof rules and examples, and its What to use where section.
+2. Fetch the work without changing your branch: `git fetch origin golem/Bronze/P105` in both copies. List its renders, shots and placed list with `git ls-tree -r --name-only origin/golem/Bronze/P105 -- notes/cc-P105-review` (docs copy), and copy them to your scratchpad with `git archive origin/golem/Bronze/P105 notes/cc-P105-review | tar -x -C <scratchpad>`. Read `notes/cc-P105-review/placed.md` and the notes `notes/cc-P105-isle-dock.md`. Read the diff (`git diff main...origin/golem/Bronze/P105`) for what was placed in code.
+3. Look at every render and shot. Check one by one, against the guide and the placed list: every wall and corner (whole corners, the east/south rule), every door (hung in the wall line, opening onto its room), every stair (climbs the right way, one step per piece), every wall-mounted item (on its wall, facing the walk side), roofs (sitting on the walls, nothing stray on top), signs (a sign, not a rune marker), shores, heights of bridges and docks, foliage, and a piece where a better one from What to use where is on disk.
+4. If the folder `notes/cc-P105-review` or its placed.md is missing, the verdict is FAIL with item 1: "no renders or placed list left for review".
+
+## Finishing
+
+Notes: `notes\cc-P106-review-build-isle-dock.md`. Put the verdict on a line of its own, exactly `BUILD REVIEW P105: PASS` or `BUILD REVIEW P105: FAIL`, and after a FAIL the fixes as a numbered list (1. 2. 3.), each naming the piece (item ID, place) and what is wrong and what the guide wants instead. Do not edit the build's own files. Last line `P106 DONE`.
+The integrator reads that line when this branch comes in: PASS merges P105, FAIL sends your list to the Bronze Golem as a fix-up. With no verdict line in 8 hours, P105 merges anyway.
+
+FAIL P747_3_ALateReviewNeverMergesOnItsOwnOnlyAVerdictOrASkip
+    FAIL: the review is not handed into the session that just finished P100: P101
+    FAIL: a review rest: 
+    FAIL: a fresh Opus session woken for it: 
+    FAIL: logged: 2026-10-31 23:17:02  Stop         P100 DONE, committing: cc-P100
+2026-10-31 23:17:02  Stop         prompt durations: 0 read from the logs into prompt-durations.jsonl
+2026-10-31 23:17:02  Stop         P100 took 0 min.
+2026-10-31 23:17:02  Stop         codex review of P100 skipped: no Codex.ps1 in C:\Users\ckfle\AppData\Local\Temp\golem-test-d67aeac6\root
+2026-10-31 23:17:03  Stop         test: stub commit exit 0
+2026-10-31 23:17:03  Stop         handed P101 (cc-P101-review-build-a.md) P100 is done, committed and pushed.
+2026-10-31 23:17:03  Stop         test: would email: [Golem] Finished P100, started P101 (build review of P100)
+
+    FAIL: the fresh session gets it: {"hookSpecificOutput":{"hookEventName":"UserPromptSubmit","additionalContext":"The Golem is awake. P101 (C:\\Users\\ckfle\\AppData\\Local\\Temp\\golem-test-d67aeac6\\prompts\\cc-P101-review-build-a.md) is already running: carry on with it as written, following its Finishing section. If this is a new session (the one that was running P101 was closed before it finished), nothing was skipped: read that prompt file in full and any notes file it had started in D:\\UO\\shard-migration\\notes, then carry on from where it stopped."}}
+FAIL P747_2_AReviewIsNeverHandedIntoTheSessionThatBuiltTheWork
+    FAIL: a later pick waits behind the answered prompt: P101 goes next: it is handed at the next hand-off, ahead of the rest of the queue. Nothing was renamed.
+    FAIL: RUN-NEXT still names P100: cc-P101-b.md
+    FAIL: the queue shows P100 then P101: cc-P101-b.md, cc-P100-a.md
+    FAIL: the woken session takes P100: {"hookSpecificOutput":{"hookEventName":"UserPromptSubmit","additionalContext":"Golem hand-off. The Golem is starting the queue. The next task is a new, separate prompt: read C:\\Users\\ckfle\\AppData\\Local\\Temp\\golem-test-ed69f64d\\prompts\\cc-P101-b.md in full and carry it out exactly as written
+    FAIL: then P101 is the pick: 
+    FAIL: cancel leaves the answered prompt first: 
+FAIL P747_4_AnAnsweredPromptKeepsItsPlaceAheadOfALaterRunNext
+
+7 checks passed, 22 failed (golem, D:/UO/golem/golem.ps1)
