@@ -24,6 +24,9 @@ in the P708 copy, sloped land climbed as pinned Movement.Check climbs it).
      0x0B95 + 2 x SignType + facing) is covered by the art drawn after it (a larger x + y, or a higher piece on its own
      tile). P708's League sign beside the keep's steps (566,321) was wholly covered by them, and the Tinkers' (1494,1026)
      half covered by the house south-east of it; neither showed in P708's shots.
+  6. (cc-P753) A player arriving at each moved hall's travel stop shows: at most half of the figure's box (fact 4's
+     measure) is covered. In P753's live shots the Tester at the Custodians' old stop (1560,974; 100%) was hidden by
+     the house south of the lane, and at the Tinkers' (1495,1023; 42%) he showed, his legs behind a low wall.
 """
 import json
 import os
@@ -52,6 +55,7 @@ def halls():
 
 
 SHOWS = 0.25   # fact 4: the most of a guildmaster's figure the art in front of him may cover
+STOP_SHOWS = 0.5   # fact 6 (cc-P753): a player at a travel stop; at the Tinkers' stop (42%) he showed in game, legs behind a low wall
 
 
 def pt(d):
@@ -167,6 +171,21 @@ class GuildHqsOnSos(unittest.TestCase):
             print('  %-10s sign %s 0x%04X: %.0f%% covered' % (key, (s['x'], s['y'], s['z']), tid, covered * 100))
             if covered > SHOWS:
                 bad.append('%s: the sign at %s is %.0f%% covered by the art in front of it' % (key, (s['x'], s['y'], s['z']), covered * 100))
+        self.assertEqual([], bad)
+
+
+    def test_6_travel_stop_shows_in_the_camera(self):
+        import numpy as np
+        os.environ.setdefault('MAPBUILD_ART', H.CLIENT)
+        from mapbuild import isorender as iso
+        art = iso.Art(art_folder=H.CLIENT, client=H.CLIENT)
+        bad = []
+        for key in PICKS:
+            x, y, z = pt(self.H[key]['travel'])
+            covered = figure_covered(iso, art, np, x, y, z)
+            print('  %-10s travel stop %s: %.0f%% covered' % (key, (x, y, z), covered * 100))
+            if covered > STOP_SHOWS:
+                bad.append('%s: the travel stop at %s is %.0f%% covered by the art in front of it' % (key, (x, y, z), covered * 100))
         self.assertEqual([], bad)
 
 
