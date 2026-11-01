@@ -1,0 +1,72 @@
+    FAIL: a batch starts: 2026-11-01 05:37:50  NightShift   night shift: the window is open until 2026-10-18T06:30:00; the first check point
+2026-11-01 05:37:50  NightShift   night check (the night shift task): no batch: usage unknown (usage.json has no 5-hour or 7-day window); next check 23:00, every 30 minutes
+
+    FAIL: the 5-hour figure is the plan page's: 2026-11-01 05:37:50  NightShift   night shift: the window is open until 2026-10-18T06:30:00; the first check point
+2026-11-01 05:37:50  NightShift   night check (the night shift task): no batch: usage unknown (usage.json has no 5-hour or 7-day window); next check 23:00, every 30 minutes
+
+    FAIL: the log says which source: 2026-11-01 05:37:50  NightShift   night shift: the window is open until 2026-10-18T06:30:00; the first check point
+2026-11-01 05:37:50  NightShift   night check (the night shift task): no batch: usage unknown (usage.json has no 5-hour or 7-day window); next check 23:00, every 30 minutes
+
+    FAIL: never "usage unknown": 2026-11-01 05:37:50  NightShift   night shift: the window is open until 2026-10-18T06:30:00; the first check point
+2026-11-01 05:37:50  NightShift   night check (the night shift task): no batch: usage unknown (usage.json has no 5-hour or 7-day window); next check 23:00, every 30 minutes
+
+    FAIL: a stale plan page is not used: 2026-11-01 05:40:11  NightShift   night shift: the window is open until 2026-10-18T06:30:00; the first check point
+2026-11-01 05:40:11  NightShift   night check (the night shift task): no batch: usage unknown (usage.json has no 5-hour or 7-day window); next check 23:00, every 30 minutes
+
+    FAIL: from the plan page alone: 2026-11-01 05:40:12  NightShift   night shift: the window is open until 2026-10-18T06:30:00; the first check point
+2026-11-01 05:40:13  NightShift   night batch 1 started (the night shift task): budget the week to 47.1% (17.1 points from 30%), the 5-hour window to 50% (from 12%); inferred: nothing has run since the last report at 22:10, so the week is taken as unchanged; waking for P101
+2026-11-01 05:40:13  NightShift   recorded session Golem P101 for P101 (night shift): cmd, process 59040
+2026-11-01 05:40:13  NightShift   woke a Fable session for P101 (night shift): claude --model fable --permission-mode auto --name "Golem P101" "Golem, please work on the shard tasks."
+2026-11-01 05:40:13  NightShift   folded into the next email: Opened a new Fable session for P101
+2026-11-01 05:40:13  NightShift   folded into the next email: Night shift started
+
+FAIL P757_1_TheNightCheckTakesTheWindowUsageJsonLacksFromThePlanPage
+    FAIL: a batch starts on the week alone: 2026-11-01 05:40:15  NightShift   night shift: the window is open until 2026-10-18T06:30:00; the first check point
+2026-11-01 05:40:15  NightShift   night check (the night shift task): no batch: usage unknown (usage.json has no 5-hour or 7-day window); next check 23:00, every 30 minutes
+
+    FAIL: said: 2026-11-01 05:40:15  NightShift   night shift: the window is open until 2026-10-18T06:30:00; the first check point
+2026-11-01 05:40:15  NightShift   night check (the night shift task): no batch: usage unknown (usage.json has no 5-hour or 7-day window); next check 23:00, every 30 minutes
+
+    FAIL: an ordinary batch, the week's budget: 
+    FAIL: why, and the source: 2026-11-01 05:42:35  NightShift   night shift: the window is open until 2026-10-18T06:30:00; the first check point
+2026-11-01 05:42:35  NightShift   night check (the night shift task): no batch: usage unknown (usage.json has no 5-hour or 7-day window); next check 23:00, every 30 minutes
+
+FAIL P757_2_AFiveHourWindowNeitherSourceReportsIsNotHeldFor
+    FAIL: one batch starts: 2026-11-01 05:42:42  NightShift   night shift: the window is open until 2026-10-18T06:30:00; the first check point
+2026-11-01 05:42:42  NightShift   night check (the night shift task): no batch: usage unknown (last reported 30 h ago, over nightUsageMaxAgeHours 24); next check 23:00, every 30 minutes
+
+    FAIL: the newest figure (the plan page's), said: 2026-11-01 05:42:42  NightShift   night shift: the window is open until 2026-10-18T06:30:00; the first check point
+2026-11-01 05:42:42  NightShift   night check (the night shift task): no batch: usage unknown (last reported 30 h ago, over nightUsageMaxAgeHours 24); next check 23:00, every 30 minutes
+
+    FAIL: the batch is marked: 
+    FAIL: one batch a night on old figures: 2026-11-01 05:42:42  NightShift   night shift: the window is open until 2026-10-18T06:30:00; the first check point
+2026-11-01 05:42:42  NightShift   night check (the night shift task): no batch: usage unknown (last reported 30 h ago, over nightUsageMaxAgeHours 24); next check 23:00, every 30 minutes
+2026-11-01 05:45:02  Watch        night check (the watch): no batch: usage unknown (last reported 31 h ago, over nightUsageMaxAgeHours 24); next check 00:00, every 30 minutes
+2026-11-01 05:45:03  Watch        plan usage reading 7 h old: emailed
+2026-11-01 05:45:03  Watch        test: would email: [Golem] Needs you: I can't read your Claude usage from claude.ai
+
+    FAIL: why: usage unknown (last reported 31 h ago, over nightUsageMaxAgeHours 24)
+    FAIL: over pace: usage unknown (last reported 30 h ago, over nightUsageMaxAgeHours 24)
+    FAIL: no figure: usage unknown (no usage.json: no CLI session has reported plan usage yet)
+    FAIL: only the night budget allows the fallback: Test-NightUsage $set $model | Test-NightUsage $set $model
+FAIL P757_3_NeitherSourceUsableStartsOneBatchWhenTheLastKnownWeekIsUnderPace
+    FAIL: Bronze takes its own pick: P106 / 2026-11-01 05:45:24  Stop         claim: P105 is marked Codex OK and a Codex lane is on: left for it
+2026-11-01 05:45:25  Stop         claimed P106 (cc-P106-plain.md) for Bronze: areas docs-only, branch golem/Bronze/P106
+2026-11-01 05:45:25  Stop         work copy C:\Users\ckfle\AppData\Local\Temp\golem-test-7853fe2d\golems\Bronze\code: on golem/Bronze/P106 from main
+2026-11-01 05:45:25  Stop         work copy C:\Users\ckfle\AppData\Local\Temp\golem-test-7853fe2d\golems\Bronze\docs: on golem/Bronze/P106 from main
+2026-11-01 05:45:25  Stop         handed P106 (cc-P106-plain.md) The Golem is starting the queue.
+2026-11-01 05:45:25  Stop         prompt durations: 0 read from the logs into prompt-durations.jsonl
+2026-11-01 05:45:25  Stop         folded into the next email: Started P106 (plain)
+
+    FAIL: said: 2026-11-01 05:45:24  Stop         claim: P105 is marked Codex OK and a Codex lane is on: left for it
+2026-11-01 05:45:25  Stop         claimed P106 (cc-P106-plain.md) for Bronze: areas docs-only, branch golem/Bronze/P106
+2026-11-01 05:45:25  Stop         work copy C:\Users\ckfle\AppData\Local\Temp\golem-test-7853fe2d\golems\Bronze\code: on golem/Bronze/P106 from main
+2026-11-01 05:45:25  Stop         work copy C:\Users\ckfle\AppData\Local\Temp\golem-test-7853fe2d\golems\Bronze\docs: on golem/Bronze/P106 from main
+2026-11-01 05:45:25  Stop         handed P106 (cc-P106-plain.md) The Golem is starting the queue.
+2026-11-01 05:45:25  Stop         prompt durations: 0 read from the logs into prompt-durations.jsonl
+2026-11-01 05:45:25  Stop         folded into the next email: Started P106 (plain)
+
+FAIL P757_4_AGolemsOwnRunNextPickIsTakenEvenWhenMarkedCodexOk
+
+2 checks passed, 20 failed (golem, C:\Users\ckfle\AppData\Local\Temp\claude\D--UO-golems-Iron-shard-migration\72fa883e-8bcb-437a-ac93-75ff6f6f8ce0\scratchpad\pristine\golem.ps1)
+exit=20

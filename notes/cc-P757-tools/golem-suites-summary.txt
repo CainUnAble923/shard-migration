@@ -1,0 +1,24 @@
+Whole kit suites, run side by side on 2026-11-01 05:25-06:20 (scratch copies)
+
+== pristine (unchanged kit)
+Golem: 1665 checks passed, 25 failed
+FAIL P184_OverlappingTouchesNeverRunTogetherAndGuessesAreLogged
+FAIL P184_TouchesAreReadOrGuessedAndAGitQueueLosesARaceCleanly
+FAIL P757_1_TheNightCheckTakesTheWindowUsageJsonLacksFromThePlanPage
+FAIL P757_2_AFiveHourWindowNeitherSourceReportsIsNotHeldFor
+FAIL P757_3_NeitherSourceUsableStartsOneBatchWhenTheLastKnownWeekIsUnderPace
+FAIL P757_4_AGolemsOwnRunNextPickIsTakenEvenWhenMarkedCodexOk
+Lane: 65 checks passed, 0 failed
+Assign: 3 facts, 3 passed, 0 failed
+
+== kit (changed kit)
+Golem: 1682 checks passed, 8 failed
+FAIL P131_NightShift_SkipsForEachReasonAndSaysSo
+FAIL P184_OverlappingTouchesNeverRunTogetherAndGuessesAreLogged
+FAIL P184_TouchesAreReadOrGuessedAndAGitQueueLosesARaceCleanly
+Lane: 65 checks passed, 0 failed
+Assign: 3 facts, 3 passed, 0 failed
+
+P184's two facts fail 5 checks on both kits (P734 and P747 found them too). The changed kit's P131 failure is its
+old 'usage old' case, which now gets the fallback batch; that case was updated (its week has reset) and passes: 28 of 28,
+then 50 of 50 for -Only P131_NightShift on the installed kit.
