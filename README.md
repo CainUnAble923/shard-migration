@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-25. Shard version 2026.11.01.6. Golem on, 4 queued, latest done P764. Play tests: 1437 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-25. Shard version 2026.11.01.6. Golem on, 4 queued, latest done P765. Play tests: 1437 open, 4 failed, 43 passed.
 
 ### Needs overseer review (4)
 
@@ -230,7 +230,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 631 prompts done, 5 more stopped early and not counted)
+### Queue (Golem on; 632 prompts done, 5 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -238,6 +238,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P768 review-build-cont-loot-boxes-diversified | queued |  |
 | P770 gold-run-next | queued |  |
 | P771 review-build-playtester-ux-notes-1 | queued |  |
+| P765 random-encounters-assessment | done | 2026-11-01 |
 | P764 pet-leash | done | 2026-11-01 |
 | P762 new-character-lockdown | done | 2026-11-01 |
 | P761 stranger-hood | done | 2026-11-01 |
@@ -247,7 +248,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P756 review-build-new-haven-tutorial-fixes | done | 2026-11-01 |
 | P755 cont-fixup-new-haven-tutorial-fixes | done | 2026-11-01 |
 | P754 review-build-new-haven-tutorial-fixes | done | 2026-11-01 |
-| P753 cont-guild-hqs-live-shots | done | 2026-10-31 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 183 patches, 12 replacements
 
