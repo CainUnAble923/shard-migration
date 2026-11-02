@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-25. Shard version 2026.11.01.6. Golem off, 2 queued, latest done P9772. Play tests: 1442 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-25. Shard version 2026.11.01.6. Golem off, 3 queued, latest done P9772. Play tests: 1442 open, 4 failed, 43 passed.
 
 ### Needs overseer review (13)
 
@@ -239,22 +239,23 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem off; 636 prompts done, 5 more stopped early and not counted)
+### Queue (Golem off; 637 prompts done, 5 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
 | P715 ask-expires-too-soon | queued |  |
 | P768 review-build-cont-loot-boxes-diversified | queued |  |
+| P772 cont-fixup-playtester-ux-notes-1 | queued |  |
 | P9772 remote-answer-test | done | 2026-11-02 |
 | P9770 run-next-test | done | 2026-11-02 |
 | P771 review-build-playtester-ux-notes-1 | done | 2026-11-02 |
+| P770 gold-run-next | done | 2026-11-02 |
 | P767 codex-usage-per-account | done | 2026-11-01 |
 | P765 random-encounters-assessment | done | 2026-11-01 |
 | P764 pet-leash | done | 2026-11-01 |
 | P762 new-character-lockdown | done | 2026-11-01 |
 | P761 stranger-hood | done | 2026-11-01 |
 | P760 reward-stores | done | 2026-11-01 |
-| P758 isle-release-5 | done | 2026-11-01 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 183 patches, 12 replacements
 

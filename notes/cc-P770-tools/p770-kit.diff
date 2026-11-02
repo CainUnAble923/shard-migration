@@ -1,0 +1,386 @@
+--- golem.ps1.bak-20261101-P770	2026-11-01 22:48:10.670291200 -0600
++++ golem.ps1	2026-11-02 01:04:27.569861100 -0600
+@@ -541,6 +541,21 @@
+     if ($h -and $h -eq (Get-RunNextName) -and (Test-Path -LiteralPath (Join-Path $QueueDir $h))) { return $h }
+     ''
+ }
++# cc-P770: a pick no longer in the queue (claimed or finished elsewhere, or a STOPPED prompt sent to another Golem) holds
++# nothing: RUN-NEXT is cleared and a pick waiting behind it (RUN-NEXT.after), if still queued, becomes the pick. Before,
++# a stale held pick kept the pick behind it waiting for a hand-off that never came (Gold, 11-02: P765 held P9770).
++# Returns the new pick's file name, or ''.
++function Clear-StaleRunNext {
++    $pick = Get-RunNextName
++    if (-not $pick -or (Test-Path -LiteralPath (Join-Path $QueueDir $pick))) { return '' }
++    $after = Get-RunNextAfterName
++    $promote = $(if ($after -and $after -ne $pick -and (Test-Path -LiteralPath (Join-Path $QueueDir $after))) { $after } else { '' })
++    if ($DryRun) { Log ("dry run: run next $pick is no longer queued: would clear it" + $(if ($promote) { " and pick $promote" } else { '' })); return $promote }
++    Remove-Item -LiteralPath $RunNextFile, ($RunNextFile + '.answered'), ($RunNextFile + '.after') -Force -ErrorAction SilentlyContinue
++    if ($promote) { [IO.File]::WriteAllText($RunNextFile, $promote + "`r`n", [Text.Encoding]::ASCII) }
++    Log ("run next: $pick is no longer in the queue: cleared" + $(if ($promote) { '; P' + [regex]::Match($promote, '^cc-P(\d+)-').Groups[1].Value + ' (' + $promote + ') goes next now' } else { '' }))
++    $promote
++}
+ # The pick $name was handed: RUN-NEXT is cleared, and a pick waiting behind it (RUN-NEXT.after) becomes the pick.
+ function Complete-RunNextPick([string]$name, [int]$num) {
+     if ((Get-RunNextName) -ne $name) { return }
+@@ -4058,6 +4073,8 @@
+ # is renamed or renumbered, so a hand-off at the same moment takes either the old first or the pick, never half a rename.
+ # -Cancel clears the pick. The running prompt and a finished one are refused: only a file in queue\ can be picked.
+ if ($Event -eq 'RunNext') {
++    if ($script:QueueMode -eq 'git' -and -not $DryRun) { Sync-PromptsGit $PromptDir }   # cc-P770: an idle Golem's clone only pulls at a claim; before the held pick is read
++    [void](Clear-StaleRunNext)   # cc-P770
+     $held = Get-RunNextHeld   # cc-P747: an answered prompt keeps its place
+     $heldN = $(if ($held) { [regex]::Match($held, '^cc-P(\d+)-').Groups[1].Value } else { '' })
+     if ($Cancel) {
+@@ -4086,6 +4103,12 @@
+     }
+     if (-not $DryRun -and -not $held) { Use-Lock { [IO.File]::WriteAllText($RunNextFile, $pf.Name + "`r`n", [Text.Encoding]::ASCII); Remove-Item -LiteralPath ($RunNextFile + '.after'), ($RunNextFile + '.answered') -Force -ErrorAction SilentlyContinue } }
+     Log "run next: P$n ($($pf.Name)) picked"
++    # cc-P770: a Golem that rested because its queue was empty is off (no ENABLED), and an off Golem's watch does nothing.
++    # A pick is work asked of it, so it is on again for it; a Golem rested by hand (Stop-Golem.ps1, "Golem, stop") stays off.
++    if (-not (Test-Path -LiteralPath $Enabled) -and -not [bool](Get-Prop (Get-State) 'stoppedByHand' $false)) {
++        if (-not $DryRun) { New-Item -ItemType File -Path $Enabled -Force | Out-Null }
++        Log "run next: the Golem rested with an empty queue; on again for P$n"
++    }
+     Write-Status
+     $cur = [string](Get-Prop (Get-State) 'current' '')
+     [Console]::Out.Write(("P{0} goes next: it is handed at the next hand-off{1}, ahead of the rest of the queue. Nothing was renamed." -f $n, $(if ($cur) { " (after $cur)" } else { '' })))
+@@ -4113,6 +4136,11 @@
+         Move-Item -LiteralPath $pf.FullName -Destination (Join-Path $QueueDir $pf.Name)
+         Remove-Item -LiteralPath ($pf.FullName + '.claim.json') -Force -ErrorAction SilentlyContinue
+         if ($Multi) { Remove-ClaimToken $PromptDir $pf.Name }
++        # cc-P770: in git mode the move is committed and pushed like every other queue change. Left uncommitted (Gold, 11-01
++        # 14:39), it made every later pull fail, and the clone's queue stayed as it was for the rest of the day.
++        if ($script:QueueMode -eq 'git' -and $HandedDir -like ($PromptDir.TrimEnd('\') + '\*')) {
++            if (-not (Invoke-PromptsGit $PromptDir "$sp back in the queue: retried by $(if ($script:Me) { [string]$script:Me.name } else { 'the Golem' })")) { Log "retry: the push of $sp's move was rejected; the next sync takes origin's queue" }
++        }
+     }
+     Use-Lock {
+         $sx = Get-State
+@@ -4595,6 +4623,34 @@
+             if ($r.Ok) { Write-Status ''; exit 0 }
+         }
+     }
++    # cc-P770: a Run next pick for an idle Golem is honored at the next watch: the Golem wakes for it. Before this only a
++    # hand-off read RUN-NEXT, so a pick set while the Golem rested waited until someone woke it (Gold, 11-01: P766 at 11:21
++    # and P768 at 17:20 sat unclaimed for hours). Not while rested by hand, winding down, waiting for Chase, a wake already
++    # on its way (a refused wake waits for its retry time); Test-SelfWake's own rules (usage, pace, the autoWakeMinMinutes
++    # spacing) still hold, and a refusal is logged and retried at a later watch.
++    if (-not $cur -and (Get-RunNextName) -and -not [bool](Get-Prop $st 'stoppedByHand' $false) -and
++        -not [string](Get-Prop $st 'stoppedPrompt' '') -and [string](Get-Prop $st 'restReason' '') -notin @('wrap up', 'stopping point') -and -not [string](Get-Prop $st 'winding' '')) {
++        if ($script:QueueMode -eq 'git' -and -not (Test-Path -LiteralPath (Join-Path $QueueDir (Get-RunNextName)))) { Sync-PromptsGit $PromptDir }
++        [void](Clear-StaleRunNext)
++        $rnPick = Get-RunNextName
++        # A wake refused for a reason that clears (usage, the spacing) waits until its retry time.
++        $wpR = Get-Prop $st 'wakePending' $null
++        $waitR = $false; if ($wpR) { try { $waitR = ([datetime]::Parse([string](Get-Prop $wpR 'retryAt' '')) -gt $NowTime) } catch {} }
++        if ($rnPick -and -not $waitR) {
++            $tgP = Get-WakeTarget $st   # syncs a git queue first; the pick sorts first when it is still queued and this Golem may take it
++            $rnN = [regex]::Match($rnPick, '^cc-P(\d+)-').Groups[1].Value
++            if ($tgP -and $rnN -and $tgP.For -eq ('P' + $rnN)) {
++                Log ("run next: P$rnN is picked and the Golem is idle: waking for it")
++                $r = Invoke-SelfWake $st 'run next' $tgP.For $tgP.Model
++                if ($r.Ok) { Write-Status ''; exit 0 }
++            } elseif ([string](Get-Prop $st 'runNextSkipNoted' '') -ne $rnPick) {
++                $why = $(if (-not (Test-Path -LiteralPath (Join-Path $QueueDir $rnPick))) { 'it is no longer in the queue' } elseif ($tgP) { 'this Golem may not take it now; ' + $tgP.For + ' would go first' } else { 'this Golem may not take it now (see the claim lines)' })
++                Log ("run next: $rnPick is picked but not woken for: $why")
++                $st | Add-Member -NotePropertyName runNextSkipNoted -NotePropertyValue $rnPick -Force
++                Save-State $st
++            }
++        }
++    }
+     if (-not $cur) { Write-Status; exit 0 }
+     $p = Get-Progress
+     # Armed only once the Activity hooks have reported for this prompt: a CC session started before they were
+--- Golems.ps1.bak-20261101-P770	2026-11-01 22:48:10.843491300 -0600
++++ Golems.ps1	2026-11-01 23:49:30.542187800 -0600
+@@ -164,6 +164,12 @@
+     $(if (Get-GolemProp $reg 'Home' $null) { $reg.Home } else { $reg.Integrator })
+ }
+ function Test-GolemLocal($g) { ([string]$g.machine -ieq [string]$env:COMPUTERNAME) }
++# cc-P770: is this Golem reached through its agent from here? On another PC, with an agent this console knows
++# (remote\<name>\agent.json, written when its agent first reports). A command for it then goes to remote\<name>\commands.
++function Test-GolemViaAgent([string]$Root, $g) {
++    if (-not $g -or (Test-GolemLocal $g)) { return $false }
++    Test-Path -LiteralPath (Join-Path $Root ('remote\' + [string]$g.name + '\agent.json'))
++}
+ # A Golem's own file names: the home Golem keeps today's names (nothing Chase uses moves); the others carry the name.
+ # cc-P208: home is the integrator, or with a script integrator (Shadow Iron: golem-ShadowIron.log) Iron, as before.
+ function Test-GolemHome($g) {
+@@ -590,7 +596,22 @@
+     $p = Invoke-Git $PromptDir @('pull', '-q', '--rebase')
+     # cc-P370: a pull whose rebase stopped (an unpushed claim that conflicts) used to stay stopped: the clone sat detached
+     # mid-rebase and its queue went stale ("nothing for Copper", 10-21). Put it back on origin/main at once.
+-    if ($p.Code -ne 0) { [void](Repair-PromptsClone $PromptDir) }
++    if ($p.Code -ne 0 -and -not (Repair-PromptsClone $PromptDir)) { [void](Reset-DirtyPromptsClone $PromptDir) }
++}
++# cc-P770: a clone on main whose pull fails because of changes never committed (Gold, 11-01: a retry's move of P765, made
++# without a commit, failed every pull after 14:39 and froze its queue). In git mode every queue change is committed and
++# pushed at once, so an uncommitted one is a change that never landed: as with an unpushed claim (cc-P370), origin's queue
++# wins. The dropped paths are logged. Returns them ('' when the clone was clean).
++function Reset-DirtyPromptsClone([string]$PromptDir) {
++    if (-not (Test-Path -LiteralPath (Join-Path $PromptDir '.git'))) { return '' }
++    $dirty = @(((Invoke-Git $PromptDir @('status', '--porcelain')).Text -split "`r?`n") | Where-Object { $_.Trim() })
++    if (-not $dirty.Count) { return '' }
++    $f = Invoke-Git $PromptDir @('fetch', '-q', 'origin')
++    $r = Invoke-Git $PromptDir @('reset', '-q', '--hard', 'origin/main')
++    $c = Invoke-Git $PromptDir @('clean', '-q', '-f', '-d', '--', 'queue', 'claimed', 'merging')
++    $what = (@($dirty | ForEach-Object { $_.Trim() }) -join '; ')
++    Write-GolemLog ('prompts clone: a pull failed on uncommitted changes; reset to origin/main and dropped ' + $what + $(if ($r.Code -ne 0) { ' (the reset failed: ' + $r.Text.Trim() + ')' } else { '' }))
++    $what
+ }
+ # cc-P370 (the Tinker's rule of 10-21, done by every Golem itself): a prompts clone that is mid-rebase or not on main gets
+ # git rebase --abort, then main reset to origin/main (an unpushed claim in it is dropped: the claim did not land, so the
+--- Set-RunNext.ps1.bak-20261101-P770	2026-10-19 15:22:40.499462900 -0500
++++ Set-RunNext.ps1	2026-11-01 23:49:30.713118600 -0600
+@@ -3,6 +3,20 @@
+ # -Event RunNext, which writes RUN-NEXT). Nothing is renamed. -Cancel clears the pick. The Shard Console's and the web
+ # console's Run next run this. ASCII only.
+ param([string]$Prompt, [switch]$Cancel, [string]$Root = 'D:\UO\golem', [string]$Golem)   # cc-P186: -Golem <name> for one of several
++# cc-P770: a Golem on another PC reads its own RUN-NEXT there. Writing one here did nothing for it (Gold, 11-01): the pick
++# goes to that PC's agent as the web console's Run next does, and it honors it at once (Remote-Agent.ps1 runs its watch).
++if ($Golem) {
++    . (Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) 'Golems.ps1')   # the kit's own, beside this script
++    $reg = $null; try { $reg = Read-GolemRegistry (Join-Path $Root 'golems.json') } catch {}
++    $g = $(if ($reg) { Get-GolemByName $reg $Golem } else { $null })
++    if (Test-GolemViaAgent $Root $g) {
++        if (-not $Cancel -and $Prompt -notmatch '^(?i)P?\d{1,4}$') { Write-Host ("Not changed: '" + $Prompt + "' is not a prompt number (P<nn>).") -ForegroundColor Yellow; exit 1 }
++        $pn = $(if ($Cancel) { '' } else { 'P' + ($Prompt -replace '^(?i)P', '') })
++        $f = Add-RemoteCommand $Root ([string]$g.name) $(if ($Cancel) { 'runnext-cancel' } else { 'runnext' }) $(if ($Cancel) { 'Cancel Run next' } else { 'Run next ' + $pn }) ('Set-RunNext on ' + $env:COMPUTERNAME) (Get-Date) 30 $(if ($Cancel) { @{} } else { @{ prompt = $pn } })
++        Write-Host ($(if ($Cancel) { 'Run next cancel' } else { $pn + ' as Run next' }) + ' sent to ' + [string]$g.name + "'s agent on " + [string]$g.machine + ' (' + $f + '). It is set there at the agent''s next poll, and the Golem wakes for it if it is idle.') -ForegroundColor Green
++        exit 0
++    }
++}
+ $a = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', (Join-Path $Root 'golem.ps1'), '-Event', 'RunNext', '-Root', $Root)
+ if ($Cancel) { $a += '-Cancel' } else { $a += @('-Prompt', $Prompt) }
+ if ($Golem) { $a += @('-Golem', $Golem) }
+--- Assign-Prompt.ps1.bak-20261101-P770	2026-10-31 23:19:13.063443200 -0500
++++ Assign-Prompt.ps1	2026-11-01 23:49:30.843329800 -0600
+@@ -111,6 +111,14 @@
+ }
+ if ($DryRun) { Write-Host ('DRY RUN: nothing was changed' + $(if ($RunNext) { '; Run next would pick P' + $num + ' for ' + $name } else { '' }) + '.') -ForegroundColor Yellow; exit 0 }
+ if ($RunNext) {
++    # cc-P770: a Golem on another PC gets the pick through its agent (Set-RunNext.ps1 sends it there).
++    $gR = $(if (-not $isInt) { $g } else { $null })
++    if (Test-GolemViaAgent $Root $gR) {
++        $r = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $Kit 'Set-RunNext.ps1') -Prompt ('P' + $num) -Golem $name -Root $Root
++        $code = $LASTEXITCODE
++        Write-Host ([string]($r -join "`r`n")) -ForegroundColor $(if ($code -eq 0) { 'Green' } else { 'Yellow' })
++        exit $(if ($code -eq 0) { 0 } else { 1 })
++    }
+     $a = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', (Join-Path $Kit 'golem.ps1'), '-Event', 'RunNext', '-Root', $Root, '-Prompt', ('P' + $num), '-PromptDir', $PromptDir)
+     if (-not $isInt) { $a += @('-Golem', $name) }
+     $r = & powershell.exe @a
+--- Answer-Question.ps1.bak-20261101-P770	2026-10-24 00:00:58.100024000 -0500
++++ Answer-Question.ps1	2026-11-01 23:49:31.029564000 -0600
+@@ -35,6 +35,33 @@
+     if ($TextB64 -notmatch '^[A-Za-z0-9+/]{1,12000}={0,2}$') { Write-Host 'Not answered: the text is not base64.'; exit 1 }
+     try { $Text = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($TextB64)) } catch { Write-Host 'Not answered: the text is not base64.'; exit 1 }
+ }
++# cc-P770: a question from a Golem on another PC lives there (questions\ on that PC); its agent sends a copy here as
++# remote\<Golem>\questions.json. Answered here, the answer goes to that agent as the web console's Answer does, and that PC
++# writes it and resumes. Checked here first with the same rules, so a wrong choice is refused at once.
++if (-not (Test-Path -LiteralPath (Join-Path (Get-QuestionDir $Root) ($Id + '.json')))) {
++    $rq = Find-RemoteQuestion $Root $Id
++    if ($rq) {
++        if (-not $rq.Open) { Write-Host ('Not answered: ' + $Id + ' on ' + $rq.Golem + ' is closed (' + $rq.State + '), as ' + $rq.Golem + '''s agent last reported at ' + $rq.ReceivedAt + '.'); exit 1 }
++        $q = $rq.Question
++        $ch = @($q.choices | Where-Object { $_ })
++        if ($Choice -ge $ch.Count -or $Choice -lt -1) { Write-Host ('Not answered: not one of its choices: ' + $Choice); exit 1 }
++        $Text = ([string]$Text -replace "`r`n", "`n" -replace '[\x00-\x08\x0b-\x1f\x7f]', ' ').Trim()
++        if ($Text -and -not [bool]$q.freeText) { Write-Host 'Not answered: this question takes one of its choices, not text'; exit 1 }
++        if ($Choice -lt 0 -and -not $Text) { Write-Host 'Not answered: pick a choice or write an answer'; exit 1 }
++        $Who = ([string]$Who -replace '[^A-Za-z0-9@._+ ()-]', '').Trim(); if ($Who.Length -gt 80) { $Who = $Who.Substring(0, 80) }
++        if ($Who -match '^[ ()-]') { $Who = 'overseer ' + $Who }
++        . (Join-Path $Here 'Golems.ps1')
++        $reg = $null; try { $reg = Read-GolemRegistry (Join-Path $Root 'golems.json') } catch {}
++        $g = $(if ($reg) { Get-GolemByName $reg $rq.Golem } else { $null })
++        $pc = $(if ($g) { [string]$g.machine } else { 'its PC' })
++        $b64 = $(if ($Text) { [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($Text)) } else { '' })
++        $f = Add-RemoteCommand $Root $rq.Golem 'answer' ('Answer ' + $Id) $(if ($Who) { $Who } else { 'Answer-Question on ' + $env:COMPUTERNAME }) (Get-Date) 60 @{ question = $Id; choice = [string]$Choice; textb64 = $b64; who = $Who }
++        $lbl = $(if ($Choice -ge 0) { '"' + [string]$ch[$Choice].label + '"' } else { '' }) + $(if ($Text) { $(if ($Choice -ge 0) { ' and ' } else { '' }) + 'your words' } else { '' })
++        Write-Host ('Sent to ' + $rq.Golem + '''s agent on ' + $pc + ': ' + $Id + ' answered ' + $lbl + ' (' + $f + '). ' + $rq.Golem + ' writes the answer there at its agent''s next poll (seconds while it is awake, a minute asleep) and resumes; its questions here show it answered at its next report.')
++        Write-Host ('If ' + $pc + ' is off, it is answered when it next comes on (the command keeps an hour), or answer it on ' + $pc + ': Answer-Question.ps1 -Id ' + $Id + ' -Choice ' + $Choice)
++        exit 0
++    }
++}
+ $r = Submit-GolemAnswer -Root $Root -Id $Id -Choice $Choice -Text $Text -Who $Who -Source $Source
+ if (-not $r.Ok) { Write-Host ('Not answered: ' + $r.Why); exit 1 }
+ Write-Host ('Answered ' + $Id + ': ' + $(if ($r.Answer.choiceLabel) { '"' + $r.Answer.choiceLabel + '"' } else { '' }) + $(if ($r.Answer.text) { $(if ($r.Answer.choiceLabel) { ' and ' } else { '' }) + 'your words' } else { '' }) + ' (' + $r.Path + ').')
+@@ -49,6 +76,10 @@
+ Write-Host (($out | Out-String).Trim())
+ if ($code -eq 3 -or $code -ne 0) { exit $(if ($code -eq 3) { 0 } else { 1 }) }
+ if ($NoWake) { Write-Host 'Not woken (-NoWake): wake the Golem when you are ready.'; exit 0 }
++# cc-P770: from the agent (-Source remote) the wake is the watch's: the agent's own process could not start the terminal
++# (Gold, 11-01 14:39: "wt.exe ... Access is denied", and the window it opened instead never reported). The answer put the
++# prompt first (RUN-NEXT), and the watch wakes an idle Golem for its Run next pick; the agent runs the watch at once.
++if ($Source -eq 'remote' -and $env:GOLEM_AGENT -eq '1') { Write-Host 'The watch wakes the Golem for it (the agent runs the watch now; else within 10 minutes).'; exit 0 }
+ $w = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $g -Event SelfWake -Manual -Root $Root @gArgs @extra
+ $code = $LASTEXITCODE
+ Write-Host (($w | Out-String).Trim())
+--- Questions.ps1.bak-20261101-P770	2026-10-21 08:40:42.394632400 -0500
++++ Questions.ps1	2026-11-01 23:49:31.169890900 -0600
+@@ -196,6 +196,32 @@
+     [pscustomobject]@{ Ok = $true; Why = ''; Question = $q; Answer = [pscustomobject]$a; Path = $ap }
+ }
+ 
++# cc-P770: a question asked on another PC, from the copy its agent sends here (remote\<Golem>\questions.json: the open ones
++# in full, the last closed ones with their answers). $null when no remote copy names it.
++function Find-RemoteQuestion([string]$Root, [string]$Id) {
++    if (-not (Test-QuestionId $Id)) { return $null }
++    $rd = Join-Path $Root 'remote'
++    if (-not (Test-Path -LiteralPath $rd)) { return $null }
++    foreach ($f in @(Get-ChildItem -LiteralPath $rd -Directory -ErrorAction SilentlyContinue | ForEach-Object { Join-Path $_.FullName 'questions.json' } | Where-Object { Test-Path -LiteralPath $_ })) {
++        $doc = Read-QFile $f
++        if (-not $doc) { continue }
++        foreach ($q in @($doc.open)) { if ($q -and [string]$q.id -ceq $Id) { return [pscustomobject]@{ Golem = [string]$doc.golem; Open = $true; State = 'open'; Question = $q; ReceivedAt = [string]$doc.receivedAt } } }
++        foreach ($q in @($doc.history)) { if ($q -and [string]$q.id -ceq $Id) { return [pscustomobject]@{ Golem = [string]$doc.golem; Open = $false; State = [string]$q.state; Question = $q; ReceivedAt = [string]$doc.receivedAt } } }
++    }
++    $null
++}
++# cc-P770: every open question on the other PCs, from the copies their agents send (for the Sweep and the overseer).
++function Get-RemoteOpenQuestions([string]$Root) {
++    $out = @()
++    $rd = Join-Path $Root 'remote'
++    if (-not (Test-Path -LiteralPath $rd)) { return $out }
++    foreach ($f in @(Get-ChildItem -LiteralPath $rd -Directory -ErrorAction SilentlyContinue | ForEach-Object { Join-Path $_.FullName 'questions.json' } | Where-Object { Test-Path -LiteralPath $_ })) {
++        $doc = Read-QFile $f
++        foreach ($q in @($doc.open)) { if ($q) { $out += [pscustomobject]@{ Golem = [string]$doc.golem; Id = [string]$q.id; Prompt = [string]$q.prompt; AskedAt = [string]$q.askedAt; Question = [string]$q.question; Choices = @($q.choices | ForEach-Object { [string]$_.label }); ReceivedAt = [string]$doc.receivedAt } } }
++    }
++    $out
++}
++
+ # The answers a session for that Golem and prompt has not been given yet (oldest first).
+ function Get-PendingAnswers([string]$Root, [string]$Golem, [string]$Prompt) {
+     $d = Get-AnswerDir $Root
+--- Remote-Agent.ps1.bak-20261101-P770	2026-10-24 00:01:22.291011600 -0500
++++ Remote-Agent.ps1	2026-11-01 23:49:31.302821200 -0600
+@@ -175,6 +175,7 @@
+     if (-not $l.Ok) { Write-AgentLog ([string]$cmd.key + ': ' + $l.Why); return @{ id = [string]$cmd.id; code = 2; result = $l.Why; lines = @($l.Why) } }
+     Write-AgentLog ('run ' + [string]$cmd.key + ': ' + (Split-Path -Leaf $l.Script) + ' ' + ($l.Args -join ' '))
+     $eap = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
++    $env:GOLEM_AGENT = '1'   # cc-P770: what it runs knows the agent ran it (Answer-Question.ps1 leaves the wake to the watch)
+     $out = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $l.Script @($l.Args) 2>&1
+     $code = $LASTEXITCODE
+     $ErrorActionPreference = $eap
+@@ -182,6 +183,13 @@
+     $text = @($lines | Where-Object { $_.Trim() })
+     $last = $(if ($text.Count) { $text[-1].Trim() } else { 'exited with ' + $code })
+     Write-AgentLog ('  ' + [string]$cmd.key + ' exited ' + $code + ': ' + $last)
++    # cc-P770: a Run next, an answer or a retry is acted on by the watch (it wakes an idle Golem for its Run next pick), run
++    # now through this PC's own Golem Watch task, whose session can open the terminal; this long-running agent's could not
++    # (Gold, 11-01 14:39: "wt.exe ... Access is denied"). Without the task the watch's own 10 minutes still come.
++    if ($code -eq 0 -and [string]$cmd.key -in @('runnext', 'answer', 'retry')) {
++        $tr = (& schtasks.exe /run /tn 'Golem Watch' 2>&1 | Out-String).Trim()
++        Write-AgentLog ('  the watch run now for it: ' + $(if ($LASTEXITCODE -eq 0) { 'Golem Watch started' } else { 'not started (' + $tr + '); the watch comes within 10 minutes' }))
++    }
+     @{ id = [string]$cmd.id; code = [int]$code; result = $last; lines = @($lines | Select-Object -Last 60) }
+ }
+ 
+--- join/Sweep.ps1.bak-20261101-P770	2026-11-01 22:48:11.043584400 -0600
++++ join/Sweep.ps1	2026-11-01 23:49:31.430712300 -0600
+@@ -4,6 +4,11 @@
+ # cc-P767: both Codex lanes side by side: each account's 5-hour and week percent and resets, fresh or the last good
+ # reading's age, today's runs, and idle time today with the reasons.
+ 'Codex lanes:'; & powershell.exe -NoProfile -ExecutionPolicy Bypass -File D:\UO\golem\Codex.ps1 -Action lanes | ForEach-Object { '  ' + $_ }
++# cc-P770: questions open on the other PCs (their agents' copies in remote\<Golem>\questions.json); Answer-Question.ps1 -Id <id>
++# -Choice <n> here sends the answer to that PC.
++. D:\UO\golem\Questions.ps1; $rq = @(Get-RemoteOpenQuestions 'D:\UO\golem')
++'Remote questions: ' + $(if ($rq.Count) { [string]$rq.Count + ' open' } else { 'none open' })
++foreach ($q in $rq) { '  ' + $q.Golem + ' ' + $q.Id + ' (asked ' + $q.AskedAt + '): ' + $(if ($q.Question.Length -gt 140) { $q.Question.Substring(0, 140) + '...' } else { $q.Question }); '    choices: ' + (@(for ($i = 0; $i -lt $q.Choices.Count; $i++) { [string]$i + ' ' + $q.Choices[$i] }) -join ' | ') + '; answer: Answer-Question.ps1 -Id ' + $q.Id + ' -Choice <n>' }
+ $man = @{}; Get-ChildItem D:\UO\golem -File | ? { $_.Extension -in '.ps1','.psm1','.py' -or $_.Name -eq 'golems.json' } | % { $man[$_.Name] = (Get-FileHash $_.FullName -Algorithm MD5).Hash }
+ $man | ConvertTo-Json | Set-Content D:\UO\golem\join\manifest.json
+ $k = @('-i','C:\Users\ckfle\.ssh\golem-remote','-o','BatchMode=yes','-o','ConnectTimeout=6')
+--- tests/Lane.Tests.ps1.bak-20261101-P770	2026-11-01 22:48:11.298653200 -0600
++++ tests/Lane.Tests.ps1	2026-11-01 23:49:31.553425200 -0600
+@@ -246,6 +246,91 @@
+     Assert-True ((Get-ClaimSkipSummary 1) -like '1 prompt, 0 claimable*') ('one prompt reads singular: ' + (Get-ClaimSkipSummary 1))
+ }
+ 
++$p770Kit = Split-Path -Parent $Lib
++function New-P770Root {
++    $r = Join-Path $Root ('p770-' + [guid]::NewGuid().ToString('N').Substring(0, 6))
++    New-Item -ItemType Directory -Path $r -Force | Out-Null
++    # The real registry and settings: Gold is on STEPHS-DESKTOP, Iron on CHASES-TOWER (this PC in the facts' eyes or not:
++    # the facts only use Gold, which is never this PC).
++    Copy-Item -LiteralPath (Join-Path $p770Kit 'golems.json') -Destination $r
++    Copy-Item -LiteralPath (Join-Path $p770Kit 'settings.json') -Destination $r
++    # Gold's agent reports to this console (the web console writes remote\Gold\agent.json when it first does).
++    New-Item -ItemType Directory -Path (Join-Path $r 'remote\Gold') -Force | Out-Null
++    [IO.File]::WriteAllText((Join-Path $r 'remote\Gold\agent.json'), '{"golem":"Gold"}')
++    $r
++}
++
++Fact 'P770_ADirtyPromptsCloneIsResetToOriginAndItsQueueIsFreshAgain' {
++    $ErrorActionPreference = 'Continue'   # git writes its notes to stderr
++    $o = Join-Path $Root 'p770-origin.git'; $seed = Join-Path $Root 'p770-seed'; $cl = Join-Path $Root 'p770-clone'
++    $g = { param($dir) & git -C $dir -c user.name=t -c user.email=t@t @args 2>&1 | Out-Null }
++    & git init -q --bare -b main $o 2>&1 | Out-Null
++    & git clone -q $o $seed 2>&1 | Out-Null
++    New-Item -ItemType Directory -Path (Join-Path $seed 'queue'), (Join-Path $seed 'claimed\Gold') -Force | Out-Null
++    [IO.File]::WriteAllText((Join-Path $seed 'claimed\Gold\cc-P501-a.md'), "# a`n"); [IO.File]::WriteAllText((Join-Path $seed 'queue\cc-P502-b.md'), "# b`n")
++    & $g $seed add -A; & $g $seed commit -q -m seed; & $g $seed push -q origin HEAD:main
++    & git clone -q $o $cl 2>&1 | Out-Null
++    # This clone's retry moved P501 back to the queue and never committed it (Gold, 11-01 14:39).
++    Move-Item -LiteralPath (Join-Path $cl 'claimed\Gold\cc-P501-a.md') -Destination (Join-Path $cl 'queue\cc-P501-a.md')
++    # Meanwhile origin moved on: P503 queued, P502 claimed by Iron.
++    New-Item -ItemType Directory -Path (Join-Path $seed 'claimed\Iron') -Force | Out-Null
++    Move-Item -LiteralPath (Join-Path $seed 'queue\cc-P502-b.md') -Destination (Join-Path $seed 'claimed\Iron\cc-P502-b.md')
++    [IO.File]::WriteAllText((Join-Path $seed 'queue\cc-P503-c.md'), "# c`n")
++    & $g $seed add -A; & $g $seed commit -q -m moved; & $g $seed push -q origin HEAD:main
++    $script:p770Log = @(); function Write-GolemLog([string]$m) { $script:p770Log += $m }
++    Sync-PromptsGit $cl
++    $q = @(Get-ChildItem -LiteralPath (Join-Path $cl 'queue') -Filter '*.md' | ForEach-Object { $_.Name } | Sort-Object)
++    Assert-True (($q -join ',') -eq 'cc-P503-c.md') ('the queue is origin''s again: ' + ($q -join ','))
++    Assert-True (Test-Path -LiteralPath (Join-Path $cl 'claimed\Iron\cc-P502-b.md')) 'and its claims'
++    $st = (& git -C $cl status --porcelain 2>$null | Out-String).Trim()
++    Assert-True (-not $st) ('nothing uncommitted left: ' + $st)
++    Assert-True (($script:p770Log -join ' ') -match 'reset to origin/main and dropped .*cc-P501-a\.md') ('what it dropped is logged: ' + ($script:p770Log -join ' | '))
++}
++
++Fact 'P770_RunNextForAGolemOnAnotherPcGoesToItsAgent' {
++    $r = New-P770Root
++    $o = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $p770Kit 'Set-RunNext.ps1') -Prompt P768 -Golem Gold -Root $r | Out-String
++    $cmds = @(Get-ChildItem -LiteralPath (Join-Path $r 'remote\Gold\commands') -Filter '*.json' -ErrorAction SilentlyContinue)
++    $c = $(if ($cmds.Count) { Get-Content -LiteralPath $cmds[0].FullName -Raw | ConvertFrom-Json } else { $null })
++    Assert-True ($c -and $c.key -eq 'runnext' -and $c.inputs.prompt -eq 'P768' -and $c.state -eq 'queued') ('a runnext command for Gold''s agent: ' + ($c | ConvertTo-Json -Compress))
++    Assert-True (-not (Test-Path -LiteralPath (Join-Path $r 'RUN-NEXT-Gold'))) 'no RUN-NEXT-Gold here: Gold never reads this PC''s'
++    Assert-True ($o -match 'sent to Gold''s agent on STEPHS-DESKTOP') ('it says where it went: ' + $o)
++    $o2 = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $p770Kit 'Set-RunNext.ps1') -Cancel -Golem Gold -Root $r | Out-String
++    $keys = @(Get-ChildItem -LiteralPath (Join-Path $r 'remote\Gold\commands') -Filter '*.json' | ForEach-Object { (Get-Content -LiteralPath $_.FullName -Raw | ConvertFrom-Json).key } | Sort-Object)
++    Assert-True (($keys -join ',') -eq 'runnext,runnext-cancel') ('and its cancel: ' + ($keys -join ',') + ' ' + $o2)
++    # Without an agent this console knows (a fixture's made-up PC, or an agent never set up), it stays a pick here, as before.
++    Remove-Item -LiteralPath (Join-Path $r 'remote\Gold\agent.json') -Force
++    . $Lib
++    Assert-True (-not (Test-GolemViaAgent $r (Get-GolemByName (Read-GolemRegistry (Join-Path $r 'golems.json')) 'Gold'))) 'no agent.json: not through an agent'
++    Assert-True (-not (Test-GolemViaAgent $r (Get-GolemByName (Read-GolemRegistry (Join-Path $r 'golems.json')) 'Iron')) -or $env:COMPUTERNAME -ine 'CHASES-TOWER') 'Iron on this tower: never through an agent'
++}
++
++Fact 'P770_AnswerQuestionAnswersAQuestionAskedOnAnotherPc' {
++    $r = New-P770Root
++    $id = 'Gold-P999-20261101-230000-abcd'
++    New-Item -ItemType Directory -Path (Join-Path $r 'remote\Gold') -Force | Out-Null
++    $doc = [ordered]@{ golem = 'Gold'; receivedAt = '2026-11-01T23:01:00'
++        open = @([ordered]@{ id = $id; golem = 'Gold'; prompt = 'P999'; kind = 'ask'; question = 'A dummy question?'; choices = @(@{ label = 'Yes'; does = 'y' }, @{ label = 'No'; does = 'n' }); freeText = $false; state = 'open' })
++        history = @([ordered]@{ id = 'Gold-P998-20261101-220000-dcba'; golem = 'Gold'; prompt = 'P998'; state = 'answered'; choices = @() }) }
++    [IO.File]::WriteAllText((Join-Path $r 'remote\Gold\questions.json'), ($doc | ConvertTo-Json -Depth 6))
++    $aq = Join-Path $p770Kit 'Answer-Question.ps1'
++    $o = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $aq -Id $id -Choice 5 -Root $r | Out-String
++    Assert-True ($LASTEXITCODE -eq 1 -and $o -match 'not one of its choices') ('a choice it does not have is refused here: ' + $o)
++    $o = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $aq -Id $id -Choice 0 -Text 'words' -Root $r | Out-String
++    Assert-True ($LASTEXITCODE -eq 1 -and $o -match 'takes one of its choices') ('text where it takes none is refused: ' + $o)
++    $o = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $aq -Id 'Gold-P998-20261101-220000-dcba' -Choice 0 -Root $r | Out-String
++    Assert-True ($LASTEXITCODE -eq 1 -and $o -match 'is closed \(answered\)') ('a closed one is refused: ' + $o)
++    $o = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $aq -Id $id -Choice 1 -Who 'overseer (for Chase)' -Root $r | Out-String
++    $cmds = @(Get-ChildItem -LiteralPath (Join-Path $r 'remote\Gold\commands') -Filter '*.json' -ErrorAction SilentlyContinue)
++    $c = $(if ($cmds.Count) { Get-Content -LiteralPath $cmds[0].FullName -Raw | ConvertFrom-Json } else { $null })
++    Assert-True ($LASTEXITCODE -eq 0 -and $c -and $c.key -eq 'answer' -and $c.inputs.question -eq $id -and $c.inputs.choice -eq '1' -and $c.inputs.who -eq 'overseer (for Chase)' -and $c.inputs.textb64 -eq '') ('an answer command for Gold''s agent, in its inputs'' shapes: ' + ($c | ConvertTo-Json -Compress))
++    Assert-True ($o -match 'Sent to Gold''s agent on STEPHS-DESKTOP' -and $o -match '"No"') ('it says where it went and what: ' + $o)
++    Assert-True (-not (Test-Path -LiteralPath (Join-Path $r 'answers'))) 'nothing written as a local answer here'
++    . (Join-Path $p770Kit 'Questions.ps1')
++    $open = @(Get-RemoteOpenQuestions $r)
++    Assert-True ($open.Count -eq 1 -and $open[0].Golem -eq 'Gold' -and $open[0].Id -eq $id -and ($open[0].Choices -join '/') -eq 'Yes/No') ('the Sweep''s list: ' + ($open | ConvertTo-Json -Compress))
++}
++
+ Remove-Item -LiteralPath $Root -Recurse -Force -ErrorAction SilentlyContinue
+ Write-Host ''
+ Write-Host ('{0} checks passed, {1} failed' -f $script:passes, $script:fails)
