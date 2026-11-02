@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-01T23:02:17-06:00",
+  "generated": "2026-11-02T00:32:21-06:00",
   "direction": {
     "eyebrow": "Direction",
     "title": "Our own shard on ModernUO, OSI where OSI has an answer",
@@ -750,11 +750,47 @@
   "review": [
     {
       "kind": "gate",
+      "item": "The shard runs and holds a world",
+      "check": "Last confirmed 2026-10-25 (8 days ago). Re-read its sources; still met?",
+      "cmd": [
+        "python tools/judge.py confirm gate \"The shard runs and holds a world\"",
+        "python tools/judge.py gate \"The shard runs and holds a world\" --done no --detail \"...\""
+      ]
+    },
+    {
+      "kind": "gate",
       "item": "The player package installs on a clean PC",
       "check": "Waits on a confirmation: Chase: which package is published on get.shatteredlegacyuo.com (the one with the 10-24 launcher?), and has a package with our TazUO build passed a clean-PC install? Settle it with whoever was asked, then record the answer (or re-confirm as it stands).",
       "cmd": [
         "python tools/judge.py gate \"The player package installs on a clean PC\" --done no --detail \"...\"",
         "python tools/judge.py confirm gate \"The player package installs on a clean PC\""
+      ]
+    },
+    {
+      "kind": "gate",
+      "item": "A new character can train without hitting a wall",
+      "check": "Last confirmed 2026-10-25 (8 days ago). Re-read its sources; still not met?",
+      "cmd": [
+        "python tools/judge.py confirm gate \"A new character can train without hitting a wall\"",
+        "python tools/judge.py gate \"A new character can train without hitting a wall\" --done yes --detail \"...\""
+      ]
+    },
+    {
+      "kind": "gate",
+      "item": "A new character's first hour",
+      "check": "Last confirmed 2026-10-25 (8 days ago). Re-read its sources; still not met?",
+      "cmd": [
+        "python tools/judge.py confirm gate \"A new character's first hour\"",
+        "python tools/judge.py gate \"A new character's first hour\" --done yes --detail \"...\""
+      ]
+    },
+    {
+      "kind": "gate",
+      "item": "Levels and loops work end to end",
+      "check": "Last confirmed 2026-10-25 (8 days ago). Re-read its sources; still not met?",
+      "cmd": [
+        "python tools/judge.py confirm gate \"Levels and loops work end to end\"",
+        "python tools/judge.py gate \"Levels and loops work end to end\" --done yes --detail \"...\""
       ]
     },
     {
@@ -776,9 +812,54 @@
       ]
     },
     {
+      "kind": "gate",
+      "item": "Things to fight",
+      "check": "Last confirmed 2026-10-25 (8 days ago). Re-read its sources; still not met?",
+      "cmd": [
+        "python tools/judge.py confirm gate \"Things to fight\"",
+        "python tools/judge.py gate \"Things to fight\" --done yes --detail \"...\""
+      ]
+    },
+    {
+      "kind": "gate",
+      "item": "Set mechanics actually fire",
+      "check": "Last confirmed 2026-10-25 (8 days ago). Re-read its sources; still not met?",
+      "cmd": [
+        "python tools/judge.py confirm gate \"Set mechanics actually fire\"",
+        "python tools/judge.py gate \"Set mechanics actually fire\" --done yes --detail \"...\""
+      ]
+    },
+    {
+      "kind": "gate",
+      "item": "No live gap a player would call a bug",
+      "check": "Last confirmed 2026-10-25 (8 days ago). Re-read its sources; still not met?",
+      "cmd": [
+        "python tools/judge.py confirm gate \"No live gap a player would call a bug\"",
+        "python tools/judge.py gate \"No live gap a player would call a bug\" --done yes --detail \"...\""
+      ]
+    },
+    {
+      "kind": "gate",
+      "item": "The fresh-world wipe is ready",
+      "check": "Last confirmed 2026-10-25 (8 days ago). Re-read its sources; still not met?",
+      "cmd": [
+        "python tools/judge.py confirm gate \"The fresh-world wipe is ready\"",
+        "python tools/judge.py gate \"The fresh-world wipe is ready\" --done yes --detail \"...\""
+      ]
+    },
+    {
+      "kind": "status",
+      "item": "shard status",
+      "check": "Last confirmed 2026-10-25: \"the test shard is the only shard: live was retired and deleted on 2026-10-14 until the fresh 1.0 world, and the launcher's Play button now connects to the test shard (2026.10.24.2); the test shard (2594, up) runs sl-modernuo:latest, built 2026-10-23 from main 0f1871f (version 2026.10.23.2), while main is 2026.10.25.7, 33 merges ahead; the overnight bot tests the newest main on its own world copy each night; which player package is published is not visible from the repos\". Still what runs?",
+      "cmd": [
+        "python tools/judge.py status \"...\"",
+        "python tools/judge.py confirm status"
+      ]
+    },
+    {
       "kind": "play tests",
       "item": "not sorted",
-      "check": "996 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check.",
+      "check": "997 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check.",
       "cmd": [
         "python -m unittest tools/tests/test_play_who.py"
       ]
@@ -1306,14 +1387,14 @@
   "derived": {
     "version": "2026.11.01.6",
     "playtests": {
-      "open": 1439,
+      "open": 1440,
       "failed": 4,
       "passed": 43,
       "later": 8,
       "blocked": 1,
-      "total": 1486,
+      "total": 1487,
       "unloggedFails": 3,
-      "generatedAt": "2026-11-02T05:01:23Z"
+      "generatedAt": "2026-11-02T06:32:02Z"
     },
     "queue": {
       "autopilot": "on",
@@ -1336,6 +1417,14 @@
         }
       ],
       "finished": [
+        {
+          "n": 9770,
+          "slug": "run-next-test",
+          "state": "done",
+          "why": "",
+          "date": "2026-11-02",
+          "notes": "notes/cc-P9770-run-next-test.md"
+        },
         {
           "n": 767,
           "slug": "codex-usage-per-account",
@@ -1407,26 +1496,18 @@
           "why": "",
           "date": "2026-11-01",
           "notes": "notes/cc-P756-review-build-new-haven-tutorial-fixes.md"
-        },
-        {
-          "n": 755,
-          "slug": "cont-fixup-new-haven-tutorial-fixes",
-          "state": "done",
-          "why": "",
-          "date": "2026-11-01",
-          "notes": "notes/cc-P755-cont-fixup-new-haven-tutorial-fixes.md"
         }
       ],
-      "finished_total": 638,
-      "done_total": 633,
+      "finished_total": 639,
+      "done_total": 634,
       "stopped_total": 5,
       "latest_done": {
-        "n": 767,
-        "slug": "codex-usage-per-account",
+        "n": 9770,
+        "slug": "run-next-test",
         "state": "done",
         "why": "",
-        "date": "2026-11-01",
-        "notes": "notes/cc-P767-codex-usage-per-account.md"
+        "date": "2026-11-02",
+        "notes": "notes/cc-P9770-run-next-test.md"
       }
     },
     "reviewed": "2026-10-25",
