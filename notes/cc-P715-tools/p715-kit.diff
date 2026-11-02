@@ -1,0 +1,156 @@
+--- golem.ps1.bak-20261102-P715	2026-11-02 01:04:27.569861100 -0600
++++ golem.ps1	2026-11-02 06:38:41.135330100 -0600
+@@ -1480,6 +1480,20 @@
+     }
+     Log ("{0}: Chase answered, no longer kept open" -f $r.name)
+ }
++# cc-P715: a prompt Claude Code queued into the session itself (a background task's or a subagent's notice), not words
++# Chase typed. Such a turn is the session's own; it never answers a STOPPED.
++function Test-MachinePrompt([string]$p) {
++    $x = ([string]$p).TrimStart()
++    return ($x -match '^(?i)<(task-notification|agent-message)\b' -or $x -match '^(?i)Another Claude session sent a message')
++}
++# cc-P715: has Chase typed in session $sid since the stop at $atUtc (a round-trip UTC stamp)? Only that is an answer in the
++# terminal; a tool call alone is not (P707, 10-27: a Monitor's notice woke the stopped session for one more turn).
++function Test-ChaseSpokeSince([string]$sid, [string]$atUtc) {
++    $p = [string](Get-Prop (Get-Session $sid) 'lastChasePromptUtc' '')
++    if (-not $p) { return $false }
++    if (-not $atUtc) { return $true }
++    try { return ([datetime]::Parse($p, $null, [Globalization.DateTimeStyles]::RoundtripKind) -gt [datetime]::Parse($atUtc, $null, [Globalization.DateTimeStyles]::RoundtripKind)) } catch { return $true }
++}
+ # Minutes since a UTC 's' stamp (huge when there is none).
+ function Get-AgeMin($t) {
+     if (-not [string]$t) { return [double]::MaxValue }
+@@ -4788,8 +4802,12 @@
+     # UserPromptSubmit. Only the start phrase does anything; every other message is left alone.
+     $cwdP = [string]$h.cwd
+     if ($cwdP -and ($cwdP -notmatch '^(?i)d:[\\/](UO|ShatteredLegacy)')) { exit 0 }
+-    Save-Session $SessionId @{ lastPromptUtc = (Get-Date).ToUniversalTime().ToString('s') }   # cc-P161: Chase typing there is activity
+-    if (Test-Path -LiteralPath $SessBook) { Clear-SessionHeld }
++    # cc-P715: a queued notification (a background task's, a subagent's) is the session's own turn, not Chase.
++    $byChase = -not (Test-MachinePrompt ([string]$h.prompt))
++    $sv = @{ lastPromptUtc = (Get-Date).ToUniversalTime().ToString('s') }   # cc-P161: Chase typing there is activity
++    if ($byChase) { $sv.lastChasePromptUtc = (Get-Date).ToUniversalTime().ToString('o') }
++    Save-Session $SessionId $sv
++    if ($byChase -and (Test-Path -LiteralPath $SessBook)) { Clear-SessionHeld }
+     $what = Test-GolemPhrase ([string]$h.prompt)
+     if (-not $what) { Save-ForeignSession; exit 0 }   # cc-P156
+     if (Register-HookSession) { [void](Close-GolemSessions (Get-State) (Get-Settings) 'a new session said the phrase') }
+@@ -4971,13 +4989,17 @@
+     }
+     # cc-P161: this session's own last tool call, and whether one is running (never closed mid-tool).
+     Save-Session $SessionId @{ lastToolUtc = (Get-Date).ToUniversalTime().ToString('s'); toolRunning = $(if ($phase -eq 'PreToolUse') { 'yes' } else { 'no' }) }
+-    if (Test-Path -LiteralPath $SessBook) { Clear-SessionHeld }
+     # Activity after a NEEDS YOU (or cc-P131 a STOPPED) means Chase answered: clear it.
+     $ns = $null
+     if (Test-Path -LiteralPath $StatFile) { try { $ns = Get-Content -LiteralPath $StatFile -Raw | ConvertFrom-Json } catch {} }
+     $sp = [string](Get-Prop $ns 'stoppedPrompt' '')
+-    if ($sp) { Use-Lock { $sx = Get-State; $sx | Add-Member -NotePropertyName stoppedPrompt -NotePropertyValue '' -Force; Save-State $sx }; Log "activity after $sp STOPPED: Chase answered" }
+-    if ([string](Get-Prop $ns 'needsYou' '') -or $sp) { Write-Status '' } else { Write-Status }
++    # cc-P715: for a STOPPED only when Chase typed in this session after the stop. A tool call of the session's own turn
++    # (a background task's notice woke it) leaves the STOPPED, its question and the session's hold as they are.
++    $kept = $false
++    if ($sp -and -not (Test-ChaseSpokeSince $SessionId ([string](Get-Prop (Get-State) 'stoppedAt' '')))) { $kept = $true }
++    if (-not $kept -and (Test-Path -LiteralPath $SessBook)) { Clear-SessionHeld }
++    if ($sp -and -not $kept) { Use-Lock { $sx = Get-State; $sx | Add-Member -NotePropertyName stoppedPrompt -NotePropertyValue '' -Force; Save-State $sx }; Log "activity after $sp STOPPED: Chase answered" }
++    if ($kept) { Write-Status } elseif ([string](Get-Prop $ns 'needsYou' '') -or $sp) { Write-Status '' } else { Write-Status }
+     exit 0
+ }
+ 
+@@ -5028,7 +5050,12 @@
+     $n = [int]$stopped.Groups[1].Value
+     $why = ([string]$stopped.Groups[2].Value).Trim()
+     # D90: already handled only when it is not the one running.
+-    if ($n -eq [int]$state.lastHandled -and [string]$state.current -ne "P$n") { exit 0 }
++    if ($n -eq [int]$state.lastHandled -and [string]$state.current -ne "P$n") {
++        # cc-P715: unless its STOPPED was cleared by Chase's words in the terminal, nothing else runs and the prompt is
++        # still claimed here: the session took his words and stopped again, so that is a new stop and is recorded.
++        if ([string](Get-Prop $state 'stoppedPrompt' '') -or [string]$state.current -or -not (Find-PromptFile $HandedDir "P$n")) { exit 0 }
++        Log "P$n STOPPED again after Chase's words in the terminal: a new stop"
++    }
+     # cc-P131: a STOPPED whose reason is the session's context (P129, 2026-10-16 09:31) is a rest, not a stop: the prompt
+     # goes back to the front of the queue, nothing is needed from Chase, and the Golem may open a fresh session itself.
+     if ($why -match '(?i)\bcontext\b|\bsession\b.{0,20}\b(full|spent|exhausted|too long)\b|\bcompact') {
+@@ -5062,6 +5089,7 @@
+     $state.lastHandled = $n; $state.current = ''; $state.currentFile = ''
+     $state | Add-Member -NotePropertyName stoppedPrompt -NotePropertyValue "P$n" -Force
+     $state | Add-Member -NotePropertyName stoppedWhy -NotePropertyValue $why -Force   # cc-P183: a wake re-checks it
++    $state | Add-Member -NotePropertyName stoppedAt -NotePropertyValue ((Get-Date).ToUniversalTime().ToString('o')) -Force   # cc-P715
+     Save-State $state
+     Set-SessionHeld "P$n STOPPED"   # cc-P161
+     Log "P$n STOPPED, no commit"
+--- tests/Golem.Tests.ps1.bak-20261102-P715	2026-11-01 05:45:59.861089400 -0600
++++ tests/Golem.Tests.ps1	2026-11-02 07:07:38.786087000 -0600
+@@ -689,8 +689,12 @@
+         Assert-True ($s.state -eq 'STOPPED' -and $s.stoppedPrompt -eq 'P100') ('status: ' + $s.state + ' / ' + $s.stoppedPrompt)
+         Assert-True ((Count-Emailed $w 'Needs you: P100') -eq 1 -and (Get-Content -LiteralPath (Join-Path $w.Root 'test-mail.txt') -Raw) -match 'which of the two layouts do you want\?') (Get-WLog $w)
+         Assert-True ((Get-WLog $w) -match 'would notify: Golem: P100 STOPPED') 'a Windows notification'
+-        # Chase answers CC: its next tool use clears the STOPPED.
+-        [void](Invoke-Hook $w 'Activity' @{ hook_event_name = 'PostToolUse'; tool_name = 'Read' })
++        # Chase answers CC: his words in the session, then its next tool use, clear the STOPPED (cc-P715: a tool use alone
++        # does not; a background task can wake a stopped session for a turn of its own).
++        [void](Invoke-Hook $w 'Activity' @{ hook_event_name = 'PostToolUse'; tool_name = 'Read'; session_id = 'sess-a' })
++        Assert-True ((Get-WStatus $w).state -eq 'STOPPED') 'a tool use alone leaves it STOPPED'
++        [void](Invoke-Hook $w 'Prompt' @{ prompt = 'The second layout.'; session_id = 'sess-a' })
++        [void](Invoke-Hook $w 'Activity' @{ hook_event_name = 'PostToolUse'; tool_name = 'Read'; session_id = 'sess-a' })
+         Assert-True ((Get-WStatus $w).state -ne 'STOPPED') 'cleared by activity'
+     }
+ 
+@@ -3875,6 +3879,57 @@
+         $ctx = ($o | ConvertFrom-Json).hookSpecificOutput.additionalContext
+         Assert-True ($ctx -match 'P100 .*already running' -and $ctx -match 'Use the second option and carry on') ('carry on with the answer: ' + $ctx)
+     }
++    # cc-P715: Iron asked P707's question at 18:39:25 on 10-27 and said P707 STOPPED at 18:40:43. A Monitor of that session
++    # then expired, its notification woke the session for one more turn (a TaskStop, 18:40:49), and the Activity hook took
++    # that tool call for Chase answering: it cleared the STOPPED and closed the question as "no longer STOPPED or
++    # running". The session said P707 STOPPED again, which the Stop hook skipped as already handled.
++    Fact 'P715_AQuestionStaysOpenWhileItsStoppedPromptWaits' {
++        $w = New-AskWorld
++        [void](& powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $p216Here 'Ask-Chase.ps1') -Question 'The run was killed for low memory. How should I go on?' `
++            -Choice 'Resume now|I restart the run' -Choice2 'Resume tonight|I wait for the night' -Root $w.Root -PromptDir $w.Prompts -NoMail)
++        $id = (@(Get-WQuestions $w 'open'))[0].id
++        $line = 'P100 STOPPED: asked Chase (' + $id + ')'
++        [void](Invoke-HookX $w 'Stop' @{ last_assistant_message = $line; session_id = 'sess-a' } $w.CliArgs)
++        Assert-True ((Get-WState $w).stoppedPrompt -eq 'P100') 'STOPPED recorded'
++        # The session's own background task wakes it: a machine notification, then one tool call and the same line again.
++        [void](Invoke-HookX $w 'Prompt' @{ prompt = "<task-notification>`n<task-id>bok7ze2rm</task-id>`n<summary>Monitor event</summary>`n</task-notification>"; session_id = 'sess-a' } $w.CliArgs)
++        [void](Invoke-HookX $w 'Activity' @{ hook_event_name = 'PreToolUse'; tool_name = 'TaskStop'; session_id = 'sess-a' } $w.CliArgs)
++        [void](Invoke-HookX $w 'Activity' @{ hook_event_name = 'PostToolUse'; tool_name = 'TaskStop'; session_id = 'sess-a' } $w.CliArgs)
++        [void](Invoke-HookX $w 'Stop' @{ last_assistant_message = ('P100 is still stopped and waiting.' + "`n`n" + $line); session_id = 'sess-a' } $w.CliArgs)
++        $q = Get-GolemQuestion $w.Root $id
++        Assert-True ($q.state -eq 'open') ('the question stays open: ' + $q.state + ' ' + $q.closedWhy)
++        $st = Get-WState $w
++        Assert-True ($st.stoppedPrompt -eq 'P100') ('still STOPPED: "' + $st.stoppedPrompt + '"')
++        $s = Get-WStatus $w
++        Assert-True ($s.state -eq 'STOPPED' -and $s.questionsOpen -eq 1) ('status.json: ' + $s.state + ' ' + $s.questionsOpen)
++        Assert-True ((Get-WLog $w) -notmatch 'activity after P100 STOPPED: Chase answered') 'no "Chase answered" from the session''s own turn'
++        # Chase's answer on the card is taken, and P100 is retried with it.
++        $r = Invoke-Answer $w $id 0
++        Assert-True ($r.Code -eq 0) ('answered: ' + $r.Out)
++        Assert-True ((Get-GolemQuestion $w.Root $id).state -eq 'answered') 'closed as answered'
++        Assert-True (-not (Get-WState $w).stoppedPrompt -and (Test-Path -LiteralPath (Join-Path $w.Queue 'cc-P100-a.md'))) 'P100 back in the queue'
++    }
++
++    Fact 'P715_ChaseTypingInTheStoppedSessionStillClearsIt' {
++        $w = New-AskWorld
++        [void](Invoke-HookX $w 'Stop' @{ last_assistant_message = 'P100 STOPPED: which world'; session_id = 'sess-a' } $w.CliArgs)
++        $id = (@(Get-WQuestions $w 'open'))[0].id
++        [void](Invoke-HookX $w 'Prompt' @{ prompt = 'Keep the Tokuno world and carry on.'; session_id = 'sess-a' } $w.CliArgs)
++        [void](Invoke-HookX $w 'Activity' @{ hook_event_name = 'PostToolUse'; tool_name = 'Bash'; session_id = 'sess-a' } $w.CliArgs)
++        Assert-True (-not (Get-WState $w).stoppedPrompt) ('cleared by Chase''s words: "' + (Get-WState $w).stoppedPrompt + '"')
++        $q = Get-GolemQuestion $w.Root $id
++        Assert-True ($q.state -eq 'expired') ('the question closes: ' + $q.state)
++        Assert-True ((Get-WLog $w) -match 'activity after P100 STOPPED: Chase answered') 'logged'
++        # Chase's words were taken and the session stopped on the same prompt again: that is a new stop, recorded.
++        [void](Invoke-HookX $w 'Stop' @{ last_assistant_message = 'P100 STOPPED: the Tokuno world is missing too'; session_id = 'sess-a' } $w.CliArgs)
++        Assert-True ((Get-WState $w).stoppedPrompt -eq 'P100') ('the second stop is recorded: "' + (Get-WState $w).stoppedPrompt + '"')
++        Assert-True (@(Get-WQuestions $w 'open').Count -eq 1) 'with a question of its own'
++        Assert-True ((Get-WStatus $w).state -eq 'STOPPED') 'STOPPED'
++        # Another session of this Golem typing does not clear a stop it did not see.
++        [void](Invoke-HookX $w 'Prompt' @{ prompt = 'hello'; session_id = 'sess-z' } $w.CliArgs)
++        [void](Invoke-HookX $w 'Activity' @{ hook_event_name = 'PostToolUse'; tool_name = 'Bash'; session_id = 'sess-a' } $w.CliArgs)
++        Assert-True ((Get-WState $w).stoppedPrompt -eq 'P100') 'still STOPPED'
++    }
+ }
+ # ---- cc-P157: every email in plain English, in one shape ----------------------------------------------------------------
+ if ($Kind -eq 'golem') {
