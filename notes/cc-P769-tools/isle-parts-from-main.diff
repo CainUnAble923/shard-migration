@@ -1,0 +1,1023 @@
+diff --git a/docker/uo/apply-patches.sh b/docker/uo/apply-patches.sh
+index d64e4ae..6ae2853 100644
+--- a/docker/uo/apply-patches.sh
++++ b/docker/uo/apply-patches.sh
+@@ -1046,6 +1046,11 @@ apply_patch "$PATCHES/AOS-fish-pies.patch"
+ # SchoolGateVerification.
+ apply_patch "$PATCHES/Spell-school-gate.patch"
+ apply_patch "$PATCHES/PowerScroll-school-gate.patch"
++# cc-P769 (the first outside playtester: "an achievement ... for completing a first quest beyond the tutorial"): one
++# call at the end of MLQuestInstance.ClaimRewards into customizations ClusterFQuestMilestones.OnRewardClaimed, after the
++# quest is recorded done. Pinned raises no event there (Quest.OnRewardClaimed is per quest class). No other patch
++# meets MLQuestEntry.cs. Made with diff -u against pinned; pinned by QuestMilestoneVerification.
++apply_patch "$PATCHES/MLQuestEntry-quest-milestones.patch"
+ 
+ # A .patch file that no apply_patch line above names would be dead weight applied to
+ # nothing, with no way to tell from the build log. Account for every file explicitly.
+diff --git a/player-package/Build-PlayerPackage.ps1 b/player-package/Build-PlayerPackage.ps1
+index 995774f..0f2ad45 100644
+--- a/player-package/Build-PlayerPackage.ps1
++++ b/player-package/Build-PlayerPackage.ps1
+@@ -133,7 +133,14 @@ if (-not $TazUO) { $TazUO = Get-PackageClientDefault }
+ # Reads the finished zip, not the staging folder, so it sees exactly what players get.
+ # Fiddle-Me-This counts are the vendored tree's (vendor\fiddle-me-this\SOURCE.txt); change
+ # them only together with that file.
+-$fmtPngCount = 170     # [Original] 107 + [Custom] 63
++$fmtPngCount = 168     # [Original] 107 + [Custom] 63, less the $FmtLeftOut below
++# cc-P769 (the first outside playtester: the character screen's city boxes "are filled or not filled no matter if they are
++# clicked ... they unfill or fill when hovered"): Fiddle-Me-This's 1209 and 1210 are drawn the wrong way round for the
++# starting-city list (CreateCharSelectionCityGump: 0x04B9 a city not chosen, 0x04BA chosen or hovered). Its 1209 is a
++# filled red box and its 1210 an empty one, so every city not chosen looked ticked and the chosen one empty. Left out,
++# the stock gems draw (also TazUO's grid container's two corner buttons, the only other users). retired-files.txt removes
++# the two files from installs that had them.
++$FmtLeftOut = @('1209.png', '1210.png')
+ $fmtXmlCount = 6
+ $fmtMaxX = 1280; $fmtMaxY = 720
+ # Our own art (cc-P26). The registry is the count: one PNG per registered ID, exactly.
+@@ -845,7 +852,7 @@ Copy-Item (Join-Path $here 'LICENSE-TazUO.txt') (Join-Path $tazOut 'LICENSE-TazU
+ $fmt       = Join-Path $here 'vendor\fiddle-me-this'
+ $fmtGumps  = Join-Path $tazOut 'ExternalImages\gumps'
+ $fmtXmlOut = Join-Path $tazOut 'Data\XmlGumps'
+-$fmtOrig   = @(Get-ChildItem -LiteralPath (Join-Path $fmt '[Original]\ExternalImages\gumps') -File)
++$fmtOrig   = @(Get-ChildItem -LiteralPath (Join-Path $fmt '[Original]\ExternalImages\gumps') -File | Where-Object { $FmtLeftOut -notcontains $_.Name })
+ $fmtCust   = @(Get-ChildItem -LiteralPath (Join-Path $fmt '[Custom]\ExternalImages\gumps') -File)
+ $fmtXml    = @(Get-ChildItem -LiteralPath (Join-Path $fmt '[Custom]\Data\XmlGumps') -File)
+ $both = @($fmtOrig | Where-Object { $fmtCust.Name -contains $_.Name } | ForEach-Object Name)
+diff --git a/player-package/payload/app/retired-files.txt b/player-package/payload/app/retired-files.txt
+index eee0b64..c3a067f 100644
+--- a/player-package/payload/app/retired-files.txt
++++ b/player-package/payload/app/retired-files.txt
+@@ -8,3 +8,6 @@
+ # holds a wildcard, is anything under app\tazuo\Data\ (players' profiles and saved
+ # gump positions), names app, app\tazuo, app\uo-path.txt or a settings*.json, or names
+ # a file the package itself still ships.
++# cc-P769: Fiddle-Me-This's city-list boxes, drawn the wrong way round on the character screen (Build-PlayerPackage.ps1, FmtLeftOut).
++app\tazuo\ExternalImages\gumps\1209.png
++app\tazuo\ExternalImages\gumps\1210.png
+diff --git a/server/customizations/ClusterFAchievements.cs b/server/customizations/ClusterFAchievements.cs
+index 113d266..9eebdd3 100644
+--- a/server/customizations/ClusterFAchievements.cs
++++ b/server/customizations/ClusterFAchievements.cs
+@@ -122,6 +122,10 @@ public enum TriggerKind
+     // cc-P762: ran for the Wakening Isle's moongate before its lessons (Tutorial/TutorialGateSkip.cs). Last, so no saved
+     // value moves.
+     TutorialGateSkip,
++    // cc-P769: a Wakening Isle lesson finished (Tutorial/TutorialLessonAchievements.cs), and the first quest's rewards
++    // claimed (ClusterFQuestMilestones.cs). Last, so no saved value moves.
++    TutorialLesson,
++    FirstQuest,
+ }
+ 
+ public sealed class AchievementTrigger
+@@ -199,6 +203,8 @@ public sealed class AchievementTrigger
+             TriggerKind.TutorialSkipped    => "skipped the New Haven tutorial",
+             TriggerKind.TutorialRemedial   => "completed the tutorial after skipping it",
+             TriggerKind.TutorialGateSkip   => "ran for the Wakening Isle's moongate before its lessons",
++            TriggerKind.TutorialLesson     => "finished a lesson on the Wakening Isle",
++            TriggerKind.FirstQuest         => "finished your first quest",
+             TriggerKind.FountainOfYouth    => "drank from the Fountain of Youth",
+             TriggerKind.ScissorsRunning    => n == 1
+                 ? "tried to use scissors while running"
+@@ -1198,6 +1204,107 @@ public static partial class ClusterFAchievementSystem // partial: cc-P231's joke
+             flavor:     "The sign said \"Lessons this way.\" You read \"Exit.\"",
+             itemGumpId: 0x0FF4);
+ 
++        // cc-P769 (the first outside playtester: "more for like each tutorial step"): one per Wakening Isle lesson, granted by
++        // TutorialLessonAchievements when the lesson is finished, once per account as every achievement is. 5 AP, no renown,
++        // nothing else (the earn's own loot box comes as for every achievement).
++        Reg("tutorial.lesson.movement",
++            "Upright and Mobile",
++            "Got up off the beach and walked onto both glowing tiles.",
++            AchievementCategory.League, ap: 5, renown: 0,
++            trigger:    T.Event(TriggerKind.TutorialLesson),
++            flavor:     "Walking: confirmed. The System had its doubts about the beach part.",
++            itemGumpId: 0x0FF4);
++
++        Reg("tutorial.lesson.backpack",
++            "Bag Inside a Bag",
++            "Opened your backpack, then the practice bag inside it.",
++            AchievementCategory.League, ap: 5, renown: 0,
++            trigger:    T.Event(TriggerKind.TutorialLesson),
++            flavor:     "Containers within containers. You are ready for inventory management, the true endgame.",
++            itemGumpId: 0x0FF4);
++
++        Reg("tutorial.lesson.paperdoll",
++            "Cloaked and Ready-ish",
++            "Put on the cloak of the Wakening Isle.",
++            AchievementCategory.League, ap: 5, renown: 0,
++            trigger:    T.Event(TriggerKind.TutorialLesson),
++            flavor:     "It is a cloak. You wore it. The bar was on the floor, and you cleared it.",
++            itemGumpId: 0x0FF4);
++
++        Reg("tutorial.lesson.chat",
++            "Said the Thing",
++            "Spoke the words at the signpost.",
++            AchievementCategory.League, ap: 5, renown: 0,
++            trigger:    T.Event(TriggerKind.TutorialLesson),
++            flavor:     "\"I am ready to learn.\" The System has filed this as a binding statement.",
++            itemGumpId: 0x0FF4);
++
++        Reg("tutorial.lesson.farm",
++            "Pest Control Contractor",
++            "Cleared the cabbage rows and went home with a pet.",
++            AchievementCategory.League, ap: 5, renown: 0,
++            trigger:    T.Event(TriggerKind.TutorialLesson),
++            flavor:     "The cabbages thank you. The pests filed a complaint. It was denied.",
++            itemGumpId: 0x0FF4);
++
++        Reg("tutorial.lesson.healing",
++            "Bandage Enthusiast",
++            "Bandaged Pip, the farm boy, back to health.",
++            AchievementCategory.League, ap: 5, renown: 0,
++            trigger:    T.Event(TriggerKind.TutorialLesson),
++            flavor:     "Pip was always going to be fine. You did not know that. Good work anyway.",
++            itemGumpId: 0x0FF4);
++
++        Reg("tutorial.lesson.death",
++            "Died on Purpose",
++            "Died in the training yard and came back.",
++            AchievementCategory.League, ap: 5, renown: 0,
++            trigger:    T.Event(TriggerKind.TutorialLesson),
++            flavor:     "Death: survivable, it turns out. Please do not make it a habit. (You will make it a habit.)",
++            itemGumpId: 0x0FF4);
++
++        Reg("tutorial.lesson.banking",
++            "Fiscally Responsible",
++            "Put the practice token in your bank box.",
++            AchievementCategory.League, ap: 5, renown: 0,
++            trigger:    T.Event(TriggerKind.TutorialLesson),
++            flavor:     "One token, safely deposited. Interest is not available. Ever.",
++            itemGumpId: 0x0FF4);
++
++        Reg("tutorial.lesson.league",
++            "Read the Brochure",
++            "Opened the League's window at the lodge.",
++            AchievementCategory.League, ap: 5, renown: 0,
++            trigger:    T.Event(TriggerKind.TutorialLesson),
++            flavor:     "Most people close it without reading. The System noticed you did not. Probably.",
++            itemGumpId: 0x0FF4);
++
++        Reg("tutorial.lesson.loop",
++            "Saw Things",
++            "Watched the vision at the standing stones.",
++            AchievementCategory.League, ap: 5, renown: 0,
++            trigger:    T.Event(TriggerKind.TutorialLesson),
++            flavor:     "The stones showed you something. The System is not permitted to comment.",
++            itemGumpId: 0x0FF4);
++
++        Reg("tutorial.lesson.travel",
++            "Left the Nest",
++            "Stepped through the moongate to New Haven.",
++            AchievementCategory.League, ap: 5, renown: 0,
++            trigger:    T.Event(TriggerKind.TutorialLesson),
++            flavor:     "The isle will miss you. The isle is a rock. It will cope.",
++            itemGumpId: 0x0FF4);
++
++        // cc-P769 ("And then for completing a first quest beyond the tutorial"): granted by ClusterFQuestMilestones when a
++        // character first claims a quest's rewards (MLQuestEntry-quest-milestones.patch).
++        Reg(ClusterFQuestMilestones.FirstQuestKey,
++            "Gainfully Employed",
++            "Finished your first quest beyond the tutorial.",
++            AchievementCategory.Legacy, ap: 5, renown: 10,
++            trigger:    T.Event(TriggerKind.FirstQuest),
++            flavor:     "Someone asked. You did it. You were paid. The System calls this a career.",
++            itemGumpId: 0x0E34);
++
+         // cc-P192 (Chase 2026-10-19 15:03: "a silly easter egg"): SECRET. Hidden until earned; granted by
+         // FountainOfYouthSystem.Drink the first time an account drinks from the roaming (live) fountain. No text names a
+         // place. Never document it on the wiki (admin notes: shard-migration notes/admin/secrets.md).
+@@ -1499,15 +1606,7 @@ public static partial class ClusterFAchievementSystem // partial: cc-P231's joke
+         NotifyMapVisit(pm);
+ 
+         // -- New Haven quest progress ---------------------------------------
+-        var ctx = MLQuestSystem.GetContext(pm);
+-        if (ctx != null)
+-        {
+-            var doneCount = 0;
+-            foreach (var (questType, _) in AchievementsGump.NewHavenQuests)
+-                if (ctx.HasDoneQuest(questType)) doneCount++;
+-            SetCounter(acct.Username, "new_haven_quests", doneCount);
+-            GrantCounted(acct, TriggerKind.NewHavenQuests, doneCount);
+-        }
++        RefreshNewHavenQuests(pm, acct);
+ 
+         // -- Login count ---------------------------------------------------
+         GrantCounted(acct, TriggerKind.Logins, Increment(acct.Username, "login_count"));
+@@ -1558,6 +1657,23 @@ public static partial class ClusterFAchievementSystem // partial: cc-P231's joke
+         return cur + amount;
+     }
+ 
++    /// <summary>
++    /// The New Haven trainer quests done, counted and granted: at login, and (cc-P769) as each quest's rewards are claimed
++    /// (ClusterFQuestMilestones), so "The Tutorial Has a Checkbox" no longer waits for the next login.
++    /// </summary>
++    public static void RefreshNewHavenQuests(PlayerMobile pm, IAccount acct)
++    {
++        var ctx = MLQuestSystem.GetContext(pm);
++        if (ctx != null)
++        {
++            var doneCount = 0;
++            foreach (var (questType, _) in AchievementsGump.NewHavenQuests)
++                if (ctx.HasDoneQuest(questType)) doneCount++;
++            SetCounter(acct.Username, "new_haven_quests", doneCount);
++            GrantCounted(acct, TriggerKind.NewHavenQuests, doneCount);
++        }
++    }
++
+     private static void SetCounter(string username, string counter, int value)
+     {
+         if (!_counters.TryGetValue(username, out var dict))
+diff --git a/server/customizations/ClusterFQuestMilestones.cs b/server/customizations/ClusterFQuestMilestones.cs
+new file mode 100644
+index 0000000..c34cc92
+--- /dev/null
++++ b/server/customizations/ClusterFQuestMilestones.cs
+@@ -0,0 +1,29 @@
++// cc-P769 item 8 (the first outside playtester, 11-01: "And then for completing a first quest beyond the tutorial"):
++// MLQuestEntry-quest-milestones.patch calls OnRewardClaimed at the end of MLQuestInstance.ClaimRewards, after the quest is
++// recorded done. The first quest a character's account claims grants "Gainfully Employed" (quest.first), and the New
++// Haven trainer quest count is refreshed at once, so "The Tutorial Has a Checkbox" is earned when the quest is turned in
++// instead of at the next login (it was only counted at login). The Wakening Isle's and New Haven's tutorial lessons are
++// not quests (TutorialStations), so they never count. Notes: shard-migration notes/cc-P769-playtester-ux-notes-1.md.
++
++#nullable enable
++
++using Server.Engines.MLQuests;
++using Server.Mobiles;
++
++namespace Server;
++
++public static class ClusterFQuestMilestones
++{
++    public const string FirstQuestKey = "quest.first";
++
++    public static void OnRewardClaimed(PlayerMobile? pm, MLQuest? quest)
++    {
++        if (pm?.Account is not { } acct || quest == null)
++        {
++            return;
++        }
++
++        ClusterFAchievementSystem.TryGrant(acct, FirstQuestKey);
++        ClusterFAchievementSystem.RefreshNewHavenQuests(pm, acct);
++    }
++}
+diff --git a/server/customizations/LeagueRegistrar.cs b/server/customizations/LeagueRegistrar.cs
+index a860fd4..d260ff9 100644
+--- a/server/customizations/LeagueRegistrar.cs
++++ b/server/customizations/LeagueRegistrar.cs
+@@ -62,6 +62,13 @@ public partial class LeagueRegistrar : BaseCreature
+         AddItem(hair);
+     }
+ 
++    // cc-P769 item 5 (the tester: "it says register today but that didn't feel like a command").
++    public const string LessonWindowLine =
++        "This is the League's window. Click Join the League to join now, or the X to close it. Your League lesson is done either way.";
++
++    /// <summary>cc-P769 item 5: on the Wakening Isle her New Haven lines ("register today") are not said; the lesson's line is.</summary>
++    public bool OnTheIsle => Tutorial.TutorialWorld.IsOnIsle(this);
++
+     public override bool IsInvulnerable => true;
+     public override bool ClickTitle      => true;
+     public override bool ShowFameTitle   => false;
+@@ -98,6 +105,8 @@ public partial class LeagueRegistrar : BaseCreature
+         if (Map == pm.Map && Tutorial.TutorialCoreTrials.IsDoing(pm, "core.league"))
+         {
+             Tutorial.TutorialCoreTrials.Observe(pm, Tutorial.TutorialAction.TalkedToLeague);
++            // cc-P769 item 5: what the window is for, and that the lesson needs nothing more.
++            Tutorial.ClusterFTutorial.SystemLine(pm, LessonWindowLine);
+         }
+     }
+ 
+@@ -185,7 +194,7 @@ public partial class LeagueRegistrar : BaseCreature
+                 }
+             }
+ 
+-            if (hasPlayer)
++            if (hasPlayer && !OnTheIsle)
+             {
+                 Say(AmbientLines[_ambientIndex % AmbientLines.Length]);
+                 _ambientIndex++;
+@@ -201,7 +210,7 @@ public partial class LeagueRegistrar : BaseCreature
+ 
+     private void CheckProximityGreetings()
+     {
+-        if (Deleted) return;
++        if (Deleted || OnTheIsle) return;
+ 
+         foreach (var m in GetMobilesInRange(6))
+         {
+diff --git a/server/customizations/Tutorial/ClusterFTutorial.cs b/server/customizations/Tutorial/ClusterFTutorial.cs
+index 374bcda..1a081e0 100644
+--- a/server/customizations/Tutorial/ClusterFTutorial.cs
++++ b/server/customizations/Tutorial/ClusterFTutorial.cs
+@@ -261,6 +261,7 @@ public static class ClusterFTutorial
+ 
+         var station = TutorialStations.Find(key);
+         SystemLine(pm, $"Lesson finished: {station?.Title ?? key}.");
++        TutorialLessonAchievements.Grant(pm, key); // cc-P769 item 8: one per isle lesson
+ 
+         if (record.State == TutorialState.InCore && CoreDone(record))
+         {
+diff --git a/server/customizations/Tutorial/TutorialClientTips.cs b/server/customizations/Tutorial/TutorialClientTips.cs
+index b4760f6..45e3e4c 100644
+--- a/server/customizations/Tutorial/TutorialClientTips.cs
++++ b/server/customizations/Tutorial/TutorialClientTips.cs
+@@ -24,9 +24,22 @@ public static class TutorialClientTips
+         ("Always run",
+             "Your character can run wherever you point, not only when you point far away. To turn it on: click Options on " +
+             "your character window (double-click yourself to open it), choose Gameplay, then Movement, and tick Always run. " +
+-            "Close the options window when you are done.")
++            "Close the options window when you are done."),
++        // cc-P769 items 3 and 9 (the first outside playtester's notes): three more, from TazUO's own options window.
++        ("Read chat again",
++            "Lines of chat scroll away fast. Click Journal on your character window: it keeps everything said to you and " +
++            "around you, so you can read it at your own pace."),
++        ("See inside buildings",
++            "The roof lifts by itself once you walk inside. To see through walls near you as well, click Options on your " +
++            "character window, choose Video, then Misc, and tick Enable circle of transparency."),
++        ("A bigger game view",
++            "Drag the lower-right corner of the game view to make it bigger or smaller. Keep your windows in the black " +
++            "space around it, so they do not cover your character.")
+     ];
+ 
++    /// <summary>cc-P769: the room each tip has in the window.</summary>
++    public const int TipRow = 100;
++
+     public static void Start(PlayerMobile pm, TutorialStation station)
+     {
+         pm.CloseGump<TutorialClientTipsGump>();
+@@ -47,15 +60,15 @@ public sealed class TutorialClientTipsGump : Gump
+ 
+     public TutorialClientTipsGump(bool canOpenOptions) : base(80, 80)
+     {
+-        var h = 110 + TutorialClientTips.Tips.Length * 120 + (canOpenOptions ? 36 : 0);
++        var h = 110 + TutorialClientTips.Tips.Length * TutorialClientTips.TipRow + (canOpenOptions ? 36 : 0);
+         TutorialStyle.Panel(this, 480, h);
+         AddLabel(24, 18, TutorialStyle.HeadingHue, "Client tips (optional)");
+         var y = 48;
+         foreach (var (title, text) in TutorialClientTips.Tips)
+         {
+             AddLabel(24, y, TutorialStyle.ActionHue, title);
+-            AddHtml(24, y + 22, 432, 90, TutorialStyle.Html(text), false, false);
+-            y += 120;
++            AddHtml(24, y + 22, 432, TutorialClientTips.TipRow - 26, TutorialStyle.Html(text), false, false);
++            y += TutorialClientTips.TipRow;
+         }
+ 
+         if (canOpenOptions)
+diff --git a/server/customizations/Tutorial/TutorialCorePlacement.cs b/server/customizations/Tutorial/TutorialCorePlacement.cs
+index 1848dcc..edb2198 100644
+--- a/server/customizations/Tutorial/TutorialCorePlacement.cs
++++ b/server/customizations/Tutorial/TutorialCorePlacement.cs
+@@ -820,7 +820,11 @@ public partial class TutorialHealer : Healer
+     public override void OfferResurrection(Mobile m)
+     {
+         if (m is not PlayerMobile { Alive: false } pm || !TutorialCoreTrials.Nearby(pm, Location, 4)) { return; }
+-        if (TutorialCoreTrials.IsDoing(pm, "core.death")) { TutorialCoreTrials.Observe(pm, TutorialAction.HealerOffer); }
++        if (TutorialCoreTrials.IsDoing(pm, "core.death"))
++        {
++            TutorialCoreTrials.Observe(pm, TutorialAction.HealerOffer);
++            TutorialCoreTrials.DeathLessonLog(pm, "was offered resurrection"); // cc-P769 item 7
++        }
+         pm.SendGump(new TutorialResurrectionGump(this));
+     }
+ }
+@@ -839,7 +843,9 @@ public sealed class TutorialResurrectionGump : Gump
+     {
+         if (info.ButtonID != 1 || sender.Mobile is not PlayerMobile { Alive: false } pm || _healer.Deleted ||
+             !TutorialCoreTrials.Nearby(pm, _healer.Location, 4) || !pm.Map.CanFit(pm.Location, 16, false, false)) { return; }
++        var lesson = TutorialCoreTrials.IsDoing(pm, "core.death");
+         pm.Resurrect();
++        if (lesson) { TutorialCoreTrials.DeathLessonLog(pm, pm.Alive ? "was resurrected" : "clicked Resurrect and is still a ghost"); } // cc-P769 item 7
+         if (pm.Alive) { TutorialCoreTrials.Observe(pm, TutorialAction.Resurrected); }
+     }
+ }
+diff --git a/server/customizations/Tutorial/TutorialCoreTrials.cs b/server/customizations/Tutorial/TutorialCoreTrials.cs
+index f46754f..d651134 100644
+--- a/server/customizations/Tutorial/TutorialCoreTrials.cs
++++ b/server/customizations/Tutorial/TutorialCoreTrials.cs
+@@ -11,6 +11,7 @@ using ModernUO.CodeGeneratedEvents;
+ using Server.Commands;
+ using Server.Gumps;
+ using Server.Items;
++using Server.Logging;
+ using Server.Mobiles;
+ using Server.Network;
+ 
+@@ -36,9 +37,30 @@ public static class TutorialCoreTrials
+ 
+     // cc-P728 item 6: a finished lesson names the next and points at its signpost; a closed lesson window comes back.
+     public const string NextLessonLine = "Next: {0}. Click Next lesson in the lesson window, or follow the arrow to its signpost and double-click it.";
+-    public const string ReopenLine = "If you closed the lesson window, type [lesson and press Enter to open it again.";
++    // cc-P769 item 4: the tester typed "lesson" without the bracket. Saying lesson aloud now works too (OnSpeech).
++    public const string ReopenLine = "If you close the lesson window, type [lesson (with the bracket) or just lesson, and press Enter, to open it again. Double-clicking Tamsin on the beach shows your lessons too.";
++    public const string SpokenWord = "lesson";
+     public const string NoLessonLine = "You have no tutorial lesson running.";
+ 
++    // cc-P769 item 7: the tester was disconnected at the resurrection lesson on 11-01, and that test shard's log was gone
++    // (the container was replaced by the next deploy). The death lesson's steps and a disconnect during it are logged now.
++    private static readonly ILogger logger = LogFactory.GetLogger(typeof(TutorialCoreTrials));
++
++    /// <summary>cc-P769 item 7: one log line for a step of the death lesson (who, where, alive or ghost, the step).</summary>
++    public static void DeathLessonLog(PlayerMobile pm, string what)
++    {
++        var step = Current(pm) is { Station.Key: "core.death" } t ? t.Progress.Step : -1;
++        logger.Information(
++            "[Tutorial] Death lesson: {Name} ({Account}) {What} at {Location} on {Map}, {State}, step {Step}",
++            pm.Name, pm.Account?.Username ?? "-", what, pm.Location, pm.Map?.Name ?? "-", pm.Alive ? "alive" : "ghost", step
++        );
++    }
++
++    private static void OnDisconnected(Mobile m)
++    {
++        if (m is PlayerMobile pm && IsDoing(pm, "core.death")) { DeathLessonLog(pm, "disconnected"); }
++    }
++
+     public static void Initialize() => EnsureHooks();
+     public static void EnsureHooks()
+     {
+@@ -46,6 +68,7 @@ public static class TutorialCoreTrials
+         if (_hooked) { return; }
+         _hooked = true;
+         EventSink.Speech += OnSpeech;
++        EventSink.Disconnected += OnDisconnected; // cc-P769 item 7
+         EventSink.PaperdollRequest += OnPaperdollRequest; // cc-P718 item 4
+         CommandSystem.Register("Lesson", AccessLevel.Player, OnLessonCommand); // cc-P728 item 6
+     }
+@@ -143,19 +166,37 @@ public static class TutorialCoreTrials
+     public static string Hint(string key) => key switch
+     {
+         "core.movement" => "Hold the right mouse button toward the glowing blue floor tile in the road, up from the beach, to walk onto it, then walk onto the gold tile. Point farther from your character while holding the button to run.",
+-        "core.backpack" => "Follow the arrow to the camp beside the road. First open your character window: double-click your own character (two quick left clicks on yourself), or click the paperdoll button. Then double-click the backpack picture in that window, and inside your backpack double-click the blue practice bag.",
++        // cc-P769 item 2: in the order the client shows them. One click on yourself opens a small menu (TazUO asks for it on a
++        // single click, GameActions.OpenPopupMenu); its Open Paperdoll entry, or a double-click on yourself, opens the window.
++        "core.backpack" => "Follow the arrow to the camp beside the road. 1. Open your character window: click your character once and choose Open Paperdoll in the small menu that appears (or double-click yourself). 2. In that window, double-click the backpack picture to open your backpack. 3. Inside your backpack, double-click the blue practice bag.",
+         "core.paperdoll" => "Follow the arrow to the table by the clothes rack: a chest appears there for you, with your blue cloak of the Wakening Isle inside. Double-click the chest to open it. To move a thing, click it, hold the left mouse button down, move the mouse, and let go: that is drag and drop. Drag the cloak onto your character's picture in the character window to wear it, or into your backpack and double-click it there. If you already wear a cloak, drag it into your backpack first. The cloak is yours to keep.",
+         "core.chat" => $"Follow the arrow to the signpost. Press Enter, type '{Phrase}', then press Enter again to speak. The Journal records what you say.",
+         "core.farm" => "Follow the arrow east along the road to the farm gate and double-click Wren the Farmhand, who wears a straw hat. Hold the pitchfork she gives you and switch to war mode (press Tab), clear the pests in the cabbage rows, then go back to Wren: she gives you a pet of your own and teaches its commands.",
+         "core.healing" => "Follow the arrow into the farmhouse by the field: Pip, the farm boy, sits hurt on the bench inside. Double-click a bandage in your backpack (this lesson gives you some; more lie on the table beside Pip, or double-click Wren), then click Pip. A bandage takes a few seconds: stand still until you see 'You finish applying the bandages'.",
+         "core.death" => "Follow the arrow into the training yard to the pale gray rat, double-click it, and click Ready. After you die, double-click Sera beside it and click Resurrect to return to life.",
+         "core.banking" => "Follow the arrow through the practice bank's door in the trades square to Merrin the banker and say 'bank' to open your bank box. Drag the blue practice token, a small blue pile of coins in your backpack, into that box.",
+-        "core.league" => "Follow the arrow to the League lodge and double-click the door on its north side to enter. Double-click Elara Voss to finish this lesson; you can read about the League without joining.",
++        // cc-P769 item 5: what to do with Elara, exactly (her window opens and the lesson is done).
++        "core.league" => "Follow the arrow to the League lodge and double-click the door on its north side to enter. Double-click Elara Voss (or click her once and choose Talk): her League window opens and this lesson is done. In that window, click Join the League to join now, or the X to close it; you can join later in New Haven.",
+         "core.loop" => "Follow the arrow up the knoll to the standing stones and double-click the lesson's signpost there. Watch the vision; it lasts about a minute, holds you still, and will not change your character.",
+         "core.travel" => "Follow the arrow to the end of the dock and walk into the shimmering blue moongate, or double-click it. It takes you, and your pet, to Rook on his bench by the Albatross tavern in New Haven.",
+         _ => "Double-click Tamsin on the Wakening Isle's beach to choose this lesson."
+     };
+ 
++    /// <summary>
++    /// cc-P769 item 3 (the tester: "I used that a lot", "they disappear ... I found it in journal"): one short client tip
++    /// where it fits a lesson, under the hint in the lesson window and after the hint line; null where none fits.
++    /// </summary>
++    public static string? Tip(string key) => key switch
++    {
++        "core.movement" => "Tip: drag the lower-right corner of the game view to make it bigger or smaller, and keep windows in the black space around it.",
++        "core.backpack" => "Tip: hold the mouse over any item to see its name and what it does.",
++        "core.paperdoll" => "Tip: drag a window by its edge to move it out of your way, into the black space beside the game view.",
++        "core.chat" => "Tip: chat scrolls away fast. Click Journal on your character window to read everything said again.",
++        "core.farm" => "Tip: double-click a door or gate to open it, and again to close it.",
++        "core.league" => "Tip: the roof lifts once you are inside. To see through walls near you too: Options on your character window, then Video, Misc, and tick Enable circle of transparency.",
++        _ => null
++    };
++
+     /// <summary>A lesson's practice item, made fresh (bright and named for what it is: cc-P480).</summary>
+     public static Item? MakeSupply(string key) => key switch
+     {
+@@ -242,6 +283,7 @@ public static class TutorialCoreTrials
+         Resupply(pm, trial);
+         if (trial.Station.Key == "core.paperdoll") { TutorialCloakChest.EnsureFor(pm); } // cc-P718: a lost cloak comes back (cc-P728: in its chest)
+         ClusterFTutorial.SystemLine(pm, Hint(trial.Station.Key));
++        if (Tip(trial.Station.Key) is { } tip) { ClusterFTutorial.SystemLine(pm, tip); } // cc-P769 item 3
+         Point(pm, Destination(trial), ArrowLabel(trial));
+         trial.ArrowAt = Destination(trial);
+         pm.CloseGump<TutorialTrialGump>();
+@@ -355,8 +397,41 @@ public static class TutorialCoreTrials
+         if (!e.Blocked && e.Type == MessageType.Regular && e.Mobile is PlayerMobile { Alive: true } pm &&
+             IsDoing(pm, "core.chat") && string.Equals(e.Speech.Trim(), Phrase, StringComparison.OrdinalIgnoreCase))
+         { Observe(pm, TutorialAction.SaidPhrase); }
++
++        // cc-P769 item 4: "lesson" said aloud (no bracket) opens the lesson window, as [lesson does, for a trainee.
++        if (!e.Blocked && e.Mobile is PlayerMobile trainee && ClusterFTutorial.IsParticipant(trainee) &&
++            string.Equals(e.Speech.Trim().TrimEnd('.', '!', '?'), SpokenWord, StringComparison.OrdinalIgnoreCase))
++        { Reopen(trainee); }
++
++        if (!e.Blocked && e.Mobile is PlayerMobile banker && e.Speech.Contains("bank", StringComparison.OrdinalIgnoreCase))
++        { BankWord(banker); }
++    }
++
++    /// <summary>
++    /// cc-P769 item 6 (the tester: "The blue tokens didn't show up the first time I went in the bank. I had to try again."):
++    /// after the death lesson the arrow points at the bank lesson's signpost, right at the bank's
++    /// door, so a trainee walks in and says "bank" with the lesson not started and no token to deposit. Saying "bank" in the
++    /// practice bank now starts the lesson when it is the next one (the token goes in the backpack before the banker opens
++    /// the box: EventSink.Speech runs before the NPCs hear it), and gives the token again when the lesson's one went missing.
++    /// </summary>
++    public static void BankWord(PlayerMobile pm)
++    {
++        if (!pm.Alive || !ClusterFTutorial.IsParticipant(pm) || pm.Map != TutorialWorld.MapOf(pm) ||
++            !TutorialCorePlacement.InBank(pm.Location)) { return; }
++        if (Current(pm) is { } trial)
++        {
++            if (trial.Station.Key == "core.banking") { Resupply(pm, trial); }
++            return;
++        }
++        if (ClusterFTutorial.RecordOf(pm) is not { } record || ClusterFTutorial.CoreLeft(record).FirstOrDefault() is not { Key: "core.banking" } bank)
++        { return; }
++        Start(pm, bank);
++        if (Current(pm)?.Supply is { Deleted: false } token && token.IsChildOf(pm.Backpack))
++        { ClusterFTutorial.SystemLine(pm, BankStartedLine); }
+     }
+ 
++    public const string BankStartedLine = "Bank lesson started: the blue practice token is in your backpack. Drag it into your bank box.";
++
+     public static void OpenBag(PlayerMobile pm, Item bag)
+     {
+         if (pm.Alive && IsDoing(pm, "core.backpack") && Current(pm)?.Supply == bag && bag.IsChildOf(pm.Backpack))
+@@ -368,6 +443,7 @@ public static class TutorialCoreTrials
+     {
+         if (!IsDoing(pm, "core.death") || pm.FindMostRecentDamager(true) is not TutorialDeathEcho) { return; }
+         Observe(pm, TutorialAction.EchoDeath);
++        DeathLessonLog(pm, "died to the pale gray rat");
+         // PlayerDeathEvent is after YoungDeathTeleport (pinned PlayerMobile.OnDeath).
+         // Return this lesson's ghost to the yard (Young's death teleport may have moved it), without changing Young.
+         pm.MoveToWorld(TutorialCorePlacement.GhostSpot, TutorialWorld.MapOf(pm));
+@@ -408,19 +484,28 @@ public static class TutorialCoreTrials
+ 
+ public sealed class TutorialTrialGump : Gump
+ {
+-    public const string FinishedText = "Lesson finished. Click Next lesson / graduate to continue. If you close this window, type [lesson and press Enter to open it again.";
++    public const string FinishedText = "Lesson finished. Click Next lesson / graduate to continue. If you close this window, type [lesson (with the bracket) or just lesson, and press Enter, to open it again.";
+     private readonly TutorialStation _station;
+     private readonly bool _done;
+     /// <summary>cc-P728 item 6: the step the trainee is on now, shown above the hint; null for none.</summary>
+     public string? Now { get; }
++    /// <summary>cc-P769 item 3: the tip under the hint; null for none.</summary>
++    public string? Tip { get; }
++    public const int TipHeight = 40;
+     public TutorialTrialGump(TutorialStation station, bool done, string? now = null) : base(80, 80)
+     {
+         _station = station; _done = done; Now = now;
+         var extra = now != null ? 56 : 0;
++        // cc-P769 item 3: the lesson's tip, a line under the hint (the window is taller by TipHeight when there is one).
++        var tip = done ? null : TutorialCoreTrials.Tip(station.Key);
++        Tip = tip;
++        var hintTop = 50 + extra;
++        if (tip != null) { extra += TipHeight; }
+         TutorialStyle.Panel(this, 480, 240 + extra);
+         AddLabel(24, 18, TutorialStyle.HeadingHue, station.Title);
+         if (now != null) { AddHtml(24, 46, 432, 50, TutorialStyle.HeadingHtml("Now: " + now), false, false); }
+-        AddHtml(24, 50 + extra, 432, 100, TutorialStyle.Html(done ? FinishedText : TutorialCoreTrials.Hint(station.Key)), false, false);
++        AddHtml(24, hintTop, 432, 100, TutorialStyle.Html(done ? FinishedText : TutorialCoreTrials.Hint(station.Key)), false, false);
++        if (tip != null) { AddHtml(24, hintTop + 104, 432, TipHeight, TutorialStyle.Html(tip), false, false); }
+         AddButton(24, 166 + extra, 4005, 4007, 1); AddLabel(60, 168 + extra, done ? TutorialStyle.DoneHue : TutorialStyle.ActionHue, done ? "Next lesson / graduate" : "Hint and arrow");
+         AddButton(24, 204 + extra, 4017, 4019, 2); AddLabel(60, 206 + extra, TutorialStyle.TextHue, "Restart this lesson");
+     }
+diff --git a/server/customizations/Tutorial/TutorialGreeting.cs b/server/customizations/Tutorial/TutorialGreeting.cs
+index 1973e68..3ce4ec1 100644
+--- a/server/customizations/Tutorial/TutorialGreeting.cs
++++ b/server/customizations/Tutorial/TutorialGreeting.cs
+@@ -19,7 +19,7 @@ public static class TutorialGreeting
+ 
+     public const string TamsinLine = "Welcome, traveler! Double-click me (two quick left clicks on me) to begin your lessons.";
+     public const string WrenLine = "Hello there! Double-click me (two quick left clicks on me) to choose your pet.";
+-    public const string ElaraLine = "Welcome to the lodge! Double-click me (two quick left clicks on me) to finish your League lesson.";
++    public const string ElaraLine = "Welcome to the lodge! Double-click me (or click me once and choose Talk) to open the League's window and finish your League lesson.";
+ 
+     // When each NPC last greeted each player, in Core.TickCount milliseconds (in memory: a restart greets again, which is
+     // harmless). The tick count, not Core.Now: a test host's NetState resets Core.Now to the wall clock as it sends (D16).
+diff --git a/server/customizations/Tutorial/TutorialLessonAchievements.cs b/server/customizations/Tutorial/TutorialLessonAchievements.cs
+new file mode 100644
+index 0000000..3650235
+--- /dev/null
++++ b/server/customizations/Tutorial/TutorialLessonAchievements.cs
+@@ -0,0 +1,27 @@
++// cc-P769 item 8 (the first outside playtester, 11-01: "I love the achievement boxes ... more for like each tutorial step"):
++// an achievement for each Wakening Isle lesson, granted when ClusterFTutorial.CompleteStation records the lesson finished.
++// Every achievement is once per account, so a second character's lessons, a remedial run or a restarted lesson grant
++// nothing new. The titles and lines are in ClusterFAchievements (tutorial.lesson.*), in the System's voice. Each earn
++// brings the usual fanfare and loot box (ClusterFLootBoxes.OnAchievementEarned); no skill or stat reward. Notes:
++// shard-migration notes/cc-P769-playtester-ux-notes-1.md.
++
++#nullable enable
++
++using Server.Mobiles;
++
++namespace Server.Tutorial;
++
++public static class TutorialLessonAchievements
++{
++    public const string Prefix = "tutorial.lesson.";
++
++    /// <summary>The achievement for core lesson <paramref name="stationKey"/> ("core.farm" is "tutorial.lesson.farm"), or null.</summary>
++    public static string? KeyFor(string stationKey) =>
++        TutorialStations.Find(stationKey) is { IsCore: true } && stationKey.StartsWith("core.")
++            ? Prefix + stationKey["core.".Length..]
++            : null;
++
++    /// <summary>Grants the lesson's achievement to <paramref name="pm"/>'s account. True on a new earn.</summary>
++    public static bool Grant(PlayerMobile pm, string stationKey) =>
++        KeyFor(stationKey) is { } key && pm.Account is { } acct && ClusterFAchievementSystem.TryGrant(acct, key);
++}
+diff --git a/server/customizations/Tutorial/TutorialWake.cs b/server/customizations/Tutorial/TutorialWake.cs
+index 371556d..57ff644 100644
+--- a/server/customizations/Tutorial/TutorialWake.cs
++++ b/server/customizations/Tutorial/TutorialWake.cs
+@@ -71,7 +71,8 @@ public static class TutorialWake
+     public static readonly TimeSpan GetUpResend = TimeSpan.FromMilliseconds(100); // after the reject; P740 tried 300 (a 0.3 s stand flash)
+     public const int WaveSound = 0x12;    // "wave01_l"
+     public const string LyingLine = "You wake on cold sand, soaked and aching. Waves wash over your boots...";
+-    public const string MoveHintLine = "Move to get up.";
++    // cc-P769 item 1 (the first outside playtester: "can you include how to get up?"): the hint says how to move.
++    public const string MoveHintLine = "To get up, take a step: hold the right mouse button on the ground, or press an arrow key.";
+     public const string LieOverheadLine = "You lie on the wet sand...";
+ 
+     private sealed class Lie
+diff --git a/server/patches/MLQuestEntry-quest-milestones.patch b/server/patches/MLQuestEntry-quest-milestones.patch
+new file mode 100644
+index 0000000..e4023b7
+--- /dev/null
++++ b/server/patches/MLQuestEntry-quest-milestones.patch
+@@ -0,0 +1,12 @@
++--- "a/Projects/UOContent/Engines/ML Quests/MLQuestEntry.cs"	2026-11-01 00:00:00.000000000 -0600
+++++ "b/Projects/UOContent/Engines/ML Quests/MLQuestEntry.cs"	2026-11-01 00:00:00.000000000 -0600
++@@ -439,6 +439,9 @@
++             }
++ 
++             Remove();
+++
+++            // cc-P769: a quest's rewards were claimed (its completion recorded above): the shard's first-quest achievement.
+++            ClusterFQuestMilestones.OnRewardClaimed(Player, Quest);
++         }
++ 
++         public void Cancel()
+diff --git a/server/tests/Misc/AchievementEarnedLineVerification.cs b/server/tests/Misc/AchievementEarnedLineVerification.cs
+index 1a3c766..ee67a45 100644
+--- a/server/tests/Misc/AchievementEarnedLineVerification.cs
++++ b/server/tests/Misc/AchievementEarnedLineVerification.cs
+@@ -97,7 +97,7 @@ public class AchievementEarnedLineVerification
+     public void EveryRegisteredAchievementHasAnEarnedLine()
+     {
+         var defs = ClusterFAchievementSystem.Definitions.Values.ToList();
+-        Assert.Equal(146, defs.Count); // cc-P762: Didn't Read the Sign; cc-P80: the two tutorial achievements; cc-P82: the two Fortune's Favor ones; cc-P192: Second Childhood; cc-P231: the 16 joke achievements; cc-P262: the 5 accessory ones; cc-P263: the 45 Noted by the System ones
++        Assert.Equal(158, defs.Count); // cc-P769: the 11 isle lesson ones and Gainfully Employed; cc-P762: Didn't Read the Sign; cc-P80: the two tutorial achievements; cc-P82: the two Fortune's Favor ones; cc-P192: Second Childhood; cc-P231: the 16 joke achievements; cc-P262: the 5 accessory ones; cc-P263: the 45 Noted by the System ones
+ 
+         foreach (var def in defs.OrderBy(d => d.Key))
+         {
+@@ -320,7 +320,7 @@ public class AchievementEarnedLineVerification
+             var (count, total) = ClusterFAchievementSystem.ProgressCount(p.Account.Username);
+             _out.WriteLine($"holder: earned {count} of {total} (retired held, not counted)");
+             Assert.Equal(2, count);
+-            Assert.Equal(146 - RetiredKeys.Length, total); // cc-P82: 78 registered; cc-P192: 79; cc-P231: 95; cc-P262: 100; cc-P263: 145; cc-P762: 146
++            Assert.Equal(158 - RetiredKeys.Length, total); // cc-P82: 78 registered; cc-P192: 79; cc-P231: 95; cc-P262: 100; cc-P263: 145; cc-P762: 146; cc-P769: 158
+ 
+             // Every page of the Skills tab (five rows a page; the Retired section is last).
+             var pages = Enumerable.Range(0, 20).Select(i => new AchievementsGump(p.Pm, AchievementCategory.Skills, false, i)).ToList();
+diff --git a/server/tests/Tutorial/PlaytesterNotesVerification.cs b/server/tests/Tutorial/PlaytesterNotesVerification.cs
+new file mode 100644
+index 0000000..e151b3c
+--- /dev/null
++++ b/server/tests/Tutorial/PlaytesterNotesVerification.cs
+@@ -0,0 +1,328 @@
++// cc-P769: the first outside playtester's notes (11-01), the Wakening Isle part. Notes: shard-migration
++// notes/cc-P769-playtester-ux-notes-1.md.
++//
++// Facts, each seen failing first (on a mutant that undoes its part; notes/cc-P769-tools/):
++//   1. The wake hint says how to get up (right mouse button, or an arrow key).
++//   2. The backpack lesson's steps are in the order the client shows them: one click on yourself, Open Paperdoll, the
++//      backpack picture, the blue practice bag.
++//   3. Lessons carry one-line client tips (hover, the game view and black space, the Journal, doors and gates, seeing in
++//      buildings), shown under the hint in the lesson window; the optional client tips page has them too.
++//   4. "lesson" said aloud (no bracket) opens the lesson window; the hint says the bracket is part of [lesson and names
++//      Tamsin. Anyone not in the lessons is not answered.
++//   5. The League lesson says what to do with Elara; on the isle she does not say New Haven's "register today".
++//   6. A fresh trainee who walks into the bank before starting the bank lesson and says "bank" gets the lesson and the
++//      blue token at once, and finishes it by depositing the token.
++//   7. The death lesson's steps are logged (no assertion on the log; the steps still run).
++//   8. Each isle lesson grants its own achievement once per account; a New Haven lesson grants none; claiming a quest's
++//      rewards grants Gainfully Employed and, for a New Haven trainer quest, The Tutorial Has a Checkbox at once.
++
++#nullable enable
++
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using Server;
++using Server.Accounting;
++using Server.Engines.MLQuests;
++using Server.Engines.MLQuests.Definitions;
++using Server.Engines.MLQuests.Items;
++using Server.Items;
++using Server.LootBoxes;
++using Server.Mobiles;
++using Server.Network;
++using Server.Tests.Network;
++using Server.Tutorial;
++using Xunit;
++
++namespace ShatteredLegacy.Tests;
++
++[Collection("Sequential UOContent Tests")]
++public class PlaytesterNotesVerification : IDisposable
++{
++    private readonly Func<PlayerMobile, int> _loopProvider = ClusterFLootBoxes.LoopProvider;
++
++    public PlaytesterNotesVerification()
++    {
++        ShardTestClock.Arm();
++        ShardTestHost.EnsureAccounts();
++        if (ClusterFAchievementSystem.Definitions.Count == 0)
++        {
++            ClusterFAchievementSystem.Configure();
++        }
++
++        ClusterFTutorial.Enabled = true;
++        ClusterFTutorial.SkipCountsAsGraduation = true;
++        FoldMaps.Configure();
++        TutorialCoreTrials.EnsureHooks();
++        TutorialFarm.EnsureHooks();
++        TutorialWake.EnsureHooks();
++        ClusterFLootBoxes.LoopProvider = ClusterFLoops.LoopOf;
++        TutorialWorld.IsleReady = () => true;
++        TutorialTestStart.ReleaseIdleCopies();
++    }
++
++    public void Dispose()
++    {
++        ClusterFLootBoxes.LoopProvider = _loopProvider;
++        ClusterFTutorial.Enabled = true;
++    }
++
++    private sealed class Player : IDisposable
++    {
++        public readonly Account Account = new($"p769{Guid.NewGuid():N}"[..16], "p769-test-only");
++        public readonly PlayerMobile Pm;
++        public readonly NetState Ns;
++
++        public Player()
++        {
++            Pm = new PlayerMobile { Player = true, Race = Race.Human, Body = 0x191, Female = true, Name = "Paige", RawStr = 60, RawDex = 60, RawInt = 60 };
++            Pm.Hits = Pm.HitsMax;
++            Pm.AddItem(new Backpack());
++            Account[0] = Pm;
++            Pm.MoveToWorld(HavenSpots.Start, HavenSpots.Map);
++            Ns = PacketTestUtilities.CreateTestNetState();
++            Ns.Account = Account;
++            Pm.NetState = Ns;
++            Ns.Mobile = Pm;
++        }
++
++        public TutorialRecord Record => ClusterFTutorial.RecordOf(Pm)!;
++
++        public void Dispose()
++        {
++            TutorialCoreTrials.Cancel(Pm);
++            TutorialWake.Stand(Pm, true);
++            ClusterFFanfare.FlushAll();
++            foreach (var m in Pm.AllFollowers?.ToList() ?? new List<Mobile>())
++            {
++                m.Delete();
++            }
++
++            MLQuestSystem.HandleDeletion(Pm);
++            Pm.NetState = null;
++            Ns.Mobile = null;
++            Ns.Dispose();
++            Pm.Delete();
++            Accounts.Remove(Account);
++        }
++    }
++
++    /// <summary>Into the tutorial on the isle, and up off the sand.</summary>
++    private static void Awake(Player p)
++    {
++        TutorialTestStart.Begin(p.Pm);
++        Assert.True(TutorialWake.OnMoveRequest(p.Pm));
++        TutorialWake.Stand(p.Pm, true);
++    }
++
++    private static void Say(PlayerMobile pm, string text) => pm.DoSpeech(text, [], MessageType.Regular, 0x3B2);
++
++    // ---------------------------------------------------------------- 1
++
++    [Fact]
++    public void P769_TheWakeHintSaysHowToGetUp()
++    {
++        Assert.Contains("get up", TutorialWake.MoveHintLine);
++        Assert.Contains("right mouse button", TutorialWake.MoveHintLine);
++        Assert.Contains("arrow key", TutorialWake.MoveHintLine);
++    }
++
++    // ---------------------------------------------------------------- 2
++
++    [Fact]
++    public void P769_TheBackpackStepsAreInTheOrderTheClientShowsThem()
++    {
++        var hint = TutorialCoreTrials.Hint("core.backpack");
++        var order = new[] { "click your character once", "Open Paperdoll", "backpack picture", "blue practice bag" }
++            .Select(s => hint.IndexOf(s, StringComparison.Ordinal)).ToArray();
++        Assert.All(order, i => Assert.True(i >= 0, hint));
++        Assert.Equal(order.OrderBy(i => i), order);
++    }
++
++    // ---------------------------------------------------------------- 3
++
++    [Fact]
++    public void P769_LessonsCarryClientTipsUnderTheHint()
++    {
++        Assert.Contains("hold the mouse over", TutorialCoreTrials.Tip("core.backpack"));
++        Assert.Contains("black space", TutorialCoreTrials.Tip("core.movement"));
++        Assert.Contains("Journal", TutorialCoreTrials.Tip("core.chat"));
++        Assert.Contains("double-click a door or gate", TutorialCoreTrials.Tip("core.farm"));
++        Assert.Contains("circle of transparency", TutorialCoreTrials.Tip("core.league"));
++
++        var gump = new TutorialTrialGump(TutorialStations.Find("core.chat")!, false);
++        Assert.Equal(TutorialCoreTrials.Tip("core.chat"), gump.Tip);
++        Assert.Null(new TutorialTrialGump(TutorialStations.Find("core.chat")!, true).Tip); // a finished lesson's window
++
++        var titles = TutorialClientTips.Tips.Select(t => t.Title).ToList();
++        Assert.Contains("Read chat again", titles);
++        Assert.Contains("See inside buildings", titles);
++        Assert.Contains("A bigger game view", titles);
++    }
++
++    // ---------------------------------------------------------------- 4
++
++    [Fact]
++    public void P769_SayingLessonOpensTheLessonWindow()
++    {
++        Assert.Contains("[lesson (with the bracket)", TutorialCoreTrials.ReopenLine);
++        Assert.Contains("Tamsin", TutorialCoreTrials.ReopenLine);
++
++        using var p = new Player();
++        Awake(p);
++        p.Pm.CloseGump<TutorialTrialGump>();
++        Assert.Null(p.Pm.FindGump<TutorialTrialGump>());
++        Say(p.Pm, "lesson");
++        Assert.NotNull(p.Pm.FindGump<TutorialTrialGump>());
++
++        p.Pm.CloseGump<TutorialTrialGump>();
++        Say(p.Pm, "Lesson.");
++        Assert.NotNull(p.Pm.FindGump<TutorialTrialGump>());
++
++        p.Pm.CloseGump<TutorialTrialGump>();
++        Say(p.Pm, "a lesson for later"); // only the word alone
++        Assert.Null(p.Pm.FindGump<TutorialTrialGump>());
++    }
++
++    // ---------------------------------------------------------------- 5
++
++    [Fact]
++    public void P769_TheLeagueLessonSaysWhatToDoWithElara()
++    {
++        var hint = TutorialCoreTrials.Hint("core.league");
++        Assert.Contains("Double-click Elara Voss", hint);
++        Assert.Contains("choose Talk", hint);
++        Assert.Contains("Join the League", hint);
++        Assert.Contains("lesson is done", hint);
++        Assert.Contains("Join the League", LeagueRegistrar.LessonWindowLine);
++        Assert.Contains("Talk", TutorialGreeting.ElaraLine);
++
++        var elara = new LeagueRegistrar();
++        try
++        {
++            elara.MoveToWorld(new Point3D(TutorialWorld.Elara.X, TutorialWorld.Elara.Y, 0), TutorialWorld.Isle);
++            Assert.True(elara.OnTheIsle); // so New Haven's "register today" is not said there
++            elara.MoveToWorld(new Point3D(3662, 2549, 0), Map.Trammel);
++            Assert.False(elara.OnTheIsle);
++        }
++        finally
++        {
++            elara.Delete();
++        }
++    }
++
++    // ---------------------------------------------------------------- 6
++
++    [Fact]
++    public void P769_SayingBankInTheBankStartsTheBankLessonWithItsToken()
++    {
++        using var p = new Player();
++        Awake(p);
++        TutorialCoreTrials.Cancel(p.Pm);
++        foreach (var station in TutorialStations.Core.TakeWhile(s => s.Key != "core.banking"))
++        {
++            p.Record.StationsDone.Add(station.Key);
++        }
++
++        Assert.Equal("core.banking", ClusterFTutorial.CoreLeft(p.Record).First().Key);
++        Assert.Null(TutorialCoreTrials.Current(p.Pm)); // the lesson not started: walked in past its signpost
++
++        p.Pm.MoveToWorld(new Point3D(TutorialWorld.Banker.X, TutorialWorld.Banker.Y + 1, p.Pm.Z), p.Pm.Map);
++        Assert.True(TutorialCorePlacement.InBank(p.Pm.Location));
++        Say(p.Pm, "bank");
++
++        Assert.True(TutorialCoreTrials.IsDoing(p.Pm, "core.banking"));
++        var token = p.Pm.Backpack!.FindItemByType<TutorialBankToken>();
++        Assert.NotNull(token);
++
++        // The token gone missing: "bank" again gives another.
++        token.Delete();
++        Say(p.Pm, "bank");
++        token = p.Pm.Backpack!.FindItemByType<TutorialBankToken>();
++        Assert.NotNull(token);
++
++        p.Pm.BankBox.DropItem(token);
++        ShardTestClock.Advance(TimeSpan.FromSeconds(0.5));
++        Assert.Contains("core.banking", p.Record.StationsDone);
++    }
++
++    [Fact]
++    public void P769_BankSaidOutsideTheBankOrOutOfOrderStartsNothing()
++    {
++        using var p = new Player();
++        Awake(p);
++        TutorialCoreTrials.Cancel(p.Pm);
++
++        // In the bank, but the bank lesson is not next.
++        p.Pm.MoveToWorld(new Point3D(TutorialWorld.Banker.X, TutorialWorld.Banker.Y + 1, p.Pm.Z), p.Pm.Map);
++        Say(p.Pm, "bank");
++        Assert.Null(TutorialCoreTrials.Current(p.Pm));
++        Assert.Null(p.Pm.Backpack!.FindItemByType<TutorialBankToken>());
++    }
++
++    // ---------------------------------------------------------------- 8
++
++    [Fact]
++    public void P769_EachIsleLessonGrantsItsOwnAchievementOnce()
++    {
++        using var p = new Player();
++        Awake(p);
++        TutorialCoreTrials.Cancel(p.Pm);
++
++        var core = TutorialStations.Core.ToList();
++        Assert.Equal(11, core.Count);
++        foreach (var station in core)
++        {
++            var key = TutorialLessonAchievements.KeyFor(station.Key)!;
++            Assert.True(ClusterFAchievementSystem.Definitions.ContainsKey(key), key);
++            Assert.False(ClusterFAchievementSystem.HasEarned(p.Account, key));
++            ClusterFTutorial.CompleteStation(p.Pm, station.Key);
++            Assert.True(ClusterFAchievementSystem.HasEarned(p.Account, key), key);
++            Assert.False(TutorialLessonAchievements.Grant(p.Pm, station.Key)); // once per account
++        }
++
++        Assert.Equal(11, core.Select(s => TutorialLessonAchievements.KeyFor(s.Key)).Distinct().Count());
++        Assert.Null(TutorialLessonAchievements.KeyFor("crafting.tinkering")); // a New Haven lesson has none
++        Assert.Null(TutorialLessonAchievements.KeyFor(TutorialClientTips.Key));
++    }
++
++    [Fact]
++    public void P769_ClaimingAQuestGrantsTheFirstQuestAchievementAtOnce()
++    {
++        if (!MLQuestSystem.Enabled)
++        {
++            MLQuestSystem.Configure();
++        }
++
++        NewHavenQuestBoard.Register();
++
++        using var p = new Player();
++        var board = new NewHavenQuestBoard();
++        board.MoveToWorld(new Point3D(p.Pm.X + 1, p.Pm.Y, p.Pm.Z), p.Pm.Map);
++        try
++        {
++            var quest = MLQuestSystem.FindQuest(typeof(ItsHammerTime));
++            Assert.NotNull(quest);
++            quest.OnAccept(board, p.Pm);
++            foreach (var objective in quest.Objectives.OfType<GainSkillObjective>())
++            {
++                p.Pm.Skills[objective.Skill].BaseFixedPoint = 500;
++            }
++
++            var instance = MLQuestSystem.GetOrCreateContext(p.Pm).FindInstance(quest);
++            Assert.NotNull(instance);
++            Assert.False(ClusterFAchievementSystem.HasEarned(p.Account, ClusterFQuestMilestones.FirstQuestKey));
++            Assert.False(ClusterFAchievementSystem.HasEarned(p.Account, "legacy.new_haven_1"));
++
++            instance.ContinueReportBack(false);
++            instance.ClaimRewards();
++
++            Assert.True(ClusterFAchievementSystem.HasEarned(p.Account, ClusterFQuestMilestones.FirstQuestKey));
++            Assert.True(ClusterFAchievementSystem.HasEarned(p.Account, "legacy.new_haven_1")); // not waiting for a login
++        }
++        finally
++        {
++            board.Delete();
++        }
++    }
++}
+diff --git a/server/tests/Tutorial/TutorialIsleWalkFixes4Verification.cs b/server/tests/Tutorial/TutorialIsleWalkFixes4Verification.cs
+index 4e4959d..b0441b2 100644
+--- a/server/tests/Tutorial/TutorialIsleWalkFixes4Verification.cs
++++ b/server/tests/Tutorial/TutorialIsleWalkFixes4Verification.cs
+@@ -222,7 +222,7 @@ public class TutorialIsleWalkFixes4Verification : IDisposable
+         Assert.True(TutorialWake.IsLying(p.Pm));
+         Assert.True(TutorialWake.LightOf(p.Pm) > 10); // cc-P732: still dark while they lie
+         Assert.Equal(2, TutorialWake.PosesSent(p.Pm)); // and the pose again a second in
+-        Assert.Equal("Move to get up.", TutorialWake.MoveHintLine);
++        Assert.Contains("get up", TutorialWake.MoveHintLine); // cc-P769: it says how, too (PlaytesterNotesVerification)
+         TutorialWake.Advance(p.Pm, 30);
+         Assert.True(TutorialWake.IsLying(p.Pm)); // still down, half a minute on
+         Assert.False(p.Pm.Frozen);
