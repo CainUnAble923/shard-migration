@@ -1,0 +1,94 @@
+
+# ---- cc-P767: each lane on its own account ----------------------------------------------------------------------------
+# A kit root with two lanes, each with its own CODEX_HOME and one session log of its own, and this PC's codex-usage.json
+# holding a newer reading of Chase's account (what lane-steph's status showed on 11-01).
+function New-P767Root([datetime]$Now) {
+    $d = Join-Path ([IO.Path]::GetTempPath()) ('codex-p767-' + [guid]::NewGuid().ToString('N').Substring(0, 8))
+    $u = $Now.ToUniversalTime()
+    $mk = {
+        param($acct, [datetime]$at, [double]$p, [double]$s)
+        $day = Join-Path $d ('codex-home\' + $acct + '\sessions\2026\11\01'); New-Item -ItemType Directory -Force -Path $day | Out-Null
+        $f = Join-Path $day ('rollout-' + $acct + '.jsonl')
+        $pr = [DateTimeOffset]::new($at).AddHours(3).ToUnixTimeSeconds(); $sr = [DateTimeOffset]::new($at).AddDays(3).ToUnixTimeSeconds()
+        [IO.File]::WriteAllText($f, ('{"timestamp":"' + $at.ToString('yyyy-MM-ddTHH:mm:ss.fffZ', [Globalization.CultureInfo]::InvariantCulture) + '","type":"event_msg","payload":{"type":"token_count","rate_limits":{"primary":{"used_percent":' + $p + ',"window_minutes":300,"resets_at":' + $pr + '},"secondary":{"used_percent":' + $s + ',"window_minutes":10080,"resets_at":' + $sr + '}}}}'))
+        New-Item -ItemType File -Force -Path (Join-Path $d ('codex-home\' + $acct + '\auth.json')) | Out-Null
+    }
+    & $mk 'lane-chase' $u.AddMinutes(-10) 29 53
+    & $mk 'lane-steph' $u.AddDays(-5) 11 30
+    $chase = [pscustomobject]@{ at = $u.AddMinutes(-1).ToString('o'); source = 'session log rollout-chase-own.jsonl'; primary = [pscustomobject]@{ usedPct = 29; windowMinutes = 300; resetsAt = [DateTimeOffset]::new($u).AddHours(3).ToUnixTimeSeconds() }; secondary = $null; planType = ''; hasCredits = $null; reached = ''; spendControlReached = '' }
+    [IO.File]::WriteAllText((Join-Path $d 'codex-usage.json'), ([pscustomobject]@{ schema = 1; updatedAt = ''; limits = $chase; runs = @() } | ConvertTo-Json -Depth 6))
+    [IO.File]::WriteAllText((Join-Path $d 'golems.json'), '{"schema":1,"golems":[{"name":"Iron","engine":"claude","enabled":true},{"name":"Valorite","engine":"codex","account":"lane-chase","enabled":true},{"name":"Verite","engine":"codex","account":"lane-steph","enabled":true}]}')
+    [IO.File]::WriteAllText((Join-Path $d 'settings.json'), '{"codexEnabled":true}')
+    $d
+}
+
+Fact 'P767_ALaneHomeNamesItsAccountAndAnAccountAloneFindsItsHome' {
+    $r = Join-Path ([IO.Path]::GetTempPath()) ('codex-p767r-' + [guid]::NewGuid().ToString('N').Substring(0, 8)); New-Item -ItemType Directory -Force -Path (Join-Path $r 'codex-home\lane-steph') | Out-Null
+    Assert-True ((Resolve-CodexAccount $r (Join-Path $r 'codex-home\lane-steph') '') -eq 'lane-steph') 'a lane home names its login'
+    Assert-True ((Resolve-CodexAccount $r ((Join-Path $r 'codex-home\lane-steph\') -replace '\\', '/') '') -eq 'lane-steph') 'with a trailing slash or forward slashes too'
+    Assert-True ((Resolve-CodexAccount $r 'C:\Users\x\.codex' '') -eq '') 'Chase''s own ~\.codex names no lane login'
+    Assert-True ((Resolve-CodexAccount $r (Join-Path $r 'codex-home\lane-steph') 'lane-chase') -eq 'lane-chase') 'an -Account given wins'
+    Assert-True ((Resolve-CodexHomeFor $r 'C:\Users\x\.codex' 'lane-steph' 'C:\Users\x\.codex') -eq (Join-Path $r 'codex-home\lane-steph')) '-Account alone: its own lane home, never Chase''s ~\.codex'
+    Assert-True ((Resolve-CodexHomeFor $r 'E:\other' 'lane-steph' 'C:\Users\x\.codex') -eq 'E:\other') 'a -CodexHome given is kept'
+    Assert-True ((Resolve-CodexHomeFor $r 'C:\Users\x\.codex' '' 'C:\Users\x\.codex') -eq 'C:\Users\x\.codex') 'no account: this PC''s own home'
+    Remove-Item -LiteralPath $r -Recurse -Force
+}
+
+Fact 'P767_LaneStephsStatusReadsOnlyItsOwnAccountAndSaysUnknownWithTheLastGoodReadingsAge' {
+    $real = Get-Date
+    $d = New-P767Root $real
+    $keep = @{ Root = $Root; Account = $Account; CodexHome = $CodexHome; BinRoot = $BinRoot }
+    try {
+        $Root = $d; $BinRoot = Join-Path $d 'no-bin'
+        $CodexHome = Join-Path $d 'codex-home\lane-steph'
+        $Account = Resolve-CodexAccount $Root $CodexHome ''   # what the script does before -Action status
+        $st = Get-CodexStatus
+        Write-Host ('      steph: ' + $st.limits.source + ' | ' + $st.limitsNote)
+        Assert-True ($st.account -eq 'lane-steph') ('the account from its home: ' + $st.account)
+        Assert-True ($st.limits.source -match 'rollout-lane-steph' -and $st.limits.primary.usedPct -eq 11) ('lane-steph''s own session log, not this PC''s file: ' + $st.limits.source + ' ' + $st.limits.primary.usedPct)
+        Assert-True ($st.limitsState -eq 'unknown' -and $st.limitsAgeMinutes -ge 7190 -and $st.limitsNote -match 'last good reading is 5(\.0)? days old') ('5 days old: unknown, with its age: ' + $st.limitsNote)
+        $f = Join-Path $d 'codex-usage-lane-steph.json'
+        Assert-True ((Test-Path -LiteralPath $f) -and ((Get-Content -LiteralPath $f -Raw | ConvertFrom-Json).limits.primary.usedPct -eq 11)) 'its own usage file now holds its last good reading'
+        Assert-True (((Get-Content -LiteralPath (Join-Path $d 'codex-usage.json') -Raw | ConvertFrom-Json).limits.source) -eq 'session log rollout-chase-own.jsonl') 'this PC''s file is untouched'
+        $CodexHome = Join-Path $d 'codex-home\lane-chase'; $Account = Resolve-CodexAccount $Root $CodexHome ''
+        $sc = Get-CodexStatus
+        Assert-True ($sc.limits.source -match 'rollout-lane-chase' -and $sc.limitsState -eq 'fresh' -and $sc.limits.primary.usedPct -eq 29) ('lane-chase: its own, fresh: ' + $sc.limitsNote)
+        Assert-True (@($sc.lanes).Count -eq 2 -and $sc.lanes[0].golem -eq 'Valorite' -and $sc.lanes[0].source -match 'rollout-lane-chase' -and $sc.lanes[0].fiveHour.usedPct -eq 29 -and $sc.lanes[1].golem -eq 'Verite' -and $sc.lanes[1].source -match 'rollout-lane-steph' -and $sc.lanes[1].limitsState -eq 'unknown') ('status shows both lanes side by side: ' + (@($sc.lanes | ForEach-Object { $_.text }) -join ' | '))
+    } finally {
+        $Root = $keep.Root; $Account = $keep.Account; $CodexHome = $keep.CodexHome; $BinRoot = $keep.BinRoot
+        Remove-Item -LiteralPath $d -Recurse -Force -ErrorAction SilentlyContinue
+    }
+}
+
+Fact 'P767_TheLanesViewAddsUpTodaysIdleTimeByReason' {
+    $now = [datetime]'2026-11-01T12:00:00'
+    $d = New-P767Root $now
+    $ln = @(
+        '2026-10-31 23:55:00  Watch        Valorite idle: budget: yesterday, not counted',
+        '2026-11-01 11:25:00  Watch        Valorite idle: 6 prompts, 0 claimable: 3 Golem line, 1 area golem, 2 no Lane tests',
+        '2026-11-01 11:35:00  Watch        Valorite idle: 6 prompts, 0 claimable: 3 Golem line, 1 area golem, 2 no Lane tests',
+        '2026-11-01 11:40:00  Watch        lane: Codex starts P800 in x (run 1, process 1)',
+        '2026-11-01 11:45:00  Watch        Verite idle: budget: the week is at 96%',
+        '2026-11-01 11:55:00  Watch        Valorite idle: error: Codex.ps1 -Action status gave no answer')
+    [IO.File]::WriteAllText((Join-Path $d 'golem-Valorite.log'), ($ln -join "`r`n"))
+    $v = @(Get-CodexLanesView $d (Get-CodexSettings (Join-Path $d 'settings.json')) $now)
+    $va = $v | Where-Object { $_.golem -eq 'Valorite' }; $ve = $v | Where-Object { $_.golem -eq 'Verite' }
+    Write-Host ('      ' + $va.text); Write-Host ('      ' + $ve.text)
+    Assert-True ($va.idleTodayMinutes -eq 25 -and $va.idleByReason['nothing claimable'] -eq 20 -and $va.idleByReason['error'] -eq 5) ('Valorite: 10 + 10 nothing claimable, 5 error until now; yesterday and Verite''s line not counted: ' + ($va.idleByReason | ConvertTo-Json -Compress))
+    Assert-True ($va.text -match '^Valorite \(lane-chase\): 5-hour 29% \(resets ' -and $va.text -match 'idle today 25 min: nothing claimable 20 min, error 5 min') ('one line a person reads: ' + $va.text)
+    Assert-True ($ve.limitsState -eq 'unknown' -and $ve.fiveHour.usedPct -eq 0 -and $ve.fiveHour.resets -eq 'reset already' -and $ve.week.usedPct -eq 0) ('Verite: its 5-day-old reading, whose windows have both reset: ' + $ve.text)
+    Assert-True ($ve.idleTodayMinutes -eq 0) 'no log for Verite here: no idle time made up'
+    Remove-Item -LiteralPath $d -Recurse -Force
+}
+
+Fact 'P767_AFreshReadingIsWithinFiveHoursAndOlderIsUnknown' {
+    $n = [datetime]'2026-11-01T12:00:00'
+    $at = { param($m) [pscustomobject]@{ at = [DateTimeOffset]::new($n).AddMinutes(-$m).ToString('o'); source = 's' } }
+    $s = Get-CodexSettings ''
+    Assert-True ((Get-LimitsFreshness (& $at 10) $s $n).state -eq 'fresh') 'ten minutes: fresh'
+    $o = Get-LimitsFreshness (& $at 360) $s $n
+    Assert-True ($o.state -eq 'unknown' -and $o.ageMinutes -eq 360 -and $o.note -match 'last good reading is 6h 00m old') ('six hours: unknown with its age: ' + $o.note)
+    Assert-True ((Get-LimitsFreshness $null $s $n).state -eq 'unknown') 'no reading: unknown'
+    $s2 = Get-CodexSettings ''; $s2.codexLimitsFreshMinutes = 720
+    Assert-True ((Get-LimitsFreshness (& $at 360) $s2 $n).state -eq 'fresh') 'codexLimitsFreshMinutes moves the line'
+}

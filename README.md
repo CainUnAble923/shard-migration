@@ -63,14 +63,14 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-25. Shard version 2026.11.01.6. Golem on, 4 queued, latest done P765. Play tests: 1437 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-25. Shard version 2026.11.01.6. Golem on, 3 queued, latest done P767. Play tests: 1439 open, 4 failed, 43 passed.
 
 ### Needs overseer review (4)
 
 - **gate The player package installs on a clean PC**: Waits on a confirmation: Chase: which package is published on get.shatteredlegacyuo.com (the one with the 10-24 launcher?), and has a package with our TazUO build passed a clean-PC install? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "The player package installs on a clean PC" --done no --detail "..."` or `python tools/judge.py confirm gate "The player package installs on a clean PC"`
 - **gate What is built is seen in a client, not only compiled**: Waits on a confirmation: Chase: deploy main (2026.10.25.7) to the test shard, and mark the bot's 10-25 evidence on the play-test page? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "What is built is seen in a client, not only compiled" --done yes --detail "..."` or `python tools/judge.py confirm gate "What is built is seen in a client, not only compiled"`
 - **gate Somewhere to go**: Waits on a confirmation: Chase: which of [GenWrongRevamp, [SetupNewCovetous, [GenExodusEncounter, [GenBlackthorn and [GenEodon have been run on the test world? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "Somewhere to go" --done yes --detail "..."` or `python tools/judge.py confirm gate "Somewhere to go"`
-- **play tests not sorted**: 994 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
+- **play tests not sorted**: 996 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
 
 ## Port list: 6 of 16 systems in. 833 of 983 files (85%).
 
@@ -230,14 +230,14 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 632 prompts done, 5 more stopped early and not counted)
+### Queue (Golem on; 633 prompts done, 5 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
 | P715 ask-expires-too-soon | queued |  |
 | P768 review-build-cont-loot-boxes-diversified | queued |  |
-| P770 gold-run-next | queued |  |
 | P771 review-build-playtester-ux-notes-1 | queued |  |
+| P767 codex-usage-per-account | done | 2026-11-01 |
 | P765 random-encounters-assessment | done | 2026-11-01 |
 | P764 pet-leash | done | 2026-11-01 |
 | P762 new-character-lockdown | done | 2026-11-01 |
@@ -247,7 +247,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P757 night-usage-fallback | done | 2026-11-01 |
 | P756 review-build-new-haven-tutorial-fixes | done | 2026-11-01 |
 | P755 cont-fixup-new-haven-tutorial-fixes | done | 2026-11-01 |
-| P754 review-build-new-haven-tutorial-fixes | done | 2026-11-01 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 183 patches, 12 replacements
 
