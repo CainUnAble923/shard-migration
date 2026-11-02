@@ -1,0 +1,22 @@
+Fact 'P767_ALaneThatSkipsEveryPromptSaysWhyInOneSummary' {
+    $pd = Join-Path $Root 'p767-prompts'; $q = Join-Path $pd 'queue'; $ci = Join-Path $pd 'claimed\Iron'; $lk = Join-Path $Root 'p767-locks'
+    foreach ($d in @($q, $ci, $lk)) { New-Item -ItemType Directory -Path $d -Force | Out-Null }
+    $w = { param($dir, $n, $t) [IO.File]::WriteAllText((Join-Path $dir $n), $t) }
+    & $w $q 'cc-P401-iron.md' "# CC task P401: a`n`n**Golem:** Iron`n**Touches:** docs-only`n**Agent:** Codex OK`n**Lane tests:** none`n"
+    & $w $q 'cc-P402-plain.md' "# CC task P402: b`n`n**Touches:** docs-only`n"
+    & $w $q 'cc-P403-notests.md' "# CC task P403: c`n`n**Touches:** docs-only`n**Agent:** Codex OK`n"
+    & $w $q 'cc-P404-golem.md' "# CC task P404: d`n`n**Touches:** golem`n**Agent:** Codex OK`n**Lane tests:** none`n"
+    & $w $ci 'cc-P400-busy.md' "# CC task P400: e`n`n**Touches:** golem`n"
+    $me = [pscustomobject]@{ name = 'Valorite'; engine = 'codex'; enabled = $true; lane = 'any'; hours = ''; areas = @('docs-only', 'golem', 'server') }
+    $reg = [pscustomobject]@{ Golems = @($me) }
+    $items = @(Get-ChildItem -LiteralPath $q -Filter 'cc-P*.md' | Sort-Object Name)
+    $c = Get-ClaimCandidate $me $reg $pd $items $lk (Get-Date)
+    Assert-True ($null -eq $c) ('nothing claimable: ' + $(if ($c) { $c.Item.Name } else { '' }))
+    $sum = Get-ClaimSkipSummary $items.Count
+    Assert-True ($sum -eq '4 prompts, 0 claimable: 1 Golem line, 1 not Codex OK, 1 no Lane tests, 1 area golem') ('the summary: ' + $sum)
+    # Each call starts a new tally: a second watch does not add to the first.
+    [void](Get-ClaimCandidate $me $reg $pd $items $lk (Get-Date))
+    Assert-True ((Get-ClaimSkipSummary $items.Count) -eq $sum) ('the next watch counts afresh: ' + (Get-ClaimSkipSummary $items.Count))
+    Assert-True ((Get-ClaimSkipSummary 1) -like '1 prompt, 0 claimable*') ('one prompt reads singular: ' + (Get-ClaimSkipSummary 1))
+}
+

@@ -1,0 +1,517 @@
+--- Codex.ps1.bak-20261101-P767	2026-10-24 04:30:34.213946600 -0500
++++ Codex.ps1	2026-11-01 22:48:10.496660100 -0600
+@@ -5,6 +5,9 @@
+ 
+       Codex.ps1 -Action status                 JSON: the exe, the sign-in, the plan usage and the budget verdict
+       Codex.ps1 -Action usage                  JSON: refresh codex-usage.json from the newest Codex session logs
++      Codex.ps1 -Action lanes                  cc-P767: every Codex lane side by side, one line each: its own account's
++                                               5-hour and week percent and resets, fresh or unknown (with the last good
++                                               reading's age), runs today, idle today and why. status carries it as lanes.
+       Codex.ps1 -Action run -PromptFile <f> -Purpose art [-RequestId x] [-Cd <dir>] [-Model m] [-Effort e]
+                 [-Images a.png,b.png] [-Override yes] [-TimeoutMinutes 15]
+                                                JSON: ok, why, threadId, images (new files under generated_images),
+@@ -42,7 +45,7 @@
+   the workspace spend control still stops a run.
+ #>
+ param(
+-    [ValidateSet('status', 'usage', 'run', 'review')][string]$Action = 'status',
++    [ValidateSet('status', 'usage', 'run', 'review', 'lanes')][string]$Action = 'status',
+     [string]$PromptFile,
+     [string]$Purpose = 'art',
+     [string]$RequestId = '',
+@@ -89,6 +92,7 @@
+         codexReviewModel = 'gpt-6.1-sol'; codexReviewEffort = 'medium'; codexLaneModel = 'gpt-6.1-sol'; codexLaneEffort = 'high'
+         codexReviewMinutes = 15; codexNightOnly = $true; nightShiftStart = '22:30'; nightShiftEnd = '06:30'
+         codexAllowCredits = $false; laneBackOffSeconds = 30; laneStopGraceMinutes = 2   # cc-P159
++        codexLimitsFreshMinutes = 300   # cc-P767: an older reading is "unknown" (the last good one is still used, with its age)
+         codexAccountHomes = $null }   # cc-P373: { "<login>": [ other CODEX_HOMEs signed in to it ] }, read for its limits
+     if ($File -and (Test-Path -LiteralPath $File -PathType Leaf)) {
+         try {
+@@ -181,6 +185,125 @@
+     @($cands | Sort-Object { Get-LimitsTime $_ } -Descending)[0]
+ }
+ 
++# ---- cc-P767: each lane on its own account ----------------------------------------------------------------------------
++
++# The login a CODEX_HOME belongs to when -Account is not given: a lane's home is <Root>\codex-home\<login> (Join-Golem.ps1).
++# Before this, `-Action status -CodexHome ...\lane-steph` read this PC's codex-usage.json (Chase's own readings) and took
++# its newer reading over lane-steph's own (11-01: both lanes showed the same session log).
++function Resolve-CodexAccount([string]$Root, [string]$CodexHomeDir, [string]$Acct) {
++    if ($Acct) { return $Acct }
++    $lanes = ((Join-Path $Root 'codex-home') -replace '/', '\').TrimEnd('\')
++    $h = (([string]$CodexHomeDir) -replace '/', '\').TrimEnd('\')
++    if (-not $h) { return '' }
++    $parent = (Split-Path -Parent $h).TrimEnd('\')
++    if ($parent -ieq $lanes) { return (Split-Path -Leaf $h) }
++    ''
++}
++
++# The CODEX_HOME for a login when -CodexHome was left at this account's own ~\.codex: the lane's own home when there is one,
++# so `-Account lane-steph` alone never reads Chase's session logs.
++function Resolve-CodexHomeFor([string]$Root, [string]$CodexHomeDir, [string]$Acct, [string]$DefaultHome) {
++    $h = (([string]$CodexHomeDir) -replace '/', '\').TrimEnd('\')
++    if (-not $Acct -or ($h -and $h -ine ([string]$DefaultHome).TrimEnd('\'))) { return $CodexHomeDir }
++    $lane = Join-Path $Root ('codex-home\' + ($Acct -replace '[^A-Za-z0-9_-]', ''))
++    if (Test-Path -LiteralPath $lane -PathType Container) { return $lane }
++    $CodexHomeDir
++}
++
++# How old a reading is, and whether it is fresh: taken within codexLimitsFreshMinutes (default 300, the 5-hour window).
++# Not fresh: the state is "unknown" and the reading kept is the lane's last good one, with its age.
++function Get-LimitsFreshness($Limits, $Settings, [datetime]$Now) {
++    $fm = [double](Get-CodexProp $Settings 'codexLimitsFreshMinutes' 300)
++    if (-not $Limits) { return [pscustomobject]@{ state = 'unknown'; ageMinutes = $null; note = 'unknown: no reading for this account yet (no session log in its own Codex homes)' } }
++    $t = Get-LimitsTime $Limits
++    if ($t -eq [DateTimeOffset]::MinValue) { return [pscustomobject]@{ state = 'unknown'; ageMinutes = $null; note = 'unknown: the last reading has no time (' + [string]$Limits.source + ')' } }
++    $age = [Math]::Max(0, [Math]::Round(([DateTimeOffset]::new($Now) - $t).TotalMinutes, 0))
++    if ($age -le $fm) { return [pscustomobject]@{ state = 'fresh'; ageMinutes = $age; note = 'fresh: ' + (Format-CodexAge $age) + ' old (' + [string]$Limits.source + ')' } }
++    [pscustomobject]@{ state = 'unknown'; ageMinutes = $age; note = 'unknown: no session log of this account in the last ' + (Format-CodexAge $fm) + '; the last good reading is ' + (Format-CodexAge $age) + ' old (' + [string]$Limits.source + ')' }
++}
++
++function Format-CodexAge([double]$Minutes) {
++    if ($Minutes -lt 60) { return ([string][int]$Minutes + ' min') }
++    if ($Minutes -lt 2880) { return ('{0}h {1:D2}m' -f [int][Math]::Floor($Minutes / 60), [int]($Minutes % 60)) }
++    ([string][Math]::Round($Minutes / 1440, 1) + ' days')
++}
++
++# One window as the lanes view shows it: used percent (0 once its reset has passed: a new window) and the reset time.
++function Get-CodexWindowView($Window, [datetime]$Now) {
++    if (-not $Window) { return [pscustomobject]@{ usedPct = $null; resets = 'unknown'; text = 'unknown' } }
++    $nowU = [DateTimeOffset]::new($Now).ToUnixTimeSeconds()
++    $r = [long](Get-CodexProp $Window 'resetsAt' 0)
++    $passed = ($r -gt 0 -and $r -le $nowU)
++    $used = $(if ($passed) { 0.0 } else { [double](Get-CodexProp $Window 'usedPct' 0) })
++    $resets = $(if ($r -le 0) { 'unknown' } elseif ($passed) { 'reset already' } else { [DateTimeOffset]::FromUnixTimeSeconds($r).LocalDateTime.ToString('ddd HH:mm', $script:Inv) })
++    [pscustomobject]@{ usedPct = $used; resets = $resets; text = $(if ($passed) { '0% (a new window: it reset after the reading)' } else { [string]$used + '% (resets ' + $resets + ')' }) }
++}
++
++# A lane's idle time today from its log's idle lines (golem.ps1 Write-LaneIdle, one per watch): each line counts until the
++# next one, at most one watch (10 minutes), the last until now. By reason: "nothing claimable" (the summary of skipped
++# prompts), budget, error, hours, backs off, queue empty, held, needs you, off.
++function Get-LaneIdleToday([string]$LogFile, [string]$Name, [datetime]$Now, [int]$WatchMinutes = 10) {
++    $res = [ordered]@{ minutes = 0; byReason = [ordered]@{}; last = ''; lastAt = '' }
++    if (-not (Test-Path -LiteralPath $LogFile -PathType Leaf)) { return [pscustomobject]$res }
++    $day = $Now.ToString('yyyy-MM-dd', $script:Inv)
++    $tag = ' ' + $Name + ' idle: '
++    $hits = New-Object System.Collections.Generic.List[object]
++    try {
++        foreach ($l in [IO.File]::ReadLines($LogFile)) {
++            if (-not $l.StartsWith($day)) { continue }
++            $i = $l.IndexOf($tag); if ($i -lt 0) { continue }
++            $at = [datetime]::MinValue
++            if (-not [datetime]::TryParseExact($l.Substring(0, 19), 'yyyy-MM-dd HH:mm:ss', $script:Inv, [Globalization.DateTimeStyles]::None, [ref]$at)) { continue }
++            $hits.Add([pscustomobject]@{ at = $at; text = $l.Substring($i + $tag.Length) })
++        }
++    } catch { }
++    for ($k = 0; $k -lt $hits.Count; $k++) {
++        $end = $(if ($k + 1 -lt $hits.Count) { $hits[$k + 1].at } else { $Now })
++        $m = [Math]::Max(0, [Math]::Min([double]$WatchMinutes, ($end - $hits[$k].at).TotalMinutes))
++        $t = [string]$hits[$k].text
++        $why = $(if ($t -match '^\d+ prompts?, 0 claimable') { 'nothing claimable' } elseif ($t -match '^([a-z][a-z ]*?):') { $Matches[1] } else { $t })
++        if (-not $res.byReason.Contains($why)) { $res.byReason[$why] = 0.0 }
++        $res.byReason[$why] = [double]$res.byReason[$why] + $m
++        $res.minutes += $m
++    }
++    if ($hits.Count) { $res.last = [string]$hits[$hits.Count - 1].text; $res.lastAt = $hits[$hits.Count - 1].at.ToString('HH:mm', $script:Inv) }
++    $res.minutes = [Math]::Round($res.minutes, 0)
++    foreach ($k in @($res.byReason.Keys)) { $res.byReason[$k] = [Math]::Round([double]$res.byReason[$k], 0) }
++    [pscustomobject]$res
++}
++
++# Every Codex lane in golems.json (engine codex, with its login), side by side: its own account's 5-hour and week windows,
++# whether the reading is fresh, today's runs, and its idle time today with the reasons.
++function Get-CodexLanesView([string]$Root, $Settings, [datetime]$Now) {
++    $reg = $null
++    try { $reg = [IO.File]::ReadAllText((Join-Path $Root 'golems.json')) | ConvertFrom-Json } catch { }
++    $out = @()
++    foreach ($g in @(Get-CodexProp $reg 'golems' @())) {
++        if ([string](Get-CodexProp $g 'engine' '') -ne 'codex') { continue }
++        $name = [string](Get-CodexProp $g 'name' ''); $acct = [string](Get-CodexProp $g 'account' '')
++        if (-not $acct) { continue }
++        $home2 = Join-Path $Root ('codex-home\' + $acct)
++        $doc = Read-CodexUsageFile (Get-CodexUsagePath $Root $acct)
++        $lim = Read-AccountRateLimits $home2 $Settings $acct $doc
++        $fr = Get-LimitsFreshness $lim $Settings $Now
++        $p = Get-CodexWindowView $(if ($lim) { $lim.primary } else { $null }) $Now
++        $s = Get-CodexWindowView $(if ($lim) { $lim.secondary } else { $null }) $Now
++        $idle = Get-LaneIdleToday (Join-Path $Root ('golem-' + $name + '.log')) $name $Now
++        $why = ''
++        try { $st = [IO.File]::ReadAllText((Join-Path $Root ('status-' + $name + '.json'))) | ConvertFrom-Json; $why = [string](Get-CodexProp $st 'current' (Get-CodexProp $st 'state' '')) } catch { }
++        $today = $(if ($doc) { $doc.today } else { $null })
++        $runsToday = $(if ($today -and [string]$today.date -eq $Now.ToString('yyyy-MM-dd', $script:Inv)) { [int]$today.runs } else { 0 })
++        $reasons = @(); foreach ($k in @($idle.byReason.Keys)) { $reasons += ($k + ' ' + (Format-CodexAge ([double]$idle.byReason[$k]))) }
++        $text = ('{0} ({1}): 5-hour {2}, week {3}; {4}; runs today {5}; idle today {6}{7}' -f $name, $acct, $p.text, $s.text, $fr.note, $runsToday,
++            (Format-CodexAge ([double]$idle.minutes)), $(if ($reasons.Count) { ': ' + ($reasons -join ', ') } else { '' }))
++        $out += [pscustomobject]@{ golem = $name; account = $acct; codexHome = $home2; enabled = [bool](Get-CodexProp $g 'enabled' $false)
++            limitsState = $fr.state; limitsAgeMinutes = $fr.ageMinutes; limitsNote = $fr.note; source = $(if ($lim) { [string]$lim.source } else { '' })
++            fiveHour = $p; week = $s; runsToday = $runsToday; idleTodayMinutes = $idle.minutes; idleByReason = $idle.byReason
++            lastIdle = $(if ($idle.last) { $idle.lastAt + ' ' + $idle.last } else { '' }); status = $why; text = $text }
++    }
++    $out
++}
++
+ function Read-CodexUsageFile([string]$File) {
+     if (-not (Test-Path -LiteralPath $File -PathType Leaf)) { return $null }
+     try { [IO.File]::ReadAllText($File) | ConvertFrom-Json } catch { $null }
+@@ -647,10 +770,17 @@
+     $set = Get-CodexSettings (Join-Path $Root 'settings.json')
+     $doc = Read-CodexUsageFile (Get-CodexUsagePath $Root $Account)
+     $lim = Read-AccountRateLimits $CodexHome $set $Account $doc   # cc-P373: any home of the same login, else the file
++    $now = Get-Date
++    $fr = Get-LimitsFreshness $lim $set $now   # cc-P767
++    # cc-P767: a lane's own file keeps its account's newest reading (the lane's watch asks for status every 10 minutes), so
++    # it holds the last good reading even while the lane runs nothing; written only when the reading is newer than the file's.
++    if ($Account -and $lim -and (-not $doc -or (Get-LimitsTime $lim) -gt (Get-LimitsTime $doc.limits))) { try { $doc = Update-CodexUsage $lim $null } catch { } }
+     $runs = $(if ($doc) { @($doc.runs) } else { @() })
+     $ver = $(if ($exe) { (Invoke-CodexNative $exe @('--version')).Trim() } else { '' })
+-    [pscustomobject]@{ exe = $exe; version = $ver; login = (Get-CodexLoginStatus $exe); settings = $set; limits = $lim
+-        budget = (Test-CodexBudget $lim $runs $set (Get-Date)); today = $(if ($doc) { $doc.today } else { $null }) }
++    [pscustomobject]@{ exe = $exe; version = $ver; login = (Get-CodexLoginStatus $exe); account = $Account; codexHome = $CodexHome; settings = $set; limits = $lim
++        limitsState = $fr.state; limitsAgeMinutes = $fr.ageMinutes; limitsNote = $fr.note
++        budget = (Test-CodexBudget $lim $runs $set $now); today = $(if ($doc) { $doc.today } else { $null })
++        lanes = @(Get-CodexLanesView $Root $set $now) }
+ }
+ 
+ function Update-CodexUsage($LimitsAfter, $Run) {
+@@ -849,8 +979,12 @@
+ }
+ 
+ if ($LoadOnly) { return }
++# cc-P767: the account from a lane's home when -Account is not given, and a lane's own home when only -Account is.
++$Account = Resolve-CodexAccount $Root $CodexHome $Account
++$CodexHome = Resolve-CodexHomeFor $Root $CodexHome $Account (Join-Path $env:USERPROFILE '.codex')
+ switch ($Action) {
+     'status' { Get-CodexStatus | ConvertTo-Json -Depth 6 }
++    'lanes'  { @(Get-CodexLanesView $Root (Get-CodexSettings (Join-Path $Root 'settings.json')) (Get-Date)) | ForEach-Object { $_.text } }
+     'usage'  { Update-CodexUsage $null $null | ConvertTo-Json -Depth 6 }
+     'run'    { $r = Invoke-CodexRun; $j = $r | ConvertTo-Json -Depth 8; if ($OutFile) { [IO.File]::WriteAllText($OutFile, $j, (New-Object Text.UTF8Encoding($false))) }; $j }
+     'review' { $r = Invoke-CodexReviewRun; $j = $r | ConvertTo-Json -Depth 8; if ($OutFile) { [IO.File]::WriteAllText($OutFile, $j, (New-Object Text.UTF8Encoding($false))) }; $j }
+--- golem.ps1.bak-20261101-P767	2026-11-01 05:22:12.539929400 -0600
++++ golem.ps1	2026-11-01 22:48:10.670291200 -0600
+@@ -3144,6 +3144,9 @@
+     Save-State $st
+     Write-Status $null $why
+ }
++# cc-P767: one line per watch while a lane runs nothing, with the reason first ("Valorite idle: budget: ...", "Valorite
++# idle: 6 prompts, 0 claimable: 3 Golem line, ..."): Codex.ps1's lanes view adds them up as idle time today by reason.
++function Write-LaneIdle([string]$What) { Log ([string]$script:Me.name + ' idle: ' + $What) }
+ function Get-CodexBudgetNow {
+     # cc-P159: a lane reads its own login's windows and its own runs (each ChatGPT seat has its own allowance).
+     $x = @()
+@@ -3265,17 +3268,18 @@
+                 $st.PSObject.Properties.Remove('lane'); $st.current = ''; $st.currentFile = ''
+                 $st | Add-Member -NotePropertyName stoppedPrompt -NotePropertyValue '' -Force; $st | Add-Member -NotePropertyName branch -NotePropertyValue '' -Force
+                 Save-State $st; Write-Status ''
+-            } else { Update-LaneProgress $ln; Write-Status ("Codex lane: " + [string]$st.stoppedPrompt + " needs you") }
++            } else { Update-LaneProgress $ln; Write-Status ("Codex lane: " + [string]$st.stoppedPrompt + " needs you"); Write-LaneIdle ('needs you: ' + [string]$st.stoppedPrompt + ' waits for your decision') }
+             return
+         }
+     }
+     $set = Get-Settings
+     $codex = Join-Path $Root 'Codex.ps1'
+-    if (-not (Test-Path -LiteralPath $codex)) { Set-LaneWhy $st ('no Codex.ps1 in ' + $Root); return }
+-    if (-not [bool]$set.codexEnabled) { Set-LaneWhy $st 'Codex is off (codexEnabled false)'; return }
++    if (-not (Test-Path -LiteralPath $codex)) { Set-LaneWhy $st ('no Codex.ps1 in ' + $Root); Write-LaneIdle ('error: no Codex.ps1 in ' + $Root); return }
++    if (-not [bool]$set.codexEnabled) { Set-LaneWhy $st 'Codex is off (codexEnabled false)'; Write-LaneIdle 'off: codexEnabled is false'; return }
+     if (-not (Get-CodexHomeFor $script:Me)) {
+         # A writing Codex run records its folder as trusted in its CODEX_HOME's config.toml: never Chase's own ~\.codex.
+         $acct = [string](Get-Prop $script:Me 'account' ''); if (-not $acct) { $acct = $name }
++        Write-LaneIdle 'error: no Codex sign-in of its own'
+         Set-LaneWhy $st ("the Codex lane $name needs its own Codex sign-in (a lane never runs on your own ~\.codex, whose config.toml a writing run changes): in PowerShell, `$env:CODEX_HOME = '" + (Join-Path $Root ('codex-home\' + $acct)) + "'; codex login")
+         return
+     }
+@@ -3288,25 +3292,31 @@
+     # cc-P373: stopped for its PC's owner, but the push failed last time: try again (whatever the hours or the back-off).
+     if ($ln -and [string](Get-Prop $ln 'publishPending' '')) { [void](Publish-LanePartial $st $ln ([string]$ln.publishPending)); return }
+     # cc-P373: Chase's Find a stopping point holds the lane there (paused, or done with that prompt) until he cancels it.
+-    if ([string](Get-Prop $st 'winding' '') -eq 'stopping-point') { if ($ln) { Update-LaneProgress $ln }; Set-LaneWhy $st ('held at the stopping point you asked for' + $(if ($ln) { ' in ' + [string]$ln.prompt } else { '' }) + ' (cancel it on the console to carry on)'); return }
++    if ([string](Get-Prop $st 'winding' '') -eq 'stopping-point') { if ($ln) { Update-LaneProgress $ln }; Set-LaneWhy $st ('held at the stopping point you asked for' + $(if ($ln) { ' in ' + [string]$ln.prompt } else { '' }) + ' (cancel it on the console to carry on)'); Write-LaneIdle 'held: at the stopping point you asked for'; return }
+     # cc-P159: Send to the second PC (Lane-Now.ps1) lifts its window until then; her using the PC and the budget still hold.
+     $rn = Get-LaneRunNow $Root $name $NowTime
+     $meNow = $script:Me
+     if ($rn) { $meNow = $script:Me.PSObject.Copy(); $meNow | Add-Member -NotePropertyName hours -NotePropertyValue '' -Force }
+     else {
+         $hr = Test-CodexLaneHours (Get-CodexSettings $SetFile) $NowTime
+-        if (-not $hr.ok) { if ($ln) { Update-LaneProgress $ln }; Set-LaneWhy $st $hr.why; return }
++        if (-not $hr.ok) { if ($ln) { Update-LaneProgress $ln }; Set-LaneWhy $st $hr.why; Write-LaneIdle ('hours: ' + $hr.why); return }
+     }
+     $bo = Get-GolemBackOffNow $meNow
+-    if ($bo -and [bool]$bo.Pause) { if ($ln) { Update-LaneProgress $ln }; Set-LaneWhy $st ('backs off: ' + [string]$bo.Why); return }
++    if ($bo -and [bool]$bo.Pause) { if ($ln) { Update-LaneProgress $ln }; Set-LaneWhy $st ('backs off: ' + [string]$bo.Why); Write-LaneIdle ('backs off: ' + [string]$bo.Why); return }
+     $b = Get-CodexBudgetNow
+-    if (-not $b.allowed) { if ($ln) { Update-LaneProgress $ln }; Set-LaneWhy $st ('the Codex budget: ' + ($b.why -replace '^refused: ', '' -replace '\. Type yes to override once\.$', '')); return }
++    if (-not $b.allowed) {
++        if ($ln) { Update-LaneProgress $ln }
++        $bw = ($b.why -replace '^refused: ', '' -replace '\. Type yes to override once\.$', '')
++        Set-LaneWhy $st ('the Codex budget: ' + $bw)
++        Write-LaneIdle $(if ($b.why -match 'gave no answer') { 'error: ' + $bw } else { 'budget: ' + $bw })   # cc-P767
++        return
++    }
+     if ($ln -and [bool](Get-Prop $ln 'paused' $false)) { Start-CodexLaneRun $st ([string]$ln.file) -Resume; return }
+     $queued = @(Get-ChildItem -LiteralPath $QueueDir -Filter 'cc-P*.md' -File -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '^cc-P(\d+)-' })
+-    if (-not $queued.Count) { Set-LaneWhy $st 'the queue is empty'; return }
++    if (-not $queued.Count) { Set-LaneWhy $st 'the queue is empty'; Write-LaneIdle 'queue empty'; return }
+     $items = Remove-ParkedDependents (Sort-Queue $queued)
+     $cand = Get-ClaimCandidate $meNow $script:Reg $PromptDir $items $LockDir $NowTime
+-    if (-not $cand) { Set-LaneWhy $st 'nothing queued is for the Codex lane now (marked Codex OK, with Touches and Lane tests lines, and no overlap)'; return }
++    if (-not $cand) { Set-LaneWhy $st 'nothing queued is for the Codex lane now (marked Codex OK, with Touches and Lane tests lines, and no overlap)'; $held = $queued.Count - @($items).Count; if ($held -gt 0) { $script:ClaimSkips['behind a parked prompt'] = $held }; Write-LaneIdle (Get-ClaimSkipSummary $queued.Count); return }   # cc-P767
+     $next = $cand.Item
+     $num = [int]([regex]::Match($next.Name, '^cc-P(\d+)-').Groups[1].Value)
+     $branch = 'golem/' + $name + "/P$num"
+--- Golems.ps1.bak-20261101-P767	2026-11-01 05:22:32.190543500 -0600
++++ Golems.ps1	2026-11-01 22:48:10.843491300 -0600
+@@ -444,17 +444,31 @@
+     }
+     $h
+ }
++# cc-P767: why each queued prompt was skipped in the last Get-ClaimCandidate, as category -> count, for a lane's one
++# idle summary line per watch ("Valorite idle: 6 prompts, 0 claimable: 3 Golem line, 1 area golem, 2 no Lane tests").
++$script:ClaimSkips = [ordered]@{}
++function Add-ClaimSkip([string]$Category, [string]$Line) {
++    if ($Line) { Write-GolemLog $Line }
++    if ($null -eq $script:ClaimSkips) { $script:ClaimSkips = [ordered]@{} }
++    if ($script:ClaimSkips.Contains($Category)) { $script:ClaimSkips[$Category] = [int]$script:ClaimSkips[$Category] + 1 } else { $script:ClaimSkips[$Category] = 1 }
++}
++# cc-P767: the summary of the last skips: "6 prompts, 0 claimable: 3 Golem line, 1 area golem, 2 no Lane tests".
++function Get-ClaimSkipSummary([int]$Queued) {
++    $parts = @(); foreach ($k in @($script:ClaimSkips.Keys)) { $parts += ([string]$script:ClaimSkips[$k] + ' ' + $k) }
++    ([string]$Queued + ' prompt' + $(if ($Queued -eq 1) { '' } else { 's' }) + ', 0 claimable' + $(if ($parts.Count) { ': ' + ($parts -join ', ') } else { '' }))
++}
+ # The next queued prompt this Golem may take, in hand-off order, or $null. Skips (each logged) a prompt whose Model is
+ # not for this lane, whose Golem line names another Golem, whose areas this Golem may not touch, whose areas overlap a
+ # prompt another Golem is running, or (golem/console) while another Golem runs one of those or holds the commit lock.
+ # $Items: the sorted queue (FileInfo). Returns { Item, Areas, Touches }.
+ function Get-ClaimCandidate($me, $reg, [string]$PromptDir, $Items, [string]$LockDir, [datetime]$now, [bool]$Marathon = $false) {
++    $script:ClaimSkips = [ordered]@{}   # cc-P767
+     if (Test-GolemScript $me) { Write-GolemLog ("claim: " + [string]$me.name + " is a script Golem (it only merges): it never claims a prompt"); return $null }
+     $claims = @(Get-GolemClaims $PromptDir | Where-Object { $_.Golem -ine [string]$me.name })
+     $commitHeld = $null
+     $cl = Get-GolemLock $LockDir 'commit'
+     if ($cl -and [string]$cl.owner -ine [string]$me.name -and -not (Test-LockStale $cl $now)) { $commitHeld = [string]$cl.owner }
+-    if (-not (Test-GolemHoursNow $me $now $Marathon)) { Write-GolemLog ("claim: outside " + [string]$me.name + "'s hours (" + [string]$me.hours + $(if ($Marathon) { '; noDaytimeMarathon keeps it to them during marathon' } else { '' }) + $(if (Test-GolemSkipDate $me $now) { '; today is a skip date, so not an all-day day' } else { '' }) + "): nothing taken"); return $null }
++    if (-not (Test-GolemHoursNow $me $now $Marathon)) { $script:ClaimSkips['outside its hours'] = @($Items).Count; Write-GolemLog ("claim: outside " + [string]$me.name + "'s hours (" + [string]$me.hours + $(if ($Marathon) { '; noDaytimeMarathon keeps it to them during marathon' } else { '' }) + $(if (Test-GolemSkipDate $me $now) { '; today is a skip date, so not an all-day day' } else { '' }) + "): nothing taken"); return $null }
+     $codexMe = ([string](Get-GolemProp $me 'engine' 'claude') -eq 'codex')   # cc-P158
+     $laneOn = (-not $codexMe) -and (Test-CodexLaneOn $reg)
+     $picks = Get-OtherRunNextPicks $me $reg (Split-Path -Parent $LockDir)   # cc-P370
+@@ -471,32 +485,32 @@
+     foreach ($it in @($Items)) {
+         $num = [regex]::Match($it.Name, '^cc-P(\d+)-').Groups[1].Value
+         $model = $(if (Get-Command Get-PromptModel -ErrorAction SilentlyContinue) { Get-PromptModel $it.FullName } else { '' })
+-        if (-not (Test-LaneFits ([string]$me.lane) $model)) { Write-GolemLog ("claim: P$num wants $model, not this lane (" + [string]$me.lane + "): skipped"); continue }
++        if (-not (Test-LaneFits ([string]$me.lane) $model)) { Add-ClaimSkip 'model' ("claim: P$num wants $model, not this lane (" + [string]$me.lane + "): skipped"); continue }
+         $gl = Get-PromptGolemLine $it.FullName
+-        if (-not (Test-PromptForGolem $it.FullName ([string]$me.name))) { Write-GolemLog ("claim: P$num is for the $gl Golem (its Golem line): skipped"); continue }
+-        if ($picks.ContainsKey($it.Name)) { Write-GolemLog ("claim: P$num is the " + $picks[$it.Name] + " Golem's run next pick: skipped"); continue }
++        if (-not (Test-PromptForGolem $it.FullName ([string]$me.name))) { Add-ClaimSkip 'Golem line' ("claim: P$num is for the $gl Golem (its Golem line): skipped"); continue }
++        if ($picks.ContainsKey($it.Name)) { Add-ClaimSkip 'run next pick' ("claim: P$num is the " + $picks[$it.Name] + " Golem's run next pick: skipped"); continue }
+         # cc-P158: only a prompt marked Codex OK goes to a Codex lane, with its Lane tests line; while a lane is on, the CC
+         # Golems leave such a prompt to it.
+         $cx = Test-CodexOk $it.FullName
+         if ($codexMe) {
+-            if (-not $cx) { Write-GolemLog ("claim: P$num is not marked **Agent:** Codex OK: not for a Codex lane"); continue }
+-            if (-not @(Get-LaneTests $it.FullName).Count) { Write-GolemLog ("claim: P$num has no **Lane tests:** line (the tests the Golem runs after Codex; none if there are none): skipped"); continue }
++            if (-not $cx) { Add-ClaimSkip 'not Codex OK' ("claim: P$num is not marked **Agent:** Codex OK: not for a Codex lane"); continue }
++            if (-not @(Get-LaneTests $it.FullName).Count) { Add-ClaimSkip 'no Lane tests' ("claim: P$num has no **Lane tests:** line (the tests the Golem runs after Codex; none if there are none): skipped"); continue }
+             $rf = Get-LaneRefusal $it.FullName   # cc-P159: whatever its Codex OK line says
+-            if ($rf) { Write-GolemLog ("claim: P$num is not for a Codex lane: $rf"); continue }
++            if ($rf) { Add-ClaimSkip 'not for a lane' ("claim: P$num is not for a Codex lane: $rf"); continue }
+         } elseif ($cx -and $laneOn) {
+             if ($mine.ContainsKey($it.Name)) { Write-GolemLog ("claim: P$num is marked Codex OK, but it is " + [string]$me.name + "'s own run next pick: taken, not left for the Codex lane") }
+-            else { Write-GolemLog ("claim: P$num is marked Codex OK and a Codex lane is on: left for it"); continue }
++            else { Add-ClaimSkip 'left for the Codex lane' ("claim: P$num is marked Codex OK and a Codex lane is on: left for it"); continue }
+         }
+         $t = Get-PromptTouches $it.FullName
+-        if ($codexMe -and $t.Guessed) { Write-GolemLog ("claim: P$num has no Touches line: a Codex lane waits when unsure (" + $t.Why + ")"); continue }
++        if ($codexMe -and $t.Guessed) { Add-ClaimSkip 'no Touches' ("claim: P$num has no Touches line: a Codex lane waits when unsure (" + $t.Why + ")"); continue }
+         if ($t.Guessed -or $t.Why) { Write-GolemLog ("claim: P$num touches " + ($t.Areas -join ', ') + ' (' + $t.Why + ')') }
+-        if (-not (Test-AreasAllowed $t.Areas @($me.areas))) { Write-GolemLog ("claim: P$num touches " + ($t.Areas -join ', ') + ", which " + [string]$me.name + " may not (areas " + (@($me.areas) -join ', ') + "): skipped"); continue }
++        if (-not (Test-AreasAllowed $t.Areas @($me.areas))) { Add-ClaimSkip ('area ' + ($t.Areas -join '+')) ("claim: P$num touches " + ($t.Areas -join ', ') + ", which " + [string]$me.name + " may not (areas " + (@($me.areas) -join ', ') + "): skipped"); continue }
+         $busy = @($claims | Where-Object { Test-AreasOverlap $t.Areas $_.Areas })
+-        if ($busy.Count) { Write-GolemLog ("claim: P$num touches " + ($t.Areas -join ', ') + ", busy with " + $busy[0].Prompt + " on " + $busy[0].Golem + " (" + ($busy[0].Areas -join ', ') + "): skipped"); continue }
++        if ($busy.Count) { Add-ClaimSkip ('area ' + ($t.Areas -join '+')) ("claim: P$num touches " + ($t.Areas -join ', ') + ", busy with " + $busy[0].Prompt + " on " + $busy[0].Golem + " (" + ($busy[0].Areas -join ', ') + "): skipped"); continue }
+         if (Test-ExclusiveArea $t.Areas) {
+             $ex = @($claims | Where-Object { Test-ExclusiveArea $_.Areas })
+-            if ($ex.Count) { Write-GolemLog ("claim: P$num touches golem or console, exclusive, and " + $ex[0].Prompt + " on " + $ex[0].Golem + " does too: skipped"); continue }
+-            if ($commitHeld) { Write-GolemLog ("claim: P$num touches golem or console and $commitHeld is mid-commit: skipped"); continue }
++            if ($ex.Count) { Add-ClaimSkip ('area ' + ($t.Areas -join '+')) ("claim: P$num touches golem or console, exclusive, and " + $ex[0].Prompt + " on " + $ex[0].Golem + " does too: skipped"); continue }
++            if ($commitHeld) { Add-ClaimSkip ('area ' + ($t.Areas -join '+')) ("claim: P$num touches golem or console and $commitHeld is mid-commit: skipped"); continue }
+         }
+         return [pscustomobject]@{ Item = $it; Areas = @($t.Areas); Touches = $t }
+     }
+--- join/Sweep.ps1.bak-20261101-P767	2026-10-20 17:28:08.656345100 -0500
++++ join/Sweep.ps1	2026-11-01 22:48:11.043584400 -0600
+@@ -1,13 +1,16 @@
+-$ErrorActionPreference = 'Continue'
+-foreach ($n in 'Iron','Bronze','ShadowIron') { $s = Get-Content "D:\UO\golem\status-$n.json" -Raw | ConvertFrom-Json; "$n : $($s.state) $($s.current) | $($s.needsYou)" }
+-Get-Content D:\UO\golem\golem-ShadowIron.log -Tail 3
+-$man = @{}; Get-ChildItem D:\UO\golem -File | ? { $_.Extension -in '.ps1','.psm1','.py' -or $_.Name -eq 'golems.json' } | % { $man[$_.Name] = (Get-FileHash $_.FullName -Algorithm MD5).Hash }
+-$man | ConvertTo-Json | Set-Content D:\UO\golem\join\manifest.json
+-$k = @('-i','C:\Users\ckfle\.ssh\golem-remote','-o','BatchMode=yes','-o','ConnectTimeout=6')
+-foreach ($p in @(@('stephs-desktop','Gold'),@('ainsleys-laptop','Copper'),@('ellies-laptop','Silver'))) {
+-  & scp @k -q D:\UO\golem\join\manifest.json D:\UO\golem\join\Check-Drift.ps1 "golem@$($p[0]):D:/UO/golem/join/" 2>$null
+-  if ($LASTEXITCODE -ne 0) { "$($p[1]) : UNREACHABLE"; continue }
+-  & ssh @k "golem@$($p[0])" "powershell -NoProfile -ExecutionPolicy Bypass -File D:\UO\golem\join\Check-Drift.ps1 -Golem $($p[1])" 2>$null
+-  & ssh @k "golem@$($p[0])" "powershell -NoProfile -Command `"'  claude=' + (Get-Process claude -EA 0).Count; Get-Content D:\UO\golem\golem-$($p[1]).log -Tail 1`"" 2>$null
+-}
++$ErrorActionPreference = 'Continue'
++foreach ($n in 'Iron','Bronze','ShadowIron') { $s = Get-Content "D:\UO\golem\status-$n.json" -Raw | ConvertFrom-Json; "$n : $($s.state) $($s.current) | $($s.needsYou)" }
++Get-Content D:\UO\golem\golem-ShadowIron.log -Tail 3
++# cc-P767: both Codex lanes side by side: each account's 5-hour and week percent and resets, fresh or the last good
++# reading's age, today's runs, and idle time today with the reasons.
++'Codex lanes:'; & powershell.exe -NoProfile -ExecutionPolicy Bypass -File D:\UO\golem\Codex.ps1 -Action lanes | ForEach-Object { '  ' + $_ }
++$man = @{}; Get-ChildItem D:\UO\golem -File | ? { $_.Extension -in '.ps1','.psm1','.py' -or $_.Name -eq 'golems.json' } | % { $man[$_.Name] = (Get-FileHash $_.FullName -Algorithm MD5).Hash }
++$man | ConvertTo-Json | Set-Content D:\UO\golem\join\manifest.json
++$k = @('-i','C:\Users\ckfle\.ssh\golem-remote','-o','BatchMode=yes','-o','ConnectTimeout=6')
++foreach ($p in @(@('stephs-desktop','Gold'),@('ainsleys-laptop','Copper'),@('ellies-laptop','Silver'))) {
++  & scp @k -q D:\UO\golem\join\manifest.json D:\UO\golem\join\Check-Drift.ps1 "golem@$($p[0]):D:/UO/golem/join/" 2>$null
++  if ($LASTEXITCODE -ne 0) { "$($p[1]) : UNREACHABLE"; continue }
++  & ssh @k "golem@$($p[0])" "powershell -NoProfile -ExecutionPolicy Bypass -File D:\UO\golem\join\Check-Drift.ps1 -Golem $($p[1])" 2>$null
++  & ssh @k "golem@$($p[0])" "powershell -NoProfile -Command `"'  claude=' + (Get-Process claude -EA 0).Count; Get-Content D:\UO\golem\golem-$($p[1]).log -Tail 1`"" 2>$null
++}
+ $st = Get-ChildItem D:\UO\golem -File | ? { $_.Name -match 'Stone' -and $_.Name -notmatch 'bak' } | select -First 3 Name,LastWriteTime | ft -a | Out-String; "Stone files on tower: $st"
+--- tests/Codex.Tests.ps1.bak-20261101-P767	2026-10-24 04:30:34.227527600 -0500
++++ tests/Codex.Tests.ps1	2026-11-01 22:48:11.171203700 -0600
+@@ -471,6 +471,100 @@
+     Assert-True (-not $b.allowed) ('the window still open: its share and hard stop still hold: ' + $b.why)
+ }
+ 
++# ---- cc-P767: each lane on its own account ----------------------------------------------------------------------------
++# A kit root with two lanes, each with its own CODEX_HOME and one session log of its own, and this PC's codex-usage.json
++# holding a newer reading of Chase's account (what lane-steph's status showed on 11-01).
++function New-P767Root([datetime]$Now) {
++    $d = Join-Path ([IO.Path]::GetTempPath()) ('codex-p767-' + [guid]::NewGuid().ToString('N').Substring(0, 8))
++    $u = $Now.ToUniversalTime()
++    $mk = {
++        param($acct, [datetime]$at, [double]$p, [double]$s)
++        $day = Join-Path $d ('codex-home\' + $acct + '\sessions\2026\11\01'); New-Item -ItemType Directory -Force -Path $day | Out-Null
++        $f = Join-Path $day ('rollout-' + $acct + '.jsonl')
++        $pr = [DateTimeOffset]::new($at).AddHours(3).ToUnixTimeSeconds(); $sr = [DateTimeOffset]::new($at).AddDays(3).ToUnixTimeSeconds()
++        [IO.File]::WriteAllText($f, ('{"timestamp":"' + $at.ToString('yyyy-MM-ddTHH:mm:ss.fffZ', [Globalization.CultureInfo]::InvariantCulture) + '","type":"event_msg","payload":{"type":"token_count","rate_limits":{"primary":{"used_percent":' + $p + ',"window_minutes":300,"resets_at":' + $pr + '},"secondary":{"used_percent":' + $s + ',"window_minutes":10080,"resets_at":' + $sr + '}}}}'))
++        New-Item -ItemType File -Force -Path (Join-Path $d ('codex-home\' + $acct + '\auth.json')) | Out-Null
++    }
++    & $mk 'lane-chase' $u.AddMinutes(-10) 29 53
++    & $mk 'lane-steph' $u.AddDays(-5) 11 30
++    $chase = [pscustomobject]@{ at = $u.AddMinutes(-1).ToString('o'); source = 'session log rollout-chase-own.jsonl'; primary = [pscustomobject]@{ usedPct = 29; windowMinutes = 300; resetsAt = [DateTimeOffset]::new($u).AddHours(3).ToUnixTimeSeconds() }; secondary = $null; planType = ''; hasCredits = $null; reached = ''; spendControlReached = '' }
++    [IO.File]::WriteAllText((Join-Path $d 'codex-usage.json'), ([pscustomobject]@{ schema = 1; updatedAt = ''; limits = $chase; runs = @() } | ConvertTo-Json -Depth 6))
++    [IO.File]::WriteAllText((Join-Path $d 'golems.json'), '{"schema":1,"golems":[{"name":"Iron","engine":"claude","enabled":true},{"name":"Valorite","engine":"codex","account":"lane-chase","enabled":true},{"name":"Verite","engine":"codex","account":"lane-steph","enabled":true}]}')
++    [IO.File]::WriteAllText((Join-Path $d 'settings.json'), '{"codexEnabled":true}')
++    $d
++}
++
++Fact 'P767_ALaneHomeNamesItsAccountAndAnAccountAloneFindsItsHome' {
++    $r = Join-Path ([IO.Path]::GetTempPath()) ('codex-p767r-' + [guid]::NewGuid().ToString('N').Substring(0, 8)); New-Item -ItemType Directory -Force -Path (Join-Path $r 'codex-home\lane-steph') | Out-Null
++    Assert-True ((Resolve-CodexAccount $r (Join-Path $r 'codex-home\lane-steph') '') -eq 'lane-steph') 'a lane home names its login'
++    Assert-True ((Resolve-CodexAccount $r ((Join-Path $r 'codex-home\lane-steph\') -replace '\\', '/') '') -eq 'lane-steph') 'with a trailing slash or forward slashes too'
++    Assert-True ((Resolve-CodexAccount $r 'C:\Users\x\.codex' '') -eq '') 'Chase''s own ~\.codex names no lane login'
++    Assert-True ((Resolve-CodexAccount $r (Join-Path $r 'codex-home\lane-steph') 'lane-chase') -eq 'lane-chase') 'an -Account given wins'
++    Assert-True ((Resolve-CodexHomeFor $r 'C:\Users\x\.codex' 'lane-steph' 'C:\Users\x\.codex') -eq (Join-Path $r 'codex-home\lane-steph')) '-Account alone: its own lane home, never Chase''s ~\.codex'
++    Assert-True ((Resolve-CodexHomeFor $r 'E:\other' 'lane-steph' 'C:\Users\x\.codex') -eq 'E:\other') 'a -CodexHome given is kept'
++    Assert-True ((Resolve-CodexHomeFor $r 'C:\Users\x\.codex' '' 'C:\Users\x\.codex') -eq 'C:\Users\x\.codex') 'no account: this PC''s own home'
++    Remove-Item -LiteralPath $r -Recurse -Force
++}
++
++Fact 'P767_LaneStephsStatusReadsOnlyItsOwnAccountAndSaysUnknownWithTheLastGoodReadingsAge' {
++    $real = Get-Date
++    $d = New-P767Root $real
++    $keep = @{ Root = $Root; Account = $Account; CodexHome = $CodexHome; BinRoot = $BinRoot }
++    try {
++        $Root = $d; $BinRoot = Join-Path $d 'no-bin'
++        $CodexHome = Join-Path $d 'codex-home\lane-steph'
++        $Account = Resolve-CodexAccount $Root $CodexHome ''   # what the script does before -Action status
++        $st = Get-CodexStatus
++        Write-Host ('      steph: ' + $st.limits.source + ' | ' + $st.limitsNote)
++        Assert-True ($st.account -eq 'lane-steph') ('the account from its home: ' + $st.account)
++        Assert-True ($st.limits.source -match 'rollout-lane-steph' -and $st.limits.primary.usedPct -eq 11) ('lane-steph''s own session log, not this PC''s file: ' + $st.limits.source + ' ' + $st.limits.primary.usedPct)
++        Assert-True ($st.limitsState -eq 'unknown' -and $st.limitsAgeMinutes -ge 7190 -and $st.limitsNote -match 'last good reading is 5(\.0)? days old') ('5 days old: unknown, with its age: ' + $st.limitsNote)
++        $f = Join-Path $d 'codex-usage-lane-steph.json'
++        Assert-True ((Test-Path -LiteralPath $f) -and ((Get-Content -LiteralPath $f -Raw | ConvertFrom-Json).limits.primary.usedPct -eq 11)) 'its own usage file now holds its last good reading'
++        Assert-True (((Get-Content -LiteralPath (Join-Path $d 'codex-usage.json') -Raw | ConvertFrom-Json).limits.source) -eq 'session log rollout-chase-own.jsonl') 'this PC''s file is untouched'
++        $CodexHome = Join-Path $d 'codex-home\lane-chase'; $Account = Resolve-CodexAccount $Root $CodexHome ''
++        $sc = Get-CodexStatus
++        Assert-True ($sc.limits.source -match 'rollout-lane-chase' -and $sc.limitsState -eq 'fresh' -and $sc.limits.primary.usedPct -eq 29) ('lane-chase: its own, fresh: ' + $sc.limitsNote)
++        Assert-True (@($sc.lanes).Count -eq 2 -and $sc.lanes[0].golem -eq 'Valorite' -and $sc.lanes[0].source -match 'rollout-lane-chase' -and $sc.lanes[0].fiveHour.usedPct -eq 29 -and $sc.lanes[1].golem -eq 'Verite' -and $sc.lanes[1].source -match 'rollout-lane-steph' -and $sc.lanes[1].limitsState -eq 'unknown') ('status shows both lanes side by side: ' + (@($sc.lanes | ForEach-Object { $_.text }) -join ' | '))
++    } finally {
++        $Root = $keep.Root; $Account = $keep.Account; $CodexHome = $keep.CodexHome; $BinRoot = $keep.BinRoot
++        Remove-Item -LiteralPath $d -Recurse -Force -ErrorAction SilentlyContinue
++    }
++}
++
++Fact 'P767_TheLanesViewAddsUpTodaysIdleTimeByReason' {
++    $now = [datetime]'2026-11-01T12:00:00'
++    $d = New-P767Root $now
++    $ln = @(
++        '2026-10-31 23:55:00  Watch        Valorite idle: budget: yesterday, not counted',
++        '2026-11-01 11:25:00  Watch        Valorite idle: 6 prompts, 0 claimable: 3 Golem line, 1 area golem, 2 no Lane tests',
++        '2026-11-01 11:35:00  Watch        Valorite idle: 6 prompts, 0 claimable: 3 Golem line, 1 area golem, 2 no Lane tests',
++        '2026-11-01 11:40:00  Watch        lane: Codex starts P800 in x (run 1, process 1)',
++        '2026-11-01 11:45:00  Watch        Verite idle: budget: the week is at 96%',
++        '2026-11-01 11:55:00  Watch        Valorite idle: error: Codex.ps1 -Action status gave no answer')
++    [IO.File]::WriteAllText((Join-Path $d 'golem-Valorite.log'), ($ln -join "`r`n"))
++    $v = @(Get-CodexLanesView $d (Get-CodexSettings (Join-Path $d 'settings.json')) $now)
++    $va = $v | Where-Object { $_.golem -eq 'Valorite' }; $ve = $v | Where-Object { $_.golem -eq 'Verite' }
++    Write-Host ('      ' + $va.text); Write-Host ('      ' + $ve.text)
++    Assert-True ($va.idleTodayMinutes -eq 25 -and $va.idleByReason['nothing claimable'] -eq 20 -and $va.idleByReason['error'] -eq 5) ('Valorite: 10 + 10 nothing claimable, 5 error until now; yesterday and Verite''s line not counted: ' + ($va.idleByReason | ConvertTo-Json -Compress))
++    Assert-True ($va.text -match '^Valorite \(lane-chase\): 5-hour 29% \(resets ' -and $va.text -match 'idle today 25 min: nothing claimable 20 min, error 5 min') ('one line a person reads: ' + $va.text)
++    Assert-True ($ve.limitsState -eq 'unknown' -and $ve.fiveHour.usedPct -eq 0 -and $ve.fiveHour.resets -eq 'reset already' -and $ve.week.usedPct -eq 0) ('Verite: its 5-day-old reading, whose windows have both reset: ' + $ve.text)
++    Assert-True ($ve.idleTodayMinutes -eq 0) 'no log for Verite here: no idle time made up'
++    Remove-Item -LiteralPath $d -Recurse -Force
++}
++
++Fact 'P767_AFreshReadingIsWithinFiveHoursAndOlderIsUnknown' {
++    $n = [datetime]'2026-11-01T12:00:00'
++    $at = { param($m) [pscustomobject]@{ at = [DateTimeOffset]::new($n).AddMinutes(-$m).ToString('o'); source = 's' } }
++    $s = Get-CodexSettings ''
++    Assert-True ((Get-LimitsFreshness (& $at 10) $s $n).state -eq 'fresh') 'ten minutes: fresh'
++    $o = Get-LimitsFreshness (& $at 360) $s $n
++    Assert-True ($o.state -eq 'unknown' -and $o.ageMinutes -eq 360 -and $o.note -match 'last good reading is 6h 00m old') ('six hours: unknown with its age: ' + $o.note)
++    Assert-True ((Get-LimitsFreshness $null $s $n).state -eq 'unknown') 'no reading: unknown'
++    $s2 = Get-CodexSettings ''; $s2.codexLimitsFreshMinutes = 720
++    Assert-True ((Get-LimitsFreshness (& $at 360) $s2 $n).state -eq 'fresh') 'codexLimitsFreshMinutes moves the line'
++}
++
+ Write-Host ''
+ Write-Host ('{0} checks passed, {1} failed' -f $script:passes, $script:fails)
+ exit $script:fails
+--- tests/Lane.Tests.ps1.bak-20261101-P767	2026-10-24 04:30:34.232527300 -0500
++++ tests/Lane.Tests.ps1	2026-11-01 22:48:11.298653200 -0600
+@@ -224,6 +224,28 @@
+     Assert-True ((Test-Path -LiteralPath (Join-Path $rr 'lane-now-Valorite.json')) -and -not (Test-Path -LiteralPath (Join-Path $rr 'remote\Valorite'))) ('a lane on this PC: the file here, as before: ' + $o)
+ }
+ 
++Fact 'P767_ALaneThatSkipsEveryPromptSaysWhyInOneSummary' {
++    $pd = Join-Path $Root 'p767-prompts'; $q = Join-Path $pd 'queue'; $ci = Join-Path $pd 'claimed\Iron'; $lk = Join-Path $Root 'p767-locks'
++    foreach ($d in @($q, $ci, $lk)) { New-Item -ItemType Directory -Path $d -Force | Out-Null }
++    $w = { param($dir, $n, $t) [IO.File]::WriteAllText((Join-Path $dir $n), $t) }
++    & $w $q 'cc-P401-iron.md' "# CC task P401: a`n`n**Golem:** Iron`n**Touches:** docs-only`n**Agent:** Codex OK`n**Lane tests:** none`n"
++    & $w $q 'cc-P402-plain.md' "# CC task P402: b`n`n**Touches:** docs-only`n"
++    & $w $q 'cc-P403-notests.md' "# CC task P403: c`n`n**Touches:** docs-only`n**Agent:** Codex OK`n"
++    & $w $q 'cc-P404-golem.md' "# CC task P404: d`n`n**Touches:** golem`n**Agent:** Codex OK`n**Lane tests:** none`n"
++    & $w $ci 'cc-P400-busy.md' "# CC task P400: e`n`n**Touches:** golem`n"
++    $me = [pscustomobject]@{ name = 'Valorite'; engine = 'codex'; enabled = $true; lane = 'any'; hours = ''; areas = @('docs-only', 'golem', 'server') }
++    $reg = [pscustomobject]@{ Golems = @($me) }
++    $items = @(Get-ChildItem -LiteralPath $q -Filter 'cc-P*.md' | Sort-Object Name)
++    $c = Get-ClaimCandidate $me $reg $pd $items $lk (Get-Date)
++    Assert-True ($null -eq $c) ('nothing claimable: ' + $(if ($c) { $c.Item.Name } else { '' }))
++    $sum = Get-ClaimSkipSummary $items.Count
++    Assert-True ($sum -eq '4 prompts, 0 claimable: 1 Golem line, 1 not Codex OK, 1 no Lane tests, 1 area golem') ('the summary: ' + $sum)
++    # Each call starts a new tally: a second watch does not add to the first.
++    [void](Get-ClaimCandidate $me $reg $pd $items $lk (Get-Date))
++    Assert-True ((Get-ClaimSkipSummary $items.Count) -eq $sum) ('the next watch counts afresh: ' + (Get-ClaimSkipSummary $items.Count))
++    Assert-True ((Get-ClaimSkipSummary 1) -like '1 prompt, 0 claimable*') ('one prompt reads singular: ' + (Get-ClaimSkipSummary 1))
++}
++
+ Remove-Item -LiteralPath $Root -Recurse -Force -ErrorAction SilentlyContinue
+ Write-Host ''
+ Write-Host ('{0} checks passed, {1} failed' -f $script:passes, $script:fails)
+--- settings.json.bak-20261101-P767	2026-10-25 05:22:22.134084400 -0500
++++ settings.json	2026-11-01 22:48:26.659507500 -0600
+@@ -50,6 +50,9 @@
+     "codexAccountHomes":  {
+                               "lane-chase":  [
+                                                  "C:\\Users\\ckfle\\.codex"
++                                             ],
++                              "lane-steph":  [
++                                                 "D:\\UO\\golem\\codex-home\\lane-steph"
+                                              ]
+                           },
+     "artApiModel":  "gpt-image-2.5-flare",

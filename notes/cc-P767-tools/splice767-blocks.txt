@@ -1,0 +1,62 @@
+    [ValidateSet('status', 'usage', 'run', 'review')][string]$Action = 'status',
+@@@@
+    [ValidateSet('status', 'usage', 'run', 'review', 'lanes')][string]$Action = 'status',
+@@@@
+      Codex.ps1 -Action usage                  JSON: refresh codex-usage.json from the newest Codex session logs
+@@@@
+      Codex.ps1 -Action usage                  JSON: refresh codex-usage.json from the newest Codex session logs
+      Codex.ps1 -Action lanes                  cc-P767: every Codex lane side by side, one line each: its own account's
+                                               5-hour and week percent and resets, fresh or unknown (with the last good
+                                               reading's age), runs today, idle today and why. status carries it as lanes.
+@@@@
+        codexAllowCredits = $false; laneBackOffSeconds = 30; laneStopGraceMinutes = 2   # cc-P159
+@@@@
+        codexAllowCredits = $false; laneBackOffSeconds = 30; laneStopGraceMinutes = 2   # cc-P159
+        codexLimitsFreshMinutes = 300   # cc-P767: an older reading is "unknown" (the last good one is still used, with its age)
+@@@@
+function Read-CodexUsageFile([string]$File) {
+@@@@
+<<FUNCS>>
+
+function Read-CodexUsageFile([string]$File) {
+@@@@
+function Get-CodexStatus {
+    $exe = Find-CodexExe $BinRoot
+    $set = Get-CodexSettings (Join-Path $Root 'settings.json')
+    $doc = Read-CodexUsageFile (Get-CodexUsagePath $Root $Account)
+    $lim = Read-AccountRateLimits $CodexHome $set $Account $doc   # cc-P373: any home of the same login, else the file
+    $runs = $(if ($doc) { @($doc.runs) } else { @() })
+    $ver = $(if ($exe) { (Invoke-CodexNative $exe @('--version')).Trim() } else { '' })
+    [pscustomobject]@{ exe = $exe; version = $ver; login = (Get-CodexLoginStatus $exe); settings = $set; limits = $lim
+        budget = (Test-CodexBudget $lim $runs $set (Get-Date)); today = $(if ($doc) { $doc.today } else { $null }) }
+}
+@@@@
+function Get-CodexStatus {
+    $exe = Find-CodexExe $BinRoot
+    $set = Get-CodexSettings (Join-Path $Root 'settings.json')
+    $doc = Read-CodexUsageFile (Get-CodexUsagePath $Root $Account)
+    $lim = Read-AccountRateLimits $CodexHome $set $Account $doc   # cc-P373: any home of the same login, else the file
+    $now = Get-Date
+    $fr = Get-LimitsFreshness $lim $set $now   # cc-P767
+    # cc-P767: a lane's own file keeps its account's newest reading (the lane's watch asks for status every 10 minutes), so
+    # it holds the last good reading even while the lane runs nothing; written only when the reading is newer than the file's.
+    if ($Account -and $lim -and (-not $doc -or (Get-LimitsTime $lim) -gt (Get-LimitsTime $doc.limits))) { try { $doc = Update-CodexUsage $lim $null } catch { } }
+    $runs = $(if ($doc) { @($doc.runs) } else { @() })
+    $ver = $(if ($exe) { (Invoke-CodexNative $exe @('--version')).Trim() } else { '' })
+    [pscustomobject]@{ exe = $exe; version = $ver; login = (Get-CodexLoginStatus $exe); account = $Account; codexHome = $CodexHome; settings = $set; limits = $lim
+        limitsState = $fr.state; limitsAgeMinutes = $fr.ageMinutes; limitsNote = $fr.note
+        budget = (Test-CodexBudget $lim $runs $set $now); today = $(if ($doc) { $doc.today } else { $null })
+        lanes = @(Get-CodexLanesView $Root $set $now) }
+}
+@@@@
+if ($LoadOnly) { return }
+switch ($Action) {
+    'status' { Get-CodexStatus | ConvertTo-Json -Depth 6 }
+@@@@
+if ($LoadOnly) { return }
+# cc-P767: the account from a lane's home when -Account is not given, and a lane's own home when only -Account is.
+$Account = Resolve-CodexAccount $Root $CodexHome $Account
+$CodexHome = Resolve-CodexHomeFor $Root $CodexHome $Account (Join-Path $env:USERPROFILE '.codex')
+switch ($Action) {
+    'status' { Get-CodexStatus | ConvertTo-Json -Depth 6 }
+    'lanes'  { @(Get-CodexLanesView $Root (Get-CodexSettings (Join-Path $Root 'settings.json')) (Get-Date)) | ForEach-Object { $_.text } }
