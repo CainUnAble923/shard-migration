@@ -1,0 +1,77 @@
+Test run for /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.0+05679a7ab5 (64-bit .NET 10.0.7)
+[xUnit.net 00:00:00.14]   Discovering: UOContent.Tests
+[xUnit.net 00:00:00.45]   Discovered:  UOContent.Tests
+[xUnit.net 00:00:00.47]   Starting:    UOContent.Tests
+[11:30:44 INF] Loading world <s:Server.World>
+[11:30:44 INF] Loading world done (0 items, 0 mobiles) (0.01 seconds) <s:Server.World>
+[11:30:45 INF] Discovered 3 spawner JSON type(s) <s:Server.Engines.Spawners.SpawnerJsonSerializer>
+[11:30:45 INF] Client: 127.0.0.1: Connected. [1 Online] <s:Server.Network.NetState>
+[11:30:45 INF] Client: 127.0.0.1: Disconnected. [0 Online] [p773a052425875d7] <s:Server.Network.NetState>
+[11:30:45 INF] Client: 127.0.0.1: Connected. [1 Online] <s:Server.Network.NetState>
+[11:30:45 INF] Client: 127.0.0.1: Connected. [2 Online] <s:Server.Network.NetState>
+[11:30:45 INF] Client: 127.0.0.1: Disconnected. [1 Online] [p773e3777abea31a] <s:Server.Network.NetState>
+[11:30:45 INF] Client: 127.0.0.1: Disconnected. [0 Online] [p773e20e19c461d1] <s:Server.Network.NetState>
+[11:30:45 INF] Client: 127.0.0.1: Connected. [1 Online] <s:Server.Network.NetState>
+[xUnit.net 00:00:01.15]     ShatteredLegacy.Tests.PlayTestTasksVerification.P773_TasksForSomeoneWhoIsNotATesterOpensNothing [FAIL]
+[11:30:45 WRN] [PlayTest] testers.json is not valid JSON: Expected depth to be zero at the end of the JSON payload. There is an open JSON object or array that should be closed. LineNumber: 0 | BytePositionInLine: 27. <s:Server.PlayTest.PlayTestFiles>
+[xUnit.net 00:00:01.15]       Assert.Null() Failure: Value is not null
+[xUnit.net 00:00:01.15]       Expected: null
+[xUnit.net 00:00:01.15]       Actual:   PlayTestTasksGump { Closable = True, Disposable = True, Draggable = True, Entries = [GumpPage { Page = 0, Parent = PlayTestTasksGump { ··· } }, GumpBackground { GumpID = 9270, Height = 500, Parent = PlayTestTasksGump { ··· }, Width = 540, X = 0, ··· }, GumpAlphaRegion { Height = 480, Parent = PlayTestTasksGump { ··· }, Width = 520, X = 10, Y = 10 }, GumpButton { ButtonID = 2, NormalID = 4011, Param = 0, Parent = PlayTestTasksGump { ··· }, PressedID = 4013, ··· }, GumpLabel { Hue = 90, Parent = PlayTestTasksGump { ··· }, Text = "Report something else", X = 60, Y = 462 }, ···], Resizable = True, ··· }
+[xUnit.net 00:00:01.15]       Stack Trace:
+[xUnit.net 00:00:01.15]         /build/modernuo/Projects/UOContent.Tests/Tests/PlayTest/PlayTestTasksVerification.cs(171,0): at ShatteredLegacy.Tests.PlayTestTasksVerification.P773_TasksForSomeoneWhoIsNotATesterOpensNothing()
+[xUnit.net 00:00:01.15]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.15]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[11:30:45 WRN] [PlayTest] tasks.json is not valid JSON: '2' is an invalid end of a number. Expected a delimiter. LineNumber: 0 | BytePositionInLine: 5. <s:Server.PlayTest.PlayTestFiles>
+[11:30:45 WRN] [PlayTest] tasks.json has no tasks list <s:Server.PlayTest.PlayTestFiles>
+[11:30:45 WRN] [PlayTest] playtest-reports.jsonl could not be written: Access to the path '/tmp/p773-5e4099aefe87402d8ed6145cca539dec/playtest-reports.jsonl' is denied. <s:Server.PlayTest.PlayTestFiles>
+[11:30:45 INF] Client: 127.0.0.1: Disconnected. [0 Online] [p773d8a818a4c441] <s:Server.Network.NetState>
+[11:30:45 INF] Client: 127.0.0.1: Connected. [1 Online] <s:Server.Network.NetState>
+[11:30:45 INF] Client: 127.0.0.1: Connected. [2 Online] <s:Server.Network.NetState>
+[11:30:45 INF] Client: 127.0.0.1: Disconnected. [1 Online] [p77330b1cec9a635] <s:Server.Network.NetState>
+[11:30:45 INF] Client: 127.0.0.1: Disconnected. [0 Online] [p773e6a0ae9e8895] <s:Server.Network.NetState>
+[11:30:45 INF] Client: 127.0.0.1: Connected. [1 Online] <s:Server.Network.NetState>
+[11:30:45 INF] Client: 127.0.0.1: Connected. [2 Online] <s:Server.Network.NetState>
+[11:30:45 INF] Client: 127.0.0.1: Disconnected. [1 Online] [p773709c6aa2a612] <s:Server.Network.NetState>
+[11:30:45 INF] Client: 127.0.0.1: Disconnected. [0 Online] [p7736859e5b340ad] <s:Server.Network.NetState>
+[xUnit.net 00:00:01.17]     ShatteredLegacy.Tests.PlayTestTasksVerification.P773_SayingTasksAloudOpensTheWindow [FAIL]
+[xUnit.net 00:00:01.17]       Assert.Null() Failure: Value is not null
+[xUnit.net 00:00:01.17]       Expected: null
+[xUnit.net 00:00:01.17]       Actual:   PlayTestTasksGump { Closable = True, Disposable = True, Draggable = True, Entries = [GumpPage { Page = 0, Parent = PlayTestTasksGump { ··· } }, GumpBackground { GumpID = 9270, Height = 500, Parent = PlayTestTasksGump { ··· }, Width = 540, X = 0, ··· }, GumpAlphaRegion { Height = 480, Parent = PlayTestTasksGump { ··· }, Width = 520, X = 10, Y = 10 }, GumpButton { ButtonID = 2, NormalID = 4011, Param = 0, Parent = PlayTestTasksGump { ··· }, PressedID = 4013, ··· }, GumpLabel { Hue = 90, Parent = PlayTestTasksGump { ··· }, Text = "Report something else", X = 60, Y = 462 }, ···], Resizable = True, ··· }
+[xUnit.net 00:00:01.17]       Stack Trace:
+[xUnit.net 00:00:01.17]         /build/modernuo/Projects/UOContent.Tests/Tests/PlayTest/PlayTestTasksVerification.cs(319,0): at ShatteredLegacy.Tests.PlayTestTasksVerification.P773_SayingTasksAloudOpensTheWindow()
+[xUnit.net 00:00:01.17]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.17]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[11:30:45 INF] Client: 127.0.0.1: Connected. [1 Online] <s:Server.Network.NetState>
+[11:30:45 INF] Client: 127.0.0.1: Disconnected. [0 Online] [p773eacc3b48f01c] <s:Server.Network.NetState>
+[xUnit.net 00:00:01.19]   Finished:    UOContent.Tests
+  Passed ShatteredLegacy.Tests.PlayTestTasksVerification.P773_ALoginLineWhenNewTasksArrive [90 ms]
+  Failed ShatteredLegacy.Tests.PlayTestTasksVerification.P773_TasksForSomeoneWhoIsNotATesterOpensNothing [13 ms]
+  Error Message:
+   Assert.Null() Failure: Value is not null
+Expected: null
+Actual:   PlayTestTasksGump { Closable = True, Disposable = True, Draggable = True, Entries = [GumpPage { Page = 0, Parent = PlayTestTasksGump { ··· } }, GumpBackground { GumpID = 9270, Height = 500, Parent = PlayTestTasksGump { ··· }, Width = 540, X = 0, ··· }, GumpAlphaRegion { Height = 480, Parent = PlayTestTasksGump { ··· }, Width = 520, X = 10, Y = 10 }, GumpButton { ButtonID = 2, NormalID = 4011, Param = 0, Parent = PlayTestTasksGump { ··· }, PressedID = 4013, ··· }, GumpLabel { Hue = 90, Parent = PlayTestTasksGump { ··· }, Text = "Report something else", X = 60, Y = 462 }, ···], Resizable = True, ··· }
+  Stack Trace:
+     at ShatteredLegacy.Tests.PlayTestTasksVerification.P773_TasksForSomeoneWhoIsNotATesterOpensNothing() in /build/modernuo/Projects/UOContent.Tests/Tests/PlayTest/PlayTestTasksVerification.cs:line 171
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed ShatteredLegacy.Tests.PlayTestTasksVerification.P773_AMissingOrBrokenFileNeverThrows [22 ms]
+  Passed ShatteredLegacy.Tests.PlayTestTasksVerification.P773_TasksForATesterOpensTheirOpenTasks [2 ms]
+  Passed ShatteredLegacy.Tests.PlayTestTasksVerification.P773_NoPassOrFailIsEverWritten [< 1 ms]
+  Failed ShatteredLegacy.Tests.PlayTestTasksVerification.P773_SayingTasksAloudOpensTheWindow [4 ms]
+  Error Message:
+   Assert.Null() Failure: Value is not null
+Expected: null
+Actual:   PlayTestTasksGump { Closable = True, Disposable = True, Draggable = True, Entries = [GumpPage { Page = 0, Parent = PlayTestTasksGump { ··· } }, GumpBackground { GumpID = 9270, Height = 500, Parent = PlayTestTasksGump { ··· }, Width = 540, X = 0, ··· }, GumpAlphaRegion { Height = 480, Parent = PlayTestTasksGump { ··· }, Width = 520, X = 10, Y = 10 }, GumpButton { ButtonID = 2, NormalID = 4011, Param = 0, Parent = PlayTestTasksGump { ··· }, PressedID = 4013, ··· }, GumpLabel { Hue = 90, Parent = PlayTestTasksGump { ··· }, Text = "Report something else", X = 60, Y = 462 }, ···], Resizable = True, ··· }
+  Stack Trace:
+     at ShatteredLegacy.Tests.PlayTestTasksVerification.P773_SayingTasksAloudOpensTheWindow() in /build/modernuo/Projects/UOContent.Tests/Tests/PlayTest/PlayTestTasksVerification.cs:line 319
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed ShatteredLegacy.Tests.PlayTestTasksVerification.P773_EachButtonWritesOneWellFormedLine [14 ms]
+
+Test Run Failed.
+Total tests: 7
+     Passed: 5
+     Failed: 2
+ Total time: 1.4885 Seconds
