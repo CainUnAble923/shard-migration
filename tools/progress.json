@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-02T09:56:09-06:00",
+  "generated": "2026-11-02T16:32:27-06:00",
   "direction": {
     "eyebrow": "Direction",
     "title": "Our own shard on ModernUO, OSI where OSI has an answer",
@@ -859,7 +859,7 @@
     {
       "kind": "play tests",
       "item": "not sorted",
-      "check": "1013 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check.",
+      "check": "1015 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check.",
       "cmd": [
         "python -m unittest tools/tests/test_play_who.py"
       ]
@@ -1387,19 +1387,30 @@
   "derived": {
     "version": "2026.11.02.5",
     "playtests": {
-      "open": 1456,
+      "open": 1458,
       "failed": 4,
       "passed": 43,
       "later": 8,
       "blocked": 1,
-      "total": 1503,
+      "total": 1505,
       "unloggedFails": 3,
-      "generatedAt": "2026-11-02T15:55:08Z"
+      "generatedAt": "2026-11-02T22:32:03Z"
     },
     "queue": {
-      "autopilot": "off",
+      "autopilot": "on",
       "running": null,
-      "queued": [],
+      "queued": [
+        {
+          "n": 778,
+          "slug": "assess-gathering-activities",
+          "state": "queued"
+        },
+        {
+          "n": 779,
+          "slug": "assess-seasonal-content",
+          "state": "queued"
+        }
+      ],
       "finished": [
         {
           "n": 9772,
@@ -1416,6 +1427,14 @@
           "why": "",
           "date": "2026-11-02",
           "notes": "notes/cc-P9770-run-next-test.md"
+        },
+        {
+          "n": 777,
+          "slug": "assess-daily-quests-tokens",
+          "state": "done",
+          "why": "",
+          "date": "2026-11-02",
+          "notes": "notes/cc-P777-assess-daily-quests-tokens.md"
         },
         {
           "n": 775,
@@ -1472,18 +1491,10 @@
           "why": "",
           "date": "2026-11-02",
           "notes": "notes/cc-P768-review-build-cont-loot-boxes-diversified.md"
-        },
-        {
-          "n": 767,
-          "slug": "codex-usage-per-account",
-          "state": "done",
-          "why": "",
-          "date": "2026-11-01",
-          "notes": "notes/cc-P767-codex-usage-per-account.md"
         }
       ],
-      "finished_total": 649,
-      "done_total": 644,
+      "finished_total": 650,
+      "done_total": 645,
       "stopped_total": 5,
       "latest_done": {
         "n": 9772,
