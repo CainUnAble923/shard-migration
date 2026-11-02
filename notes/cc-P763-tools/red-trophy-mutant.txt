@@ -1,0 +1,37 @@
+    0 Error(s)
+Build succeeded.
+Test run for /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.0+05679a7ab5 (64-bit .NET 10.0.7)
+[xUnit.net 00:00:00.12]   Discovering: UOContent.Tests
+[xUnit.net 00:00:00.43]   Discovered:  UOContent.Tests
+[xUnit.net 00:00:00.45]   Starting:    UOContent.Tests
+[18:32:34 INF] Loading world <s:Server.World>
+[18:32:34 INF] Loading world done (0 items, 0 mobiles) (0.01 seconds) <s:Server.World>
+[18:32:35 INF] Discovered 3 spawner JSON type(s) <s:Server.Engines.Spawners.SpawnerJsonSerializer>
+[18:32:35 INF] Client: 127.0.0.1: Connected. [1 Online] <s:Server.Network.NetState>
+[18:32:35 WRN] map1.mul was not found. <s:Server.TileMatrix>
+[18:32:35 WRN] staidx1.mul was not found. <s:Server.TileMatrix>
+[18:32:35 WRN] statics1.mul was not found. <s:Server.TileMatrix>
+[18:32:35 WRN] 127.0.0.1: send buffer exhausted - needed 104 bytes, 1 writable, 0 awaiting acknowledgement, 4096 capacity. Raise network.sendBufferMaxSize (power of two) if this recurs on healthy connections. <s:Server.Network.NetState>
+[xUnit.net 00:00:01.14]     ShatteredLegacy.Tests.LootBoxDiversityVerification.TheNewSourcesEachAwardOnce [FAIL]
+[xUnit.net 00:00:01.14]       Assert.Contains() Failure: Filter not matched in collection
+[xUnit.net 00:00:01.14]       Collection: [0x40000038 "LootDecor", 0x40000039 "StuddedChest", 0x4000003A "FruitBowl"]
+[xUnit.net 00:00:01.14]       Stack Trace:
+[xUnit.net 00:00:01.14]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/LootBoxDiversityVerification.cs(534,0): at ShatteredLegacy.Tests.LootBoxDiversityVerification.TheNewSourcesEachAwardOnce()
+[xUnit.net 00:00:01.14]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.14]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.14]   Finished:    UOContent.Tests
+  Failed ShatteredLegacy.Tests.LootBoxDiversityVerification.TheNewSourcesEachAwardOnce [162 ms]
+  Error Message:
+   Assert.Contains() Failure: Filter not matched in collection
+Collection: [0x40000038 "LootDecor", 0x40000039 "StuddedChest", 0x4000003A "FruitBowl"]
+  Stack Trace:
+     at ShatteredLegacy.Tests.LootBoxDiversityVerification.TheNewSourcesEachAwardOnce() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/LootBoxDiversityVerification.cs:line 534
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+Test Run Failed.
+Total tests: 1
+     Failed: 1
+ Total time: 1.3834 Seconds

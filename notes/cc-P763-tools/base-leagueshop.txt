@@ -1,0 +1,96 @@
+    0 Error(s)
+Build succeeded.
+Test run for /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.0+05679a7ab5 (64-bit .NET 10.0.7)
+[xUnit.net 00:00:00.13]   Discovering: UOContent.Tests
+[xUnit.net 00:00:00.49]   Discovered:  UOContent.Tests
+[xUnit.net 00:00:00.50]   Starting:    UOContent.Tests
+[18:20:30 INF] Loading world <s:Server.World>
+[18:20:30 INF] Loading world done (0 items, 0 mobiles) (0.01 seconds) <s:Server.World>
+[18:20:31 INF] Discovered 3 spawner JSON type(s) <s:Server.Engines.Spawners.SpawnerJsonSerializer>
+[xUnit.net 00:00:01.14]     ShatteredLegacy.Tests.LeagueShopVerification.TheStockIsF13sStarterTableAndHandsOverNoMagicItem [FAIL]
+[xUnit.net 00:00:01.14]       System.NullReferenceException : Object reference not set to an instance of an object.
+[xUnit.net 00:00:01.14]       Stack Trace:
+[xUnit.net 00:00:01.14]         /build/modernuo/Projects/UOContent/Engines/Treasures of Tokuno/TreasuresOfTokuno.cs(124,0): at Server.Misc.TreasuresOfTokuno.get_RewardEra()
+[xUnit.net 00:00:01.14]         /build/modernuo/Projects/UOContent/Engines/Treasures of Tokuno/TreasuresOfTokuno.cs(159,0): at Server.Misc.TreasuresOfTokuno.get_GreaterArtifacts()
+[xUnit.net 00:00:01.14]         /build/modernuo/Projects/UOContent/Engines/Treasures of Tokuno/BasePigmentsOfTokuno.cs(217,0): at Server.Items.BasePigmentsOfTokuno.IsValidItem(Item i)
+[xUnit.net 00:00:01.14]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/LeagueShopVerification.cs(406,0): at ShatteredLegacy.Tests.LeagueShopVerification.TheStockIsF13sStarterTableAndHandsOverNoMagicItem()
+[xUnit.net 00:00:01.14]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.14]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.14]       Output:
+[xUnit.net 00:00:01.14]             0 AP    25 Renown  Title: Registered Adventurer
+[xUnit.net 00:00:01.14]             0 AP    50 Renown  League tabard
+[xUnit.net 00:00:01.14]             0 AP    40 Renown  System's Loot Box, Bronze
+[xUnit.net 00:00:01.14]           100 AP    75 Renown  Hair restyling deed
+[xUnit.net 00:00:01.14]           100 AP    60 Renown  League rune (blessed)
+[xUnit.net 00:00:01.14]           250 AP   150 Renown  League banner
+[xUnit.net 00:00:01.14]           250 AP   200 Renown  League cloak
+[xUnit.net 00:00:01.14]           250 AP   150 Renown  System's Loot Box, Silver
+[xUnit.net 00:00:01.14]           500 AP   250 Renown  Achievement trophy statuette
+[xUnit.net 00:00:01.14]           500 AP   300 Renown  League-hue pigment (one use)
+[xUnit.net 00:00:01.14]           500 AP   200 Renown  Title: Veteran of the League
+[xUnit.net 00:00:01.14]          1000 AP   400 Renown  System's Loot Box, Gold
+[xUnit.net 00:00:01.14]          1750 AP  1000 Renown  League regalia (3 pieces)
+[xUnit.net 00:00:01.14]          1750 AP   500 Renown  Title: the System's Favorite
+[xUnit.net 00:00:01.14]          1750 AP   750 Renown  Mount: chestnut draft horse
+[xUnit.net 00:00:01.14]          1750 AP   750 Renown  Mount: bay draft horse
+[xUnit.net 00:00:01.14]          1750 AP   750 Renown  Mount: grey draft horse
+[xUnit.net 00:00:01.14]          1750 AP   750 Renown  Mount: palomino draft horse
+[xUnit.net 00:00:01.14]          1750 AP  1000 Renown  Mount: barded warhorse
+[xUnit.net 00:00:01.14]          1750 AP  1500 Renown  Mount: gilded charger
+[xUnit.net 00:00:01.14]         AP from every achievement not retired: 2,575
+[xUnit.net 00:00:01.14]           tabard: LeagueTabard 0x1FFD hue 1323
+  Passed ShatteredLegacy.Tests.LeagueShopVerification.TheWindowGreysLockedRowsAndTheConfirmStepListsTheRequirements [75 ms]
+  Passed ShatteredLegacy.Tests.LeagueShopVerification.ABuyWithEnoughRenownAndApTakesExactlyThePrice [20 ms]
+  Passed ShatteredLegacy.Tests.LeagueShopVerification.ThePickedTitleShowsOnTheMobile [1 ms]
+  Passed ShatteredLegacy.Tests.LeagueShopVerification.ATitleRowIsBoughtOnce [1 ms]
+  Passed ShatteredLegacy.Tests.LeagueShopVerification.ATitleUnlockedByApStaysUnlocked [< 1 ms]
+  Failed ShatteredLegacy.Tests.LeagueShopVerification.TheStockIsF13sStarterTableAndHandsOverNoMagicItem [5 ms]
+  Error Message:
+   System.NullReferenceException : Object reference not set to an instance of an object.
+  Stack Trace:
+     at Server.Misc.TreasuresOfTokuno.get_RewardEra() in /build/modernuo/Projects/UOContent/Engines/Treasures of Tokuno/TreasuresOfTokuno.cs:line 124
+   at Server.Misc.TreasuresOfTokuno.get_GreaterArtifacts() in /build/modernuo/Projects/UOContent/Engines/Treasures of Tokuno/TreasuresOfTokuno.cs:line 159
+   at Server.Items.BasePigmentsOfTokuno.IsValidItem(Item i) in /build/modernuo/Projects/UOContent/Engines/Treasures of Tokuno/BasePigmentsOfTokuno.cs:line 217
+   at ShatteredLegacy.Tests.LeagueShopVerification.TheStockIsF13sStarterTableAndHandsOverNoMagicItem() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/LeagueShopVerification.cs:line 406
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+     0 AP    25 Renown  Title: Registered Adventurer
+     0 AP    50 Renown  League tabard
+     0 AP    40 Renown  System's Loot Box, Bronze
+   100 AP    75 Renown  Hair restyling deed
+   100 AP    60 Renown  League rune (blessed)
+   250 AP   150 Renown  League banner
+   250 AP   200 Renown  League cloak
+   250 AP   150 Renown  System's Loot Box, Silver
+   500 AP   250 Renown  Achievement trophy statuette
+   500 AP   300 Renown  League-hue pigment (one use)
+   500 AP   200 Renown  Title: Veteran of the League
+  1000 AP   400 Renown  System's Loot Box, Gold
+  1750 AP  1000 Renown  League regalia (3 pieces)
+  1750 AP   500 Renown  Title: the System's Favorite
+  1750 AP   750 Renown  Mount: chestnut draft horse
+  1750 AP   750 Renown  Mount: bay draft horse
+  1750 AP   750 Renown  Mount: grey draft horse
+  1750 AP   750 Renown  Mount: palomino draft horse
+  1750 AP  1000 Renown  Mount: barded warhorse
+  1750 AP  1500 Renown  Mount: gilded charger
+ AP from every achievement not retired: 2,575
+   tabard: LeagueTabard 0x1FFD hue 1323
+
+
+  Passed ShatteredLegacy.Tests.LeagueShopVerification.ALootBoxHoldsOnlyRowsItsOwnApOpens [10 ms]
+  Passed ShatteredLegacy.Tests.LeagueShopVerification.OneRenownShortIsRefusedAndNothingIsTaken [< 1 ms]
+  Passed ShatteredLegacy.Tests.LeagueShopVerification.APurchaseLeavesLifetimeRenownAndLeagueRankUnchanged [5 ms]
+[xUnit.net 00:00:01.18]   Finished:    UOContent.Tests
+  Passed ShatteredLegacy.Tests.LeagueShopVerification.TheAccountsTitlesRoundTripThroughASave [17 ms]
+  Passed ShatteredLegacy.Tests.LeagueShopVerification.ApBelowTheRowIsRefusedEvenWithRenownToSpare [< 1 ms]
+  Passed ShatteredLegacy.Tests.LeagueShopVerification.EarningAnAchievementUnlocksItsApTitles [1 ms]
+
+Test Run Failed.
+Total tests: 12
+     Passed: 11
+     Failed: 1
+ Total time: 1.4042 Seconds
