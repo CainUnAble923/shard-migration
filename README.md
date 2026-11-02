@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-25. Shard version 2026.11.02.5. Golem off, 0 queued, latest done P9772. Play tests: 1456 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-25. Shard version 2026.11.02.5. Golem on, 3 queued, latest done P9772. Play tests: 1456 open, 4 failed, 43 passed.
 
 ### Needs overseer review (13)
 
@@ -239,12 +239,16 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem off; 644 prompts done, 5 more stopped early and not counted)
+### Queue (Golem on; 644 prompts done, 6 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
+| P777 assess-daily-quests-tokens | queued |  |
+| P778 assess-gathering-activities | queued |  |
+| P779 assess-seasonal-content | queued |  |
 | P9772 remote-answer-test | done | 2026-11-02 |
 | P9770 run-next-test | done | 2026-11-02 |
+| P776 random-encounters | stopped: the mutant run was killed for low memory and its container hung; the 27-fact green probe, 14 mutants and the gated build are not run | 2026-11-02 |
 | P775 review-build-cont-loot-boxes-diversified | done | 2026-11-02 |
 | P774 cont-fixup-cont-loot-boxes-diversified | done | 2026-11-02 |
 | P773 playtest-tasks | done | 2026-11-02 |
@@ -252,7 +256,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P770 gold-run-next | done | 2026-11-02 |
 | P769 playtester-ux-notes-1 | done | 2026-11-02 |
 | P768 review-build-cont-loot-boxes-diversified | done | 2026-11-02 |
-| P767 codex-usage-per-account | done | 2026-11-01 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 186 patches, 12 replacements
 
