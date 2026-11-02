@@ -1,0 +1,76 @@
+$p770Kit = Split-Path -Parent $Lib
+function New-P770Root {
+    $r = Join-Path $Root ('p770-' + [guid]::NewGuid().ToString('N').Substring(0, 6))
+    New-Item -ItemType Directory -Path $r -Force | Out-Null
+    # The real registry and settings: Gold is on STEPHS-DESKTOP, Iron on CHASES-TOWER (this PC in the facts' eyes or not:
+    # the facts only use Gold, which is never this PC).
+    Copy-Item -LiteralPath (Join-Path $p770Kit 'golems.json') -Destination $r
+    Copy-Item -LiteralPath (Join-Path $p770Kit 'settings.json') -Destination $r
+    $r
+}
+
+Fact 'P770_ADirtyPromptsCloneIsResetToOriginAndItsQueueIsFreshAgain' {
+    $o = Join-Path $Root 'p770-origin.git'; $seed = Join-Path $Root 'p770-seed'; $cl = Join-Path $Root 'p770-clone'
+    $g = { param($dir) & git -C $dir -c user.name=t -c user.email=t@t @args 2>&1 | Out-Null }
+    & git init -q --bare -b main $o 2>&1 | Out-Null
+    & git clone -q $o $seed 2>&1 | Out-Null
+    New-Item -ItemType Directory -Path (Join-Path $seed 'queue'), (Join-Path $seed 'claimed\Gold') -Force | Out-Null
+    [IO.File]::WriteAllText((Join-Path $seed 'claimed\Gold\cc-P501-a.md'), "# a`n"); [IO.File]::WriteAllText((Join-Path $seed 'queue\cc-P502-b.md'), "# b`n")
+    & $g $seed add -A; & $g $seed commit -q -m seed; & $g $seed push -q origin HEAD:main
+    & git clone -q $o $cl 2>&1 | Out-Null
+    # This clone's retry moved P501 back to the queue and never committed it (Gold, 11-01 14:39).
+    Move-Item -LiteralPath (Join-Path $cl 'claimed\Gold\cc-P501-a.md') -Destination (Join-Path $cl 'queue\cc-P501-a.md')
+    # Meanwhile origin moved on: P503 queued, P502 claimed by Iron.
+    New-Item -ItemType Directory -Path (Join-Path $seed 'claimed\Iron') -Force | Out-Null
+    Move-Item -LiteralPath (Join-Path $seed 'queue\cc-P502-b.md') -Destination (Join-Path $seed 'claimed\Iron\cc-P502-b.md')
+    [IO.File]::WriteAllText((Join-Path $seed 'queue\cc-P503-c.md'), "# c`n")
+    & $g $seed add -A; & $g $seed commit -q -m moved; & $g $seed push -q origin HEAD:main
+    $script:p770Log = @(); function Write-GolemLog([string]$m) { $script:p770Log += $m }
+    Sync-PromptsGit $cl
+    $q = @(Get-ChildItem -LiteralPath (Join-Path $cl 'queue') -Filter '*.md' | ForEach-Object { $_.Name } | Sort-Object)
+    Assert-True (($q -join ',') -eq 'cc-P503-c.md') ('the queue is origin''s again: ' + ($q -join ','))
+    Assert-True (Test-Path -LiteralPath (Join-Path $cl 'claimed\Iron\cc-P502-b.md')) 'and its claims'
+    $st = (& git -C $cl status --porcelain 2>$null | Out-String).Trim()
+    Assert-True (-not $st) ('nothing uncommitted left: ' + $st)
+    Assert-True (($script:p770Log -join ' ') -match 'reset to origin/main and dropped .*cc-P501-a\.md') ('what it dropped is logged: ' + ($script:p770Log -join ' | '))
+}
+
+Fact 'P770_RunNextForAGolemOnAnotherPcGoesToItsAgent' {
+    $r = New-P770Root
+    $o = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $p770Kit 'Set-RunNext.ps1') -Prompt P768 -Golem Gold -Root $r | Out-String
+    $cmds = @(Get-ChildItem -LiteralPath (Join-Path $r 'remote\Gold\commands') -Filter '*.json' -ErrorAction SilentlyContinue)
+    $c = $(if ($cmds.Count) { Get-Content -LiteralPath $cmds[0].FullName -Raw | ConvertFrom-Json } else { $null })
+    Assert-True ($c -and $c.key -eq 'runnext' -and $c.inputs.prompt -eq 'P768' -and $c.state -eq 'queued') ('a runnext command for Gold''s agent: ' + ($c | ConvertTo-Json -Compress))
+    Assert-True (-not (Test-Path -LiteralPath (Join-Path $r 'RUN-NEXT-Gold'))) 'no RUN-NEXT-Gold here: Gold never reads this PC''s'
+    Assert-True ($o -match 'sent to Gold''s agent on STEPHS-DESKTOP') ('it says where it went: ' + $o)
+    $o2 = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $p770Kit 'Set-RunNext.ps1') -Cancel -Golem Gold -Root $r | Out-String
+    $keys = @(Get-ChildItem -LiteralPath (Join-Path $r 'remote\Gold\commands') -Filter '*.json' | ForEach-Object { (Get-Content -LiteralPath $_.FullName -Raw | ConvertFrom-Json).key } | Sort-Object)
+    Assert-True (($keys -join ',') -eq 'runnext,runnext-cancel') ('and its cancel: ' + ($keys -join ',') + ' ' + $o2)
+}
+
+Fact 'P770_AnswerQuestionAnswersAQuestionAskedOnAnotherPc' {
+    $r = New-P770Root
+    $id = 'Gold-P999-20261101-230000-abcd'
+    New-Item -ItemType Directory -Path (Join-Path $r 'remote\Gold') -Force | Out-Null
+    $doc = [ordered]@{ golem = 'Gold'; receivedAt = '2026-11-01T23:01:00'
+        open = @([ordered]@{ id = $id; golem = 'Gold'; prompt = 'P999'; kind = 'ask'; question = 'A dummy question?'; choices = @(@{ label = 'Yes'; does = 'y' }, @{ label = 'No'; does = 'n' }); freeText = $false; state = 'open' })
+        history = @([ordered]@{ id = 'Gold-P998-20261101-220000-dcba'; golem = 'Gold'; prompt = 'P998'; state = 'answered'; choices = @() }) }
+    [IO.File]::WriteAllText((Join-Path $r 'remote\Gold\questions.json'), ($doc | ConvertTo-Json -Depth 6))
+    $aq = Join-Path $p770Kit 'Answer-Question.ps1'
+    $o = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $aq -Id $id -Choice 5 -Root $r | Out-String
+    Assert-True ($LASTEXITCODE -eq 1 -and $o -match 'not one of its choices') ('a choice it does not have is refused here: ' + $o)
+    $o = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $aq -Id $id -Choice 0 -Text 'words' -Root $r | Out-String
+    Assert-True ($LASTEXITCODE -eq 1 -and $o -match 'takes one of its choices') ('text where it takes none is refused: ' + $o)
+    $o = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $aq -Id 'Gold-P998-20261101-220000-dcba' -Choice 0 -Root $r | Out-String
+    Assert-True ($LASTEXITCODE -eq 1 -and $o -match 'is closed \(answered\)') ('a closed one is refused: ' + $o)
+    $o = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $aq -Id $id -Choice 1 -Who 'overseer (for Chase)' -Root $r | Out-String
+    $cmds = @(Get-ChildItem -LiteralPath (Join-Path $r 'remote\Gold\commands') -Filter '*.json' -ErrorAction SilentlyContinue)
+    $c = $(if ($cmds.Count) { Get-Content -LiteralPath $cmds[0].FullName -Raw | ConvertFrom-Json } else { $null })
+    Assert-True ($LASTEXITCODE -eq 0 -and $c -and $c.key -eq 'answer' -and $c.inputs.question -eq $id -and $c.inputs.choice -eq '1' -and $c.inputs.who -eq 'overseer (for Chase)' -and $c.inputs.textb64 -eq '') ('an answer command for Gold''s agent, in its inputs'' shapes: ' + ($c | ConvertTo-Json -Compress))
+    Assert-True ($o -match 'Sent to Gold''s agent on STEPHS-DESKTOP' -and $o -match '"No"') ('it says where it went and what: ' + $o)
+    Assert-True (-not (Test-Path -LiteralPath (Join-Path $r 'answers'))) 'nothing written as a local answer here'
+    . (Join-Path $p770Kit 'Questions.ps1')
+    $open = @(Get-RemoteOpenQuestions $r)
+    Assert-True ($open.Count -eq 1 -and $open[0].Golem -eq 'Gold' -and $open[0].Id -eq $id -and ($open[0].Choices -join '/') -eq 'Yes/No') ('the Sweep''s list: ' + ($open | ConvertTo-Json -Compress))
+}
+
