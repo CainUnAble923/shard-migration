@@ -1,0 +1,76 @@
+Test run for /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.0+05679a7ab5 (64-bit .NET 10.0.7)
+[xUnit.net 00:00:00.13]   Discovering: UOContent.Tests
+[xUnit.net 00:00:00.44]   Discovered:  UOContent.Tests
+[xUnit.net 00:00:00.46]   Starting:    UOContent.Tests
+[01:37:51 INF] Loading world <s:Server.World>
+[01:37:51 INF] Loading world done (0 items, 0 mobiles) (0.01 seconds) <s:Server.World>
+[01:37:52 INF] Discovered 3 spawner JSON type(s) <s:Server.Engines.Spawners.SpawnerJsonSerializer>
+[01:37:52 INF] The Fold: registered 17 maps (32-48) on Trammel's files <s:Server.FoldMaps>
+[01:37:52 WRN] map1.mul was not found. <s:Server.TileMatrix>
+[01:37:52 WRN] staidx1.mul was not found. <s:Server.TileMatrix>
+[01:37:52 WRN] statics1.mul was not found. <s:Server.TileMatrix>
+[xUnit.net 00:00:01.15]     ShatteredLegacy.Tests.RandomEncounterVerification.NeverInAHouse [FAIL]
+[xUnit.net 00:00:01.15]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:01.15]       Expected: "in a house"
+[xUnit.net 00:00:01.15]       Actual:   null
+[xUnit.net 00:00:01.15]       Stack Trace:
+[xUnit.net 00:00:01.15]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/RandomEncounterVerification.cs(154,0): at ShatteredLegacy.Tests.RandomEncounterVerification.AssertRefused(PlayerMobile pm, String because)
+[xUnit.net 00:00:01.15]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/RandomEncounterVerification.cs(290,0): at ShatteredLegacy.Tests.RandomEncounterVerification.NeverInAHouse()
+[xUnit.net 00:00:01.15]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.15]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.15]       Output:
+[xUnit.net 00:00:01.15]         house at (3700, 400, 0): FindHouseAt = , region HouseRegion
+[xUnit.net 00:00:01.15]         refused: 
+[xUnit.net 00:00:01.15]         region at (3700, 400, 0) on Trammel:  (HouseRegion, priority 51, parent ); registered here: 
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.AnEncounterPicksOnlyWhatThePlayerQualifiesFor [60 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.TheCooldownStopsStackingOnACharacterAndItsAccount [41 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.UnfoughtCreaturesLeaveOnTimeAndNotBefore [4 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverWhileInCombat [7 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.ARestartRemovesWhatWasLeftOut [1 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverOnTheWakeningIsle [4 ms]
+  Failed ShatteredLegacy.Tests.RandomEncounterVerification.NeverInAHouse [13 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+Expected: "in a house"
+Actual:   null
+  Stack Trace:
+     at ShatteredLegacy.Tests.RandomEncounterVerification.AssertRefused(PlayerMobile pm, String because) in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/RandomEncounterVerification.cs:line 154
+   at ShatteredLegacy.Tests.RandomEncounterVerification.NeverInAHouse() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/RandomEncounterVerification.cs:line 290
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ house at (3700, 400, 0): FindHouseAt = , region HouseRegion
+ refused: 
+ region at (3700, 400, 0) on Trammel:  (HouseRegion, priority 51, parent ); registered here: 
+
+
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.TheTollKeepersKillerGetsTheTollBoxOncePerLoop [47 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverInAGuardedTownOrADungeonOrJail [1 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.TheOffSwitchStopsEverything [16 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverOnABoat [3 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.TheDefaultTablePassesItsChecksAndRoundTripsThroughTheFile [6 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverForStaff [< 1 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.TheLanternBearersKillerGetsAFestivalToken [6 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NoEncounterStartsBesideOneAlreadyOut [1 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.ACreatureThatFollowsIntoTownIsRemovedAtOnce [1 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverForTheHiddenOrTheIdle [2 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverOnAFacetNotListed [< 1 ms]
+[xUnit.net 00:00:01.26]   Finished:    UOContent.Tests
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.AFightingCreatureStaysUntilItStopsAndItsCorpseAndLootAreNotTouched [< 1 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.TheTollRoadSpawnsTwoToFourBrigandsAndATollKeeper [4 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverForTheDead [9 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.TheLanternProcessionSpawnsAtNightInSeasonOnly [1 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.TheLostSurveyorSpawnsASurveyorAndTwoOrThreeNativesOnHerForLeagueMembersOnly [5 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverOnHavenIslandOrInNewHaven [1 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.PayingTheTollTakesFivePercentAtMostTwoHundredAndTheyLeave [2 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverForYoungCharactersOrTrainees [< 1 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.AnEligibleTravelerOnAnEncounterFacetGetsOne [1 ms]
+
+Test Run Failed.
+Total tests: 27
+     Passed: 26
+     Failed: 1
+ Total time: 1.5178 Seconds
+PROBE_EXIT=1

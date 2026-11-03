@@ -22,13 +22,10 @@ No code was copied from the RunUO engine P765 read; this is ours, written from s
   decide whether 5% a minute feels right. Not yet seen in a client: the creatures' behaviour (walking up, the
   surveyor's fight, the procession's walk) is tested only in code.
 
-## Where it stands (stopped, not finished)
+## Where it stands
 
-The code, the 27 facts, the CHANGELOG line and the version bump are written. Not done: the last green probe of all
-27 facts, 14 of the 32 mutants, and the gated build. The mutant run was killed by Claude Code because the PC ran
-critically low on memory (4.5 GB of 32 GB free afterwards). Its container on mutant 14 (`boat`) hung for 3 hours, and
-Docker could not kill it (`festive_goodall`, image `sl-uo-builder:cc-P774`, "did not receive an exit event"). I was
-told not to rerun the memory-heavy work on my own, so I released the docker-build lock and stopped here.
+Finished. All 27 facts pass alone and in the full suite, all 32 mutants were killed, and the gated build is green
+(`sl-modernuo:cc-p776`, 2977 passed, 0 failed, 6 skipped, EXIT=0). `latest` was not moved. Nothing was put on a shard.
 
 ## Design and files (code copy `D:\UO\golems\Iron\ShatteredLegacy`)
 
@@ -63,13 +60,24 @@ line is sent to the player when an encounter starts.
 
 - Red: the facts alone failed to compile, because `Server.Encounters` did not exist yet (`red-probe.txt`,
   PROBE_EXIT=3).
-- Green: 25 of 25 passed (`green-probe5.txt`). After that, I added two reward facts and a fix to the sweep (dead
-  creatures' serials are dropped from the saved set). **These have not been seen green.**
-- Mutants: 32 mutants, each breaking one rule (`mutate776.py`, `run-mutants.sh`). The first 18 were all killed:
-  off switch, staff, dead, Young, trainee, hidden, idle, combat, already in one, both cooldowns, crowd, isle, facets,
-  deny regions, town, dungeon, house (`mutants-result.txt`). Not run: boat, season, league, night, toll cap, toll
-  deadline, follow into town, leave late, leave early, fighter removed, dawn, restart sweep, tamable, surveyor target.
-- Gated build: not run.
+- Green: 25 of 25 first (`green-probe5.txt`), then all 27 after the two reward facts and the sweep fix
+  (`green-probe6.txt`, 2026-11-02 after the reboot).
+- Mutants: 32 mutants, each breaking one rule (`mutate776.py`). All 32 were killed: the first 18 before the memory
+  stop (`mutants-result.txt`), the other 14 after the reboot (`mutants-result2.txt`): boat, season, league, night,
+  toll cap, toll deadline, follow into town, leave late, leave early, fighter removed, dawn, restart sweep, tamable,
+  surveyor target. `run-mutants-checked.sh` runs them one at a time. Before each one, it drops the Docker VM's page
+  cache and checks free memory, and it stops under 4 GB. It stopped once, at 3.8 GB, before `league`. After a cache
+  drop the rest ran at 4.3 to 7.6 GB free.
+- Gated build, first try: 2 facts failed in the full suite (`gated-build-1-failed-summary.txt`): Haven Island and
+  town. Both had passed alone. The cause was the facts' test spot (4400, 600). It lies inside the north-east snow
+  isles SOS fence (`SosFenceRegion`, priority 60), which another fact registers in the full run. That fence hid the
+  facts' own lower-priority regions, so `Region.Find` returned the fence. The engine was right: no rule was
+  refused wrongly. I moved the spot to (3400, 400), which keeps every offset the facts use clear of all fences. Now
+  each place check first asserts its spot is not under a fence, and prints the region it found
+  (`full-probe-diag-summary.txt`). After that, the full suite passed in the probe (4073 passed, 0 failed,
+  `full-probe2-summary.txt`). The four place mutants (deny regions, town, dungeon, house) were killed again at the
+  new spot (`mutants-result-newspot.txt`).
+- Gated build, second try: EXIT=0 (`gated-build-summary.txt`).
 
 ## Deviations and decisions for Chase
 
@@ -88,13 +96,12 @@ line is sent to the player when an encounter starts.
 
 The creatures' behaviour in a client: the walk-up, the surveyor's fight, and the procession's walk.
 
-## To finish (when memory allows)
+## Resumed after the reboot (2026-11-02, evening)
 
-1. Free the hung container (`docker rm -f festive_goodall`; if Docker still cannot kill it, restart Docker Desktop).
-2. `bash notes/cc-P776-tools/probe776.sh "FullyQualifiedName~RandomEncounterVerification"`: 27 of 27 must pass.
-3. Run the remaining 14 mutants: edit `mutants.txt` in the scratchpad mutant folder down to those 14, then
-   `run-mutants.sh`.
-4. Take the docker-build lock and run `notes\cc-P776-tools\gated-build.ps1` detached. The log is UTF-16; strip NULs
-   and check for `EXIT=0`.
+Chase's answer (Iron-P776-20261102-180115-d497): the tower was rebooted at 18:53, and `festive_goodall` was gone. Run
+the 27-fact check, the 14 mutants one at a time, and the gated build, checking memory before each. Done in that
+order, with free memory checked (and the Docker VM's cache dropped) before every Docker run. One run, the
+diagnostic full-suite probe, started at 3.2 GB free before I noticed. It finished without trouble, and every run
+after it started at 5.6 GB or more.
 
-P776 STOPPED: the mutant run was killed for low memory and its container hung; the 27-fact green probe, 14 mutants and the gated build are not run
+P776 DONE
