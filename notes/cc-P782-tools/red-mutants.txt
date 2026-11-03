@@ -1,0 +1,144 @@
+Build succeeded.
+Test run for /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.0+05679a7ab5 (64-bit .NET 10.0.7)
+[xUnit.net 00:00:00.12]   Discovering: UOContent.Tests
+[xUnit.net 00:00:00.40]   Discovered:  UOContent.Tests
+[xUnit.net 00:00:00.41]   Starting:    UOContent.Tests
+[12:01:19 INF] Loading world <s:Server.World>
+[12:01:19 INF] Loading world done (0 items, 0 mobiles) (0.01 seconds) <s:Server.World>
+[12:01:19 INF] Discovered 3 spawner JSON type(s) <s:Server.Engines.Spawners.SpawnerJsonSerializer>
+[xUnit.net 00:00:01.00]     ShatteredLegacy.Tests.GraveDiggingVerification.OnlyGravesInACemeteryCanBeDug [FAIL]
+[xUnit.net 00:00:01.00]       Assert.False() Failure
+[xUnit.net 00:00:01.00]       Expected: False
+[xUnit.net 00:00:01.00]       Actual:   True
+[xUnit.net 00:00:01.00]       Stack Trace:
+[xUnit.net 00:00:01.00]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GraveDiggingVerification.cs(182,0): at ShatteredLegacy.Tests.GraveDiggingVerification.OnlyGravesInACemeteryCanBeDug()
+[xUnit.net 00:00:01.00]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.00]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.02]     ShatteredLegacy.Tests.GraveDiggingVerification.TheDefaultTableValidatesRoundTripsAndABadFileIsRefusedWhole [FAIL]
+[xUnit.net 00:00:01.02]       Assert.Null() Failure: Value is not null
+[xUnit.net 00:00:01.02]       Expected: null
+[xUnit.net 00:00:01.02]       Actual:   GraveDiggingTable { About = "Grave digging (cc-P782). Edit and run [GraveDiggin"···, Areas = [CemeteryArea { Facets = [···], Name = "the Chapel of Saint Lucia, Trinsic jungle", X1 = 1651, X2 = 1674, Y1 = 3144, ··· }, CemeteryArea { Facets = [···], Name = "Jhelom cemetery", X1 = 1278, X2 = 1301, Y1 = 3721, ··· }, CemeteryArea { Facets = [···], Name = "Cove graveyard", X1 = 2423, X2 = 2450, Y1 = 1098, ··· }, CemeteryArea { Facets = [···], Name = "Moonglow cemetery", X1 = 4527, X2 = 4554, Y1 = 1314, ··· }, CemeteryArea { Facets = [···], Name = "Jhelom cemetery, north", X1 = 1271, X2 = 1289, Y1 = 3710, ··· }, ···], Bonus = GraveBonusRules { ChancePercent = 4, Entries = [···], MinSkill = 50 }, Enabled = True, GradeSkills = [0, 50, 75, 90], ··· }
+[xUnit.net 00:00:01.02]       Stack Trace:
+[xUnit.net 00:00:01.02]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GraveDiggingVerification.cs(149,0): at ShatteredLegacy.Tests.GraveDiggingVerification.TheDefaultTableValidatesRoundTripsAndABadFileIsRefusedWhole()
+[xUnit.net 00:00:01.02]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.02]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.02]     ShatteredLegacy.Tests.GraveDiggingVerification.TheBonusRollKeepsItsOddsAndItsGrades [FAIL]
+[xUnit.net 00:00:01.02]       under the bonus minSkill
+[xUnit.net 00:00:01.02]       Stack Trace:
+[xUnit.net 00:00:01.02]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GraveDiggingVerification.cs(271,0): at ShatteredLegacy.Tests.GraveDiggingVerification.TheBonusRollKeepsItsOddsAndItsGrades()
+[xUnit.net 00:00:01.02]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.02]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[12:01:20 WRN] map1.mul was not found. <s:Server.TileMatrix>
+[12:01:20 WRN] staidx1.mul was not found. <s:Server.TileMatrix>
+[12:01:20 WRN] statics1.mul was not found. <s:Server.TileMatrix>
+[xUnit.net 00:00:01.04]     ShatteredLegacy.Tests.GraveDiggingVerification.NothingFromAGraveIsGearPowerOrBlessed [FAIL]
+[xUnit.net 00:00:01.04]       Assert.NotEqual() Failure: Values are equal
+[xUnit.net 00:00:01.04]       Expected: Not Blessed
+[xUnit.net 00:00:01.04]       Actual:       Blessed
+[xUnit.net 00:00:01.04]       Stack Trace:
+[xUnit.net 00:00:01.04]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GraveDiggingVerification.cs(324,0): at ShatteredLegacy.Tests.GraveDiggingVerification.NothingFromAGraveIsGearPowerOrBlessed()
+[xUnit.net 00:00:01.04]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.04]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.05]     ShatteredLegacy.Tests.GraveDiggingVerification.TinkersSellTheSpadeAtTheTablesPrice [FAIL]
+[xUnit.net 00:00:01.05]       Assert.Single() Failure: The collection did not contain any matching items
+[xUnit.net 00:00:01.05]       Expected:   (predicate expression)
+[xUnit.net 00:00:01.05]       Collection: [GenericBuyInfo { Amount = 20, Args = null, CanCacheDisplay = False, ControlSlots = 0, DefaultPrice = 0, ··· }, GenericBuyInfo { Amount = 20, Args = null, CanCacheDisplay = False, ControlSlots = 0, DefaultPrice = 0, ··· }, GenericBuyInfo { Amount = 20, Args = null, CanCacheDisplay = False, ControlSlots = 0, DefaultPrice = 0, ··· }, GenericBuyInfo { Amount = 20, Args = null, CanCacheDisplay = False, ControlSlots = 0, DefaultPrice = 0, ··· }, GenericBuyInfo { Amount = 20, Args = null, CanCacheDisplay = False, ControlSlots = 0, DefaultPrice = 0, ··· }, ···]
+[xUnit.net 00:00:01.05]       Stack Trace:
+[xUnit.net 00:00:01.05]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GraveDiggingVerification.cs(343,0): at ShatteredLegacy.Tests.GraveDiggingVerification.TinkersSellTheSpadeAtTheTablesPrice()
+[xUnit.net 00:00:01.05]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.05]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.05]     ShatteredLegacy.Tests.GraveDiggingVerification.AGraveGivesItsTotalToWhoeverDigsItThenIsDugOut [FAIL]
+[xUnit.net 00:00:01.05]       Assert.True() Failure
+[xUnit.net 00:00:01.05]       Expected: True
+[xUnit.net 00:00:01.05]       Actual:   False
+[xUnit.net 00:00:01.05]       Stack Trace:
+[xUnit.net 00:00:01.05]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GraveDiggingVerification.cs(231,0): at ShatteredLegacy.Tests.GraveDiggingVerification.AGraveGivesItsTotalToWhoeverDigsItThenIsDugOut()
+[xUnit.net 00:00:01.05]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.05]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.05]       Output:
+[xUnit.net 00:00:01.05]         the grave holds 11
+[xUnit.net 00:00:01.05]     ShatteredLegacy.Tests.GraveDiggingVerification.WhatADigFindsRisesWithForensics [FAIL]
+[xUnit.net 00:00:01.05]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:01.05]                  ↓ (pos 0)
+[xUnit.net 00:00:01.05]       Expected: "FertileDirt"
+[xUnit.net 00:00:01.05]       Actual:   "Bone"
+[xUnit.net 00:00:01.05]                  ↑ (pos 0)
+[xUnit.net 00:00:01.05]       Stack Trace:
+[xUnit.net 00:00:01.05]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GraveDiggingVerification.cs(244,0): at ShatteredLegacy.Tests.GraveDiggingVerification.WhatADigFindsRisesWithForensics()
+[xUnit.net 00:00:01.05]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.05]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.06]   Finished:    UOContent.Tests
+  Failed ShatteredLegacy.Tests.GraveDiggingVerification.OnlyGravesInACemeteryCanBeDug [67 ms]
+  Error Message:
+   Assert.False() Failure
+Expected: False
+Actual:   True
+  Stack Trace:
+     at ShatteredLegacy.Tests.GraveDiggingVerification.OnlyGravesInACemeteryCanBeDug() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GraveDiggingVerification.cs:line 182
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed ShatteredLegacy.Tests.GraveDiggingVerification.TheDefaultTableValidatesRoundTripsAndABadFileIsRefusedWhole [21 ms]
+  Error Message:
+   Assert.Null() Failure: Value is not null
+Expected: null
+Actual:   GraveDiggingTable { About = "Grave digging (cc-P782). Edit and run [GraveDiggin"···, Areas = [CemeteryArea { Facets = [···], Name = "the Chapel of Saint Lucia, Trinsic jungle", X1 = 1651, X2 = 1674, Y1 = 3144, ··· }, CemeteryArea { Facets = [···], Name = "Jhelom cemetery", X1 = 1278, X2 = 1301, Y1 = 3721, ··· }, CemeteryArea { Facets = [···], Name = "Cove graveyard", X1 = 2423, X2 = 2450, Y1 = 1098, ··· }, CemeteryArea { Facets = [···], Name = "Moonglow cemetery", X1 = 4527, X2 = 4554, Y1 = 1314, ··· }, CemeteryArea { Facets = [···], Name = "Jhelom cemetery, north", X1 = 1271, X2 = 1289, Y1 = 3710, ··· }, ···], Bonus = GraveBonusRules { ChancePercent = 4, Entries = [···], MinSkill = 50 }, Enabled = True, GradeSkills = [0, 50, 75, 90], ··· }
+  Stack Trace:
+     at ShatteredLegacy.Tests.GraveDiggingVerification.TheDefaultTableValidatesRoundTripsAndABadFileIsRefusedWhole() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GraveDiggingVerification.cs:line 149
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed ShatteredLegacy.Tests.GraveDiggingVerification.TheBonusRollKeepsItsOddsAndItsGrades [< 1 ms]
+  Error Message:
+   under the bonus minSkill
+  Stack Trace:
+     at ShatteredLegacy.Tests.GraveDiggingVerification.TheBonusRollKeepsItsOddsAndItsGrades() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GraveDiggingVerification.cs:line 271
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed ShatteredLegacy.Tests.GraveDiggingVerification.NothingFromAGraveIsGearPowerOrBlessed [24 ms]
+  Error Message:
+   Assert.NotEqual() Failure: Values are equal
+Expected: Not Blessed
+Actual:       Blessed
+  Stack Trace:
+     at ShatteredLegacy.Tests.GraveDiggingVerification.NothingFromAGraveIsGearPowerOrBlessed() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GraveDiggingVerification.cs:line 324
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed ShatteredLegacy.Tests.GraveDiggingVerification.TinkersSellTheSpadeAtTheTablesPrice [3 ms]
+  Error Message:
+   Assert.Single() Failure: The collection did not contain any matching items
+Expected:   (predicate expression)
+Collection: [GenericBuyInfo { Amount = 20, Args = null, CanCacheDisplay = False, ControlSlots = 0, DefaultPrice = 0, ··· }, GenericBuyInfo { Amount = 20, Args = null, CanCacheDisplay = False, ControlSlots = 0, DefaultPrice = 0, ··· }, GenericBuyInfo { Amount = 20, Args = null, CanCacheDisplay = False, ControlSlots = 0, DefaultPrice = 0, ··· }, GenericBuyInfo { Amount = 20, Args = null, CanCacheDisplay = False, ControlSlots = 0, DefaultPrice = 0, ··· }, GenericBuyInfo { Amount = 20, Args = null, CanCacheDisplay = False, ControlSlots = 0, DefaultPrice = 0, ··· }, ···]
+  Stack Trace:
+     at ShatteredLegacy.Tests.GraveDiggingVerification.TinkersSellTheSpadeAtTheTablesPrice() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GraveDiggingVerification.cs:line 343
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed ShatteredLegacy.Tests.GraveDiggingVerification.AGraveGivesItsTotalToWhoeverDigsItThenIsDugOut [2 ms]
+  Error Message:
+   Assert.True() Failure
+Expected: True
+Actual:   False
+  Stack Trace:
+     at ShatteredLegacy.Tests.GraveDiggingVerification.AGraveGivesItsTotalToWhoeverDigsItThenIsDugOut() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GraveDiggingVerification.cs:line 231
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ the grave holds 11
+
+
+  Failed ShatteredLegacy.Tests.GraveDiggingVerification.WhatADigFindsRisesWithForensics [4 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+           ↓ (pos 0)
+Expected: "FertileDirt"
+Actual:   "Bone"
+           ↑ (pos 0)
+  Stack Trace:
+     at ShatteredLegacy.Tests.GraveDiggingVerification.WhatADigFindsRisesWithForensics() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GraveDiggingVerification.cs:line 244
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+Test Run Failed.
+Total tests: 7
+     Failed: 7
+ Total time: 1.2882 Seconds
