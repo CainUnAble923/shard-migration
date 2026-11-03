@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-25. Shard version 2026.11.03.11. Golem on, 1 queued, latest done P9772. Play tests: 1476 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-25. Shard version 2026.11.03.11. Golem off, 0 queued, latest done P9772. Play tests: 1477 open, 4 failed, 43 passed.
 
 ### Needs overseer review (13)
 
@@ -79,7 +79,7 @@ Judgment reviewed 2026-10-25. Shard version 2026.11.03.11. Golem on, 1 queued, l
 - **gate No live gap a player would call a bug**: Last confirmed 2026-10-25 (9 days ago). Re-read its sources; still not met? `python tools/judge.py confirm gate "No live gap a player would call a bug"` or `python tools/judge.py gate "No live gap a player would call a bug" --done yes --detail "..."`
 - **gate The fresh-world wipe is ready**: Last confirmed 2026-10-25 (9 days ago). Re-read its sources; still not met? `python tools/judge.py confirm gate "The fresh-world wipe is ready"` or `python tools/judge.py gate "The fresh-world wipe is ready" --done yes --detail "..."`
 - **shard status**: Last confirmed 2026-10-25: "the test shard is the only shard: live was retired and deleted on 2026-10-14 until the fresh 1.0 world, and the launcher's Play button now connects to the test shard (2026.10.24.2); the test shard (2594, up) runs sl-modernuo:latest, built 2026-10-23 from main 0f1871f (version 2026.10.23.2), while main is 2026.10.25.7, 33 merges ahead; the overnight bot tests the newest main on its own world copy each night; which player package is published is not visible from the repos". Still what runs? `python tools/judge.py status "..."` or `python tools/judge.py confirm status`
-- **play tests not sorted**: 1033 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
+- **play tests not sorted**: 1034 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
 
 ## Port list: 6 of 16 systems in. 833 of 983 files (85%).
 
@@ -239,13 +239,13 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 659 prompts done, 5 more stopped early and not counted)
+### Queue (Golem off; 660 prompts done, 5 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
-| P792 assess-magic-systems | queued |  |
 | P9772 remote-answer-test | done | 2026-11-02 |
 | P9770 run-next-test | done | 2026-11-02 |
+| P791 assess-bounties-and-quests | done | 2026-11-03 |
 | P790 assess-mounts-and-tamables | done | 2026-11-03 |
 | P789 tasks-window-and-staff-testers | done | 2026-11-03 |
 | P788 isle-features | done | 2026-11-03 |
@@ -253,7 +253,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P786 halloween-witch | done | 2026-11-03 |
 | P785 chocolate-recipes | done | 2026-11-03 |
 | P784 holiday-stocking | done | 2026-11-03 |
-| P783 artisan-festival-decor | done | 2026-11-03 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 189 patches, 12 replacements
 
