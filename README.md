@@ -239,12 +239,13 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 646 prompts done, 5 more stopped early and not counted)
+### Queue (Golem on; 647 prompts done, 5 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
 | P9772 remote-answer-test | done | 2026-11-02 |
 | P9770 run-next-test | done | 2026-11-02 |
+| P778 assess-gathering-activities | done | 2026-11-02 |
 | P777 assess-daily-quests-tokens | done | 2026-11-02 |
 | P776 random-encounters | done | 2026-11-02 |
 | P775 review-build-cont-loot-boxes-diversified | done | 2026-11-02 |
@@ -252,7 +253,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P773 playtest-tasks | done | 2026-11-02 |
 | P771 review-build-playtester-ux-notes-1 | done | 2026-11-02 |
 | P770 gold-run-next | done | 2026-11-02 |
-| P769 playtester-ux-notes-1 | done | 2026-11-02 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 186 patches, 12 replacements
 
