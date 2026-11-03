@@ -1,0 +1,24 @@
+cc-P787: the wild hive spots, Trammel (facet 1), checked with vseUOAware against D:\UO\tool-trials\client-data-copy.
+
+validate_coordinate_list (passable, not water, no blocking static), 20 candidates: 15 ok, 5 refused:
+  (2930,640) impassable land 0x0064; (2870,760) impassable land 0x005C; (820,2100) water; (2100,1300) water;
+  (3000,800) impassable land 0x005E.
+
+inspect_map_coordinate on the ones considered (land tile, Z, statics on the tile):
+  (560,1000)  land 0x0078 Z0, static 0x05C3 at Z20 (a building piece)   -> dropped
+  (2520,560)  land 0x0003 Z0, statics 0x0518, 0x1784 (Minoc walls)      -> dropped
+  (600,1100)  land 0x00C4 Z0, static 0x0CB1                              -> moved to (601,1101)
+  kept, no static on the tile:
+  (601,1101)  land 0x00C6 Z0     Yew woods, east
+  (480,1150)  land 0x00C5 Z0     Yew woods, south
+  (640,880)   land 0x00C6 Z0     Yew woods, north
+  (2990,620)  land 0x0005 Z0     Vesper, east fields
+  (1300,1550) land 0x0004 Z20    Britain woods, west
+  (1250,1650) land 0x00F1 Z0     Britain woods, south
+  (1370,1400) land 0x00C7 Z0     Britain woods, north
+  (880,2240)  land 0x0005 Z0     Skara mainland, south
+  (900,2000)  land 0x0003 Z0     Skara mainland, north
+  (2450,500)  land 0x0085 Z15    Minoc woods
+  (1880,2650) land 0x0006 Z0     Trinsic woods, north
+  (1700,2850) land 0x0004 Z0     Trinsic woods, west
+Not checked: that each spot is outside a guarded town region on the shard (none is inside a town's walls on the map).
