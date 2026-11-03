@@ -1,0 +1,741 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 6d2f73d..3be6058 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -29,6 +29,14 @@ Example:
+ - Restoring a Jacob's Pickaxe no longer refuses ingots kept in your bank.
+ -->
+ 
++## 2026.11.01.6
++
++### Added
++- A pet leash: double-click it and target your pet, and the pet shrinks into a figurine in your backpack (weight 1). Double-click the figurine to call your pet back out, with its name and loyalty as they were. Only the owner can call it out, and not in a fight; summons and pets carrying items cannot be leashed. Animal trainers sell leashes for 150 gold, and the pet choice scroll (dog or cat) now comes with one. Ported from "Pet shrink for 57.2" by Queen.
++
++### Staff
++- The leash's price, uses (unlimited by default), fight rule and blessed options are clusterf.petLeash.* in the shard's configuration.
++
+ ## 2026.11.01.5
+ 
+ ### Added
+diff --git a/VERSION b/VERSION
+index 4e67a7b..00be05c 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-2026.11.01.5
++2026.11.01.6
+diff --git a/server/customizations/ClusterFPetLeash.cs b/server/customizations/ClusterFPetLeash.cs
+new file mode 100644
+index 0000000..43196f2
+--- /dev/null
++++ b/server/customizations/ClusterFPetLeash.cs
+@@ -0,0 +1,384 @@
++// cc-P764: the pet leash. A port of "Pet shrink for 57.2" by Queen (servuo.dev, 2022, from Xanthos's Shrink System;
++// reference copy D:\UO\third-party\code\pet-shrink). Double-click the leash and target your own pet: it shrinks into a
++// figurine in your backpack (weight 1) and comes back out at your feet when you double-click the figurine. Its name,
++// loyalty, owner and bond are kept as they were: no stats, taming or control slots change.
++//
++// What is ported from Queen's ShrinkTarget and ShrinkItem: the refusals (not your pet, a summon, a dead pet, a pet carrying
++// items, a fight, a ridden mount), the figurine's art from ShrinkTable and the pet's hue, charges and the blessed options.
++// What differs:
++// - Only the owner can call the pet out. Queen's figurine let any holder claim it unless locked; here there is no lock.
++// - "In a fight" is any aggression within clusterf.petLeash.combatSeconds, or a current combatant, for the player and
++//   the pet. Queen used SpellHelper.CheckCombat, which on pinned counts only fights with players.
++// - No loyalty floor. Queen raised loyalty to 60% on shrink and restore; that would change a pet's loyalty.
++// - Storage is the shard's ShrunkPet (the Outrider's Crook figurine), which LeashedPet extends: the pet keeps its master
++//   and leaves the follower count by hand, and ShrunkPet.Initialize redoes that after every load. Queen's figurine cleared
++//   the master and marked the pet stabled; on pinned IsStabled is not saved, so the next load would start the 3-day
++//   abandoned-pet delete timer (BaseCreature.cs:2433, 2504).
++// - Not ported: the hitching post (notes cc-P764), the staff [Shrink, [ShrinkLockDown and [ShrinkRelease commands, the
++//   lock and unlock context entries, the stat and skill lines on the figurine, the XML config parser.
++//
++// Config (modernuo.json): clusterf.petLeash.price, .charges (-1 = unlimited), .refuseInCombat, .combatSeconds,
++// .blessedLeash, .blessedFigurine.
++
++using System;
++using ModernUO.Serialization;
++using Server.Mobiles;
++using Server.Targeting;
++
++namespace Server.Items;
++
++public static class ClusterFPetLeash
++{
++    /// <summary>The animal trainer's price for a leash (SBPetRebirth).</summary>
++    public static int Price => ServerConfiguration.GetOrUpdateSetting("clusterf.petLeash.price", 150);
++
++    /// <summary>Shrinks a new leash holds; -1 is unlimited. Restoring never uses a charge.</summary>
++    public static int Charges => ServerConfiguration.GetOrUpdateSetting("clusterf.petLeash.charges", -1);
++
++    /// <summary>Refuse to shrink or restore while the player (or, to shrink, the pet) is fighting.</summary>
++    public static bool RefuseInCombat => ServerConfiguration.GetOrUpdateSetting("clusterf.petLeash.refuseInCombat", true);
++
++    /// <summary>How long after the last blow a player or pet still counts as fighting.</summary>
++    public static int CombatSeconds => ServerConfiguration.GetOrUpdateSetting("clusterf.petLeash.combatSeconds", 15);
++
++    public static bool BlessedLeash => ServerConfiguration.GetOrUpdateSetting("clusterf.petLeash.blessedLeash", true);
++
++    public static bool BlessedFigurine => ServerConfiguration.GetOrUpdateSetting("clusterf.petLeash.blessedFigurine", true);
++
++    /// <summary>The leash's reach, in tiles.</summary>
++    public const int Range = 3;
++
++    public const int HintHue = 0x3B2;
++    public const int RefuseHue = 0x22;
++
++    /// <summary>A current combatant, or any aggression either way within CombatSeconds.</summary>
++    public static bool InCombat(Mobile m)
++    {
++        if (m.Combatant != null)
++        {
++            return true;
++        }
++
++        var window = TimeSpan.FromSeconds(CombatSeconds);
++        foreach (var info in m.Aggressed)
++        {
++            if (Core.Now - info.LastCombatTime < window)
++            {
++                return true;
++            }
++        }
++
++        foreach (var info in m.Aggressors)
++        {
++            if (Core.Now - info.LastCombatTime < window)
++            {
++                return true;
++            }
++        }
++
++        return false;
++    }
++
++    /// <summary>Why <paramref name="pet"/> cannot be leashed by <paramref name="pm"/>, or null when it can.</summary>
++    public static string? Refusal(PlayerMobile pm, BaseCreature? pet)
++    {
++        if (pet == null || pet.Deleted || pet.Map == null || pet.Map == Map.Internal || pet.Map != pm.Map)
++        {
++            return "A leash only holds a pet.";
++        }
++
++        if (pet.Summoned || pet is BaseTalismanSummon)
++        {
++            return "A summoned creature slips the leash. Only pets can be leashed.";
++        }
++
++        if (!pet.Controlled || pet.ControlMaster != pm)
++        {
++            return "That is not your pet.";
++        }
++
++        if (pet.IsDeadPet)
++        {
++            return "Your pet must be alive to be leashed.";
++        }
++
++        if (pet is BaseMount { Rider: not null })
++        {
++            return "Dismount first.";
++        }
++
++        if (pet.Backpack?.Items.Count > 0)
++        {
++            return "Your pet is carrying things. Unload its pack first.";
++        }
++
++        if (RefuseInCombat && (InCombat(pm) || InCombat(pet)))
++        {
++            return "Not in the middle of a fight. Try again once things calm down.";
++        }
++
++        if (!pm.InRange(pet, Range))
++        {
++            return "Your pet is too far away. Bring it closer.";
++        }
++
++        return null;
++    }
++
++    /// <summary>
++    /// Shrinks the pet into a figurine in the backpack, or says why not and returns null. The pet keeps its master,
++    /// as ShrunkPet.TryShrink does, and leaves the follower count and AllFollowers by hand.
++    /// </summary>
++    public static LeashedPet? Shrink(PlayerMobile pm, BaseCreature? pet)
++    {
++        var refusal = pm.Backpack == null ? "You have no backpack to carry it in." : Refusal(pm, pet);
++        if (refusal != null)
++        {
++            pm.SendMessage(RefuseHue, refusal);
++            return null;
++        }
++
++        var fig = new LeashedPet(pet!);
++
++        pet!.Combatant = null;
++        pet.ControlTarget = null;
++        pet.ControlOrder = OrderType.None;
++        pet.MoveToWorld(new Point3D(1, 1, 0), Map.Internal);
++        pm.Followers -= Math.Min(pet.ControlSlots, pm.Followers);
++        pm.RemoveFollower(pet);
++
++        pm.Backpack!.DropItem(fig);
++        pm.PlaySound(0x1FE);
++        pm.SendMessage(
++            HintHue,
++            $"{pet.Name} shrinks into a figurine in your backpack. Double-click the figurine to call {pet.Name} back out."
++        );
++        return fig;
++    }
++}
++
++/// <summary>cc-P764: Queen's pet leash. Double-click, then target your pet.</summary>
++[SerializationGenerator(0)]
++public partial class PetLeash : Item
++{
++    /// <summary>Art 0x1374 (a bridle), as Queen's leash.</summary>
++    public const int LeashItemID = 0x1374;
++
++    [SerializableField(0)]
++    [SerializedCommandProperty(AccessLevel.GameMaster)]
++    private int _charges;
++
++    [Constructible]
++    public PetLeash() : this(ClusterFPetLeash.Charges)
++    {
++    }
++
++    [Constructible]
++    public PetLeash(int charges) : base(LeashItemID)
++    {
++        _charges = charges;
++        Weight = 1.0;
++        LootType = ClusterFPetLeash.BlessedLeash ? LootType.Blessed : LootType.Regular;
++    }
++
++    public override string DefaultName => "a pet leash";
++
++    public override void GetProperties(IPropertyList list)
++    {
++        base.GetProperties(list);
++
++        if (_charges >= 0)
++        {
++            list.Add($"Uses left: {_charges}");
++        }
++
++        list.Add("Double-click, then target your pet: it shrinks into a figurine");
++    }
++
++    public override void OnDoubleClick(Mobile from)
++    {
++        if (from is not PlayerMobile pm)
++        {
++            return;
++        }
++
++        if (!IsChildOf(pm.Backpack))
++        {
++            pm.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
++            return;
++        }
++
++        pm.SendMessage(ClusterFPetLeash.HintHue, "Which pet will you leash?");
++        pm.Target = new LeashTarget(this);
++    }
++
++    /// <summary>Leashes the pet: the figurine, or null with the reason said. Uses a charge when the leash has them.</summary>
++    public LeashedPet? Use(PlayerMobile pm, BaseCreature? pet)
++    {
++        if (Deleted || !IsChildOf(pm.Backpack))
++        {
++            return null;
++        }
++
++        if (_charges == 0)
++        {
++            pm.SendMessage(ClusterFPetLeash.RefuseHue, "This leash is worn through.");
++            return null;
++        }
++
++        var fig = ClusterFPetLeash.Shrink(pm, pet);
++        if (fig != null && _charges > 0)
++        {
++            Charges = _charges - 1;
++            if (_charges == 0)
++            {
++                pm.SendMessage(ClusterFPetLeash.HintHue, "The leash wears through and falls apart.");
++                Delete();
++            }
++            else
++            {
++                InvalidateProperties();
++            }
++        }
++
++        return fig;
++    }
++
++    private class LeashTarget : Target
++    {
++        private readonly PetLeash _leash;
++
++        public LeashTarget(PetLeash leash) : base(ClusterFPetLeash.Range, false, TargetFlags.None) => _leash = leash;
++
++        protected override void OnTarget(Mobile from, object targeted)
++        {
++            if (from is PlayerMobile pm)
++            {
++                _leash.Use(pm, targeted as BaseCreature);
++            }
++        }
++    }
++}
++
++/// <summary>
++/// cc-P764: a leashed pet's figurine, the pet's own statuette art in its hue. Only the pet's owner can call it out, not in a
++/// fight. A ShrunkPet, so ShrunkPet.Initialize keeps the follower count right across restarts; its own double-click
++/// replaces ShrunkPet's, which lets any holder claim the pet and bonds it.
++/// </summary>
++[SerializationGenerator(0)]
++public partial class LeashedPet : ShrunkPet
++{
++    [Constructible]
++    public LeashedPet()
++    {
++        Weight = 1.0;
++    }
++
++    public LeashedPet(BaseCreature pet) : this()
++    {
++        Pet = pet;
++        ItemID = ShrinkTable.Lookup(pet);
++        Hue = pet.Hue;
++        Name = $"a figurine of {pet.Name}";
++        LootType = ClusterFPetLeash.BlessedFigurine ? LootType.Blessed : LootType.Regular;
++    }
++
++    public override void GetProperties(IPropertyList list)
++    {
++        base.GetProperties(list);
++
++        if (Pet is { Deleted: false, ControlMaster: { } owner })
++        {
++            list.Add($"Owner: {owner.Name}");
++        }
++
++        list.Add("Double-click to call your pet back out");
++    }
++
++    public override void OnDoubleClick(Mobile from)
++    {
++        if (from is PlayerMobile pm)
++        {
++            Restore(pm);
++        }
++    }
++
++    /// <summary>Calls the pet out at the player's feet: true when it came out; otherwise the reason is said.</summary>
++    public bool Restore(PlayerMobile pm)
++    {
++        if (!IsChildOf(pm.Backpack))
++        {
++            pm.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
++            return false;
++        }
++
++        var pet = Pet is { Deleted: false } p ? p : null;
++        if (pet == null)
++        {
++            pm.SendMessage(ClusterFPetLeash.RefuseHue, "The figurine is empty. It crumbles to dust.");
++            Delete();
++            return false;
++        }
++
++        if (pet.Map != Map.Internal)
++        {
++            pm.SendMessage(ClusterFPetLeash.RefuseHue, "This figurine holds no pet.");
++            return false;
++        }
++
++        var owner = pet.ControlMaster;
++        if (owner != pm)
++        {
++            pm.SendMessage(
++                ClusterFPetLeash.RefuseHue,
++                owner == null ? "The pet in this figurine answers to no one." : $"Only {owner.Name} can call this pet out."
++            );
++            return false;
++        }
++
++        if (!pm.Alive)
++        {
++            pm.SendMessage(ClusterFPetLeash.RefuseHue, "Your pet will not come out to a ghost.");
++            return false;
++        }
++
++        if (ClusterFPetLeash.RefuseInCombat && ClusterFPetLeash.InCombat(pm))
++        {
++            pm.SendMessage(ClusterFPetLeash.RefuseHue, "Not in the middle of a fight. Try again once things calm down.");
++            return false;
++        }
++
++        if (pm.Followers + pet.ControlSlots > pm.FollowersMax)
++        {
++            pm.SendMessage(ClusterFPetLeash.RefuseHue, "You have too many followers to call this pet out.");
++            return false;
++        }
++
++        // The reverse of ClusterFPetLeash.Shrink. Not a raw ControlOrder = Follow: IssueOrder sets the target, as
++        // ShrunkPet's restore does (PetOrders.cs:638-644 drops a Follow with no target).
++        pm.Followers += pet.ControlSlots;
++        pm.AddFollower(pet);
++        pet.MoveToWorld(pm.Location, pm.Map);
++        pet.IssueOrder(OrderType.Follow, null, pm);
++
++        pm.SendMessage(ClusterFPetLeash.HintHue, $"{pet.Name} comes out of the figurine and follows you.");
++        pm.PlaySound(0x1FA);
++
++        Pet = null;
++        Delete();
++        return true;
++    }
++
++    // A figurine deleted with its pet still inside would leave the pet on the internal map for good: delete the pet too,
++    // as Queen's ShrinkItem does.
++    public override void OnDelete()
++    {
++        if (Pet is { Deleted: false } pet && pet.Map == Map.Internal)
++        {
++            Pet = null;
++            pet.Delete();
++        }
++
++        base.OnDelete();
++    }
++}
+diff --git a/server/customizations/Tutorial/TutorialGateSkip.cs b/server/customizations/Tutorial/TutorialGateSkip.cs
+index e8166ce..9804943 100644
+--- a/server/customizations/Tutorial/TutorialGateSkip.cs
++++ b/server/customizations/Tutorial/TutorialGateSkip.cs
+@@ -137,7 +137,7 @@ public partial class PetChoiceScroll : Item
+         pm.SendGump(new PetChoiceGump(this));
+     }
+ 
+-    /// <summary>The choice: the pet given and the scroll used up, or the scroll kept when there is no follower slot.</summary>
++    /// <summary>The choice: the pet and a pet leash (cc-P764) given and the scroll used up, or the scroll kept when there is no follower slot.</summary>
+     public BaseCreature? Choose(PlayerMobile pm, bool dog)
+     {
+         if (Deleted || !IsChildOf(pm.Backpack))
+@@ -153,6 +153,9 @@ public partial class PetChoiceScroll : Item
+         }
+ 
+         pm.SendMessage(0x3B2, $"Your new {(dog ? "dog" : "cat")} follows you. Say \"all follow\", \"all guard\" or \"all stay\", or click it for its orders.");
++        // cc-P764: a pet leash with it, to carry the pet as a figurine.
++        pm.AddToBackpack(new PetLeash());
++        pm.SendMessage(0x3B2, "A pet leash comes with it. Double-click the leash and target your pet to carry it as a figurine.");
+         Delete();
+         return pet;
+     }
+diff --git a/server/customizations/Tutorial/TutorialPetCare.cs b/server/customizations/Tutorial/TutorialPetCare.cs
+index aadc648..85ed0df 100644
+--- a/server/customizations/Tutorial/TutorialPetCare.cs
++++ b/server/customizations/Tutorial/TutorialPetCare.cs
+@@ -265,7 +265,10 @@ namespace Server.Mobiles
+         }
+     }
+ 
+-    /// <summary>The animal trainer's elixir of rebirth (AnimalTrainer-elixir-of-rebirth.patch). Price: notes cc-P480.</summary>
++    /// <summary>
++    /// The animal trainer's extra stock (AnimalTrainer-elixir-of-rebirth.patch): the elixir of rebirth (price: notes
++    /// cc-P480) and, since cc-P764, the pet leash at its configured price (ClusterFPetLeash.Price).
++    /// </summary>
+     public class SBPetRebirth : SBInfo
+     {
+         public const int Price = 500;
+@@ -274,7 +277,8 @@ namespace Server.Mobiles
+ 
+         public override List<GenericBuyInfo> BuyInfo { get; } = new()
+         {
+-            new GenericBuyInfo(typeof(ElixirOfRebirth), Price, 10, 0x24E2, 0x48E)
++            new GenericBuyInfo(typeof(ElixirOfRebirth), Price, 10, 0x24E2, 0x48E),
++            new GenericBuyInfo("a pet leash", typeof(PetLeash), ClusterFPetLeash.Price, 20, PetLeash.LeashItemID, 0)
+         };
+     }
+ }
+diff --git a/server/tests/Items/PetLeashVerification.cs b/server/tests/Items/PetLeashVerification.cs
+new file mode 100644
+index 0000000..27dd79e
+--- /dev/null
++++ b/server/tests/Items/PetLeashVerification.cs
+@@ -0,0 +1,270 @@
++// cc-P764: the pet leash (server/customizations/ClusterFPetLeash.cs), a port of Queen's "Pet shrink for 57.2".
++// Shrink and restore keep the pet's name, owner, loyalty and bond; only the owner can call it out; it is refused in a
++// fight, on a summon and on a pet carrying items; the P762 pet choice scroll gives a leash; the animal trainer sells it;
++// and the follower count is right after a restart (ShrunkPet.Initialize, which LeashedPet relies on).
++
++using System.Linq;
++using System.Reflection;
++using Server;
++using Server.Items;
++using Server.Mobiles;
++using Server.Tutorial;
++using Xunit;
++using Xunit.Abstractions;
++
++namespace ShatteredLegacy.Tests;
++
++[Collection("Sequential UOContent Tests")]
++public class PetLeashVerification
++{
++    private static readonly Point3D Spot = new(1410, 1740, 0);
++
++    private readonly ITestOutputHelper _out;
++
++    public PetLeashVerification(ITestOutputHelper output) => _out = output;
++
++    private static PlayerMobile Player(string name)
++    {
++        var pm = new PlayerMobile { Player = true, Name = name, FollowersMax = 5 };
++        pm.AddItem(new Backpack());
++        pm.MoveToWorld(Spot, Map.Trammel);
++        return pm;
++    }
++
++    private static Dog DogOf(PlayerMobile pm, string name = "Rex")
++    {
++        var dog = new Dog { Name = name };
++        dog.MoveToWorld(Spot, Map.Trammel);
++        Assert.True(dog.SetControlMaster(pm));
++        dog.IssueOrder(OrderType.Follow, pm, pm);
++        return dog;
++    }
++
++    private static PetLeash LeashIn(PlayerMobile pm)
++    {
++        var leash = new PetLeash();
++        pm.Backpack!.DropItem(leash);
++        return leash;
++    }
++
++    // Setting Combatant also records aggression, which counts as fighting for clusterf.petLeash.combatSeconds: the fight
++    // is over when both are cleared.
++    private static void Calm(params Mobile[] mobiles)
++    {
++        foreach (var m in mobiles)
++        {
++            m.Combatant = null;
++            m.Aggressed.Clear();
++            m.Aggressors.Clear();
++        }
++    }
++
++    private static void Cleanup(params IEntity?[] things)
++    {
++        foreach (var e in things)
++        {
++            e?.Delete();
++        }
++    }
++
++    [Fact]
++    public void P764_ShrinkAndRestoreKeepNameOwnerAndLoyalty()
++    {
++        var pm = Player("Leasher");
++        var dog = DogOf(pm);
++        dog.Loyalty = 70;
++        var leash = LeashIn(pm);
++        Assert.Equal(1, pm.Followers);
++
++        var fig = leash.Use(pm, dog);
++
++        Assert.NotNull(fig);
++        _out.WriteLine($"shrunk: fig={fig!.Name} item=0x{fig.ItemID:X4} map={dog.Map} followers={pm.Followers}");
++        Assert.True(fig.IsChildOf(pm.Backpack));
++        Assert.Equal(1.0, fig.Weight);
++        Assert.Equal(1.0, leash.Weight);
++        Assert.Equal(ShrinkTable.Lookup(dog), fig.ItemID);
++        Assert.Equal(Map.Internal, dog.Map);
++        Assert.Equal(0, pm.Followers);
++        Assert.False(leash.Deleted); // unlimited by default
++
++        Assert.True(fig.Restore(pm));
++
++        _out.WriteLine($"restored: name={dog.Name} master={dog.ControlMaster?.Name} loyalty={dog.Loyalty} map={dog.Map}");
++        Assert.Equal("Rex", dog.Name);
++        Assert.Same(pm, dog.ControlMaster);
++        Assert.True(dog.Controlled);
++        Assert.Equal(70, dog.Loyalty);
++        Assert.False(dog.IsBonded);
++        Assert.Equal(Map.Trammel, dog.Map);
++        Assert.Equal(OrderType.Follow, dog.ControlOrder);
++        Assert.Same(pm, dog.ControlTarget);
++        Assert.Equal(1, pm.Followers);
++        Assert.True(fig.Deleted);
++
++        Cleanup(dog, pm);
++    }
++
++    [Fact]
++    public void P764_ANonOwnerCannotRestore()
++    {
++        var owner = Player("Owner");
++        var other = Player("Finder");
++        var dog = DogOf(owner);
++        var fig = LeashIn(owner).Use(owner, dog)!;
++        Assert.NotNull(fig);
++
++        other.Backpack!.DropItem(fig);
++        Assert.False(fig.Restore(other));
++
++        Assert.Equal(Map.Internal, dog.Map);
++        Assert.Same(owner, dog.ControlMaster);
++        Assert.Equal(0, other.Followers);
++        Assert.False(fig.Deleted);
++
++        // Back with its owner, it comes out.
++        owner.Backpack!.DropItem(fig);
++        Assert.True(fig.Restore(owner));
++        Assert.Same(owner, dog.ControlMaster);
++
++        Cleanup(dog, owner, other);
++    }
++
++    [Fact]
++    public void P764_ShrinkAndRestoreAreRefusedInAFight()
++    {
++        var pm = Player("Fighter");
++        var dog = DogOf(pm);
++        var leash = LeashIn(pm);
++        var rat = new SewerRat();
++        rat.MoveToWorld(Spot, Map.Trammel);
++
++        pm.Combatant = rat;
++        Assert.Null(leash.Use(pm, dog));
++        Assert.Equal(Map.Trammel, dog.Map);
++        Calm(pm, dog, rat);
++
++        dog.Combatant = rat;
++        Assert.Null(leash.Use(pm, dog));
++        Assert.Equal(Map.Trammel, dog.Map);
++        Calm(pm, dog, rat);
++
++        var fig = leash.Use(pm, dog)!;
++        Assert.NotNull(fig);
++
++        pm.Combatant = rat;
++        Assert.False(fig.Restore(pm));
++        Assert.Equal(Map.Internal, dog.Map);
++        Calm(pm, rat);
++        Assert.True(fig.Restore(pm));
++
++        Cleanup(dog, rat, pm);
++    }
++
++    [Fact]
++    public void P764_ASummonCannotBeLeashed()
++    {
++        var pm = Player("Summoner");
++        var wolf = new GreyWolf { Summoned = true };
++        wolf.MoveToWorld(Spot, Map.Trammel);
++        Assert.True(wolf.SetControlMaster(pm));
++        var leash = LeashIn(pm);
++
++        Assert.Null(leash.Use(pm, wolf));
++        Assert.Equal(Map.Trammel, wolf.Map);
++        Assert.Empty(pm.Backpack!.Items.OfType<LeashedPet>());
++
++        Cleanup(wolf, pm);
++    }
++
++    [Fact]
++    public void P764_APetCarryingItemsCannotBeLeashed()
++    {
++        var pm = Player("Packer");
++        var horse = new PackHorse();
++        horse.MoveToWorld(Spot, Map.Trammel);
++        Assert.True(horse.SetControlMaster(pm));
++        horse.Backpack!.DropItem(new Gold(10));
++        var leash = LeashIn(pm);
++
++        Assert.Null(leash.Use(pm, horse));
++        Assert.Equal(Map.Trammel, horse.Map);
++
++        // Unloaded, it goes.
++        foreach (var item in horse.Backpack.Items.ToList())
++        {
++            item.Delete();
++        }
++
++        var fig = leash.Use(pm, horse);
++        Assert.NotNull(fig);
++        Assert.True(fig!.Restore(pm));
++
++        Cleanup(horse, pm);
++    }
++
++    [Fact]
++    public void P764_SomeoneElsesPetCannotBeLeashed()
++    {
++        var owner = Player("RealOwner");
++        var thief = Player("Thief");
++        var dog = DogOf(owner);
++
++        Assert.Null(LeashIn(thief).Use(thief, dog));
++        Assert.Equal(Map.Trammel, dog.Map);
++        Assert.Same(owner, dog.ControlMaster);
++
++        Cleanup(dog, owner, thief);
++    }
++
++    [Fact]
++    public void P764_TheStarterScrollGivesALeash()
++    {
++        var pm = Player("Starter");
++        var scroll = new PetChoiceScroll();
++        pm.Backpack!.DropItem(scroll);
++
++        var pet = scroll.Choose(pm, true);
++
++        Assert.NotNull(pet);
++        Assert.Single(pm.Backpack.Items.OfType<PetLeash>());
++        Assert.True(scroll.Deleted);
++
++        Cleanup(pet, pm);
++    }
++
++    [Fact]
++    public void P764_TheAnimalTrainerSellsTheLeash()
++    {
++        var info = new SBPetRebirth().BuyInfo.Single(b => b.Type == typeof(PetLeash));
++        Assert.Equal(ClusterFPetLeash.Price, info.Price);
++        Assert.InRange(info.Price, 1, 1000);
++    }
++
++    [Fact]
++    public void P764_TheFollowerCountIsRightAfterARestartWhileLeashed()
++    {
++        var pm = Player("Restarter");
++        var dog = DogOf(pm);
++        var fig = LeashIn(pm).Use(pm, dog)!;
++        Assert.NotNull(fig);
++
++        // As ShrunkPetVerification: the owner's Followers and AllFollowers are not saved; the pet's own load re-adds it.
++        var buffer = new byte[65536];
++        var writer = new BufferWriter(buffer, true);
++        dog.Serialize(writer);
++        writer.Flush();
++        pm.Followers = 0;
++        pm.RemoveFollower(dog);
++        dog.Deserialize(new BufferReader(buffer));
++        _out.WriteLine($"after the pet's load: followers={pm.Followers}");
++
++        typeof(ShrunkPet).GetMethod("Initialize", BindingFlags.Public | BindingFlags.Static)!.Invoke(null, null);
++        Assert.Equal(0, pm.Followers);
++
++        Assert.True(fig.Restore(pm));
++        Assert.Equal(dog.ControlSlots, pm.Followers);
++
++        Cleanup(dog, pm);
++    }
++}
