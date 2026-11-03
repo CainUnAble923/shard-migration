@@ -1,0 +1,74 @@
+Build succeeded.
+Test run for /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.0+05679a7ab5 (64-bit .NET 10.0.7)
+[xUnit.net 00:00:00.12]   Discovering: UOContent.Tests
+[xUnit.net 00:00:00.39]   Discovered:  UOContent.Tests
+[xUnit.net 00:00:00.41]   Starting:    UOContent.Tests
+[11:33:21 INF] Loading world <s:Server.World>
+[11:33:21 INF] Loading world done (0 items, 0 mobiles) (0.01 seconds) <s:Server.World>
+[11:33:22 INF] Discovered 3 spawner JSON type(s) <s:Server.Engines.Spawners.SpawnerJsonSerializer>
+[xUnit.net 00:00:01.08]     ShatteredLegacy.Tests.GoldPanningVerification.AWaterBankYieldsItsTotalThenIsWorkedClean [FAIL]
+[xUnit.net 00:00:01.08]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.08]       Expected: 6
+[xUnit.net 00:00:01.08]       Actual:   0
+[xUnit.net 00:00:01.08]       Stack Trace:
+[xUnit.net 00:00:01.08]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GoldPanningVerification.cs(264,0): at ShatteredLegacy.Tests.GoldPanningVerification.AWaterBankYieldsItsTotalThenIsWorkedClean()
+[xUnit.net 00:00:01.08]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.08]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.08]       Output:
+[xUnit.net 00:00:01.08]         bank holds 6
+[xUnit.net 00:00:01.08]     ShatteredLegacy.Tests.GoldPanningVerification.AtTheTablesChanceAPanAlsoFindsAnMlGem [FAIL]
+[xUnit.net 00:00:01.08]       Assert.True() Failure
+[xUnit.net 00:00:01.08]       Expected: True
+[xUnit.net 00:00:01.08]       Actual:   False
+[xUnit.net 00:00:01.08]       Stack Trace:
+[xUnit.net 00:00:01.08]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GoldPanningVerification.cs(349,0): at ShatteredLegacy.Tests.GoldPanningVerification.AtTheTablesChanceAPanAlsoFindsAnMlGem()
+[xUnit.net 00:00:01.08]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.08]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.08]       Output:
+[xUnit.net 00:00:01.08]         gem: BlueDiamond
+[11:33:22 WRN] map1.mul was not found. <s:Server.TileMatrix>
+[11:33:22 WRN] staidx1.mul was not found. <s:Server.TileMatrix>
+[11:33:22 WRN] statics1.mul was not found. <s:Server.TileMatrix>
+[ClusterFAssayerSeeder] Assayer by the liaison at (2400, 3200, 0): placed at (2402, 3200, 0) on Trammel.
+[ClusterFAssayerSeeder] Assayer seed: placed 1, already there 0, skipped 0 (1 liaisons).
+[ClusterFAssayerSeeder] Assayer seed: placed 0, already there 1, skipped 0 (1 liaisons).
+[xUnit.net 00:00:01.10]   Finished:    UOContent.Tests
+  Passed ShatteredLegacy.Tests.GoldPanningVerification.TheAssayerPaysTheTablesPriceOrCompactStandingForAMember [64 ms]
+  Passed ShatteredLegacy.Tests.GoldPanningVerification.MiningSixtyPansAndEachSizeOpensAtItsSkill [56 ms]
+  Passed ShatteredLegacy.Tests.GoldPanningVerification.ThePanTakesShelteredRiverAndLakeWaterOnlyNeverTheCoast [1 ms]
+  Failed ShatteredLegacy.Tests.GoldPanningVerification.AWaterBankYieldsItsTotalThenIsWorkedClean [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 6
+Actual:   0
+  Stack Trace:
+     at ShatteredLegacy.Tests.GoldPanningVerification.AWaterBankYieldsItsTotalThenIsWorkedClean() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GoldPanningVerification.cs:line 264
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ bank holds 6
+
+
+  Passed ShatteredLegacy.Tests.GoldPanningVerification.TheDefaultTableValidatesRoundTripsAndABadFileIsRefusedWhole [2 ms]
+  Failed ShatteredLegacy.Tests.GoldPanningVerification.AtTheTablesChanceAPanAlsoFindsAnMlGem [2 ms]
+  Error Message:
+   Assert.True() Failure
+Expected: True
+Actual:   False
+  Stack Trace:
+     at ShatteredLegacy.Tests.GoldPanningVerification.AtTheTablesChanceAPanAlsoFindsAnMlGem() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/GoldPanningVerification.cs:line 349
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ gem: BlueDiamond
+
+
+  Passed ShatteredLegacy.Tests.GoldPanningVerification.TheAssayerAppearsBesideEachLiaisonOnce [13 ms]
+
+Test Run Failed.
+Total tests: 7
+     Passed: 5
+     Failed: 2
+ Total time: 1.3329 Seconds
