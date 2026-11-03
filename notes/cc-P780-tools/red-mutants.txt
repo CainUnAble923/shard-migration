@@ -1,0 +1,243 @@
+    0 Error(s)
+Build succeeded.
+Test run for /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.0+05679a7ab5 (64-bit .NET 10.0.7)
+[xUnit.net 00:00:00.12]   Discovering: UOContent.Tests
+[xUnit.net 00:00:00.41]   Discovered:  UOContent.Tests
+[xUnit.net 00:00:00.42]   Starting:    UOContent.Tests
+[10:59:14 INF] Loading world <s:Server.World>
+[10:59:14 INF] Loading world done (0 items, 0 mobiles) (0.01 seconds) <s:Server.World>
+[10:59:14 INF] Discovered 3 spawner JSON type(s) <s:Server.Engines.Spawners.SpawnerJsonSerializer>
+[xUnit.net 00:00:01.02]     ShatteredLegacy.Tests.LeagueHuntsVerification.TheDailyHuntsRollOverAtTheRefreshHourAndAFinishedOneStaysUntilThen [FAIL]
+[xUnit.net 00:00:01.02]       Assert.Equal() Failure: Collections differ
+[xUnit.net 00:00:01.02]                  ↓ (pos 0)
+[xUnit.net 00:00:01.02]       Expected: [5a013e84-2ec1-44c1-94ac-9a1ff7a52f58, b2b7ffbf-80a9-4c15-a03c-cf3f7859902b]
+[xUnit.net 00:00:01.02]       Actual:   [537ae75b-5a81-4112-897f-3b222b8cf00c, a7ee718f-f3ba-4894-babc-9dc9dbfbfcc0]
+[xUnit.net 00:00:01.02]                  ↑ (pos 0)
+[xUnit.net 00:00:01.02]       Stack Trace:
+[xUnit.net 00:00:01.02]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/LeagueHuntsVerification.cs(267,0): at ShatteredLegacy.Tests.LeagueHuntsVerification.TheDailyHuntsRollOverAtTheRefreshHourAndAFinishedOneStaysUntilThen()
+[xUnit.net 00:00:01.02]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.02]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.05]     ShatteredLegacy.Tests.LeagueHuntsVerification.TheMostDamageCountsAndThePartyNearbySharesItThroughTheRealDeathEvent [FAIL]
+[xUnit.net 00:00:01.05]       Assert.Equal() Failure: Collections differ
+[xUnit.net 00:00:01.05]                                 ↓ (pos 1)
+[xUnit.net 00:00:01.05]       Expected: [0x00000003 "", 0x00000004 ""]
+[xUnit.net 00:00:01.05]       Actual:   [0x00000003 ""]
+[xUnit.net 00:00:01.05]       Stack Trace:
+[xUnit.net 00:00:01.05]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/LeagueHuntsVerification.cs(429,0): at ShatteredLegacy.Tests.LeagueHuntsVerification.TheMostDamageCountsAndThePartyNearbySharesItThroughTheRealDeathEvent()
+[xUnit.net 00:00:01.05]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.05]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.07]     ShatteredLegacy.Tests.LeagueHuntsVerification.TheDefaultTableValidatesNamesTheBestiaryAndRoundTripsAndABadFileIsRefusedWhole [FAIL]
+[xUnit.net 00:00:01.07]       Assert.Null() Failure: Value is not null
+[xUnit.net 00:00:01.07]       Expected: null
+[xUnit.net 00:00:01.07]       Actual:   LeagueHuntTable { About = "League hunts (cc-P780, F-24): daily kill goals on "···, Counts = LeagueHuntCounts { Boss = 1, Cull = 12, Hunt = 4 }, DailyHunts = 2, Enabled = True, Families = [LeagueHuntFamily { Entries = [···], Key = "hedge-snatchers", LevelFrom = 2147483647, Name = "hedge snatchers", Slayer = "", ··· }, LeagueHuntFamily { Entries = [···], Key = "snatcher-outriders", LevelFrom = 20, Name = "snatcher outriders", Slayer = "", ··· }, LeagueHuntFamily { Entries = [···], Key = "hornback-raiders", LevelFrom = 12, Name = "hornback raiders", Slayer = "", ··· }, LeagueHuntFamily { Entries = [···], Key = "ditch-crawlers", LevelFrom = 5, Name = "ditch crawlers", Slayer = "", ··· }, LeagueHuntFamily { Entries = [···], Key = "mire-croakers", LevelFrom = 12, Name = "mire croakers", Slayer = "", ··· }, ···], ··· }
+[xUnit.net 00:00:01.07]       Stack Trace:
+[xUnit.net 00:00:01.07]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/LeagueHuntsVerification.cs(169,0): at ShatteredLegacy.Tests.LeagueHuntsVerification.TheDefaultTableValidatesNamesTheBestiaryAndRoundTripsAndABadFileIsRefusedWhole()
+[xUnit.net 00:00:01.07]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.07]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.08]     ShatteredLegacy.Tests.LeagueHuntsVerification.TheBoardShowsEachHuntsProgressAndTheCommandSaysOneLinePerHunt [FAIL]
+[xUnit.net 00:00:01.08]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:01.08]       String:    "Warriors' Brotherhood: requisitions\n<BASE"···
+[xUnit.net 00:00:01.08]       Not found: "League hunts"
+[xUnit.net 00:00:01.08]       Stack Trace:
+[xUnit.net 00:00:01.08]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/LeagueHuntsVerification.cs(587,0): at ShatteredLegacy.Tests.LeagueHuntsVerification.TheBoardShowsEachHuntsProgressAndTheCommandSaysOneLinePerHunt()
+[xUnit.net 00:00:01.08]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.08]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.08]       Output:
+[xUnit.net 00:00:01.08]         Warriors' Brotherhood: requisitions
+[xUnit.net 00:00:01.08]         <BASEFONT COLOR=#AAAAAA>League rank: Unregistered (requests up to the Initiate tier). The board refreshes daily at 05:00 UTC.</BASEFONT>
+[xUnit.net 00:00:01.08]         Warriors' Brotherhood: Apprentice, rolling the Initiate tier.
+[xUnit.net 00:00:01.08]         Initiate tier:
+[xUnit.net 00:00:01.08]         <BASEFONT COLOR=#FFFFFF>A mace that slays humanoids.</BASEFONT>
+[xUnit.net 00:00:01.08]         Turn in
+[xUnit.net 00:00:01.08]         <BASEFONT COLOR=#AAAAAA>Pays 10 Renown, 40 Warriors' Brotherhood standing, and gold at the Appraiser's price.</BASEFONT>
+[xUnit.net 00:00:01.08]         <BASEFONT COLOR=#777777>No lead.</BASEFONT>
+[xUnit.net 00:00:01.08]         Initiate tier:
+[xUnit.net 00:00:01.08]         <BASEFONT COLOR=#FFFFFF>A shield with Defense Chance Increase at 20% or better.</BASEFONT>
+[xUnit.net 00:00:01.08]         Turn in
+[xUnit.net 00:00:01.08]         <BASEFONT COLOR=#AAAAAA>Pays 10 Renown, 40 Warriors' Brotherhood standing, and gold at the Appraiser's price.</BASEFONT>
+[xUnit.net 00:00:01.08]         <BASEFONT COLOR=#777777>No lead.</BASEFONT>
+[xUnit.net 00:00:01.08]         Initiate tier:
+[xUnit.net 00:00:01.08]         <BASEFONT COLOR=#FFFFFF>A sword with Hit Lower Defense at 20% or better.</BASEFONT>
+[xUnit.net 00:00:01.08]         Turn in
+[xUnit.net 00:00:01.08]         <BASEFONT COLOR=#AAAAAA>Pays 10 Renown, 40 Warriors' Brotherhood standing, and gold at the Appraiser's price.</BASEFONT>
+[xUnit.net 00:00:01.08]         <BASEFONT COLOR=#777777>No lead.</BASEFONT>
+[xUnit.net 00:00:01.08]         Refresh
+[xUnit.net 00:00:01.08]         Close
+[xUnit.net 00:00:01.09]     ShatteredLegacy.Tests.LeagueHuntsVerification.TheRecordSurvivesAWriteAndAReadAndAVersion0RecordLoadsWithNoHunts [FAIL]
+[xUnit.net 00:00:01.09]       Assert.Equal() Failure: Collections differ
+[xUnit.net 00:00:01.09]                                                                                                                                                               ↓ (pos 1)
+[xUnit.net 00:00:01.09]       Expected: [Tuple (16d54878-e069-41a4-807d-e3f0f862a14c, "moonmaws", "warriors", 2, False, 12, 7, 35, 90, 600, "", False, 2026-10-20T12:00:00.0000000Z), Tuple (83d3c33f-bff3-4d17-b9a6-f6b2a57d43ac, "hedge-snatchers", "arcane", 0, False, 12, 12, 10, 40, 250, "", True, 2026-10-20T09:00:00.0000000Z)]
+[xUnit.net 00:00:01.09]       Actual:   [Tuple (16d54878-e069-41a4-807d-e3f0f862a14c, "moonmaws", "warriors", 2, False, 12, 7, 35, 90, 600, "", False, 2026-10-20T12:00:00.0000000Z), Tuple (83d3c33f-bff3-4d17-b9a6-f6b2a57d43ac, "hedge-snatchers", "arcane", 0, False, 12, 12, 10, 40, 250, "", False, 2026-10-20T09:00:00.0000000Z)]
+[xUnit.net 00:00:01.09]                                                                                                                                                               ↑ (pos 1)
+[xUnit.net 00:00:01.09]       Stack Trace:
+[xUnit.net 00:00:01.09]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/LeagueHuntsVerification.cs(538,0): at ShatteredLegacy.Tests.LeagueHuntsVerification.TheRecordSurvivesAWriteAndAReadAndAVersion0RecordLoadsWithNoHunts()
+[xUnit.net 00:00:01.09]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.09]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.09]     ShatteredLegacy.Tests.LeagueHuntsVerification.AFirstReadRollsTheDailyHuntsAndOneGreatHuntAtTheTiersNumbers [FAIL]
+[xUnit.net 00:00:01.09]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.09]       Expected: 36
+[xUnit.net 00:00:01.09]       Actual:   12
+[xUnit.net 00:00:01.09]       Stack Trace:
+[xUnit.net 00:00:01.09]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/LeagueHuntsVerification.cs(221,0): at ShatteredLegacy.Tests.LeagueHuntsVerification.AFirstReadRollsTheDailyHuntsAndOneGreatHuntAtTheTiersNumbers()
+[xUnit.net 00:00:01.09]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.09]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.10]     ShatteredLegacy.Tests.LeagueHuntsVerification.HuntFamilyAsksForAnOpenHuntsSlayerAndOtherwiseTheTableDraws [FAIL]
+[xUnit.net 00:00:01.10]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.10]       Expected: Silver
+[xUnit.net 00:00:01.10]       Actual:   null
+[xUnit.net 00:00:01.10]       Stack Trace:
+[xUnit.net 00:00:01.10]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/LeagueHuntsVerification.cs(491,0): at ShatteredLegacy.Tests.LeagueHuntsVerification.HuntFamilyAsksForAnOpenHuntsSlayerAndOtherwiseTheTableDraws()
+[xUnit.net 00:00:01.10]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.10]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.10]     ShatteredLegacy.Tests.LeagueHuntsVerification.AKillCountsOnItsFamilyAndTheLastKillPaysOnceAndTheGreatHuntPaysASilverBox [FAIL]
+[xUnit.net 00:00:01.10]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.10]       Expected: 36
+[xUnit.net 00:00:01.10]       Actual:   12
+[xUnit.net 00:00:01.10]       Stack Trace:
+[xUnit.net 00:00:01.10]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/LeagueHuntsVerification.cs(347,0): at ShatteredLegacy.Tests.LeagueHuntsVerification.AKillCountsOnItsFamilyAndTheLastKillPaysOnceAndTheGreatHuntPaysASilverBox()
+[xUnit.net 00:00:01.10]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.10]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.10]     ShatteredLegacy.Tests.LeagueHuntsVerification.TheGreatHuntStaysAllWeekAndRollsOverOnTheResetDayAtTheRefreshHour [FAIL]
+[xUnit.net 00:00:01.10]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.10]       Expected: 40
+[xUnit.net 00:00:01.10]       Actual:   41
+[xUnit.net 00:00:01.10]       Stack Trace:
+[xUnit.net 00:00:01.10]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/LeagueHuntsVerification.cs(291,0): at ShatteredLegacy.Tests.LeagueHuntsVerification.TheGreatHuntStaysAllWeekAndRollsOverOnTheResetDayAtTheRefreshHour()
+[xUnit.net 00:00:01.10]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.10]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed ShatteredLegacy.Tests.LeagueHuntsVerification.TheDailyHuntsRollOverAtTheRefreshHourAndAFinishedOneStaysUntilThen [60 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+           ↓ (pos 0)
+Expected: [5a013e84-2ec1-44c1-94ac-9a1ff7a52f58, b2b7ffbf-80a9-4c15-a03c-cf3f7859902b]
+Actual:   [537ae75b-5a81-4112-897f-3b222b8cf00c, a7ee718f-f3ba-4894-babc-9dc9dbfbfcc0]
+           ↑ (pos 0)
+  Stack Trace:
+     at ShatteredLegacy.Tests.LeagueHuntsVerification.TheDailyHuntsRollOverAtTheRefreshHourAndAFinishedOneStaysUntilThen() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/LeagueHuntsVerification.cs:line 267
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed ShatteredLegacy.Tests.LeagueHuntsVerification.TheMostDamageCountsAndThePartyNearbySharesItThroughTheRealDeathEvent [34 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+                          ↓ (pos 1)
+Expected: [0x00000003 "", 0x00000004 ""]
+Actual:   [0x00000003 ""]
+  Stack Trace:
+     at ShatteredLegacy.Tests.LeagueHuntsVerification.TheMostDamageCountsAndThePartyNearbySharesItThroughTheRealDeathEvent() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/LeagueHuntsVerification.cs:line 429
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed ShatteredLegacy.Tests.LeagueHuntsVerification.TheDefaultTableValidatesNamesTheBestiaryAndRoundTripsAndABadFileIsRefusedWhole [15 ms]
+  Error Message:
+   Assert.Null() Failure: Value is not null
+Expected: null
+Actual:   LeagueHuntTable { About = "League hunts (cc-P780, F-24): daily kill goals on "···, Counts = LeagueHuntCounts { Boss = 1, Cull = 12, Hunt = 4 }, DailyHunts = 2, Enabled = True, Families = [LeagueHuntFamily { Entries = [···], Key = "hedge-snatchers", LevelFrom = 2147483647, Name = "hedge snatchers", Slayer = "", ··· }, LeagueHuntFamily { Entries = [···], Key = "snatcher-outriders", LevelFrom = 20, Name = "snatcher outriders", Slayer = "", ··· }, LeagueHuntFamily { Entries = [···], Key = "hornback-raiders", LevelFrom = 12, Name = "hornback raiders", Slayer = "", ··· }, LeagueHuntFamily { Entries = [···], Key = "ditch-crawlers", LevelFrom = 5, Name = "ditch crawlers", Slayer = "", ··· }, LeagueHuntFamily { Entries = [···], Key = "mire-croakers", LevelFrom = 12, Name = "mire croakers", Slayer = "", ··· }, ···], ··· }
+  Stack Trace:
+     at ShatteredLegacy.Tests.LeagueHuntsVerification.TheDefaultTableValidatesNamesTheBestiaryAndRoundTripsAndABadFileIsRefusedWhole() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/LeagueHuntsVerification.cs:line 169
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed ShatteredLegacy.Tests.LeagueHuntsVerification.TheBoardShowsEachHuntsProgressAndTheCommandSaysOneLinePerHunt [13 ms]
+  Error Message:
+   Assert.Contains() Failure: Sub-string not found
+String:    "Warriors' Brotherhood: requisitions\n<BASE"···
+Not found: "League hunts"
+  Stack Trace:
+     at ShatteredLegacy.Tests.LeagueHuntsVerification.TheBoardShowsEachHuntsProgressAndTheCommandSaysOneLinePerHunt() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/LeagueHuntsVerification.cs:line 587
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ Warriors' Brotherhood: requisitions
+ <BASEFONT COLOR=#AAAAAA>League rank: Unregistered (requests up to the Initiate tier). The board refreshes daily at 05:00 UTC.</BASEFONT>
+ Warriors' Brotherhood: Apprentice, rolling the Initiate tier.
+ Initiate tier:
+ <BASEFONT COLOR=#FFFFFF>A mace that slays humanoids.</BASEFONT>
+ Turn in
+ <BASEFONT COLOR=#AAAAAA>Pays 10 Renown, 40 Warriors' Brotherhood standing, and gold at the Appraiser's price.</BASEFONT>
+ <BASEFONT COLOR=#777777>No lead.</BASEFONT>
+ Initiate tier:
+ <BASEFONT COLOR=#FFFFFF>A shield with Defense Chance Increase at 20% or better.</BASEFONT>
+ Turn in
+ <BASEFONT COLOR=#AAAAAA>Pays 10 Renown, 40 Warriors' Brotherhood standing, and gold at the Appraiser's price.</BASEFONT>
+ <BASEFONT COLOR=#777777>No lead.</BASEFONT>
+ Initiate tier:
+ <BASEFONT COLOR=#FFFFFF>A sword with Hit Lower Defense at 20% or better.</BASEFONT>
+ Turn in
+ <BASEFONT COLOR=#AAAAAA>Pays 10 Renown, 40 Warriors' Brotherhood standing, and gold at the Appraiser's price.</BASEFONT>
+ <BASEFONT COLOR=#777777>No lead.</BASEFONT>
+ Refresh
+ Close
+
+
+  Failed ShatteredLegacy.Tests.LeagueHuntsVerification.TheRecordSurvivesAWriteAndAReadAndAVersion0RecordLoadsWithNoHunts [12 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+                                                                                                                                                        ↓ (pos 1)
+Expected: [Tuple (16d54878-e069-41a4-807d-e3f0f862a14c, "moonmaws", "warriors", 2, False, 12, 7, 35, 90, 600, "", False, 2026-10-20T12:00:00.0000000Z), Tuple (83d3c33f-bff3-4d17-b9a6-f6b2a57d43ac, "hedge-snatchers", "arcane", 0, False, 12, 12, 10, 40, 250, "", True, 2026-10-20T09:00:00.0000000Z)]
+Actual:   [Tuple (16d54878-e069-41a4-807d-e3f0f862a14c, "moonmaws", "warriors", 2, False, 12, 7, 35, 90, 600, "", False, 2026-10-20T12:00:00.0000000Z), Tuple (83d3c33f-bff3-4d17-b9a6-f6b2a57d43ac, "hedge-snatchers", "arcane", 0, False, 12, 12, 10, 40, 250, "", False, 2026-10-20T09:00:00.0000000Z)]
+                                                                                                                                                        ↑ (pos 1)
+  Stack Trace:
+     at ShatteredLegacy.Tests.LeagueHuntsVerification.TheRecordSurvivesAWriteAndAReadAndAVersion0RecordLoadsWithNoHunts() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/LeagueHuntsVerification.cs:line 538
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed ShatteredLegacy.Tests.LeagueHuntsVerification.AFirstReadRollsTheDailyHuntsAndOneGreatHuntAtTheTiersNumbers [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 36
+Actual:   12
+  Stack Trace:
+     at ShatteredLegacy.Tests.LeagueHuntsVerification.AFirstReadRollsTheDailyHuntsAndOneGreatHuntAtTheTiersNumbers() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/LeagueHuntsVerification.cs:line 221
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed ShatteredLegacy.Tests.LeagueHuntsVerification.HuntFamilyAsksForAnOpenHuntsSlayerAndOtherwiseTheTableDraws [4 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: Silver
+Actual:   null
+  Stack Trace:
+     at ShatteredLegacy.Tests.LeagueHuntsVerification.HuntFamilyAsksForAnOpenHuntsSlayerAndOtherwiseTheTableDraws() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/LeagueHuntsVerification.cs:line 491
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed ShatteredLegacy.Tests.LeagueHuntsVerification.AKillCountsOnItsFamilyAndTheLastKillPaysOnceAndTheGreatHuntPaysASilverBox [< 1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 36
+Actual:   12
+  Stack Trace:
+     at ShatteredLegacy.Tests.LeagueHuntsVerification.AKillCountsOnItsFamilyAndTheLastKillPaysOnceAndTheGreatHuntPaysASilverBox() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/LeagueHuntsVerification.cs:line 347
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed ShatteredLegacy.Tests.LeagueHuntsVerification.TheGreatHuntStaysAllWeekAndRollsOverOnTheResetDayAtTheRefreshHour [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 40
+Actual:   41
+  Stack Trace:
+     at ShatteredLegacy.Tests.LeagueHuntsVerification.TheGreatHuntStaysAllWeekAndRollsOverOnTheResetDayAtTheRefreshHour() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/LeagueHuntsVerification.cs:line 291
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.11]     ShatteredLegacy.Tests.LeagueHuntsVerification.AHuntPaysOnlyRenownStandingGoldAndALeagueShopBoxAndTheNumbersComeFromTheFile [FAIL]
+[xUnit.net 00:00:01.11]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:01.11]       Expected: ""
+[xUnit.net 00:00:01.11]       Actual:   "Silver"
+[xUnit.net 00:00:01.11]                  ↑ (pos 0)
+[xUnit.net 00:00:01.11]       Stack Trace:
+[xUnit.net 00:00:01.11]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/LeagueHuntsVerification.cs(645,0): at ShatteredLegacy.Tests.LeagueHuntsVerification.AHuntPaysOnlyRenownStandingGoldAndALeagueShopBoxAndTheNumbersComeFromTheFile()
+[xUnit.net 00:00:01.11]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.11]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.11]   Finished:    UOContent.Tests
+  Failed ShatteredLegacy.Tests.LeagueHuntsVerification.AHuntPaysOnlyRenownStandingGoldAndALeagueShopBoxAndTheNumbersComeFromTheFile [2 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+Expected: ""
+Actual:   "Silver"
+           ↑ (pos 0)
+  Stack Trace:
+     at ShatteredLegacy.Tests.LeagueHuntsVerification.AHuntPaysOnlyRenownStandingGoldAndALeagueShopBoxAndTheNumbersComeFromTheFile() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/LeagueHuntsVerification.cs:line 645
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+Test Run Failed.
+Total tests: 10
+     Failed: 10
+ Total time: 1.3282 Seconds
