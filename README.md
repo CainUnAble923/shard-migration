@@ -239,12 +239,13 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem off; 660 prompts done, 5 more stopped early and not counted)
+### Queue (Golem off; 661 prompts done, 5 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
 | P9772 remote-answer-test | done | 2026-11-02 |
 | P9770 run-next-test | done | 2026-11-02 |
+| P792 assess-magic-systems | done | 2026-11-03 |
 | P791 assess-bounties-and-quests | done | 2026-11-03 |
 | P790 assess-mounts-and-tamables | done | 2026-11-03 |
 | P789 tasks-window-and-staff-testers | done | 2026-11-03 |
@@ -252,7 +253,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P787 beekeeping | done | 2026-11-03 |
 | P786 halloween-witch | done | 2026-11-03 |
 | P785 chocolate-recipes | done | 2026-11-03 |
-| P784 holiday-stocking | done | 2026-11-03 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 189 patches, 12 replacements
 
