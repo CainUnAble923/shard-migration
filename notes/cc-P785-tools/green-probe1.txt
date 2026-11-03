@@ -1,0 +1,44 @@
+Build succeeded.
+Test run for /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.0+05679a7ab5 (64-bit .NET 10.0.7)
+[xUnit.net 00:00:00.14]   Discovering: UOContent.Tests
+[xUnit.net 00:00:00.43]   Discovered:  UOContent.Tests
+[xUnit.net 00:00:00.45]   Starting:    UOContent.Tests
+[13:05:44 INF] Loading world <s:Server.World>
+[13:05:44 INF] Loading world done (0 items, 0 mobiles) (0.01 seconds) <s:Server.World>
+[13:05:44 INF] Discovered 3 spawner JSON type(s) <s:Server.Engines.Spawners.SpawnerJsonSerializer>
+[Chocolatiering] 19 recipes added to Cooking.
+[13:05:44 WRN] map1.mul was not found. <s:Server.TileMatrix>
+[13:05:44 WRN] staidx1.mul was not found. <s:Server.TileMatrix>
+[13:05:44 WRN] statics1.mul was not found. <s:Server.TileMatrix>
+[xUnit.net 00:00:01.11]     ShatteredLegacy.Tests.ChocolatieringVerification.EachRecipeMakesItsItemFromItsResources [FAIL]
+[xUnit.net 00:00:01.11]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.11]       Expected: 0
+[xUnit.net 00:00:01.11]       Actual:   1
+[xUnit.net 00:00:01.11]       Stack Trace:
+[xUnit.net 00:00:01.11]            at ShatteredLegacy.Tests.ChocolatieringVerification.Craft(CraftItem entry, PlayerMobile cook)
+[xUnit.net 00:00:01.11]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/ChocolatieringVerification.cs(209,0): at ShatteredLegacy.Tests.ChocolatieringVerification.EachRecipeMakesItsItemFromItsResources()
+[xUnit.net 00:00:01.11]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.11]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.12]   Finished:    UOContent.Tests
+  Passed ShatteredLegacy.Tests.ChocolatieringVerification.TheTableValidatesAndRefusesAnythingButKitchenGoods [27 ms]
+  Passed ShatteredLegacy.Tests.ChocolatieringVerification.EveryRecipeIsInCookingsChocolatieringGroup [7 ms]
+  Passed ShatteredLegacy.Tests.ChocolatieringVerification.TheProvisionerSellsTheMoldsAndSuppliesAtTheTablesPrices [63 ms]
+  Failed ShatteredLegacy.Tests.ChocolatieringVerification.EachRecipeMakesItsItemFromItsResources [18 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1
+  Stack Trace:
+     at ShatteredLegacy.Tests.ChocolatieringVerification.Craft(CraftItem entry, PlayerMobile cook)
+   at ShatteredLegacy.Tests.ChocolatieringVerification.EachRecipeMakesItsItemFromItsResources() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/ChocolatieringVerification.cs:line 209
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed ShatteredLegacy.Tests.ChocolatieringVerification.TheThreeNutcrackersAreMadeEachOfItsKindInAnOrdinaryRecipeBand [11 ms]
+
+Test Run Failed.
+Total tests: 5
+     Passed: 4
+     Failed: 1
+ Total time: 1.3633 Seconds
