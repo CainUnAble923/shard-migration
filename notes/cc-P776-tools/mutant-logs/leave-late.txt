@@ -1,0 +1,144 @@
+Test run for /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.0+05679a7ab5 (64-bit .NET 10.0.7)
+[xUnit.net 00:00:00.13]   Discovering: UOContent.Tests
+[xUnit.net 00:00:00.41]   Discovered:  UOContent.Tests
+[xUnit.net 00:00:00.42]   Starting:    UOContent.Tests
+[01:25:56 INF] Loading world <s:Server.World>
+[01:25:56 INF] Loading world done (0 items, 0 mobiles) (0.01 seconds) <s:Server.World>
+[01:25:56 INF] Discovered 3 spawner JSON type(s) <s:Server.Engines.Spawners.SpawnerJsonSerializer>
+[01:25:56 INF] The Fold: registered 17 maps (32-48) on Trammel's files <s:Server.FoldMaps>
+[xUnit.net 00:00:01.04]     ShatteredLegacy.Tests.RandomEncounterVerification.UnfoughtCreaturesLeaveOnTimeAndNotBefore [FAIL]
+[xUnit.net 00:00:01.04]       Assert.Equal() Failure: Values differ
+[01:25:56 WRN] map1.mul was not found. <s:Server.TileMatrix>
+[01:25:56 WRN] staidx1.mul was not found. <s:Server.TileMatrix>
+[01:25:56 WRN] statics1.mul was not found. <s:Server.TileMatrix>
+[xUnit.net 00:00:01.04]       Expected: 4
+[xUnit.net 00:00:01.04]       Actual:   0
+[xUnit.net 00:00:01.04]       Stack Trace:
+[xUnit.net 00:00:01.04]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/RandomEncounterVerification.cs(632,0): at ShatteredLegacy.Tests.RandomEncounterVerification.UnfoughtCreaturesLeaveOnTimeAndNotBefore()
+[xUnit.net 00:00:01.04]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.04]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.AnEncounterPicksOnlyWhatThePlayerQualifiesFor [56 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.TheCooldownStopsStackingOnACharacterAndItsAccount [36 ms]
+  Failed ShatteredLegacy.Tests.RandomEncounterVerification.UnfoughtCreaturesLeaveOnTimeAndNotBefore [3 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 4
+Actual:   0
+  Stack Trace:
+     at ShatteredLegacy.Tests.RandomEncounterVerification.UnfoughtCreaturesLeaveOnTimeAndNotBefore() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/RandomEncounterVerification.cs:line 632
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverWhileInCombat [7 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.ARestartRemovesWhatWasLeftOut [2 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverOnTheWakeningIsle [4 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverInAHouse [12 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.TheTollKeepersKillerGetsTheTollBoxOncePerLoop [46 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverInAGuardedTownOrADungeonOrJail [1 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.TheOffSwitchStopsEverything [15 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverOnABoat [3 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.TheDefaultTablePassesItsChecksAndRoundTripsThroughTheFile [5 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverForStaff [< 1 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.TheLanternBearersKillerGetsAFestivalToken [6 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NoEncounterStartsBesideOneAlreadyOut [< 1 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.ACreatureThatFollowsIntoTownIsRemovedAtOnce [1 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverForTheHiddenOrTheIdle [2 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverOnAFacetNotListed [< 1 ms]
+[xUnit.net 00:00:01.15]     ShatteredLegacy.Tests.RandomEncounterVerification.AFightingCreatureStaysUntilItStopsAndItsCorpseAndLootAreNotTouched [FAIL]
+[xUnit.net 00:00:01.15]       Assert.All() Failure: 3 out of 3 items in the collection did not pass.
+[xUnit.net 00:00:01.15]       [0]: Item:  0x00000037 "Farha"
+[xUnit.net 00:00:01.15]            Error: Assert.True() Failure
+[xUnit.net 00:00:01.15]                   Expected: True
+[xUnit.net 00:00:01.15]                   Actual:   False
+[xUnit.net 00:00:01.15]       [1]: Item:  0x00000038 "Tacita"
+[xUnit.net 00:00:01.15]            Error: Assert.True() Failure
+[xUnit.net 00:00:01.15]                   Expected: True
+[xUnit.net 00:00:01.15]                   Actual:   False
+[xUnit.net 00:00:01.15]       [2]: Item:  0x00000039 "Phyllis"
+[xUnit.net 00:00:01.15]            Error: Assert.True() Failure
+[xUnit.net 00:00:01.15]                   Expected: True
+[xUnit.net 00:00:01.15]                   Actual:   False
+[xUnit.net 00:00:01.15]       Stack Trace:
+[xUnit.net 00:00:01.15]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/RandomEncounterVerification.cs(652,0): at ShatteredLegacy.Tests.RandomEncounterVerification.AFightingCreatureStaysUntilItStopsAndItsCorpseAndLootAreNotTouched()
+[xUnit.net 00:00:01.15]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.15]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.16]     ShatteredLegacy.Tests.RandomEncounterVerification.TheLanternProcessionSpawnsAtNightInSeasonOnly [FAIL]
+[xUnit.net 00:00:01.16]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:01.16]       Collection: [ActiveEncounter { All = [0x00000040 "the lantern bearer", 0x00000041 "a lantern walker", 0x00000042 "a lantern walker"], Ally = null, Creatures = [0x00000040 "the lantern bearer", 0x00000041 "a lantern walker", 0x00000042 "a lantern walker"], Def = EncounterDef { BoxGrade = 2, BoxSource = "", CreatureHue = 43, CreatureName = "a lantern walker", Creatures = [···], ··· }, Leader = 0x00000040 "the lantern bearer", ··· }]
+[xUnit.net 00:00:01.16]       Stack Trace:
+[xUnit.net 00:00:01.16]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/RandomEncounterVerification.cs(536,0): at ShatteredLegacy.Tests.RandomEncounterVerification.TheLanternProcessionSpawnsAtNightInSeasonOnly()
+[xUnit.net 00:00:01.16]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.16]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.17]     ShatteredLegacy.Tests.RandomEncounterVerification.TheLostSurveyorSpawnsASurveyorAndTwoOrThreeNativesOnHerForLeagueMembersOnly [FAIL]
+[xUnit.net 00:00:01.17]       Assert.True() Failure
+[xUnit.net 00:00:01.17]       Expected: True
+[xUnit.net 00:00:01.17]       Actual:   False
+[xUnit.net 00:00:01.17]       Stack Trace:
+[xUnit.net 00:00:01.17]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/RandomEncounterVerification.cs(502,0): at ShatteredLegacy.Tests.RandomEncounterVerification.TheLostSurveyorSpawnsASurveyorAndTwoOrThreeNativesOnHerForLeagueMembersOnly()
+[xUnit.net 00:00:01.17]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.17]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.17]     ShatteredLegacy.Tests.RandomEncounterVerification.PayingTheTollTakesFivePercentAtMostTwoHundredAndTheyLeave [FAIL]
+[xUnit.net 00:00:01.17]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:01.17]       Collection: [ActiveEncounter { All = [0x0000004B "Alton", 0x0000004C "Tanner", 0x0000004D "Castel"], Ally = null, Creatures = [0x0000004B "Alton", 0x0000004C "Tanner", 0x0000004D "Castel"], Def = EncounterDef { BoxGrade = 2, BoxSource = "encounter:toll", CreatureHue = 0, CreatureName = "", Creatures = [···], ··· }, Leader = 0x0000004B "Alton", ··· }]
+[xUnit.net 00:00:01.17]       Stack Trace:
+[xUnit.net 00:00:01.17]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/RandomEncounterVerification.cs(465,0): at ShatteredLegacy.Tests.RandomEncounterVerification.PayingTheTollTakesFivePercentAtMostTwoHundredAndTheyLeave()
+[xUnit.net 00:00:01.17]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.17]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.17]   Finished:    UOContent.Tests
+  Failed ShatteredLegacy.Tests.RandomEncounterVerification.AFightingCreatureStaysUntilItStopsAndItsCorpseAndLootAreNotTouched [1 ms]
+  Error Message:
+   Assert.All() Failure: 3 out of 3 items in the collection did not pass.
+[0]: Item:  0x00000037 "Farha"
+     Error: Assert.True() Failure
+            Expected: True
+            Actual:   False
+[1]: Item:  0x00000038 "Tacita"
+     Error: Assert.True() Failure
+            Expected: True
+            Actual:   False
+[2]: Item:  0x00000039 "Phyllis"
+     Error: Assert.True() Failure
+            Expected: True
+            Actual:   False
+  Stack Trace:
+     at ShatteredLegacy.Tests.RandomEncounterVerification.AFightingCreatureStaysUntilItStopsAndItsCorpseAndLootAreNotTouched() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/RandomEncounterVerification.cs:line 652
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.TheTollRoadSpawnsTwoToFourBrigandsAndATollKeeper [3 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverForTheDead [9 ms]
+  Failed ShatteredLegacy.Tests.RandomEncounterVerification.TheLanternProcessionSpawnsAtNightInSeasonOnly [4 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: [ActiveEncounter { All = [0x00000040 "the lantern bearer", 0x00000041 "a lantern walker", 0x00000042 "a lantern walker"], Ally = null, Creatures = [0x00000040 "the lantern bearer", 0x00000041 "a lantern walker", 0x00000042 "a lantern walker"], Def = EncounterDef { BoxGrade = 2, BoxSource = "", CreatureHue = 43, CreatureName = "a lantern walker", Creatures = [···], ··· }, Leader = 0x00000040 "the lantern bearer", ··· }]
+  Stack Trace:
+     at ShatteredLegacy.Tests.RandomEncounterVerification.TheLanternProcessionSpawnsAtNightInSeasonOnly() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/RandomEncounterVerification.cs:line 536
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed ShatteredLegacy.Tests.RandomEncounterVerification.TheLostSurveyorSpawnsASurveyorAndTwoOrThreeNativesOnHerForLeagueMembersOnly [2 ms]
+  Error Message:
+   Assert.True() Failure
+Expected: True
+Actual:   False
+  Stack Trace:
+     at ShatteredLegacy.Tests.RandomEncounterVerification.TheLostSurveyorSpawnsASurveyorAndTwoOrThreeNativesOnHerForLeagueMembersOnly() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/RandomEncounterVerification.cs:line 502
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverOnHavenIslandOrInNewHaven [< 1 ms]
+  Failed ShatteredLegacy.Tests.RandomEncounterVerification.PayingTheTollTakesFivePercentAtMostTwoHundredAndTheyLeave [2 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: [ActiveEncounter { All = [0x0000004B "Alton", 0x0000004C "Tanner", 0x0000004D "Castel"], Ally = null, Creatures = [0x0000004B "Alton", 0x0000004C "Tanner", 0x0000004D "Castel"], Def = EncounterDef { BoxGrade = 2, BoxSource = "encounter:toll", CreatureHue = 0, CreatureName = "", Creatures = [···], ··· }, Leader = 0x0000004B "Alton", ··· }]
+  Stack Trace:
+     at ShatteredLegacy.Tests.RandomEncounterVerification.PayingTheTollTakesFivePercentAtMostTwoHundredAndTheyLeave() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/RandomEncounterVerification.cs:line 465
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverForYoungCharactersOrTrainees [< 1 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.AnEligibleTravelerOnAnEncounterFacetGetsOne [1 ms]
+
+Test Run Failed.
+Total tests: 27
+     Passed: 22
+     Failed: 5
+ Total time: 1.4126 Seconds
+PROBE_EXIT=1

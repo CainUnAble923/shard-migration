@@ -1,0 +1,72 @@
+Test run for /build/modernuo/Projects/UOContent.Tests/bin/Release/net10.0/UOContent.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.0+05679a7ab5 (64-bit .NET 10.0.7)
+[xUnit.net 00:00:00.14]   Discovering: UOContent.Tests
+[xUnit.net 00:00:00.46]   Discovered:  UOContent.Tests
+[xUnit.net 00:00:00.48]   Starting:    UOContent.Tests
+[18:38:59 INF] Loading world <s:Server.World>
+[18:38:59 INF] Loading world done (0 items, 0 mobiles) (0.01 seconds) <s:Server.World>
+[18:39:00 INF] Discovered 3 spawner JSON type(s) <s:Server.Engines.Spawners.SpawnerJsonSerializer>
+[18:39:00 INF] The Fold: registered 17 maps (32-48) on Trammel's files <s:Server.FoldMaps>
+[18:39:00 WRN] map1.mul was not found. <s:Server.TileMatrix>
+[18:39:00 WRN] staidx1.mul was not found. <s:Server.TileMatrix>
+[18:39:00 WRN] statics1.mul was not found. <s:Server.TileMatrix>
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.AnEncounterPicksOnlyWhatThePlayerQualifiesFor [59 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.TheCooldownStopsStackingOnACharacterAndItsAccount [40 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.UnfoughtCreaturesLeaveOnTimeAndNotBefore [4 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverWhileInCombat [7 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.ARestartRemovesWhatWasLeftOut [1 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverOnTheWakeningIsle [4 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverInAHouse [12 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.TheTollKeepersKillerGetsTheTollBoxOncePerLoop [46 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverInAGuardedTownOrADungeonOrJail [1 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.TheOffSwitchStopsEverything [17 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverOnABoat [3 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.TheDefaultTablePassesItsChecksAndRoundTripsThroughTheFile [5 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverForStaff [< 1 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.TheLanternBearersKillerGetsAFestivalToken [7 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NoEncounterStartsBesideOneAlreadyOut [< 1 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.ACreatureThatFollowsIntoTownIsRemovedAtOnce [1 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverForTheHiddenOrTheIdle [2 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverOnAFacetNotListed [< 1 ms]
+[xUnit.net 00:00:01.28]     ShatteredLegacy.Tests.RandomEncounterVerification.NeverForYoungCharactersOrTrainees [FAIL]
+[xUnit.net 00:00:01.28]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:01.28]       Expected: "Young"
+[xUnit.net 00:00:01.28]       Actual:   null
+[xUnit.net 00:00:01.28]       Stack Trace:
+[xUnit.net 00:00:01.28]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/RandomEncounterVerification.cs(149,0): at ShatteredLegacy.Tests.RandomEncounterVerification.AssertRefused(PlayerMobile pm, String because)
+[xUnit.net 00:00:01.28]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/RandomEncounterVerification.cs(349,0): at ShatteredLegacy.Tests.RandomEncounterVerification.NeverForYoungCharactersOrTrainees()
+[xUnit.net 00:00:01.28]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:01.28]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.28]       Output:
+[xUnit.net 00:00:01.28]         refused: 
+[xUnit.net 00:00:01.29]   Finished:    UOContent.Tests
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.AFightingCreatureStaysUntilItStopsAndItsCorpseAndLootAreNotTouched [< 1 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.TheTollRoadSpawnsTwoToFourBrigandsAndATollKeeper [3 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverForTheDead [10 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.TheLanternProcessionSpawnsAtNightInSeasonOnly [1 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.TheLostSurveyorSpawnsASurveyorAndTwoOrThreeNativesOnHerForLeagueMembersOnly [3 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.NeverOnHavenIslandOrInNewHaven [< 1 ms]
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.PayingTheTollTakesFivePercentAtMostTwoHundredAndTheyLeave [1 ms]
+  Failed ShatteredLegacy.Tests.RandomEncounterVerification.NeverForYoungCharactersOrTrainees [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+Expected: "Young"
+Actual:   null
+  Stack Trace:
+     at ShatteredLegacy.Tests.RandomEncounterVerification.AssertRefused(PlayerMobile pm, String because) in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/RandomEncounterVerification.cs:line 149
+   at ShatteredLegacy.Tests.RandomEncounterVerification.NeverForYoungCharactersOrTrainees() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/RandomEncounterVerification.cs:line 349
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ refused: 
+
+
+  Passed ShatteredLegacy.Tests.RandomEncounterVerification.AnEligibleTravelerOnAnEncounterFacetGetsOne [1 ms]
+
+Test Run Failed.
+Total tests: 27
+     Passed: 26
+     Failed: 1
+ Total time: 1.5237 Seconds
+PROBE_EXIT=1
