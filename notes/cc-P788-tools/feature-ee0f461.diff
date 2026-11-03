@@ -1,0 +1,3691 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index a226458..6d2f73d 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -29,6 +29,18 @@ Example:
+ - Restoring a Jacob's Pickaxe no longer refuses ingots kept in your bank.
+ -->
+ 
++## 2026.11.01.5
++
++### Added
++- Every guild now has a Guild Store at its guildmaster ("Guild Store" in the guild's window, say "guild store", or type [guildstore beside the guildmaster), paid in the guild's own points: tools, materials, runic tools for the craft guilds, decor, a cloak in the guild's colours and, at the top rank, a guild title. Spending points never lowers your standing or rank.
++- Tailors, Foresters, Tinkers, Maritime, Alembic and Arcane bulk orders now also pay their guild's points (1 per 50 order points), and every requisition pays its guild's members 1 point per 10 standing. Guilds that showed "scrip" now have named points: Arcane Sigils, Tailors' Thimbles, Tinkers' Cogs, Healers' Tokens, Bards' Notes, Warriors' Marks, Maritime Charts, Merchants' Bills, Dojo Seals, Keepers' Candles and Alembic Drops.
++- Festival Tokens: while Halloween, winter or spring is on, strong creatures sometimes drop a token to whoever did the most damage, each Sorcerer's Dungeon artifact you hand in pays 2, and your first login of the day pays 1. Spend them at the Festival Peddler's stall in New Haven, which is there only during a festival and sells that season's treats, decorations, a festival title and a festival loot box.
++- The Achievement Store ("AP Store" in the achievements window, at the League Registrar, or type [apstore): spend your achievement points on titles, achiever's sashes, the robe of the Noted, an engraved plaque and twelve classic paintings. Your AP total never goes down, so nothing it has opened closes.
++- The League shop has fourteen more rows: a blessed League runebook, special hair and beard dye, an oil lantern, a bag of sending, furniture and metallic dye tubs, a crystal ball, two floating crystals, a pet bonding potion, a name change deed, the title "the League Champion" and the System's Platinum loot box.
++
++### Staff
++- Every reward store price and what opens each row are in Configuration/reward-stores.json (written with the defaults on first start); [RewardStores reload reads it again. [FestivalMarket status|place|clear|season shows or moves the Festival Peddler's stall; clusterf.festival.peddlerAt in the shard's configuration is where she stands.
++
+ ## 2026.11.01.4
+ 
+ ### Added
+diff --git a/VERSION b/VERSION
+index 612b39b..4e67a7b 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-2026.11.01.4
++2026.11.01.5
+diff --git a/server/customizations/ClusterFAchievements.cs b/server/customizations/ClusterFAchievements.cs
+index 113d266..405d34e 100644
+--- a/server/customizations/ClusterFAchievements.cs
++++ b/server/customizations/ClusterFAchievements.cs
+@@ -1565,6 +1565,18 @@ public static partial class ClusterFAchievementSystem // partial: cc-P231's joke
+         dict[counter] = value;
+     }
+ 
++    /// <summary>
++    /// cc-P760: adds to a named account counter (saved with the achievement counters) and returns the new value. The reward
++    /// stores keep their spent and earned counts here (Festival Tokens, spendable AP, guild points spent). A counter is
++    /// never taken below zero.
++    /// </summary>
++    public static int AddToCounter(string username, string counter, int amount)
++    {
++        var value = Math.Max(0, GetCounter(username, counter) + amount);
++        SetCounter(username, counter, value);
++        return value;
++    }
++
+     public static int GetCounter(string username, string counter)
+     {
+         if (!_counters.TryGetValue(username, out var dict)) return 0;
+@@ -2002,6 +2014,7 @@ public class AchievementsGump : Gump
+     // cc-P229 (F-13): the footer's League shop and title picker buttons.
+     public const int BtnLeagueShop = 201;
+     public const int BtnTitles = 202;
++    public const int BtnApStore = 203; // cc-P760: the Achievement store (RewardStores/AchievementStore.cs)
+ 
+     // cc-P57 Part F (bug-list D80, Chase screenshot 2026-10-05): rows were a fixed 64 high, five to a page, and a row
+     // with a wrapped flavor, an Earned line and a progress line ran under the next row's title. Each row now gets the
+@@ -2170,6 +2183,9 @@ public class AchievementsGump : Gump
+ 
+         // -- Footer --------------------------------------------------------
+         AddImageTiled(10, GumpHeight - 40, GumpWidth - 20, 2, 9304);
++        // cc-P760: the Achievement store, which spends AP without lowering the AP total.
++        AddButton(GumpWidth / 2 - 270, GumpHeight - 30, 4011, 4012, BtnApStore);
++        AddLabel(GumpWidth / 2 - 236,  GumpHeight - 28, 999, "AP Store");
+         AddButton(GumpWidth / 2 - 150, GumpHeight - 30, 4011, 4012, 200);
+         AddLabel(GumpWidth / 2 - 132,  GumpHeight - 28, 999, "Guilds");
+         AddButton(GumpWidth / 2 - 40, GumpHeight - 30, 4023, 4025, 0);
+@@ -2459,6 +2475,12 @@ public class AchievementsGump : Gump
+             return;
+         }
+ 
++        if (info.ButtonID == BtnApStore)
++        {
++            Server.Engines.RewardStores.AchievementStoreDef.Open(_pm);
++            return;
++        }
++
+         if (info.ButtonID == BtnLeagueShop)
+         {
+             _pm.SendGump(new Server.Engines.LeagueRewards.LeagueShopGump(_pm));
+diff --git a/server/customizations/ClusterFAlembicGuild.cs b/server/customizations/ClusterFAlembicGuild.cs
+index c875d92..8297f46 100644
+--- a/server/customizations/ClusterFAlembicGuild.cs
++++ b/server/customizations/ClusterFAlembicGuild.cs
+@@ -44,7 +44,7 @@ namespace Server
+ 
+         // The guild's scrip, by name (stored per guild key like every guild's, CharacterGuildData.GuildCurrency).
+         // A placeholder name until Chase picks; MuleUpgrades.CurrencyName reads it.
+-        public const string CurrencyName = "Alembic Drams";
++        public const string CurrencyName = "Alembic Drops"; // cc-P760: the reward stores plan's name
+ 
+         // Rank names by GuildRankIndex 0 to 5 on the generic six-rank ladder (ClusterFGuildSystem.RankThresholds:
+         // 0, 1,000, 5,000, 15,000, 50,000, 100,000 standing). PLACEHOLDERS: the generic names until Chase picks from
+diff --git a/server/customizations/ClusterFGuildSystem.cs b/server/customizations/ClusterFGuildSystem.cs
+index bb0302c..793cdf1 100644
+--- a/server/customizations/ClusterFGuildSystem.cs
++++ b/server/customizations/ClusterFGuildSystem.cs
+@@ -1047,6 +1047,7 @@ public class GuildTaskDetailGump : GuildStyledGump
+     public const int BtnSchematics = 7; // cc-P70: mule module schematics
+     public const int BtnRecipes    = 8; // cc-P78: the guild's pattern books and recipe scrolls
+     public const int BtnRequisitions = 9; // cc-P150 (F-47): this guild's requisitions, the chapter's view of the board
++    public const int BtnStore = 10; // cc-P760: the guild's store (RewardStores/GuildStores.cs)
+ 
+     public GuildTaskDetailGump(PlayerMobile pm, GuildDef def, IAccount acct) : this(pm, def, acct, null) { }
+ 
+@@ -1069,7 +1070,7 @@ public class GuildTaskDetailGump : GuildStyledGump
+         var starters  = GuildStarterItems.For(def.Key).Length;
+         var isApprentice = ClusterFGuildSystem.IsApprentice(data, def.Key);
+ 
+-        const int H = 400;
++        const int H = 440; // cc-P760: 400 before the Guild Store row
+         AddBackground(0, 0, W, H, 9270);
+         AddAlphaRegion(10, 10, W - 20, H - 20);
+ 
+@@ -1140,6 +1141,15 @@ public class GuildTaskDetailGump : GuildStyledGump
+             y += 28;
+         }
+ 
++        // cc-P760: the guild's store, for members at the guildmaster, paid in the guild's points.
++        if (atMaster && isMember)
++        {
++            var store = new Server.Engines.RewardStores.GuildStoreDef(def.Key, _guildmaster);
++            AddButton(20, y, 4005, 4007, BtnStore);
++            AddLabel(55, y + 2, 999, $"Guild Store ({store.Currency.Balance(pm):N0} {store.Currency.Name})");
++            y += 28;
++        }
++
+         AddImageTiled(10, y + 4, W - 20, 2, 9304);
+         y += 12;
+ 
+@@ -1245,6 +1255,10 @@ public class GuildTaskDetailGump : GuildStyledGump
+                 RequisitionsBoard.OpenFor(_pm, _def.Key);
+                 return;
+ 
++            case BtnStore: // cc-P760
++                Server.Engines.RewardStores.GuildStores.Open(_pm, _def.Key, _guildmaster);
++                return;
++
+             default:
+                 return;
+         }
+diff --git a/server/customizations/ClusterFGuildmasterExtension.cs b/server/customizations/ClusterFGuildmasterExtension.cs
+index 75f0ea7..6143b37 100644
+--- a/server/customizations/ClusterFGuildmasterExtension.cs
++++ b/server/customizations/ClusterFGuildmasterExtension.cs
+@@ -41,6 +41,14 @@ public abstract partial class BaseGuildmaster
+     {
+         var speech = e.Speech;
+ 
++        // cc-P760: "guild store" opens the guild's store for a member here (RewardStores/GuildStores.cs).
++        if (speech.Contains("guild store", StringComparison.OrdinalIgnoreCase) &&
++            ClusterFGuildSystem.GetDefForGuildmaster(GetType()) is { } storeDef)
++        {
++            Server.Engines.RewardStores.GuildStores.Open(pm, storeDef.Key, this);
++            return true;
++        }
++
+         var isJoinTrigger  = speech.Contains("wish to join", StringComparison.OrdinalIgnoreCase);
+         var isMenuTrigger  = speech.Contains("guild menu",   StringComparison.OrdinalIgnoreCase);
+ 
+diff --git a/server/customizations/ForestersGuildmaster.cs b/server/customizations/ForestersGuildmaster.cs
+index 39db5ff..9a936d6 100644
+--- a/server/customizations/ForestersGuildmaster.cs
++++ b/server/customizations/ForestersGuildmaster.cs
+@@ -93,6 +93,14 @@ public partial class ForestersGuildmaster : BaseCreature
+             return;
+ 
+         var s = e.Speech;
++
++        // cc-P760: the guild's store (RewardStores/GuildStores.cs), as at every other guildmaster.
++        if (s.Contains("guild store", StringComparison.OrdinalIgnoreCase))
++        {
++            Server.Engines.RewardStores.GuildStores.Open(pm, "foresters", this);
++            return;
++        }
++
+         if (s.Contains("forester",  StringComparison.OrdinalIgnoreCase) ||
+             s.Contains("woodcut",   StringComparison.OrdinalIgnoreCase) ||
+             s.Contains("lumber",    StringComparison.OrdinalIgnoreCase) ||
+diff --git a/server/customizations/LeagueRegistrarGump.cs b/server/customizations/LeagueRegistrarGump.cs
+index 976436b..67f56d4 100644
+--- a/server/customizations/LeagueRegistrarGump.cs
++++ b/server/customizations/LeagueRegistrarGump.cs
+@@ -46,6 +46,9 @@ public class LeagueRegistrarGump : GuildStyledGump
+     // cc-P280: the League Register, issued (or re-issued) free from Dull Copper, on the Citizen Status row's right.
+     public const int BtnRegister = 29;
+ 
++    // cc-P760: the Achievement store, on the About Renown row's right.
++    public const int BtnApStore = 30;
++
+     private readonly PlayerMobile _pm;
+     private readonly View         _view;
+ 
+@@ -133,7 +136,8 @@ public class LeagueRegistrarGump : GuildStyledGump
+ 
+         AddButton(18, y, 4011, 4012, 11); AddLabel(44, y + 2, 999, "Citizen Status");
+         AddButton(230, y, 4011, 4012, BtnRegister); AddLabel(256, y + 2, 999, "League Register"); y += 28;
+-        AddButton(18, y, 4011, 4012, 12); AddLabel(44, y + 2, 999, "About Renown");      y += 28;
++        AddButton(18, y, 4011, 4012, 12); AddLabel(44, y + 2, 999, "About Renown");
++        AddButton(230, y, 4011, 4012, BtnApStore); AddLabel(256, y + 2, 999, "Achievement Store"); y += 28;
+         AddButton(18, y, 4011, 4012, 13); AddLabel(44, y + 2, 999, "Achievements");
+         AddButton(230, y, 4011, 4012, BtnShop); AddLabel(256, y + 2, 999, "League Shop");  y += 28;
+         AddButton(18, y, 4011, 4012, 14); AddLabel(44, y + 2, 999, "Guilds Overview");
+@@ -406,6 +410,10 @@ public class LeagueRegistrarGump : GuildStyledGump
+                 }
+                 break;
+ 
++            case BtnApStore: // cc-P760
++                Server.Engines.RewardStores.AchievementStoreDef.Open(_pm);
++                return;
++
+             case BtnShop: // cc-P229 (F-13)
+                 _pm.SendGump(new Server.Engines.LeagueRewards.LeagueShopGump(_pm));
+                 return;
+diff --git a/server/customizations/LeagueShop/LeagueShop.cs b/server/customizations/LeagueShop/LeagueShop.cs
+index 619dd97..7061327 100644
+--- a/server/customizations/LeagueShop/LeagueShop.cs
++++ b/server/customizations/LeagueShop/LeagueShop.cs
+@@ -38,8 +38,9 @@ public enum LeagueShopKind
+ public sealed class LeagueShopEntry
+ {
+     public LeagueShopEntry(string key, string label, int ap, int renown, LeagueShopKind kind, int itemID, int hue,
+-        Func<PlayerMobile, List<Item>>? create = null, string? titleKey = null)
++        Func<PlayerMobile, List<Item>>? create = null, string? titleKey = null, bool boxable = true)
+     {
++        Boxable = boxable;
+         Key = key;
+         Label = label;
+         ApRequired = ap;
+@@ -66,6 +67,12 @@ public sealed class LeagueShopEntry
+     public string? TitleKey { get; }
+ 
+     public bool IsTitle => TitleKey != null;
++
++    /// <summary>
++    /// cc-P760: whether the System's loot boxes may draw this row. F-13's rows may; the rows cc-P760 added may not, so the
++    /// Bronze, Silver and Gold boxes hold what they held before.
++    /// </summary>
++    public bool Boxable { get; }
+ }
+ 
+ public enum LeagueShopResult
+@@ -119,7 +126,38 @@ public static class LeagueShop
+         new("title.favorite", "Title: the System's Favorite", 1750, 500, LeagueShopKind.Title, TitleArt, LeagueHue,
+             titleKey: LeagueTitles.SystemsFavorite),
+         // cc-P365: the reward mounts routed to the shop, at 1750 AP (past the Gold box's 1000, so no box draws one).
+-        .. RewardMounts.ShopRows()
++        .. RewardMounts.ShopRows(),
++        // cc-P760 (the reward stores plan, section 4): fourteen more rows, Renown by AP, under the same guardrails. None
++        // goes in a loot box (boxable: false). The art: stock, or registered (registry.csv: the crystal ball and floating
++        // crystals are cc-P265's, the oil lantern cc-P237's).
++        new("runebook", "Runebook (blessed, League hue)", 100, 150, LeagueShopKind.Convenience, 0x22C5, LeagueHue,
++            One(_ => new Runebook { Hue = LeagueHue, LootType = LootType.Blessed }), boxable: false),
++        new("hairdye", "Special hair dye (one use)", 100, 75, LeagueShopKind.Cosmetic, 0xE26, 0,
++            One(_ => new SpecialHairDye()), boxable: false),
++        new("bearddye", "Special beard dye (one use)", 100, 75, LeagueShopKind.Cosmetic, 0xE26, 0,
++            One(_ => new SpecialBeardDye()), boxable: false),
++        new("lantern", "Oil lantern (decor)", 100, 100, LeagueShopKind.Decor, 0x3C8C, 0,
++            One(_ => new RewardDecor(0x3C8C, "an oil lantern")), boxable: false),
++        new("bagofsending", "Bag of sending (30 charges)", 250, 250, LeagueShopKind.Convenience, 0xE76, 0x8AD,
++            One(_ => new BagOfSending(BagOfSendingHue.Blue) { Charges = 30 }), boxable: false),
++        new("furnituretub", "Furniture dye tub", 250, 200, LeagueShopKind.Cosmetic, 0xFAB, 0,
++            One(_ => new FurnitureDyeTub()), boxable: false),
++        new("crystalball", "Crystal ball (decor)", 250, 300, LeagueShopKind.Decor, 0x6DC4, 0,
++            One(_ => new RewardDecor(0x6DC4, "a crystal ball")), boxable: false),
++        new("metallictub", "Metallic dye tub", 500, 400, LeagueShopKind.Cosmetic, 0xFAB, 0,
++            One(_ => new MetallicDyeTub()), boxable: false),
++        new("bondingpotion", "Pet bonding potion", 500, 400, LeagueShopKind.Convenience, 0xF04, 0,
++            One(_ => new PetBondingPotion()), boxable: false),
++        new("crystal.green", "Floating crystal, green (decor)", 500, 300, LeagueShopKind.Decor, 0x6DD8, 0,
++            One(_ => new RewardDecor(0x6DD8, "a floating crystal")), boxable: false),
++        new("crystal.purple", "Floating crystal, purple (decor)", 500, 300, LeagueShopKind.Decor, 0x6DE1, 0,
++            One(_ => new RewardDecor(0x6DE1, "a floating crystal")), boxable: false),
++        new("namechange", "Name change deed", 1000, 600, LeagueShopKind.Convenience, 0x14F0, 0,
++            One(_ => new NameChangeDeed()), boxable: false),
++        new("title.champion", "Title: the League Champion", 1750, 800, LeagueShopKind.Title, TitleArt, LeagueHue,
++            titleKey: Server.Engines.RewardStores.RewardStoreTitles.LeagueChampion, boxable: false),
++        new("box.platinum", "System's Loot Box, Platinum", 1750, 800, LeagueShopKind.LootBox, BoxArt, 0,
++            pm => [MakeBox(pm, BoxTier.Platinum)], boxable: false)
+     ];
+ 
+     private static Func<PlayerMobile, List<Item>> One(Func<PlayerMobile, Item> make) => pm => [make(pm)];
+@@ -247,7 +285,8 @@ public static class LeagueShop
+     {
+         Bronze,
+         Silver,
+-        Gold
++        Gold,
++        Platinum // cc-P760: two draws past Gold
+     }
+ 
+     // P79's LootBox item (bound, opened in a guarded town or a house, its reveal and fanfare), filled from the shop's own
+@@ -258,7 +297,8 @@ public static class LeagueShop
+     {
+         BoxTier.Bronze => ("System's Bronze Loot", 1, 1, 0),
+         BoxTier.Silver => ("System's Silver Loot", 2, 2, 250),
+-        _              => ("System's Gold Loot", 4, 3, 1000)
++        BoxTier.Gold   => ("System's Gold Loot", 4, 3, 1000),
++        _              => ("System's Platinum Loot", 5, 5, 1750)
+     };
+ 
+     /// <summary>
+@@ -275,7 +315,9 @@ public static class LeagueShop
+ 
+         foreach (var entry in Stock)
+         {
+-            if (entry.Create != null && entry.Kind != LeagueShopKind.LootBox && entry.ApRequired <= maxAp)
++            // cc-P760: never a mount (they open at 1750, which the Platinum box reaches) and never a row added since F-13.
++            if (entry.Create != null && entry.Kind != LeagueShopKind.LootBox && entry.Kind != LeagueShopKind.Mount &&
++                entry.Boxable && entry.ApRequired <= maxAp)
+             {
+                 var e = entry;
+                 pool.Add(pm => e.Create!(pm)[0]);
+@@ -296,8 +338,14 @@ public static class LeagueShop
+     public static LootBox MakeBox(PlayerMobile pm, BoxTier tier)
+     {
+         var (name, p79Tier, draws, _) = BoxInfo(tier);
+-        var pool = BoxPool(tier);
+-        var box = new LootBox(BoxTheme.League, p79Tier, pm.Account?.Username ?? "", "the League shop");
++        return MakeBox(pm, name, p79Tier, draws, BoxPool(tier), "the League shop");
++    }
++
++    /// <summary>cc-P760: a store's box (the League shop's, the Festival store's): P79's bound box, filled from a pool.</summary>
++    public static LootBox MakeBox(PlayerMobile pm, string name, int p79Tier, int draws, List<Func<PlayerMobile, Item>> pool,
++        string source)
++    {
++        var box = new LootBox(BoxTheme.League, p79Tier, pm.Account?.Username ?? "", source);
+         var contents = new List<(Item, bool)>();
+ 
+         for (var i = 0; i < draws; i++)
+@@ -345,6 +393,8 @@ public static class LeagueTitles
+         new(NotedRewards.LarryTitle, "Larry", -1, HiddenUntilHeld: true),
+         new(NotedRewards.SupervisorTitle, "the Supervisor", -1, HiddenUntilHeld: true),
+         new(NotedRewards.BraveTitle, "the Brave (citation needed)", -1, HiddenUntilHeld: true),
++        // cc-P760: the titles the reward stores sell (guild, Festival and Achievement stores, the League Champion).
++        .. Server.Engines.RewardStores.RewardStoreTitles.All(),
+     ];
+ 
+     public static TitleDef? Find(string key) => All.FirstOrDefault(t => t.Key == key);
+diff --git a/server/customizations/MinersCompactLiaison.cs b/server/customizations/MinersCompactLiaison.cs
+index 7222520..d5fef89 100644
+--- a/server/customizations/MinersCompactLiaison.cs
++++ b/server/customizations/MinersCompactLiaison.cs
+@@ -94,6 +94,14 @@ public partial class MinersCompactLiaison : BaseCreature
+             return;
+ 
+         var s = e.Speech;
++
++        // cc-P760: the guild's store (RewardStores/GuildStores.cs), as at every other guildmaster.
++        if (s.Contains("guild store", StringComparison.OrdinalIgnoreCase))
++        {
++            Server.Engines.RewardStores.GuildStores.Open(pm, "mining", this);
++            return;
++        }
++
+         if (s.Contains("compact", StringComparison.OrdinalIgnoreCase) ||
+             s.Contains("orders",  StringComparison.OrdinalIgnoreCase) ||
+             s.Contains("menu",    StringComparison.OrdinalIgnoreCase) ||
+diff --git a/server/customizations/Mobiles/Mule/MuleUpgrades.cs b/server/customizations/Mobiles/Mule/MuleUpgrades.cs
+index aeb58ee..2c62ee8 100644
+--- a/server/customizations/Mobiles/Mule/MuleUpgrades.cs
++++ b/server/customizations/Mobiles/Mule/MuleUpgrades.cs
+@@ -41,7 +41,18 @@ namespace Server
+             ["rangers"] = "Trail Marks",
+             ["foresters"] = "Timber Tokens",
+             ["artificers"] = "Essence Shards",
+-            [ClusterFAlembicGuild.Key] = ClusterFAlembicGuild.CurrencyName // cc-P77, a placeholder name
++            [ClusterFAlembicGuild.Key] = ClusterFAlembicGuild.CurrencyName, // cc-P77; cc-P760 named it Alembic Drops
++            // cc-P760 (the reward stores plan, approved 2026-11-01): the guilds that showed "<guild> scrip" get real names.
++            ["arcane"] = "Arcane Sigils",
++            ["tailoring"] = "Tailors' Thimbles",
++            ["tinkers"] = "Tinkers' Cogs",
++            ["healers"] = "Healers' Tokens",
++            ["bards"] = "Bards' Notes",
++            ["warriors"] = "Warriors' Marks",
++            ["maritime"] = "Maritime Charts",
++            ["merchants"] = "Merchants' Bills",
++            ["dojo"] = "Dojo Seals",
++            ["keepers"] = "Keepers' Candles"
+         };
+ 
+         public static string CurrencyName(string key)
+diff --git a/server/customizations/OutridersGuildmaster.cs b/server/customizations/OutridersGuildmaster.cs
+index 0b28115..f816ca6 100644
+--- a/server/customizations/OutridersGuildmaster.cs
++++ b/server/customizations/OutridersGuildmaster.cs
+@@ -91,6 +91,14 @@ public partial class OutridersGuildmaster : BaseCreature
+             return;
+ 
+         var s = e.Speech;
++
++        // cc-P760: the guild's store (RewardStores/GuildStores.cs), as at every other guildmaster.
++        if (s.Contains("guild store", StringComparison.OrdinalIgnoreCase))
++        {
++            Server.Engines.RewardStores.GuildStores.Open(pm, "rangers", this);
++            return;
++        }
++
+         if (s.Contains("outrider",  StringComparison.OrdinalIgnoreCase) ||
+             s.Contains("ranger",    StringComparison.OrdinalIgnoreCase) ||
+             s.Contains("orders",    StringComparison.OrdinalIgnoreCase) ||
+diff --git a/server/customizations/Requisitions/RequisitionSystem.cs b/server/customizations/Requisitions/RequisitionSystem.cs
+index b0ed7de..5bedfe9 100644
+--- a/server/customizations/Requisitions/RequisitionSystem.cs
++++ b/server/customizations/Requisitions/RequisitionSystem.cs
+@@ -247,12 +247,15 @@ public static class ClusterFRequisitions
+ 
+         ClusterFAccountPersistence.GetOrCreate(acct).GrantRenown(e.Renown, RenownSource.LeagueJob);
+         ClusterFAccountPersistence.GetOrCreateGuild(pm).AddReputation(e.GuildKey, e.Reputation);
++        // cc-P760: a member also gets the guild's points, 1 per 10 standing (the guild stores spend them).
++        var guildPoints = Server.Engines.RewardStores.GuildPointEarning.OnRequisition(pm, e.GuildKey, e.Reputation);
+         GiveGold(pm, gold);
+ 
+         data.Requests.Remove(e);
+         item.Delete();
+ 
+-        message = $"Requisition filled: {Describe(e)}. Paid {e.Renown} Renown, {e.Reputation} {guildName} standing and {gold} gold.";
++        message = $"Requisition filled: {Describe(e)}. Paid {e.Renown} Renown, {e.Reputation} {guildName} standing" +
++                  (guildPoints > 0 ? $", {guildPoints} {MuleUpgrades.CurrencyName(e.GuildKey)}" : "") + $" and {gold} gold.";
+         return true;
+     }
+ 
+diff --git a/server/customizations/RewardStores/AchievementStore.cs b/server/customizations/RewardStores/AchievementStore.cs
+new file mode 100644
+index 0000000..7a4c0a0
+--- /dev/null
++++ b/server/customizations/RewardStores/AchievementStore.cs
+@@ -0,0 +1,155 @@
++// cc-P760 (plan section 3): the Achievement store. Achievement points buy titles, cosmetics and decor.
++//
++// The currency is AP to spend: the account's AP total (ClusterFAccountData.AchievementPoints, every earned achievement's
++// AP) less what this store has taken, kept as a spent counter beside it (the account's achievement counter "ap.spent").
++// The AP total itself never drops: it still opens League shop rows and the AP titles, and rows here open by it too.
++//
++// Where: the "AP Store" button in the achievements window's footer, and "Achievement Store" in the League Registrar's
++// menu. No new NPC.
++
++#nullable enable
++
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using Server.Accounting;
++using Server.Engines.LeagueRewards;
++using Server.Gumps;
++using Server.Items;
++using Server.LootBoxes;
++using Server.Mobiles;
++
++namespace Server.Engines.RewardStores;
++
++/// <summary>AP to spend: the AP total less the spent counter. Spending never lowers the AP total.</summary>
++public sealed class SpendableAp : IRewardCurrency
++{
++    public static readonly SpendableAp Instance = new();
++
++    public const string SpentCounter = "ap.spent";
++
++    public string Name => "AP";
++
++    public static int Spent(string username) => ClusterFAchievementSystem.GetCounter(username, SpentCounter);
++
++    public int Balance(PlayerMobile pm) =>
++        pm.Account is IAccount acct && RewardStore.DataOf(pm) is { } data
++            ? Math.Max(0, data.AchievementPoints - Spent(acct.Username))
++            : 0;
++
++    public bool TrySpend(PlayerMobile pm, int amount)
++    {
++        if (amount < 0 || pm.Account is not IAccount acct || Balance(pm) < amount)
++        {
++            return false;
++        }
++
++        ClusterFAchievementSystem.AddToCounter(acct.Username, SpentCounter, amount);
++        return true;
++    }
++}
++
++public sealed class AchievementStoreDef : RewardStoreDef
++{
++    public override string Key => "achievement";
++
++    public override string Title => "The Achievement Store";
++
++    public override string Blurb => "Your AP total opens a row and never drops.";
++
++    public override IRewardCurrency Currency => SpendableAp.Instance;
++
++    public override IReadOnlyList<RewardStoreRow> Rows() => AchievementStock.Rows;
++
++    public override int Progress(PlayerMobile pm) => RewardStore.DataOf(pm)?.AchievementPoints ?? 0;
++
++    public override string OpensText(int opensAt) => opensAt <= 0 ? "Open to all" : $"Requires {opensAt:N0} AP total";
++
++    public override string ProgressText(PlayerMobile pm) => $"{Progress(pm):N0} AP total";
++
++    public override string SpendNote => "Spending AP never lowers your AP total or League rank.";
++
++    public static void Open(PlayerMobile pm) => pm.SendGump(new RewardStoreGump(pm, new AchievementStoreDef()));
++}
++
++public static class AchievementStock
++{
++    // The 12 Odin paintings (cc-P237, registry.csv 15518-15529), public-domain works; community art, credit Odin.
++    public static readonly (int Id, string Name)[] Paintings =
++    [
++        (0x3C9E, "Beata Beatrix"), (0x3C9F, "Morgan le Fay"), (0x3CA0, "Ophelia"),
++        (0x3CA1, "Sir Galahad at the Ruined Chapel"), (0x3CA2, "The Fairy Feller's Master-Stroke"),
++        (0x3CA3, "The Garden of the Hesperides"), (0x3CA4, "The Lady of Shalott"), (0x3CA5, "The Love Song"),
++        (0x3CA6, "The Tune of the Seven Towers"), (0x3CA7, "Wars of the Roses"), (0x3CA8, "The Nightmare"),
++        (0x3CA9, "The Magic Circle")
++    ];
++
++    public static readonly (string Key, string Name, int Hue)[] SashHues =
++    [
++        ("gold", "gold", 0x8A5), ("crimson", "crimson", 0x26), ("azure", "azure", 0x59), ("emerald", "emerald", 0x3F),
++        ("violet", "violet", 0x76)
++    ];
++
++    public const int RobeHue = 0x4F2;
++    public const int PlaqueArt = 0x63D4; // stock "Broadsword Plaque" (south wall)
++
++    private static RewardStoreRow[]? _rows;
++
++    public static IReadOnlyList<RewardStoreRow> Rows => _rows ??= Build().ToArray();
++
++    /// <summary>Whether the account holds every live achievement of a category (the Curious, Collector, Explorer titles).</summary>
++    public static bool HasAll(PlayerMobile pm, AchievementCategory category)
++    {
++        if (pm.Account is not IAccount acct)
++        {
++            return false;
++        }
++
++        var live = ClusterFAchievementSystem.Definitions.Values.Where(d => !d.Retired && d.Category == category).ToList();
++        var earned = ClusterFAchievementSystem.GetEarnedKeys(acct.Username);
++        return live.Count > 0 && live.All(d => earned.Contains(d.Key));
++    }
++
++    private static RewardStoreRow Title(string key, string titleKey, int price, int opens, AchievementCategory? all = null,
++        string? allText = null) =>
++        new($"ap.{key}", $"Title: {LeagueTitles.Display(titleKey)}", price, opens, LeagueShop.TitleArt, LeagueShop.LeagueHue,
++            titleKey: titleKey)
++        {
++            Condition = all is { } c ? pm => HasAll(pm, c) : null,
++            ConditionText = allText
++        };
++
++    private static IEnumerable<RewardStoreRow> Build()
++    {
++        yield return Title("title.completionist", RewardStoreTitles.Completionist, 300, 1500);
++        yield return Title("title.curious", RewardStoreTitles.Curious, 100, 0, AchievementCategory.Discovery,
++            "Requires every Discovery achievement");
++        yield return Title("title.collector", RewardStoreTitles.Collector, 200, 0, AchievementCategory.Collection,
++            "Requires every Collection achievement");
++        yield return Title("title.explorer", RewardStoreTitles.Explorer, 200, 0, AchievementCategory.Exploration,
++            "Requires every Exploration achievement");
++
++        foreach (var (key, name, hue) in SashHues)
++        {
++            yield return new RewardStoreRow($"ap.sash.{key}", $"Achiever's sash, {name}", 40, 0, 0x1541, hue,
++                pm => [new BoundCosmeticSash(pm.Account?.Username ?? "", "Achiever's", hue)]);
++        }
++
++        yield return new RewardStoreRow("ap.robe", "Robe of the Noted (cosmetic)", 150, 500, 0x1F03, RobeHue,
++            RewardStore.One(() => new Robe(RobeHue) { Name = "the robe of the Noted" }));
++
++        yield return new RewardStoreRow("ap.plaque", "Achievement plaque (engraved)", 75, 250, PlaqueArt, 0,
++            pm => [Plaque(pm)]);
++
++        foreach (var (id, name) in Paintings)
++        {
++            var key = new string(name.ToLowerInvariant().Where(char.IsLetter).ToArray());
++            yield return new RewardStoreRow($"ap.painting.{key}", $"Painting: {name}", 50, 100, id, 0,
++                RewardStore.One(() => new RewardDecor(id, $"a painting: {name}")));
++        }
++    }
++
++    /// <summary>A plaque engraved with the buyer's name and AP total when bought.</summary>
++    public static Item Plaque(PlayerMobile pm) =>
++        new RewardDecor(PlaqueArt, $"an achievement plaque: {pm.Name}, {RewardStore.DataOf(pm)?.AchievementPoints ?? 0:N0} AP");
++}
+diff --git a/server/customizations/RewardStores/FestivalStore.cs b/server/customizations/RewardStores/FestivalStore.cs
+new file mode 100644
+index 0000000..02b2589
+--- /dev/null
++++ b/server/customizations/RewardStores/FestivalStore.cs
+@@ -0,0 +1,648 @@
++// cc-P760 (plan section 2): the Festival store. Festival Tokens, earned only while a season is on, spent at a Festival
++// Peddler whose small market stall stands in New Haven only while Halloween, winter or spring is on.
++//
++// The seasons (FestivalSeasons): the shared seasonal switch's own windows. Halloween is ClusterFHalloweenDecor.Season
++// (clusterf.seasonal.halloween.*), winter ClusterFWinterDecor.Season (clusterf.seasonal.winter.*), spring the switch named
++// "spring" when one is registered (cc-P763 adds it, clusterf.seasonal.spring.*, 03-20 to 04-20), else the same window
++// built in here. One season at a time, in that order.
++//
++// The currency (FestivalTokens): an account balance, not an item, so it cannot be lost on death or sold for gold. Kept in
++// the account's achievement counters (saved with them, as the loot boxes' counters are): "festival.tokens.earned" only
++// rises, "festival.tokens.spent" counts what the store took, and the balance is the difference.
++//
++// Earned only in season:
++//   - a creature of 1,000 fame or more (not a pet, not a summon) drops 1 token to the player who dealt it the most damage
++//     (a pet's or summon's master), at 10% plus 1% per 1,000 fame, at most 25%;
++//   - each Treasures of Sorcerer's Dungeon artifact handed to the researcher: 2;
++//   - the first login of each day: 1.
++//
++// The stall (FestivalMarket): the peddler, a counter, a crate and a signpost, placed when a season starts and taken away
++// when it ends, on the world load and the hourly check, every piece tracked by serial in ClusterFSeasonalState (as the
++// Halloween decor is) so take-down deletes exactly what it placed. Where: notes/cc-P760-review/placed.md.
++// [FestivalMarket status|place|clear|season <halloween|winter|spring|none|auto>] for staff.
++
++#nullable enable
++
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using ModernUO.CodeGeneratedEvents;
++using ModernUO.Serialization;
++using Server.Accounting;
++using Server.Commands;
++using Server.Engines.LeagueRewards;
++using Server.Engines.Plants;
++using Server.Gumps;
++using Server.Items.Holiday;
++using Server.Items;
++using Server.Mobiles;
++
++namespace Server.Engines.RewardStores;
++
++public static class FestivalSeasons
++{
++    public const string Halloween = "halloween";
++    public const string Winter = "winter";
++    public const string Spring = "spring";
++
++    public static readonly string[] All = [Halloween, Winter, Spring];
++
++    /// <summary>The shard's local date, as the seasonal switch reads it. Tests replace it.</summary>
++    public static Func<DateTime> Clock = () => Core.Now.ToLocalTime();
++
++    /// <summary>Staff or a test: a season name forced on, "none" forced off, null to follow the dates.</summary>
++    public static string? Forced { get; set; }
++
++    // cc-P763's spring window (clusterf.seasonal.spring.*), used while no "spring" switch is registered.
++    public static readonly SeasonWindow SpringFallback = SeasonWindow.Parse("03-20", "04-20");
++
++    public static string? Current() => At(Clock());
++
++    public static string? At(DateTime local)
++    {
++        if (Forced != null)
++        {
++            return Forced == "none" ? null : Forced;
++        }
++
++        if (ClusterFHalloweenDecor.Season.IsInSeason(local))
++        {
++            return Halloween;
++        }
++
++        if (ClusterFWinterDecor.Season.IsInSeason(local))
++        {
++            return Winter;
++        }
++
++        var spring = ClusterFSeasonalSwitch.All.GetValueOrDefault(Spring);
++        return (spring?.IsInSeason(local) ?? SpringFallback.Contains(local)) ? Spring : null;
++    }
++
++    public static bool InSeason => Current() != null;
++
++    public static string Label(string? season) => season switch
++    {
++        Halloween => "Halloween",
++        Winter    => "Winter",
++        Spring    => "Spring",
++        _         => "no season"
++    };
++}
++
++/// <summary>Festival Tokens: an account balance, earned only in season, spent at the Festival Peddler.</summary>
++public sealed class FestivalTokens : IRewardCurrency
++{
++    public static readonly FestivalTokens Instance = new();
++
++    public const string EarnedCounter = "festival.tokens.earned";
++    public const string SpentCounter = "festival.tokens.spent";
++    public const string LoginDayCounter = "festival.login.day";
++
++    public const int FameFloor = 1000;
++    public const int ArtifactTokens = 2;
++    public const int DailyLoginTokens = 1;
++
++    public string Name => "Festival Tokens";
++
++    public static int Earned(string username) => ClusterFAchievementSystem.GetCounter(username, EarnedCounter);
++
++    public static int Spent(string username) => ClusterFAchievementSystem.GetCounter(username, SpentCounter);
++
++    public static int BalanceOf(string username) => Math.Max(0, Earned(username) - Spent(username));
++
++    public int Balance(PlayerMobile pm) => pm.Account is IAccount acct ? BalanceOf(acct.Username) : 0;
++
++    public bool TrySpend(PlayerMobile pm, int amount)
++    {
++        if (amount < 0 || pm.Account is not IAccount acct || BalanceOf(acct.Username) < amount)
++        {
++            return false;
++        }
++
++        ClusterFAchievementSystem.AddToCounter(acct.Username, SpentCounter, amount);
++        return true;
++    }
++
++    /// <summary>Adds tokens to the account, and says so to the character. Returns the new balance.</summary>
++    public static int Grant(PlayerMobile pm, int amount, string why)
++    {
++        if (amount <= 0 || pm.Account is not IAccount acct)
++        {
++            return 0;
++        }
++
++        ClusterFAchievementSystem.AddToCounter(acct.Username, EarnedCounter, amount);
++        var balance = BalanceOf(acct.Username);
++        pm.SendMessage(0x44, $"+{amount} Festival Token{(amount == 1 ? "" : "s")} ({why}). You have {balance:N0}.");
++        return balance;
++    }
++
++    // -- Earning ------------------------------------------------------------------------------------------------------
++
++    /// <summary>A creature's drop chance: none under 1,000 fame; 10% plus 1% per 1,000 fame, at most 25%.</summary>
++    public static double DropChance(int fame) =>
++        fame < FameFloor ? 0.0 : Math.Min(0.25, 0.10 + 0.01 * (fame / 1000));
++
++    /// <summary>Who a creature's token goes to: the most damage dealt, a pet's or summon's master standing in.</summary>
++    public static PlayerMobile? TopDamager(BaseCreature bc)
++    {
++        var top = bc.FindMostTotalDamager(false);
++        if (top is BaseCreature pet)
++        {
++            top = pet.GetMaster();
++        }
++
++        return top as PlayerMobile;
++    }
++
++    /// <summary>The kill's roll, given: true when the top damager got a token.</summary>
++    public static bool TryDrop(BaseCreature bc, double roll)
++    {
++        if (FestivalSeasons.Current() == null || bc.Controlled || bc.Summoned || roll >= DropChance(bc.Fame))
++        {
++            return false;
++        }
++
++        if (TopDamager(bc) is not { } pm)
++        {
++            return false;
++        }
++
++        Grant(pm, 1, $"{FestivalSeasons.Label(FestivalSeasons.Current())} festival");
++        return true;
++    }
++
++    [OnEvent(nameof(CreatureEvents.CreatureDeathEvent))]
++    public static void OnCreatureDeath(BaseCreature bc) => TryDrop(bc, Utility.RandomDouble());
++
++    /// <summary>A Treasures of Sorcerer's Dungeon artifact handed in (SorcerersDungeonResearcher.AwardPoints).</summary>
++    public static void OnSorcerersArtifact(PlayerMobile pm)
++    {
++        if (FestivalSeasons.Current() != null)
++        {
++            Grant(pm, ArtifactTokens, "an artifact handed in");
++        }
++    }
++
++    public static int DayIndex(DateTime local) => (int)(local.Date - new DateTime(2000, 1, 1)).TotalDays;
++
++    /// <summary>The first login of a day in season pays 1. Returns whether it paid.</summary>
++    public static bool OnDailyLogin(PlayerMobile pm, DateTime local)
++    {
++        if (FestivalSeasons.At(local) == null || pm.Account is not IAccount acct)
++        {
++            return false;
++        }
++
++        var today = DayIndex(local);
++        if (ClusterFAchievementSystem.GetCounter(acct.Username, LoginDayCounter) == today)
++        {
++            return false;
++        }
++
++        ClusterFAchievementSystem.AddToCounter(acct.Username, LoginDayCounter,
++            today - ClusterFAchievementSystem.GetCounter(acct.Username, LoginDayCounter));
++        Grant(pm, DailyLoginTokens, "the day's first login");
++        return true;
++    }
++
++    [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
++    public static void OnLogin(PlayerMobile pm) => OnDailyLogin(pm, FestivalSeasons.Clock());
++}
++
++public sealed class FestivalStoreDef : RewardStoreDef
++{
++    public const int Range = 8;
++
++    public FestivalStoreDef(Mobile? peddler) => Peddler = peddler;
++
++    public Mobile? Peddler { get; }
++
++    /// <summary>False only in tests: the store then sells away from the peddler.</summary>
++    public bool RequirePeddler { get; init; } = true;
++
++    public override string Key => "festival";
++
++    public override string Title => "The Festival Peddler";
++
++    public override string Blurb => $"{FestivalSeasons.Label(FestivalSeasons.Current())} wares, while the season lasts.";
++
++    public override IRewardCurrency Currency => FestivalTokens.Instance;
++
++    public override IReadOnlyList<RewardStoreRow> Rows() =>
++        FestivalSeasons.Current() is { } season ? FestivalStock.For(season) : [];
++
++    public override IReadOnlyList<RewardStoreRow> AllRows() => FestivalSeasons.All.SelectMany(FestivalStock.For).ToArray();
++
++    public override int Progress(PlayerMobile pm) => 0;
++
++    public override string OpensText(int opensAt) => "Open to all";
++
++    public override string ProgressText(PlayerMobile pm) => FestivalSeasons.Label(FestivalSeasons.Current());
++
++    public override string SpendNote => "Spending tokens never lowers the count you have earned.";
++
++    public override bool CanShop(PlayerMobile pm, out string why)
++    {
++        if (FestivalSeasons.Current() == null)
++        {
++            why = "The festival is over. The peddler will be back next season.";
++            return false;
++        }
++
++        if (RequirePeddler && (Peddler == null || Peddler.Deleted || Peddler.Map != pm.Map || !pm.InRange(Peddler, Range)))
++        {
++            why = "You must be at the Festival Peddler to buy.";
++            return false;
++        }
++
++        why = "";
++        return true;
++    }
++
++    public override RewardStoreDef Refresh() => new FestivalStoreDef(Peddler) { RequirePeddler = RequirePeddler };
++}
++
++public static class FestivalStock
++{
++    private static readonly Dictionary<string, RewardStoreRow[]> _rows = new();
++
++    public static IReadOnlyList<RewardStoreRow> For(string season)
++    {
++        if (!_rows.TryGetValue(season, out var rows))
++        {
++            _rows[season] = rows = Build(season).ToArray();
++        }
++
++        return rows;
++    }
++
++    private static RewardStoreRow R(string season, string key, string label, int price, int itemID,
++        Func<PlayerMobile, List<Item>> create, int hue = 0) =>
++        new($"festival.{season}.{key}", label, price, 0, itemID, hue, create);
++
++    private static Func<PlayerMobile, List<Item>> Decor(int itemID, string name) =>
++        RewardStore.One(() => new RewardDecor(itemID, name));
++
++    private static IEnumerable<RewardStoreRow> Build(string season)
++    {
++        var items = season switch
++        {
++            FestivalSeasons.Halloween => Halloween(),
++            FestivalSeasons.Winter    => Winter(),
++            _                         => Spring()
++        };
++
++        var list = items.ToList();
++        foreach (var row in list)
++        {
++            yield return row;
++        }
++
++        // Every season: its title and a seasonal loot box drawing from that season's own rows.
++        var titleKey = season switch
++        {
++            FestivalSeasons.Halloween => RewardStoreTitles.Halloween,
++            FestivalSeasons.Winter    => RewardStoreTitles.Winter,
++            _                         => RewardStoreTitles.Spring
++        };
++        yield return new RewardStoreRow($"festival.{season}.title", $"Title: {LeagueTitles.Display(titleKey)}", 40, 0,
++            LeagueShop.TitleArt, 0, titleKey: titleKey);
++
++        var label = FestivalSeasons.Label(season);
++        yield return R(season, "box", $"{label} Festival loot box (3 draws)", 15, LeagueShop.BoxArt,
++            pm => [MakeBox(pm, label, list)]);
++    }
++
++    public static Item MakeBox(PlayerMobile pm, string label, List<RewardStoreRow> rows)
++    {
++        var pool = rows.Where(r => r.Create != null).Select(r => (Func<PlayerMobile, Item>)(p => r.Create!(p)[0])).ToList();
++        return LeagueShop.MakeBox(pm, $"{label} Festival Loot", 2, 3, pool, "the Festival Peddler");
++    }
++
++    private static IEnumerable<RewardStoreRow> Halloween()
++    {
++        const string s = FestivalSeasons.Halloween;
++        yield return R(s, "treats", "Bag of treats (8)", 2, 0x469E, _ => [Treats()]);
++        yield return R(s, "mask.clown", "Painted evil clown mask", 10, 0x4A90, RewardStore.One(() => new PaintedEvilClownMask()));
++        yield return R(s, "mask.daemon", "Painted daemon mask", 10, 0x4A92, RewardStore.One(() => new PaintedDaemonMask()));
++        yield return R(s, "mask.plague", "Painted plague mask", 10, 0x4A8E, RewardStore.One(() => new PaintedPlagueMask()));
++        yield return R(s, "mask.jester", "Painted evil jester mask", 10, 0x4BA5, RewardStore.One(() => new PaintedEvilJesterMask()));
++        yield return R(s, "mask.porcelain", "Painted porcelain mask", 10, 0x4BA7, RewardStore.One(() => new PaintedPorcelainMask()));
++        yield return R(s, "pumpkin", "Halloween pumpkin", 10, 0xC6A, RewardStore.One(() => new HalloweenPumpkin()));
++        yield return R(s, "webs", "Colored small webs", 10, 0x10D6, RewardStore.One(() => new ColoredSmallWebs()));
++        yield return R(s, "skulls", "Skulls on a pike", 10, 0x42B5, RewardStore.One(() => new SkullsOnPike()));
++        yield return R(s, "ghostchair", "Chair in a ghost costume", 10, 0x3F26, RewardStore.One(() => new ChairInAGhostCostume()));
++        yield return R(s, "carving", "Pumpkin carving kit", 10, 0x992D, RewardStore.One(() => new PumpkinCarvingKit()));
++        yield return R(s, "scarecrow", "Pumpkin scarecrow", 25, 0x469B, RewardStore.One(() => new PumpkinScarecrow()));
++        yield return R(s, "guillotine", "Halloween guillotine", 25, 0x3F27, RewardStore.One(() => new HalloweenGuillotine()));
++    }
++
++    private static IEnumerable<RewardStoreRow> Winter()
++    {
++        const string s = FestivalSeasons.Winter;
++        yield return R(s, "candycanes", "Candy canes (5)", 2, 0x2BDD, RewardStore.Bagged<CandyCane>("a bag of candy canes", 5));
++        yield return R(s, "snowglobe", "Snow globe", 10, 0xE2F, RewardStore.One(() => new SnowGlobe()));
++        yield return R(s, "snowman", "Snowman", 10, 0x2328, RewardStore.One(() => new Snowman()));
++        yield return R(s, "wreath", "Holiday wreath (deed)", 10, 0x14F0, RewardStore.One(() => new WreathDeed()));
++        yield return R(s, "rockinghorse", "Rocking horse", 10, 0x4214, RewardStore.One(() => new RockingHorse()));
++        yield return R(s, "fireflies", "Fireflies (deed)", 10, 0x14F0, RewardStore.One(() => new FirefliesDeed()));
++        yield return R(s, "tree", "Holiday tree (deed)", 25, 0x14F0, RewardStore.One(() => new HolidayTreeDeed()));
++        // F-22's registered winter art (registry.csv 15424-15470: MrRiots, Vrark), as house decor.
++        yield return R(s, "fatherchristmas", "Father Christmas statue (decor)", 25, 0x3C40, Decor(0x3C40, "a Father Christmas statue"));
++        yield return R(s, "xmastree", "Decorated Christmas tree (decor)", 25, 0x3C52, Decor(0x3C52, "a decorated Christmas tree"));
++        yield return R(s, "present.orange", "Present, orange (decor)", 10, 0x3C54, Decor(0x3C54, "a present"));
++        yield return R(s, "present.pink", "Present, pink (decor)", 10, 0x3C55, Decor(0x3C55, "a present"));
++        yield return R(s, "present.green", "Present, green (decor)", 10, 0x3C56, Decor(0x3C56, "a present"));
++        yield return R(s, "gingerbread", "Gingerbread house (decor)", 10, 0x3C5F, Decor(0x3C5F, "a gingerbread house"));
++        yield return R(s, "painting.a", "Holiday painting A (decor)", 10, 0x3C63, Decor(0x3C63, "a holiday painting"));
++        yield return R(s, "painting.b", "Holiday painting B (decor)", 10, 0x3C65, Decor(0x3C65, "a holiday painting"));
++    }
++
++    private static IEnumerable<RewardStoreRow> Spring()
++    {
++        const string s = FestivalSeasons.Spring;
++        yield return R(s, "chocolate", "Valentine chocolates (3)", 2, 2538, RewardStore.Bagged<ValentineChocolate>("a bag of chocolates", 3));
++        yield return R(s, "seeds", "Plant seeds (5)", 2, 0xDCF, RewardStore.Bagged<Seed>("a bag of seeds", 5));
++        yield return R(s, "garland", "Flower garland", 10, 0x2306, RewardStore.One(() => new FlowerGarland(0x2B)));
++        yield return R(s, "pottedplant", "Potted plant", 10, 0x11CA, RewardStore.One(() => new PottedPlant()));
++        yield return R(s, "heartbox", "Heart-shaped box", 10, 0x49CA, RewardStore.One(() => new HeartShapedBox()));
++    }
++
++    /// <summary>Halloween's treats: a bag of eight of pinned's Halloween candies.</summary>
++    public static Item Treats()
++    {
++        var bag = new Bag { Name = "a bag of treats", Hue = 0x2B };
++        bag.DropItem(new WrappedCandy(2));
++        bag.DropItem(new Lollipops(2));
++        bag.DropItem(new NougatSwirl(2));
++        bag.DropItem(new Taffy(2));
++        return bag;
++    }
++}
++
++/// <summary>The Festival Peddler: a traveling vendor who stands at the stall in season. Double-click to shop.</summary>
++[SerializationGenerator(0, false)]
++public partial class FestivalPeddler : BaseCreature
++{
++    [Constructible]
++    public FestivalPeddler() : base(AIType.AI_Animal, FightMode.None, 10, 1)
++    {
++        Name = "Tamsin Brightwick";
++        Title = "the Festival Peddler";
++        Body = 0x191;
++        Hue = 0x83EA;
++        Female = true;
++        CantWalk = true;
++        Blessed = true;
++
++        SetStr(50);
++        SetDex(50);
++        SetInt(50);
++        SetHits(100);
++
++        AddItem(new FancyDress { Movable = false, Hue = 0x2B });
++        AddItem(new Shoes { Movable = false, Hue = 0x455 });
++        AddItem(new FeatheredHat { Movable = false, Hue = 0x2B });
++        AddItem(new HalfApron { Movable = false, Hue = 0x8AB });
++        AddItem(new Item(0x203C) { Movable = false, Hue = 0x45E, Layer = Layer.Hair });
++    }
++
++    public override bool IsInvulnerable => true;
++    public override bool ClickTitle => true;
++    public override bool ShowFameTitle => false;
++
++    public override void OnDoubleClick(Mobile from)
++    {
++        if (from is not PlayerMobile pm)
++        {
++            return;
++        }
++
++        var store = new FestivalStoreDef(this);
++        if (!store.CanShop(pm, out var why))
++        {
++            pm.SendMessage(0x22, why);
++            return;
++        }
++
++        SayTo(pm, "Festival wares! Tokens only, friend; gold spends at the bank.");
++        pm.SendGump(new RewardStoreGump(pm, store));
++    }
++
++    public override void OnSpeech(SpeechEventArgs e)
++    {
++        if (!e.Handled && e.Mobile is PlayerMobile pm && pm.InRange(this, 4) &&
++            (e.Speech.Contains("buy", StringComparison.OrdinalIgnoreCase) ||
++             e.Speech.Contains("festival", StringComparison.OrdinalIgnoreCase) ||
++             e.Speech.Contains("token", StringComparison.OrdinalIgnoreCase)))
++        {
++            e.Handled = true;
++            OnDoubleClick(pm);
++            return;
++        }
++
++        base.OnSpeech(e);
++    }
++}
++
++/// <summary>A piece of the Festival stall: fixed decor, placed and taken away with the season.</summary>
++[SerializationGenerator(0, false)]
++public partial class FestivalStallPiece : Item
++{
++    [Constructible]
++    public FestivalStallPiece() : this(0xE3D, "a crate")
++    {
++    }
++
++    public FestivalStallPiece(int itemID, string name) : base(itemID)
++    {
++        Name = name;
++        Movable = false;
++    }
++}
++
++/// <summary>The stall in New Haven, up in season and down out of it (the seasonal switch's pattern, by serial).</summary>
++public static class FestivalMarket
++{
++    public const string StateName = "festival-peddler";
++    public const string AnchorSetting = "clusterf.festival.peddlerAt";
++
++    // The peddler's tile; the stall's pieces stand around it (Pieces). Chosen in cc-P760's review (placed.md).
++    public const string DefaultAnchor = "3636,2627,0";
++
++    public static Map Facet => Map.Trammel;
++
++    public sealed record Piece(int Dx, int Dy, int Dz, int ItemID, string Name);
++
++    // Relative to the peddler, who faces south: a long table in front of her (0x0B7C and 0x0B7D join east-west into
++    // one, rendered in cc-P760's review), a crate and a barrel of stock behind her, and the signpost north-west of the
++    // stall, on the north edge of the dirt path that runs into the stall's west side (y 2627), reading from the south
++    // (0xA854) as the building guide asks. See notes/cc-P760-review/placed.md.
++    public static readonly Piece[] Pieces =
++    [
++        new(0, 1, 0, 0x0B7C, "the Festival Peddler's table"),
++        new(1, 1, 0, 0x0B7D, "the Festival Peddler's table"),
++        new(-1, 0, 0, 0x0E3D, "a crate of festival wares"),
++        new(1, 0, 0, 0x0E77, "a barrel of festival wares"),
++        new(-2, -1, 0, 0xA854, "The Festival Peddler: festival wares for tokens")
++    ];
++
++    private static Point3D? _anchor;
++
++    public static Point3D Anchor
++    {
++        get => _anchor ??= ParseAnchor(DefaultAnchor)!.Value;
++        set => _anchor = value;
++    }
++
++    public static Point3D? ParseAnchor(string text)
++    {
++        var parts = (text ?? "").Split(',', StringSplitOptions.TrimEntries);
++        return parts.Length == 3 && int.TryParse(parts[0], out var x) && int.TryParse(parts[1], out var y) &&
++               int.TryParse(parts[2], out var z)
++            ? new Point3D(x, y, z)
++            : null;
++    }
++
++    public static void Configure()
++    {
++        var setting = ServerConfiguration.GetOrUpdateSetting(AnchorSetting, DefaultAnchor);
++        if (ParseAnchor(setting) is { } at)
++        {
++            Anchor = at;
++        }
++        else
++        {
++            Console.WriteLine($"[FestivalMarket] {AnchorSetting} = '{setting}' is not x,y,z; using {DefaultAnchor}.");
++        }
++
++        CommandSystem.Register("FestivalMarket", AccessLevel.GameMaster, OnCommand);
++
++        EventSink.WorldLoad += () => Timer.DelayCall(TimeSpan.Zero, () =>
++        {
++            foreach (var line in Sync())
++            {
++                Console.WriteLine(line);
++            }
++
++            Timer.DelayCall(TimeSpan.FromHours(1), TimeSpan.FromHours(1), () =>
++            {
++                foreach (var line in Sync())
++                {
++                    Console.WriteLine(line);
++                }
++            });
++        });
++    }
++
++    [Usage("FestivalMarket [status|place|clear|season <halloween|winter|spring|none|auto>]")]
++    [Description("The Festival Peddler's stall in New Haven (cc-P760). status says the season and whether the stall is up. place puts up what is missing of it (any time, for testing); clear removes exactly what it placed, by serial. season forces a festival season on or off for testing (auto follows the dates again) and brings the stall up or down to match.")]
++    [ShardCommand(CommandCategory.WorldSetup, Rerun = CommandRerun.Skips, Shard = CommandShard.TestFirst, NoDryRun = true, Summary = "Puts up (or clears) the Festival Peddler's stall in New Haven. It goes up by itself while Halloween, winter or spring is on and comes down after; clear removes only what it placed, by serial.")]
++    private static void OnCommand(CommandEventArgs e)
++    {
++        foreach (var line in Run(e.Arguments))
++        {
++            e.Mobile.SendMessage(line);
++        }
++    }
++
++    public static List<string> Run(string[] args)
++    {
++        var verb = args.Length > 0 ? args[0].ToLowerInvariant() : "status";
++        switch (verb)
++        {
++            case "place":
++                return Up();
++            case "clear":
++                return Down();
++            case "season":
++                var s = args.Length > 1 ? args[1].ToLowerInvariant() : "auto";
++                FestivalSeasons.Forced = s == "auto" ? null : s is "none" || FestivalSeasons.All.Contains(s) ? s : FestivalSeasons.Forced;
++                var lines = new List<string> { $"Festival season: {FestivalSeasons.Label(FestivalSeasons.Current())} ({(FestivalSeasons.Forced == null ? "by the dates" : "forced by staff")})." };
++                lines.AddRange(Sync());
++                return lines;
++            default:
++                return
++                [
++                    $"Festival: {FestivalSeasons.Label(FestivalSeasons.Current())}; the stall is {(IsUp ? "up" : "down")} at {Anchor} ({Placed().Count} pieces).",
++                    "[FestivalMarket status|place|clear|season <halloween|winter|spring|none|auto>]"
++                ];
++        }
++    }
++
++    public static HashSet<Serial> Placed() => ClusterFSeasonalState.Placed(StateName);
++
++    public static bool IsUp => Placed().Any(s => World.FindEntity(s) is { Deleted: false });
++
++    public static FestivalPeddler? Peddler =>
++        Placed().Select(s => World.FindMobile(s)).OfType<FestivalPeddler>().FirstOrDefault(p => !p.Deleted);
++
++    /// <summary>
++    /// The hourly and world-load check: up in season, down out of it, acting only when the season state changed since the
++    /// last check (so a staff place or clear stands until then). A world first seen in season is brought up.
++    /// </summary>
++    public static List<string> Sync()
++    {
++        var season = FestivalSeasons.Current() != null;
++        var last = ClusterFSeasonalState.GetLast(StateName);
++        ClusterFSeasonalState.SetLast(StateName, season);
++
++        if (last == season)
++        {
++            return [];
++        }
++
++        if (season)
++        {
++            return Up();
++        }
++
++        return last == null ? [] : Down();
++    }
++
++    /// <summary>Places what is missing of the stall. Place twice places once.</summary>
++    public static List<string> Up()
++    {
++        var placed = Placed();
++        placed.RemoveWhere(s => World.FindEntity(s) is not { Deleted: false });
++
++        if (placed.Count > 0)
++        {
++            return [$"[FestivalMarket] The stall is already up ({placed.Count} pieces)."];
++        }
++
++        var at = Anchor;
++        foreach (var p in Pieces)
++        {
++            var piece = new FestivalStallPiece(p.ItemID, p.Name);
++            piece.MoveToWorld(new Point3D(at.X + p.Dx, at.Y + p.Dy, at.Z + p.Dz), Facet);
++            placed.Add(piece.Serial);
++        }
++
++        var peddler = new FestivalPeddler { Direction = Direction.South, Home = at, RangeHome = 0 };
++        peddler.MoveToWorld(at, Facet);
++        placed.Add(peddler.Serial);
++
++        return [$"[FestivalMarket] The Festival Peddler's stall is up at {at} ({placed.Count} pieces)."];
++    }
++
++    /// <summary>Takes away exactly what Up placed (by serial).</summary>
++    public static List<string> Down()
++    {
++        var placed = Placed();
++        var n = 0;
++        foreach (var serial in placed.ToList())
++        {
++            if (World.FindEntity(serial) is { Deleted: false } e)
++            {
++                e.Delete();
++                n++;
++            }
++        }
++
++        placed.Clear();
++        return [$"[FestivalMarket] The Festival Peddler's stall is down ({n} pieces taken away)."];
++    }
++}
+diff --git a/server/customizations/RewardStores/GuildStores.cs b/server/customizations/RewardStores/GuildStores.cs
+new file mode 100644
+index 0000000..5fb7653
+--- /dev/null
++++ b/server/customizations/RewardStores/GuildStores.cs
+@@ -0,0 +1,422 @@
++// cc-P760 (plan section 1): the guild and society stores. Each of the 18 guilds sells its own goods at its guildmaster, for
++// its own points.
++//
++// The currency is the points every guild already keeps per character (CharacterGuildData.GuildCurrency, shown in the
++// guild menus by MuleUpgrades.CurrencyName). Spending takes from that balance only (CharacterGuildData.SpendCurrency):
++// standing, and so rank, never moves; a spent counter beside it (the account's achievement counters,
++// "guildstore.spent.<serial>.<guild>") records what the stores took. The Custodians keep no scrip since cc-P33 retired
++// Civic Tokens (ClusterFCustodianSystem.RetireCivicTokens clears it at every load), so their store spends the character's
++// Clean Up Britannia points, whose lifetime total (their standing) a spend never touches.
++//
++// Earning (GuildPointEarning below): the six deed-giving guilds other than the Smiths now pay 1 guild point per 50 bulk
++// order points a deed is worth (BulkOrderVendors.TurnIn), and every requisition pays its guild's member 1 point per 10
++// standing (RequisitionSystem.TurnIn). Everything that paid points before still does.
++//
++// Where: a Guild Store button in the guild's hall window (GuildTaskDetailGump), "Guild Store" on the guildmaster's context
++// menu, and saying "guild store" to the guildmaster, for members at the guildmaster. No new NPC.
++//
++// Rows open by rank index (ClusterFGuildSystem.GuildRankIndex: 0 Initiate to 5 top rank); the price table sets each.
++
++#nullable enable
++
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using Server.Accounting;
++using Server.Engines.LeagueRewards;
++using Server.Engines.Points;
++using Server.Gumps;
++using Server.Items;
++using Server.Mobiles;
++
++namespace Server.Engines.RewardStores;
++
++/// <summary>A guild's points: CharacterGuildData.GuildCurrency, this character's.</summary>
++public sealed class GuildPointsCurrency : IRewardCurrency
++{
++    public GuildPointsCurrency(string guildKey) => GuildKey = guildKey;
++
++    public string GuildKey { get; }
++
++    public string Name => MuleUpgrades.CurrencyName(GuildKey);
++
++    public int Balance(PlayerMobile pm) => ClusterFAccountPersistence.GetGuild(pm)?.GetCurrency(GuildKey) ?? 0;
++
++    public bool TrySpend(PlayerMobile pm, int amount)
++    {
++        if (amount < 0 || pm.Account is not IAccount acct)
++        {
++            return false;
++        }
++
++        if (!ClusterFAccountPersistence.GetOrCreateGuild(pm).SpendCurrency(GuildKey, amount))
++        {
++            return false;
++        }
++
++        ClusterFAchievementSystem.AddToCounter(acct.Username, SpentCounter(pm, GuildKey), amount);
++        return true;
++    }
++
++    public static string SpentCounter(Mobile m, string guildKey) => $"guildstore.spent.{(uint)m.Serial}.{guildKey}";
++}
++
++/// <summary>The Custodians' store currency: Clean Up Britannia points (the balance; the lifetime total is their standing).</summary>
++public sealed class CleanUpPointsCurrency : IRewardCurrency
++{
++    public string Name => "Clean Up points";
++
++    public int Balance(PlayerMobile pm) => (int)Math.Floor(CleanUpBritanniaData.Instance.GetPoints(pm));
++
++    public bool TrySpend(PlayerMobile pm, int amount)
++    {
++        if (amount < 0 || Balance(pm) < amount || pm.Account is not IAccount acct)
++        {
++            return false;
++        }
++
++        if (!CleanUpBritanniaData.Instance.DeductPoints(pm, amount))
++        {
++            return false;
++        }
++
++        ClusterFAchievementSystem.AddToCounter(acct.Username, GuildPointsCurrency.SpentCounter(pm, GuildStores.Custodians), amount);
++        return true;
++    }
++}
++
++public sealed class GuildStoreDef : RewardStoreDef
++{
++    public GuildStoreDef(string guildKey, Mobile? guildmaster)
++    {
++        GuildKey = guildKey;
++        Guildmaster = guildmaster;
++        Currency = guildKey == GuildStores.Custodians ? new CleanUpPointsCurrency() : new GuildPointsCurrency(guildKey);
++    }
++
++    public string GuildKey { get; }
++
++    public Mobile? Guildmaster { get; }
++
++    /// <summary>False only in tests: the store then sells away from the guildmaster.</summary>
++    public bool RequireGuildmaster { get; init; } = true;
++
++    public string GuildName => ClusterFGuildSystem.GetDef(GuildKey)?.Name ?? GuildKey;
++
++    public override string Key => $"guild.{GuildKey}";
++
++    public override string Title => GuildName;
++
++    public override string Blurb => "Guild Store. Your rank opens a row.";
++
++    public override IRewardCurrency Currency { get; }
++
++    public override IReadOnlyList<RewardStoreRow> Rows() => GuildStores.RowsFor(GuildKey);
++
++    public override int Progress(PlayerMobile pm) =>
++        ClusterFAccountPersistence.GetGuild(pm) is { } data ? ClusterFGuildSystem.GuildRankIndex(GuildKey, data) : -1;
++
++    public override string OpensText(int opensAt) =>
++        opensAt <= 0 ? "Members" : $"Requires {ClusterFGuildSystem.RankIndexName(opensAt)} rank";
++
++    public override string ProgressText(PlayerMobile pm) =>
++        ClusterFAccountPersistence.GetGuild(pm) is { } data ? ClusterFGuildSystem.GetRankName(GuildKey, data) : "not a member";
++
++    public override string SpendNote => "Spending points never lowers your standing or rank.";
++
++    public override bool CanShop(PlayerMobile pm, out string why)
++    {
++        if (!ClusterFGuildSystem.IsJoined(pm, GuildKey))
++        {
++            why = $"The {GuildName}'s store is for members.";
++            return false;
++        }
++
++        if (RequireGuildmaster && !ClusterFGuildSystem.IsNearGuildmaster(pm, Guildmaster!))
++        {
++            why = "You must be at the guildmaster to buy.";
++            return false;
++        }
++
++        why = "";
++        return true;
++    }
++
++    public override RewardStoreDef Refresh() => new GuildStoreDef(GuildKey, Guildmaster) { RequireGuildmaster = RequireGuildmaster };
++}
++
++public static class GuildStores
++{
++    public const string Custodians = "custodians";
++
++    // The craft guilds and their craft's tool, next-tier material and runic tool (the plan: "where stock has one").
++    // Rank indexes: 0 Initiate, 1 Apprentice, 2 Journeyman, 3 Master, 4 Grandmaster, 5 top rank.
++
++    /// <summary>Every guild's store, without a guildmaster: the price table's list and the tests'.</summary>
++    public static IEnumerable<GuildStoreDef> All()
++    {
++        ClusterFGuildSystem.EnsureRegistered();
++        return ClusterFGuildSystem.AllGuilds.Keys.OrderBy(k => k, StringComparer.Ordinal).Select(k => new GuildStoreDef(k, null));
++    }
++
++    private static readonly Dictionary<string, RewardStoreRow[]> _rows = new(StringComparer.OrdinalIgnoreCase);
++
++    public static IReadOnlyList<RewardStoreRow> RowsFor(string guildKey)
++    {
++        if (!_rows.TryGetValue(guildKey, out var rows))
++        {
++            _rows[guildKey] = rows = Build(guildKey).ToArray();
++        }
++
++        return rows;
++    }
++
++    private static RewardStoreRow R(string guild, string key, string label, int price, int opens, int itemID, int hue,
++        Func<PlayerMobile, List<Item>> create) =>
++        new($"guild.{guild}.{key}", label, price, opens, itemID, hue, create);
++
++    private static IEnumerable<RewardStoreRow> Build(string g)
++    {
++        var name = ClusterFGuildSystem.GetDef(g)?.Name ?? g;
++        var hue = GuildMenuThemes.Get(g).AccentHue;
++
++        // Every guild: its title (top rank) and a cloak in the guild's colour.
++        if (RewardStoreTitles.GuildTitleNames.TryGetValue(g, out var title))
++        {
++            yield return new RewardStoreRow($"guild.{g}.title", $"Title: {title}", 2000, ClusterFGuildSystem.RankTop,
++                LeagueShop.TitleArt, hue, titleKey: RewardStoreTitles.GuildTitleKey(g));
++        }
++
++        yield return R(g, "cloak", $"{name} cloak", 300, ClusterFGuildSystem.RankJourneyman, 0x1515, hue,
++            RewardStore.One(() => new Cloak(hue) { Name = $"a {name} cloak" }));
++
++        foreach (var row in Stock(g, name, hue))
++        {
++            yield return row;
++        }
++    }
++
++    private static IEnumerable<RewardStoreRow> Stock(string g, string name, int hue)
++    {
++        switch (g)
++        {
++            case "smithing":
++                yield return R(g, "tools", "Smith's hammers (3, 50 uses each)", 50, 0, 0x13E3, 0, Bundle<SmithHammer>("a bag of smith's hammers"));
++                yield return R(g, "material", "Dull copper ingots (50)", 150, 1, 0x1BF2, CraftResources.GetHue(CraftResource.DullCopper), RewardStore.Stack<DullCopperIngot>(50));
++                yield return R(g, "runic", "Runic hammer, dull copper (50 uses)", 1500, 3, 0x13E3, CraftResources.GetHue(CraftResource.DullCopper),
++                    RewardStore.One(() => new RunicHammer(CraftResource.DullCopper, 50)));
++                yield return R(g, "banner", "Society of Smiths banner (decor)", 600, 3, 0x15AE, hue,
++                    RewardStore.One(() => new RewardDecor(0x15AE, "a Society of Smiths banner", hue)));
++                break;
++            case "tailoring":
++                yield return R(g, "tools", "Sewing kits (3, 50 uses each)", 50, 0, 0xF9D, 0, Bundle<SewingKit>("a bag of sewing kits"));
++                yield return R(g, "cloth", "Cloth (50)", 50, 0, 0x1766, 0, RewardStore.Stack<Cloth>(50));
++                yield return R(g, "material", "Spined leather (50)", 150, 1, 0x1081, CraftResources.GetHue(CraftResource.SpinedLeather), RewardStore.Stack<SpinedLeather>(50));
++                yield return R(g, "dressform", "Dress form (decor)", 400, 2, 0xEC6, 0, RewardStore.One(() => new Dressform()));
++                yield return R(g, "runic", "Runic sewing kit, spined (50 uses)", 1500, 3, 0xF9D, CraftResources.GetHue(CraftResource.SpinedLeather),
++                    RewardStore.One(() => new RunicSewingKit(CraftResource.SpinedLeather, 50)));
++                break;
++            case "tinkers":
++                yield return R(g, "tools", "Tinker's tools (3, 50 uses each)", 50, 0, 0x1EB8, 0, Bundle<TinkerTools>("a bag of tinker's tools"));
++                yield return R(g, "gears", "Gears (20)", 50, 0, 0x1053, 0, RewardStore.Stack<Gears>(20));
++                yield return R(g, "springs", "Springs (20)", 50, 0, 0x105D, 0, RewardStore.Stack<Springs>(20));
++                yield return R(g, "material", "Dull copper ingots (50)", 150, 1, 0x1BF2, CraftResources.GetHue(CraftResource.DullCopper), RewardStore.Stack<DullCopperIngot>(50));
++                yield return R(g, "clock", "Clock (decor)", 400, 2, 0x104B, 0, RewardStore.One(() => new Clock()));
++                break;
++            case "foresters":
++                yield return R(g, "tools", "Hatchets (3)", 50, 0, 0xF43, 0, Bundle<Hatchet>("a bag of hatchets"));
++                yield return R(g, "saws", "Dovetail saws (3, 50 uses each)", 50, 0, 0x1028, 0, Bundle<DovetailSaw>("a bag of dovetail saws"));
++                yield return R(g, "material", "Oak boards (50)", 150, 1, 0x1BD7, CraftResources.GetHue(CraftResource.OakWood), RewardStore.Stack<OakBoard>(50));
++                yield return R(g, "pottedtree", "Potted tree (decor)", 400, 2, 0x11C8, 0, RewardStore.One(() => new PottedTree()));
++                yield return R(g, "runic.saw", "Runic dovetail saw, oak (50 uses)", 1500, 3, 0x1028, CraftResources.GetHue(CraftResource.OakWood),
++                    RewardStore.One(() => new RunicDovetailSaw(CraftResource.OakWood, 50)));
++                yield return R(g, "runic.fletcher", "Runic fletcher's tool, oak (50 uses)", 1500, 3, 0x1022, CraftResources.GetHue(CraftResource.OakWood),
++                    RewardStore.One(() => new RunicFletcherTool(CraftResource.OakWood, 50)));
++                break;
++            case "alembic":
++                yield return R(g, "tools", "Mortars and pestles (3, 50 uses each)", 50, 0, 0xE9B, 0, Bundle<MortarPestle>("a bag of mortars and pestles"));
++                yield return R(g, "bottles", "Empty bottles (50)", 50, 0, 0xF0E, 0, RewardStore.Stack<Bottle>(50));
++                yield return R(g, "reagents", "Bag of reagents (50 each)", 150, 1, 0xE76, 0, RewardStore.One(() => new BagOfReagents()));
++                for (var i = 0; i < 8; i++)
++                {
++                    var id = 0x6DBB + i; // cc-P265's partial-hue flasks (registry.csv 28091-28098, Ems)
++                    yield return R(g, $"flask.{i + 1}", $"Partial-hue flask {i + 1} (decor)", 400, 2, id, 0,
++                        RewardStore.One(() => new RewardDecor(id, "a flask")));
++                }
++
++                break;
++            case "arcane":
++                yield return R(g, "tools", "Scribe's pens (3, 50 uses each)", 50, 0, 0xFBF, 0, Bundle<ScribesPen>("a bag of scribe's pens"));
++                yield return R(g, "scrolls", "Blank scrolls (50)", 50, 0, 0xEF3, 0, RewardStore.Stack<BlankScroll>(50));
++                yield return R(g, "reagents", "Bag of reagents (50 each)", 150, 1, 0xE76, 0, RewardStore.One(() => new BagOfReagents()));
++                yield return R(g, "crystalball", "Crystal ball (decor)", 600, 3, 0x6DC4, 0, // cc-P265, RedRooster
++                    RewardStore.One(() => new RewardDecor(0x6DC4, "a crystal ball")));
++                break;
++            case "mining":
++                yield return R(g, "prospector", "Prospector's tool", 50, 0, 0xFB4, 0, RewardStore.One(() => new ProspectorsTool()));
++                yield return R(g, "shovels", "Shovels (3, 50 uses each)", 50, 0, 0xF39, 0, Bundle<Shovel>("a bag of shovels"));
++                yield return R(g, "gems", "Pouch of gems (10)", 150, 1, 0xE79, 0, _ => [GemPouch()]);
++                break;
++            case "rangers":
++                yield return R(g, "arrows", "Arrows (200)", 50, 0, 0xF3F, 0, RewardStore.Stack<Arrow>(200));
++                yield return R(g, "bolts", "Crossbow bolts (200)", 50, 0, 0x1BFB, 0, RewardStore.Stack<Bolt>(200));
++                yield return R(g, "fletcher", "Fletcher's tools (3, 50 uses each)", 50, 0, 0x1022, 0, Bundle<FletcherTools>("a bag of fletcher's tools"));
++                yield return R(g, "feathers", "Feathers (100)", 100, 1, 0x1BD1, 0, RewardStore.Stack<Feather>(100));
++                break;
++            case "artificers":
++                yield return R(g, "residue", "Magical residue (20)", 100, 0, 0x2DB1, 0, RewardStore.Stack<MagicalResidue>(20));
++                yield return R(g, "essence", "Enchanted essence (10)", 150, 1, 0x2DB2, 0, RewardStore.Stack<EnchantedEssence>(10));
++                yield return R(g, "relic", "Relic fragments (5)", 150, 2, 0x2DB3, 0, RewardStore.Stack<RelicFragment>(5));
++                yield return R(g, "crystal", "Floating crystal, green (decor)", 800, 3, 0x6DD8, 0, // cc-P265, MrRiots
++                    RewardStore.One(() => new RewardDecor(0x6DD8, "a floating crystal")));
++                break;
++            case "healers":
++                yield return R(g, "bandages", "Bandages (100)", 50, 0, 0xE21, 0, RewardStore.Stack<Bandage>(100));
++                yield return R(g, "heal", "Greater heal potions (5)", 100, 1, 0xF0C, 0, Bundle<GreaterHealPotion>("a bag of heal potions", 5));
++                yield return R(g, "cure", "Greater cure potions (5)", 100, 1, 0xF07, 0, Bundle<GreaterCurePotion>("a bag of cure potions", 5));
++                yield return R(g, "kit", "Healer's kit (bag: 50 bandages, 2 heal, 2 cure)", 150, 2, 0xE76, 0, _ => [HealersKit()]);
++                break;
++            case "bards":
++                yield return R(g, "lute", "Lute", 100, 0, 0xEB3, 0, RewardStore.One(() => new Lute()));
++                yield return R(g, "harp", "Lap harp", 100, 0, 0xEB2, 0, RewardStore.One(() => new LapHarp()));
++                yield return R(g, "drum", "Drum", 100, 0, 0xE9C, 0, RewardStore.One(() => new Drums()));
++                yield return R(g, "stand", "Music stand (decor)", 400, 2, 0x0EB5, 0, RewardStore.One(() => new RewardDecor(0x0EB5, "a music stand")));
++                break;
++            case "warriors":
++                yield return R(g, "dummy", "Training dummy (deed)", 600, 2, 0x14F0, 0, RewardStore.One(() => new TrainingDummyEastDeed()));
++                yield return R(g, "repair", "Weapon repair deed (smithing 90)", 100, 1, 0x14F0, 0x1BC,
++                    RewardStore.One(() => new RepairDeed(RepairDeed.RepairSkillType.Smithing, 90.0)));
++                yield return R(g, "bandages", "Bandages (100)", 50, 0, 0xE21, 0, RewardStore.Stack<Bandage>(100));
++                break;
++            case "maritime":
++                yield return R(g, "bait", "Fish bait, a random fish (20 uses)", 50, 0, 2454, 0,
++                    RewardStore.One(() => new Bait(Utility.Random(FishInfo.FishInfos.Count)) { UsesRemaining = 20 }));
++                yield return R(g, "pole", "Fishing pole", 50, 0, 0xDC0, 0, RewardStore.One(() => new FishingPole()));
++                yield return R(g, "sextant", "Sextant", 100, 1, 0x1057, 0, RewardStore.One(() => new Sextant()));
++                yield return R(g, "spyglass", "Spyglass", 100, 1, 0x14F5, 0, RewardStore.One(() => new Spyglass()));
++                yield return R(g, "rope", "Coil of rope (decor)", 400, 2, 0x14F8, 0, RewardStore.One(() => new Rope()));
++                break;
++            case "merchants":
++                yield return R(g, "deeds", "Commodity deeds (5)", 100, 0, 0x14F0, 0, Bundle<CommodityDeed>("a bag of commodity deeds", 5));
++                yield return R(g, "scales", "Scales (decor)", 400, 2, 0x1852, 0, RewardStore.One(() => new Scales()));
++                yield return R(g, "sign", "Shop sign (decor)", 400, 2, 0xBD2, 0, RewardStore.One(() => new RewardDecor(0xBD2, "a merchant's sign")));
++                break;
++            case "thieves":
++                yield return R(g, "lockpicks", "Lockpicks (20)", 50, 0, 0x14FC, 0, RewardStore.Stack<Lockpick>(20));
++                yield return R(g, "lockpicks.50", "Lockpicks (50)", 100, 1, 0x14FC, 0, RewardStore.Stack<Lockpick>(50));
++                yield return R(g, "disguise", "Disguise kit", 150, 2, 0xE05, 0, RewardStore.One(() => new DisguiseKit()));
++                break;
++            case "dojo":
++                yield return R(g, "tatami", "Tatami mat (decor)", 400, 2, 0x29CA, 0, RewardStore.One(() => new RewardDecor(0x29CA, "a tatami mat")));
++                yield return R(g, "bonsai", "Bonsai tree (decor)", 600, 3, 0x28DC, 0, RewardStore.One(() => new RewardDecor(0x28DC, "a bonsai tree")));
++                yield return R(g, "bandages", "Bandages (100)", 50, 0, 0xE21, 0, RewardStore.Stack<Bandage>(100));
++                break;
++            case "keepers":
++                yield return R(g, "gravedust", "Grave dust (50)", 50, 0, 0xF8F, 0, RewardStore.Stack<GraveDust>(50));
++                yield return R(g, "necroreagents", "Bag of necromancer reagents (50 each)", 150, 1, 0xE76, 0, RewardStore.One(() => new BagOfNecroReagents()));
++                yield return R(g, "candles", "Candles (5)", 50, 0, 0xA28, 0, Bundle<Candle>("a bag of candles", 5));
++                break;
++            case Custodians:
++                yield return R(g, "barrel", "Trash barrel", 400, 2, 0xE77, 0, RewardStore.One(() => new TrashBarrel()));
++                yield return R(g, "broom", "Custodian's broom (decor)", 400, 2, 0xB027, 0, // stock art "Broom Yellow South"
++                    RewardStore.One(() => new RewardDecor(0xB027, "a custodian's broom")));
++                yield return R(g, "cloth", "Cloth (50)", 50, 0, 0x1766, 0, RewardStore.Stack<Cloth>(50));
++                break;
++        }
++    }
++
++    private static Func<PlayerMobile, List<Item>> Bundle<T>(string bagName, int count = 3) where T : Item =>
++        RewardStore.Bagged<T>(bagName, count);
++
++    /// <summary>The Miners' gem pouch: a pouch of ten stock gems, two of five kinds.</summary>
++    public static Item GemPouch()
++    {
++        var pouch = new Pouch { Name = "a pouch of gems" };
++        pouch.DropItem(new Amber(2));
++        pouch.DropItem(new Citrine(2));
++        pouch.DropItem(new Ruby(2));
++        pouch.DropItem(new Sapphire(2));
++        pouch.DropItem(new Emerald(2));
++        return pouch;
++    }
++
++    /// <summary>The Healers' kit: a bag of 50 bandages, two greater heal and two greater cure potions.</summary>
++    public static Item HealersKit()
++    {
++        var bag = new Bag { Name = "a healer's kit" };
++        bag.DropItem(new Bandage(50));
++        bag.DropItem(new GreaterHealPotion());
++        bag.DropItem(new GreaterHealPotion());
++        bag.DropItem(new GreaterCurePotion());
++        bag.DropItem(new GreaterCurePotion());
++        return bag;
++    }
++
++    /// <summary>Opens a guild's store for a member at the guildmaster; says why not otherwise.</summary>
++    public static void Open(PlayerMobile pm, string guildKey, Mobile? guildmaster)
++    {
++        var store = new GuildStoreDef(guildKey, guildmaster);
++        if (!store.CanShop(pm, out var why))
++        {
++            pm.SendMessage(0x22, why);
++            return;
++        }
++
++        pm.SendGump(new RewardStoreGump(pm, store));
++    }
++}
++
++/// <summary>
++/// cc-P760: guild points from work that paid none (plan section 1). The six deed-giving guilds other than the Smiths pay
++/// 1 point per 50 bulk order points; a requisition pays its guild's member 1 point per 10 standing.
++/// </summary>
++public static class GuildPointEarning
++{
++    public const int BodPointsPerGuildPoint = 50;
++    public const int StandingPerGuildPoint = 10;
++
++    /// <summary>What a deed worth this many bulk order points pays a member: at least 1 for a deed worth any.</summary>
++    public static int ForBodPoints(double bodPoints) =>
++        bodPoints <= 0 ? 0 : Math.Max(1, (int)(bodPoints / BodPointsPerGuildPoint));
++
++    public static int ForStanding(int standing) => standing <= 0 ? 0 : Math.Max(1, standing / StandingPerGuildPoint);
++
++    /// <summary>
++    /// A deed turned in at a stock-rules turn-in (BulkOrderVendors.TurnIn). Pays the deed's guild's member (not the Smiths:
++    /// the Society pays Seals its own way). Returns what it paid.
++    /// </summary>
++    public static int OnBodTurnIn(PlayerMobile pm, string? guildKey, double bodPoints)
++    {
++        if (guildKey == null || guildKey == "smithing" || !ClusterFGuildSystem.IsJoined(pm, guildKey))
++        {
++            return 0;
++        }
++
++        var points = ForBodPoints(bodPoints);
++        if (points > 0)
++        {
++            ClusterFAccountPersistence.GetOrCreateGuild(pm).AddCurrency(guildKey, points);
++            pm.SendMessage(0x44, $"+{points} {MuleUpgrades.CurrencyName(guildKey)}.");
++        }
++
++        return points;
++    }
++
++    /// <summary>A requisition filled (RequisitionSystem.TurnIn): its guild's member gets points. Returns what it paid.</summary>
++    public static int OnRequisition(PlayerMobile pm, string guildKey, int standing)
++    {
++        // The Custodians keep no scrip (cc-P33); their store spends Clean Up points.
++        if (guildKey == GuildStores.Custodians || !ClusterFGuildSystem.IsJoined(pm, guildKey))
++        {
++            return 0;
++        }
++
++        var points = ForStanding(standing);
++        if (points > 0)
++        {
++            ClusterFAccountPersistence.GetOrCreateGuild(pm).AddCurrency(guildKey, points);
++        }
++
++        return points;
++    }
++}
+diff --git a/server/customizations/RewardStores/RewardStore.cs b/server/customizations/RewardStores/RewardStore.cs
+new file mode 100644
+index 0000000..03e543f
+--- /dev/null
++++ b/server/customizations/RewardStores/RewardStore.cs
+@@ -0,0 +1,317 @@
++// cc-P760: the reward stores' shared core. Notes: shard-migration notes/cc-P760-reward-stores.md; the plan Chase approved
++// (2026-11-01) is notes/cc-P760-stores-plan.md.
++//
++// Every store is built on the League shop's pattern (LeagueShop/, cc-P229):
++//   - rows: what a row is, what opens it, its price, what it hands over (RewardStoreRow);
++//   - one window: the League shop's scroll frame, five rows a page, the art greyed until the row opens (RewardStoreGump);
++//   - a confirm step, then a server-side buy that checks everything again, hands the items over all or none, and then
++//     takes exactly the price (RewardStore.Purchase);
++//   - spending never touches a lifetime total: each currency (IRewardCurrency) spends a balance only.
++//
++// The stores: the guild stores (GuildStores.cs), the Festival store (FestivalStore.cs) and the Achievement store
++// (AchievementStore.cs). The League shop keeps its own code and its own tests (it gained rows in LeagueShop.cs).
++//
++// Prices are placeholders, every one in one table: Configuration/reward-stores.json (RewardStorePrices), a row's price
++// and what opens it by the row's key. A missing file is written with the built-in defaults; a bad file is refused whole.
++//
++// Guardrails (F-12, F-13), for every store, checked by RewardStoreVerification over every row: nothing grants skill or stat
++// points; no power scrolls, bless deeds, or artifacts or gear with item properties; art only from registry.csv.
++
++#nullable enable
++
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using Server.Engines.LeagueRewards;
++using Server.Items;
++using Server.Mobiles;
++
++namespace Server.Engines.RewardStores;
++
++public enum RewardStoreResult
++{
++    Bought,
++    NoAccount,
++    Unavailable,
++    Locked,
++    AlreadyOwned,
++    NotEnough,
++    NoRoom
++}
++
++/// <summary>A balance a store spends. Spending takes from the balance only, never from a lifetime total.</summary>
++public interface IRewardCurrency
++{
++    string Name { get; }
++
++    int Balance(PlayerMobile pm);
++
++    /// <summary>Takes exactly <paramref name="amount"/>. False, and nothing taken, when the balance is short.</summary>
++    bool TrySpend(PlayerMobile pm, int amount);
++}
++
++/// <summary>One store row: what it is, what opens it, its price, and what it hands over.</summary>
++public sealed class RewardStoreRow
++{
++    public RewardStoreRow(string key, string label, int price, int opensAt, int itemID, int hue = 0,
++        Func<PlayerMobile, List<Item>>? create = null, string? titleKey = null)
++    {
++        Key = key;
++        Label = label;
++        DefaultPrice = price;
++        DefaultOpensAt = opensAt;
++        ItemID = itemID;
++        Hue = hue;
++        Create = create;
++        TitleKey = titleKey;
++    }
++
++    public string Key { get; }
++    public string Label { get; }
++    public int DefaultPrice { get; }
++    public int DefaultOpensAt { get; }
++    public int ItemID { get; }
++    public int Hue { get; }
++
++    /// <summary>The items handed over, made for this buyer now. Null for a title.</summary>
++    public Func<PlayerMobile, List<Item>>? Create { get; }
++
++    /// <summary>The LeagueTitles key a title row grants (account-wide, chosen in the Titles window). Null for items.</summary>
++    public string? TitleKey { get; }
++
++    /// <summary>An extra condition besides OpensAt (the Achievement store's "every Discovery achievement"), and its words.</summary>
++    public Func<PlayerMobile, bool>? Condition { get; init; }
++
++    public string? ConditionText { get; init; }
++
++    public bool IsTitle => TitleKey != null;
++
++    /// <summary>The price in force: the price table's, else the default.</summary>
++    public int Price => RewardStorePrices.Current.PriceOf(this);
++
++    /// <summary>What opens the row (a rank index, an AP total, 0 for open to all), from the price table.</summary>
++    public int OpensAt => RewardStorePrices.Current.OpensAtOf(this);
++}
++
++/// <summary>A store: its name, its currency, its rows and what opens a row.</summary>
++public abstract class RewardStoreDef
++{
++    public abstract string Key { get; }
++
++    public abstract string Title { get; }
++
++    /// <summary>One line under the balance, about the store.</summary>
++    public abstract string Blurb { get; }
++
++    public abstract IRewardCurrency Currency { get; }
++
++    /// <summary>The rows on sale now.</summary>
++    public abstract IReadOnlyList<RewardStoreRow> Rows();
++
++    /// <summary>Every row the store can ever sell (the price table lists each), whatever is on sale now.</summary>
++    public virtual IReadOnlyList<RewardStoreRow> AllRows() => Rows();
++
++    /// <summary>The buyer's measure against a row's OpensAt: a rank index, an AP total.</summary>
++    public abstract int Progress(PlayerMobile pm);
++
++    /// <summary>How a locked row reads: "Requires Master rank", "Requires 500 AP".</summary>
++    public abstract string OpensText(int opensAt);
++
++    /// <summary>The measure's name and the buyer's value, for the window's header ("Rank: Journeyman").</summary>
++    public abstract string ProgressText(PlayerMobile pm);
++
++    /// <summary>The confirm step's last line: what spending never lowers.</summary>
++    public abstract string SpendNote { get; }
++
++    /// <summary>Whether the buyer may shop here now (at the guildmaster, beside the peddler, in season).</summary>
++    public virtual bool CanShop(PlayerMobile pm, out string why)
++    {
++        why = "";
++        return true;
++    }
++
++    /// <summary>The row on sale now with this key, or null.</summary>
++    public RewardStoreRow? Find(string key) => Rows().FirstOrDefault(r => r.Key == key);
++
++    /// <summary>A fresh copy of this store for a reopened window (the stores carry their guildmaster or peddler).</summary>
++    public virtual RewardStoreDef Refresh() => this;
++}
++
++public static class RewardStore
++{
++    public static ClusterFAccountData? DataOf(Mobile m) => LeagueShop.DataOf(m);
++
++    public static bool IsUnlocked(PlayerMobile pm, RewardStoreDef store, RewardStoreRow row) =>
++        store.Progress(pm) >= row.OpensAt && (row.Condition?.Invoke(pm) ?? true);
++
++    public static bool IsOwned(PlayerMobile pm, RewardStoreRow row) =>
++        row.TitleKey != null && DataOf(pm) is { } data && data.LeagueTitles.Owned.Contains(row.TitleKey);
++
++    /// <summary>Why this buyer cannot buy the row now, or Bought when they can. Opens, then ownership, then the price.</summary>
++    public static RewardStoreResult Check(PlayerMobile pm, RewardStoreDef store, RewardStoreRow row)
++    {
++        if (DataOf(pm) == null)
++        {
++            return RewardStoreResult.NoAccount;
++        }
++
++        if (store.Find(row.Key) == null)
++        {
++            return RewardStoreResult.Unavailable;
++        }
++
++        if (!IsUnlocked(pm, store, row))
++        {
++            return RewardStoreResult.Locked;
++        }
++
++        if (IsOwned(pm, row))
++        {
++            return RewardStoreResult.AlreadyOwned;
++        }
++
++        return store.Currency.Balance(pm) < row.Price ? RewardStoreResult.NotEnough : RewardStoreResult.Bought;
++    }
++
++    /// <summary>
++    /// Buys the row: every check again, server side, then the items into the pack (all or none), then exactly the price.
++    /// Nothing is taken on a refusal, and a failed spend takes the items back.
++    /// </summary>
++    public static RewardStoreResult Purchase(PlayerMobile pm, RewardStoreDef store, RewardStoreRow row)
++    {
++        if (!store.CanShop(pm, out var why))
++        {
++            pm.SendMessage(0x22, why);
++            return RewardStoreResult.Unavailable;
++        }
++
++        // The row as the store sells it now: a stale window (the season changed, the row left) buys nothing.
++        var current = store.Find(row.Key);
++        var check = current == null ? RewardStoreResult.Unavailable : Check(pm, store, current);
++        if (check != RewardStoreResult.Bought)
++        {
++            pm.SendMessage(0x22, RefusalLine(check, pm, store, current ?? row));
++            return check;
++        }
++
++        row = current!;
++        var data = DataOf(pm)!;
++        var price = row.Price;
++
++        if (row.IsTitle)
++        {
++            if (!store.Currency.TrySpend(pm, price))
++            {
++                pm.SendMessage(0x22, RefusalLine(RewardStoreResult.NotEnough, pm, store, row));
++                return RewardStoreResult.NotEnough;
++            }
++
++            data.LeagueTitles.Owned.Add(row.TitleKey!);
++            pm.SendMessage(0x44, $"System: Title unlocked: \"{LeagueTitles.Display(row.TitleKey!)}\". Choose it in Titles.");
++            pm.PlaySound(0x5A7);
++            return RewardStoreResult.Bought;
++        }
++
++        var items = row.Create!(pm);
++        var pack = pm.Backpack;
++        if (pack == null || items.Count == 0 || !CanHoldAll(pm, pack, items))
++        {
++            DeleteAll(items);
++            pm.SendLocalizedMessage(1074361); // The reward could not be given.  Make sure you have room in your pack.
++            return RewardStoreResult.NoRoom;
++        }
++
++        if (!store.Currency.TrySpend(pm, price))
++        {
++            DeleteAll(items);
++            pm.SendMessage(0x22, RefusalLine(RewardStoreResult.NotEnough, pm, store, row));
++            return RewardStoreResult.NotEnough;
++        }
++
++        foreach (var item in items)
++        {
++            pack.DropItem(item);
++            item.InvalidateProperties();
++        }
++
++        pm.SendLocalizedMessage(1073621); // Your reward has been placed in your backpack.
++        pm.PlaySound(0x5A7);
++        return RewardStoreResult.Bought;
++    }
++
++    public static string RefusalLine(RewardStoreResult result, PlayerMobile pm, RewardStoreDef store, RewardStoreRow row) =>
++        result switch
++        {
++            RewardStoreResult.NoAccount    => "You have no account record.",
++            RewardStoreResult.Unavailable  => "That is no longer for sale here.",
++            RewardStoreResult.Locked       => row.Condition != null && !row.Condition(pm) && row.ConditionText != null
++                ? row.ConditionText
++                : store.OpensText(row.OpensAt),
++            RewardStoreResult.AlreadyOwned => "You already hold that title.",
++            RewardStoreResult.NotEnough    =>
++                $"That costs {row.Price:N0} {store.Currency.Name} (you have {store.Currency.Balance(pm):N0}).",
++            RewardStoreResult.NoRoom       => "Make room in your pack first.",
++            _                              => ""
++        };
++
++    // CleanUpBritanniaRewards.CanHoldAll, as LeagueShop: several items, checked together before any is given.
++    public static bool CanHoldAll(PlayerMobile pm, Container pack, List<Item> items)
++    {
++        var weight = items.Sum(i => i.TotalWeight + i.PileWeight);
++        return pack.CheckHold(pm, items[0], false, true, items.Count - 1, weight - items[0].TotalWeight - items[0].PileWeight);
++    }
++
++    private static void DeleteAll(List<Item> items)
++    {
++        foreach (var item in items)
++        {
++            item.Delete();
++        }
++    }
++
++    // -- Helpers the stock tables use --
++
++    public static Func<PlayerMobile, List<Item>> One(Func<Item> make) => _ => [make()];
++
++    public static Func<PlayerMobile, List<Item>> One(Func<PlayerMobile, Item> make) => pm => [make(pm)];
++
++    /// <summary>A stack of a stackable item (Amount), or the item alone.</summary>
++    public static Func<PlayerMobile, List<Item>> Stack<T>(int amount) where T : Item =>
++        _ =>
++        {
++            // Loot.Construct: most stock resources have only an optional-amount constructor (no new()).
++            var item = Loot.Construct<T>(typeof(T));
++            if (item.Stackable)
++            {
++                item.Amount = amount;
++            }
++
++            return [item];
++        };
++
++    /// <summary>A tool with this many uses (pinned BaseTool.UsesRemaining), or the item alone.</summary>
++    public static Func<PlayerMobile, List<Item>> Tool<T>(int uses) where T : Item =>
++        _ =>
++        {
++            var item = Loot.Construct<T>(typeof(T));
++            if (item is IUsesRemaining tool)
++            {
++                tool.UsesRemaining = uses;
++            }
++
++            return [item];
++        };
++
++    /// <summary>Several of a non-stacking item in one bag.</summary>
++    public static Func<PlayerMobile, List<Item>> Bagged<T>(string bagName, int count) where T : Item =>
++        _ =>
++        {
++            var bag = new Bag { Name = bagName };
++            for (var i = 0; i < count; i++)
++            {
++                bag.DropItem(Loot.Construct<T>(typeof(T)));
++            }
++
++            return [bag];
++        };
++}
+diff --git a/server/customizations/RewardStores/RewardStoreCommands.cs b/server/customizations/RewardStores/RewardStoreCommands.cs
+new file mode 100644
+index 0000000..ace766b
+--- /dev/null
++++ b/server/customizations/RewardStores/RewardStoreCommands.cs
+@@ -0,0 +1,126 @@
++// cc-P760: the reward stores' commands. Players: [apstore opens the Achievement store and [leagueshop the League shop, from
++// anywhere; [guildstore opens the Guild Store of your guild whose guildmaster is beside you (the same windows the achievements window and the League Registrar open). Staff, for testing:
++// [RewardStores grant <character name> <tokens|ap|guild:<key>> <amount> (a guild grant also joins the character and sets
++// its standing to the amount, so its rows open).
++
++#nullable enable
++
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using Server.Accounting;
++using Server.Commands;
++using Server.Engines.LeagueRewards;
++using Server.Gumps;
++using Server.Mobiles;
++
++namespace Server.Engines.RewardStores;
++
++public static class RewardStoreCommands
++{
++    public static void Configure()
++    {
++        CommandSystem.Register("apstore", AccessLevel.Player, OnApStore);
++        CommandSystem.Register("leagueshop", AccessLevel.Player, OnLeagueShop);
++        CommandSystem.Register("guildstore", AccessLevel.Player, OnGuildStore);
++    }
++
++    [Usage("guildstore")]
++    [Description("Opens the Guild Store of a guild you belong to whose guildmaster is beside you (the same store as the guild window's Guild Store button).")]
++    [ShardCommand(CommandCategory.Player, Shard = CommandShard.Any)]
++    private static void OnGuildStore(CommandEventArgs e)
++    {
++        if (e.Mobile is not PlayerMobile pm)
++        {
++            return;
++        }
++
++        ClusterFGuildSystem.EnsureRegistered();
++        foreach (var def in ClusterFGuildSystem.AllGuilds.Values)
++        {
++            if (ClusterFGuildSystem.IsJoined(pm, def.Key) && ClusterFGuildSystem.FindGuildmasterNear(pm, def) is { } gm)
++            {
++                GuildStores.Open(pm, def.Key, gm);
++                return;
++            }
++        }
++
++        // Say what was found, so a player (or staff) can tell which half is missing.
++        var joined = ClusterFAccountPersistence.GetGuild(pm)?.JoinedGuilds.ToList() ?? [];
++        var near = ClusterFGuildSystem.AllGuilds.Values.Where(d => ClusterFGuildSystem.FindGuildmasterNear(pm, d) != null)
++            .Select(d => d.Name).ToList();
++        pm.SendMessage(0x22, "Stand beside the guildmaster of a guild you belong to. " +
++            $"Your guilds: {(joined.Count > 0 ? string.Join(", ", joined.Select(k => ClusterFGuildSystem.GetDef(k)?.Name ?? k)) : "none")}. " +
++            $"Guildmasters here: {(near.Count > 0 ? string.Join(", ", near) : "none")}.");
++    }
++
++    [Usage("apstore")]
++    [Description("Opens the Achievement store: spend achievement points on titles, cosmetics and decor. Your AP total never goes down.")]
++    [ShardCommand(CommandCategory.Player, Shard = CommandShard.Any)]
++    private static void OnApStore(CommandEventArgs e)
++    {
++        if (e.Mobile is PlayerMobile pm)
++        {
++            AchievementStoreDef.Open(pm);
++        }
++    }
++
++    [Usage("leagueshop")]
++    [Description("Opens the League shop: AP opens a row, Renown buys it.")]
++    [ShardCommand(CommandCategory.Player, Shard = CommandShard.Any)]
++    private static void OnLeagueShop(CommandEventArgs e)
++    {
++        if (e.Mobile is PlayerMobile pm)
++        {
++            pm.SendGump(new LeagueShopGump(pm));
++        }
++    }
++
++    public static List<string> Grant(string[] args)
++    {
++        if (args.Length < 4 || !int.TryParse(args[^1], out var amount))
++        {
++            return ["Usage: [RewardStores grant <character name> <tokens|ap|guild:<key>> <amount>"];
++        }
++
++        var what = args[^2].ToLowerInvariant();
++        var name = string.Join(' ', args[1..^2]);
++        var pm = World.Mobiles.Values.OfType<PlayerMobile>().FirstOrDefault(m => m.Name == name);
++        if (pm?.Account is not IAccount acct)
++        {
++            return [$"No character called '{name}'."];
++        }
++
++        var data = ClusterFAccountPersistence.GetOrCreate(acct);
++        switch (what)
++        {
++            case "tokens":
++                ClusterFAchievementSystem.AddToCounter(acct.Username, FestivalTokens.EarnedCounter, amount);
++                return [$"{name}: +{amount} Festival Tokens ({FestivalTokens.BalanceOf(acct.Username)})."];
++            case "ap":
++                data.AchievementPoints += amount;
++                LeagueTitles.Sync(data);
++                return [$"{name}: +{amount} AP ({data.AchievementPoints} total)."];
++            case "renown":
++                data.Renown += amount;
++                return [$"{name}: +{amount} Renown (balance only)."];
++        }
++
++        if (what.StartsWith("guild:", StringComparison.Ordinal))
++        {
++            var key = what[6..];
++            if (ClusterFGuildSystem.GetDef(key) == null)
++            {
++                return [$"No guild '{key}'."];
++            }
++
++            var guild = data.GetOrCreateGuildData(pm.Serial);
++            guild.JoinedGuilds.Add(key);
++            guild.GuildReputation[key] = Math.Max(guild.GetReputation(key), amount);
++            guild.AddCurrency(key, amount);
++            return [$"{name}: joined {key}, standing {guild.GetReputation(key)}, +{amount} {MuleUpgrades.CurrencyName(key)}."];
++        }
++
++        return [$"Unknown: '{what}'. tokens, ap, renown or guild:<key>."];
++    }
++}
+diff --git a/server/customizations/RewardStores/RewardStoreGumps.cs b/server/customizations/RewardStores/RewardStoreGumps.cs
+new file mode 100644
+index 0000000..c2b8d6b
+--- /dev/null
++++ b/server/customizations/RewardStores/RewardStoreGumps.cs
+@@ -0,0 +1,264 @@
++// cc-P760: the reward stores' window and confirm step, the League shop's own (LeagueShopGumps.cs) for every store, so the
++// shard's stores look and work alike:
++//
++// RewardStoreGump         CleanUpBritanniaRewardGump's scroll frame, five rows a page, the item art greyed until the row
++//                         opens. Each row shows its price in the store's currency and what opens it, in cc-P169's
++//                         requirement colours (RequirementStyle): green when met, red when not. A Titles button opens the
++//                         League title picker, where a bought title is chosen.
++// RewardStoreConfirmGump  the confirm step: the row's requirements as a cc-P169 RequirementList, then Buy.
++//
++// Every press checks again server side (RewardStore.Purchase), so a stale page buys nothing.
++
++#nullable enable
++
++using System;
++using System.Collections.Generic;
++using Server.Engines.LeagueRewards;
++using Server.Gumps;
++using Server.Mobiles;
++using Server.Network;
++
++namespace Server.Engines.RewardStores;
++
++public class RewardStoreGump : Gump
++{
++    public const int RowHeight = LeagueShopGump.RowHeight;
++    public const int RowsPerPage = LeagueShopGump.RowsPerPage;
++    public const int BtnTitles = 2;
++    public const int BtnRowBase = 200;
++
++    public RewardStoreDef Store { get; }
++
++    public IReadOnlyList<RewardStoreRow> Rows { get; }
++
++    public RewardStoreGump(PlayerMobile pm, RewardStoreDef store) : base(50, 50)
++    {
++        pm.CloseGump<RewardStoreGump>();
++
++        Store = store;
++        Rows = store.Rows();
++
++        Closable = true;
++        Disposable = true;
++        Draggable = true;
++        Resizable = false;
++
++        AddPage(0);
++
++        AddImage(0, 0, 0x1F40);
++        AddImageTiled(20, 37, 300, 308, 0x1F42);
++        AddImage(20, 325, 0x1F43);
++        AddImage(35, 8, 0x39);
++        AddImageTiled(65, 8, 257, 10, 0x3A);
++        AddImage(290, 8, 0x3B);
++        AddImage(32, 33, 0x2635);
++        AddImageTiled(70, 55, 230, 2, 0x23C5);
++
++        // Dark text on the scroll, as the League shop.
++        AddLabel(70, 35, 0, store.Title);
++        AddLabel(40, 62, 0, $"{store.Currency.Name}:");
++        AddLabel(40, 78, 0x64, store.Currency.Balance(pm).ToString("N0"));
++        AddLabel(180, 62, 0, "You:");
++        AddLabel(180, 78, 0x64, store.ProgressText(pm));
++        AddImageTiled(35, 98, 270, 2, 0x23C5);
++        AddLabel(35, 101, 0, store.Blurb);
++
++        AddButton(35, 337, 4011, 4012, BtnTitles);
++        AddLabel(69, 337, 0, "Titles");
++
++        if (Rows.Count == 0)
++        {
++            AddLabel(35, 130, 0, "Nothing is on sale here now.");
++        }
++
++        var pages = Math.Max(1, (Rows.Count + RowsPerPage - 1) / RowsPerPage);
++
++        for (var page = 0; page < pages; page++)
++        {
++            AddPage(page + 1);
++
++            var offset = 122;
++
++            for (var i = page * RowsPerPage; i < Math.Min(Rows.Count, (page + 1) * RowsPerPage); i++)
++            {
++                var entry = Rows[i];
++                var row = Row.Of(pm, store, entry);
++
++                if (row.CanBuy)
++                {
++                    AddButton(35, offset + RowHeight / 2 - 5, 0x837, 0x838, BtnRowBase + i);
++                }
++
++                AddItem(55, offset + 4, entry.ItemID, row.Unlocked ? entry.Hue : LeagueShopGump.LockedArtHue);
++                AddLabel(110, offset + 2, row.Unlocked ? 0 : RequirementStyle.DisabledHue, entry.Label);
++                AddLabel(110, offset + 20, row.PriceHue, $"{entry.Price:N0} {store.Currency.Name}");
++                AddLabel(230, offset + 20, row.OpensHue, row.OpensText);
++
++                offset += RowHeight;
++            }
++
++            if (page > 0)
++            {
++                AddButton(150, 335, 0x15E3, 0x15E7, 0, GumpButtonType.Page, page);
++                AddHtmlLocalized(170, 335, 60, 20, 1074880, 0x1); // Previous
++            }
++
++            if (page < pages - 1)
++            {
++                AddButton(300, 335, 0x15E1, 0x15E5, 0, GumpButtonType.Page, page + 2);
++                AddHtmlLocalized(240, 335, 60, 20, 1072854, 0x1); // <div align=right>Next</div>
++            }
++        }
++    }
++
++    /// <summary>How one row draws for this buyer: open or locked, the price's and the opening's words and colours.</summary>
++    public readonly record struct Row(bool Unlocked, bool Owned, bool CanBuy, int PriceHue, string OpensText, int OpensHue)
++    {
++        public static Row Of(PlayerMobile pm, RewardStoreDef store, RewardStoreRow entry)
++        {
++            var unlocked = RewardStore.IsUnlocked(pm, store, entry);
++                var owned = RewardStore.IsOwned(pm, entry);
++            var affordable = store.Currency.Balance(pm) >= entry.Price;
++
++            var opensText = owned ? "Owned"
++                : !unlocked ? (entry.Condition != null && !entry.Condition(pm) && entry.ConditionText != null
++                    ? entry.ConditionText
++                    : store.OpensText(entry.OpensAt))
++                : "Open";
++            var opensHue = unlocked ? RequirementStyle.MetHue : RequirementStyle.NotMetHue;
++            var priceHue = !unlocked || owned ? RequirementStyle.DisabledHue
++                : affordable ? RequirementStyle.MetHue : RequirementStyle.NotMetHue;
++
++            return new Row(unlocked, owned, unlocked && !owned && affordable, priceHue, opensText, opensHue);
++        }
++    }
++
++    public override void OnResponse(NetState state, in RelayInfo info)
++    {
++        if (state.Mobile is not PlayerMobile pm)
++        {
++            return;
++        }
++
++        if (info.ButtonID == BtnTitles)
++        {
++            pm.SendGump(new LeagueTitleGump(pm));
++            return;
++        }
++
++        var index = info.ButtonID - BtnRowBase;
++        if (index < 0 || index >= Rows.Count)
++        {
++            return;
++        }
++
++        var store = Store.Refresh();
++        if (!store.CanShop(pm, out var why))
++        {
++            pm.SendMessage(0x22, why);
++            return;
++        }
++
++        // The row by its key, as the store sells it now: the confirm step and the purchase check everything again.
++        if (store.Find(Rows[index].Key) is { } row)
++        {
++            pm.SendGump(new RewardStoreConfirmGump(pm, store, row));
++        }
++        else
++        {
++            pm.SendMessage(0x22, "That is no longer for sale here.");
++            pm.SendGump(new RewardStoreGump(pm, store));
++        }
++    }
++}
++
++public class RewardStoreConfirmGump : GuildStyledGump
++{
++    public const int BtnBuy = 1;
++    public const int BtnBack = 2;
++
++    private const int W = 400;
++    private const int H = 240;
++
++    public RewardStoreDef Store { get; }
++
++    public RewardStoreRow Entry { get; }
++
++    public RequirementList Requirements { get; }
++
++    public RewardStoreConfirmGump(PlayerMobile pm, RewardStoreDef store, RewardStoreRow entry) : base(80, 80)
++    {
++        pm.CloseGump<RewardStoreConfirmGump>();
++        Store = store;
++        Entry = entry;
++
++        Closable = true;
++        Disposable = true;
++
++        var opensMet = store.Progress(pm) >= entry.OpensAt;
++
++        Requirements = new RequirementList()
++            .Check(opensMet, entry.OpensAt > 0 ? store.OpensText(entry.OpensAt).Replace("Requires", "Has") : "Open to all",
++                store.OpensText(entry.OpensAt));
++
++        if (entry.Condition != null)
++        {
++            var met = entry.Condition(pm);
++            Requirements.Check(met, (entry.ConditionText ?? "").Replace("Requires", "Has"), entry.ConditionText ?? "Not yet");
++        }
++
++        Requirements.Amount(store.Currency.Name, store.Currency.Balance(pm), entry.Price);
++
++        if (entry.IsTitle)
++        {
++            Requirements.Check(!RewardStore.IsOwned(pm, entry), "Title not yet held", "You already hold this title");
++        }
++
++        Requirements.Info(store.SpendNote);
++
++        AddBackground(0, 0, W, H, 9270);
++        RequirementStyle.AddSolidPanel(this, W, H);
++
++        AddLabel(20, 16, RequirementStyle.HeadingHue, $"Buy from {store.Title}?");
++        AddItem(20, 44, entry.ItemID, entry.Hue);
++        AddLabel(80, 46, 0x481, entry.Label);
++        AddLabel(80, 64, RequirementStyle.InfoHue, $"Price: {entry.Price:N0} {store.Currency.Name}");
++
++        var y = Requirements.Draw(this, 20, 92);
++        Requirements.DrawFooter(this, 20, y + 4, BtnBuy, $"Buy for {entry.Price:N0} {store.Currency.Name}");
++
++        AddButton(W - 90, H - 34, 4014, 4015, BtnBack);
++        AddLabel(W - 56, H - 32, RequirementStyle.InfoHue, "Back");
++
++    }
++
++    public override void OnResponse(NetState state, in RelayInfo info)
++    {
++        if (state.Mobile is not PlayerMobile pm)
++        {
++            return;
++        }
++
++        if (info.ButtonID == BtnBuy)
++        {
++            var store = Store.Refresh();
++            RewardStore.Purchase(pm, store, Entry);
++            if (store.CanShop(pm, out _))
++            {
++                pm.SendGump(new RewardStoreGump(pm, store));
++            }
++        }
++        else if (info.ButtonID == BtnBack)
++        {
++            var store = Store.Refresh();
++            if (store.CanShop(pm, out var why))
++            {
++                pm.SendGump(new RewardStoreGump(pm, store));
++            }
++            else
++            {
++                pm.SendMessage(0x22, why);
++            }
++        }
++    }
++}
+diff --git a/server/customizations/RewardStores/RewardStoreItems.cs b/server/customizations/RewardStores/RewardStoreItems.cs
+new file mode 100644
+index 0000000..9668cad
+--- /dev/null
++++ b/server/customizations/RewardStores/RewardStoreItems.cs
+@@ -0,0 +1,31 @@
++// cc-P760: the reward stores' one item of their own, RewardDecor: house decor drawn from registered art (registry.csv) or
++// stock art. It is plain decor: no item properties, nothing on use, movable so it can be locked down in a house. The art's
++// tiledata on the server comes from the set that registered it (GuildHallDecorArt, ClusterFCommunityArtRecords), which
++// gives these pieces a weight of 255 (immovable); RewardDecor's own weight makes them carryable.
++
++using ModernUO.Serialization;
++
++namespace Server.Items;
++
++[SerializationGenerator(0, false)]
++public partial class RewardDecor : Item
++{
++    [Constructible]
++    public RewardDecor() : this(0x14F0, "a piece of decor")
++    {
++    }
++
++    public RewardDecor(int itemID, string name, int hue = 0) : base(itemID)
++    {
++        Name = name;
++        Hue = hue;
++    }
++
++    public override double DefaultWeight => 5.0;
++
++    public override void GetProperties(IPropertyList list)
++    {
++        base.GetProperties(list);
++        list.Add("House decor");
++    }
++}
+diff --git a/server/customizations/RewardStores/RewardStorePrices.cs b/server/customizations/RewardStores/RewardStorePrices.cs
+new file mode 100644
+index 0000000..e65316b
+--- /dev/null
++++ b/server/customizations/RewardStores/RewardStorePrices.cs
+@@ -0,0 +1,238 @@
++// cc-P760: the reward stores' price table, one file: Configuration/reward-stores.json. Every row of every store (the guild
++// stores, the Festival store and the Achievement store) by its key: its price and what opens it. The prices are
++// placeholders (Chase's plan, section 6) to be tuned in play.
++//
++// Loaded the way cc-P78's recipe-gating.json is: a missing file is written with the built-in defaults (each row's own
++// DefaultPrice and DefaultOpensAt); a file that fails any check is refused whole and the table in force is kept;
++// [RewardStores reload reads it again. A row the file leaves out keeps its default. The test host runs no Configure, so it
++// uses the defaults.
++
++#nullable enable
++
++using System;
++using System.Collections.Generic;
++using System.IO;
++using System.Linq;
++using System.Text.Json;
++using Server.Commands;
++
++namespace Server.Engines.RewardStores;
++
++public sealed class RewardStorePrices
++{
++    public const string FileName = "reward-stores.json";
++
++    public static string FilePath => Path.Combine(Core.BaseDirectory, "Configuration", FileName);
++
++    public sealed record Entry(int Price, int OpensAt);
++
++    public string Source { get; init; } = "built-in defaults";
++
++    public Dictionary<string, Entry> Rows { get; init; } = new(StringComparer.Ordinal);
++
++    public static RewardStorePrices Defaults { get; } = new();
++
++    public static RewardStorePrices Current { get; set; } = Defaults;
++
++    public int PriceOf(RewardStoreRow row) => Rows.TryGetValue(row.Key, out var e) ? e.Price : row.DefaultPrice;
++
++    public int OpensAtOf(RewardStoreRow row) => Rows.TryGetValue(row.Key, out var e) ? e.OpensAt : row.DefaultOpensAt;
++
++    /// <summary>Every store whose rows the table prices, for the defaults file and the key check.</summary>
++    public static IEnumerable<RewardStoreDef> AllStores()
++    {
++        foreach (var store in GuildStores.All())
++        {
++            yield return store;
++        }
++
++        yield return new FestivalStoreDef(null);
++        yield return new AchievementStoreDef();
++    }
++
++    public static IEnumerable<RewardStoreRow> AllRows() => AllStores().SelectMany(s => s.AllRows());
++
++    public static void Configure()
++    {
++        CommandSystem.Register("RewardStores", AccessLevel.GameMaster, OnCommand);
++
++        EventSink.ServerStarted += () =>
++        {
++            foreach (var line in LoadOrWriteDefaults(FilePath))
++            {
++                Console.WriteLine($"[RewardStores] {line}");
++            }
++        };
++    }
++
++    [Usage("RewardStores [reload | grant <character name> <tokens|ap|renown|guild:<key>> <amount>]")]
++    [Description("The reward stores' price table (cc-P760). With no argument, says where the prices came from. reload reads Configuration/reward-stores.json again (a bad file is refused whole). grant gives a character Festival Tokens, AP, Renown or a guild's points (joining the guild, standing set to the amount), for testing.")]
++    [ShardCommand(CommandCategory.DevTool, Shard = CommandShard.TestFirst)]
++    private static void OnCommand(CommandEventArgs e)
++    {
++        var verb = e.Length > 0 ? e.GetString(0).ToLowerInvariant() : "";
++        var lines = verb switch
++        {
++            "reload" => Reload(FilePath),
++            "grant"  => RewardStoreCommands.Grant(e.Arguments),
++            _ => [$"Reward store prices from {Current.Source}: {Current.Rows.Count} rows in the file, {AllRows().Count()} rows in all. [RewardStores reload reads {FileName} again. [RewardStores grant <character name> <tokens|ap|guild:<key>> <amount> (staff, for testing)."]
++        };
++        foreach (var line in lines)
++        {
++            e.Mobile.SendMessage(line);
++        }
++    }
++
++    // -- The file ---------------------------------------------------------------------------------------------------
++
++    private static readonly JsonSerializerOptions Json = new()
++    {
++        WriteIndented = true,
++        AllowTrailingCommas = true,
++        ReadCommentHandling = JsonCommentHandling.Skip,
++        PropertyNameCaseInsensitive = true
++    };
++
++    private sealed class FileRow
++    {
++        public string? Store { get; set; }
++        public string? Label { get; set; }
++        public int? Price { get; set; }
++        public int? OpensAt { get; set; }
++    }
++
++    private sealed class FileForm
++    {
++        public string? About { get; set; }
++        public Dictionary<string, FileRow>? Rows { get; set; }
++    }
++
++    /// <summary>The defaults as the file: every row of every store, its store and label beside it for the reader.</summary>
++    public static string DefaultsJson()
++    {
++        var rows = new Dictionary<string, FileRow>(StringComparer.Ordinal);
++        foreach (var store in AllStores())
++        {
++            foreach (var row in store.AllRows())
++            {
++                rows[row.Key] = new FileRow
++                {
++                    Store = store.Title,
++                    Label = row.Label,
++                    Price = row.DefaultPrice,
++                    OpensAt = row.DefaultOpensAt
++                };
++            }
++        }
++
++        return JsonSerializer.Serialize(
++            new FileForm
++            {
++                About = "Reward store prices (cc-P760), placeholders to tune in play. One row per store row, by key: price in " +
++                        "the store's currency, and opensAt (a guild row: the rank index 0 Initiate to 5 top rank; an " +
++                        "Achievement row: the AP total; a Festival row: 0). store and label are for reading only. Edit and " +
++                        "run [RewardStores reload; a bad file is refused whole.",
++                Rows = rows
++            },
++            Json
++        );
++    }
++
++    /// <summary>Reads a table. Null and errors when anything is wrong: not JSON, an unknown key, a negative number.</summary>
++    public static RewardStorePrices? Parse(string json, string source, List<string> errors)
++    {
++        FileForm? f;
++        try
++        {
++            f = JsonSerializer.Deserialize<FileForm>(json, Json);
++        }
++        catch (JsonException ex)
++        {
++            errors.Add($"not valid JSON: {ex.Message}");
++            return null;
++        }
++
++        if (f == null)
++        {
++            errors.Add("the file is empty.");
++            return null;
++        }
++
++        var known = AllRows().ToDictionary(r => r.Key, StringComparer.Ordinal);
++        var table = new RewardStorePrices { Source = source };
++
++        foreach (var (key, row) in f.Rows ?? new Dictionary<string, FileRow>())
++        {
++            if (!known.TryGetValue(key, out var def))
++            {
++                errors.Add($"rows.{key}: no store sells a row with this key.");
++                continue;
++            }
++
++            var price = row.Price ?? def.DefaultPrice;
++            var opens = row.OpensAt ?? def.DefaultOpensAt;
++            if (price < 0 || opens < 0)
++            {
++                errors.Add($"rows.{key}: price and opensAt are 0 or more.");
++                continue;
++            }
++
++            table.Rows[key] = new Entry(price, opens);
++        }
++
++        return errors.Count == 0 ? table : null;
++    }
++
++    /// <summary>At start: read the file, or write the defaults to it when it is missing. Returns lines to log.</summary>
++    public static List<string> LoadOrWriteDefaults(string path)
++    {
++        if (!File.Exists(path))
++        {
++            Current = Defaults;
++            try
++            {
++                Directory.CreateDirectory(Path.GetDirectoryName(path)!);
++                File.WriteAllText(path, DefaultsJson());
++                return [$"{FileName} was missing; wrote the built-in defaults to {path}."];
++            }
++            catch (Exception ex)
++            {
++                return [$"{FileName} is missing and could not be written ({ex.Message}); using the built-in defaults."];
++            }
++        }
++
++        return Reload(path);
++    }
++
++    public static List<string> Reload(string path)
++    {
++        string json;
++        try
++        {
++            json = File.ReadAllText(path);
++        }
++        catch (Exception ex)
++        {
++            return [$"Could not read {path} ({ex.Message}); kept {Current.Source}."];
++        }
++
++        return Apply(json, path);
++    }
++
++    /// <summary>Parses and, if it is good, puts the table in force. Returns lines to report.</summary>
++    public static List<string> Apply(string json, string source)
++    {
++        var errors = new List<string>();
++        var table = Parse(json, source, errors);
++
++        if (table == null)
++        {
++            var lines = new List<string> { $"{FileName} REFUSED ({errors.Count} error{(errors.Count == 1 ? "" : "s")}); kept {Current.Source}:" };
++            lines.AddRange(errors.Select(e => $"  {e}"));
++            return lines;
++        }
++
++        Current = table;
++        return [$"Loaded the reward store prices from {source} ({table.Rows.Count} rows)."];
++    }
++}
+diff --git a/server/customizations/RewardStores/RewardStoreTitles.cs b/server/customizations/RewardStores/RewardStoreTitles.cs
+new file mode 100644
+index 0000000..f0bb74e
+--- /dev/null
++++ b/server/customizations/RewardStores/RewardStoreTitles.cs
+@@ -0,0 +1,68 @@
++// cc-P760: the titles the reward stores sell. They are League titles (LeagueTitles.All lists these after its own): owned by
++// the account, one shown per character, chosen in the Titles window. Hidden until held, so the picker never lists a title
++// a player has not bought.
++
++#nullable enable
++
++using System.Collections.Generic;
++using Server.Engines.LeagueRewards;
++
++namespace Server.Engines.RewardStores;
++
++public static class RewardStoreTitles
++{
++    // One per guild, at its top rank (the plan: "its guild title, top rank"). Keyed by the guild key.
++    public static readonly Dictionary<string, string> GuildTitleNames = new()
++    {
++        ["smithing"] = "the Master of the Forge",
++        ["arcane"] = "the Sigilwright",
++        ["tailoring"] = "the Master Weaver",
++        ["tinkers"] = "the Gearmaster",
++        ["healers"] = "the Lifebinder",
++        ["bards"] = "the Songkeeper",
++        ["thieves"] = "the Shadowhand",
++        ["warriors"] = "the Blademaster",
++        ["mining"] = "the Deep Delver",
++        ["rangers"] = "the Pathwarden",
++        ["maritime"] = "the Sea Captain",
++        ["merchants"] = "the Merchant Prince",
++        ["foresters"] = "the Woodwarden",
++        ["artificers"] = "the Master Artificer",
++        ["custodians"] = "the Keeper of the Streets",
++        ["dojo"] = "the Twin Path Master",
++        ["keepers"] = "the Keeper of the Last Door",
++        ["alembic"] = "the Master Distiller"
++    };
++
++    public static string GuildTitleKey(string guildKey) => $"guild.{guildKey}";
++
++    public const string Halloween = "festival.halloween";
++    public const string Winter = "festival.winter";
++    public const string Spring = "festival.spring";
++
++    public const string Completionist = "ap.completionist";
++    public const string Curious = "ap.curious";
++    public const string Collector = "ap.collector";
++    public const string Explorer = "ap.explorer";
++
++    public const string LeagueChampion = "league-champion";
++
++    public static IEnumerable<LeagueTitles.TitleDef> All()
++    {
++        foreach (var (guild, display) in GuildTitleNames)
++        {
++            yield return new LeagueTitles.TitleDef(GuildTitleKey(guild), display, -1, HiddenUntilHeld: true);
++        }
++
++        yield return new LeagueTitles.TitleDef(Halloween, "the Hallowed", -1, HiddenUntilHeld: true);
++        yield return new LeagueTitles.TitleDef(Winter, "the Winterborn", -1, HiddenUntilHeld: true);
++        yield return new LeagueTitles.TitleDef(Spring, "the Springtide", -1, HiddenUntilHeld: true);
++
++        yield return new LeagueTitles.TitleDef(Completionist, "the Completionist", -1, HiddenUntilHeld: true);
++        yield return new LeagueTitles.TitleDef(Curious, "the Curious", -1, HiddenUntilHeld: true);
++        yield return new LeagueTitles.TitleDef(Collector, "the Collector", -1, HiddenUntilHeld: true);
++        yield return new LeagueTitles.TitleDef(Explorer, "the Explorer", -1, HiddenUntilHeld: true);
++
++        yield return new LeagueTitles.TitleDef(LeagueChampion, "the League Champion", -1, HiddenUntilHeld: true);
++    }
++}
+diff --git a/server/customizations/SanitationWardenGump.cs b/server/customizations/SanitationWardenGump.cs
+index d148d88..7ce60d1 100644
+--- a/server/customizations/SanitationWardenGump.cs
++++ b/server/customizations/SanitationWardenGump.cs
+@@ -33,6 +33,7 @@ public class SanitationWardenGump : GuildStyledGump
+     private const int BtnStore    = 3;
+     private const int BtnTrashBag = 5;
+     private const int BtnSchematics = 6; // cc-P70: the Salvage Bin's mule module schematics
++    private const int BtnGuildStore = 7; // cc-P760: the Custodians' Guild Store (spends Clean Up points)
+ 
+     // A store trader this close lets the gump open the store (ServUO's confirm range, BaseRewardGump.cs:238).
+     public const int StoreRange = 5;
+@@ -56,7 +57,7 @@ public class SanitationWardenGump : GuildStyledGump
+         Resizable  = false;
+ 
+         var isMember = ClusterFGuildSystem.IsJoined(pm, "custodians");
+-        var H        = isMember ? 445 : 380; // cc-P70: +30 for the schematics row
++        var H        = isMember ? 475 : 380; // cc-P70: +30 for the schematics row; cc-P760: +30 for the Guild Store
+ 
+         AddPage(0);
+         AddBackground(0, 0, W, H, 9270);
+@@ -152,6 +153,9 @@ public class SanitationWardenGump : GuildStyledGump
+ 
+         AddButton(18, 406, 4005, 4007, BtnSchematics, GumpButtonType.Reply, 0);
+         AddLabel(54, 408, 1154, "Mule module schematics (Salvage Bin)");
++
++        AddButton(18, 436, 4005, 4007, BtnGuildStore, GumpButtonType.Reply, 0); // cc-P760
++        AddLabel(54, 438, 1154, "Guild Store (spends Clean Up points)");
+     }
+ 
+     // -- Join view -------------------------------------------------------------
+@@ -205,6 +209,19 @@ public class SanitationWardenGump : GuildStyledGump
+                 HandleTrashBag(pm);
+                 break;
+ 
++            case BtnGuildStore: // cc-P760
++                foreach (var m in pm.GetMobilesInRange(StoreRange))
++                {
++                    if (m is SanitationWarden)
++                    {
++                        Server.Engines.RewardStores.GuildStores.Open(pm, "custodians", m);
++                        return;
++                    }
++                }
++
++                pm.SendMessage(0x22, "You must be at a Sanitation Warden to buy.");
++                break;
++
+             case BtnSchematics:
+                 foreach (var m in pm.GetMobilesInRange(StoreRange))
+                 {
+diff --git a/server/customizations/Services/BulkOrders/BulkOrderGuildPay.cs b/server/customizations/Services/BulkOrders/BulkOrderGuildPay.cs
+index bf97a31..0b0249c 100644
+--- a/server/customizations/Services/BulkOrders/BulkOrderGuildPay.cs
++++ b/server/customizations/Services/BulkOrders/BulkOrderGuildPay.cs
+@@ -133,11 +133,17 @@ public static class BulkOrderGuildPay
+         return (pay, setting);
+     }
+ 
+-    /// <summary>Another deed-giving guild's line: the stock turn-in's bank gold.</summary>
++    /// <summary>
++    /// Another deed-giving guild's line: the stock turn-in's bank gold, and (cc-P760) the guild points it pays a member,
++    /// 1 per 50 of the deed's bulk order points (GuildPointEarning.ForBodPoints).
++    /// </summary>
+     public static string OtherGuildLine(BaseBOD deed)
+     {
+-        var name = ClusterFGuildSystem.GetDef(GuildKeyFor(deed))?.Name ?? "Your guild";
+-        return $"{name} pays you: {Quote(deed).StockGold:N0} gold to the bank (no guild currency or standing yet)";
++        var key = GuildKeyFor(deed);
++        var name = ClusterFGuildSystem.GetDef(key)?.Name ?? "Your guild";
++        BulkOrderSystem.ComputePoints(deed, out var points, out _);
++        var guildPoints = Server.Engines.RewardStores.GuildPointEarning.ForBodPoints(points);
++        return $"{name} pays you: {Quote(deed).StockGold:N0} gold to the bank and {guildPoints:N0} {MuleUpgrades.CurrencyName(key)}";
+     }
+ 
+     /// <summary>The tooltip lines for the holder: none for a non-member.</summary>
+diff --git a/server/customizations/Services/BulkOrders/BulkOrderVendors.cs b/server/customizations/Services/BulkOrders/BulkOrderVendors.cs
+index 8f4b198..058fd28 100644
+--- a/server/customizations/Services/BulkOrders/BulkOrderVendors.cs
++++ b/server/customizations/Services/BulkOrders/BulkOrderVendors.cs
+@@ -356,6 +356,9 @@ public static class BulkOrderVendors
+         // the gold/fame for that bod. (ServUO's note; ServUO, and this, pay at once.)
+         Banker.Deposit(from, gold);
+ 
++        // cc-P760: a member of the deed's guild (not the Smiths, who bank Seals their own way) gets guild points.
++        Server.Engines.RewardStores.GuildPointEarning.OnBodTurnIn(pm, BulkOrderGuildPay.GuildKeyFor(bod), points);
++
+         Titles.AwardFame(from, fame, true);
+ 
+         if (Core.ML)
+diff --git a/server/customizations/Services/Seasonal Events/TreasuresOfSorceresDungeon/SorcerersDungeonResearcher.cs b/server/customizations/Services/Seasonal Events/TreasuresOfSorceresDungeon/SorcerersDungeonResearcher.cs
+index 5bb9728..852202a 100644
+--- a/server/customizations/Services/Seasonal Events/TreasuresOfSorceresDungeon/SorcerersDungeonResearcher.cs	
++++ b/server/customizations/Services/Seasonal Events/TreasuresOfSorceresDungeon/SorcerersDungeonResearcher.cs	
+@@ -79,6 +79,7 @@ public partial class SorcerersDungeonResearcher : BaseTurnInMobile
+     {
+         EnchantedOriginArtifacts.Remove(item);
+         SorcerersDungeonData.Instance.AwardPoints(pm, amount);
++        Server.Engines.RewardStores.FestivalTokens.OnSorcerersArtifact(pm); // cc-P760: 2 Festival Tokens in season
+     }
+ 
+     public override bool IsRedeemableItem(Item item) => EnchantedOriginArtifacts.IsEnchantedOrigin(item);
+diff --git a/server/customizations/SmithGuildmasterGump.cs b/server/customizations/SmithGuildmasterGump.cs
+index 5cf2ad9..5700952 100644
+--- a/server/customizations/SmithGuildmasterGump.cs
++++ b/server/customizations/SmithGuildmasterGump.cs
+@@ -32,6 +32,7 @@ public class SmithGuildmasterGump : GuildStyledGump
+     private const int BtnCatalog      = 6;
+     private const int BtnMuleExchange = 20;
+     private const int BtnSchematics   = 21; // cc-P70: mule module schematics
++    private const int BtnGuildStore   = 22; // cc-P760: the Society's Guild Store (RewardStores/GuildStores.cs)
+     private const int BtnJoin         = 10;
+ 
+     // Smith rank thresholds - mirrors Phase 4 design doc
+@@ -193,6 +194,8 @@ public class SmithGuildmasterGump : GuildStyledGump
+ 
+         AddButton(18, btnY, 4005, 4007, BtnCatalog, GumpButtonType.Reply, 0);
+         AddLabel(54, btnY + 2, 999, "Seal Catalog");
++        AddButton(240, btnY, 4005, 4007, BtnGuildStore, GumpButtonType.Reply, 0); // cc-P760
++        AddLabel(276, btnY + 2, 999, "Guild Store");
+         btnY += 32;
+ 
+         AddImageTiled(10, btnY + 4, W - 20, 2, 9304);
+@@ -291,6 +294,10 @@ public class SmithGuildmasterGump : GuildStyledGump
+                 pm.SendGump(new Server.Mobiles.GuildSchematicsGump(pm, "smithing", _npc));
+                 break;
+ 
++            case BtnGuildStore: // cc-P760
++                Server.Engines.RewardStores.GuildStores.Open(pm, "smithing", _npc);
++                break;
++
+             case BtnJoin:
+                 HandleJoin(pm);
+                 break;
+diff --git a/server/tests/Misc/LeagueShopVerification.cs b/server/tests/Misc/LeagueShopVerification.cs
+index bdb5875..0540390 100644
+--- a/server/tests/Misc/LeagueShopVerification.cs
++++ b/server/tests/Misc/LeagueShopVerification.cs
+@@ -370,6 +370,11 @@ public class LeagueShopVerification
+         // cc-P365: the reward mounts routed to the shop (RewardMounts.ShopRows), statuettes at 1750 AP.
+         ("mount.chestnut-draft", 1750, 750), ("mount.bay-draft", 1750, 750), ("mount.grey-draft", 1750, 750),
+         ("mount.palomino-draft", 1750, 750), ("mount.barded-warhorse", 1750, 1000), ("mount.gilded-charger", 1750, 1500),
++        // cc-P760 (the reward stores plan, section 4): fourteen more rows.
++        ("runebook", 100, 150), ("hairdye", 100, 75), ("bearddye", 100, 75), ("lantern", 100, 100),
++        ("bagofsending", 250, 250), ("furnituretub", 250, 200), ("crystalball", 250, 300),
++        ("metallictub", 500, 400), ("bondingpotion", 500, 400), ("crystal.green", 500, 300), ("crystal.purple", 500, 300),
++        ("namechange", 1000, 600), ("title.champion", 1750, 800), ("box.platinum", 1750, 800),
+     ];
+ 
+     [Fact]
+@@ -384,8 +389,8 @@ public class LeagueShopVerification
+             Assert.Equal((key, ap, renown), (row.Key, row.ApRequired, row.Renown));
+         }
+ 
+-        Assert.Equal(3, LeagueShop.Stock.Count(r => r.IsTitle));
+-        Assert.Equal(3, LeagueShop.Stock.Count(r => r.Kind == LeagueShopKind.LootBox));
++        Assert.Equal(4, LeagueShop.Stock.Count(r => r.IsTitle)); // cc-P760: the League Champion
++        Assert.Equal(4, LeagueShop.Stock.Count(r => r.Kind == LeagueShopKind.LootBox)); // cc-P760: Platinum
+ 
+         // F-13's AP totals: every achievement's AP, for the AP titles' top threshold. Counted, not quoted.
+         var total = ClusterFAchievementSystem.Definitions.Values.Where(d => !d.Retired).Sum(d => d.AP);
+diff --git a/server/tests/Misc/RewardStoreVerification.cs b/server/tests/Misc/RewardStoreVerification.cs
+new file mode 100644
+index 0000000..8d34488
+--- /dev/null
++++ b/server/tests/Misc/RewardStoreVerification.cs
+@@ -0,0 +1,747 @@
++// RewardStoreVerification.cs
++//
++// cc-P760: the reward stores (guild and society stores, the Festival store, the Achievement store) and the League shop's
++// new rows. Notes in shard-migration notes/cc-P760-reward-stores.md; the plan Chase approved is
++// notes/cc-P760-stores-plan.md.
++//
++// For each currency (guild points, Clean Up points, Festival Tokens, spendable AP, Renown):
++//   earning adds to it; a buy takes exactly the price and hands the items over; a buy it cannot afford is refused and
++//   takes nothing; the balance cannot go negative; the lifetime total (standing and rank, lifetime Clean Up points, tokens
++//   earned, the AP total, LifetimeRenown) never moves on a spend.
++// And: every row of every store can be made, and nothing sold is gear, a power scroll or a magic item; row keys are
++// unique and the price table round-trips; tokens drop only in season; the Festival stall is placed and removed with the
++// season; the store window greys a locked row and the confirm step buys.
++
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using Server;
++using Server.Accounting;
++using Server.Commands;
++using Server.Engines.LeagueRewards;
++using Server.Engines.Points;
++using Server.Engines.RewardStores;
++using Server.Gumps;
++using Server.Items;
++using Server.LootBoxes;
++using Server.Mobiles;
++using Server.Network;
++using Server.Tests.Network;
++using Xunit;
++using Xunit.Abstractions;
++
++namespace ShatteredLegacy.Tests;
++
++[Collection("Sequential UOContent Tests")]
++public class RewardStoreVerification
++{
++    private readonly ITestOutputHelper _out;
++
++    public RewardStoreVerification(ITestOutputHelper output)
++    {
++        _out = output;
++        ShardTestHost.EnsureAccounts();
++        ClusterFGuildSystem.EnsureRegistered();
++
++        if (!_achievements)
++        {
++            ClusterFAchievementSystem.Configure();
++            _achievements = true;
++        }
++    }
++
++    private static bool _achievements;
++
++    // ---------------------------------------------------------------- helpers
++
++    private static Account NewAccount() => new($"p760{Guid.NewGuid():N}"[..16], "p760-test-only");
++
++    private static PlayerMobile NewCharacter(Account account)
++    {
++        var pm = new PlayerMobile { Player = true, Race = Race.Human, Name = "Tester" };
++        pm.AddItem(new Backpack());
++        account[0] = pm;
++        pm.MoveToWorld(new Point3D(3460, 2604, 18), Map.Trammel);
++        return pm;
++    }
++
++    private static void Cleanup(Account account)
++    {
++        for (var i = 0; i < account.Length; i++)
++        {
++            if (account[i] is PlayerMobile pm)
++            {
++                CleanUpBritanniaData.Instance.RemoveEntry(pm);
++                pm.Delete();
++            }
++        }
++
++        Accounts.Remove(account);
++    }
++
++    private static ClusterFAccountData Data(Account account) => ClusterFAccountPersistence.GetOrCreate(account);
++
++    private static int Count<T>(PlayerMobile pm) where T : Item => pm.Backpack.Items.OfType<T>().Count();
++
++    private static GuildStoreDef Guild(string key) => new(key, null) { RequireGuildmaster = false };
++
++    private static FestivalStoreDef Festival() => new(null) { RequirePeddler = false };
++
++    private static RewardStoreRow Row(RewardStoreDef store, string key) =>
++        store.Find(key) ?? throw new InvalidOperationException(key);
++
++    private static void Join(PlayerMobile pm, string guild, int standing, int points)
++    {
++        var data = ClusterFAccountPersistence.GetOrCreateGuild(pm);
++        data.JoinedGuilds.Add(guild);
++        data.GuildReputation[guild] = standing;
++        data.GuildCurrency[guild] = points;
++    }
++
++    // ---------------------------------------------------------------- guild points
++
++    [Fact]
++    public void GuildPointsAreEarnedFromBodsAndRequisitions()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++        try
++        {
++            Join(pm, "tailoring", 0, 0);
++            var data = ClusterFAccountPersistence.GetOrCreateGuild(pm);
++
++            // 1 per 50 bulk order points, at least 1; nothing for a deed worth none.
++            Assert.Equal(0, GuildPointEarning.ForBodPoints(0));
++            Assert.Equal(1, GuildPointEarning.ForBodPoints(10));
++            Assert.Equal(4, GuildPointEarning.ForBodPoints(200));
++
++            Assert.Equal(4, GuildPointEarning.OnBodTurnIn(pm, "tailoring", 200));
++            Assert.Equal(4, data.GetCurrency("tailoring"));
++
++            // Not a member of the deed's guild, or the Smiths' deed (they bank Seals their own way): nothing.
++            Assert.Equal(0, GuildPointEarning.OnBodTurnIn(pm, "tinkers", 200));
++            Join(pm, "smithing", 0, 0);
++            Assert.Equal(0, GuildPointEarning.OnBodTurnIn(pm, "smithing", 200));
++            Assert.Equal(0, data.GetCurrency("smithing"));
++
++            // Requisitions: 1 per 10 standing, to a member; the Custodians keep no scrip.
++            Assert.Equal(5, GuildPointEarning.OnRequisition(pm, "tailoring", 50));
++            Assert.Equal(9, data.GetCurrency("tailoring"));
++            Assert.Equal(0, GuildPointEarning.OnRequisition(pm, "arcane", 50));
++            Join(pm, "custodians", 0, 0);
++            Assert.Equal(0, GuildPointEarning.OnRequisition(pm, "custodians", 50));
++
++            // The named currencies (the plan's eleven).
++            Assert.Equal("Tailors' Thimbles", MuleUpgrades.CurrencyName("tailoring"));
++            Assert.Equal("Alembic Drops", MuleUpgrades.CurrencyName("alembic"));
++            Assert.Equal("Keepers' Candles", MuleUpgrades.CurrencyName("keepers"));
++        }
++        finally
++        {
++            Cleanup(account);
++        }
++    }
++
++    [Fact]
++    public void AGuildStoreBuyTakesExactlyThePriceAndNeverStandingOrRank()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++        try
++        {
++            Join(pm, "tailoring", 6_200, 1_000); // Journeyman (rank index 2)
++            var guild = ClusterFAccountPersistence.GetOrCreateGuild(pm);
++            var store = Guild("tailoring");
++            var rankBefore = ClusterFGuildSystem.GuildRankIndex("tailoring", guild);
++            Assert.Equal(ClusterFGuildSystem.RankJourneyman, rankBefore);
++
++            var cloth = Row(store, "guild.tailoring.cloth");
++            Assert.Equal(RewardStoreResult.Bought, RewardStore.Purchase(pm, store, cloth));
++            Assert.Equal(1_000 - cloth.Price, guild.GetCurrency("tailoring"));
++            Assert.Equal(50, pm.Backpack.Items.OfType<Cloth>().Sum(c => c.Amount));
++
++            var form = Row(store, "guild.tailoring.dressform");
++            Assert.Equal(RewardStoreResult.Bought, RewardStore.Purchase(pm, store, form));
++            Assert.Equal(1_000 - cloth.Price - form.Price, guild.GetCurrency("tailoring"));
++            Assert.Equal(1, Count<Dressform>(pm));
++
++            // Standing and rank never move; the spent counter records what the store took.
++            Assert.Equal(6_200, guild.GetReputation("tailoring"));
++            Assert.Equal(rankBefore, ClusterFGuildSystem.GuildRankIndex("tailoring", guild));
++            Assert.Equal(cloth.Price + form.Price,
++                ClusterFAchievementSystem.GetCounter(account.Username, GuildPointsCurrency.SpentCounter(pm, "tailoring")));
++
++            // A Master row (the runic sewing kit) is locked at Journeyman: refused, nothing taken.
++            var runic = Row(store, "guild.tailoring.runic");
++            var before = guild.GetCurrency("tailoring");
++            Assert.Equal(RewardStoreResult.Locked, RewardStore.Purchase(pm, store, runic));
++            Assert.Equal(before, guild.GetCurrency("tailoring"));
++            Assert.Equal(0, Count<RunicSewingKit>(pm));
++        }
++        finally
++        {
++            Cleanup(account);
++        }
++    }
++
++    [Fact]
++    public void AGuildBuyItCannotAffordIsRefusedAndTheBalanceCannotGoNegative()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++        try
++        {
++            var store = Guild("healers");
++            var bandages = Row(store, "guild.healers.bandages");
++            Join(pm, "healers", 0, bandages.Price - 1);
++            var guild = ClusterFAccountPersistence.GetOrCreateGuild(pm);
++
++            Assert.Equal(RewardStoreResult.NotEnough, RewardStore.Purchase(pm, store, bandages));
++            Assert.Equal(bandages.Price - 1, guild.GetCurrency("healers"));
++            Assert.Equal(0, Count<Bandage>(pm));
++
++            Assert.False(store.Currency.TrySpend(pm, bandages.Price));
++            Assert.False(store.Currency.TrySpend(pm, -5));
++            Assert.Equal(bandages.Price - 1, guild.GetCurrency("healers"));
++            Assert.True(store.Currency.Balance(pm) >= 0);
++
++            // Not a member: the store refuses to sell at all.
++            var outsider = Guild("bards");
++            Assert.False(outsider.CanShop(pm, out var why));
++            Assert.Contains("members", why);
++        }
++        finally
++        {
++            Cleanup(account);
++        }
++    }
++
++    [Fact]
++    public void TheCustodiansStoreSpendsCleanUpPointsAndNeverTheLifetimeTotal()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++        try
++        {
++            Join(pm, "custodians", 0, 0);
++            CleanUpBritanniaData.Instance.AwardPoints(pm, 1_000, false, false);
++            var lifetime = CleanUpBritanniaData.Instance.GetLifetimePoints(pm);
++            Assert.Equal(1_000, lifetime);
++
++            var guild = ClusterFAccountPersistence.GetOrCreateGuild(pm);
++            guild.GuildReputation["custodians"] = 1_000_000; // a rank high enough for every row
++            var store = Guild("custodians");
++            Assert.Equal("Clean Up points", store.Currency.Name);
++
++            var barrel = Row(store, "guild.custodians.barrel");
++            Assert.Equal(RewardStoreResult.Bought, RewardStore.Purchase(pm, store, barrel));
++            Assert.Equal(1_000 - barrel.Price, store.Currency.Balance(pm));
++            Assert.Equal(lifetime, CleanUpBritanniaData.Instance.GetLifetimePoints(pm));
++            Assert.Equal(1, Count<TrashBarrel>(pm));
++
++            Assert.False(store.Currency.TrySpend(pm, 1_000_000));
++            Assert.Equal(1_000 - barrel.Price, store.Currency.Balance(pm));
++        }
++        finally
++        {
++            Cleanup(account);
++        }
++    }
++
++    [Fact]
++    public void AGuildTitleIsBoughtOnceAtTheTopRankAndCanBeShown()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++        try
++        {
++            Join(pm, "bards", 100_000, 5_000); // top rank on the generic ladder
++            var store = Guild("bards");
++            var title = Row(store, "guild.bards.title");
++            Assert.True(title.IsTitle);
++
++            Assert.Equal(RewardStoreResult.Bought, RewardStore.Purchase(pm, store, title));
++            Assert.Equal(5_000 - title.Price, store.Currency.Balance(pm));
++            Assert.Contains(RewardStoreTitles.GuildTitleKey("bards"), Data(account).LeagueTitles.Owned);
++
++            Assert.Equal(RewardStoreResult.AlreadyOwned, RewardStore.Purchase(pm, store, title));
++            Assert.Equal(5_000 - title.Price, store.Currency.Balance(pm));
++
++            Assert.True(LeagueTitles.Choose(pm, RewardStoreTitles.GuildTitleKey("bards")));
++            Assert.Equal("the Songkeeper", pm.Title);
++        }
++        finally
++        {
++            Cleanup(account);
++        }
++    }
++
++    // ---------------------------------------------------------------- Festival Tokens
++
++    [Fact]
++    public void FestivalTokensAreEarnedOnlyInSeasonAndSpendingNeverLowersTheEarnedCount()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++        var bc = new Mongbat { Fame = 5_000 };
++        try
++        {
++            FestivalSeasons.Forced = "none";
++            bc.RegisterDamage(10, pm);
++            Assert.False(FestivalTokens.TryDrop(bc, 0.0));
++            Assert.False(FestivalTokens.OnDailyLogin(pm, new DateTime(2026, 7, 1)));
++            Assert.Equal(0, FestivalTokens.Instance.Balance(pm));
++
++            // The drop chance: none under 1,000 fame, 10% + 1% per 1,000, at most 25%.
++            Assert.Equal(0.0, FestivalTokens.DropChance(999));
++            Assert.Equal(0.11, FestivalTokens.DropChance(1_000), 6);
++            Assert.Equal(0.15, FestivalTokens.DropChance(5_000), 6);
++            Assert.Equal(0.25, FestivalTokens.DropChance(40_000), 6);
++
++            FestivalSeasons.Forced = FestivalSeasons.Halloween;
++            Assert.True(FestivalTokens.TryDrop(bc, 0.0));          // the roll under the chance: the top damager gets 1
++            Assert.False(FestivalTokens.TryDrop(bc, 0.99));        // over it: none
++            bc.Fame = 500;
++            Assert.False(FestivalTokens.TryDrop(bc, 0.0));         // under 1,000 fame: none
++            Assert.Equal(1, FestivalTokens.Instance.Balance(pm));
++
++            FestivalTokens.OnSorcerersArtifact(pm);                 // 2 per artifact
++            Assert.Equal(3, FestivalTokens.Instance.Balance(pm));
++
++            Assert.True(FestivalTokens.OnDailyLogin(pm, new DateTime(2026, 10, 30, 9, 0, 0)));
++            Assert.False(FestivalTokens.OnDailyLogin(pm, new DateTime(2026, 10, 30, 21, 0, 0))); // once a day
++            Assert.True(FestivalTokens.OnDailyLogin(pm, new DateTime(2026, 10, 31, 9, 0, 0)));
++            Assert.Equal(5, FestivalTokens.Instance.Balance(pm));
++            Assert.Equal(5, FestivalTokens.Earned(account.Username));
++
++            var store = Festival();
++            var treats = Row(store, "festival.halloween.treats");
++            Assert.Equal(RewardStoreResult.Bought, RewardStore.Purchase(pm, store, treats));
++            Assert.Equal(5 - treats.Price, FestivalTokens.Instance.Balance(pm));
++            Assert.Equal(5, FestivalTokens.Earned(account.Username)); // the earned count never moves
++            Assert.Equal(treats.Price, FestivalTokens.Spent(account.Username));
++
++            // Cannot afford: refused, nothing taken; cannot go negative.
++            var guillotine = Row(store, "festival.halloween.guillotine");
++            var balance = FestivalTokens.Instance.Balance(pm);
++            Assert.Equal(RewardStoreResult.NotEnough, RewardStore.Purchase(pm, store, guillotine));
++            Assert.Equal(balance, FestivalTokens.Instance.Balance(pm));
++            Assert.False(FestivalTokens.Instance.TrySpend(pm, balance + 1));
++            Assert.False(FestivalTokens.Instance.TrySpend(pm, -1));
++            Assert.Equal(balance, FestivalTokens.Instance.Balance(pm));
++
++            // Out of season the store sells nothing and a stale row buys nothing.
++            FestivalSeasons.Forced = "none";
++            Assert.Empty(store.Rows());
++            Assert.Equal(RewardStoreResult.Unavailable, RewardStore.Purchase(pm, store, treats));
++            Assert.Equal(balance, FestivalTokens.Instance.Balance(pm));
++        }
++        finally
++        {
++            FestivalSeasons.Forced = null;
++            bc.Delete();
++            Cleanup(account);
++        }
++    }
++
++    [Fact]
++    public void EachSeasonSellsItsOwnStockAndTheSeasonsFollowTheSwitches()
++    {
++        try
++        {
++            FestivalSeasons.Forced = null;
++            Assert.Equal(FestivalSeasons.Halloween, FestivalSeasons.At(new DateTime(2026, 10, 31)));
++            Assert.Equal(FestivalSeasons.Winter, FestivalSeasons.At(new DateTime(2026, 12, 25)));
++            Assert.Equal(FestivalSeasons.Spring, FestivalSeasons.At(new DateTime(2027, 4, 1)));
++            Assert.Null(FestivalSeasons.At(new DateTime(2027, 7, 4)));
++
++            foreach (var season in FestivalSeasons.All)
++            {
++                FestivalSeasons.Forced = season;
++                var rows = Festival().Rows();
++                Assert.All(rows, r => Assert.StartsWith($"festival.{season}.", r.Key));
++                Assert.Single(rows, r => r.IsTitle);
++                Assert.Single(rows, r => r.Key.EndsWith(".box"));
++                _out.WriteLine($"{season}: {rows.Count} rows");
++            }
++        }
++        finally
++        {
++            FestivalSeasons.Forced = null;
++        }
++    }
++
++    [Fact]
++    public void TheFestivalStallIsPlacedInSeasonAndRemovedWhenItEnds()
++    {
++        try
++        {
++            FestivalMarket.Down();
++            ClusterFSeasonalState.SetLast(FestivalMarket.StateName, null);
++
++            FestivalSeasons.Forced = "none";
++            Assert.Empty(FestivalMarket.Sync()); // a world first seen out of season is left as it is
++            Assert.False(FestivalMarket.IsUp);
++
++            FestivalSeasons.Forced = FestivalSeasons.Winter;
++            FestivalMarket.Sync();
++            Assert.True(FestivalMarket.IsUp);
++            Assert.Equal(FestivalMarket.Pieces.Length + 1, FestivalMarket.Placed().Count);
++            var peddler = FestivalMarket.Peddler;
++            Assert.NotNull(peddler);
++            Assert.Equal(FestivalMarket.Anchor, peddler.Location);
++            Assert.Empty(FestivalMarket.Sync());           // no change, nothing done
++            FestivalMarket.Up();                          // place twice places once
++            Assert.Equal(FestivalMarket.Pieces.Length + 1, FestivalMarket.Placed().Count);
++
++            var serials = FestivalMarket.Placed().ToList();
++            FestivalSeasons.Forced = "none";
++            FestivalMarket.Sync();
++            Assert.False(FestivalMarket.IsUp);
++            Assert.Empty(FestivalMarket.Placed());
++            Assert.All(serials, s => Assert.True(World.FindEntity(s) is null or { Deleted: true }));
++        }
++        finally
++        {
++            FestivalSeasons.Forced = null;
++            FestivalMarket.Down();
++        }
++    }
++
++    // ---------------------------------------------------------------- spendable AP
++
++    [Fact]
++    public void TheAchievementStoreSpendsApButTheApTotalNeverDrops()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++        try
++        {
++            var data = Data(account);
++            data.AchievementPoints = 500;
++            LeagueTitles.Sync(data);
++            var titles = data.LeagueTitles.Owned.Count;
++            var store = new AchievementStoreDef();
++            Assert.Equal(500, SpendableAp.Instance.Balance(pm));
++
++            var robe = Row(store, "ap.robe");
++            Assert.Equal(RewardStoreResult.Bought, RewardStore.Purchase(pm, store, robe));
++            Assert.Equal(500 - robe.Price, SpendableAp.Instance.Balance(pm));
++            Assert.Equal(500, data.AchievementPoints);                  // the total never drops
++            Assert.Equal(titles, data.LeagueTitles.Owned.Count);       // nor does an AP title go
++            Assert.Equal(1, Count<Robe>(pm));
++            Assert.Equal(robe.Price, SpendableAp.Spent(account.Username));
++
++            // Earning: a new achievement's AP adds to the balance.
++            data.AchievementPoints += 25;
++            Assert.Equal(525 - robe.Price, SpendableAp.Instance.Balance(pm));
++
++            // Cannot afford: refused, nothing taken; cannot go negative.
++            ClusterFAchievementSystem.AddToCounter(account.Username, SpendableAp.SpentCounter, 525 - robe.Price - 10);
++            Assert.Equal(10, SpendableAp.Instance.Balance(pm));
++            var painting = store.Rows().First(r => r.Key.StartsWith("ap.painting."));
++            Assert.Equal(RewardStoreResult.NotEnough, RewardStore.Purchase(pm, store, painting));
++            Assert.Equal(10, SpendableAp.Instance.Balance(pm));
++            Assert.False(SpendableAp.Instance.TrySpend(pm, 11));
++            Assert.False(SpendableAp.Instance.TrySpend(pm, -1));
++            Assert.Equal(10, SpendableAp.Instance.Balance(pm));
++
++            // A row opens by the AP total; a category title needs the category.
++            Assert.Equal(RewardStoreResult.Locked, RewardStore.Check(pm, store, Row(store, "ap.title.completionist")));
++            Assert.Equal(RewardStoreResult.Locked, RewardStore.Check(pm, store, Row(store, "ap.title.curious")));
++
++            // The plaque is engraved with the buyer's name and AP total.
++            Assert.Contains("Tester, 525 AP", AchievementStock.Plaque(pm).Name);
++        }
++        finally
++        {
++            Cleanup(account);
++        }
++    }
++
++    // ---------------------------------------------------------------- Renown (the League shop's new rows)
++
++    [Fact]
++    public void TheLeagueShopsNewRowsSpendRenownAndNeverLifetimeRenown()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++        try
++        {
++            var data = Data(account);
++            data.AchievementPoints = 1_750;
++            data.GrantRenown(3_000, RenownSource.Achievement);
++            var lifetime = data.LifetimeRenown;
++
++            var runebook = LeagueShop.Find("runebook")!;
++            Assert.Equal(LeagueShopResult.Bought, LeagueShop.Purchase(pm, runebook));
++            Assert.Equal(3_000 - runebook.Renown, data.Renown);
++            Assert.Equal(lifetime, data.LifetimeRenown);
++            var book = pm.Backpack.Items.OfType<Runebook>().Single();
++            Assert.Equal(LeagueShop.LeagueHue, book.Hue);
++            Assert.Equal(LootType.Blessed, book.LootType);
++
++            var bag = LeagueShop.Find("bagofsending")!;
++            Assert.Equal(LeagueShopResult.Bought, LeagueShop.Purchase(pm, bag));
++            Assert.Equal(30, pm.Backpack.Items.OfType<BagOfSending>().Single().Charges);
++
++            var champion = LeagueShop.Find("title.champion")!;
++            Assert.Equal(LeagueShopResult.Bought, LeagueShop.Purchase(pm, champion));
++            Assert.Contains(RewardStoreTitles.LeagueChampion, data.LeagueTitles.Owned);
++            Assert.Equal(lifetime, data.LifetimeRenown);
++
++            // The Platinum box: five draws, never a mount and never a row added since F-13.
++            var allowed = LeagueShop.BoxPool(LeagueShop.BoxTier.Platinum).Select(f => f(pm)).ToList();
++            var types = allowed.Select(i => i.GetType()).ToHashSet();
++            allowed.ForEach(i => i.Delete());
++            Assert.DoesNotContain(typeof(NameChangeDeed), types);
++            Assert.DoesNotContain(typeof(PetBondingPotion), types);
++            for (var n = 0; n < 10; n++)
++            {
++                var box = LeagueShop.MakeBox(pm, LeagueShop.BoxTier.Platinum);
++                Assert.Equal(5, box.Contents.Count);
++                Assert.All(box.Contents, i => Assert.Contains(i.GetType(), types));
++                box.Delete();
++            }
++
++            // The Gold box still draws what it drew before: none of the new rows.
++            var gold = LeagueShop.BoxPool(LeagueShop.BoxTier.Gold).Select(f => f(pm)).ToList();
++            Assert.DoesNotContain(gold, i => i is Runebook or BagOfSending or FurnitureDyeTub or NameChangeDeed or RewardDecor);
++            gold.ForEach(i => i.Delete());
++        }
++        finally
++        {
++            Cleanup(account);
++        }
++    }
++
++    // ---------------------------------------------------------------- every row, the guardrails, the price table
++
++    private static IEnumerable<(string Store, RewardStoreRow Row)> EveryStoreRow() =>
++        RewardStorePrices.AllStores().SelectMany(s => s.AllRows().Select(r => (s.Title, r)));
++
++    // Our registered art (registry.csv): the guild hall decor (cc-P265), the community art (cc-P237), F-22's winter art.
++    private static bool IsOurRegisteredArt(int id) =>
++        id is >= GuildHallDecorArt.FirstId and <= GuildHallDecorArt.LastId ||
++        id is >= ClusterFCommunityArtRecords.FirstId and <= ClusterFCommunityArtRecords.LastId ||
++        id is >= 0x3C40 and <= 0x3C6E;
++
++    // Every ID range our art package claims (registry.csv): an ID inside one must be a registered piece.
++    private static bool IsInOurArtRanges(int id) => id is >= 0x3C10 and <= 0x3D0D or >= 0x6D70 and <= 0x6E86 or >= 0x3384 and <= 0x33B6;
++
++    [Fact]
++    public void EveryRowOfEveryStoreCanBeMadeAndNoneIsGearOrMagic()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++        var made = 0;
++        try
++        {
++            Data(account).AchievementPoints = 1_000;
++
++            var rows = EveryStoreRow().Select(x => (x.Store, x.Row.Key, x.Row.Create, x.Row.IsTitle))
++                .Concat(LeagueShop.Stock.Select(r => ("League", r.Key, r.Create, r.IsTitle)))
++                .ToList();
++
++            foreach (var (store, key, create, isTitle) in rows)
++            {
++                if (isTitle)
++                {
++                    continue;
++                }
++
++                Assert.NotNull(create);
++                var items = create!(pm);
++                Assert.NotEmpty(items);
++                var all = items.Concat(items.OfType<Container>().SelectMany(c => c.Items))
++                    .Concat(items.OfType<LootBox>().SelectMany(b => b.Contents)).ToList();
++
++                foreach (var item in all)
++                {
++                    // (Not BasePigmentsOfTokuno.IsValidItem, the League shop's test: it reads the Tokuno config, which a
++                    // filtered run never loads. Gear, jewels, properties and the special scrolls are checked directly.)
++                    Assert.IsNotType<PowerScroll>(item);
++                    Assert.IsNotType<StatCapScroll>(item);
++                    // A plain harvest tool (the hatchets and the prospector's tool: stock tools built on BaseWeapon) is allowed with no properties.
++                    if (item is BaseWeapon weapon && item is Hatchet or Pickaxe or ProspectorsTool)
++                    {
++                        Assert.True(weapon.Attributes.IsEmpty && weapon.WeaponAttributes.IsEmpty && weapon.SkillBonuses.IsEmpty,
++                            $"{store} {key} has properties");
++                    }
++                    else
++                    {
++                        Assert.False(item is BaseWeapon or BaseArmor or BaseJewel, $"{store} {key} hands over gear");
++                    }
++                    if (item is BaseClothing clothing)
++                    {
++                        Assert.True(clothing.Attributes.IsEmpty && clothing.SkillBonuses.IsEmpty, $"{store} {key} has properties");
++                    }
++
++                    if (item is RewardDecor decor && IsInOurArtRanges(decor.ItemID))
++                    {
++                        Assert.True(IsOurRegisteredArt(decor.ItemID), $"{store} {key}: 0x{decor.ItemID:X4} is not registered art");
++                    }
++                }
++
++                made++;
++                foreach (var item in items)
++                {
++                    item.Delete();
++                }
++            }
++
++            _out.WriteLine($"{made} rows made across {RewardStorePrices.AllStores().Count()} stores and the League shop");
++            Assert.True(made > 150);
++        }
++        finally
++        {
++            Cleanup(account);
++        }
++    }
++
++    [Fact]
++    public void RowKeysAreUniqueAndThePriceTableRoundTrips()
++    {
++        var keys = EveryStoreRow().Select(x => x.Row.Key).ToList();
++        Assert.Equal(keys.Count, keys.Distinct().Count());
++
++        // Every guild has a store with its title and cloak.
++        Assert.Equal(18, GuildStores.All().Count());
++        Assert.All(GuildStores.All(), s => Assert.Contains(s.AllRows(), r => r.IsTitle));
++        Assert.All(GuildStores.All(), s => Assert.Contains(s.AllRows(), r => r.Key.EndsWith(".cloak")));
++
++        // The defaults as the file read back as the defaults; a changed price applies; a bad file is refused whole.
++        var errors = new List<string>();
++        var table = RewardStorePrices.Parse(RewardStorePrices.DefaultsJson(), "test", errors);
++        Assert.Empty(errors);
++        Assert.NotNull(table);
++        Assert.Equal(keys.Count, table!.Rows.Count);
++
++        var previous = RewardStorePrices.Current;
++        try
++        {
++            var lines = RewardStorePrices.Apply("{ \"rows\": { \"ap.robe\": { \"price\": 77 } } }", "test");
++            Assert.Contains("Loaded", lines[0]);
++            Assert.Equal(77, new AchievementStoreDef().Find("ap.robe")!.Price);
++            Assert.Equal(500, new AchievementStoreDef().Find("ap.robe")!.OpensAt);
++
++            lines = RewardStorePrices.Apply("{ \"rows\": { \"no.such.row\": { \"price\": 1 }, \"ap.robe\": { \"price\": -1 } } }", "bad");
++            Assert.Contains("REFUSED", lines[0]);
++            Assert.Equal(77, new AchievementStoreDef().Find("ap.robe")!.Price);
++        }
++        finally
++        {
++            RewardStorePrices.Current = previous;
++        }
++    }
++
++    // ---------------------------------------------------------------- where a guild store opens
++
++    [Fact]
++    public void AGuildStoreOpensForAMemberAtTheGuildmasterBySpeechOrCommand()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++        var gm = new TailorGuildmaster();
++        var ns = PacketTestUtilities.CreateTestNetState();
++        try
++        {
++            gm.MoveToWorld(new Point3D(pm.X, pm.Y - 2, pm.Z), Map.Trammel);
++            ns.Account = account;
++            pm.NetState = ns;
++            ns.Mobile = pm;
++            RewardStoreCommands.Configure();
++
++            // Not a member: refused.
++            CommandSystem.Handle(pm, $"{CommandSystem.Prefix}guildstore");
++            Assert.False(pm.HasGump<RewardStoreGump>());
++
++            Join(pm, "tailoring", 0, 10);
++            CommandSystem.Handle(pm, $"{CommandSystem.Prefix}guildstore");
++            Assert.True(pm.HasGump<RewardStoreGump>());
++            pm.CloseGump<RewardStoreGump>();
++
++            // "guild store" said to the guildmaster, through the engine's speech.
++            pm.DoSpeech("guild store", [0x6], MessageType.Regular, 0x3B2);
++            Assert.True(pm.HasGump<RewardStoreGump>());
++            pm.CloseGump<RewardStoreGump>();
++
++            // The Rangers' League guildmaster is its own NPC (not a stock guildmaster): it answers the phrase too.
++            gm.Delete();
++            var outrider = new OutridersGuildmaster();
++            try
++            {
++                outrider.MoveToWorld(new Point3D(pm.X + 2, pm.Y, pm.Z), Map.Trammel);
++                Join(pm, "rangers", 0, 10);
++                pm.DoSpeech("guild store", [0x6], MessageType.Regular, 0x3B2);
++                Assert.Equal("guild.rangers", pm.FindGump<RewardStoreGump>()?.Store.Key);
++            }
++            finally
++            {
++                outrider.Delete();
++            }
++        }
++        finally
++        {
++            pm.NetState = null;
++            ns.Mobile = null;
++            gm.Delete();
++            Cleanup(account);
++        }
++    }
++
++    // ---------------------------------------------------------------- the window and the confirm step
++
++    private static void Press(BaseGump gump, NetState ns, int buttonId) =>
++        gump.OnResponse(ns, new RelayInfo(buttonId, ReadOnlySpan<int>.Empty, ReadOnlySpan<ushort>.Empty,
++            ReadOnlySpan<Range>.Empty, ReadOnlySpan<byte>.Empty));
++
++    [Fact]
++    public void TheWindowGreysALockedRowAndTheConfirmStepBuys()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++        var ns = PacketTestUtilities.CreateTestNetState();
++        try
++        {
++            ns.Account = account;
++            pm.NetState = ns;
++            ns.Mobile = pm;
++
++            var data = Data(account);
++            data.AchievementPoints = 150;
++            var store = new AchievementStoreDef();
++            var gump = new RewardStoreGump(pm, store);
++            var labels = gump.Entries.OfType<GumpLabel>().ToList();
++            var buttons = gump.Entries.OfType<GumpButton>().Select(b => b.ButtonID).ToHashSet();
++
++            // The robe opens at 500 AP total: greyed, "Requires 500 AP total", no buy button.
++            var robe = gump.Rows.ToList().FindIndex(r => r.Key == "ap.robe");
++            Assert.Contains(labels, l => l.Text == "Requires 500 AP total" && l.Hue == RequirementStyle.NotMetHue);
++            Assert.Contains(labels, l => l.Text == gump.Rows[robe].Label && l.Hue == RequirementStyle.DisabledHue);
++            Assert.DoesNotContain(RewardStoreGump.BtnRowBase + robe, buttons);
++
++            // A sash: open, affordable: a buy button; the confirm step buys it for exactly its price.
++            var sash = gump.Rows.ToList().FindIndex(r => r.Key == "ap.sash.gold");
++            Assert.Contains(RewardStoreGump.BtnRowBase + sash, buttons);
++
++            var confirm = new RewardStoreConfirmGump(pm, store, gump.Rows[sash]);
++            Press(confirm, ns, RewardStoreConfirmGump.BtnBuy);
++            Assert.Equal(1, Count<BoundCosmeticSash>(pm));
++            Assert.Equal(150 - gump.Rows[sash].Price, SpendableAp.Instance.Balance(pm));
++
++            // Every store's window draws (a guild store, the Festival store in season).
++            Join(pm, "mining", 0, 100);
++            Assert.NotEmpty(new RewardStoreGump(pm, Guild("mining")).Entries);
++            FestivalSeasons.Forced = FestivalSeasons.Spring;
++            Assert.NotEmpty(new RewardStoreGump(pm, Festival()).Rows);
++        }
++        finally
++        {
++            FestivalSeasons.Forced = null;
++            pm.NetState = null;
++            ns.Mobile = null;
++            Cleanup(account);
++        }
++    }
++}
+diff --git a/server/tests/Services/BulkOrders/BulkOrderGuildPayVerification.cs b/server/tests/Services/BulkOrders/BulkOrderGuildPayVerification.cs
+index 6be8961..edb364b 100644
+--- a/server/tests/Services/BulkOrders/BulkOrderGuildPayVerification.cs
++++ b/server/tests/Services/BulkOrders/BulkOrderGuildPayVerification.cs
+@@ -251,16 +251,22 @@ public class BulkOrderGuildPayVerification
+         _out.WriteLine($"tailor member: {string.Join(" | ", lines)}");
+         Assert.Equal(2, lines.Count);
+         Assert.StartsWith("Worth ", lines[0]);
+-        Assert.Equal($"Tailors' Circle pays you: {q.StockGold:N0} gold to the bank (no guild currency or standing yet)", lines[1]);
++        // cc-P760: and the guild's points, 1 per 50 of the deed's bulk order points.
++        BulkOrderSystem.ComputePoints(deed, out var bodPoints, out _);
++        var guildPoints = Server.Engines.RewardStores.GuildPointEarning.ForBodPoints(bodPoints);
++        Assert.True(guildPoints >= 1);
++        Assert.Equal($"Tailors' Circle pays you: {q.StockGold:N0} gold to the bank and {guildPoints:N0} Tailors' Thimbles", lines[1]);
+         Assert.Equal(72, BulkOrderDeedGumpLines.Height(deed));
+         Assert.Equal(new List<string> { lines[1] }, TooltipLines(deed));
+ 
++        var held = m.Guild.GetCurrency(TailorGuildmaster.GuildKey); // cc-P760
+         var bank = m.BankGold;
+         m.Pm.NextBODTurnInTime = DateTime.MinValue;
+         Assert.True(master.OnDragDrop(m.Pm, deed));
+         _out.WriteLine($"paid: bank +{m.BankGold - bank}");
+         Assert.True(deed.Deleted);
+         Assert.Equal(q.StockGold, m.BankGold - bank);
++        Assert.Equal(held + guildPoints, m.Guild.GetCurrency(TailorGuildmaster.GuildKey)); // cc-P760
+     }
+ 
+     // ---------------------------------------------------------------- 4

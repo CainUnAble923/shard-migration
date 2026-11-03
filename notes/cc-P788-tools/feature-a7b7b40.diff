@@ -1,0 +1,3467 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index bcb1571..ae8b39c 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -29,6 +29,21 @@ Example:
+ - Restoring a Jacob's Pickaxe no longer refuses ingots kept in your bank.
+ -->
+ 
++## 2026.11.02.5
++
++### Added
++- Loot boxes now roll a rarity when you earn them: Common, Rare, Epic or Legendary. Rarer boxes hold more items in bigger stacks, Epic and Legendary boxes add a guaranteed prize for their kind, and each step has a bigger celebration; a Legendary box is announced to the whole shard. Higher-grade boxes are rare more often.
++- Six new kinds of loot box: Fisher's (your first catch of each High Seas fish), Sailor's (your first SOS chest of each level), Herbalist's (each kind of plant you first set to decorative), Society (each new rank in a crafting guild; the Maritime Brotherhood gives Fisher's and Sailor's boxes, the Healers' Covenant Herbalist's), Delver's (a boss's first kill inside a dungeon) and League Dive (every tenth guild work order).
++- Seasonal loot boxes: while Halloween, winter or spring is on, every box you earn holds one extra seasonal treat or decoration and carries the season's name.
++- New loot box prizes: Bags of Holding in five sizes, which hold a set number of items however heavy (after TheArt's Bags of Holding), and a Reagent Bag that holds only reagents and makes them lighter (after Bittiez's Regeant Bag); paintings, trophies, crystal balls and other house decorations; tools, trap training kits, pet treats, dyes, League title deeds and more.
++
++### Changed
++- Everything in a loot box now does something: the placeholder items, loop scroll fragments and epic components are gone from boxes, recipe scrolls come only for crafts you have 50 or more skill in, and a boss box holds a real trophy named for the boss.
++- Loot box grades are now named Plain, Sturdy, Fine, Grand, Exalted and Celestial, and a box's name shows its rarity, grade and kind, as in "Epic Fine Explorer's Box".
++
++### Staff
++- [LootBox give takes an optional rarity and season, [LootBox season says which season's slot boxes earned now get, and [ClusterFSpring shows the new spring window (clusterf.seasonal.spring.start and .end in modernuo.json, 03-20 to 04-20). Every loot box number and item list is in loot-boxes.json.
++
+ ## 2026.11.02.3
+ 
+ ### Staff
+diff --git a/VERSION b/VERSION
+index 446ee7b..7b5bd41 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-2026.11.02.3
++2026.11.02.5
+diff --git a/docker/uo/apply-patches.sh b/docker/uo/apply-patches.sh
+index 8a96a1c..d3dd8f0 100644
+--- a/docker/uo/apply-patches.sh
++++ b/docker/uo/apply-patches.sh
+@@ -1052,6 +1052,14 @@ apply_patch "$PATCHES/PowerScroll-school-gate.patch"
+ # meets MLQuestEntry.cs. Made with diff -u against pinned; pinned by PlaytesterNotesVerification.
+ apply_patch "$PATCHES/MLQuestEntry-quest-milestones.patch"
+ 
++# cc-P763: the loot box sources fishing and gardening have no achievement for. Fishing.cs tells ClusterFLootBoxes of
++# each catch (SendSuccessTo: a High Seas fish's first catch of its kind is a Fisher box) and of each SOS chest raised
++# (Construct, before the SOS is deleted: its level's first recovery is a Sailor box); SetToDecorativeGump.cs of a plant
++# set to decorative (its type's first is a Herbalist box). Made against the tree every Fishing patch above leaves.
++# Notes: shard-migration/notes/cc-P763-cont-loot-boxes-diversified.md; pinned by LootBoxDiversityVerification.
++apply_patch "$PATCHES/Fishing-loot-box-firsts.patch"
++apply_patch "$PATCHES/SetToDecorativeGump-loot-box-herbalist.patch"
++
+ # A .patch file that no apply_patch line above names would be dead weight applied to
+ # nothing, with no way to tell from the build log. Account for every file explicitly.
+ echo "[patches] Checking every patch file is accounted for..."
+diff --git a/server/customizations/ClusterFGuildPromotion.cs b/server/customizations/ClusterFGuildPromotion.cs
+index 56561ba..2d04e55 100644
+--- a/server/customizations/ClusterFGuildPromotion.cs
++++ b/server/customizations/ClusterFGuildPromotion.cs
+@@ -48,6 +48,9 @@ public static class ClusterFGuildPromotion
+                 Update(pm, key);
+             }
+         }
++
++        // cc-P763: a box for each new rank of a guild the loot table names (the first check records the ranks held).
++        Server.LootBoxes.ClusterFLootBoxes.CheckGuildRanks(pm);
+     }
+ 
+     public static bool IsTracked(CharacterGuildData data, string key) => data.RankCap.ContainsKey(key);
+@@ -166,6 +169,7 @@ public static class ClusterFGuildPromotion
+             said.AddRange(Grant(pm, key, r));
+         }
+ 
++        Server.LootBoxes.ClusterFLootBoxes.CheckGuildRanks(pm); // cc-P763: the promotion's Society box
+         return said;
+     }
+ 
+diff --git a/server/customizations/ClusterFSeasonalSwitch.cs b/server/customizations/ClusterFSeasonalSwitch.cs
+index d334dfe..54c2800 100644
+--- a/server/customizations/ClusterFSeasonalSwitch.cs
++++ b/server/customizations/ClusterFSeasonalSwitch.cs
+@@ -28,6 +28,7 @@ using System;
+ using System.Collections.Generic;
+ using System.Globalization;
+ using System.IO;
++using Server.Commands;
+ 
+ namespace Server
+ {
+@@ -233,6 +234,37 @@ namespace Server
+         }
+     }
+ 
++    /// <summary>
++    /// cc-P763: the spring season, for the loot boxes' spring slot (ClusterFLootBoxes.ActiveSeason). It has no decor, so
++    /// its up and down place and take away nothing; the switch keeps its window, clusterf.seasonal.spring.start and .end
++    /// in modernuo.json (default 03-20 to 04-20), like the Halloween and winter windows.
++    /// </summary>
++    public static class ClusterFSpringSeason
++    {
++        public const string SeasonName = "spring";
++        public const string Label = "SpringSeason";
++        public const string DefaultStart = "03-20";
++        public const string DefaultEnd = "04-20";
++
++        public static readonly ClusterFSeasonalSwitch Season =
++            new(SeasonName, Label, DefaultStart, DefaultEnd, _ => new List<string>(), _ => new List<string>());
++
++        public static void Configure()
++        {
++            Season.Configure();
++            CommandSystem.Register("ClusterFSpring", AccessLevel.Administrator, OnCommand);
++        }
++
++        [Usage("ClusterFSpring")]
++        [Description("The spring season (cc-P763, the loot boxes' spring slot): whether it is on, its dates and the automatic check.")]
++        [ShardCommand(CommandCategory.Diagnostic, Shard = CommandShard.Any, Summary = "Says whether the spring season (the loot boxes' spring slot) is on, its dates and the automatic check. Changes nothing.")]
++        private static void OnCommand(CommandEventArgs e)
++        {
++            var today = Season.Clock();
++            e.Mobile.SendMessage($"Spring: {Season.SeasonText(today)}. {Season.AutomaticText()}");
++        }
++    }
++
+     /// <summary>
+     /// The saved state of every seasonal switch (cc-P267): per season name, the state the automatic check last brought
+     /// the world to, and the serials of the items the decor placed. Saved through pinned's GenericPersistence
+diff --git a/server/customizations/GuildContractLedgerGump.cs b/server/customizations/GuildContractLedgerGump.cs
+index 6edc156..4a5d431 100644
+--- a/server/customizations/GuildContractLedgerGump.cs
++++ b/server/customizations/GuildContractLedgerGump.cs
+@@ -618,6 +618,7 @@ public class GuildContractLedgerGump : GuildStyledGump
+ 
+         pm.SendMessage(0x44, $"Work order complete: {def.Title}. {string.Join(", ", reward)}.");
+         pm.PlaySound(0x57);
++        Server.LootBoxes.ClusterFLootBoxes.OnWorkOrderCompleted(pm); // cc-P763: League Dive boxes, and a promotion's box
+         return true;
+     }
+ }
+diff --git a/server/customizations/LootBoxes/ClusterFFanfare.cs b/server/customizations/LootBoxes/ClusterFFanfare.cs
+index e56a36f..1fe0b75 100644
+--- a/server/customizations/LootBoxes/ClusterFFanfare.cs
++++ b/server/customizations/LootBoxes/ClusterFFanfare.cs
+@@ -53,6 +53,7 @@ public static class ClusterFFanfare
+     {
+         public FanfareLevel Level;
+         public int Tier;
++        public int? Hue; // cc-P763: a box's rarity colour, over the grade's
+         public readonly List<string> Lines = new();
+         public readonly List<string> Broadcasts = new();
+         public readonly List<string> VoiceKeys = new();
+@@ -89,7 +90,7 @@ public static class ClusterFFanfare
+     /// with any other queued for this player in the window.
+     /// </summary>
+     public static void Play(PlayerMobile pm, FanfareLevel level, string pool, FanfareVars? vars = null, int tier = 1,
+-        string? line = null, string? voiceKey = null)
++        string? line = null, string? voiceKey = null, int? hue = null)
+     {
+         if (pm.Deleted)
+         {
+@@ -106,6 +107,10 @@ public static class ClusterFFanfare
+ 
+         p.Level = (FanfareLevel)Math.Max((int)p.Level, (int)level);
+         p.Tier = Math.Max(p.Tier, tier);
++        if (hue != null)
++        {
++            p.Hue = hue;
++        }
+ 
+         if (text.Length > 0)
+         {
+@@ -148,7 +153,7 @@ public static class ClusterFFanfare
+         var muted = IsMuted(pm);
+         var lines = new List<string>(p.Lines);
+         lines.AddRange(p.Broadcasts);
+-        var hue = TierHue(p.Tier);
++        var hue = p.Hue ?? TierHue(p.Tier);
+ 
+         // The chat lines always arrive (System voice).
+         foreach (var l in lines)
+@@ -196,8 +201,8 @@ public static class ClusterFFanfare
+         return played;
+     }
+ 
+-    // The rarity colors by tier (LootTable.Rarity), so a tier 6 fanfare is Celestial.
+-    public static int TierHue(int tier) => LootTable.HueOf(LootTable.Current.Rarity[Math.Clamp(tier, 1, 6) - 1]);
++    // The grade colours (LootTable.Grades, named Common to Celestial before cc-P763), so a grade 6 fanfare is Celestial.
++    public static int TierHue(int tier) => LootTable.HueOf(LootTable.Current.Grades[Math.Clamp(tier, 1, 6) - 1]);
+ 
+     private static void PlayEffects(PlayerMobile pm, FanfareLevel level, int hue)
+     {
+diff --git a/server/customizations/LootBoxes/ClusterFLootBoxCounters.cs b/server/customizations/LootBoxes/ClusterFLootBoxCounters.cs
+new file mode 100644
+index 0000000..82087f2
+--- /dev/null
++++ b/server/customizations/LootBoxes/ClusterFLootBoxCounters.cs
+@@ -0,0 +1,10 @@
++// cc-P763: the loot boxes' per-account counters (the League Dive's work orders), kept with the achievement counters so
++// they are saved with them.
++
++namespace Server;
++
++public static partial class ClusterFAchievementSystem
++{
++    /// <summary>Adds one to a loot box counter of the account and returns the new count.</summary>
++    public static int BumpLootBoxCounter(string username, string counter) => Increment(username, counter);
++}
+diff --git a/server/customizations/LootBoxes/ClusterFLootBoxes.cs b/server/customizations/LootBoxes/ClusterFLootBoxes.cs
+index 2c0af4a..26d4ef6 100644
+--- a/server/customizations/LootBoxes/ClusterFLootBoxes.cs
++++ b/server/customizations/LootBoxes/ClusterFLootBoxes.cs
+@@ -1,15 +1,24 @@
+ // cc-P79 (F-40, F-41): loot box awards, their sources, and the hooks for sources that do not exist yet. Notes:
+ // shard-migration notes/cc-P79-loot-boxes-fanfare.md (and the Step 0 survey, notes/loot-boxes-fanfare-survey.md).
++// cc-P763: the rarity roll and the season at the earn, and the new sources (notes/cc-P763-cont-loot-boxes-diversified.md).
+ //
+ // A box is awarded the first time a character earns a source on a loop; a source earned again on a later loop gives no
+ // box, a repeat line with the count instead. Records are per character (CharacterLootRecord, ClusterFAccountData v18):
+ // source key to the loops it was earned on. Source keys:
+ //   ach:<achievement key>   achievements (ClusterFAchievementSystem.TryGrant: the account's first earn; see below)
+-//   boss:<type name>        each boss's first kill (CreatureDeathEvent; "boss" = ClusterFRareSelfRepair.IsHighEndSource
++//   boss:<type name>        each boss's first kill (CreatureDeletedEvent; "boss" = ClusterFRareSelfRepair.IsHighEndSource
+ //                           without paragons), for every player with looting rights
++//   delve:<region>:<type>   cc-P763: a boss's first kill inside a dungeon region (DungeonRegion): a Delver's box
+ //   league:<rank>           each League rank reached (ClusterFLeagueRanks.TryPromote)
+ //   clear:<dungeon>         each dungeon or floor's first clear (OnDungeonCleared: a hook, no clear tracking exists)
+ //   loop:<n>                each loop completed (tutorial graduation records loop 1, P371)
++// cc-P763, once per character ever (a later loop gives nothing again, not even the repeat line):
++//   fish:<type name>        a High Seas fish's first catch of its kind (the Fishing patch, SendSuccessTo): Fisher
++//   sos:<level>             an SOS chest's first recovery at its level (the Fishing patch, Construct): Sailor
++//   plant:<plant type>      a plant type first set to decorative (the SetToDecorativeGump patch): Herbalist
++//   guild:<key>:<rank>      each new rank in a guild of LootTable.GuildTheme (Society, Fisher/Sailor, Herbalist); ranks
++//                           a character already held when this was first checked are recorded without a box
++//   dive:<n>                every LootTable.LeagueDiveEvery-th guild work order finished (per account): League Dive
+ //
+ // Achievements are stored per ACCOUNT by the achievement system (ClusterFAchievements.cs:267-269), so TryGrant fires once
+ // per account. The box goes to the account's online character, the one the earn popup goes to. A second character on the
+@@ -25,8 +34,11 @@ using System.Collections.Generic;
+ using ModernUO.CodeGeneratedEvents;
+ using Server.Accounting;
+ using Server.Commands;
++using Server.Engines.Craft;
++using Server.Engines.Plants;
+ using Server.Items;
+ using Server.Mobiles;
++using Server.Regions;
+ 
+ namespace Server.LootBoxes;
+ 
+@@ -69,6 +81,47 @@ public static class ClusterFLootBoxes
+     public static CharacterLootRecord? RecordOf(PlayerMobile pm) =>
+         pm.Account is IAccount acct ? ClusterFAccountPersistence.GetOrCreate(acct).GetOrCreateLootRecord(pm.Serial) : null;
+ 
++    // -- cc-P763: the rarity roll and the season --
++
++    /// <summary>The rarity of a box earned at a grade: LootTable.RarityOdds. Tests replace it.</summary>
++    public static Func<int, BoxRarity> RarityRoll { get; set; } =
++        grade => LootTable.Current.RarityForRoll(grade, Utility.RandomDouble() * 100);
++
++    /// <summary>The shard's local date the seasons are read on (as ClusterFSeasonalSwitch reads it). Tests replace it.</summary>
++    public static Func<DateTime> SeasonClock { get; set; } = () => Core.Now.ToLocalTime();
++
++    /// <summary>A season's switch by its name in LootTable.Seasons (touching the decor classes makes their switches).</summary>
++    public static ClusterFSeasonalSwitch? SeasonSwitch(string name) => name.ToLowerInvariant() switch
++    {
++        ClusterFHalloweenDecor.SeasonName => ClusterFHalloweenDecor.Season,
++        ClusterFWinterDecor.SeasonName => ClusterFWinterDecor.Season,
++        ClusterFSpringSeason.SeasonName => ClusterFSpringSeason.Season,
++        _ => ClusterFSeasonalSwitch.All.GetValueOrDefault(name)
++    };
++
++    /// <summary>The season on now whose pool a box earned now draws from (the first in the table), or null.</summary>
++    public static string? ActiveSeason()
++    {
++        var today = SeasonClock();
++        foreach (var name in LootTable.Current.Seasons.Keys)
++        {
++            if (SeasonSwitch(name) is { } sw && sw.IsInSeason(today))
++            {
++                return name;
++            }
++        }
++
++        return null;
++    }
++
++    /// <summary>A box's fanfare: Major from grade 4 (as before cc-P763), and at least its rarity's.</summary>
++    public static FanfareLevel LevelFor(int tier, BoxRarity rarity)
++    {
++        var byGrade = tier >= 4 ? FanfareLevel.Major : FanfareLevel.Minor;
++        var byRarity = LootTable.Current.RarityOf(rarity).Level;
++        return (FanfareLevel)Math.Max((int)byGrade, (int)byRarity);
++    }
++
+     // -- The award --
+ 
+     public enum AwardResult
+@@ -84,7 +137,7 @@ public static class ClusterFLootBoxes
+     /// line with the count. The same loop again: nothing.
+     /// </summary>
+     public static AwardResult Award(PlayerMobile pm, string source, BoxTheme theme, int tier, SkillName? skill, string label,
+-        out LootBox? box)
++        out LootBox? box, BoxRarity? rarity = null, string? sourceName = null)
+     {
+         box = null;
+         var record = RecordOf(pm);
+@@ -107,21 +160,63 @@ public static class ClusterFLootBoxes
+             return AwardResult.Repeat;
+         }
+ 
+-        box = MakeBox(pm, theme, tier, skill, label, null);
++        box = MakeBox(pm, theme, tier, skill, label, sourceName, rarity);
+         ClusterFGuildPromotion.Deliver(pm, box);
+         ClusterFImbueEffects.OnLootBoxEarned(pm, source); // cc-P82: the Fortune's Favor achievements
+-        var level = tier >= 4 ? FanfareLevel.Major : FanfareLevel.Minor;
+-        ClusterFFanfare.Play(pm, level, FanfareLines.BoxAwarded, new FanfareVars(Tier: box.BoxName), tier,
+-            voiceKey: $"box:{box.BoxName}");
++        PlayAwardFanfare(pm, box, tier);
+         pm.SendMessage(0x44, $"System: You have received a {box.DefaultName}!");
+         return AwardResult.Box;
+     }
+ 
+-    /// <summary>A box rolled for this character now (contents fixed at this moment).</summary>
+-    public static LootBox MakeBox(PlayerMobile pm, BoxTheme theme, int tier, SkillName? skill, string label, string? sourceName)
++    /// <summary>cc-P763: a source that gives a box once per character ever: on a later loop it records nothing and says nothing.</summary>
++    public static AwardResult AwardOnce(PlayerMobile pm, string source, BoxTheme theme, int tier, SkillName? skill, string label,
++        out LootBox? box)
++    {
++        box = null;
++        var record = RecordOf(pm);
++        if (record == null)
++        {
++            return AwardResult.NoRecord;
++        }
++
++        return record.CountOf(source) > 0
++            ? AwardResult.AlreadyThisLoop
++            : Award(pm, source, theme, tier, skill, label, out box);
++    }
++
++    // cc-P763: the award's fanfare by grade and rarity. Rare and up say the rare line in the rarity's colour; a Legendary
++    // box's capstone tells the shard in a plain line (the box lines are spoken to the player, not about them).
++    private static void PlayAwardFanfare(PlayerMobile pm, LootBox box, int tier)
+     {
+-        var rolled = LootBoxRoller.Roll(pm, theme, tier, skill, sourceName ?? label);
+-        var box = new LootBox(theme, tier, pm.Account?.Username ?? "", label);
++        var step = LootTable.Current.RarityOf(box.Rarity);
++        var level = LevelFor(tier, box.Rarity);
++        int? hue = box.Rarity > BoxRarity.Common ? step.Hue : null;
++        var personal = level == FanfareLevel.Capstone ? FanfareLevel.Major : level;
++
++        ClusterFFanfare.Play(pm, personal, FanfareLines.BoxAwarded, new FanfareVars(Tier: box.BoxName), tier,
++            voiceKey: $"box:{box.BoxName}", hue: hue);
++        if (step.RareLine)
++        {
++            ClusterFFanfare.Play(pm, personal, FanfareLines.BoxRare, tier: tier, hue: hue);
++        }
++
++        if (level == FanfareLevel.Capstone)
++        {
++            ClusterFFanfare.Play(pm, FanfareLevel.Capstone, "", tier: tier, line: $"{pm.Name} has earned a {box.DefaultName}.", hue: hue);
++        }
++    }
++
++    /// <summary>
++    /// A box rolled for this character now (contents fixed at this moment). cc-P763: the rarity is rolled here (or given),
++    /// and the season on now adds its slot.
++    /// </summary>
++    public static LootBox MakeBox(PlayerMobile pm, BoxTheme theme, int tier, SkillName? skill, string label, string? sourceName,
++        BoxRarity? rarity = null)
++    {
++        tier = Math.Clamp(tier, 1, 6);
++        var r = rarity ?? RarityRoll(tier);
++        var rolled = LootBoxRoller.Roll(pm, theme, tier, skill, sourceName ?? label, r, ActiveSeason());
++        var box = new LootBox(theme, tier, pm.Account?.Username ?? "", label) { Rarity = r };
+         box.Fill(rolled.BoxName, rolled.Hue, rolled.Gold, rolled.Renown, rolled.Items);
+         return box;
+     }
+@@ -147,13 +242,15 @@ public static class ClusterFLootBoxes
+ 
+         var table = LootTable.Current;
+ 
+-        // cc-P263: an achievement whose Noted reward names a joke item earns a Dented Box (its tier, the joke item inside).
++        // cc-P263: an achievement whose Noted reward names a joke item earns a Dented Box (its grade, the joke item inside).
+         var noted = NotedRewards.For(def.Key) is { JokeItem: not null } r ? r : null;
+         var tier = noted?.BoxTier ?? table.TierForAchievement(def.Key, def.AP);
+         var level = tier >= 4 ? FanfareLevel.Major : FanfareLevel.Minor;
+         ClusterFFanfare.Play(pm, level, level == FanfareLevel.Major ? FanfareLines.MajorAchievement : FanfareLines.MinorAchievement,
+             tier: tier, voiceKey: "achievement");
+-        Award(pm, $"ach:{def.Key}", table.ThemeForCategory(def.Category.ToString()), tier, def.Trigger.OnSkill, def.Title, out var box);
++        // cc-P763: the per-key theme first (LootTable.AchievementTheme), then the category's.
++        Award(pm, $"ach:{def.Key}", table.ThemeForAchievement(def.Key, def.Category.ToString()), tier, def.Trigger.OnSkill,
++            def.Title, out var box);
+         if (noted != null && box != null)
+         {
+             ClusterFNotedBySystem.Dent(box, pm, noted);
+@@ -191,20 +288,30 @@ public static class ClusterFLootBoxes
+             killers.Add(last);
+         }
+ 
++        var dungeon = DungeonOf(bc);
+         foreach (var pm in killers)
+         {
+-            OnBossKilled(pm, bc.GetType(), bc.Name ?? bc.GetType().Name);
++            OnBossKilled(pm, bc.GetType(), bc.Name ?? bc.GetType().Name, dungeon);
+         }
+     }
+ 
+-    public static AwardResult OnBossKilled(PlayerMobile pm, Type bossType, string bossName)
++    /// <summary>cc-P763: the dungeon region a creature stands in (its name), or null outside every dungeon.</summary>
++    public static string? DungeonOf(Mobile m) => m.Region?.GetRegion<DungeonRegion>() is { } d ? d.Name ?? "a dungeon" : null;
++
++    public static AwardResult OnBossKilled(PlayerMobile pm, Type bossType, string bossName, string? dungeon = null)
+     {
+-        var result = Award(pm, $"boss:{bossType.Name}", BoxTheme.Boss, LootTable.Current.TierForBoss(bossType), null,
+-            $"slaying {bossName}", out _);
++        var grade = LootTable.Current.TierForBoss(bossType);
++        // cc-P763: the boss's own name for its trophy ("Trophy of a balron"), not the label ("slaying a balron").
++        var result = Award(pm, $"boss:{bossType.Name}", BoxTheme.Boss, grade, null, $"slaying {bossName}", out _, sourceName: bossName);
+         if (result == AwardResult.Box)
+         {
+-            ClusterFFanfare.Play(pm, FanfareLevel.Major, "", tier: LootTable.Current.TierForBoss(bossType),
+-                line: $"{pm.Name} has slain {bossName} for the first time.");
++            ClusterFFanfare.Play(pm, FanfareLevel.Major, "", tier: grade, line: $"{pm.Name} has slain {bossName} for the first time.");
++        }
++
++        // cc-P763: the dungeon dive. Each dungeon's boss, first killed inside it, is a Delver's box.
++        if (dungeon != null)
++        {
++            AwardOnce(pm, $"delve:{dungeon}:{bossType.Name}", BoxTheme.Delver, grade, null, $"{bossName} in {dungeon}", out _);
+         }
+ 
+         return result;
+@@ -214,6 +321,127 @@ public static class ClusterFLootBoxes
+     public static AwardResult OnLeagueRank(PlayerMobile pm, int rank, string rankName) =>
+         Award(pm, $"league:{rank}", BoxTheme.League, LootTable.Current.TierForLeagueRank(rank), null, $"League rank {rankName}", out _);
+ 
++    // -- cc-P763: the sources fishing, sailing and gardening have --
++
++    /// <summary>The Fishing patch (SendSuccessTo), every catch: a High Seas fish's first of its kind is a Fisher's box.</summary>
++    public static void OnFished(Mobile from, Item item)
++    {
++        if (from is not PlayerMobile pm || item is not BaseHighseasFish)
++        {
++            return;
++        }
++
++        var type = item.GetType();
++        var grade = FishInfo.IsRareFish(type) ? LootTable.Current.RareFishGrade : LootTable.Current.FishGrade;
++        AwardOnce(pm, $"fish:{type.Name}", BoxTheme.Fisher, grade, SkillName.Fishing, $"your first {LootBoxRoller.Describe(item)}", out _);
++    }
++
++    /// <summary>The Fishing patch (Construct), an SOS chest raised: its level's first is a Sailor's box.</summary>
++    public static void OnSosRecovered(Mobile from, int level)
++    {
++        if (from is not PlayerMobile pm)
++        {
++            return;
++        }
++
++        level = Math.Clamp(level, 1, 4);
++        AwardOnce(pm, $"sos:{level}", BoxTheme.Sailor, LootTable.Current.SosGrade[level - 1], null,
++            $"your first level {level} SOS chest", out _);
++    }
++
++    /// <summary>The SetToDecorativeGump patch: a plant type first set to decorative is a Herbalist's box.</summary>
++    public static void OnPlantDecorative(Mobile from, PlantItem plant)
++    {
++        if (from is not PlayerMobile pm)
++        {
++            return;
++        }
++
++        AwardOnce(pm, $"plant:{plant.PlantType}", BoxTheme.Herbalist, LootTable.Current.PlantGrade, null,
++            $"your first decorative {plant.PlantType}", out _);
++    }
++
++    public const string GuildSeededKey = "guild:seeded";
++
++    /// <summary>
++    /// Each new rank in a guild LootTable.GuildTheme names is a box of its theme, grade = rank. Checked at login, at each
++    /// craft guild promotion (ClusterFGuildPromotion.Update) and after each work order. The first check records the ranks
++    /// already held, without boxes: a box is for a promotion from now on. Returns how many boxes it gave.
++    /// </summary>
++    public static int CheckGuildRanks(PlayerMobile pm)
++    {
++        var record = RecordOf(pm);
++        var data = ClusterFAccountPersistence.GetGuild(pm);
++        if (record == null || data == null)
++        {
++            return 0;
++        }
++
++        var table = LootTable.Current;
++        var loop = CurrentLoop(pm);
++        var seeding = record.CountOf(GuildSeededKey) == 0;
++        var given = 0;
++
++        foreach (var key in new List<string>(data.JoinedGuilds))
++        {
++            var rank = ClusterFGuildSystem.GuildRankIndex(key, data);
++            for (var r = 1; r <= Math.Min(rank, ClusterFGuildSystem.RankTop); r++)
++            {
++                if (table.ThemeForGuildRank(key, r) is not { } theme)
++                {
++                    break;
++                }
++
++                var source = $"guild:{key}:{r}";
++                if (seeding)
++                {
++                    record.Record(source, loop);
++                    continue;
++                }
++
++                var skills = RecipeOwners.SkillsOf(key);
++                SkillName? skill = skills.Count > 0 ? skills[0] : null;
++                var name = ClusterFGuildSystem.GetDef(key)?.Name ?? key;
++                if (AwardOnce(pm, source, theme, Math.Clamp(r, 1, 6), skill,
++                        $"{ClusterFGuildPromotion.RankNameForIndex(key, r)} of the {name}", out _) == AwardResult.Box)
++                {
++                    given++;
++                }
++            }
++        }
++
++        if (seeding)
++        {
++            record.Record(GuildSeededKey, loop);
++        }
++
++        return given;
++    }
++
++    public const string WorkOrderCounter = "lootbox.workOrders";
++
++    /// <summary>A guild work order finished (GuildContractLedgerGump): every LeagueDiveEvery-th is a League Dive box.</summary>
++    public static AwardResult? OnWorkOrderCompleted(PlayerMobile pm)
++    {
++        CheckGuildRanks(pm);
++
++        if (pm.Account is not IAccount acct)
++        {
++            return null;
++        }
++
++        var n = ClusterFAchievementSystem.BumpLootBoxCounter(acct.Username, WorkOrderCounter);
++        var every = Math.Max(1, LootTable.Current.LeagueDiveEvery);
++        if (n % every != 0)
++        {
++            return null;
++        }
++
++        var rank = ClusterFLeagueRanks.GetRank(pm);
++        var grade = rank > 0 ? LootTable.Current.TierForLeagueRank(rank) : 1;
++        return AwardOnce(pm, $"dive:{n / every}", BoxTheme.LeagueDive, grade, null, $"{n} work orders finished", out _);
++    }
++
+     // -- Hooks for sources that do not exist yet --
+ 
+     /// <summary>F-12 hook: a level-up. Minor fanfare from the level-up pool.</summary>
+@@ -227,9 +455,9 @@ public static class ClusterFLootBoxes
+         return Award(pm, $"loop:{loop}", BoxTheme.Loop, LootTable.Current.LoopTier, null, $"completing loop {loop}", out _);
+     }
+ 
+-    /// <summary>Hook: a dungeon or floor's first clear (no clear tracking exists). An Explorer's box.</summary>
++    /// <summary>Hook: a dungeon or floor's first clear (no clear tracking exists). cc-P763: a Delver's box (it was an Explorer's).</summary>
+     public static AwardResult OnDungeonCleared(PlayerMobile pm, string dungeonKey) =>
+-        Award(pm, $"clear:{dungeonKey}", BoxTheme.Explorer, LootTable.Current.DungeonClearTier, null, $"clearing {dungeonKey}", out _);
++        Award(pm, $"clear:{dungeonKey}", BoxTheme.Delver, LootTable.Current.DungeonClearTier, null, $"clearing {dungeonKey}", out _);
+ 
+     /// <summary>Hook: a League trial chapter completed (trials are waived and nothing completes them yet). Shard-wide.</summary>
+     public static void OnTrialChapter(PlayerMobile pm, int chapter) =>
+@@ -240,7 +468,10 @@ public static class ClusterFLootBoxes
+     public static void OnReached200(PlayerMobile pm) =>
+         ClusterFFanfare.Play(pm, FanfareLevel.Capstone, FanfareLines.Reached200, tier: 6, voiceKey: "reached200");
+ 
+-    /// <summary>F-12 hook: five fragments make one loop scroll. No loop scroll item exists, so nothing is made yet.</summary>
++    /// <summary>
++    /// F-12 hook: five fragments make one loop scroll. No loop scroll item exists, so nothing is made yet. cc-P763: boxes
++    /// no longer give fragments; saved ones and the monster-stealing ones still answer this.
++    /// </summary>
+     public static void CombineLoopScroll(Mobile from, LoopScrollFragment fragments) =>
+         from.SendMessage("System: The fragments hum, but the loop scroll they would make does not exist yet. Keep them.");
+ 
+@@ -296,8 +527,8 @@ public static class ClusterFLootBoxes
+ 
+     // -- Staff commands --
+ 
+-    [Usage("LootBox <give <theme> <tier> | reload | cleanup>")]
+-    [Description("give: rolls a box of a theme (Miner, Woodsman, Artisan, Hunter, Explorer, Tamer, Scholar, Boss, Loop, League) and tier (1-6) for you. reload: reads Configuration/loot-boxes.json and fanfare-lines.json again (a bad file is refused whole). cleanup: removes boxes opened and abandoned.")]
++    [Usage("LootBox <give <theme> <grade> [rarity] [season] | season | reload | cleanup>")]
++    [Description("give: rolls a box of a theme (Miner, Woodsman, Artisan, Hunter, Explorer, Tamer, Scholar, Boss, Loop, League, Fisher, Sailor, Herbalist, Society, Delver, LeagueDive), grade (1-6), and optionally rarity (Common, Rare, Epic, Legendary; else rolled) and season (halloween, winter, spring, none; else today's) for you. season: which season's slot boxes earned now get. reload: reads Configuration/loot-boxes.json and fanfare-lines.json again (a bad file is refused whole). cleanup: removes boxes opened and abandoned.")]
+     [ShardCommand(CommandCategory.Grant, Shard = CommandShard.TestOnly)]
+     private static void OnLootBoxCommand(CommandEventArgs e)
+     {
+@@ -323,14 +554,37 @@ public static class ClusterFLootBoxes
+             return;
+         }
+ 
++        if (verb == "season")
++        {
++            var on = ActiveSeason();
++            e.Mobile.SendMessage(on == null ? "No season is on: boxes earned now get no season slot." : $"The {on} season is on: boxes earned now get its slot.");
++            return;
++        }
++
+         if (verb != "give" || e.Length < 3 || !Enum.TryParse<BoxTheme>(e.GetString(1), true, out var theme) ||
+             e.Mobile is not PlayerMobile pm)
+         {
+-            e.Mobile.SendMessage("Usage: [LootBox <give <theme> <tier> | reload | cleanup>");
++            e.Mobile.SendMessage("Usage: [LootBox <give <theme> <grade> [rarity] [season] | season | reload | cleanup>");
+             return;
+         }
+ 
+-        var box = MakeBox(pm, theme, Math.Clamp(e.GetInt32(2), 1, 6), null, "a staff test", null);
++        BoxRarity? rarity = e.Length > 3 && Enum.TryParse<BoxRarity>(e.GetString(3), true, out var named) ? named : null;
++        var grade = Math.Clamp(e.GetInt32(2), 1, 6);
++        LootBox box;
++        if (e.Length > 4)
++        {
++            var season = e.GetString(4);
++            var r = rarity ?? RarityRoll(grade);
++            var rolled = LootBoxRoller.Roll(pm, theme, grade, null, "a staff test", r,
++                season.Equals("none", StringComparison.OrdinalIgnoreCase) ? null : season);
++            box = new LootBox(theme, grade, pm.Account?.Username ?? "", "a staff test") { Rarity = r };
++            box.Fill(rolled.BoxName, rolled.Hue, rolled.Gold, rolled.Renown, rolled.Items);
++        }
++        else
++        {
++            box = MakeBox(pm, theme, grade, null, "a staff test", null, rarity);
++        }
++
+         ClusterFGuildPromotion.Deliver(pm, box);
+     }
+ 
+diff --git a/server/customizations/LootBoxes/ClusterFLootTable.cs b/server/customizations/LootBoxes/ClusterFLootTable.cs
+index 83c8383..1391f4e 100644
+--- a/server/customizations/LootBoxes/ClusterFLootTable.cs
++++ b/server/customizations/LootBoxes/ClusterFLootTable.cs
+@@ -1,9 +1,17 @@
+ // cc-P79 (F-40): the loot box numbers, in one table Chase can tune. Notes: shard-migration notes/cc-P79-loot-boxes-fanfare.md.
++// cc-P763 (P759's approved plan, shard-migration notes/cc-P759-loot-plan.md): the contents are data too. Every general
++// pool, every theme's slot and its Epic and Legendary lists, and every season's pool is a list of entries here; the
++// rarity roll (Common, Rare, Epic, Legendary) has its odds by grade and its bonuses here; the six tiers are named as
++// grades (Plain to Celestial), so the rarity words mean only the rarity roll.
+ //
+ // Loaded from Configuration/loot-boxes.json the way cc-P48's League ladder is: a missing file is written with the
+ // built-in defaults below; a file that fails a check is refused whole and the table in force is kept; [LootBox reload
+-// reads it again. The test host runs no Configure and uses the defaults. Every number here is a placeholder for
+-// playtesting (F-40, "numbers unchanged").
++// reads it again. The test host runs no Configure and uses the defaults. A field the file leaves out keeps its default,
++// and so does a pool row, theme or season it leaves out (a file written before cc-P763 still loads).
++//
++// An entry's Item is a type name (any constructible item, made with no arguments) or a special the roller makes in
++// code, starting with @ (LootBoxRoller.Specials lists them: the ore for the opener's Mining, a runic tool, a bag of
++// holding, a piece of registered art). Every entry is checked when the file loads: an unknown type or special refuses it.
+ 
+ #nullable enable
+ 
+@@ -11,10 +19,12 @@ using System;
+ using System.Collections.Generic;
+ using System.IO;
+ using System.Text.Json;
++using System.Text.Json.Serialization;
+ using Server.Items;
+ 
+ namespace Server.LootBoxes;
+ 
++// Appended only: a saved box stores its theme by number.
+ public enum BoxTheme
+ {
+     Miner,
+@@ -26,7 +36,13 @@ public enum BoxTheme
+     Scholar,
+     Boss,
+     Loop,
+-    League
++    League,
++    Fisher,     // cc-P763
++    Sailor,
++    Herbalist,
++    Society,
++    Delver,
++    LeagueDive
+ }
+ 
+ public enum BoxPool
+@@ -36,12 +52,88 @@ public enum BoxPool
+     MagicGear,
+     Recipes,
+     Cosmetics,
+-    Rare
++    Rare,
++    Tools // cc-P763
++}
++
++/// <summary>cc-P763: the rarity rolled when a box is earned, on top of its grade. Saved by number.</summary>
++public enum BoxRarity
++{
++    Common,
++    Rare,
++    Epic,
++    Legendary
+ }
+ 
+ /// <summary>A named step of a ladder: its display name and its hue (a CraftResource name, or a hue number).</summary>
+ public sealed record LadderStep(string Name, string Resource, int Hue);
+ 
++/// <summary>cc-P763: what one rarity adds (LootTable.RarityBonus).</summary>
++public sealed class RarityStep
++{
++    public string Name { get; set; } = "";
++    public int Hue { get; set; }
++    public int ExtraSlots { get; set; }
++    public double StackMultiplier { get; set; } = 1.0;
++    public int PoolShift { get; set; }
++
++    /// <summary>Minor, Major or Capstone: the least fanfare a box of this rarity plays.</summary>
++    public string Fanfare { get; set; } = "Minor";
++
++    /// <summary>Whether the award and the opening say the "rare" line (FanfareLines.BoxRare).</summary>
++    public bool RareLine { get; set; }
++
++    public FanfareLevel Level => Enum.TryParse<FanfareLevel>(Fanfare, true, out var l) ? l : FanfareLevel.Minor;
++}
++
++/// <summary>
++/// cc-P763: one entry of a pool, a theme slot, an Epic or Legendary list or a season. Amount: Min to Max (Max 0 is Min),
++/// plus PerGrade times the grade, times the rarity's stack multiplier for a stackable. Offered at grades MinGrade to
++/// MaxGrade and rarities from MinRarity up. In a theme slot or list, entries with no Group are each given; entries
++/// sharing a Group give one, by Weight. Chance (percent by rarity, Common to Legendary) makes an entry a chance.
++/// </summary>
++public sealed class PoolEntry
++{
++    public string Item { get; set; } = "";
++    public int Weight { get; set; } = 10;
++    public int Min { get; set; } = 1;
++    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] public int Max { get; set; }
++    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] public int PerGrade { get; set; }
++    public int MinGrade { get; set; } = 1;
++    public int MaxGrade { get; set; } = 6;
++    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] public string? MinRarity { get; set; }
++    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] public int[]? Chance { get; set; }
++    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] public string? Group { get; set; }
++    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] public int Arg { get; set; }
++    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] public string? Skill { get; set; }
++    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] public string? Name { get; set; }
++    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] public int Hue { get; set; }
++    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] public int ItemId { get; set; }
++    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] public int AltId { get; set; }
++
++    public BoxRarity LeastRarity => Enum.TryParse<BoxRarity>(MinRarity, true, out var r) ? r : BoxRarity.Common;
++
++    public bool OfferedAt(int grade, BoxRarity rarity) => grade >= MinGrade && grade <= MaxGrade && rarity >= LeastRarity;
++}
++
++/// <summary>cc-P763: a theme's slot, its Epic and Legendary lists, and the ladder that names its boxes.</summary>
++public sealed class ThemeDef
++{
++    /// <summary>Metal, Wood, Leather, Craft (by the craft: wood, leather or metal) or Grade.</summary>
++    public string Ladder { get; set; } = "Grade";
++
++    public PoolEntry[] Slot { get; set; } = [];
++    public PoolEntry[] Epic { get; set; } = [];
++    public PoolEntry[] Legendary { get; set; } = [];
++}
++
++/// <summary>cc-P763: a season's pool: one extra slot while its seasonal switch's window is on.</summary>
++public sealed class SeasonDef
++{
++    public string Label { get; set; } = "";
++    public PoolEntry[] Items { get; set; } = [];
++}
++
+ public sealed class LootTable
+ {
+     public const string FileName = "loot-boxes.json";
+@@ -50,14 +142,14 @@ public sealed class LootTable
+ 
+     public string Source { get; init; } = "built-in defaults";
+ 
+-    // Slots per tier 1 to 6.
++    // Slots per grade 1 to 6.
+     public int[] Slots { get; init; } = [2, 3, 3, 4, 5, 6];
+ 
+-    // The currency slot: gold at every tier, Renown from tier 2.
++    // The currency slot: gold at every grade, Renown from grade 2.
+     public int[] Gold { get; init; } = [250, 750, 2_000, 5_000, 12_000, 30_000];
+     public int[] Renown { get; init; } = [0, 25, 50, 100, 200, 400];
+ 
+-    // General pool weights by tier 1 to 6.
++    // General pool weights by grade 1 to 6. cc-P763: Tools is new; the six pools before it keep their weights.
+     public Dictionary<string, int[]> PoolWeights { get; init; } = new(StringComparer.OrdinalIgnoreCase)
+     {
+         ["Consumables"] = [50, 40, 30, 20, 15, 10],
+@@ -66,16 +158,18 @@ public sealed class LootTable
+         ["Recipes"] = [5, 8, 12, 15, 15, 15],
+         ["Cosmetics"] = [0, 2, 6, 12, 15, 20],
+         ["Rare"] = [0, 0, 2, 8, 15, 25],
++        ["Tools"] = [8, 8, 8, 8, 8, 8],
+     };
+ 
+-    // Box names and hues. Resource themes use their ladder; the rest use rarity.
+-    public LadderStep[] Rarity { get; init; } =
++    // cc-P763: the grade ladder (it was named Common to Celestial before the rarity roll took those words). It names the
++    // boxes of the themes with no material ladder, and colours the fanfare by grade.
++    public LadderStep[] Grades { get; init; } =
+     [
+-        new("Common", "", 0x0386),
+-        new("Uncommon", "", 0x0044),
+-        new("Rare", "", 0x0059),
+-        new("Epic", "", 0x0013),
+-        new("Legendary", "", 0x002B),
++        new("Plain", "", 0x0386),
++        new("Sturdy", "", 0x0044),
++        new("Fine", "", 0x0059),
++        new("Grand", "", 0x0013),
++        new("Exalted", "", 0x002B),
+         new("Celestial", "Celestial", 0),
+     ];
+ 
+@@ -98,7 +192,27 @@ public sealed class LootTable
+         new("Frostwood", "Frostwood", 0), new("Runewood", "Runewood", 0), new("Celestial", "Celestial", 0),
+     ];
+ 
+-    // Tier by source. Achievements: by AP (the ceilings for tiers 1 to 5; above the last, tier 6), with overrides by key.
++    // cc-P763: the rarity roll's odds by grade 1 to 6, percent Common, Rare, Epic, Legendary (the plan's table).
++    public double[][] RarityOdds { get; init; } =
++    [
++        [85, 13, 2, 0],
++        [75, 20, 4.5, 0.5],
++        [65, 25, 8, 2],
++        [50, 32, 14, 4],
++        [40, 35, 18, 7],
++        [25, 40, 25, 10],
++    ];
++
++    // cc-P763: what each rarity adds, Common to Legendary. The hue is the box's colour (grey, blue, purple, orange).
++    public RarityStep[] RarityBonus { get; init; } =
++    [
++        new() { Name = "Common", Hue = 0x0386, ExtraSlots = 0, StackMultiplier = 1.0, PoolShift = 0, Fanfare = "Minor" },
++        new() { Name = "Rare", Hue = 0x0059, ExtraSlots = 1, StackMultiplier = 1.5, PoolShift = 5, Fanfare = "Minor", RareLine = true },
++        new() { Name = "Epic", Hue = 0x0013, ExtraSlots = 1, StackMultiplier = 2.0, PoolShift = 10, Fanfare = "Major", RareLine = true },
++        new() { Name = "Legendary", Hue = 0x002B, ExtraSlots = 2, StackMultiplier = 3.0, PoolShift = 15, Fanfare = "Capstone", RareLine = true },
++    ];
++
++    // Grade by source. Achievements: by AP (the ceilings for grades 1 to 5; above the last, 6), overrides by key.
+     public int[] AchievementApCeilings { get; init; } = [10, 25, 50, 100, 250];
+     public Dictionary<string, int> AchievementTier { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+ 
+@@ -116,7 +230,14 @@ public sealed class LootTable
+         ["League"] = "League",
+     };
+ 
+-    // Bosses: tier by type name (or a base class name), default for the rest.
++    // cc-P763: an achievement key to a theme, ahead of its category. The shard has one fishing achievement (Sole
++    // Survivor, a boot fished up) and none for boats, docks or gardens; add keys here as those are written.
++    public Dictionary<string, string> AchievementTheme { get; init; } = new(StringComparer.OrdinalIgnoreCase)
++    {
++        ["joke.sole_survivor"] = "Fisher",
++    };
++
++    // Bosses: grade by type name (or a base class name), default for the rest.
+     public int BossDefaultTier { get; init; } = 4;
+     public Dictionary<string, int> BossTier { get; init; } = new(StringComparer.OrdinalIgnoreCase)
+     {
+@@ -126,12 +247,57 @@ public sealed class LootTable
+         ["ClockworkExodus"] = 5, // cc-P195: the Exodus Encounter's boss, 50,000 hits, a peerless-sized fight
+     };
+ 
+-    // League rank index 1 to 17 (Iron to Celestial) to tier.
++    // League rank index 1 to 17 (Iron to Celestial) to grade.
+     public int[] LeagueRankTier { get; init; } = [1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6];
+ 
+     public int DungeonClearTier { get; init; } = 3;
+     public int LoopTier { get; init; } = 6;
+ 
++    // cc-P763: the first-time sources fishing, sailing and gardening have (once per character each).
++    public int FishGrade { get; init; } = 2;             // a High Seas fish's first catch of its kind
++    public int RareFishGrade { get; init; } = 4;         // a rare or legendary fish's
++    public int[] SosGrade { get; init; } = [2, 3, 4, 5]; // an SOS chest's first recovery, by its level 1 to 4
++    public int PlantGrade { get; init; } = 2;            // a plant type first set to decorative
++
++    // cc-P763: guild promotion. Each new rank of these guilds is a box of its theme, grade = rank (1 to 5). A theme
++    // "A|B" gives A at odd ranks and B at even ones.
++    public Dictionary<string, string> GuildTheme { get; init; } = new(StringComparer.OrdinalIgnoreCase)
++    {
++        ["smithing"] = "Society",
++        ["arcane"] = "Society",
++        ["tailoring"] = "Society",
++        ["tinkers"] = "Society",
++        ["foresters"] = "Society",
++        ["artificers"] = "Society",
++        ["maritime"] = "Fisher|Sailor",
++        ["healers"] = "Herbalist",
++    };
++
++    // cc-P763: a League Dive box for every this-many guild work orders finished, at the character's League rank's grade.
++    public int LeagueDiveEvery { get; init; } = 10;
++
++    // cc-P763: the Reagent Bag's weight cut, percent, by the box's rarity (Common to Legendary).
++    public int[] ReagentBagCut { get; init; } = [25, 50, 75, 90];
++
++    // cc-P763: TheArt's Bags of Holding by size 1 to 5: their names and item caps (no weight cap).
++    public string[] BagOfHoldingNames { get; init; } =
++        ["Lesser Bag of Holding", "Bag of Holding", "Greater Bag of Holding", "Legendary Bag of Holding", "Grand Bag of Holding"];
++
++    public int[] BagOfHoldingCaps { get; init; } = [12, 24, 36, 48, 125];
++
++    // cc-P763: the Boss slot's trophy, from the registered Hestia and Archaaz art (north-wall ID, west-wall ID).
++    public int[][] Trophies { get; init; } =
++    [
++        [0x3CF8, 0x3CF9], [0x3CFA, 0x3CFB], [0x3CFC, 0x3CFD], [0x3CFE, 0x3CFF], [0x3D00, 0x3D01], [0x3D02, 0x3D03],
++        [0x3D04, 0x3D05], [0x3D06, 0x3D07], [0x3D08, 0x3D09], [0x3D0A, 0x3D0B], [0x3D0C, 0x3D0D],
++    ];
++
++    // -- The contents (cc-P763) --
++
++    public Dictionary<string, PoolEntry[]> Pools { get; init; } = DefaultPools();
++    public Dictionary<string, ThemeDef> Themes { get; init; } = DefaultThemes();
++    public Dictionary<string, SeasonDef> Seasons { get; init; } = DefaultSeasons();
++
+     // A box opened but not emptied (a full bank) is cleaned up after this many days.
+     public int AbandonedBoxDays { get; init; } = 7;
+ 
+@@ -139,6 +305,248 @@ public sealed class LootTable
+ 
+     public static LootTable Current { get; set; } = Defaults;
+ 
++    // -- The default contents --
++
++    private static PoolEntry E(string item, int w = 10, int min = 1, int per = 0, int minG = 1, int maxG = 6,
++        string? rarity = null, string? group = null, int arg = 0, string? skill = null, int[]? chance = null,
++        string? name = null, int id = 0, int alt = 0, int max = 0, int hue = 0) =>
++        new()
++        {
++            Item = item, Weight = w, Min = min, Max = max, PerGrade = per, MinGrade = minG, MaxGrade = maxG,
++            MinRarity = rarity, Group = group, Arg = arg, Skill = skill, Chance = chance, Name = name, ItemId = id,
++            AltId = alt, Hue = hue
++        };
++
++    private static PoolEntry Decor(string name, int id, int alt = 0, int w = 10) => E("@Decor", w, name: name, id: id, alt: alt);
++
++    public static Dictionary<string, PoolEntry[]> DefaultPools() => new(StringComparer.OrdinalIgnoreCase)
++    {
++        ["Consumables"] =
++        [
++            E("@Potion", 30, min: 2, per: 1),
++            E("Bandage", 30, min: 10, per: 10),
++            E("EnchantedApple", 6, min: 1, per: 1),
++            E("BegPizza", 4, min: 2), E("BegStew", 4, min: 2), E("FruitBowl", 4), E("BegCheeseWedge", 4, min: 2),
++            E("BegSake", 3), E("BegWine", 3),
++            E("ExplodingTarPotion", 5, min: 2, minG: 3),
++            E("GoldFoil", 3), E("SkinTingeingTincture", 2),
++        ],
++        ["Resources"] =
++        [
++            E("@Metal", 20, min: 0, per: 10), E("@Wood", 20, min: 0, per: 10), E("@Leather", 15, min: 0, per: 10),
++            E("@Gems", 15, min: 0, per: 1),
++            E("Cloth", 10, min: 10, per: 10), E("Bone", 6, min: 5, per: 5),
++            E("FertileDirt", 7, min: 5, per: 5), E("@Seed", 7, min: 1, per: 1),
++        ],
++        ["MagicGear"] = [E("@MagicGear", 100)],
++        ["Tools"] =
++        [
++            E("Skeletonkey", 12),
++            E("SewingKit", 10), E("TinkerTools", 10), E("SmithHammer", 10), E("FletcherTools", 10), E("MortarPestle", 10),
++            E("Sextant", 6),
++            E("@RunicMallet", 6, rarity: "Epic"),
++            E("CircuitTrapTrainingKit", 5), E("CylinderTrapTrainingKit", 5), E("SliderTrapTrainingKit", 5),
++        ],
++        ["Recipes"] = [E("@Recipe", 100)],
++        ["Cosmetics"] =
++        [
++            E("@BoxSash", 20),
++            E("FlowerGarland", 8),
++            E("DaggerBelt", 4), E("SwordBelt", 4), E("MaceBelt", 4), E("FirstAidBelt", 4),
++            E("SkeletonCostume", 3), E("PixieCostume", 3), E("SatyrCostume", 3), E("CentaurCostume", 3), E("GazerCostume", 3),
++            Decor("a painting: Beata Beatrix", 0x3C9E, w: 2), Decor("a painting: Morgan le Fay", 0x3C9F, w: 2),
++            Decor("a painting: Ophelia", 0x3CA0, w: 2), Decor("a painting: Sir Galahad at the Ruined Chapel", 0x3CA1, w: 2),
++            Decor("a painting: The Fairy Feller's Master-Stroke", 0x3CA2, w: 2),
++            Decor("a painting: The Garden of the Hesperides", 0x3CA3, w: 2), Decor("a painting: The Lady of Shalott", 0x3CA4, w: 2),
++            Decor("a painting: The Love Song", 0x3CA5, w: 2), Decor("a painting: The Tune of the Seven Towers", 0x3CA6, w: 2),
++            Decor("a painting: Wars of the Roses", 0x3CA7, w: 2),
++            Decor("a crystal ball", 0x6DC8, w: 3),
++            Decor("a floating crystal (green)", 0x6DD8, w: 2), Decor("a floating crystal (purple)", 0x6DE1, w: 2),
++            Decor("a partial-hue flask", 0x6DBB, w: 1), Decor("a partial-hue flask", 0x6DBD, w: 1),
++            Decor("a partial-hue flask", 0x6DBF, w: 1), Decor("a partial-hue flask", 0x6DC1, w: 1),
++            Decor("an oil lantern", 0x3C8C, w: 3),
++            // The Noted joke items: 3 of 96 weight, 3 percent of this pool.
++            E("StrategicBoulder", 1), E("BucketOfPopcorn", 1), E("LuckyRug", 1),
++        ],
++        ["Rare"] =
++        [
++            E("@BoxInBox", 18, minG: 2),
++            E("@MuleSchematic", 18),
++            E("@LeagueTitle", 10),
++            E("MetallicDyeTub", 6), E("SpecialDyeTub", 5), E("FurnitureDyeTub", 5),
++            E("PetBondingPotion", 7), E("ElixirOfRebirth", 6),
++            E("@ReagentBag", 8),
++            E("@BagOfHolding", 4, arg: 1, rarity: "Rare"),
++            E("@BagOfHolding", 6, arg: 2, rarity: "Epic"),
++            E("@BagOfHolding", 3, arg: 3, rarity: "Epic"),
++            E("@BagOfHolding", 4, arg: 4, rarity: "Legendary"),
++        ],
++    };
++
++    public static Dictionary<string, ThemeDef> DefaultThemes() => new(StringComparer.OrdinalIgnoreCase)
++    {
++        ["Miner"] = new()
++        {
++            Ladder = "Metal",
++            Slot =
++            [
++                E("@Ore", min: 10, per: 10), E("@Gems", min: 0, per: 1),
++                E("Pickaxe", group: "tool", maxG: 3), E("Shovel", group: "tool", maxG: 3), E("ProspectorsTool", group: "tool", minG: 4),
++            ],
++            Epic = [E("ProspectorsTool"), E("@Ore", min: 20, per: 20)],
++            Legendary = [E("JacobsPickaxe")],
++        },
++        ["Woodsman"] = new()
++        {
++            Ladder = "Wood",
++            Slot = [E("@Boards", min: 10, per: 10), E("Hatchet", group: "tool", maxG: 3), E("Axe", group: "tool", minG: 4)],
++            Epic = [E("LargeBattleAxe", group: "axe"), E("ExecutionersAxe", group: "axe")],
++            Legendary = [E("@RunicTool", skill: "Carpentry")],
++        },
++        ["Artisan"] = new()
++        {
++            Ladder = "Craft",
++            Slot = [E("@CraftResources", min: 10, per: 10), E("@PatternBook")],
++            Epic = [E("@RunicTool")],
++            Legendary = [E("@RunicTool", arg: 1)],
++        },
++        ["Hunter"] = new()
++        {
++            Ladder = "Leather",
++            Slot = [E("@Hides", min: 10, per: 5), E("@SlayerWeapon")],
++            Epic = [E("@SlayerWeapon", arg: 2)],
++            Legendary = [E("@BagOfHolding", arg: 2)],
++        },
++        ["Explorer"] = new()
++        {
++            Slot = [E("@TreasureMap"), E("BlankMap")],
++            Epic = [E("@TreasureMap", arg: 4)],
++            Legendary = [E("@TreasureMap", arg: 5), E("@BagOfHolding", arg: 2)],
++        },
++        ["Tamer"] = new()
++        {
++            Slot =
++            [
++                E("TastyTreat", 10, min: 2, group: "treat"), E("DeliciouslyTastyTreat", 10, min: 2, group: "treat", rarity: "Rare"),
++                E("IrresistiblyTastyTreat", 10, min: 2, group: "treat", rarity: "Epic"),
++                E("@Mount"),
++            ],
++            Epic = [E("PetBondingPotion")],
++            Legendary = [E("ElixirOfRebirth"), E("@Mount")],
++        },
++        ["Scholar"] = new()
++        {
++            Slot = [E("@Reagents", min: 0, per: 10), E("@Scroll"), E("@ReagentBag", chance: [10, 25, 0, 0])],
++            Epic = [E("@ReagentBag"), E("@Reagents", min: 0, per: 20)],
++            Legendary = [E("@ReagentBag")],
++        },
++        ["Boss"] = new()
++        {
++            Slot = [E("@Trophy"), E("@Mount")],
++            Epic = [E("@Trophy")],
++            Legendary = [E("@BagOfHolding", arg: 4)],
++        },
++        ["Loop"] = new()
++        {
++            Slot = [E("@LoopSash"), E("@RarePick")],
++            Epic = [E("@RarePick"), E("@RarePick")],
++            Legendary = [E("@BagOfHolding", arg: 5)],
++        },
++        ["League"] = new()
++        {
++            Slot = [E("@RenownBonus", arg: 50), E("@LeagueCloak")],
++            Epic = [E("@LeagueTitle")],
++            Legendary = [E("@BagOfHolding", arg: 5)],
++        },
++        ["Fisher"] = new()
++        {
++            Slot = [E("Bait"), E("FishingPole"), E("FishSteak", min: 5, per: 5)],
++            Epic = [E("BegFishingPole"), E("SpecialFishingNet")],
++            Legendary = [E("FishingPole"), E("@BagOfHolding", arg: 2)],
++        },
++        ["Sailor"] = new()
++        {
++            Slot = [E("Sextant"), E("Spyglass"), E("Rope"), E("BreadLoaf", min: 3, per: 1)],
++            Epic = [E("MessageInABottle")],
++            Legendary = [E("SmallBoatDeed")],
++        },
++        ["Herbalist"] = new()
++        {
++            Slot =
++            [
++                E("@Seed", min: 2, per: 1), E("FertileDirt", min: 10, per: 5), E("MortarPestle"),
++                E("GreaterHealPotion", min: 2, per: 1, group: "potion"), E("GreaterCurePotion", min: 2, per: 1, group: "potion"),
++                E("GreaterPoisonPotion", min: 2, per: 1, group: "potion"), E("GreaterStrengthPotion", min: 2, per: 1, group: "potion"),
++            ],
++            Epic = [E("SeedBox")],
++            Legendary = [E("ChickenCoop"), E("@Seed", min: 2, arg: 1)],
++        },
++        ["Society"] = new()
++        {
++            Ladder = "Craft",
++            Slot = [E("@CraftResources", min: 10, per: 10), E("@CraftTool")],
++            Epic = [E("@RunicTool")],
++            Legendary = [E("@RunicTool", arg: 1), E("@BagOfHolding", arg: 2)],
++        },
++        ["Delver"] = new()
++        {
++            Slot = [E("@TreasureMap"), E("@Potion", min: 2, per: 1), E("Bandage", min: 10, per: 5), E("Skeletonkey")],
++            Epic = [E("@SlayerWeapon", arg: 2)],
++            Legendary = [E("@BagOfHolding", arg: 2)],
++        },
++        ["LeagueDive"] = new()
++        {
++            Slot = [E("@RenownBonus", arg: 50), E("@Potion", min: 2, per: 1), E("Bandage", min: 10, per: 5)],
++            Epic = [E("@LeagueTitle")],
++            Legendary = [E("@BagOfHolding", arg: 5)],
++        },
++    };
++
++    public static Dictionary<string, SeasonDef> DefaultSeasons() => new(StringComparer.OrdinalIgnoreCase)
++    {
++        ["halloween"] = new()
++        {
++            Label = "Halloween",
++            Items =
++            [
++                E("Lollipops", min: 3), E("WrappedCandy", min: 3), E("JellyBeans", min: 3), E("Taffy", min: 3), E("NougatSwirl", min: 3),
++                E("CreepyCake"), E("PumpkinPizza"), E("HarvestWine"),
++                E("PaintedDaemonMask", 4), E("PaintedEvilClownMask", 4), E("PaintedEvilJesterMask", 4), E("PaintedPlagueMask", 4),
++                E("PaintedPorcelainMask", 4),
++                E("HalloweenPumpkin"), E("PumpkinScarecrow", 5),
++                E("SkullsOnPike", 5), E("ColoredSmallWebs", 5), E("ChairInAGhostCostume", 5), E("HalloweenGuillotine", 5),
++                E("PumpkinCarvingKit"),
++            ],
++        },
++        ["winter"] = new()
++        {
++            Label = "Winter",
++            Items =
++            [
++                E("SnowGlobeOne", 4), E("SnowGlobeTwo", 3), E("SnowGlobeThree", 3), E("Snowman"), E("HolidayTreeDeed", 5),
++                E("HolidayBell"), E("WreathDeed"), E("GiftBox"), E("RockingHorse", 5), E("FirefliesDeed", 5),
++                E("CandyCane", min: 3),
++                Decor("a Father Christmas statue", 0x3C40, w: 3), Decor("Santa's bag", 0x3C53, w: 3),
++                Decor("a present", 0x3C54, w: 3), Decor("a present", 0x3C55, w: 3), Decor("a present", 0x3C56, w: 3),
++                Decor("an eggnog tray", 0x3C59, w: 3), Decor("a pan of Christmas cookies", 0x3C5B, w: 3),
++                Decor("a tray of candy canes", 0x3C5C, w: 3), Decor("a holiday platter", 0x3C5D, w: 3),
++                Decor("a roast turkey", 0x3C5E, w: 3), Decor("a gingerbread house", 0x3C5F, w: 3),
++                Decor("a decorated Christmas tree", 0x3C52, w: 2), Decor("a garland", 0x3C61, 0x3C62, w: 3),
++                Decor("a holiday painting", 0x3C63, 0x3C64, w: 3), Decor("a holiday painting", 0x3C65, 0x3C66, w: 3),
++                Decor("a snow-covered painting", 0x3C68, 0x3C67, w: 3), Decor("a snow-covered shield", 0x3C6A, 0x3C69, w: 3),
++            ],
++        },
++        ["spring"] = new()
++        {
++            Label = "Spring",
++            Items =
++            [
++                E("FlowerGarland", 15), E("@Seed", 25, min: 2, per: 1), E("PottedPlant", 10), E("PottedPlant1", 10),
++                E("PottedCactus", 10), E("ValentineChocolate", 15), E("HeartShapedBox", 15),
++            ],
++        },
++    };
++
+     // -- Lookups --
+ 
+     public int SlotsFor(int tier) => Slots[Math.Clamp(tier, 1, 6) - 1];
+@@ -166,6 +574,25 @@ public sealed class LootTable
+             ? theme
+             : BoxTheme.Explorer;
+ 
++    /// <summary>cc-P763: the per-key theme first (AchievementTheme), then the category's.</summary>
++    public BoxTheme ThemeForAchievement(string key, string category) =>
++        AchievementTheme.TryGetValue(key, out var name) && Enum.TryParse<BoxTheme>(name, true, out var theme)
++            ? theme
++            : ThemeForCategory(category);
++
++    /// <summary>cc-P763: a guild's promotion theme at a rank, or null when its promotions give no box.</summary>
++    public BoxTheme? ThemeForGuildRank(string guildKey, int rank)
++    {
++        if (!GuildTheme.TryGetValue(guildKey, out var text))
++        {
++            return null;
++        }
++
++        var parts = text.Split('|');
++        var pick = parts.Length > 1 && rank % 2 == 0 ? parts[1] : parts[0];
++        return Enum.TryParse<BoxTheme>(pick.Trim(), true, out var theme) ? theme : null;
++    }
++
+     public int TierForBoss(Type type)
+     {
+         for (var t = type; t != null && t != typeof(object); t = t.BaseType)
+@@ -184,6 +611,38 @@ public sealed class LootTable
+     public int Weight(BoxPool pool, int tier) =>
+         PoolWeights.TryGetValue(pool.ToString(), out var w) && w.Length >= 6 ? w[Math.Clamp(tier, 1, 6) - 1] : 0;
+ 
++    public RarityStep RarityOf(BoxRarity rarity) => RarityBonus[Math.Clamp((int)rarity, 0, RarityBonus.Length - 1)];
++
++    public PoolEntry[] PoolEntries(BoxPool pool) => Pools.TryGetValue(pool.ToString(), out var e) ? e : [];
++
++    public ThemeDef ThemeOf(BoxTheme theme) => Themes.TryGetValue(theme.ToString(), out var d) ? d : new ThemeDef();
++
++    /// <summary>cc-P763: the rarity for a roll 0 to 100 at a grade (the odds rows, Common first).</summary>
++    public BoxRarity RarityForRoll(int grade, double roll)
++    {
++        var row = RarityOdds[Math.Clamp(grade, 1, 6) - 1];
++        var at = 0.0;
++        for (var i = 0; i < row.Length && i < 4; i++)
++        {
++            at += row[i];
++            if (roll < at)
++            {
++                return (BoxRarity)i;
++            }
++        }
++
++        // A roll at the very top: the last rarity with any odds.
++        for (var i = Math.Min(row.Length, 4) - 1; i >= 0; i--)
++        {
++            if (row[i] > 0)
++            {
++                return (BoxRarity)i;
++            }
++        }
++
++        return BoxRarity.Common;
++    }
++
+     public static int HueOf(LadderStep step)
+     {
+         if (!string.IsNullOrEmpty(step.Resource) && Enum.TryParse<CraftResource>(step.Resource, true, out var res))
+@@ -211,18 +670,34 @@ public sealed class LootTable
+         public int[]? Gold { get; set; }
+         public int[]? Renown { get; set; }
+         public Dictionary<string, int[]>? PoolWeights { get; set; }
+-        public LadderStep[]? Rarity { get; set; }
++        public LadderStep[]? Grades { get; set; }
+         public LadderStep[]? MetalLadder { get; set; }
+         public LadderStep[]? LeatherLadder { get; set; }
+         public LadderStep[]? WoodLadder { get; set; }
++        public double[][]? RarityOdds { get; set; }
++        public RarityStep[]? RarityBonus { get; set; }
+         public int[]? AchievementApCeilings { get; set; }
+         public Dictionary<string, int>? AchievementTier { get; set; }
+         public Dictionary<string, string>? CategoryTheme { get; set; }
++        public Dictionary<string, string>? AchievementTheme { get; set; }
+         public int? BossDefaultTier { get; set; }
+         public Dictionary<string, int>? BossTier { get; set; }
+         public int[]? LeagueRankTier { get; set; }
+         public int? DungeonClearTier { get; set; }
+         public int? LoopTier { get; set; }
++        public int? FishGrade { get; set; }
++        public int? RareFishGrade { get; set; }
++        public int[]? SosGrade { get; set; }
++        public int? PlantGrade { get; set; }
++        public Dictionary<string, string>? GuildTheme { get; set; }
++        public int? LeagueDiveEvery { get; set; }
++        public int[]? ReagentBagCut { get; set; }
++        public string[]? BagOfHoldingNames { get; set; }
++        public int[]? BagOfHoldingCaps { get; set; }
++        public int[][]? Trophies { get; set; }
++        public Dictionary<string, PoolEntry[]>? Pools { get; set; }
++        public Dictionary<string, ThemeDef>? Themes { get; set; }
++        public Dictionary<string, SeasonDef>? Seasons { get; set; }
+         public int? AbandonedBoxDays { get; set; }
+     }
+ 
+@@ -230,18 +705,38 @@ public sealed class LootTable
+         JsonSerializer.Serialize(
+             new FileForm
+             {
+-                About = "Loot boxes (cc-P79, F-40). Six tiers; arrays are tier 1 to 6. Pool weights are placeholders for " +
+-                        "playtesting. Edit and run [LootBox reload; a bad file is refused whole.",
+-                Slots = t.Slots, Gold = t.Gold, Renown = t.Renown, PoolWeights = t.PoolWeights, Rarity = t.Rarity,
++                About = "Loot boxes (cc-P79, F-40; contents, rarity and seasons cc-P763). Six grades; arrays are grade 1 to 6. " +
++                        "RarityOdds: per grade, percent Common, Rare, Epic, Legendary. Pools, Themes and Seasons hold the " +
++                        "contents: Item is a type name or an @special. Edit and run [LootBox reload; a bad file is refused whole.",
++                Slots = t.Slots, Gold = t.Gold, Renown = t.Renown, PoolWeights = t.PoolWeights, Grades = t.Grades,
+                 MetalLadder = t.MetalLadder, LeatherLadder = t.LeatherLadder, WoodLadder = t.WoodLadder,
++                RarityOdds = t.RarityOdds, RarityBonus = t.RarityBonus,
+                 AchievementApCeilings = t.AchievementApCeilings, AchievementTier = t.AchievementTier,
+-                CategoryTheme = t.CategoryTheme, BossDefaultTier = t.BossDefaultTier, BossTier = t.BossTier,
+-                LeagueRankTier = t.LeagueRankTier, DungeonClearTier = t.DungeonClearTier, LoopTier = t.LoopTier,
++                CategoryTheme = t.CategoryTheme, AchievementTheme = t.AchievementTheme, BossDefaultTier = t.BossDefaultTier,
++                BossTier = t.BossTier, LeagueRankTier = t.LeagueRankTier, DungeonClearTier = t.DungeonClearTier,
++                LoopTier = t.LoopTier, FishGrade = t.FishGrade, RareFishGrade = t.RareFishGrade, SosGrade = t.SosGrade,
++                PlantGrade = t.PlantGrade, GuildTheme = t.GuildTheme, LeagueDiveEvery = t.LeagueDiveEvery,
++                ReagentBagCut = t.ReagentBagCut, BagOfHoldingNames = t.BagOfHoldingNames, BagOfHoldingCaps = t.BagOfHoldingCaps,
++                Trophies = t.Trophies, Pools = t.Pools, Themes = t.Themes, Seasons = t.Seasons,
+                 AbandonedBoxDays = t.AbandonedBoxDays
+             },
+             Json
+         );
+ 
++    private static Dictionary<string, TV> Merged<TV>(Dictionary<string, TV>? fromFile, Dictionary<string, TV> defaults)
++    {
++        var d = new Dictionary<string, TV>(defaults, StringComparer.OrdinalIgnoreCase);
++        if (fromFile != null)
++        {
++            foreach (var (k, v) in fromFile)
++            {
++                d[k] = v;
++            }
++        }
++
++        return d;
++    }
++
+     /// <summary>Reads a table; null and errors when anything is wrong. A field left out keeps its default.</summary>
+     public static LootTable? Parse(string json, string source, List<string> errors)
+     {
+@@ -269,19 +764,36 @@ public sealed class LootTable
+             Slots = f.Slots ?? d.Slots,
+             Gold = f.Gold ?? d.Gold,
+             Renown = f.Renown ?? d.Renown,
+-            PoolWeights = f.PoolWeights != null ? new Dictionary<string, int[]>(f.PoolWeights, StringComparer.OrdinalIgnoreCase) : d.PoolWeights,
+-            Rarity = f.Rarity ?? d.Rarity,
++            // cc-P763: a pool row the file leaves out (Tools, in a file from before it) keeps its default.
++            PoolWeights = Merged(f.PoolWeights, d.PoolWeights),
++            Grades = f.Grades ?? d.Grades,
+             MetalLadder = f.MetalLadder ?? d.MetalLadder,
+             LeatherLadder = f.LeatherLadder ?? d.LeatherLadder,
+             WoodLadder = f.WoodLadder ?? d.WoodLadder,
++            RarityOdds = f.RarityOdds ?? d.RarityOdds,
++            RarityBonus = f.RarityBonus ?? d.RarityBonus,
+             AchievementApCeilings = f.AchievementApCeilings ?? d.AchievementApCeilings,
+             AchievementTier = f.AchievementTier != null ? new Dictionary<string, int>(f.AchievementTier, StringComparer.OrdinalIgnoreCase) : d.AchievementTier,
+             CategoryTheme = f.CategoryTheme != null ? new Dictionary<string, string>(f.CategoryTheme, StringComparer.OrdinalIgnoreCase) : d.CategoryTheme,
++            AchievementTheme = f.AchievementTheme != null ? new Dictionary<string, string>(f.AchievementTheme, StringComparer.OrdinalIgnoreCase) : d.AchievementTheme,
+             BossDefaultTier = f.BossDefaultTier ?? d.BossDefaultTier,
+             BossTier = f.BossTier != null ? new Dictionary<string, int>(f.BossTier, StringComparer.OrdinalIgnoreCase) : d.BossTier,
+             LeagueRankTier = f.LeagueRankTier ?? d.LeagueRankTier,
+             DungeonClearTier = f.DungeonClearTier ?? d.DungeonClearTier,
+             LoopTier = f.LoopTier ?? d.LoopTier,
++            FishGrade = f.FishGrade ?? d.FishGrade,
++            RareFishGrade = f.RareFishGrade ?? d.RareFishGrade,
++            SosGrade = f.SosGrade ?? d.SosGrade,
++            PlantGrade = f.PlantGrade ?? d.PlantGrade,
++            GuildTheme = f.GuildTheme != null ? new Dictionary<string, string>(f.GuildTheme, StringComparer.OrdinalIgnoreCase) : d.GuildTheme,
++            LeagueDiveEvery = f.LeagueDiveEvery ?? d.LeagueDiveEvery,
++            ReagentBagCut = f.ReagentBagCut ?? d.ReagentBagCut,
++            BagOfHoldingNames = f.BagOfHoldingNames ?? d.BagOfHoldingNames,
++            BagOfHoldingCaps = f.BagOfHoldingCaps ?? d.BagOfHoldingCaps,
++            Trophies = f.Trophies ?? d.Trophies,
++            Pools = Merged(f.Pools, d.Pools),
++            Themes = Merged(f.Themes, d.Themes),
++            Seasons = Merged(f.Seasons, d.Seasons),
+             AbandonedBoxDays = f.AbandonedBoxDays ?? d.AbandonedBoxDays
+         };
+ 
+@@ -289,17 +801,18 @@ public sealed class LootTable
+         {
+             if (a.Length != 6)
+             {
+-                errors.Add($"{name}: {a.Length} values, expected 6 (tier 1 to 6).");
++                errors.Add($"{name}: {a.Length} values, expected 6 (grade 1 to 6).");
+             }
+         }
+ 
+         SixOf("slots", t.Slots);
+         SixOf("gold", t.Gold);
+         SixOf("renown", t.Renown);
+-        SixOf("rarity", t.Rarity);
++        SixOf("grades", t.Grades);
+         SixOf("metalLadder", t.MetalLadder);
+         SixOf("leatherLadder", t.LeatherLadder);
+         SixOf("woodLadder", t.WoodLadder);
++        SixOf("rarityOdds", t.RarityOdds);
+ 
+         foreach (var pool in Enum.GetNames<BoxPool>())
+         {
+@@ -315,7 +828,7 @@ public sealed class LootTable
+ 
+         if (Array.Exists(t.Slots, s => s < 2))
+         {
+-            errors.Add("slots: every tier needs at least 2 (the theme and currency slots).");
++            errors.Add("slots: every grade needs at least 2 (the theme and currency slots).");
+         }
+ 
+         if (Array.Exists(t.Gold, g => g < 0) || Array.Exists(t.Renown, r => r < 0))
+@@ -325,7 +838,7 @@ public sealed class LootTable
+ 
+         if (t.AchievementApCeilings.Length != 5)
+         {
+-            errors.Add($"achievementApCeilings: {t.AchievementApCeilings.Length} values, expected 5 (tiers 1 to 5).");
++            errors.Add($"achievementApCeilings: {t.AchievementApCeilings.Length} values, expected 5 (grades 1 to 5).");
+         }
+ 
+         foreach (var (key, theme) in t.CategoryTheme)
+@@ -336,9 +849,28 @@ public sealed class LootTable
+             }
+         }
+ 
++        foreach (var (key, theme) in t.AchievementTheme)
++        {
++            if (!Enum.TryParse<BoxTheme>(theme, true, out _))
++            {
++                errors.Add($"achievementTheme.{key}: '{theme}' is not a box theme.");
++            }
++        }
++
++        foreach (var (key, text) in t.GuildTheme)
++        {
++            foreach (var part in text.Split('|'))
++            {
++                if (!Enum.TryParse<BoxTheme>(part.Trim(), true, out _))
++                {
++                    errors.Add($"guildTheme.{key}: '{part}' is not a box theme.");
++                }
++            }
++        }
++
+         if (t.LeagueRankTier.Length == 0 || Array.Exists(t.LeagueRankTier, x => x is < 1 or > 6))
+         {
+-            errors.Add("leagueRankTier: needs tiers 1 to 6.");
++            errors.Add("leagueRankTier: needs grades 1 to 6.");
+         }
+ 
+         if (t.AbandonedBoxDays < 1)
+@@ -346,9 +878,158 @@ public sealed class LootTable
+             errors.Add("abandonedBoxDays: at least 1.");
+         }
+ 
++        // cc-P763: the rarity, the sources and the bags.
++        for (var g = 0; g < t.RarityOdds.Length; g++)
++        {
++            var row = t.RarityOdds[g];
++            if (row is not { Length: 4 } || Array.Exists(row, x => x < 0) || Math.Abs(Sum(row) - 100) > 0.001)
++            {
++                errors.Add($"rarityOdds[{g + 1}]: needs 4 percents (Common, Rare, Epic, Legendary), none negative, summing to 100.");
++            }
++        }
++
++        if (t.RarityBonus.Length != 4)
++        {
++            errors.Add($"rarityBonus: {t.RarityBonus.Length} rows, expected 4 (Common, Rare, Epic, Legendary).");
++        }
++
++        foreach (var step in t.RarityBonus)
++        {
++            if (step.ExtraSlots < 0 || step.StackMultiplier < 1 || step.PoolShift < 0 ||
++                !Enum.TryParse<FanfareLevel>(step.Fanfare, true, out _))
++            {
++                errors.Add($"rarityBonus.{step.Name}: extraSlots and poolShift at least 0, stackMultiplier at least 1, " +
++                           "fanfare Minor, Major or Capstone.");
++            }
++        }
++
++        foreach (var (name, grade) in new[] { ("fishGrade", t.FishGrade), ("rareFishGrade", t.RareFishGrade), ("plantGrade", t.PlantGrade) })
++        {
++            if (grade is < 1 or > 6)
++            {
++                errors.Add($"{name}: a grade 1 to 6.");
++            }
++        }
++
++        if (t.SosGrade.Length != 4 || Array.Exists(t.SosGrade, x => x is < 1 or > 6))
++        {
++            errors.Add("sosGrade: 4 grades (SOS levels 1 to 4), each 1 to 6.");
++        }
++
++        if (t.LeagueDiveEvery < 1)
++        {
++            errors.Add("leagueDiveEvery: at least 1.");
++        }
++
++        if (t.ReagentBagCut.Length != 4 || Array.Exists(t.ReagentBagCut, x => x is < 0 or > 100))
++        {
++            errors.Add("reagentBagCut: 4 percents (Common to Legendary), 0 to 100.");
++        }
++
++        if (t.BagOfHoldingNames.Length != 5 || t.BagOfHoldingCaps.Length != 5 || Array.Exists(t.BagOfHoldingCaps, x => x < 1))
++        {
++            errors.Add("bagOfHoldingNames and bagOfHoldingCaps: 5 each (sizes 1 to 5), every cap at least 1.");
++        }
++
++        if (t.Trophies.Length == 0 ||
++            Array.Exists(t.Trophies, p => p is not { Length: >= 1 and <= 2 } || Array.Exists(p, id => id is < 1 or > 0xFFFF)))
++        {
++            errors.Add("trophies: at least one, each one or two item IDs.");
++        }
++
++        // cc-P763: the contents. Every pool, every theme and every season with entries that can be made.
++        foreach (var pool in Enum.GetNames<BoxPool>())
++        {
++            if (!t.Pools.TryGetValue(pool, out var entries) || entries.Length == 0)
++            {
++                errors.Add($"pools.{pool}: no entries.");
++                continue;
++            }
++
++            CheckEntries($"pools.{pool}", entries, errors);
++        }
++
++        foreach (var theme in Enum.GetNames<BoxTheme>())
++        {
++            if (!t.Themes.TryGetValue(theme, out var def) || def.Slot.Length == 0)
++            {
++                errors.Add($"themes.{theme}: no slot entries.");
++                continue;
++            }
++
++            if (def.Ladder is not ("Metal" or "Wood" or "Leather" or "Craft" or "Grade"))
++            {
++                errors.Add($"themes.{theme}.ladder: '{def.Ladder}' is not Metal, Wood, Leather, Craft or Grade.");
++            }
++
++            if (def.Epic.Length == 0 || def.Legendary.Length == 0)
++            {
++                errors.Add($"themes.{theme}: the Epic and Legendary lists need an entry each.");
++            }
++
++            CheckEntries($"themes.{theme}.slot", def.Slot, errors);
++            CheckEntries($"themes.{theme}.epic", def.Epic, errors);
++            CheckEntries($"themes.{theme}.legendary", def.Legendary, errors);
++        }
++
++        foreach (var (name, season) in t.Seasons)
++        {
++            if (season.Items.Length == 0 || string.IsNullOrWhiteSpace(season.Label))
++            {
++                errors.Add($"seasons.{name}: needs a label and entries.");
++                continue;
++            }
++
++            CheckEntries($"seasons.{name}", season.Items, errors);
++        }
++
+         return errors.Count == 0 ? t : null;
+     }
+ 
++    private static double Sum(double[] row)
++    {
++        var s = 0.0;
++        foreach (var x in row)
++        {
++            s += x;
++        }
++
++        return s;
++    }
++
++    private static void CheckEntries(string where, PoolEntry[] entries, List<string> errors)
++    {
++        for (var i = 0; i < entries.Length; i++)
++        {
++            var e = entries[i];
++            var at = $"{where}[{i}] ({e.Item})";
++            if (e.Weight < 0 || e.Min < 0 || e.Max < 0 || e.PerGrade < 0 || e.MinGrade is < 1 or > 6 || e.MaxGrade < e.MinGrade)
++            {
++                errors.Add($"{at}: weight, min, max and perGrade at least 0; minGrade 1 to 6, maxGrade not below it.");
++            }
++
++            if (e.MinRarity != null && !Enum.TryParse<BoxRarity>(e.MinRarity, true, out _))
++            {
++                errors.Add($"{at}: minRarity '{e.MinRarity}' is not Common, Rare, Epic or Legendary.");
++            }
++
++            if (e.Chance != null && (e.Chance.Length != 4 || Array.Exists(e.Chance, c => c is < 0 or > 100)))
++            {
++                errors.Add($"{at}: chance needs 4 percents (Common to Legendary), 0 to 100.");
++            }
++
++            if (e.Skill != null && !Enum.TryParse<SkillName>(e.Skill, true, out _))
++            {
++                errors.Add($"{at}: skill '{e.Skill}' is not a skill.");
++            }
++
++            if (LootBoxRoller.CheckEntry(e) is { } problem)
++            {
++                errors.Add($"{at}: {problem}");
++            }
++        }
++    }
++
+     public static List<string> LoadOrWriteDefaults(string path)
+     {
+         if (!File.Exists(path))
+diff --git a/server/customizations/LootBoxes/LootBoxItems.cs b/server/customizations/LootBoxes/LootBoxItems.cs
+index 3906c52..51f793c 100644
+--- a/server/customizations/LootBoxes/LootBoxItems.cs
++++ b/server/customizations/LootBoxes/LootBoxItems.cs
+@@ -9,6 +9,9 @@
+ // EpicComponent          a component no recipe uses yet (F-42), with a System line hinting at undiscovered recipes.
+ // LootBoxPlaceholder     a clearly named stand-in for a reward whose real item does not exist yet (listed in the notes).
+ //
++// cc-P763: the box keeps the rarity rolled at its earn (version 1; a version 0 box from before is Common), and the last
++// three are no longer rolled (the plan, notes/cc-P759-loot-plan.md section 2); their classes stay so old saves load.
++//
+ // Account binding (no pinned mechanism binds to an account; pinned's Nontransferable binds to the backpack only): a
+ // bound item refuses a secure trade, a drop on the ground, a drop onto anyone, a drop into or onto anything not carried
+ // by a character of its account (so another player's pack, a house chest, a vendor), and a lift by anyone else.
+@@ -45,7 +48,7 @@ public static class AccountBinding
+     }
+ }
+ 
+-[SerializationGenerator(0, false)]
++[SerializationGenerator(1, false)]
+ public partial class LootBox : Item
+ {
+     [SerializableField(0)]
+@@ -87,6 +90,27 @@ public partial class LootBox : Item
+     [SerializableField(9)]
+     private List<int> _rareSlots;
+ 
++    // cc-P763: the rarity rolled at the earn (ClusterFLootBoxes.MakeBox).
++    [SerializableField(10)]
++    [SerializedCommandProperty(AccessLevel.GameMaster)]
++    private BoxRarity _rarity;
++
++    // cc-P763: a box saved before the rarity roll is Common.
++    private void MigrateFrom(V0Content content)
++    {
++        _theme = content.Theme;
++        _tier = content.Tier;
++        _boundAccount = content.BoundAccount;
++        _contents = content.Contents ?? new List<Item>();
++        _gold = content.Gold;
++        _renown = content.Renown;
++        _boxName = content.BoxName;
++        _earnedFor = content.EarnedFor;
++        _openedAt = content.OpenedAt;
++        _rareSlots = content.RareSlots ?? new List<int>();
++        _rarity = BoxRarity.Common;
++    }
++
+     [Constructible]
+     public LootBox() : this(BoxTheme.Explorer, 1, "", "staff")
+     {
+@@ -100,7 +124,7 @@ public partial class LootBox : Item
+         _earnedFor = earnedFor;
+         _contents = new List<Item>();
+         _rareSlots = new List<int>();
+-        var (name, hue) = LootBoxRoller.NameAndHue(theme, _tier, null);
++        var (name, hue) = LootBoxRoller.NameAndHue(theme, _tier, null, BoxRarity.Common);
+         _boxName = name;
+         Hue = hue;
+         Weight = 2.0;
+@@ -135,7 +159,7 @@ public partial class LootBox : Item
+     public override void GetProperties(IPropertyList list)
+     {
+         base.GetProperties(list);
+-        list.Add($"{LootBoxRoller.ThemeTitle(_theme)} box, tier {_tier}");
++        list.Add($"{LootBoxRoller.ThemeTitle(_theme)} box: {LootTable.Current.RarityOf(_rarity).Name}, grade {_tier}");
+         list.Add($"For: {_earnedFor}");
+         list.Add("Bound to your account");
+         list.Add("Open in a guarded town or your house");
+@@ -261,21 +285,30 @@ public partial class LootBox : Item
+         pm.SendGump(new LootBoxRevealGump(DefaultName, shown));
+         pm.SendMessage(0x44, $"System: You open the {DefaultName}.");
+ 
+-        var level = _tier >= 4 ? FanfareLevel.Major : FanfareLevel.Minor;
++        // cc-P763: Major from grade 4, and at least the rarity's fanfare, in the rarity's colour above Common.
++        var level = ClusterFLootBoxes.LevelFor(_tier, _rarity);
++        int? hue = _rarity > BoxRarity.Common ? LootTable.Current.RarityOf(_rarity).Hue : null;
++        rare |= LootTable.Current.RarityOf(_rarity).RareLine;
+ 
+         // cc-P242: the best item flies out of the box now, as it opens; the fanfare below follows when its window closes.
+-        ClusterFFlyingLoot.Play(pm, handedOver, level == FanfareLevel.Major);
++        ClusterFFlyingLoot.Play(pm, handedOver, level >= FanfareLevel.Major);
+         if (boxInBox)
+         {
+-            ClusterFFanfare.Play(pm, level, FanfareLines.BoxInBox, tier: _tier, voiceKey: $"box:{_boxName}");
++            ClusterFFanfare.Play(pm, level, FanfareLines.BoxInBox, tier: _tier, voiceKey: $"box:{_boxName}", hue: hue);
+         }
+         else if (rare)
+         {
+-            ClusterFFanfare.Play(pm, level, FanfareLines.BoxRare, tier: _tier, voiceKey: $"box:{_boxName}");
++            // A capstone's line would go to the whole shard; the rare line is the opener's, so it plays at Major.
++            ClusterFFanfare.Play(pm, level == FanfareLevel.Capstone ? FanfareLevel.Major : level, FanfareLines.BoxRare, tier: _tier,
++                voiceKey: $"box:{_boxName}", hue: hue);
++            if (level == FanfareLevel.Capstone)
++            {
++                ClusterFFanfare.Play(pm, level, "", tier: _tier, line: "", hue: hue);
++            }
+         }
+         else
+         {
+-            ClusterFFanfare.Play(pm, level, "", tier: _tier, line: "", voiceKey: $"box:{_boxName}");
++            ClusterFFanfare.Play(pm, level, "", tier: _tier, line: "", voiceKey: $"box:{_boxName}", hue: hue);
+         }
+ 
+         Delete();
+diff --git a/server/customizations/LootBoxes/LootBoxRewards.cs b/server/customizations/LootBoxes/LootBoxRewards.cs
+new file mode 100644
+index 0000000..115c34e
+--- /dev/null
++++ b/server/customizations/LootBoxes/LootBoxRewards.cs
+@@ -0,0 +1,244 @@
++// cc-P763: the items the diversified loot boxes give that the shard had no class for. Notes: shard-migration
++// notes/cc-P763-cont-loot-boxes-diversified.md (the plan: notes/cc-P759-loot-plan.md, section 6).
++//
++// BagOfHolding     TheArt's "Bags of Holding" (servuo.dev 1694, reference only in D:\UO\third-party\code\bags-of-holding),
++//                  ported: five sizes in one class, Lesser to Grand, an item cap (LootTable.BagOfHoldingCaps: 12, 24, 36,
++//                  48, 125) and no weight cap of its own. Changes from TheArt's, as the approved plan sets them: what is
++//                  inside still weighs what it weighs on the carrier (TheArt's counted it as nothing); it is not blessed;
++//                  the fifth, TheArt's "Rare Bag of Holding", is the "Grand Bag of Holding", so "Rare" means only the
++//                  rarity roll. The hues are TheArt's.
++// ReagentBag       Bittiez's "Regeant Bag" (servuo.dev 1895, reference only in D:\UO\third-party\code\reagent-bag), ported:
++//                  holds only reagents and cuts their weight by its percent (25, 50, 75 or 90 by the box's rarity,
++//                  LootTable.ReagentBagCut). Bittiez's Reduction setter never stored its value and its load read an int
++//                  for a double; the port stores the cut as a whole percent. The weight change it passes up to the
++//                  carrier is the reduced one, so the cut reaches the backpack (stock Container passes every child's
++//                  full change up, pinned Server/Items/Container.cs UpdateTotal).
++// LootDecor        a piece of registered art (player-package registry.csv) as a house item: a painting, a crystal ball,
++//                  a trophy. A wall piece with two facings turns when double-clicked in the pack.
++// LeagueTitleDeed  a League title (LeagueTitles) for the account; used, it adds the title to the account's titles.
++
++#nullable enable
++
++using System;
++using ModernUO.Serialization;
++using Server.Engines.LeagueRewards;
++using Server.LootBoxes;
++using Server.Mobiles;
++
++namespace Server.Items;
++
++[SerializationGenerator(0, false)]
++public partial class BagOfHolding : Bag
++{
++    // TheArt's hues, Lesser to Rare (here Grand).
++    private static readonly int[] Hues = [1925, 1923, 1927, 1922, 1919];
++
++    [SerializableField(0)]
++    [SerializedCommandProperty(AccessLevel.GameMaster)]
++    private int _size;
++
++    [Constructible]
++    public BagOfHolding() : this(2)
++    {
++    }
++
++    [Constructible]
++    public BagOfHolding(int size)
++    {
++        _size = Math.Clamp(size, 1, 5);
++        Hue = Hues[_size - 1];
++        Weight = 1.0;
++    }
++
++    private int Step => Math.Clamp(_size, 1, 5);
++
++    public override string DefaultName => LootTable.Current.BagOfHoldingNames[Step - 1];
++
++    public override int DefaultMaxItems => LootTable.Current.BagOfHoldingCaps[Step - 1];
++
++    // No weight cap of its own; the carrier's still counts what is inside (Container.CheckHold asks the parents).
++    public override int DefaultMaxWeight => 0;
++
++    public override void GetProperties(IPropertyList list)
++    {
++        base.GetProperties(list);
++        list.Add($"Holds up to {DefaultMaxItems} items, of any weight");
++    }
++}
++
++[SerializationGenerator(0, false)]
++public partial class ReagentBag : Bag
++{
++    [SerializableField(0)]
++    [SerializedCommandProperty(AccessLevel.GameMaster)]
++    private int _weightCut;
++
++    // Not saved: the uncut weight of what is inside, rebuilt by UpdateTotals at load.
++    private int _rawWeight;
++
++    [Constructible]
++    public ReagentBag() : this(90)
++    {
++    }
++
++    [Constructible]
++    public ReagentBag(int weightCut)
++    {
++        _weightCut = Math.Clamp(weightCut, 0, 100);
++        Hue = 673; // Bittiez's
++        Weight = 1.0;
++    }
++
++    public override string DefaultName => "a reagent bag";
++
++    public int Cut(int raw) => raw - raw * Math.Clamp(_weightCut, 0, 100) / 100;
++
++    public override bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight)
++    {
++        if (item is not BaseReagent)
++        {
++            if (message)
++            {
++                m.SendMessage("Only reagents go in this bag.");
++            }
++
++            return false;
++        }
++
++        return base.CheckHold(m, item, message, checkItems, plusItems, plusWeight);
++    }
++
++    public override int GetTotal(TotalType type) => type == TotalType.Weight ? Cut(_rawWeight) : base.GetTotal(type);
++
++    public override void UpdateTotal(Item sender, TotalType type, int delta)
++    {
++        if (type == TotalType.Weight && sender != this && delta != 0 && !sender.IsVirtualItem)
++        {
++            var before = Cut(_rawWeight);
++            _rawWeight += delta;
++            base.UpdateTotal(sender, type, Cut(_rawWeight) - before);
++            return;
++        }
++
++        base.UpdateTotal(sender, type, delta);
++    }
++
++    public override void UpdateTotals()
++    {
++        base.UpdateTotals();
++        _rawWeight = base.GetTotal(TotalType.Weight);
++    }
++
++    public override void GetProperties(IPropertyList list)
++    {
++        base.GetProperties(list);
++        list.Add($"Reagents only; they weigh {_weightCut}% less inside");
++    }
++}
++
++[SerializationGenerator(0, false)]
++public partial class LootDecor : Item
++{
++    [SerializableField(0)]
++    [SerializedCommandProperty(AccessLevel.GameMaster)]
++    private int _altId;
++
++    [Constructible]
++    public LootDecor() : this(0x3C9E, 0, "a painting")
++    {
++    }
++
++    public LootDecor(int itemId, int altId, string name) : base(itemId)
++    {
++        _altId = altId;
++        Name = name;
++        Weight = 5.0;
++    }
++
++    public override void GetProperties(IPropertyList list)
++    {
++        base.GetProperties(list);
++        list.Add(_altId != 0 ? "House decor; double-click in your pack to turn it" : "House decor");
++    }
++
++    public override void OnDoubleClick(Mobile from)
++    {
++        if (_altId == 0)
++        {
++            return;
++        }
++
++        if (!IsChildOf(from.Backpack))
++        {
++            from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
++            return;
++        }
++
++        var id = ItemID;
++        ItemID = _altId;
++        AltId = id;
++    }
++}
++
++[SerializationGenerator(0, false)]
++public partial class LeagueTitleDeed : Item
++{
++    [SerializableField(0)]
++    [SerializedCommandProperty(AccessLevel.GameMaster)]
++    private string _titleKey;
++
++    [Constructible]
++    public LeagueTitleDeed() : this(LeagueTitles.RegisteredAdventurer)
++    {
++    }
++
++    public LeagueTitleDeed(string titleKey) : base(0x14F0)
++    {
++        _titleKey = titleKey;
++        Hue = 1153;
++        Weight = 1.0;
++    }
++
++    public override string DefaultName => $"a League title deed: {LeagueTitles.Display(_titleKey)}";
++
++    /// <summary>A deed for a League title the account can buy and does not hold; null when it holds them all.</summary>
++    public static LeagueTitleDeed? ForAccount(PlayerMobile pm)
++    {
++        var data = pm.Account is Accounting.IAccount acct ? ClusterFAccountPersistence.GetOrCreate(acct) : null;
++        var open = new System.Collections.Generic.List<string>();
++        foreach (var t in LeagueTitles.All)
++        {
++            if (t.FreeAtAp < 0 && !t.HiddenUntilHeld && (data == null || !LeagueTitles.Holds(data, t.Key)))
++            {
++                open.Add(t.Key);
++            }
++        }
++
++        return open.Count > 0 ? new LeagueTitleDeed(open[Utility.Random(open.Count)]) : null;
++    }
++
++    public override void OnDoubleClick(Mobile from)
++    {
++        if (!IsChildOf(from.Backpack))
++        {
++            from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
++            return;
++        }
++
++        if (from.Account is not Accounting.IAccount acct)
++        {
++            return;
++        }
++
++        var data = ClusterFAccountPersistence.GetOrCreate(acct);
++        if (LeagueTitles.Holds(data, _titleKey))
++        {
++            from.SendMessage(0x22, $"System: Your account already holds {LeagueTitles.Display(_titleKey)}.");
++            return;
++        }
++
++        data.LeagueTitles.Owned.Add(_titleKey);
++        from.SendMessage(0x44, $"System: {LeagueTitles.Display(_titleKey)} is now one of your account's League titles. Choose it in the League shop.");
++        Delete();
++    }
++}
+diff --git a/server/customizations/LootBoxes/LootBoxRoller.cs b/server/customizations/LootBoxes/LootBoxRoller.cs
+index 44411c1..66bbaff 100644
+--- a/server/customizations/LootBoxes/LootBoxRoller.cs
++++ b/server/customizations/LootBoxes/LootBoxRoller.cs
+@@ -1,16 +1,23 @@
+ // cc-P79 (F-40): what goes in a box, rolled the moment it is earned. Notes: shard-migration notes/cc-P79-loot-boxes-fanfare.md.
++// cc-P763: the contents come from the table's entries (LootTable.Pools, Themes, Seasons; notes/cc-P759-loot-plan.md and
++// notes/cc-P763-cont-loot-boxes-diversified.md), and the rarity rolled at the earn adds to them.
+ //
+-// Slots (LootTable.Slots: 2/3/3/4/5/6): one theme slot, one currency slot (gold, plus Renown from tier 2), the rest from
+-// the general pool by the tier's weights. Scaling: the character's level (ClusterFLootBoxes.LevelOf, a placeholder until
+-// F-12 levels exist) sets magic gear intensity and potion strength; the related skill sets the resource tier of the theme
+-// slot. Box gear is plain quality (never exceptional) with a few modest properties, so it stays below an exceptional
+-// crafted piece of the same material; no item on the shard is levelable, so none of it is.
++// Slots (LootTable.Slots: 2/3/3/4/5/6 by grade, plus the rarity's ExtraSlots): one theme slot, one currency slot (gold,
++// plus Renown from grade 2, both times the rarity's stack multiplier), the rest from the general pools by the grade's
++// weights, the rarity's PoolShift added to Rare and Cosmetics. An Epic box adds its theme's Epic list, a Legendary its
++// Legendary list; a box earned while a season is on adds one item from that season's pool.
++//
++// Scaling: the character's level (ClusterFLootBoxes.LevelOf, a placeholder until F-12 levels exist) sets magic gear
++// intensity and potion strength; the related skill sets the resource tier of the theme slot. Box gear is plain quality
++// (never exceptional) with a few modest properties, so it stays below an exceptional crafted piece of the same material;
++// no item on the shard is levelable, so none of it is.
+ 
+ #nullable enable
+ 
+ using System;
+ using System.Collections.Generic;
+ using Server.Engines.Craft;
++using Server.Engines.Plants;
+ using Server.Items;
+ using Server.Mobiles;
+ 
+@@ -27,34 +34,52 @@ public static class LootBoxRoller
+         BoxTheme.Explorer => "Explorer's",
+         BoxTheme.Tamer => "Tamer's",
+         BoxTheme.Scholar => "Scholar's",
++        BoxTheme.Fisher => "Fisher's",
++        BoxTheme.Sailor => "Sailor's",
++        BoxTheme.Herbalist => "Herbalist's",
++        BoxTheme.Delver => "Delver's",
++        BoxTheme.LeagueDive => "League Dive",
+         _ => theme.ToString()
+     };
+ 
+     // -- Names and hues --
+ 
+-    /// <summary>
+-    /// The box's name and hue: a resource theme by its ladder (Miner's metal, Woodsman's wood, Hunter's leather, Artisan's
+-    /// by its craft), the rest by rarity. Tier 1 to 6 picks the ladder step.
+-    /// </summary>
+-    public static (string Name, int Hue) NameAndHue(BoxTheme theme, int tier, SkillName? craft)
++    /// <summary>The grade's step name: a resource theme by its ladder (Artisan's and Society's by the craft), the rest by grade.</summary>
++    public static string GradeName(BoxTheme theme, int tier, SkillName? craft)
+     {
+         var t = LootTable.Current;
+-        var ladder = theme switch
++        var ladder = t.ThemeOf(theme).Ladder switch
+         {
+-            BoxTheme.Miner => t.MetalLadder,
+-            BoxTheme.Woodsman => t.WoodLadder,
+-            BoxTheme.Hunter => t.LeatherLadder,
+-            BoxTheme.Artisan => craft switch
++            "Metal" => t.MetalLadder,
++            "Wood" => t.WoodLadder,
++            "Leather" => t.LeatherLadder,
++            "Craft" => craft switch
+             {
+-                SkillName.Carpentry or SkillName.Fletching => t.WoodLadder,
++                SkillName.Carpentry or SkillName.Fletching or SkillName.Lumberjacking => t.WoodLadder,
+                 SkillName.Tailoring => t.LeatherLadder,
+                 _ => t.MetalLadder
+             },
+-            _ => t.Rarity
++            _ => t.Grades
+         };
+ 
+-        var step = ladder[Math.Clamp(tier, 1, 6) - 1];
+-        return (step.Name, LootTable.HueOf(step));
++        return ladder[Math.Clamp(tier, 1, 6) - 1].Name;
++    }
++
++    /// <summary>
++    /// cc-P763: the box's name and hue. The name puts the season (when one is on), the rarity, the grade and the theme
++    /// together ("Halloween Epic Fine Explorer's"; the box adds " Box"); the hue is the rarity's (grey, blue, purple, orange).
++    /// </summary>
++    public static (string Name, int Hue) NameAndHue(BoxTheme theme, int tier, SkillName? craft,
++        BoxRarity rarity = BoxRarity.Common, string? seasonLabel = null)
++    {
++        var step = LootTable.Current.RarityOf(rarity);
++        var name = $"{step.Name} {GradeName(theme, tier, craft)} {ThemeTitle(theme)}";
++        if (!string.IsNullOrEmpty(seasonLabel))
++        {
++            name = $"{seasonLabel} {name}";
++        }
++
++        return (name, step.Hue);
+     }
+ 
+     // -- Resource tiers by skill --
+@@ -100,7 +125,7 @@ public static class LootBoxRoller
+         return best;
+     }
+ 
+-    // The ladder's resource for a general-pool roll: by tier, not skill (tier 6 reaches the top).
++    // The ladder's resource for a general-pool roll: by grade, not skill (grade 6 reaches the top).
+     private static CraftResource ResourceForTier((CraftResource Res, double Skill)[] ladder, int tier) =>
+         ladder[Math.Clamp((int)Math.Round((ladder.Length - 1) * (tier - 1) / 5.0), 0, ladder.Length - 1)].Res;
+ 
+@@ -138,64 +163,123 @@ public static class LootBoxRoller
+         public readonly List<(Item Item, bool Rare)> Items = new();
+         public readonly List<BoxPool> Pools = new();
+ 
+-        // cc-P82: the tier the contents rolled at (the box's own, or one higher on a Fortune's Favor roll).
++        // cc-P82: the grade the contents rolled at (the box's own, or one higher on a Fortune's Favor roll).
+         public int QualityTier;
++
++        // cc-P763: the rarity rolled at the earn, and the season whose slot it got (null out of season).
++        public BoxRarity Rarity;
++        public string? Season;
+     }
+ 
+-    /// <summary>Rolls a box's whole contents for this character now. Nothing is rolled again at opening.</summary>
+-    public static Rolled Roll(PlayerMobile pm, BoxTheme theme, int tier, SkillName? relatedSkill, string? sourceName = null)
++    // Everything one roll needs.
++    private sealed class Ctx
++    {
++        public required PlayerMobile Pm;
++        public required BoxTheme Theme;
++        public required int Grade;
++        public required BoxRarity Rarity;
++        public required SkillName? Craft;
++        public required string Account;
++        public required string? SourceName;
++        public required int Level;
++        public required Rolled R;
++        public required int BoxGrade;
++
++        public double Stack => LootTable.Current.RarityOf(Rarity).StackMultiplier;
++    }
++
++    /// <summary>
++    /// Rolls a box's whole contents for this character now. Nothing is rolled again at opening. cc-P763: the rarity and
++    /// the season are the earn's (ClusterFLootBoxes.MakeBox rolls them); a caller that names neither gets a Common box
++    /// with no season slot, as every box was before.
++    /// </summary>
++    public static Rolled Roll(PlayerMobile pm, BoxTheme theme, int tier, SkillName? relatedSkill, string? sourceName = null,
++        BoxRarity rarity = BoxRarity.Common, string? season = null)
+     {
+         var t = LootTable.Current;
+         tier = Math.Clamp(tier, 1, 6);
+-        var level = ClusterFLootBoxes.LevelOf(pm);
+-        var account = pm.Account?.Username ?? "";
+-        var craft = theme == BoxTheme.Artisan ? relatedSkill ?? BestCraft(pm) : relatedSkill;
+-        var r = new Rolled();
+-
+-        (r.BoxName, r.Hue) = NameAndHue(theme, tier, craft);
+-        r.Gold = t.Gold[tier - 1];
+-        r.Renown = t.Renown[tier - 1];
+-
+-        // cc-P82 Fortune's Favor: the contents may roll one quality tier higher. The number of slots and the currency
+-        // slot's gold stay this box's own tier's, so the number of items never changes; what fills each slot (and a
+-        // theme stack's size, as tier always set it) follows the quality tier.
++        var craft = theme is BoxTheme.Artisan or BoxTheme.Society ? relatedSkill ?? BestCraft(pm) : relatedSkill;
++        var step = t.RarityOf(rarity);
++        var seasonDef = season != null && t.Seasons.TryGetValue(season, out var s) ? s : null;
++        var r = new Rolled { Rarity = rarity, Season = seasonDef != null ? season : null };
++
++        (r.BoxName, r.Hue) = NameAndHue(theme, tier, craft, rarity, seasonDef?.Label);
++        r.Gold = (int)Math.Round(t.Gold[tier - 1] * step.StackMultiplier);
++        r.Renown = (int)Math.Round(t.Renown[tier - 1] * step.StackMultiplier);
++
++        // cc-P82 Fortune's Favor: the contents may roll one quality grade higher. The number of slots and the currency
++        // slot's gold stay this box's own grade's, so the number of items never changes; what fills each slot (and a
++        // theme stack's size) follows the quality grade.
+         var quality = ClusterFImbueEffects.FortuneQualityTier(pm, tier);
+         r.QualityTier = quality;
+ 
++        var c = new Ctx
++        {
++            Pm = pm, Theme = theme, Grade = quality, Rarity = rarity, Craft = craft, Account = pm.Account?.Username ?? "",
++            SourceName = sourceName, Level = ClusterFLootBoxes.LevelOf(pm), R = r, BoxGrade = tier
++        };
++
++        var def = t.ThemeOf(theme);
++
+         // The theme slot.
+-        foreach (var item in ThemeSlot(pm, theme, quality, craft, account, sourceName, r))
++        foreach (var item in GiveList(def.Slot, c))
+         {
+             r.Items.Add((item, false));
+         }
+ 
+-        // The general pool: every slot past theme and currency.
+-        for (var i = 2; i < t.SlotsFor(tier); i++)
++        // The general pool: every slot past theme and currency, and the rarity's extra slots.
++        var poolSlots = t.SlotsFor(tier) - 2 + step.ExtraSlots;
++        for (var i = 0; i < poolSlots; i++)
+         {
+-            var pool = PickPool(quality);
++            var pool = PickPool(quality, rarity);
+             r.Pools.Add(pool);
+-            var item = PoolItem(pool, pm, quality, level, account, theme);
++            var item = PoolItem(pool, c);
+             if (item != null)
+             {
+                 r.Items.Add((item, pool == BoxPool.Rare));
+             }
+         }
+ 
++        // cc-P763: the rarity's guaranteed list.
++        var guaranteed = rarity switch
++        {
++            BoxRarity.Epic => def.Epic,
++            BoxRarity.Legendary => def.Legendary,
++            _ => []
++        };
++
++        foreach (var item in GiveList(guaranteed, c))
++        {
++            r.Items.Add((item, true));
++        }
++
++        // cc-P763: the season's slot.
++        if (seasonDef != null && PickEntry(seasonDef.Items, c) is { } seasonal && Make(seasonal, c) is { } seasonItem)
++        {
++            r.Items.Add((seasonItem, false));
++        }
++
+         return r;
+     }
+ 
+-    public static BoxPool PickPool(int tier)
++    /// <summary>A pool by the grade's weights; cc-P763: a rarity above Common adds its PoolShift to Rare and Cosmetics.</summary>
++    public static BoxPool PickPool(int tier, BoxRarity rarity = BoxRarity.Common)
+     {
+         var t = LootTable.Current;
++        var shift = t.RarityOf(rarity).PoolShift;
++
++        int WeightOf(BoxPool pool) => t.Weight(pool, tier) + (pool is BoxPool.Rare or BoxPool.Cosmetics ? shift : 0);
++
+         var total = 0;
+         foreach (var pool in Enum.GetValues<BoxPool>())
+         {
+-            total += t.Weight(pool, tier);
++            total += WeightOf(pool);
+         }
+ 
+         var roll = Utility.Random(Math.Max(1, total));
+         foreach (var pool in Enum.GetValues<BoxPool>())
+         {
+-            roll -= t.Weight(pool, tier);
++            roll -= WeightOf(pool);
+             if (roll < 0)
+             {
+                 return pool;
+@@ -225,131 +309,290 @@ public static class LootBoxRoller
+         return best;
+     }
+ 
+-    private static List<Item> ThemeSlot(PlayerMobile pm, BoxTheme theme, int tier, SkillName? craft, string account, string? sourceName, Rolled r)
++    // -- Entries --
++
++    /// <summary>A theme slot or list: each entry with no group (a Chance entry by its chance), and one per group by weight.</summary>
++    private static List<Item> GiveList(PoolEntry[] list, Ctx c)
+     {
+-        var list = new List<Item>();
+-        void Add(Item? i)
++        var made = new List<Item>();
++        var groups = new Dictionary<string, List<PoolEntry>>(StringComparer.OrdinalIgnoreCase);
++
++        foreach (var e in list)
+         {
+-            if (i != null)
++            if (!e.OfferedAt(c.Grade, c.Rarity))
+             {
+-                list.Add(i);
++                continue;
+             }
+-        }
+ 
+-        switch (theme)
+-        {
+-            case BoxTheme.Miner:
+-                Add(ResourceStack(ResourceFor(Metals, pm.Skills[SkillName.Mining].Base), 1, 10 + 10 * tier));
+-                Add(Gems(tier));
+-                if (Utility.RandomDouble() < 0.1 * tier)
++            if (!string.IsNullOrEmpty(e.Group))
++            {
++                if (!groups.TryGetValue(e.Group, out var g))
+                 {
+-                    Add(new LootBoxPlaceholder("Ore Satchel Upgrade"));
++                    groups[e.Group] = g = new List<PoolEntry>();
+                 }
+ 
+-                break;
+-            case BoxTheme.Woodsman:
+-                Add(ResourceStack(ResourceFor(Woods, pm.Skills[SkillName.Lumberjacking].Base), 0, 10 + 10 * tier));
+-                if (Utility.RandomDouble() < 0.1 * tier)
+-                {
+-                    Add(new LootBoxPlaceholder("Grove Ledger Page"));
+-                }
++                g.Add(e);
++                continue;
++            }
+ 
+-                break;
+-            case BoxTheme.Artisan:
+-                var skill = craft ?? SkillName.Blacksmith;
+-                Add(CraftResourcesFor(skill, pm.Skills[skill].Base, tier));
+-                Add(CraftRecipe(skill, tier));
+-                break;
+-            case BoxTheme.Hunter:
+-                Add(ResourceStack(ResourceForTier(Leathers, tier), 1, 10 + 5 * tier)); // hides: the monster part
+-                Add(SlayerWeapon(tier));
+-                break;
+-            case BoxTheme.Explorer:
+-                Add(new TreasureMap(Math.Clamp(tier, 1, 6), Map.Trammel));
+-                Add(new BlankMap());
+-                break;
+-            case BoxTheme.Tamer:
+-                Add(new LootBoxPlaceholder("Companion Treat"));
+-                Add(RewardMounts.LootBoxMount(theme, tier, Utility.RandomDouble(), Utility.Random(1000))); // cc-P365
+-                break;
+-            case BoxTheme.Scholar:
+-                Add(Reagents(tier));
+-                Add(Loot.RandomScroll(0, Math.Clamp(tier * 8, 8, 63), SpellbookType.Regular));
+-                break;
+-            case BoxTheme.Boss:
+-                Add(new LootBoxPlaceholder($"Trophy of {sourceName ?? "a boss"}"));
+-                Add(RewardMounts.LootBoxMount(theme, tier, Utility.RandomDouble(), Utility.Random(1000))); // cc-P365
+-                break;
+-            case BoxTheme.Loop:
+-                Add(new LoopScrollFragment());
+-                Add(new BoundCosmeticSash(account, $"Loop {ClusterFLootBoxes.CurrentLoop(pm)}", LootTable.HueOf(LootTable.Current.Rarity[5])));
+-                break;
+-            case BoxTheme.League:
+-                r.Renown += 50 * tier;
+-                Add(new LootBoxPlaceholder("League Shop Discount Token"));
+-                break;
++            if (e.Chance != null && Utility.Random(100) >= e.Chance[Math.Clamp((int)c.Rarity, 0, 3)])
++            {
++                continue;
++            }
++
++            if (Make(e, c) is { } item)
++            {
++                made.Add(item);
++            }
+         }
+ 
+-        return list;
++        foreach (var g in groups.Values)
++        {
++            if (PickEntry(g.ToArray(), c) is { } e && Make(e, c) is { } item)
++            {
++                made.Add(item);
++            }
++        }
++
++        return made;
+     }
+ 
+-    private static Item? PoolItem(BoxPool pool, PlayerMobile pm, int tier, int level, string account, BoxTheme theme) => pool switch
++    /// <summary>One entry by weight among those offered at this grade and rarity; null when none is.</summary>
++    private static PoolEntry? PickEntry(PoolEntry[] entries, Ctx c, Func<PoolEntry, bool>? allow = null)
+     {
+-        BoxPool.Consumables => Consumable(level, tier),
+-        BoxPool.Resources => GeneralResource(tier),
+-        BoxPool.MagicGear => MagicGear(level, tier),
+-        BoxPool.Recipes => Recipe(tier),
+-        BoxPool.Cosmetics => new BoundCosmeticSash(account, "Box", UniqueHue()),
+-        BoxPool.Rare => RareItem(pm, tier, account, theme),
+-        _ => null
+-    };
++        var total = 0;
++        foreach (var e in entries)
++        {
++            if (e.OfferedAt(c.Grade, c.Rarity) && (allow == null || allow(e)))
++            {
++                total += e.Weight;
++            }
++        }
+ 
+-    // -- Pool items --
++        if (total <= 0)
++        {
++            return null;
++        }
+ 
+-    private static Item? Consumable(int level, int tier)
+-    {
+-        if (Utility.RandomBool())
++        var roll = Utility.Random(total);
++        foreach (var e in entries)
+         {
+-            return new Bandage(10 + 10 * tier);
++            if (!e.OfferedAt(c.Grade, c.Rarity) || allow != null && !allow(e))
++            {
++                continue;
++            }
++
++            roll -= e.Weight;
++            if (roll < 0)
++            {
++                return e;
++            }
+         }
+ 
+-        Type[] potions = level < 30
+-            ? [typeof(LesserHealPotion), typeof(LesserCurePotion), typeof(RefreshPotion)]
+-            : level < 70
+-                ? [typeof(HealPotion), typeof(CurePotion), typeof(RefreshPotion)]
+-                : [typeof(GreaterHealPotion), typeof(GreaterCurePotion), typeof(TotalRefreshPotion), typeof(GreaterStrengthPotion), typeof(GreaterAgilityPotion)];
++        return null;
++    }
+ 
+-        var potion = potions[Utility.Random(potions.Length)].CreateInstance<Item>();
+-        if (potion is { Stackable: true })
++    /// <summary>A pool's item. A pick that makes nothing (a box in a box at grade 1) is picked again; bandages at the last.</summary>
++    private static Item? PoolItem(BoxPool pool, Ctx c, Func<PoolEntry, bool>? allow = null)
++    {
++        var entries = LootTable.Current.PoolEntries(pool);
++        for (var tries = 0; tries < 4; tries++)
+         {
+-            potion.Amount = 2 + tier;
++            if (PickEntry(entries, c, allow) is { } e && Make(e, c) is { } item)
++            {
++                return item;
++            }
+         }
+ 
+-        return potion;
++        return new Bandage(10 + 10 * c.Grade);
+     }
+ 
+-    private static Item? GeneralResource(int tier) => Utility.Random(4) switch
++    /// <summary>The amount an entry gives: Min to Max, plus PerGrade per grade, times the rarity's stack multiplier.</summary>
++    private static int AmountOf(PoolEntry e, Ctx c)
+     {
+-        0 => ResourceStack(ResourceForTier(Metals, tier), 0, 10 * tier),
+-        1 => ResourceStack(ResourceForTier(Woods, tier), 1, 10 * tier),
+-        2 => ResourceStack(ResourceForTier(Leathers, tier), 0, 10 * tier),
+-        _ => Gems(tier)
++        var n = e.Max > e.Min ? Utility.RandomMinMax(e.Min, e.Max) : e.Min;
++        n += e.PerGrade * c.Grade;
++        return Math.Max(1, (int)Math.Round(n * c.Stack));
++    }
++
++    /// <summary>The specials an entry may name (made in code below); every other Item is a type name.</summary>
++    public static readonly HashSet<string> Specials = new(StringComparer.OrdinalIgnoreCase)
++    {
++        "@Ore", "@Boards", "@Hides", "@Metal", "@Wood", "@Leather", "@Gems", "@CraftResources", "@PatternBook",
++        "@CraftTool", "@RunicTool", "@SlayerWeapon", "@TreasureMap", "@Mount", "@Reagents", "@Scroll", "@Trophy",
++        "@LoopSash", "@LeagueCloak", "@LeagueTitle", "@Potion", "@MagicGear", "@Recipe", "@BoxSash", "@BoxInBox",
++        "@MuleSchematic", "@BagOfHolding", "@ReagentBag", "@Decor", "@RenownBonus", "@RarePick", "@Seed", "@RunicMallet"
+     };
+ 
+-    private static Item Gems(int tier)
++    /// <summary>Why an entry cannot be made, or null when it can (LootTable.Parse refuses a file with any).</summary>
++    public static string? CheckEntry(PoolEntry e)
++    {
++        if (e.Item.StartsWith('@'))
++        {
++            if (!Specials.Contains(e.Item))
++            {
++                return $"'{e.Item}' is not a special ({string.Join(", ", Specials)}).";
++            }
++
++            return e.Item.ToLowerInvariant() switch
++            {
++                "@decor" when e.ItemId is < 1 or > 0xFFFF || string.IsNullOrWhiteSpace(e.Name) => "@Decor needs an itemId and a name.",
++                "@bagofholding" when e.Arg is < 1 or > 5 => "@BagOfHolding needs arg 1 to 5 (the bag's size).",
++                "@treasuremap" when e.Arg is < 0 or > 6 => "@TreasureMap's arg is a map level 1 to 6 (0: the grade).",
++                "@runictool" when e.Arg is < 0 or > 1 => "@RunicTool's arg is 0 (the lowest material) or 1 (one step up).",
++                _ => null
++            };
++        }
++
++        var type = AssemblyHandler.FindTypeByName(e.Item);
++        if (type == null || !typeof(Item).IsAssignableFrom(type) || type.IsAbstract)
++        {
++            return $"'{e.Item}' is not an item type.";
++        }
++
++        // Made as CreateInstance makes it: a constructor whose every parameter is optional counts (Bandage(int amount = 1)).
++        return ActivatorExtensions.GetConstructor(type, null, Type.EmptyTypes, out _) == null
++            ? $"'{e.Item}' cannot be made with no arguments."
++            : null;
++    }
++
++    /// <summary>Makes an entry's item for this roll, or null (a mount chance that missed, a Renown bonus, no recipe).</summary>
++    private static Item? Make(PoolEntry e, Ctx c)
++    {
++        Item? item;
++        if (!e.Item.StartsWith('@'))
++        {
++            item = AssemblyHandler.FindTypeByName(e.Item)?.CreateInstance<Item>();
++            if (item == null)
++            {
++                return null;
++            }
++
++            // A stackable takes the entry's amount; a non-stackable is one (the stack multiplier never makes copies).
++            if (item.Stackable)
++            {
++                item.Amount = AmountOf(e, c);
++            }
++
++            item.Personalize(c.Pm);
++        }
++        else
++        {
++            item = MakeSpecial(e, c);
++        }
++
++        if (item != null && e.Hue != 0)
++        {
++            item.Hue = e.Hue;
++        }
++
++        return item;
++    }
++
++    // A Noted joke item is personalized to its opener, as the Dented Box's is.
++    private static void Personalize(this Item item, PlayerMobile pm)
++    {
++        if (item is INotedJoke joke)
++        {
++            joke.Personalize(pm);
++        }
++    }
++
++    private static Item? MakeSpecial(PoolEntry e, Ctx c)
++    {
++        var t = LootTable.Current;
++        var pm = c.Pm;
++        var craft = e.Skill != null && Enum.TryParse<SkillName>(e.Skill, true, out var named) ? named : c.Craft ?? SkillName.Blacksmith;
++
++        switch (e.Item.ToLowerInvariant())
++        {
++            case "@ore": return ResourceStack(ResourceFor(Metals, pm.Skills[SkillName.Mining].Base), 1, AmountOf(e, c));
++            case "@boards": return ResourceStack(ResourceFor(Woods, pm.Skills[SkillName.Lumberjacking].Base), 1, AmountOf(e, c));
++            case "@hides": return ResourceStack(ResourceForTier(Leathers, c.Grade), 1, AmountOf(e, c));
++            case "@metal": return ResourceStack(ResourceForTier(Metals, c.Grade), 0, AmountOf(e, c));
++            case "@wood": return ResourceStack(ResourceForTier(Woods, c.Grade), 1, AmountOf(e, c));
++            case "@leather": return ResourceStack(ResourceForTier(Leathers, c.Grade), 0, AmountOf(e, c));
++            case "@gems": return Gems(AmountOf(e, c));
++            case "@reagents": return Reagents(AmountOf(e, c));
++            case "@craftresources": return CraftResourcesFor(craft, pm.Skills[craft].Base, AmountOf(e, c));
++            case "@patternbook": return CraftRecipe(craft, c.Grade, c);
++            case "@crafttool": return CraftTool(craft);
++            case "@runictool": return RunicTool(craft, e.Arg) ?? PoolItem(BoxPool.Rare, c, NoRecursion);
++            case "@slayerweapon": return SlayerWeapon(e.Arg, c.Level);
++            case "@treasuremap": return new TreasureMap(e.Arg > 0 ? e.Arg : Math.Clamp(c.Grade, 1, 6), Map.Trammel);
++            case "@mount": return RewardMounts.LootBoxMount(c.Theme, c.Grade, Utility.RandomDouble(), Utility.Random(1000)); // cc-P365
++            case "@scroll": return Loot.RandomScroll(0, Math.Clamp(c.Grade * 8, 8, 63), SpellbookType.Regular);
++            case "@trophy": return Trophy(c.SourceName);
++            case "@loopsash":
++                return new BoundCosmeticSash(c.Account, $"Loop {ClusterFLootBoxes.CurrentLoop(pm)}", LootTable.HueOf(t.Grades[5]));
++            case "@leaguecloak":
++                return new BoundCosmeticSash(c.Account, "League", ClusterFLeagueRanks.LabelHue(Math.Max(1, ClusterFLeagueRanks.GetRank(pm))));
++            case "@leaguetitle": return LeagueTitleDeed.ForAccount(pm) ?? PoolItem(BoxPool.Rare, c, NoTitle);
++            case "@potion": return Potion(c.Level, AmountOf(e, c));
++            case "@magicgear": return MagicGear(c.Level, c.Grade);
++            case "@recipe": return Recipe(pm, c.Grade);
++            case "@boxsash": return new BoundCosmeticSash(c.Account, "Box", UniqueHue());
++            case "@boxinbox": return c.BoxGrade > 1 ? BoxInBox(pm, c.Theme, c.BoxGrade - 1) : null;
++            case "@muleschematic": return MuleSchematic(c.Grade);
++            case "@bagofholding": return new BagOfHolding(e.Arg);
++            case "@reagentbag": return new ReagentBag(t.ReagentBagCut[Math.Clamp((int)c.Rarity, 0, 3)]);
++            case "@decor": return new LootDecor(e.ItemId, e.AltId, e.Name ?? "a decoration");
++            case "@renownbonus":
++                c.R.Renown += Math.Max(t.Renown[c.BoxGrade - 1] * e.Arg / 100, 25 * c.Grade);
++                return null;
++            case "@rarepick": return PoolItem(BoxPool.Rare, c, NoRecursion);
++            case "@runicmallet": return new RunicMalletAndChisel(e.Arg == 1 ? CraftResource.ShadowIron : CraftResource.DullCopper); // masonry's runic
++            case "@seed":
++            {
++                var seed = e.Arg == 1 ? Seed.RandomPeculiarSeed(Utility.RandomMinMax(1, 4)) : new Seed();
++                if (seed.Stackable)
++                {
++                    seed.Amount = AmountOf(e, c);
++                }
++
++                return seed;
++            }
++            default: return null;
++        }
++    }
++
++    private static bool NoRecursion(PoolEntry e) => !e.Item.Equals("@RarePick", StringComparison.OrdinalIgnoreCase);
++
++    private static bool NoTitle(PoolEntry e) => NoRecursion(e) && !e.Item.Equals("@LeagueTitle", StringComparison.OrdinalIgnoreCase);
++
++    // -- Specials --
++
++    private static Item Gems(int amount)
+     {
+         var gem = Loot.RandomGem();
+-        gem.Amount = tier;
++        gem.Amount = Math.Max(1, amount);
+         return gem;
+     }
+ 
+-    private static Item Reagents(int tier)
++    private static Item Reagents(int amount)
+     {
+         var reg = Loot.RandomReagent();
+-        reg.Amount = 10 * tier;
++        reg.Amount = Math.Max(1, amount);
+         return reg;
+     }
+ 
++    private static Item? Potion(int level, int amount)
++    {
++        Type[] potions = level < 30
++            ? [typeof(LesserHealPotion), typeof(LesserCurePotion), typeof(RefreshPotion)]
++            : level < 70
++                ? [typeof(HealPotion), typeof(CurePotion), typeof(RefreshPotion)]
++                : [typeof(GreaterHealPotion), typeof(GreaterCurePotion), typeof(TotalRefreshPotion), typeof(GreaterStrengthPotion), typeof(GreaterAgilityPotion)];
++
++        var potion = potions[Utility.Random(potions.Length)].CreateInstance<Item>();
++        if (potion is { Stackable: true })
++        {
++            potion.Amount = Math.Max(1, amount);
++        }
++
++        return potion;
++    }
++
+     /// <summary>
+     /// A random weapon, armor piece, shield or jewel, plain quality, with 1 to 4 properties at an intensity set by level
+     /// (at most 60 percent): below an exceptional crafted piece of its material.
+@@ -377,7 +620,8 @@ public static class LootBoxRoller
+         return item;
+     }
+ 
+-    private static Item? SlayerWeapon(int tier)
++    // A slayer weapon; cc-P763: an Epic one carries extra properties at the gear's intensity.
++    private static Item? SlayerWeapon(int extraProps, int level)
+     {
+         var weapon = Loot.RandomWeapon();
+         if (weapon == null)
+@@ -387,48 +631,103 @@ public static class LootBoxRoller
+ 
+         var slayers = Enum.GetValues<SlayerName>();
+         weapon.Slayer = slayers[Utility.RandomMinMax(1, slayers.Length - 1)];
++        if (extraProps > 0)
++        {
++            var max = Math.Clamp(20 + level / 4, 20, 60);
++            BaseRunicTool.ApplyAttributesTo(weapon, extraProps, Math.Max(10, max / 3), max);
++        }
++
+         return weapon;
+     }
+ 
+-    // F-43's reward hook first ("recipe scroll from table"), then a stock ML recipe scroll.
+-    private static Item? Recipe(int tier)
++    // cc-P763: a boss's trophy, from the registered trophy art, named for the boss.
++    private static Item Trophy(string? bossName)
+     {
+-        var fromTable = ClusterFRecipeRewards.CreateFromTable("bandV", RecipeRewardSource.LootBox);
+-        if (fromTable != null && Utility.RandomBool())
+-        {
+-            return fromTable;
+-        }
++        var pair = LootTable.Current.Trophies[Utility.Random(LootTable.Current.Trophies.Length)];
++        return new LootDecor(pair[0], pair.Length > 1 ? pair[1] : 0, $"Trophy of {bossName ?? "a boss"}");
++    }
+ 
++    /// <summary>
++    /// cc-P763: a recipe the opener can use: F-43's reward hook first ("recipe scroll from table"), else a stock recipe
++    /// scroll of a craft where the opener has 50 or more skill; with no such craft, a plain resource of the grade.
++    /// </summary>
++    private static Item? Recipe(PlayerMobile pm, int tier)
++    {
+         var ids = new List<int>();
+-        foreach (var id in Engines.Craft.Recipe.Recipes.Keys)
++        foreach (var (id, recipe) in Engines.Craft.Recipe.Recipes)
+         {
+-            if (id < 9000)
++            if (id < 9000 && recipe.CraftSystem != null && pm.Skills[recipe.CraftSystem.MainSkill].Base >= 50)
+             {
+                 ids.Add(id);
+             }
+         }
+ 
+         if (ids.Count == 0)
++        {
++            return GeneralResource(tier);
++        }
++
++        if (Utility.RandomBool() && ClusterFRecipeRewards.CreateFromTable("bandV", RecipeRewardSource.LootBox) is { } fromTable)
+         {
+             return fromTable;
+         }
+ 
+-        fromTable?.Delete();
+         return new RecipeScroll(ids[Utility.Random(ids.Count)]);
+     }
+ 
+-    private static Item? CraftResourcesFor(SkillName skill, double value, int tier) => skill switch
++    /// <summary>cc-P763: whether a stock recipe scroll's craft is one the opener has 50 or more in (the test's check).</summary>
++    public static bool CanUseRecipe(PlayerMobile pm, int recipeId) =>
++        Engines.Craft.Recipe.Recipes.TryGetValue(recipeId, out var r) && r.CraftSystem != null &&
++        pm.Skills[r.CraftSystem.MainSkill].Base >= 50;
++
++    private static Item? GeneralResource(int tier) => Utility.Random(4) switch
++    {
++        0 => ResourceStack(ResourceForTier(Metals, tier), 0, 10 * tier),
++        1 => ResourceStack(ResourceForTier(Woods, tier), 1, 10 * tier),
++        2 => ResourceStack(ResourceForTier(Leathers, tier), 0, 10 * tier),
++        _ => Gems(tier)
++    };
++
++    private static Item? CraftResourcesFor(SkillName skill, double value, int amount) => skill switch
+     {
+-        SkillName.Carpentry or SkillName.Fletching => ResourceStack(ResourceFor(Woods, value), 1, 10 + 10 * tier),
+-        SkillName.Tailoring => ResourceStack(ResourceFor(Leathers, value), 0, 10 + 10 * tier),
+-        SkillName.Alchemy => Reagents(tier),
+-        SkillName.Inscribe => new BlankScroll(10 * tier),
+-        SkillName.Cooking => new RawRibs(5 * tier),
+-        _ => ResourceStack(ResourceFor(Metals, value), 0, 10 + 10 * tier)
++        SkillName.Carpentry or SkillName.Fletching or SkillName.Lumberjacking => ResourceStack(ResourceFor(Woods, value), 1, amount),
++        SkillName.Tailoring => ResourceStack(ResourceFor(Leathers, value), 0, amount),
++        SkillName.Alchemy => Reagents(amount),
++        SkillName.Inscribe => new BlankScroll(Math.Max(1, amount)),
++        SkillName.Cooking => new RawRibs(Math.Max(1, amount / 2)),
++        SkillName.Imbuing => Gems(Math.Max(1, amount / 10)),
++        _ => ResourceStack(ResourceFor(Metals, value), 0, amount)
+     };
+ 
+-    // The Artisan's recipe: a scroll for one of the craft's own scroll-only designs, else its band book for the tier.
+-    private static Item? CraftRecipe(SkillName skill, int tier)
++    // cc-P763: the craft's own tool, for a Society box.
++    private static Item CraftTool(SkillName skill) => skill switch
++    {
++        SkillName.Blacksmith => new SmithHammer(),
++        SkillName.Tailoring => new SewingKit(),
++        SkillName.Carpentry or SkillName.Lumberjacking => new DovetailSaw(),
++        SkillName.Fletching => new FletcherTools(),
++        SkillName.Alchemy => new MortarPestle(),
++        SkillName.Inscribe => new ScribesPen(),
++        SkillName.Cooking => new Skillet(),
++        SkillName.Cartography => new MapmakersPen(),
++        _ => new TinkerTools()
++    };
++
++    /// <summary>
++    /// cc-P763: the craft's runic tool, its lowest material (step 0) or one up (step 1). Crafts with no runic tool in
++    /// stock (Tinkering, Inscription, Alchemy, Cooking, Cartography, Imbuing) give null, and the caller a Rare pick.
++    /// </summary>
++    public static Item? RunicTool(SkillName skill, int step) => skill switch
++    {
++        SkillName.Blacksmith => new RunicHammer(step == 0 ? CraftResource.DullCopper : CraftResource.ShadowIron),
++        SkillName.Tailoring => new RunicSewingKit(step == 0 ? CraftResource.SpinedLeather : CraftResource.HornedLeather),
++        SkillName.Carpentry or SkillName.Lumberjacking => new RunicDovetailSaw(step == 0 ? CraftResource.OakWood : CraftResource.AshWood),
++        SkillName.Fletching => new RunicFletcherTool(step == 0 ? CraftResource.OakWood : CraftResource.AshWood),
++        _ => null
++    };
++
++    // The Artisan's recipe: a scroll for one of the craft's own scroll-only designs, else its band book for the grade.
++    private static Item? CraftRecipe(SkillName skill, int tier, Ctx c)
+     {
+         var keys = ClusterFRecipeRewards.BandVKeys(skill);
+         if (keys.Count > 0 && tier >= 5)
+@@ -439,28 +738,17 @@ public static class LootBoxRoller
+         var system = ClusterFRecipeGate.SystemFor(skill);
+         if (system == null)
+         {
+-            return Recipe(tier);
++            return Recipe(c.Pm, tier);
+         }
+ 
+         var books = ClusterFRecipeGate.BooksFor(system);
+         return books.Count > 0
+             ? new PatternBook(skill, books[Math.Clamp(tier - 1, 0, books.Count - 1)])
+-            : Recipe(tier);
++            : Recipe(c.Pm, tier);
+     }
+ 
+     private static int UniqueHue() => Utility.RandomList(0x0489, 0x0493, 0x04F2, 0x0501, 0x0515, 0x052D, 0x0555, 0x0581);
+ 
+-    private static Item? RareItem(PlayerMobile pm, int tier, string account, BoxTheme theme) => Utility.Random(7) switch
+-    {
+-        0 => new LoopScrollFragment(),
+-        1 => new LootBoxPlaceholder("Unique Title", account),
+-        2 => new LootBoxPlaceholder("Unique Hue", account),
+-        3 => MuleSchematic(tier),
+-        4 => new LootBoxPlaceholder("Companion Item"),
+-        5 => new EpicComponent(Utility.RandomList("Starforged Filament", "Voidglass Shard", "Heartsteel Ember", "Loopwoven Thread")),
+-        _ => tier > 1 ? BoxInBox(pm, theme, tier - 1) : new EpicComponent("Loopwoven Thread")
+-    };
+-
+     private static Item MuleSchematic(int tier)
+     {
+         var modules = Enum.GetValues<MuleModuleId>();
+@@ -469,7 +757,7 @@ public static class LootBoxRoller
+         return ClusterFRecipeRewards.CreateScroll(ClusterFRecipeStore.RecipeKey(MuleModuleCrafts.RecipeId(id, moduleTier)));
+     }
+ 
+-    /// <summary>A box one tier lower, same theme, rolled now like any box.</summary>
++    /// <summary>A box one grade lower, same theme, rolled now like any box.</summary>
+     public static LootBox BoxInBox(PlayerMobile pm, BoxTheme theme, int tier) =>
+         ClusterFLootBoxes.MakeBox(pm, theme, tier, null, "a box in a box", null);
+ 
+diff --git a/server/migrations/Server.Items.LootBox.v0.json b/server/migrations/Server.Items.LootBox.v0.json
+new file mode 100644
+index 0000000..4c07cc1
+--- /dev/null
++++ b/server/migrations/Server.Items.LootBox.v0.json
+@@ -0,0 +1,16 @@
++{
++  "version": 0,
++  "type": "Server.Items.LootBox",
++  "properties": [
++    { "name": "Theme",        "type": "Server.LootBoxes.BoxTheme", "rule": "EnumMigrationRule" },
++    { "name": "Tier",         "type": "int",    "rule": "PrimitiveTypeMigrationRule", "ruleArguments": [""] },
++    { "name": "BoundAccount", "type": "string", "rule": "PrimitiveTypeMigrationRule", "ruleArguments": [""] },
++    { "name": "Contents",     "type": "System.Collections.Generic.List<Server.Item>", "rule": "ListMigrationRule", "ruleArguments": ["Server.Item", "SerializableInterfaceMigrationRule"] },
++    { "name": "Gold",         "type": "int",    "rule": "PrimitiveTypeMigrationRule", "ruleArguments": [""] },
++    { "name": "Renown",       "type": "int",    "rule": "PrimitiveTypeMigrationRule", "ruleArguments": [""] },
++    { "name": "BoxName",      "type": "string", "rule": "PrimitiveTypeMigrationRule", "ruleArguments": [""] },
++    { "name": "EarnedFor",    "type": "string", "rule": "PrimitiveTypeMigrationRule", "ruleArguments": [""] },
++    { "name": "OpenedAt",     "type": "System.DateTime", "rule": "PrimitiveTypeMigrationRule", "ruleArguments": [""] },
++    { "name": "RareSlots",    "type": "System.Collections.Generic.List<int>", "rule": "ListMigrationRule", "ruleArguments": ["int", "PrimitiveTypeMigrationRule", ""] }
++  ]
++}
+diff --git a/server/patches/Fishing-loot-box-firsts.patch b/server/patches/Fishing-loot-box-firsts.patch
+new file mode 100644
+index 0000000..2428e50
+--- /dev/null
++++ b/server/patches/Fishing-loot-box-firsts.patch
+@@ -0,0 +1,20 @@
++--- a/Projects/UOContent/Engines/Harvest/Fishing.cs
+++++ b/Projects/UOContent/Engines/Harvest/Fishing.cs
++@@ -378,6 +378,8 @@
++                         chest.TrapPower = 0;
++                         chest.TrapLevel = 0;
++ 
+++                        Server.LootBoxes.ClusterFLootBoxes.OnSosRecovered(from, sos.Level); // Shattered Legacy (cc-P763): a Sailor box
+++
++                         sos.Delete();
++ 
++                         return chest;
++@@ -449,6 +451,8 @@
++ 
++         public override void SendSuccessTo(Mobile from, Item item, HarvestResource resource)
++         {
+++            Server.LootBoxes.ClusterFLootBoxes.OnFished(from, item); // Shattered Legacy (cc-P763): a Fisher box
+++
++             if (item is BigFish fish)
++             {
++                 from.SendLocalizedMessage(1042635); // Your fishing pole bends as you pull a big fish from the depths!
+diff --git a/server/patches/SetToDecorativeGump-loot-box-herbalist.patch b/server/patches/SetToDecorativeGump-loot-box-herbalist.patch
+new file mode 100644
+index 0000000..1a90356
+--- /dev/null
++++ b/server/patches/SetToDecorativeGump-loot-box-herbalist.patch
+@@ -0,0 +1,10 @@
++--- a/Projects/UOContent/Engines/Plants/SetToDecorativeGump.cs
+++++ b/Projects/UOContent/Engines/Plants/SetToDecorativeGump.cs
++@@ -85,6 +85,7 @@
++             case 3: // Ok
++                 {
++                     _plant.PlantStatus = PlantStatus.DecorativePlant;
+++                    Server.LootBoxes.ClusterFLootBoxes.OnPlantDecorative(from, _plant); // Shattered Legacy (cc-P763): a Herbalist box
++                     // You prune the plant.
++                     // This plant will no longer produce resources or seeds, but will require no upkeep.
++                     _plant.LabelTo(from, 1053077);
+diff --git a/server/tests/Misc/DeathHooksVerification.cs b/server/tests/Misc/DeathHooksVerification.cs
+index 25a03a1..92b76be 100644
+--- a/server/tests/Misc/DeathHooksVerification.cs
++++ b/server/tests/Misc/DeathHooksVerification.cs
+@@ -50,6 +50,8 @@ public class DeathHooksVerification : IDisposable
+         }
+ 
+         LootTable.Current = LootTable.Defaults;
++        ClusterFLootBoxes.RarityRoll = _ => BoxRarity.Common; // cc-P763: these facts predate the rarity roll
++        ClusterFLootBoxes.SeasonClock = () => new DateTime(2026, 6, 15); // and the season slot: a day in no season
+         ClusterFLootBoxes.LoopProvider = _ => 1;
+     }
+ 
+diff --git a/server/tests/Misc/LootBoxDiversityVerification.cs b/server/tests/Misc/LootBoxDiversityVerification.cs
+new file mode 100644
+index 0000000..117fa47
+--- /dev/null
++++ b/server/tests/Misc/LootBoxDiversityVerification.cs
+@@ -0,0 +1,586 @@
++// LootBoxDiversityVerification.cs
++//
++// cc-P763 (P759's approved plan, shard-migration notes/cc-P759-loot-plan.md; notes/cc-P763-cont-loot-boxes-diversified.md).
++//
++// Facts:
++//   1. Every theme at every grade and every rarity rolls with no empty slot: the theme slot gives something, every pool
++//      slot an item, an Epic or Legendary box its list, and none of it is a placeholder, a loop fragment or an epic
++//      component (the "does nothing" items).
++//   2. Every entry of the table can be made (types and specials), the default table round-trips, and a bad entry refuses
++//      the file whole.
++//   3. Seasonal pools roll only in their window: Halloween, winter and spring add a slot and their name; out of season none.
++//   4. The rarity odds and bonuses come from the json: an odds row and a bonus row edited in a file change the roll.
++//   5. The box's name and colour: season, rarity, grade and theme; the rarity's hue.
++//   6. Recipes only for the opener's crafts (50 or more), else a plain resource.
++//   7. The Bags of Holding's caps (no weight cap of their own), and the Reagent Bag's reagents-only rule and weight cut,
++//      which reaches the carrier; a Legendary Scholar's bag cuts 90 percent.
++//   8. The Fisher, Sailor, Herbalist, Society, Delver and League Dive sources each award once (a later loop: nothing).
++//   9. The joke items are 3 percent of Cosmetics and in no other pool; helpful items are 95 percent or more of each.
++
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using Server;
++using Server.Accounting;
++using Server.Accounting.Security;
++using Server.Engines.Plants;
++using Server.Items;
++using Server.LootBoxes;
++using Server.Misc;
++using Server.Mobiles;
++using Server.Network;
++using Server.Tests.Network;
++using Xunit;
++using Xunit.Abstractions;
++
++namespace ShatteredLegacy.Tests;
++
++[Collection("Sequential UOContent Tests")]
++public class LootBoxDiversityVerification
++{
++    private readonly ITestOutputHelper _out;
++
++    private static bool _startupHooksRun;
++
++    private static readonly DateTime NoSeason = new(2026, 6, 15);
++
++    public LootBoxDiversityVerification(ITestOutputHelper output)
++    {
++        _out = output;
++        if (!_startupHooksRun)
++        {
++            Accounts.Configure();
++            WelcomeTimer.Initialize();
++            _startupHooksRun = true;
++        }
++
++        if (AccountSecurity.CurrentAlgorithm == PasswordProtectionAlgorithm.None)
++        {
++            AccountSecurity.CurrentAlgorithm = PasswordProtectionAlgorithm.PBKDF2;
++        }
++
++        LootTable.Current = LootTable.Defaults;
++        FanfareLines.Current = FanfareLines.Defaults;
++        ClusterFLootBoxes.LoopProvider = _ => 1;
++        ClusterFLootBoxes.RarityRoll = _ => BoxRarity.Common;
++        ClusterFLootBoxes.SeasonClock = () => NoSeason;
++        ClusterFFanfare.FlushAll();
++    }
++
++    private sealed class Player : IDisposable
++    {
++        public readonly Account Account;
++        public readonly PlayerMobile Pm;
++        public readonly NetState Ns;
++
++        public Player()
++        {
++            Account = new Account($"p763{Guid.NewGuid():N}"[..16], "p763-test-only");
++            Pm = new PlayerMobile { Player = true, Race = Race.Human, Name = "Tester" };
++            Pm.AddItem(new Backpack());
++            Account[0] = Pm;
++            Pm.MoveToWorld(new Point3D(1400, 1400, 0), Map.Trammel);
++            Ns = PacketTestUtilities.CreateTestNetState();
++            Pm.NetState = Ns;
++            Ns.Mobile = Pm;
++        }
++
++        public List<LootBox> Boxes() => Pm.Backpack.Items.OfType<LootBox>().Concat(Pm.BankBox.Items.OfType<LootBox>()).ToList();
++
++        public void Dispose()
++        {
++            ClusterFFanfare.FlushAll();
++            foreach (var box in Boxes())
++            {
++                box.Delete();
++            }
++
++            Pm.NetState = null;
++            Ns.Mobile = null;
++            Pm.Delete();
++            Accounts.Remove(Account);
++        }
++    }
++
++    private static bool DoesNothing(Item item) => item is LootBoxPlaceholder or LoopScrollFragment or EpicComponent;
++
++    private static void DeleteAll(LootBoxRoller.Rolled r)
++    {
++        foreach (var (item, _) in r.Items)
++        {
++            item.Delete();
++        }
++    }
++
++    [Fact]
++    public void EveryThemeGradeAndRarityRollsWithNoEmptySlotAndNothingThatDoesNothing()
++    {
++        using var p = new Player();
++        p.Pm.Skills[SkillName.Blacksmith].Base = 60;
++        p.Pm.Skills[SkillName.Mining].Base = 70;
++        var t = LootTable.Current;
++        var rolls = 0;
++        var made = new SortedDictionary<string, int>();
++
++        foreach (var theme in Enum.GetValues<BoxTheme>())
++        {
++            for (var grade = 1; grade <= 6; grade++)
++            {
++                foreach (var rarity in Enum.GetValues<BoxRarity>())
++                {
++                    for (var n = 0; n < 3; n++)
++                    {
++                        var r = LootBoxRoller.Roll(p.Pm, theme, grade, null, "a test", rarity);
++                        rolls++;
++                        try
++                        {
++                            var at = $"{theme} grade {grade} {rarity}";
++                            var poolSlots = t.SlotsFor(grade) - 2 + t.RarityOf(rarity).ExtraSlots;
++                            Assert.True(poolSlots == r.Pools.Count, $"{at}: {r.Pools.Count} pool slots, expected {poolSlots}");
++
++                            // Every pool slot gives an item, and the theme slot at least one more (League's and the
++                            // League Dive's Renown bonus is not an item, so theirs is the cloak or the potions).
++                            Assert.True(r.Items.Count >= poolSlots + 1, $"{at}: {r.Items.Count} items for {poolSlots} pool slots");
++                            Assert.True(r.Gold > 0, $"{at}: no gold");
++
++                            if (rarity >= BoxRarity.Epic)
++                            {
++                                Assert.True(r.Items.Count(i => i.Rare) >= 1, $"{at}: nothing from the {rarity} list or the Rare pool");
++                            }
++
++                            foreach (var (item, _) in r.Items)
++                            {
++                                Assert.False(item.Deleted, $"{at}: a deleted {item.GetType().Name}");
++                                Assert.False(DoesNothing(item), $"{at}: {item.GetType().Name} does nothing on the shard");
++                                made[item.GetType().Name] = made.GetValueOrDefault(item.GetType().Name) + 1;
++                            }
++                        }
++                        finally
++                        {
++                            DeleteAll(r);
++                        }
++                    }
++                }
++            }
++        }
++
++        _out.WriteLine($"{rolls} rolls; {made.Count} kinds of item: " + string.Join(", ", made.Select(kv => $"{kv.Key} {kv.Value}")));
++        Assert.Equal(Enum.GetValues<BoxTheme>().Length * 6 * 4 * 3, rolls);
++    }
++
++    [Fact]
++    public void EveryEntryCanBeMadeTheDefaultsRoundTripAndABadEntryRefusesTheFile()
++    {
++        var t = LootTable.Defaults;
++        var entries = new List<(string Where, PoolEntry E)>();
++        foreach (var (pool, list) in t.Pools)
++        {
++            entries.AddRange(list.Select(e => ($"pool {pool}", e)));
++        }
++
++        foreach (var (theme, def) in t.Themes)
++        {
++            entries.AddRange(def.Slot.Concat(def.Epic).Concat(def.Legendary).Select(e => ($"theme {theme}", e)));
++        }
++
++        foreach (var (season, def) in t.Seasons)
++        {
++            entries.AddRange(def.Items.Select(e => ($"season {season}", e)));
++        }
++
++        // Every pool, theme and season the plan names has entries.
++        Assert.Equal(Enum.GetNames<BoxPool>().OrderBy(x => x), t.Pools.Keys.OrderBy(x => x));
++        Assert.Equal(Enum.GetNames<BoxTheme>().OrderBy(x => x), t.Themes.Keys.OrderBy(x => x));
++        Assert.Equal(new[] { "halloween", "spring", "winter" }, t.Seasons.Keys.OrderBy(x => x));
++
++        foreach (var (where, e) in entries)
++        {
++            Assert.True(LootBoxRoller.CheckEntry(e) == null, $"{where}: {e.Item}: {LootBoxRoller.CheckEntry(e)}");
++            if (!e.Item.StartsWith('@'))
++            {
++                var item = AssemblyHandler.FindTypeByName(e.Item)!.CreateInstance<Item>();
++                Assert.NotNull(item);
++                Assert.False(DoesNothing(item!), $"{where}: {e.Item} does nothing on the shard");
++                item!.Delete();
++            }
++        }
++
++        _out.WriteLine($"{entries.Count} entries, every one can be made.");
++
++        var errors = new List<string>();
++        var parsed = LootTable.Parse(LootTable.ToJson(t), "test", errors);
++        Assert.True(parsed != null, string.Join("; ", errors));
++        Assert.Equal(t.Pools["Rare"].Length, parsed!.Pools["Rare"].Length);
++        Assert.Equal(t.RarityOdds[5], parsed.RarityOdds[5]);
++
++        // A file from before cc-P763 (no Tools row, no contents) still loads, with the defaults for what it leaves out.
++        errors.Clear();
++        var old = LootTable.Parse("{ \"PoolWeights\": { \"Consumables\": [50,40,30,20,15,10], \"Resources\": [30,30,25,20,15,10], " +
++                                  "\"MagicGear\": [15,20,25,25,25,20], \"Recipes\": [5,8,12,15,15,15], \"Cosmetics\": [0,2,6,12,15,20], " +
++                                  "\"Rare\": [0,0,2,8,15,25] } }", "old", errors);
++        Assert.True(old != null, string.Join("; ", errors));
++        Assert.Equal(8, old!.Weight(BoxPool.Tools, 1));
++
++        // An entry naming no item refuses the file whole, and the table in force stays.
++        var bad = LootTable.Apply("{ \"Pools\": { \"Tools\": [ { \"Item\": \"NoSuchItemAnywhere\" } ] } }", "bad");
++        Assert.Contains("REFUSED", bad[0]);
++        Assert.Contains(bad, l => l.Contains("NoSuchItemAnywhere"));
++        Assert.Same(LootTable.Defaults, LootTable.Current);
++
++        var badSpecial = LootTable.Apply("{ \"Pools\": { \"Tools\": [ { \"Item\": \"@NoSuchSpecial\" } ] } }", "bad");
++        Assert.Contains("REFUSED", badSpecial[0]);
++        Assert.Same(LootTable.Defaults, LootTable.Current);
++    }
++
++    [Fact]
++    public void SeasonalPoolsRollOnlyInTheirWindow()
++    {
++        using var p = new Player();
++        var t = LootTable.Current;
++        var cases = new (DateTime Day, string? Season)[]
++        {
++            (new DateTime(2026, 10, 30), "halloween"), (new DateTime(2026, 11, 2), "halloween"), (new DateTime(2026, 11, 3), null),
++            (new DateTime(2026, 12, 25), "winter"), (new DateTime(2027, 1, 6), "winter"), (new DateTime(2027, 1, 7), null),
++            (new DateTime(2027, 3, 20), "spring"), (new DateTime(2027, 4, 20), "spring"), (new DateTime(2027, 4, 21), null),
++            (NoSeason, null),
++        };
++
++        foreach (var (day, season) in cases)
++        {
++            ClusterFLootBoxes.SeasonClock = () => day;
++            Assert.True(season == ClusterFLootBoxes.ActiveSeason(), $"{day:MM-dd}: {ClusterFLootBoxes.ActiveSeason() ?? "none"}, not {season ?? "none"}");
++
++            for (var n = 0; n < 6; n++)
++            {
++                var box = ClusterFLootBoxes.MakeBox(p.Pm, BoxTheme.Explorer, 2, null, "a test", null);
++                try
++                {
++                    var plain = t.SlotsFor(2) - 2 + 2; // the pool slots, the treasure map and the blank map
++                    if (season == null)
++                    {
++                        Assert.Equal(plain, box.Contents.Count);
++                        Assert.DoesNotContain("Halloween", box.DefaultName);
++                        continue;
++                    }
++
++                    var def = t.Seasons[season];
++                    Assert.StartsWith(def.Label + " ", box.DefaultName);
++                    Assert.Equal(plain + 1, box.Contents.Count);
++
++                    // The last item is the season's, from its own pool.
++                    var last = box.Contents[^1];
++                    var types = def.Items.Where(e => !e.Item.StartsWith('@')).Select(e => e.Item).ToHashSet();
++                    var fromPool = types.Contains(last.GetType().Name) ||
++                                   last is LootDecor && def.Items.Any(e => e.Item == "@Decor") ||
++                                   last is Seed && def.Items.Any(e => e.Item == "@Seed");
++                    Assert.True(fromPool, $"{season}: {last.GetType().Name} is not from its pool");
++                }
++                finally
++                {
++                    box.Delete();
++                }
++            }
++        }
++    }
++
++    [Fact]
++    public void RarityOddsAndBonusesComeFromTheJson()
++    {
++        using var p = new Player();
++        var d = LootTable.Defaults;
++
++        // The plan's odds, by the cumulative rows.
++        Assert.Equal(BoxRarity.Common, d.RarityForRoll(1, 84.9));
++        Assert.Equal(BoxRarity.Rare, d.RarityForRoll(1, 85.0));
++        Assert.Equal(BoxRarity.Epic, d.RarityForRoll(1, 99.9));
++        Assert.Equal(BoxRarity.Legendary, d.RarityForRoll(2, 99.6));
++        Assert.Equal(BoxRarity.Legendary, d.RarityForRoll(6, 90.0));
++        Assert.Equal(BoxRarity.Epic, d.RarityForRoll(6, 89.9));
++
++        // A file's odds row and bonus row change the roll.
++        var lines = LootTable.Apply(
++            "{ \"RarityOdds\": [[0,0,0,100],[75,20,4.5,0.5],[65,25,8,2],[50,32,14,4],[40,35,18,7],[25,40,25,10]], " +
++            "\"RarityBonus\": [ { \"Name\": \"Common\", \"Hue\": 1 }, { \"Name\": \"Rare\", \"Hue\": 2, \"ExtraSlots\": 1 }, " +
++            "{ \"Name\": \"Epic\", \"Hue\": 3, \"ExtraSlots\": 1, \"Fanfare\": \"Major\" }, " +
++            "{ \"Name\": \"Mythic\", \"Hue\": 1234, \"ExtraSlots\": 3, \"StackMultiplier\": 4, \"Fanfare\": \"Capstone\" } ] }", "test");
++        try
++        {
++            Assert.StartsWith("Loaded", lines[0]);
++            Assert.Equal(BoxRarity.Legendary, LootTable.Current.RarityForRoll(1, 0));
++
++            ClusterFLootBoxes.RarityRoll = g => LootTable.Current.RarityForRoll(g, Utility.RandomDouble() * 100);
++            var box = ClusterFLootBoxes.MakeBox(p.Pm, BoxTheme.Explorer, 1, null, "a test", null);
++            try
++            {
++                Assert.Equal(BoxRarity.Legendary, box.Rarity);
++                Assert.Equal(1234, box.Hue);
++                Assert.StartsWith("Mythic Plain Explorer's", box.DefaultName);
++                Assert.Equal(LootTable.Defaults.Gold[0] * 4, box.Gold);
++                Assert.Equal(FanfareLevel.Capstone, ClusterFLootBoxes.LevelFor(1, box.Rarity));
++            }
++            finally
++            {
++                box.Delete();
++            }
++
++            var r = LootBoxRoller.Roll(p.Pm, BoxTheme.Explorer, 1, null, "a test", BoxRarity.Legendary);
++            Assert.Equal(LootTable.Current.SlotsFor(1) - 2 + 3, r.Pools.Count);
++            DeleteAll(r);
++        }
++        finally
++        {
++            LootTable.Current = LootTable.Defaults;
++        }
++
++        // A row that does not sum to 100 refuses the file.
++        var refused = LootTable.Apply("{ \"RarityOdds\": [[50,0,0,0],[75,20,4.5,0.5],[65,25,8,2],[50,32,14,4],[40,35,18,7],[25,40,25,10]] }", "bad");
++        Assert.Contains("REFUSED", refused[0]);
++        Assert.Same(LootTable.Defaults, LootTable.Current);
++    }
++
++    [Fact]
++    public void TheBoxNameAndColourPutTheSeasonRarityGradeAndThemeTogether()
++    {
++        using var p = new Player();
++        var t = LootTable.Current;
++
++        var epic = ClusterFLootBoxes.MakeBox(p.Pm, BoxTheme.Explorer, 3, null, "a test", null, BoxRarity.Epic);
++        var rare = ClusterFLootBoxes.MakeBox(p.Pm, BoxTheme.Miner, 4, null, "a test", null, BoxRarity.Rare);
++        var common = ClusterFLootBoxes.MakeBox(p.Pm, BoxTheme.Fisher, 1, null, "a test", null, BoxRarity.Common);
++        ClusterFLootBoxes.SeasonClock = () => new DateTime(2026, 10, 30);
++        var spooky = ClusterFLootBoxes.MakeBox(p.Pm, BoxTheme.Explorer, 3, null, "a test", null, BoxRarity.Epic);
++        try
++        {
++            Assert.Equal("Epic Fine Explorer's Box", epic.DefaultName);
++            Assert.Equal(t.RarityOf(BoxRarity.Epic).Hue, epic.Hue);
++            Assert.Equal("Rare Valorite Miner's Box", rare.DefaultName);
++            Assert.Equal(t.RarityOf(BoxRarity.Rare).Hue, rare.Hue);
++            Assert.Equal("Common Plain Fisher's Box", common.DefaultName);
++            Assert.Equal("Halloween Epic Fine Explorer's Box", spooky.DefaultName);
++
++            // The fanfare: Major from grade 4 as before, and at least the rarity's.
++            Assert.Equal(FanfareLevel.Minor, ClusterFLootBoxes.LevelFor(3, BoxRarity.Rare));
++            Assert.Equal(FanfareLevel.Major, ClusterFLootBoxes.LevelFor(1, BoxRarity.Epic));
++            Assert.Equal(FanfareLevel.Major, ClusterFLootBoxes.LevelFor(4, BoxRarity.Common));
++            Assert.Equal(FanfareLevel.Capstone, ClusterFLootBoxes.LevelFor(1, BoxRarity.Legendary));
++        }
++        finally
++        {
++            epic.Delete();
++            rare.Delete();
++            common.Delete();
++            spooky.Delete();
++        }
++    }
++
++    // Only the Recipes pool, for the recipe fact.
++    private const string RecipesOnly =
++        "{ \"PoolWeights\": { \"Consumables\": [0,0,0,0,0,0], \"Resources\": [0,0,0,0,0,0], \"MagicGear\": [0,0,0,0,0,0], " +
++        "\"Recipes\": [100,100,100,100,100,100], \"Cosmetics\": [0,0,0,0,0,0], \"Rare\": [0,0,0,0,0,0], \"Tools\": [0,0,0,0,0,0] } }";
++
++    [Fact]
++    public void RecipesOnlyForTheOpenersCrafts()
++    {
++        Assert.StartsWith("Loaded", LootTable.Apply(RecipesOnly, "test")[0]);
++        using var p = new Player();
++        try
++        {
++            // No craft at 50: a plain resource, never a recipe scroll.
++            for (var n = 0; n < 20; n++)
++            {
++                var r = LootBoxRoller.Roll(p.Pm, BoxTheme.Explorer, 6, null, "a test");
++                Assert.DoesNotContain(r.Items, i => i.Item is RecipeScroll);
++                DeleteAll(r);
++            }
++
++            // Blacksmithing at 60: a stock scroll is a Blacksmithing one.
++            p.Pm.Skills[SkillName.Blacksmith].Base = 60;
++            var scrolls = 0;
++            for (var n = 0; n < 40; n++)
++            {
++                var r = LootBoxRoller.Roll(p.Pm, BoxTheme.Explorer, 6, null, "a test");
++                foreach (var (item, _) in r.Items)
++                {
++                    if (item is RecipeScroll scroll)
++                    {
++                        scrolls++;
++                        Assert.True(LootBoxRoller.CanUseRecipe(p.Pm, scroll.RecipeID), $"recipe {scroll.RecipeID} is not one the opener can use");
++                    }
++                }
++
++                DeleteAll(r);
++            }
++
++            _out.WriteLine($"{scrolls} stock recipe scrolls, every one Blacksmithing.");
++        }
++        finally
++        {
++            LootTable.Current = LootTable.Defaults;
++        }
++    }
++
++    [Fact]
++    public void BagsOfHoldingHaveTheirCapsAndTheReagentBagHoldsOnlyReagentsAndCutsTheirWeight()
++    {
++        using var p = new Player();
++        var caps = new[] { 12, 24, 36, 48, 125 };
++        var names = new[] { "Lesser Bag of Holding", "Bag of Holding", "Greater Bag of Holding", "Legendary Bag of Holding", "Grand Bag of Holding" };
++        for (var size = 1; size <= 5; size++)
++        {
++            var bag = new BagOfHolding(size);
++            try
++            {
++                Assert.Equal(caps[size - 1], bag.MaxItems);
++                Assert.Equal(0, bag.MaxWeight);
++                Assert.Equal(names[size - 1], bag.DefaultName);
++            }
++            finally
++            {
++                bag.Delete();
++            }
++        }
++
++        // A Lesser bag holds 12, refuses the 13th, and takes a heavy thing its pack can carry.
++        var lesser = new BagOfHolding(1);
++        p.Pm.Backpack.DropItem(lesser);
++        for (var i = 0; i < 12; i++)
++        {
++            lesser.DropItem(new Apple());
++        }
++
++        Assert.False(lesser.CheckHold(p.Pm, new Apple(), false, true, 0, 0));
++        lesser.Delete();
++
++        // The Reagent Bag: reagents only; their weight cut, and the cut reaches the pack.
++        var regBag = new ReagentBag(90);
++        p.Pm.Backpack.DropItem(regBag);
++        var shirt = new Shirt();
++        Assert.False(regBag.CheckHold(p.Pm, shirt, false, true, 0, 0));
++        shirt.Delete();
++        var pearls = new BlackPearl(100);
++        Assert.True(regBag.CheckHold(p.Pm, pearls, false, true, 0, 0));
++        var packBefore = p.Pm.Backpack.TotalWeight;
++        regBag.DropItem(pearls);
++        var raw = pearls.PileWeight + pearls.TotalWeight;
++        Assert.Equal(raw - raw * 90 / 100, regBag.TotalWeight);
++        Assert.Equal(packBefore + regBag.TotalWeight, p.Pm.Backpack.TotalWeight);
++        _out.WriteLine($"100 black pearls weigh {raw} loose and {regBag.TotalWeight} in the bag.");
++        regBag.Delete();
++
++        // A Legendary Scholar's box gives the bag at its 90 percent; a Common one's, when it comes, 25.
++        var legendary = LootBoxRoller.Roll(p.Pm, BoxTheme.Scholar, 6, null, "a test", BoxRarity.Legendary);
++        var given = legendary.Items.Select(i => i.Item).OfType<ReagentBag>().ToList();
++        Assert.NotEmpty(given);
++        Assert.All(given, b => Assert.Equal(90, b.WeightCut));
++        DeleteAll(legendary);
++    }
++
++    [Fact]
++    public void TheNewSourcesEachAwardOnce()
++    {
++        using var p = new Player();
++        var pm = p.Pm;
++
++        int BoxesOf(BoxTheme theme) => p.Boxes().Count(b => b.Theme == theme);
++
++        // Guilds, first (the first check of any kind records the ranks held): those ranks give nothing; a promotion after
++        // it gives its theme's box.
++        var guild = ClusterFAccountPersistence.GetOrCreateGuild(pm);
++        guild.JoinedGuilds.Add("healers");
++        guild.AddReputation("healers", 2_000);
++        var heldRank = ClusterFGuildSystem.GuildRankIndex("healers", guild);
++        Assert.Equal(0, ClusterFLootBoxes.CheckGuildRanks(pm));
++        guild.AddReputation("healers", 1_000_000);
++        var newRank = ClusterFGuildSystem.GuildRankIndex("healers", guild);
++        Assert.True(newRank > heldRank, $"healers rank {heldRank} to {newRank}");
++        Assert.Equal(newRank - heldRank, ClusterFLootBoxes.CheckGuildRanks(pm));
++        Assert.Equal(newRank - heldRank, BoxesOf(BoxTheme.Herbalist));
++        Assert.Equal(0, ClusterFLootBoxes.CheckGuildRanks(pm));
++
++        // Fisher: a High Seas fish's first catch of its kind; a stock fish gives nothing.
++        var fish = new Amberjack();
++        ClusterFLootBoxes.OnFished(pm, fish);
++        ClusterFLootBoxes.OnFished(pm, fish);
++        var plain = new Fish();
++        ClusterFLootBoxes.OnFished(pm, plain);
++        Assert.Equal(1, BoxesOf(BoxTheme.Fisher));
++        fish.Delete();
++        plain.Delete();
++
++        // Sailor: an SOS chest's first recovery at each level.
++        ClusterFLootBoxes.OnSosRecovered(pm, 2);
++        ClusterFLootBoxes.OnSosRecovered(pm, 2);
++        ClusterFLootBoxes.OnSosRecovered(pm, 3);
++        Assert.Equal(2, BoxesOf(BoxTheme.Sailor));
++        Assert.Contains(p.Boxes(), b => b.Theme == BoxTheme.Sailor && b.Tier == LootTable.Current.SosGrade[2]);
++
++        // Herbalist: a plant type first set to decorative.
++        var herbalists = BoxesOf(BoxTheme.Herbalist);
++        var plant = new PlantItem();
++        ClusterFLootBoxes.OnPlantDecorative(pm, plant);
++        ClusterFLootBoxes.OnPlantDecorative(pm, plant);
++        Assert.Equal(herbalists + 1, BoxesOf(BoxTheme.Herbalist));
++        plant.Delete();
++
++        // Delver: a boss's first kill inside a dungeon, beside its Boss box; outside a dungeon, only the Boss box.
++        ClusterFLootBoxes.OnBossKilled(pm, typeof(Balron), "a balron", "Despise");
++        ClusterFLootBoxes.OnBossKilled(pm, typeof(Balron), "a balron", "Despise");
++        ClusterFLootBoxes.OnBossKilled(pm, typeof(Lich), "a lich");
++        Assert.Equal(1, BoxesOf(BoxTheme.Delver));
++        Assert.Equal(2, BoxesOf(BoxTheme.Boss));
++
++        // The Boss box's trophy is a real piece of decor named for the boss.
++        var balronBox = p.Boxes().First(b => b.Theme == BoxTheme.Boss && b.EarnedFor == "slaying a balron");
++        Assert.Contains(balronBox.Contents, i => i is LootDecor && i.Name == "Trophy of a balron");
++
++        // League Dive: the tenth work order, not the ninth.
++        for (var i = 0; i < 9; i++)
++        {
++            Assert.Null(ClusterFLootBoxes.OnWorkOrderCompleted(pm));
++        }
++
++        Assert.Equal(0, BoxesOf(BoxTheme.LeagueDive));
++        Assert.Equal(ClusterFLootBoxes.AwardResult.Box, ClusterFLootBoxes.OnWorkOrderCompleted(pm));
++        Assert.Equal(1, BoxesOf(BoxTheme.LeagueDive));
++
++        // The maritime guild alternates Fisher and Sailor; a guild the table does not name gives none.
++        Assert.Equal(BoxTheme.Fisher, LootTable.Current.ThemeForGuildRank("maritime", 1));
++        Assert.Equal(BoxTheme.Sailor, LootTable.Current.ThemeForGuildRank("maritime", 2));
++        Assert.Equal(BoxTheme.Society, LootTable.Current.ThemeForGuildRank("smithing", 3));
++        Assert.Null(LootTable.Current.ThemeForGuildRank("thieves", 1));
++
++        // A later loop: the first-time sources give nothing again, not even the repeat line.
++        ClusterFLootBoxes.LoopProvider = _ => 2;
++        var before = p.Boxes().Count;
++        Assert.Equal(ClusterFLootBoxes.AwardResult.AlreadyThisLoop,
++            ClusterFLootBoxes.AwardOnce(pm, "sos:2", BoxTheme.Sailor, 3, null, "again", out _));
++        ClusterFLootBoxes.OnSosRecovered(pm, 2);
++        Assert.Equal(before, p.Boxes().Count);
++
++        // The per-key achievement theme: the one fishing achievement goes to Fisher, others by category.
++        Assert.Equal(BoxTheme.Fisher, LootTable.Current.ThemeForAchievement("joke.sole_survivor", "Mischief"));
++        Assert.Equal(BoxTheme.Hunter, LootTable.Current.ThemeForAchievement("combat.first_blood", "Combat"));
++    }
++
++    [Fact]
++    public void JokeItemsAreThreePercentOfCosmeticsAndInNoOtherPool()
++    {
++        foreach (var (pool, entries) in LootTable.Defaults.Pools)
++        {
++            var total = entries.Sum(e => e.Weight);
++            var joke = entries.Where(e => !e.Item.StartsWith('@') &&
++                                          typeof(INotedJoke).IsAssignableFrom(AssemblyHandler.FindTypeByName(e.Item))).Sum(e => e.Weight);
++            var share = 100.0 * joke / total;
++            _out.WriteLine($"{pool}: jokes {joke} of {total} ({share:F1}%)");
++            Assert.True(share <= 5.0, $"{pool}: jokes are {share:F1}%");
++            if (pool == "Cosmetics")
++            {
++                Assert.InRange(share, 2.5, 3.5);
++            }
++            else
++            {
++                Assert.Equal(0, joke);
++            }
++        }
++    }
++}
+diff --git a/server/tests/Misc/LootBoxFanfareVerification.cs b/server/tests/Misc/LootBoxFanfareVerification.cs
+index 69f57cc..f982bdf 100644
+--- a/server/tests/Misc/LootBoxFanfareVerification.cs
++++ b/server/tests/Misc/LootBoxFanfareVerification.cs
+@@ -59,6 +59,8 @@ public class LootBoxFanfareVerification
+         }
+ 
+         LootTable.Current = LootTable.Defaults;
++        ClusterFLootBoxes.RarityRoll = _ => BoxRarity.Common; // cc-P763: these facts predate the rarity roll
++        ClusterFLootBoxes.SeasonClock = () => new DateTime(2026, 6, 15); // and the season slot: a day in no season
+         FanfareLines.Current = FanfareLines.Defaults;
+         ClusterFLootBoxes.LoopProvider = _ => 1;
+         ClusterFFanfare.FlushAll();
+diff --git a/server/tests/Misc/LootBoxFlyingLootVerification.cs b/server/tests/Misc/LootBoxFlyingLootVerification.cs
+index b999626..b7d68be 100644
+--- a/server/tests/Misc/LootBoxFlyingLootVerification.cs
++++ b/server/tests/Misc/LootBoxFlyingLootVerification.cs
+@@ -62,6 +62,8 @@ public class LootBoxFlyingLootVerification
+         }
+ 
+         LootTable.Current = LootTable.Defaults;
++        ClusterFLootBoxes.RarityRoll = _ => BoxRarity.Common; // cc-P763: these facts predate the rarity roll
++        ClusterFLootBoxes.SeasonClock = () => new DateTime(2026, 6, 15); // and the season slot: a day in no season
+         FanfareLines.Current = FanfareLines.Defaults;
+         ClusterFLootBoxes.LoopProvider = _ => 1;
+         ClusterFFanfare.FlushAll();
+diff --git a/server/tests/Misc/NotedBySystemVerification.cs b/server/tests/Misc/NotedBySystemVerification.cs
+index da33189..4f9f45a 100644
+--- a/server/tests/Misc/NotedBySystemVerification.cs
++++ b/server/tests/Misc/NotedBySystemVerification.cs
+@@ -71,6 +71,8 @@ public class NotedBySystemVerification : IDisposable
+         }
+ 
+         LootTable.Current = LootTable.Defaults;
++        ClusterFLootBoxes.RarityRoll = _ => BoxRarity.Common; // cc-P763: these facts predate the rarity roll
++        ClusterFLootBoxes.SeasonClock = () => new DateTime(2026, 6, 15); // and the season slot: a day in no season
+         ClusterFLootBoxes.LoopProvider = _ => 1;
+         ClusterFStoreBought.CraftedOnly = true;
+         ShardTestHost.EnsureCraftSystems(); // cc-P457: the commissions' teaching pick reads the smithing menu, which
+diff --git a/server/tests/Misc/NotedFixupsVerification.cs b/server/tests/Misc/NotedFixupsVerification.cs
+index a014f4a..a52baba 100644
+--- a/server/tests/Misc/NotedFixupsVerification.cs
++++ b/server/tests/Misc/NotedFixupsVerification.cs
+@@ -57,6 +57,8 @@ public class NotedFixupsVerification : IDisposable
+         }
+ 
+         LootTable.Current = LootTable.Defaults;
++        ClusterFLootBoxes.RarityRoll = _ => BoxRarity.Common; // cc-P763: these facts predate the rarity roll
++        ClusterFLootBoxes.SeasonClock = () => new DateTime(2026, 6, 15); // and the season slot: a day in no season
+         ClusterFLootBoxes.LoopProvider = _ => 1;
+         ClusterFStoreBought.CraftedOnly = true;
+         ShardTestHost.EnsureCraftSystems(); // the large commission's teaching pick reads the smithing menu

@@ -239,7 +239,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 649 prompts done, 5 more stopped early and not counted)
+### Queue (Golem on; 650 prompts done, 5 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -251,6 +251,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P787 beekeeping | queued |  |
 | P9772 remote-answer-test | done | 2026-11-02 |
 | P9770 run-next-test | done | 2026-11-02 |
+| P788 isle-features | done | 2026-11-03 |
 | P780 daily-league-hunts | done | 2026-11-03 |
 | P779 assess-seasonal-content | done | 2026-11-02 |
 | P778 assess-gathering-activities | done | 2026-11-02 |
@@ -258,7 +259,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P776 random-encounters | done | 2026-11-02 |
 | P775 review-build-cont-loot-boxes-diversified | done | 2026-11-02 |
 | P774 cont-fixup-cont-loot-boxes-diversified | done | 2026-11-02 |
-| P773 playtest-tasks | done | 2026-11-02 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 186 patches, 12 replacements
 
