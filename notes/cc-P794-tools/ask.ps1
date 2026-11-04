@@ -1,0 +1,8 @@
+# cc-P794: the one question for Chase, from a file so the words survive the shell.
+$q = 'P794: seven new ethereal mounts are built, tested and ridden in the real client (windrunner, lasher, dark tiger, light tiger, ancient hellhound, boura, peacock). No player can get one until you choose how they are earned. Which should I wire? They are never a plain store sale. Your own table is welcome in place of these.'
+$context = 'Recommended mix. League shop at 1750 AP: peacock 1,500 Renown; windrunner, dark tiger and light tiger 2,000 Renown each (real shop mounts are 750 to 1,500; an ethereal cannot die). Achievements: lasher for all 38 New Haven trainer quests; boura for all 16 ore types; ancient hellhound for 200 in three skills. All three achievements are reachable and have no reward yet. Rewards pay only at the moment of earning, so the mix also adds a once-only hand-over at login for anyone who already earned one. Each mount costs one follower slot while ridden, as stock; a setting can make it 0. Prices are placeholders, kept in settings. Full table: notes\cc-P794-ethereal-looks.md.'
+& 'D:\UO\golem\Ask-Chase.ps1' -Question $q -Context $context -Prompt P794 `
+    -Choice 'Recommended mix|Four in the League shop and three as achievement rewards, with the once-only login hand-over for past earners.' `
+    -Choice2 'All seven in the League shop|All seven at 1750 AP: peacock 1,500 Renown, the other six 2,000. No achievement changes.' `
+    -Choice3 'All seven in the Achievement store|All seven for spendable AP at 500 each, in the AP Store. No Renown and no back pay needed.'
+exit $LASTEXITCODE
