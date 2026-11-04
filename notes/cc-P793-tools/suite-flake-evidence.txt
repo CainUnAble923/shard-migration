@@ -1,0 +1,30 @@
+  Failed ShatteredLegacy.Tests.PeacockVerification.ARealTameMakesItTheTamers [2 ms]
+  Error Message:
+   a 120 tamer tames a 29.1 peacock; followers 0/5, los True, see True, alive False, map TerMur, skills cap 7000, killer=0x0000291C "a chest mimic" hits=0/50 str=0 poison= birdCombatant= near=[ChestMimic@(1000, 1000, 0) hits=758 combatant=; PlayerMobile@(1000, 1000, 0) hits=0 combatant=; Peacock@(1001, 1000, 0) hits=80 combatant=]
+--
+  Failed ShatteredLegacy.Tests.PeacockVerification.ARealTameMakesItTheTamers [2 ms]
+  Error Message:
+   a 120 tamer tames a 29.1 peacock; followers 0/5, los True, see True, alive False, map TerMur, skills cap 7000, killer=0x000028DF "a chest mimic" hits=0/50 str=0 poison= birdCombatant= near=[ChestMimic@(1000, 1000, 0) hits=769 combatant=; PlayerMobile@(1000, 1000, 0) hits=0 combatant=; Peacock@(1001, 1000, 0) hits=84 combatant=]
+--
+  Failed ShatteredLegacy.Tests.PeacockVerification.ARealTameMakesItTheTamers [2 ms]
+  Error Message:
+   a 120 tamer tames a 29.1 peacock; followers 0/5, los True, see True, alive False, map TerMur, skills cap 7000, killer=0x000028F1 "a chest mimic" hits=0/50 str=0 poison= birdCombatant= near=[ChestMimic@(1000, 1000, 0) hits=777 combatant=; PlayerMobile@(1000, 1000, 0) hits=0 combatant=; Peacock@(1001, 1000, 0) hits=85 combatant=]
+--
+  Failed ShatteredLegacy.Tests.EodonRemainderVerification.TheInfernusDropsFireFromCombatOnACooldownAndItBurnsWhoeverStandsInIt [26 ms]
+  Error Message:
+   no second drop after the cooldown
+--
+  Failed ShatteredLegacy.Tests.PeacockVerification.ARealTameMakesItTheTamers [2 ms]
+  Error Message:
+   a 120 tamer tames a 29.1 peacock; followers 0/5, los True, see True, alive False, map TerMur, skills cap 7000, killer=0x00002910 "a chest mimic" hits=0/50 str=0 poison= birdCombatant= near=[ChestMimic@(1000, 1000, 0) hits=788 combatant=; PlayerMobile@(1000, 1000, 0) hits=0 combatant=; Peacock@(1001, 1000, 0) hits=83 combatant=]
+
+gated-build-run3-tame-and-butcher.log, the Butcher's Eye failure:
+  Failed ShatteredLegacy.Tests.DeathHooksVerification.AKilledNonBondedPetPaysNoImbueKillEffect [1 ms]
+  Error Message:
+   System.MissingMethodException : Cannot dynamically create an instance of type 'Server.Items.SilverSnakeSkin'. Reason: No parameterless constructor defined.
+  Stack Trace:
+     at System.RuntimeType.ActivatorCache..ctor(RuntimeType rt)
+   at System.RuntimeType.ActivatorCache.Create(RuntimeType type)
+   at System.RuntimeType.IGenericCacheEntry`1.CreateAndCache(RuntimeType type)
+   at System.Activator.CreateInstance(Type type)
+   at Server.ClusterFImbueEffects.ButcherOn(PlayerMobile pm, Container corpse, Item item) in /build/modernuo/Projects/UOContent/Imbuing/ClusterFImbueEffects.cs:line 341
