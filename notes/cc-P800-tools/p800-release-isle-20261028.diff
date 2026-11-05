@@ -1,0 +1,1932 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 4a9df4b..a911c1a 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -29,6 +29,17 @@ Example:
+ - Restoring a Jacob's Pickaxe no longer refuses ingots kept in your bank.
+ -->
+ 
++## 2026.11.03.2
++
++### Added
++- The League sash now grows with you. Elara gives every registered citizen one for free, one per character, blessed and bound to that character, and it stays with you through every loop. As your League rank reaches Dull Copper, Bronze, Verite, Blaze, Mythril and Celestial, go back to Elara and pay Renown to raise it a step: each step gives it a new name and metal hue and adds 1% to the Renown you earn from achievements and League jobs while you wear it, up to 6%. Spending Renown never lowers your rank.
++
++### Changed
++- League sashes you already have become your new sash at its first step. A second one stays as an old League keepsake. Loot boxes only give the sash to a character who has none yet.
++
++### Staff
++- Every League sash number is in Configuration/league-sash.json, written with the defaults on first start. [LeagueSash lists the steps, [LeagueSash reload reads the file again, and [LeagueSash step <n> sets your own sash.
++
+ ## 2026.11.03.1
+ 
+ ### Changed
+diff --git a/VERSION b/VERSION
+index 9105ef1..4883fb6 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-2026.11.03.1
++2026.11.03.2
+diff --git a/server/customizations/ClusterFAchievements.cs b/server/customizations/ClusterFAchievements.cs
+index 0a03f7a..00e1c23 100644
+--- a/server/customizations/ClusterFAchievements.cs
++++ b/server/customizations/ClusterFAchievements.cs
+@@ -1454,6 +1454,17 @@ public static partial class ClusterFAchievementSystem // partial: cc-P231's joke
+         return (live.Count(d => earned.Contains(d.Key)), live.Count);
+     }
+ 
++    // cc-P800: main's helper, for the worn sash's Renown bonus.
++    private static PlayerMobile? OnlineCharacter(IAccount acct)
++    {
++        for (var i = 0; i < acct.Count; i++)
++        {
++            if (acct[i] is PlayerMobile p && p.NetState != null) return p;
++        }
++
++        return null;
++    }
++
+     /// <summary>
+     /// Grant an achievement if not already earned. Returns true on new earn.
+     /// Enforces prerequisite chain, updates AP and Renown, spawns any reward
+@@ -1474,7 +1485,7 @@ public static partial class ClusterFAchievementSystem // partial: cc-P231's joke
+ 
+         var data = ClusterFAccountPersistence.GetOrCreate(acct);
+         data.AchievementPoints += def.AP;
+-        data.GrantRenown(def.Renown, RenownSource.Achievement); // and LifetimeRenown (cc-P48)
++        LeagueSashSystem.Earn(data, OnlineCharacter(acct), def.Renown, RenownSource.Achievement); // and LifetimeRenown (cc-P48); cc-P800: the worn sash's bonus
+         Server.Engines.LeagueRewards.LeagueTitles.Sync(data); // cc-P229: AP titles unlock as AP is reached, and stay
+ 
+         if (def.RewardItems.Length > 0)
+diff --git a/server/customizations/LeagueRegistrarGump.cs b/server/customizations/LeagueRegistrarGump.cs
+index 957aff7..c54e195 100644
+--- a/server/customizations/LeagueRegistrarGump.cs
++++ b/server/customizations/LeagueRegistrarGump.cs
+@@ -17,13 +17,14 @@ namespace Server;
+ ///   GuildReferrals -- the Guild Directory (cc-P15): the same rows as the board's first page and [guild
+ ///   WhereToStart   -- step-by-step guidance for new arrivals
+ ///   Rank           -- (cc-P48) the character's League rank, the next one, the four promotion checks, Promote
++///   Sash           -- (cc-P800) the character's League sash: take it, replace it, buy the next step
+ ///   MuleErrand     -- (cc-P69) the Compact's Mule errand: take it, deliver ore and ingots, collect the mule, replace a lost one
+ ///
+ /// Opened by: LeagueRegistrar.OnDoubleClick
+ /// </summary>
+ public class LeagueRegistrarGump : GuildStyledGump
+ {
+-    public enum View { MainMenu, CitizenStatus, AboutRenown, GuildReferrals, WhereToStart, Rank, MuleErrand }
++    public enum View { MainMenu, CitizenStatus, AboutRenown, GuildReferrals, WhereToStart, Rank, MuleErrand, Sash }
+ 
+     // cc-P48: the main menu's League Rank entry and the Rank page's Promote (the free IDs from 18).
+     public const int BtnRank    = 18;
+@@ -49,12 +50,20 @@ public class LeagueRegistrarGump : GuildStyledGump
+     // cc-P760: the Achievement store, on the About Renown row's right.
+     public const int BtnApStore = 30;
+ 
++    // cc-P800: the League sash, on the Guild Referrals row's right, and its page's actions.
++    public const int BtnSash = 31;
++    public const int BtnSashTake = 32;
++    public const int BtnSashUpgrade = 33;
++
+     private readonly PlayerMobile _pm;
+     private readonly View         _view;
+ 
+     // The rank the page was drawn at. Promote acts only from this rank, so a stale page promotes nobody.
+     private readonly int          _rankAtDraw;
+ 
++    // cc-P800: the step the Sash page was drawn at. Upgrade acts only from this step, so a stale page charges nobody.
++    private readonly int          _sashStepAtDraw;
++
+     private const int W    = 440;
+     private const int H    = 420;
+     private const int BgId = 9270;
+@@ -64,6 +73,7 @@ public class LeagueRegistrarGump : GuildStyledGump
+         _pm   = pm;
+         _view = view;
+         _rankAtDraw = ClusterFLeagueRanks.GetRank(pm);
++        _sashStepAtDraw = LeagueSashSystem.StepOf(pm);
+ 
+         Closable   = true;
+         Disposable = true;
+@@ -91,6 +101,7 @@ public class LeagueRegistrarGump : GuildStyledGump
+             case View.WhereToStart:  DrawWhereToStart(data);  break;
+             case View.Rank:          DrawRank(data);          break;
+             case View.MuleErrand:    DrawMuleErrand();        break;
++            case View.Sash:          DrawSash(data);          break;
+         }
+ 
+         // -- Footer --------------------------------------------------------
+@@ -142,7 +153,8 @@ public class LeagueRegistrarGump : GuildStyledGump
+         AddButton(230, y, 4011, 4012, BtnShop); AddLabel(256, y + 2, 999, "League Shop");  y += 28;
+         AddButton(18, y, 4011, 4012, 14); AddLabel(44, y + 2, 999, "Guilds Overview");
+         AddButton(230, y, 4011, 4012, BtnTitles); AddLabel(256, y + 2, 999, "Titles");     y += 28;
+-        AddButton(18, y, 4011, 4012, 15); AddLabel(44, y + 2, 999, "Guild Referrals");   y += 28;
++        AddButton(18, y, 4011, 4012, 15); AddLabel(44, y + 2, 999, "Guild Referrals");
++        AddButton(230, y, 4011, 4012, BtnSash); AddLabel(256, y + 2, 999, "League Sash");  y += 28;
+         AddButton(18, y, 4011, 4012, 16); AddLabel(44, y + 2, 999, "League Dispatch");   y += 28;
+         AddButton(18, y, 4011, 4012, 17); AddLabel(44, y + 2, 999, "Where to go first?"); y += 28;
+         AddButton(18, y, 4011, 4012, BtnRank); AddLabel(44, y + 2, 999, "League Rank");
+@@ -150,6 +162,65 @@ public class LeagueRegistrarGump : GuildStyledGump
+         AddButton(18, y, 4011, 4012, BtnMuleErrand); AddLabel(44, y + 2, 999, "The Compact's Mule (errand)");
+     }
+ 
++    // cc-P800: the character's sash, what it does now, and the next step's rank and fee. The press checks again.
++    private void DrawSash(ClusterFAccountData data)
++    {
++        AddLabel(18, 56, RequirementStyle.HeadingHue, "League Sash");
++        AddImageTiled(10, 72, W - 20, 1, 9304);
++
++        var table = LeagueSashTable.Current;
++        var step = _sashStepAtDraw;
++
++        if (_rankAtDraw <= 0)
++        {
++            AddHtml(18, 82, W - 36, 60, "<BASEFONT COLOR=#AAAAAA>Register with the League first, and your sash is free.</BASEFONT>", false, false);
++            return;
++        }
++
++        var sash = LeagueSashSystem.Find(_pm);
++
++        if (sash == null)
++        {
++            var had = LeagueSashSystem.Has(_pm);
++            var offer = had
++                ? "The League keeps a record of every sash. Yours can be replaced at the step it had reached, at no charge."
++                : "Every citizen may wear the League's sash. It is bound to you and you keep it through every loop. " +
++                  $"As you rise, come back to me: it grows in {table.MaxStep} steps, each with a new name and metal hue.";
++
++            AddHtml(18, 82, W - 36, 90, $"<BASEFONT COLOR=#AAAAAA>{offer}</BASEFONT>", false, false);
++            AddButton(18, 180, 4011, 4012, BtnSashTake);
++            AddLabel(44, 182, 0x44, had ? "Replace my sash" : "Take my sash");
++            return;
++        }
++
++        AddLabel(18, 80, 999, "Your sash:");
++        AddLabel(110, 80, sash.Hue, $"{sash.DefaultName} (step {step} of {table.MaxStep})");
++        AddLabel(18, 102, 999, "Worn:");
++        AddLabel(110, 102, 999, table.BonusOf(step) > 0 ? $"+{table.BonusOf(step)}% Renown earned" : "no Renown bonus yet");
++        AddImageTiled(10, 126, W - 20, 1, 9304);
++
++        var next = step + 1;
++
++        if (next > table.MaxStep)
++        {
++            AddHtml(18, 136, W - 36, 60, "<BASEFONT COLOR=#AAAAAA>Your sash has reached its last step. The League has no higher honor.</BASEFONT>", false, false);
++            return;
++        }
++
++        var need = table.RankNeeded(next);
++        var fee = table.FeeOf(next);
++
++        AddLabel(18, 136, 999, "Next step:");
++        AddLabel(110, 136, table.HueOf(next), $"a {table.MetalNameOf(next)} League sash, +{table.BonusOf(next)}% Renown");
++
++        var reqs = new RequirementList()
++            .Check(_rankAtDraw >= need, $"League rank: {ClusterFLeagueRanks.RankName(need)}", $"League rank: {ClusterFLeagueRanks.RankName(need)}")
++            .Amount("Renown", data.Renown, fee);
++
++        var y = reqs.Draw(this, 18, 162);
++        reqs.DrawFooter(this, 18, y + 6, BtnSashUpgrade, $"Upgrade for {fee:N0} Renown");
++    }
++
+     // cc-P69: the Compact's Mule errand (MuleErrand). The page says where the character is; every button re-checks.
+     private void DrawMuleErrand()
+     {
+@@ -433,6 +504,26 @@ public class LeagueRegistrarGump : GuildStyledGump
+                 Server.Items.RequisitionsBoard.OpenFor(_pm, null);
+                 return;
+ 
++            case BtnSash: // cc-P800
++                _pm.SendGump(new LeagueRegistrarGump(_pm, View.Sash));
++                break;
++
++            case BtnSashTake when _view == View.Sash:
++                {
++                    var issued = LeagueSashSystem.Issue(_pm, out var sashMsg);
++                    _pm.SendMessage(issued != null ? 0x44 : 0x22, sashMsg);
++                    _pm.SendGump(new LeagueRegistrarGump(_pm, View.Sash));
++                }
++                break;
++
++            case BtnSashUpgrade when _view == View.Sash: // every check again, server side, from the step this page was drawn at
++                {
++                    var upgraded = LeagueSashSystem.Upgrade(_pm, _sashStepAtDraw, out var sashMsg);
++                    _pm.SendMessage(upgraded ? 0x44 : 0x22, sashMsg);
++                    _pm.SendGump(new LeagueRegistrarGump(_pm, View.Sash));
++                }
++                break;
++
+             case BtnRank: // League Rank (cc-P48)
+                 _pm.SendGump(new LeagueRegistrarGump(_pm, View.Rank));
+                 break;
+diff --git a/server/customizations/LeagueShop/LeagueSash.cs b/server/customizations/LeagueShop/LeagueSash.cs
+new file mode 100644
+index 0000000..ea16e4e
+--- /dev/null
++++ b/server/customizations/LeagueShop/LeagueSash.cs
+@@ -0,0 +1,768 @@
++// LeagueSash.cs
++//
++// cc-P800: the League sash grows with its wearer. Plan and Chase's answer in shard-migration notes/cc-P800-league-sash-plan.md
++// and notes/cc-P800-league-sash.md.
++//
++// ONE PER CHARACTER. Elara gives the first free. The sash is blessed and bound to the character, never the account. A step
++// is opened by the character's League rank and bought from Elara with spendable Renown (SpendRenown, so rank never falls).
++// Each step changes its name, hue and title line and adds a small Renown bonus while worn. Never skill, stat or item
++// properties.
++//
++// STORAGE. The item saves its owner and step. The account's FlagValues (the same per-character keys ClusterFLoops uses, no
++// schema change) keep the character's step, so a lost sash can be replaced at that step, and the fraction of a Renown the
++// bonus has not yet paid. A loop touches neither: the sash, its step and the flags all stay (F-12: League rank, Renown and
++// achievements sit outside the loop).
++//
++// OLD SASHES. P79's BoundCosmeticSash labelled "League" converts in place after every world load and at its holder's login; a
++// pass finding nothing changes nothing. The login pass is the one that counts for a character whose Account was not set when the
++// load pass ran (seen on a real load, never in the test host). A second one held by a character becomes a keepsake labelled "old
++// League". One still inside an unopened box converts as the box opens. One not held by a character of its account is left until
++// it is.
++//
++// NUMBERS. Configuration/league-sash.json, written with the defaults on first start, read at start and by [LeagueSash reload.
++// A bad file is refused whole, every error is printed, and the table in force is kept.
++
++using System;
++using System.Collections.Generic;
++using System.Globalization;
++using System.IO;
++using System.Linq;
++using System.Text;
++using System.Text.Json;
++using ModernUO.CodeGeneratedEvents;
++using ModernUO.Serialization;
++using Server.Accounting;
++using Server.Commands;
++using Server.Engines.LeagueRewards;
++using Server.Items;
++using Server.Mobiles;
++using Server.Network;
++using Server.Tutorial;
++
++namespace Server.Items
++{
++    [SerializationGenerator(0, false)]
++    public partial class LeagueSash : BodySash
++    {
++        public const string Refusal = "That sash is bound to its owner.";
++
++        [SerializableField(0, setter: "private")]
++        private Mobile _owner;
++
++        [SerializableField(1, setter: "private")]
++        private int _step;
++
++        [Constructible]
++        public LeagueSash() : this(null, 0)
++        {
++        }
++
++        public LeagueSash(Mobile owner, int step)
++        {
++            _owner = owner;
++            LootType = LootType.Blessed;
++            SetStep(step);
++        }
++
++        /// <summary>The step's look. The character's record is LeagueSashSystem's.</summary>
++        public void SetStep(int step)
++        {
++            Step = Math.Clamp(step, 0, LeagueSashTable.Current.MaxStep);
++            Hue = LeagueSashTable.Current.HueOf(Step);
++            InvalidateProperties();
++        }
++
++        public override string DefaultName => Step <= 0 ? "a League sash" : $"a {LeagueSashTable.Current.MetalNameOf(Step)} League sash";
++
++        public override void GetProperties(IPropertyList list)
++        {
++            base.GetProperties(list);
++
++            foreach (var line in Lines())
++            {
++                list.Add(line);
++            }
++        }
++
++        /// <summary>What the sash says under its name.</summary>
++        public List<string> Lines()
++        {
++            var table = LeagueSashTable.Current;
++            var lines = new List<string> { $"Sash of {LeagueSashSystem.CitizenPhrase(Step)}, step {Step} of {table.MaxStep}" };
++
++            if (table.BonusOf(Step) > 0)
++            {
++                lines.Add($"+{table.BonusOf(Step)}% Renown earned while worn");
++            }
++
++            if (_owner is PlayerMobile pm && ClusterFLoops.LoopOf(pm) is var loops and > 0)
++            {
++                lines.Add(loops == 1 ? "Worn through 1 loop" : $"Worn through {loops} loops");
++            }
++
++            lines.Add("Bound to this character");
++            return lines;
++        }
++
++        public bool IsOwner(Mobile m) => m != null && m == _owner;
++
++        private static bool Refuse(Mobile from)
++        {
++            from.SendMessage(0x22, Refusal);
++            return false;
++        }
++
++        private bool MayRestIn(Item target) => target?.RootParent is Mobile holder && IsOwner(holder);
++
++        public override bool AllowSecureTrade(Mobile from, Mobile to, Mobile newOwner, bool accepted) => Refuse(from);
++
++        public override bool OnDroppedToWorld(Mobile from, Point3D p) => Refuse(from);
++
++        public override bool OnDroppedToMobile(Mobile from, Mobile target) =>
++            target == from && IsOwner(from) ? base.OnDroppedToMobile(from, target) : Refuse(from);
++
++        public override bool OnDroppedInto(Mobile from, Container target, Point3D p) =>
++            MayRestIn(target) ? base.OnDroppedInto(from, target, p) : Refuse(from);
++
++        public override bool OnDroppedOnto(Mobile from, Item target) =>
++            MayRestIn(target) ? base.OnDroppedOnto(from, target) : Refuse(from);
++
++        public override bool CheckLift(Mobile from, Item item, ref LRReason reject)
++        {
++            if (from.AccessLevel < AccessLevel.GameMaster && !IsOwner(from))
++            {
++                reject = LRReason.CannotLift;
++                return false;
++            }
++
++            return base.CheckLift(from, item, ref reject);
++        }
++
++        // The hue says the step, and bandages would end a sash the League keeps a record of.
++        public override bool Dye(Mobile from, DyeTub sender) => Refuse(from);
++
++        public override bool Scissor(Mobile from, Scissors scissors) => Refuse(from);
++    }
++}
++
++namespace Server
++{
++    /// <summary>One step above the first sash: the metal rank that opens it, its Renown fee, its bonus while worn.</summary>
++    public sealed record LeagueSashStep(string Metal, int Fee, int BonusPercent);
++
++    /// <summary>The steps and effects: Configuration/league-sash.json.</summary>
++    public sealed class LeagueSashTable
++    {
++        public const string FileName = "league-sash.json";
++
++        public static string FilePath => Path.Combine(Core.BaseDirectory, "Configuration", FileName);
++
++        public static LeagueSashTable Defaults { get; } = new(
++            [
++                new LeagueSashStep("DullCopper", 50, 1),
++                new LeagueSashStep("Bronze", 250, 2),
++                new LeagueSashStep("Verite", 1_000, 3),
++                new LeagueSashStep("Blaze", 3_000, 4),
++                new LeagueSashStep("Mythril", 6_000, 5),
++                new LeagueSashStep("Celestial", 10_000, 6)
++            ],
++            LeagueShop.LeagueHue, 0x1F2, 0x376A, "built-in defaults"
++        );
++
++        public static LeagueSashTable Current { get; set; } = Defaults;
++
++        private readonly List<LeagueSashStep> _steps;
++
++        private LeagueSashTable(List<LeagueSashStep> steps, int firstHue, int sound, int effect, string source)
++        {
++            _steps = steps;
++            FirstHue = firstHue;
++            UpgradeSound = sound;
++            UpgradeEffect = effect;
++            Source = source;
++        }
++
++        public int FirstHue { get; }
++
++        public int UpgradeSound { get; }
++
++        public int UpgradeEffect { get; }
++
++        public string Source { get; }
++
++        public int MaxStep => _steps.Count;
++
++        /// <summary>Step 1 upward; null for step 0 and past the top.</summary>
++        public LeagueSashStep Row(int step) => step >= 1 && step <= _steps.Count ? _steps[step - 1] : null;
++
++        private static LeagueRankInfo Rank(string metal)
++        {
++            foreach (var rank in ClusterFLeagueRanks.Ladder)
++            {
++                if (rank.MetalKey.Equals(metal, StringComparison.OrdinalIgnoreCase))
++                {
++                    return rank;
++                }
++            }
++
++            return null;
++        }
++
++        private LeagueRankInfo RankOf(int step) => Row(step) is { } row ? Rank(row.Metal) : null;
++
++        /// <summary>The ladder rank that opens a step: 1 (Iron) for the first sash.</summary>
++        public int RankNeeded(int step) => RankOf(step)?.Index ?? 1;
++
++        public int HueOf(int step) => RankOf(step)?.Hue ?? FirstHue;
++
++        public string MetalNameOf(int step) => RankOf(step)?.MetalName ?? "League";
++
++        public int FeeOf(int step) => Row(step)?.Fee ?? 0;
++
++        public int BonusOf(int step) => Row(step)?.BonusPercent ?? 0;
++
++        // -- The file ----------------------------------------------------------------------------------
++
++        public static string ToJson(LeagueSashTable table)
++        {
++            var sb = new StringBuilder();
++            sb.Append("{\n");
++            sb.Append("  \"about\": \"The League sash (cc-P800). firstHue: the first sash. upgradeSound, upgradeEffect: Elara's upgrade. ");
++            sb.Append("steps: lowest first; metal is the League rank that opens the step (the step takes its name and hue), fee is the ");
++            sb.Append("Renown Elara charges, bonusPercent is the Renown bonus while worn (0 turns it off). Edit and run [LeagueSash reload. ");
++            sb.Append("A bad file is refused whole and the table in force is kept.\",\n");
++            sb.Append($"  \"firstHue\": {table.FirstHue},\n  \"upgradeSound\": {table.UpgradeSound},\n  \"upgradeEffect\": {table.UpgradeEffect},\n");
++            sb.Append("  \"steps\": [\n");
++
++            for (var i = 0; i < table._steps.Count; i++)
++            {
++                var s = table._steps[i];
++                sb.Append($"    {{ \"metal\": \"{s.Metal}\", \"fee\": {s.Fee}, \"bonusPercent\": {s.BonusPercent} }}{(i < table._steps.Count - 1 ? "," : "")}\n");
++            }
++
++            sb.Append("  ]\n}\n");
++            return sb.ToString();
++        }
++
++        private static int ReadInt(JsonElement el, string name, int min, int max, string where, List<string> errors)
++        {
++            if (el.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number && v.TryGetInt32(out var n) && n >= min && n <= max)
++            {
++                return n;
++            }
++
++            errors.Add($"{where}: \"{name}\" must be a whole number from {min} to {max}.");
++            return min;
++        }
++
++        /// <summary>
++        /// Reads a table, or returns null and fills errors; accepted whole or not at all. Checked: syntax; firstHue, sound and
++        /// effect; at least one step; each metal is a ladder metal above Iron, in rising rank order; fee 0 or more; bonus 0 to 100.
++        /// </summary>
++        public static LeagueSashTable Parse(string json, string source, List<string> errors)
++        {
++            JsonDocument doc;
++            try
++            {
++                doc = JsonDocument.Parse(json, new JsonDocumentOptions { AllowTrailingCommas = true, CommentHandling = JsonCommentHandling.Skip });
++            }
++            catch (JsonException ex)
++            {
++                errors.Add($"not valid JSON: {ex.Message}");
++                return null;
++            }
++
++            using (doc)
++            {
++                var root = doc.RootElement;
++
++                if (root.ValueKind != JsonValueKind.Object || !root.TryGetProperty("steps", out var steps) ||
++                    steps.ValueKind != JsonValueKind.Array || steps.GetArrayLength() == 0)
++                {
++                    errors.Add("the file needs a \"steps\" array with at least one row.");
++                    return null;
++                }
++
++                var firstHue = ReadInt(root, "firstHue", 0, 0xFFFF, "file", errors);
++                var sound = ReadInt(root, "upgradeSound", 0, 0xFFFF, "file", errors);
++                var effect = ReadInt(root, "upgradeEffect", 0, 0xFFFF, "file", errors);
++
++                var rows = new List<LeagueSashStep>();
++                var lastRank = 1;
++
++                foreach (var el in steps.EnumerateArray())
++                {
++                    var where = $"step {rows.Count + 1}";
++
++                    if (el.ValueKind != JsonValueKind.Object)
++                    {
++                        errors.Add($"{where}: not an object.");
++                        rows.Add(null);
++                        continue;
++                    }
++
++                    var metal = el.TryGetProperty("metal", out var m) && m.ValueKind == JsonValueKind.String ? m.GetString() : null;
++                    var rank = Rank(metal ?? "");
++
++                    if (rank == null)
++                    {
++                        errors.Add($"{where}: \"{metal}\" is not a League rank's metal.");
++                    }
++                    else if (rank.Index <= lastRank)
++                    {
++                        errors.Add($"{where}: {rank.MetalKey} must rank above the step before it.");
++                    }
++                    else
++                    {
++                        lastRank = rank.Index;
++                    }
++
++                    rows.Add(new LeagueSashStep(rank?.MetalKey ?? "", ReadInt(el, "fee", 0, int.MaxValue, where, errors),
++                        ReadInt(el, "bonusPercent", 0, 100, where, errors)));
++                }
++
++                return errors.Count == 0 ? new LeagueSashTable(rows, firstHue, sound, effect, source) : null;
++            }
++        }
++
++        public static List<string> LoadOrWriteDefaults(string path)
++        {
++            if (File.Exists(path))
++            {
++                return Reload(path);
++            }
++
++            Current = Defaults;
++
++            try
++            {
++                Directory.CreateDirectory(Path.GetDirectoryName(path)!);
++                File.WriteAllText(path, ToJson(Defaults));
++                return [$"{FileName} was missing; wrote the built-in defaults to {path}."];
++            }
++            catch (Exception ex)
++            {
++                return [$"{FileName} is missing and could not be written ({ex.Message}); using the built-in defaults."];
++            }
++        }
++
++        /// <summary>Reads the file and puts it in force, or refuses it whole and keeps the table in force. Returns lines to report.</summary>
++        public static List<string> Reload(string path)
++        {
++            var errors = new List<string>();
++            LeagueSashTable table = null;
++
++            try
++            {
++                table = Parse(File.ReadAllText(path), path, errors);
++            }
++            catch (Exception ex)
++            {
++                errors.Add($"could not read it: {ex.Message}");
++            }
++
++            if (table == null)
++            {
++                errors.Insert(0, $"{FileName} REFUSED, the table in force is kept ({Current.Source}):");
++                return errors;
++            }
++
++            Current = table;
++            return [$"{FileName} loaded: {table.MaxStep} steps."];
++        }
++    }
++
++    public static class LeagueSashSystem
++    {
++        public const string OldLabel = "League";
++        public const string KeepsakeLabel = "old League";
++
++        public static void Configure()
++        {
++            foreach (var line in LeagueSashTable.LoadOrWriteDefaults(LeagueSashTable.FilePath))
++            {
++                Console.WriteLine($"[League] {line}");
++            }
++
++            CommandSystem.Register("LeagueSash", AccessLevel.GameMaster, OnCommand);
++
++            // Items made during the load reach World.Items only after it.
++            EventSink.WorldLoad += () => Timer.DelayCall(TimeSpan.Zero, () => ConvertOldSashes());
++        }
++
++        [Usage("LeagueSash [reload | step <n>]")]
++        [Description("Lists the League sash steps. 'reload' reads Configuration/league-sash.json again; a bad file is refused whole and the table in force is kept. 'step <n>' sets your own sash to a step, with no fee.")]
++        [ShardCommand(CommandCategory.Diagnostic, Shard = CommandShard.Any)]
++        private static void OnCommand(CommandEventArgs e)
++        {
++            var from = e.Mobile;
++            var word = e.Length >= 1 ? e.GetString(0).ToLowerInvariant() : "";
++
++            if (word == "reload")
++            {
++                foreach (var line in LeagueSashTable.Reload(LeagueSashTable.FilePath))
++                {
++                    from.SendMessage(line);
++                }
++            }
++            else if (word == "step" && e.Length >= 2 && from is PlayerMobile pm)
++            {
++                if (Find(pm) is { } own)
++                {
++                    SetCharacterStep(pm, own, e.GetInt32(1));
++                    from.SendMessage($"Your sash is at step {own.Step}.");
++                }
++                else
++                {
++                    from.SendMessage("You have no League sash.");
++                }
++
++                return;
++            }
++
++            var table = LeagueSashTable.Current;
++            from.SendMessage($"League sash ({table.Source}), {table.MaxStep} steps:");
++
++            for (var s = 1; s <= table.MaxStep; s++)
++            {
++                from.SendMessage($"{s}: {table.MetalNameOf(s)}, {table.FeeOf(s):N0} Renown, +{table.BonusOf(s)}%");
++            }
++        }
++
++        public static string CitizenPhrase(int step)
++        {
++            var metal = LeagueSashTable.Current.MetalNameOf(step);
++            return $"{("AEIOU".Contains(metal[0]) ? "an" : "a")} {metal} Citizen";
++        }
++
++        // -- The character's record ----------------------------------------------------------------------
++
++        private static string StepKey(Mobile m) => $"character:{(uint)m.Serial}:leagueSash";
++
++        private static string CarryKey(Mobile m) => $"character:{(uint)m.Serial}:leagueSashCarry";
++
++        private static ClusterFAccountData Data(Mobile m) => m?.Account is IAccount acct ? ClusterFAccountPersistence.GetOrCreate(acct) : null;
++
++        private static bool ReadFlag(Mobile m, string key, out int value)
++        {
++            value = 0;
++            return Data(m)?.FlagValues.TryGetValue(key, out var text) == true &&
++                   int.TryParse(text, NumberStyles.None, CultureInfo.InvariantCulture, out value);
++        }
++
++        private static void SetCharacterStep(PlayerMobile pm, LeagueSash sash, int step)
++        {
++            sash.SetStep(step);
++
++            if (Data(pm) is { } data)
++            {
++                data.FlagValues[StepKey(pm)] = sash.Step.ToString(CultureInfo.InvariantCulture);
++            }
++        }
++
++        /// <summary>This character's step, kept apart from the item so a lost sash comes back where it was.</summary>
++        public static int StepOf(PlayerMobile pm) =>
++            ReadFlag(pm, StepKey(pm), out var step) ? Math.Min(step, LeagueSashTable.Current.MaxStep) : 0;
++
++        /// <summary>Worn, carried at any depth, or in the bank.</summary>
++        public static LeagueSash Find(PlayerMobile pm)
++        {
++            if (pm.FindItemOnLayer(Layer.MiddleTorso) is LeagueSash worn && worn.IsOwner(pm))
++            {
++                return worn;
++            }
++
++            return FindIn(pm.Backpack, pm) ?? FindIn(pm.FindBankNoCreate(), pm);
++        }
++
++        private static LeagueSash FindIn(Container pack, PlayerMobile pm)
++        {
++            if (pack == null)
++            {
++                return null;
++            }
++
++            foreach (var sash in pack.FindItemsByType<LeagueSash>())
++            {
++                if (sash.IsOwner(pm))
++                {
++                    return sash;
++                }
++            }
++
++            return null;
++        }
++
++        /// <summary>The character has had their sash, whether or not it can be found now.</summary>
++        public static bool Has(PlayerMobile pm) => ReadFlag(pm, StepKey(pm), out _) || Find(pm) != null;
++
++        /// <summary>The highest step this character's rank opens.</summary>
++        public static int OpenStep(PlayerMobile pm)
++        {
++            var table = LeagueSashTable.Current;
++            var rank = ClusterFLeagueRanks.GetRank(pm);
++            var open = 0;
++
++            for (var s = 1; s <= table.MaxStep && table.RankNeeded(s) <= rank; s++)
++            {
++                open = s;
++            }
++
++            return open;
++        }
++
++        public static void Refresh(PlayerMobile pm) => Find(pm)?.InvalidateProperties();
++
++        private static LeagueSash Create(PlayerMobile pm, int step)
++        {
++            var sash = new LeagueSash(pm, step);
++
++            if (Data(pm) is { } data)
++            {
++                data.FlagValues[StepKey(pm)] = sash.Step.ToString(CultureInfo.InvariantCulture);
++            }
++
++            return sash;
++        }
++
++        // -- At Elara's ----------------------------------------------------------------------------------
++
++        /// <summary>The first sash, or a lost one back at the character's step. Free. Refused while they hold it.</summary>
++        public static LeagueSash Issue(PlayerMobile pm, out string message)
++        {
++            if (ClusterFLeagueRanks.GetRank(pm) <= 0)
++            {
++                message = "Register with the League first.";
++                return null;
++            }
++
++            if (Find(pm) != null)
++            {
++                message = "You already have your League sash.";
++                return null;
++            }
++
++            var replacing = Has(pm);
++            var sash = Create(pm, StepOf(pm));
++            ClusterFGuildPromotion.Deliver(pm, sash);
++            message = replacing ? "The League replaces your sash." : "The League gives you your sash. It grows as you rise.";
++            return sash;
++        }
++
++        /// <summary>
++        /// Buys the next step. Everything is checked here, from the step the page was drawn at, so a stale page charges nobody.
++        /// Renown comes from the balance only: LifetimeRenown, and so League rank, never falls.
++        /// </summary>
++        public static bool Upgrade(PlayerMobile pm, int fromStep, out string message)
++        {
++            var table = LeagueSashTable.Current;
++            var sash = Find(pm);
++
++            if (sash == null)
++            {
++                message = "You need your League sash with you.";
++                return false;
++            }
++
++            var step = StepOf(pm);
++
++            if (step != fromStep)
++            {
++                message = "That page is out of date.";
++                return false;
++            }
++
++            var next = step + 1;
++
++            if (next > table.MaxStep)
++            {
++                message = "Your sash has reached its last step.";
++                return false;
++            }
++
++            if (ClusterFLeagueRanks.GetRank(pm) < table.RankNeeded(next))
++            {
++                message = $"That step opens at {ClusterFLeagueRanks.RankName(table.RankNeeded(next))}.";
++                return false;
++            }
++
++            var fee = table.FeeOf(next);
++
++            if (Data(pm)?.SpendRenown(fee) != true)
++            {
++                message = $"That step costs {fee:N0} Renown.";
++                return false;
++            }
++
++            SetCharacterStep(pm, sash, next);
++            pm.FixedParticles(table.UpgradeEffect, 9, 32, 5030, EffectLayer.Waist);
++            pm.PlaySound(table.UpgradeSound);
++            message = $"The League honors you: {sash.DefaultName}, step {next} of {table.MaxStep}.";
++            return true;
++        }
++
++        // -- The bonus ---------------------------------------------------------------------------------
++
++        /// <summary>The percent this character earns on top right now: only their own sash, only while worn.</summary>
++        public static int WornBonus(PlayerMobile pm) =>
++            pm?.FindItemOnLayer(Layer.MiddleTorso) is LeagueSash sash && sash.IsOwner(pm) ? LeagueSashTable.Current.BonusOf(sash.Step) : 0;
++
++        /// <summary>
++        /// Pays Renown earned by the character's own deeds, with the worn sash's bonus. A fraction of a Renown is kept toward
++        /// the next grant, so small achievements count too. Only achievements and League jobs earn the bonus; Renown from
++        /// another player (Commission) or staff never does.
++        /// </summary>
++        public static void Earn(ClusterFAccountData data, PlayerMobile pm, int amount, RenownSource source)
++        {
++            var percent = source is RenownSource.Achievement or RenownSource.LeagueJob ? WornBonus(pm) : 0;
++
++            if (percent <= 0 || amount <= 0)
++            {
++                data.GrantRenown(amount, source);
++                return;
++            }
++
++            ReadFlag(pm, CarryKey(pm), out var carry);
++            var hundredths = (long)amount * percent + carry;
++            data.FlagValues[CarryKey(pm)] = (hundredths % 100).ToString(CultureInfo.InvariantCulture);
++            data.GrantRenown(amount + (int)(hundredths / 100), source);
++        }
++
++        // -- Old sashes and boxes ---------------------------------------------------------------------
++
++        private static bool IsOld(Item item) => item is BoundCosmeticSash { Label: OldLabel };
++
++        /// <summary>Whether a loot box may hold the sash for this character.</summary>
++        public static bool BoxMayGive(PlayerMobile pm) => !Has(pm);
++
++        /// <summary>A sash rolled for a box stays old until opened, so it goes to whoever opens it. Other items pass through.</summary>
++        public static Item FromBox(PlayerMobile pm, Item item)
++        {
++            if (!IsOld(item))
++            {
++                return item;
++            }
++
++            if (Has(pm))
++            {
++                ((BoundCosmeticSash)item).Label = KeepsakeLabel;
++                return item;
++            }
++
++            var sash = Create(pm, 0);
++            item.Delete();
++            return sash;
++        }
++
++        /// <summary>
++        /// One old sash its character holds: becomes their sash where it lies, or a keepsake when they have theirs. True for the
++        /// first.
++        /// </summary>
++        private static bool Convert(BoundCosmeticSash item, PlayerMobile pm)
++        {
++            if (Has(pm))
++            {
++                item.Label = KeepsakeLabel;
++                item.InvalidateProperties();
++                return false;
++            }
++
++            var sash = Create(pm, 0);
++
++            if (item.Parent is Container pack)
++            {
++                var at = item.Location;
++                item.Delete();
++                pack.AddItem(sash);
++                sash.Location = at;
++            }
++            else
++            {
++                item.Delete();
++                pm.AddItem(sash);
++            }
++
++            return true;
++        }
++
++        private static bool HeldByItsAccount(BoundCosmeticSash item, out PlayerMobile pm)
++        {
++            pm = item.RootParent as PlayerMobile;
++            return pm != null && AccountBinding.SameAccount(pm, item.BoundAccount);
++        }
++
++        /// <summary>
++        /// Every old sash a character of its account holds, in serial order: the first becomes that character's sash where it
++        /// lies, and the rest (or any when the character has theirs) become keepsakes. Run again it finds none. Returns how many
++        /// became sashes.
++        /// </summary>
++        public static int ConvertOldSashes()
++        {
++            var old = new List<BoundCosmeticSash>();
++
++            foreach (var item in World.Items.Values)
++            {
++                if (IsOld(item))
++                {
++                    old.Add((BoundCosmeticSash)item);
++                }
++            }
++
++            int converted = 0, keepsakes = 0, left = 0;
++
++            foreach (var item in old.OrderBy(i => i.Serial))
++            {
++                if (!HeldByItsAccount(item, out var pm))
++                {
++                    left++;
++                }
++                else if (Convert(item, pm))
++                {
++                    converted++;
++                }
++                else
++                {
++                    keepsakes++;
++                }
++            }
++
++            if (old.Count > 0)
++            {
++                Console.WriteLine($"[League] Old sashes: {old.Count} found, {converted} converted, {keepsakes} keepsakes, {left} left for their login.");
++            }
++
++            return converted;
++        }
++
++        /// <summary>The same for one character, worn, carried or banked, as they log in.</summary>
++        [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
++        public static void OnLogin(PlayerMobile pm)
++        {
++            var old = new List<BoundCosmeticSash>();
++
++            if (pm.FindItemOnLayer(Layer.MiddleTorso) is BoundCosmeticSash worn)
++            {
++                old.Add(worn);
++            }
++
++            foreach (var pack in new[] { pm.Backpack, pm.FindBankNoCreate() })
++            {
++                if (pack != null)
++                {
++                    foreach (var item in pack.FindItemsByType<BoundCosmeticSash>())
++                    {
++                        old.Add(item);
++                    }
++                }
++            }
++
++            foreach (var item in old.OrderBy(i => i.Serial))
++            {
++                if (IsOld(item) && HeldByItsAccount(item, out _) && Convert(item, pm))
++                {
++                    Console.WriteLine($"[League] Converted {pm.Name}'s old sash at login.");
++                }
++            }
++        }
++    }
++}
+diff --git a/server/customizations/LeagueShop/LeagueShop.cs b/server/customizations/LeagueShop/LeagueShop.cs
+index 7061327..8d1da8c 100644
+--- a/server/customizations/LeagueShop/LeagueShop.cs
++++ b/server/customizations/LeagueShop/LeagueShop.cs
+@@ -303,15 +303,18 @@ public static class LeagueShop
+ 
+     /// <summary>
+     /// What a box can hold: the cosmetic, decor and convenience rows its AP opens (never a title, never a box), plus the
+-    /// League sash (P79's BoundCosmeticSash in the League hue) so the Bronze box has two kinds.
++    /// League sash (P79's BoundCosmeticSash in the League hue) so the Bronze box has two kinds. cc-P800: the sash only for
++    /// a character without theirs (buyer given); opening the box makes it their LeagueSash.
+     /// </summary>
+-    public static List<Func<PlayerMobile, Item>> BoxPool(BoxTier tier)
++    public static List<Func<PlayerMobile, Item>> BoxPool(BoxTier tier, PlayerMobile buyer = null)
+     {
+         var maxAp = BoxInfo(tier).MaxAp;
+-        var pool = new List<Func<PlayerMobile, Item>>
++        var pool = new List<Func<PlayerMobile, Item>>();
++
++        if (buyer == null || LeagueSashSystem.BoxMayGive(buyer))
+         {
+-            pm => new BoundCosmeticSash(pm.Account?.Username ?? "", "League", LeagueHue)
+-        };
++            pool.Add(pm => new BoundCosmeticSash(pm.Account?.Username ?? "", LeagueSashSystem.OldLabel, LeagueHue));
++        }
+ 
+         foreach (var entry in Stock)
+         {
+@@ -338,7 +341,7 @@ public static class LeagueShop
+     public static LootBox MakeBox(PlayerMobile pm, BoxTier tier)
+     {
+         var (name, p79Tier, draws, _) = BoxInfo(tier);
+-        return MakeBox(pm, name, p79Tier, draws, BoxPool(tier), "the League shop");
++        return MakeBox(pm, name, p79Tier, draws, BoxPool(tier, pm), "the League shop");
+     }
+ 
+     /// <summary>cc-P760: a store's box (the League shop's, the Festival store's): P79's bound box, filled from a pool.</summary>
+diff --git a/server/customizations/LootBoxes/LootBoxItems.cs b/server/customizations/LootBoxes/LootBoxItems.cs
+index 51f793c..f4f1080 100644
+--- a/server/customizations/LootBoxes/LootBoxItems.cs
++++ b/server/customizations/LootBoxes/LootBoxItems.cs
+@@ -270,6 +270,8 @@ public partial class LootBox : Item
+                 continue;
+             }
+ 
++            item = LeagueSashSystem.FromBox(pm, item); // cc-P800: an old League sash becomes the opener's own
++
+             shown.Add(LootBoxRoller.Describe(item));
+             rare |= IsRareSlot(i);
+             boxInBox |= item is LootBox;
+diff --git a/server/customizations/LootBoxes/LootBoxRoller.cs b/server/customizations/LootBoxes/LootBoxRoller.cs
+index 66bbaff..8b7d7ca 100644
+--- a/server/customizations/LootBoxes/LootBoxRoller.cs
++++ b/server/customizations/LootBoxes/LootBoxRoller.cs
+@@ -525,8 +525,10 @@ public static class LootBoxRoller
+             case "@trophy": return Trophy(c.SourceName);
+             case "@loopsash":
+                 return new BoundCosmeticSash(c.Account, $"Loop {ClusterFLootBoxes.CurrentLoop(pm)}", LootTable.HueOf(t.Grades[5]));
+-            case "@leaguecloak":
+-                return new BoundCosmeticSash(c.Account, "League", ClusterFLeagueRanks.LabelHue(Math.Max(1, ClusterFLeagueRanks.GetRank(pm))));
++            case "@leaguecloak": // cc-P800: one per character; the box's opening makes it their LeagueSash
++                return LeagueSashSystem.BoxMayGive(pm)
++                    ? new BoundCosmeticSash(c.Account, LeagueSashSystem.OldLabel, Server.Engines.LeagueRewards.LeagueShop.LeagueHue)
++                    : PoolItem(BoxPool.Rare, c, NoSash);
+             case "@leaguetitle": return LeagueTitleDeed.ForAccount(pm) ?? PoolItem(BoxPool.Rare, c, NoTitle);
+             case "@potion": return Potion(c.Level, AmountOf(e, c));
+             case "@magicgear": return MagicGear(c.Level, c.Grade);
+@@ -558,6 +560,8 @@ public static class LootBoxRoller
+ 
+     private static bool NoRecursion(PoolEntry e) => !e.Item.Equals("@RarePick", StringComparison.OrdinalIgnoreCase);
+ 
++    private static bool NoSash(PoolEntry e) => NoRecursion(e) && !e.Item.Equals("@LeagueCloak", StringComparison.OrdinalIgnoreCase);
++
+     private static bool NoTitle(PoolEntry e) => NoRecursion(e) && !e.Item.Equals("@LeagueTitle", StringComparison.OrdinalIgnoreCase);
+ 
+     // -- Specials --
+diff --git a/server/customizations/Requisitions/RequisitionSystem.cs b/server/customizations/Requisitions/RequisitionSystem.cs
+index 5bedfe9..3758fb9 100644
+--- a/server/customizations/Requisitions/RequisitionSystem.cs
++++ b/server/customizations/Requisitions/RequisitionSystem.cs
+@@ -245,7 +245,7 @@ public static class ClusterFRequisitions
+         var gold = AppraiserPricing.Price(item);
+         var guildName = ClusterFGuildSystem.GetDef(e.GuildKey)?.Name ?? e.GuildKey;
+ 
+-        ClusterFAccountPersistence.GetOrCreate(acct).GrantRenown(e.Renown, RenownSource.LeagueJob);
++        LeagueSashSystem.Earn(ClusterFAccountPersistence.GetOrCreate(acct), pm, e.Renown, RenownSource.LeagueJob); // cc-P800: the worn sash's bonus
+         ClusterFAccountPersistence.GetOrCreateGuild(pm).AddReputation(e.GuildKey, e.Reputation);
+         // cc-P760: a member also gets the guild's points, 1 per 10 standing (the guild stores spend them).
+         var guildPoints = Server.Engines.RewardStores.GuildPointEarning.OnRequisition(pm, e.GuildKey, e.Reputation);
+diff --git a/server/customizations/Tutorial/ClusterFLoops.cs b/server/customizations/Tutorial/ClusterFLoops.cs
+index e55b26a..63a080a 100644
+--- a/server/customizations/Tutorial/ClusterFLoops.cs
++++ b/server/customizations/Tutorial/ClusterFLoops.cs
+@@ -58,6 +58,7 @@ namespace Server.Tutorial
+ 
+             ResetLevelAndSkillsForF12(pm, loop);
+             ClusterFAccountPersistence.GetOrCreate(acct).FlagValues[LoopKey(pm)] = loop.ToString(CultureInfo.InvariantCulture);
++            LeagueSashSystem.Refresh(pm); // cc-P800: its "worn through" line; the sash and its step stay
+             return new AwardResultOrNone(ClusterFLootBoxes.OnLoopCompleted(pm, loop));
+         }
+     }
+diff --git a/server/tests/Misc/LeagueSashVerification.cs b/server/tests/Misc/LeagueSashVerification.cs
+new file mode 100644
+index 0000000..8f77f3d
+--- /dev/null
++++ b/server/tests/Misc/LeagueSashVerification.cs
+@@ -0,0 +1,831 @@
++// LeagueSashVerification.cs
++//
++// cc-P800: the League sash that grows with its wearer. Notes in shard-migration notes/cc-P800-league-sash.md.
++//
++// Facts:
++//   1. Every step: closed below its rank, then bought at its rank for its fee, with its name, hue and bonus; rank and
++//      LifetimeRenown never move.
++//   2. One Renown short is refused with nothing taken; the last step has no next.
++//   3. Elara's page: a stale page charges once; the first sash is free and only one; an unregistered character gets none.
++//   4. A lost sash is replaced free at the character's step; no second one while they hold it.
++//   5. Old sashes convert in place (worn, pack, bank) at step 0; a second is a keepsake; a second pass changes nothing; other
++//      sashes and sashes held by no character are left.
++//   5b. An old sash the load could not place (its holder had no Account yet) converts at login.
++//   6. Bound to the character, blessed, no dye, no scissors, and a second character of the same account cannot take it.
++//   7. A loop keeps the sash, its step and its bonus, and the sash says so.
++//   8. The bonus: only worn, only your own, only achievements and League jobs; a fraction of a Renown carries.
++//   9. The file: defaults round-trip, a bad file is refused whole, a missing file is written, a bonus of 0 is off.
++//  10. Boxes: the sash leaves the pool once the character has one; an opened box gives the opener theirs; a second is a keepsake.
++//  11. A sash survives a save with its owner and step.
++//  12. A real achievement pays the bonus.
++
++using System;
++using System.IO;
++using System.Linq;
++using Server;
++using Server.Accounting;
++using Server.Engines.LeagueRewards;
++using Server.Gumps;
++using Server.Items;
++using Server.LootBoxes;
++using Server.Mobiles;
++using Server.Network;
++using Server.Tests.Network;
++using Server.Tutorial;
++using Xunit;
++using Xunit.Abstractions;
++
++namespace ShatteredLegacy.Tests;
++
++[Collection("Sequential UOContent Tests")]
++public class LeagueSashVerification
++{
++    private static bool _achievements;
++
++    private readonly ITestOutputHelper _out;
++
++    public LeagueSashVerification(ITestOutputHelper output)
++    {
++        _out = output;
++        ShardTestHost.EnsureAccounts();
++        ClusterFGuildSystem.EnsureRegistered();
++        LeagueSashTable.Current = LeagueSashTable.Defaults;
++    }
++
++    // ---------------------------------------------------------------- helpers
++
++    private static Account NewAccount() => new($"p800{Guid.NewGuid():N}"[..16], "p800-test-only");
++
++    private static PlayerMobile NewCharacter(Account account, int slot = 0, bool register = true)
++    {
++        var pm = new PlayerMobile { Player = true, Race = Race.Human, Name = "Tester" };
++        pm.AddItem(new Backpack());
++        account[slot] = pm;
++        pm.MoveToWorld(new Point3D(3460, 2604, 18), Map.Trammel);
++
++        if (register)
++        {
++            Data(account).SetFlag(ClusterFLeagueSystem.FlagJoined);
++        }
++
++        return pm;
++    }
++
++    private static ClusterFAccountData Data(Account account) => ClusterFAccountPersistence.GetOrCreate(account);
++
++    private static NetState Online(PlayerMobile pm)
++    {
++        var ns = PacketTestUtilities.CreateTestNetState();
++        pm.NetState = ns;
++        ns.Mobile = pm;
++        ns.Account = pm.Account;
++        return ns;
++    }
++
++    private static void Cleanup(Account account)
++    {
++        for (var i = 0; i < account.Length; i++)
++        {
++            if (account[i] is PlayerMobile pm)
++            {
++                if (pm.NetState is { } ns)
++                {
++                    pm.NetState = null;
++                    ns.Mobile = null;
++                    ns.Dispose();
++                }
++
++                pm.Delete();
++            }
++        }
++
++        Accounts.Remove(account);
++    }
++
++    private static void Press(BaseGump gump, NetState ns, int buttonId) =>
++        gump.OnResponse(ns, new RelayInfo(buttonId, ReadOnlySpan<int>.Empty, ReadOnlySpan<ushort>.Empty,
++            ReadOnlySpan<Range>.Empty, ReadOnlySpan<byte>.Empty));
++
++    private static bool HasButton(Gump gump, int id) => gump.Entries.OfType<GumpButton>().Any(b => b.ButtonID == id);
++
++    private static System.Collections.Generic.List<T> InPack<T>(PlayerMobile pm) where T : Item
++    {
++        var list = new System.Collections.Generic.List<T>();
++
++        foreach (var item in pm.Backpack.FindItemsByType<T>())
++        {
++            list.Add(item);
++        }
++
++        return list;
++    }
++
++    private static LeagueSash Issue(PlayerMobile pm)
++    {
++        var sash = LeagueSashSystem.Issue(pm, out var message);
++        Assert.True(sash != null, message);
++        return sash;
++    }
++
++    private static LeagueSash IssueAtStep(PlayerMobile pm, int step)
++    {
++        var sash = Issue(pm);
++        ClusterFLeagueRanks.SetRank(pm, LeagueSashTable.Current.RankNeeded(LeagueSashTable.Current.MaxStep));
++        Data((Account)pm.Account).Renown = int.MaxValue / 2;
++
++        for (var s = 0; s < step; s++)
++        {
++            Assert.True(LeagueSashSystem.Upgrade(pm, s, out var message), message);
++        }
++
++        return sash;
++    }
++
++    // ---------------------------------------------------------------- 1
++
++    [Theory]
++    [InlineData(1, "a Dull Copper League sash", "DullCopper", 50, 1)]
++    [InlineData(2, "a Bronze League sash", "Bronze", 250, 2)]
++    [InlineData(3, "a Verite League sash", "Verite", 1000, 3)]
++    [InlineData(4, "a Blaze League sash", "Blaze", 3000, 4)]
++    [InlineData(5, "a Mythril League sash", "Mythril", 6000, 5)]
++    [InlineData(6, "a Celestial League sash", "Celestial", 10000, 6)]
++    public void EveryStepOpensAtItsRankAndIsBoughtForItsFee(int step, string name, string metal, int fee, int bonus)
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++
++        try
++        {
++            var sash = IssueAtStep(pm, step - 1);
++            var rank = ClusterFLeagueRanks.Ladder.First(r => r.MetalKey == metal);
++            var data = Data(account);
++            data.Renown = fee + 7;
++            data.LifetimeRenown = 12345;
++
++            // A rank below the step's: refused, nothing taken.
++            ClusterFLeagueRanks.SetRank(pm, rank.Index - 1);
++            Assert.False(LeagueSashSystem.Upgrade(pm, step - 1, out var why));
++            _out.WriteLine(why);
++            Assert.Equal(fee + 7, data.Renown);
++            Assert.Equal(step - 1, sash.Step);
++
++            ClusterFLeagueRanks.SetRank(pm, rank.Index);
++            Assert.True(LeagueSashSystem.Upgrade(pm, step - 1, out var message), message);
++
++            Assert.Equal(step, sash.Step);
++            Assert.Equal(step, LeagueSashSystem.StepOf(pm));
++            Assert.Equal(name, sash.DefaultName);
++            Assert.Equal(rank.Hue, sash.Hue);
++            Assert.NotEqual(LeagueShop.LeagueHue, sash.Hue);
++            Assert.Equal(7, data.Renown);
++            Assert.Equal(12345, data.LifetimeRenown);
++            Assert.Equal(rank.Index, ClusterFLeagueRanks.GetRank(pm));
++            Assert.Contains($"+{bonus}% Renown earned while worn", sash.Lines());
++            Assert.Contains($"step {step} of 6", sash.Lines()[0]);
++            Assert.Contains($"{rank.MetalName} Citizen", sash.Lines()[0]);
++        }
++        finally
++        {
++            Cleanup(account);
++        }
++    }
++
++    [Fact]
++    public void TheFirstSashIsLeagueBlueWithNoBonus()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++
++        try
++        {
++            var sash = Issue(pm);
++            Assert.Equal("a League sash", sash.DefaultName);
++            Assert.Equal(LeagueShop.LeagueHue, sash.Hue);
++            Assert.Equal(0, sash.Step);
++            Assert.DoesNotContain(sash.Lines(), l => l.Contains("Renown"));
++        }
++        finally
++        {
++            Cleanup(account);
++        }
++    }
++
++    // ---------------------------------------------------------------- 2
++
++    [Fact]
++    public void OneRenownShortTakesNothingAndTheLastStepHasNoNext()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++
++        try
++        {
++            var sash = Issue(pm);
++            ClusterFLeagueRanks.SetRank(pm, 2);
++            Data(account).Renown = 49;
++
++            Assert.False(LeagueSashSystem.Upgrade(pm, 0, out _));
++            Assert.Equal(49, Data(account).Renown);
++            Assert.Equal(0, sash.Step);
++
++            Cleanup(account);
++            account = NewAccount();
++            pm = NewCharacter(account);
++            sash = IssueAtStep(pm, 6);
++            var left = Data(account).Renown;
++
++            Assert.False(LeagueSashSystem.Upgrade(pm, 6, out var message));
++            _out.WriteLine(message);
++            Assert.Equal(left, Data(account).Renown);
++            Assert.Equal(6, sash.Step);
++            Assert.False(HasButton(new LeagueRegistrarGump(pm, LeagueRegistrarGump.View.Sash), LeagueRegistrarGump.BtnSashUpgrade));
++        }
++        finally
++        {
++            Cleanup(account);
++        }
++    }
++
++    // ---------------------------------------------------------------- 3
++
++    [Fact]
++    public void ElarasPageGivesOneFreeSashAndAStalePageChargesOnce()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++        var ns = Online(pm);
++
++        try
++        {
++            var main = new LeagueRegistrarGump(pm);
++            Assert.True(HasButton(main, LeagueRegistrarGump.BtnSash));
++
++            var offer = new LeagueRegistrarGump(pm, LeagueRegistrarGump.View.Sash);
++            Assert.True(HasButton(offer, LeagueRegistrarGump.BtnSashTake));
++            Assert.False(HasButton(offer, LeagueRegistrarGump.BtnSashUpgrade));
++
++            Press(offer, ns, LeagueRegistrarGump.BtnSashTake);
++            Press(offer, ns, LeagueRegistrarGump.BtnSashTake); // the same page again
++
++            Assert.Single(InPack<LeagueSash>(pm));
++            var sash = LeagueSashSystem.Find(pm);
++            Assert.Equal(0, Data(account).Renown);
++
++            // Below the rank, or short of Renown, the page has no upgrade button.
++            Data(account).Renown = 500;
++            Assert.False(HasButton(new LeagueRegistrarGump(pm, LeagueRegistrarGump.View.Sash), LeagueRegistrarGump.BtnSashUpgrade));
++
++            ClusterFLeagueRanks.SetRank(pm, ClusterFLeagueRanks.TopRank);
++            var page = new LeagueRegistrarGump(pm, LeagueRegistrarGump.View.Sash);
++            Assert.True(HasButton(page, LeagueRegistrarGump.BtnSashUpgrade));
++
++            Press(page, ns, LeagueRegistrarGump.BtnSashUpgrade);
++            Press(page, ns, LeagueRegistrarGump.BtnSashUpgrade); // stale: it was drawn at step 0
++
++            Assert.Equal(1, sash.Step);
++            Assert.Equal(450, Data(account).Renown);
++        }
++        finally
++        {
++            Cleanup(account);
++        }
++    }
++
++    [Fact]
++    public void AnUnregisteredCharacterGetsNoSash()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account, register: false);
++
++        try
++        {
++            Assert.Null(LeagueSashSystem.Issue(pm, out var message));
++            _out.WriteLine(message);
++            Assert.Null(LeagueSashSystem.Find(pm));
++            Assert.False(HasButton(new LeagueRegistrarGump(pm, LeagueRegistrarGump.View.Sash), LeagueRegistrarGump.BtnSashTake));
++        }
++        finally
++        {
++            Cleanup(account);
++        }
++    }
++
++    // ---------------------------------------------------------------- 4
++
++    [Fact]
++    public void ALostSashComesBackFreeAtItsStepAndNeverASecond()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++
++        try
++        {
++            var sash = IssueAtStep(pm, 3);
++            var renown = Data(account).Renown;
++
++            Assert.Null(LeagueSashSystem.Issue(pm, out _));
++            sash.Delete();
++            Assert.True(LeagueSashSystem.Has(pm));
++
++            var back = Issue(pm);
++            Assert.Equal(3, back.Step);
++            Assert.Equal("a Verite League sash", back.DefaultName);
++            Assert.Equal(renown, Data(account).Renown);
++        }
++        finally
++        {
++            Cleanup(account);
++        }
++    }
++
++    // ---------------------------------------------------------------- 5
++
++    private static BoundCosmeticSash Old(Account account, string label = "League", int hue = 1234) => new(account.Username, label, hue);
++
++    [Fact]
++    public void OldSashesConvertInPlaceOnceAndTheRestAreKeepsakes()
++    {
++        var a1 = NewAccount();
++        var a2 = NewAccount();
++        var a3 = NewAccount();
++        var worn = NewCharacter(a1);
++        var inPack = NewCharacter(a2);
++        var inBank = NewCharacter(a3);
++        var alsoOnA1 = NewCharacter(a1, 1);
++
++        try
++        {
++            var w = Old(a1);
++            worn.AddItem(w);
++
++            var keep = Old(a2);
++            var second = Old(a2);
++            var other = Old(a2, "Box");
++            inPack.Backpack.DropItem(keep);
++            keep.Location = new Point3D(55, 66, 0);
++            inPack.Backpack.DropItem(second);
++            inPack.Backpack.DropItem(other);
++
++            var b = Old(a3);
++            inBank.BankBox.DropItem(b);
++
++            var onA1Second = Old(a1);
++            alsoOnA1.Backpack.DropItem(onA1Second);
++
++            // In the world, no character holds it: left alone.
++            var loose = Old(a1);
++            loose.MoveToWorld(new Point3D(3461, 2604, 18), Map.Trammel);
++
++            Assert.True(LeagueSashSystem.ConvertOldSashes() >= 4);
++
++            var wornNew = Assert.IsType<LeagueSash>(worn.FindItemOnLayer(Layer.MiddleTorso));
++            Assert.True(wornNew.IsOwner(worn));
++            Assert.Equal(0, wornNew.Step);
++            Assert.Equal(LeagueShop.LeagueHue, wornNew.Hue);
++            Assert.True(w.Deleted);
++            Assert.Equal(LootType.Blessed, wornNew.LootType);
++
++            var packNew = LeagueSashSystem.Find(inPack);
++            Assert.NotNull(packNew);
++            Assert.Same(inPack.Backpack, packNew.Parent);
++            Assert.Equal(new Point3D(55, 66, 0), packNew.Location);
++            Assert.True(keep.Deleted);
++            Assert.False(second.Deleted);
++            Assert.Equal(LeagueSashSystem.KeepsakeLabel, second.Label);
++            Assert.Equal("Box", other.Label);
++
++            var bankNew = LeagueSashSystem.Find(inBank);
++            Assert.NotNull(bankNew);
++            Assert.Same(inBank.BankBox, bankNew.Parent);
++
++            // Each character of an account gets their own.
++            Assert.NotNull(LeagueSashSystem.Find(alsoOnA1));
++
++            Assert.False(loose.Deleted);
++            Assert.Equal("League", loose.Label);
++
++            // Idempotent: the pass finds nothing it has not done, and a held step is not reset.
++            Data(a3).Renown = 100;
++            ClusterFLeagueRanks.SetRank(inBank, 2);
++            Assert.True(LeagueSashSystem.Upgrade(inBank, 0, out _));
++            loose.Delete();
++
++            Assert.Equal(0, LeagueSashSystem.ConvertOldSashes());
++            Assert.Equal(1, bankNew.Step);
++            Assert.Same(packNew, LeagueSashSystem.Find(inPack));
++            Assert.False(second.Deleted);
++        }
++        finally
++        {
++            Cleanup(a1);
++            Cleanup(a2);
++            Cleanup(a3);
++        }
++    }
++
++    [Fact]
++    public void AnOldSashTheLoadCouldNotPlaceConvertsAtLogin()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++
++        try
++        {
++            var held = Old(account);
++            var second = Old(account);
++            pm.Backpack.DropItem(held);
++            pm.BankBox.DropItem(second);
++
++            // As on a real load: the holder's Account is not set yet, so the pass must leave them, and touch nothing.
++            pm.Account = null;
++            LeagueSashSystem.ConvertOldSashes();
++            Assert.False(held.Deleted);
++            Assert.Equal("League", second.Label);
++
++            pm.Account = account;
++            LeagueSashSystem.OnLogin(pm);
++
++            Assert.True(held.Deleted);
++            var sash = LeagueSashSystem.Find(pm);
++            Assert.NotNull(sash);
++            Assert.Same(pm.Backpack, sash.Parent);
++            Assert.Equal(LeagueSashSystem.KeepsakeLabel, second.Label);
++
++            // A second login changes nothing, and other cosmetics never convert.
++            var box = Old(account, "Box");
++            pm.Backpack.DropItem(box);
++            LeagueSashSystem.OnLogin(pm);
++            Assert.Same(sash, LeagueSashSystem.Find(pm));
++            Assert.Equal("Box", box.Label);
++            Assert.False(box.Deleted);
++        }
++        finally
++        {
++            Cleanup(account);
++        }
++    }
++
++    // ---------------------------------------------------------------- 6
++
++    [Fact]
++    public void TheSashIsBlessedAndBoundToTheCharacter()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++        var twin = NewCharacter(account, 1);
++        var stranger = NewAccount();
++        var other = NewCharacter(stranger);
++
++        try
++        {
++            var sash = Issue(pm);
++            Assert.Equal(LootType.Blessed, sash.LootType);
++
++            var reject = LRReason.Inspecific;
++            Assert.False(sash.CheckLift(twin, sash, ref reject)); // same account, another character
++            Assert.False(sash.CheckLift(other, sash, ref reject));
++            Assert.True(sash.CheckLift(pm, sash, ref reject));
++
++            Assert.False(sash.AllowSecureTrade(pm, other, other, false));
++            Assert.False(sash.OnDroppedToWorld(pm, pm.Location));
++            Assert.False(sash.OnDroppedToMobile(pm, twin));
++            Assert.False(sash.OnDroppedInto(pm, twin.Backpack, Point3D.Zero));
++            Assert.True(sash.OnDroppedInto(pm, pm.Backpack, Point3D.Zero));
++            Assert.False(sash.OnDroppedInto(pm, new Bag(), Point3D.Zero)); // a chest: no holder
++
++            Assert.False(sash.Dye(pm, new DyeTub()));
++            Assert.False(sash.Scissor(pm, new Scissors()));
++            Assert.False(sash.Deleted);
++
++            // Staff can still move it; a worn stranger's sash pays nobody else (fact 8).
++            twin.AccessLevel = AccessLevel.GameMaster;
++            Assert.True(sash.CheckLift(twin, sash, ref reject));
++        }
++        finally
++        {
++            Cleanup(account);
++            Cleanup(stranger);
++        }
++    }
++
++    // ---------------------------------------------------------------- 7
++
++    [Fact]
++    public void ALoopKeepsTheSashAndItsStep()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++
++        try
++        {
++            var sash = IssueAtStep(pm, 4);
++            pm.AddItem(sash);
++            var rank = ClusterFLeagueRanks.GetRank(pm);
++
++            Assert.DoesNotContain(sash.Lines(), l => l.Contains("Worn through"));
++
++            ClusterFLoops.CompleteLoop(pm, 1);
++            Assert.Contains("Worn through 1 loop", sash.Lines());
++            ClusterFLoops.CompleteLoop(pm, 2);
++            Assert.Contains("Worn through 2 loops", sash.Lines());
++
++            Assert.False(sash.Deleted);
++            Assert.Same(sash, LeagueSashSystem.Find(pm));
++            Assert.Equal(pm, sash.Parent);
++            Assert.Equal(4, sash.Step);
++            Assert.Equal(4, LeagueSashSystem.StepOf(pm));
++            Assert.Equal(4, LeagueSashSystem.WornBonus(pm));
++            Assert.Equal(rank, ClusterFLeagueRanks.GetRank(pm));
++        }
++        finally
++        {
++            Cleanup(account);
++        }
++    }
++
++    // ---------------------------------------------------------------- 8
++
++    [Fact]
++    public void TheBonusIsPaidOnlyWhileWornAndOnlyOnDeeds()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++        var twin = NewCharacter(account, 1);
++
++        try
++        {
++            var sash = IssueAtStep(pm, 3);
++            var data = Data(account);
++            data.Renown = 0;
++            data.LifetimeRenown = 0;
++
++            // In the pack: no bonus.
++            LeagueSashSystem.Earn(data, pm, 1000, RenownSource.Achievement);
++            Assert.Equal(1000, data.Renown);
++
++            pm.AddItem(sash);
++            data.Renown = 0;
++            data.LifetimeRenown = 0;
++
++            LeagueSashSystem.Earn(data, pm, 1000, RenownSource.Achievement);
++            Assert.Equal(1030, data.Renown);
++            Assert.Equal(1030, data.LifetimeRenown);
++
++            LeagueSashSystem.Earn(data, pm, 1000, RenownSource.LeagueJob);
++            Assert.Equal(2060, data.Renown);
++
++            // Renown from another player or staff: none, and a Commission still never counts toward rank.
++            LeagueSashSystem.Earn(data, pm, 1000, RenownSource.Commission);
++            Assert.Equal(3060, data.Renown);
++            Assert.Equal(2060, data.LifetimeRenown);
++            LeagueSashSystem.Earn(data, pm, 1000, RenownSource.Staff);
++            Assert.Equal(4060, data.Renown);
++
++            // Offline, or another character of the account: none.
++            LeagueSashSystem.Earn(data, null, 1000, RenownSource.Achievement);
++            Assert.Equal(5060, data.Renown);
++            LeagueSashSystem.Earn(data, twin, 1000, RenownSource.Achievement);
++            Assert.Equal(6060, data.Renown);
++
++            // A sash that is not theirs pays nobody.
++            sash.Delete();
++            var stolen = new LeagueSash(pm, 6);
++            twin.AddItem(stolen);
++            Assert.Equal(0, LeagueSashSystem.WornBonus(twin));
++        }
++        finally
++        {
++            Cleanup(account);
++        }
++    }
++
++    [Fact]
++    public void AFractionOfARenownCarriesToTheNextGrant()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++
++        try
++        {
++            var sash = IssueAtStep(pm, 3); // +3%
++            pm.AddItem(sash);
++            var data = Data(account);
++            data.Renown = 0;
++
++            // 10 at 3% is 0.3: six such grants pay 1.8, so one whole Renown and 0.8 still carried.
++            for (var i = 0; i < 6; i++)
++            {
++                LeagueSashSystem.Earn(data, pm, 10, RenownSource.Achievement);
++            }
++
++            Assert.Equal(61, data.Renown);
++
++            LeagueSashSystem.Earn(data, pm, 10, RenownSource.Achievement); // 1.1
++            Assert.Equal(72, data.Renown);
++        }
++        finally
++        {
++            Cleanup(account);
++        }
++    }
++
++    // ---------------------------------------------------------------- 9
++
++    [Fact]
++    public void TheFileRoundTripsAndABadOneIsRefusedWhole()
++    {
++        var dir = Path.Combine(Path.GetTempPath(), $"p800{Guid.NewGuid():N}");
++        var path = Path.Combine(dir, LeagueSashTable.FileName);
++
++        try
++        {
++            // Missing: the defaults are written, and read back the same.
++            var lines = LeagueSashTable.LoadOrWriteDefaults(path);
++            _out.WriteLine(string.Join("\n", lines));
++            Assert.True(File.Exists(path));
++            Assert.Contains(lines, l => l.Contains("wrote the built-in defaults"));
++
++            var errors = new System.Collections.Generic.List<string>();
++            var read = LeagueSashTable.Parse(File.ReadAllText(path), path, errors);
++            Assert.NotNull(read);
++            Assert.Empty(errors);
++            Assert.Equal(LeagueSashTable.ToJson(LeagueSashTable.Defaults), LeagueSashTable.ToJson(read));
++            Assert.Equal(6, read.MaxStep);
++            Assert.Equal(LeagueShop.LeagueHue, read.FirstHue);
++
++            // Edited: fees, and a bonus of 0 turns it off.
++            File.WriteAllText(path, File.ReadAllText(path).Replace("\"fee\": 50,", "\"fee\": 75,").Replace("\"bonusPercent\": 1 ", "\"bonusPercent\": 0 "));
++            LeagueSashTable.Reload(path);
++            Assert.Equal(75, LeagueSashTable.Current.FeeOf(1));
++            Assert.Equal(0, LeagueSashTable.Current.BonusOf(1));
++            Assert.Equal(path, LeagueSashTable.Current.Source);
++
++            var inForce = LeagueSashTable.Current;
++
++            foreach (var bad in new[]
++                     {
++                         "not json",
++                         "{}",
++                         "{ \"steps\": [] }",
++                         GoodWith("\"metal\": \"Moonstone\", \"fee\": 1, \"bonusPercent\": 1"),
++                         GoodWith("\"metal\": \"Iron\", \"fee\": 1, \"bonusPercent\": 1"),
++                         GoodWith("\"metal\": \"DullCopper\", \"fee\": -1, \"bonusPercent\": 1"),
++                         GoodWith("\"metal\": \"DullCopper\", \"fee\": 1, \"bonusPercent\": 101"),
++                         GoodWith("\"metal\": \"DullCopper\", \"fee\": 1"),
++                     })
++            {
++                File.WriteAllText(path, bad);
++                var report = LeagueSashTable.Reload(path);
++                _out.WriteLine(string.Join(" | ", report));
++                Assert.Contains("REFUSED", report[0]);
++                Assert.Same(inForce, LeagueSashTable.Current);
++            }
++
++            // Rising rank order is required.
++            var order = new System.Collections.Generic.List<string>();
++            Assert.Null(LeagueSashTable.Parse(
++                "{ \"firstHue\": 1, \"upgradeSound\": 1, \"upgradeEffect\": 1, \"steps\": [ " +
++                "{ \"metal\": \"Bronze\", \"fee\": 1, \"bonusPercent\": 1 }, { \"metal\": \"DullCopper\", \"fee\": 1, \"bonusPercent\": 1 } ] }",
++                "test", order));
++            Assert.NotEmpty(order);
++        }
++        finally
++        {
++            LeagueSashTable.Current = LeagueSashTable.Defaults;
++
++            if (Directory.Exists(dir))
++            {
++                Directory.Delete(dir, true);
++            }
++        }
++    }
++
++    private static string GoodWith(string row) =>
++        "{ \"firstHue\": 1, \"upgradeSound\": 1, \"upgradeEffect\": 1, \"steps\": [ { " + row + " } ] }";
++
++    // ---------------------------------------------------------------- 10
++
++    [Fact]
++    public void BoxesGiveTheSashOnlyToACharacterWithoutOne()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++
++        try
++        {
++            static bool HoldsSash(Func<PlayerMobile, Item> f, PlayerMobile who)
++            {
++                var item = f(who);
++                var sash = item is BoundCosmeticSash;
++                item.Delete();
++                return sash;
++            }
++
++            Assert.Contains(LeagueShop.BoxPool(LeagueShop.BoxTier.Bronze, pm), f => HoldsSash(f, pm));
++            Assert.True(LeagueSashSystem.BoxMayGive(pm));
++
++            // A box rolled before the character has theirs, opened: it becomes their sash, and it is the only one.
++            var box = new LootBox(BoxTheme.League, 1, account.Username, "test");
++            box.Fill("a test box", 0, 0, 0, [(Old(account), false)]);
++            pm.Backpack.DropItem(box);
++            box.Open(pm);
++
++            var sash = LeagueSashSystem.Find(pm);
++            Assert.NotNull(sash);
++            Assert.Equal(0, sash.Step);
++            Assert.Empty(InPack<BoundCosmeticSash>(pm));
++
++            // Now the pool has none, and the League theme's slot rolls something else.
++            Assert.False(LeagueSashSystem.BoxMayGive(pm));
++            Assert.DoesNotContain(LeagueShop.BoxPool(LeagueShop.BoxTier.Bronze, pm), f => HoldsSash(f, pm));
++            Assert.Contains(LeagueShop.BoxPool(LeagueShop.BoxTier.Bronze), f => HoldsSash(f, pm));
++
++            for (var i = 0; i < 40; i++)
++            {
++                var made = LeagueShop.MakeBox(pm, LeagueShop.BoxTier.Bronze);
++                Assert.DoesNotContain(made.Contents, c => c is BoundCosmeticSash or LeagueSash);
++                made.Delete();
++            }
++
++            // A second rolled before the first was opened: a keepsake, never a second sash.
++            var late = new LootBox(BoxTheme.League, 1, account.Username, "test");
++            late.Fill("a late box", 0, 0, 0, [(Old(account), false)]);
++            pm.Backpack.DropItem(late);
++            late.Open(pm);
++
++            var keepsake = Assert.Single(InPack<BoundCosmeticSash>(pm));
++            Assert.Equal(LeagueSashSystem.KeepsakeLabel, keepsake.Label);
++            Assert.Single(InPack<LeagueSash>(pm));
++        }
++        finally
++        {
++            Cleanup(account);
++        }
++    }
++
++    // ---------------------------------------------------------------- 11
++
++    [Fact]
++    public void ASashSurvivesASave()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++
++        try
++        {
++            var sash = IssueAtStep(pm, 2);
++
++            var buffer = new byte[65536];
++            var writer = new BufferWriter(buffer, true);
++            sash.Serialize(writer);
++            writer.Flush();
++
++            var copy = (LeagueSash)Activator.CreateInstance(typeof(LeagueSash), sash.Serial)!;
++            copy.Deserialize(new BufferReader(buffer));
++
++            Assert.Equal(2, copy.Step);
++            Assert.True(copy.IsOwner(pm));
++            Assert.Equal("a Bronze League sash", copy.DefaultName);
++            Assert.Equal(LootType.Blessed, copy.LootType);
++        }
++        finally
++        {
++            Cleanup(account);
++        }
++    }
++
++    // ---------------------------------------------------------------- 12
++
++    [Fact]
++    public void ARealAchievementPaysTheWornBonus()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++        var ns = Online(pm);
++
++        try
++        {
++            if (!_achievements)
++            {
++                ClusterFAchievementSystem.Configure();
++                _achievements = true;
++            }
++
++            var sash = IssueAtStep(pm, 6); // +6%
++            pm.AddItem(sash);
++
++            var data = Data(account);
++            var def = ClusterFAchievementSystem.Definitions.Values.First(d => d.Renown >= 50 && d.PrerequisiteKey == null && !d.Retired);
++            data.Renown = 0;
++
++            Assert.True(ClusterFAchievementSystem.TryGrant(account, def.Key));
++            Assert.Equal(def.Renown + def.Renown * 6 / 100, data.Renown);
++        }
++        finally
++        {
++            _ = ns;
++            Cleanup(account);
++        }
++    }
++}
