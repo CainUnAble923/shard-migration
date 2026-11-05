@@ -239,7 +239,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 666 prompts done, 5 more stopped early and not counted)
+### Queue (Golem on; 667 prompts done, 5 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -251,13 +251,13 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P9772 remote-answer-test | done | 2026-11-02 |
 | P9770 run-next-test | done | 2026-11-02 |
 | P805 review-build-league-ankh | done | 2026-11-05 |
+| P797 assess-events-and-gold-sinks | done | 2026-11-05 |
 | P796 assess-pet-systems | done | 2026-11-05 |
 | P795 drovers-handbook | done | 2026-11-05 |
 | P794 ethereal-looks | done | 2026-11-04 |
 | P793 peacock-mount | done | 2026-11-04 |
 | P792 assess-magic-systems | done | 2026-11-03 |
 | P791 assess-bounties-and-quests | done | 2026-11-03 |
-| P790 assess-mounts-and-tamables | done | 2026-11-03 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 193 patches, 12 replacements
 
