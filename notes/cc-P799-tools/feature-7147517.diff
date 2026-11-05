@@ -1,0 +1,1898 @@
+diff --git a/docker/uo/apply-patches.sh b/docker/uo/apply-patches.sh
+index e648f26..d64e4ae 100644
+--- a/docker/uo/apply-patches.sh
++++ b/docker/uo/apply-patches.sh
+@@ -1023,6 +1023,9 @@ apply_patch "$PATCHES/PlayerMobile-craft-order-hurt.patch"
+ # sees the attempt. Made with diff -u against the PlayerMobile.cs every patch above leaves. Alternatives argued in
+ # shard-migration notes/cc-P728-isle-walkthrough-fixes-4.md.
+ apply_patch "$PATCHES/PlayerMobile-tutorial-wake-move.patch"
++# cc-P743: a creature kept for one player (Tutorial.IPrivateMobile, the New Haven stable horse) shows to that player and
++# staff only. After every other PlayerMobile patch, whose lines it does not meet. Pinned by NewHavenFixesVerification.
++apply_patch "$PATCHES/PlayerMobile-private-mobile.patch"
+ # cc-P269 (High Seas fishing, second half). FishingPole.cs gains ServUO's bait and hook (version 0 -> 1, migrated from
+ # pinned's v0 by the generator): BaitType, EnhancedBait, BaitUses, HookType, HookUses, OriginalHue, OnFishedHarvest and
+ # the tooltip lines; a partial class could add the members but not the saved version or the generated serializer, and
+diff --git a/server/customizations/Tutorial/ClusterFTutorial.cs b/server/customizations/Tutorial/ClusterFTutorial.cs
+index ef7bd0d..d274e61 100644
+--- a/server/customizations/Tutorial/ClusterFTutorial.cs
++++ b/server/customizations/Tutorial/ClusterFTutorial.cs
+@@ -107,12 +107,12 @@ public static class ClusterFTutorial
+                 }
+                 else if (IsParticipant(pm))
+                 {
+-                    SystemLine(pm, "Your finished lessons are saved. Double-click Rook on the New Haven plaza to continue.");
++                    SystemLine(pm, "Your finished lessons are saved. Double-click Rook on his bench by the Albatross tavern in New Haven to continue.");
+                     TutorialRecruiter.PointTo(pm);
+                 }
+                 else if (RecordOf(pm) is { } waiting && CompanionPending(waiting) && IsRecordedCharacter(pm, waiting))
+                 {
+-                    SystemLine(pm, "You still have a pet to choose. Double-click Rook on the New Haven plaza to open the choices.");
++                    SystemLine(pm, "You still have a pet to choose. Double-click Rook on his bench by the Albatross tavern in New Haven to open the choices.");
+                     TutorialRecruiter.PointTo(pm);
+                 }
+             }
+@@ -152,7 +152,7 @@ public static class ClusterFTutorial
+ 
+         if (!quiet)
+         {
+-            SystemLine(pm, "Your tutorial has started. Tamsin, your guide, waits on the Wakening Isle's beach; Rook on the New Haven plaza can send you there.");
++            SystemLine(pm, "Your tutorial has started. Tamsin, your guide, waits on the Wakening Isle's beach; Rook on his bench by the Albatross tavern in New Haven can send you there.");
+             TutorialGuide.PointTo(pm);
+         }
+ 
+@@ -235,7 +235,7 @@ public static class ClusterFTutorial
+     {
+         if (!IsParticipant(pm))
+         {
+-            SystemLine(pm, "You do not have an active tutorial. Double-click Rook on the New Haven plaza to check your progress.");
++            SystemLine(pm, "You do not have an active tutorial. Double-click Rook on his bench by the Albatross tavern in New Haven to check your progress.");
+             return;
+         }
+ 
+@@ -385,7 +385,7 @@ public static class ClusterFTutorial
+     {
+         if (!IsParticipant(pm) || RecordOf(pm) is not { IsActive: true } record)
+         {
+-            return "You do not have an active tutorial. Double-click Rook on the New Haven plaza to check your progress.";
++            return "You do not have an active tutorial. Double-click Rook on his bench by the Albatross tavern in New Haven to check your progress.";
+         }
+ 
+         if (!CoreDone(record))
+diff --git a/server/customizations/Tutorial/HavenSpots.cs b/server/customizations/Tutorial/HavenSpots.cs
+index 543978a..fdf6332 100644
+--- a/server/customizations/Tutorial/HavenSpots.cs
++++ b/server/customizations/Tutorial/HavenSpots.cs
+@@ -28,11 +28,41 @@ public static class HavenSpots
+     /// </summary>
+     public static Point3D Start { get; set; } = new(3634, 2586, 0);
+ 
+-    /// <summary>Rook Hallowell, two tiles from the start, as on the old plaza (cc-P80; was 3500,2572,14).</summary>
+-    public static readonly Point3D Rook = new(3631, 2584, 0);
++    /// <summary>
++    /// Rook Hallowell, seated on a bench by the Albatross Bar and Grill's patio, facing the square (cc-P743, Chase 10-30:
++    /// "a better spot instead of in the middle of the square"). Was the square, two tiles from the start (3631,2584,0).
++    /// </summary>
++    public static readonly Point3D Rook = new(3669, 2636, 0);
++
++    /// <summary>Rook's old spot on the square, where an older world's Rook is moved from (cc-P743).</summary>
++    public static readonly Point3D OldRook = new(3631, 2584, 0);
++
++    /// <summary>His bench: two wooden bench pieces (0x0B2C, east-west), Rook on the west one (cc-P743).</summary>
++    public static readonly Point3D[] RookBench = [new(3669, 2636, 0), new(3670, 2636, 0)];
++
++    /// <summary>Where the isle's dock moongate sets a trainee down: in front of Rook's bench (cc-P743; was 3632,2584,0).</summary>
++    public static readonly Point3D MoongateExit = new(3669, 2634, 0);
++
++    /// <summary>cc-P743: Rook's place in words, for every line that sends a trainee to him.</summary>
++    public const string RookPlace = "on his bench by the Albatross tavern, south of the square";
++
++    /// <summary>cc-P743: New Haven's warrior training area, the Proving Grounds' palisade yard (floor Z 40, gate east).</summary>
++    public static readonly Point3D ProvingGrounds = new(3731, 2583, 40);
++
++    /// <summary>cc-P743: the Haven Magery School's south room (P678's magery hall, floor Z 0).</summary>
++    public static readonly Point3D MageryHall = new(3651, 2477, 0);
++
++    /// <summary>cc-P743: the Bardic Guild's long hall (floor Z 0).</summary>
++    public static readonly Point3D BardicGuild = new(3663, 2531, 0);
++
++    /// <summary>cc-P743: the cave mouth on the mountain path south of town (cave floor, Z 9).</summary>
++    public static readonly Point3D MiningCave = new(3612, 2744, 9);
++
++    /// <summary>cc-P743: the stables (Uzeraan's mansion's barn), the aisle in front of the sick-bay stall.</summary>
++    public static readonly Point3D Stables = new(3605, 2617, 0);
+ 
+-    /// <summary>Where the isle's dock moongate sets a trainee down: beside Rook (the old travel gate's exit, cc-P289).</summary>
+-    public static readonly Point3D MoongateExit = new(3632, 2584, 0);
++    /// <summary>cc-P743: the sick-bay stall, where the injured horse waits.</summary>
++    public static readonly Point3D SickStall = new(3606, 2620, 0);
+ 
+     /// <summary>The quest board, one tile from the start as on the old plaza (NewHavenQuestBoard; was 3502,2573,14).</summary>
+     public static readonly Point3D QuestBoard = new(3633, 2585, 0);
+diff --git a/server/customizations/Tutorial/NewHavenLessons.cs b/server/customizations/Tutorial/NewHavenLessons.cs
+new file mode 100644
+index 0000000..4290f87
+--- /dev/null
++++ b/server/customizations/Tutorial/NewHavenLessons.cs
+@@ -0,0 +1,602 @@
++// cc-P743: Chase's New Haven notes of 2026-10-30, the wing lessons part (shard-migration
++// notes/cc-P743-new-haven-tutorial-fixes.md). One more part of TutorialWingTrials (P290/P291's partial class):
++//
++//   1. The sparring lesson (combat.weapons) is in the Proving Grounds, New Haven's warrior training yard (PlaceOf).
++//   3. The mining lesson is at the cave on the mountain path south of town, on its real cave floor (no practice vein);
++//      a signpost marks where the path starts.
++//   4. The animals lesson is in the stables: an injured horse in the sick-bay stall, seen only by its trainee
++//      (IPrivateMobile), bandaged (Veterinary), then tamed, which always works once it is healed. The first horse a
++//      character tames is theirs to keep and ride (TutorialStableHorseStore); a replay's horse goes back to its stall.
++//   5. Bard: a successful Provocation sets the two echoes fighting each other for about 12 s (BrawlSeconds), then they
++//      are healed and the lesson goes on (or finishes).
++//   7. The magery lesson is in the Haven Magery School, where a mage echo casts Magic Arrow at the training echo a few
++//      times, slowly, with the words of power, until the trainee has cast it; then it fades. The bard lesson is in the
++//      Bardic Guild's hall.
++//   8. Thieving: while Remove Trap is still to do, the practice chest always has a trap: one that went off (opening the
++//      chest fires it) is set again at once, with a line saying so.
++//   2. New Haven's old tutorial farm (P276's addon, door and pen spawner at the ML map's west farm, 3372-3401 x
++//      2603-2619) is taken away at every seed; nothing uses it now.
++//   6. Rook sits on a bench by the Albatross tavern (HavenSpots.Rook); an older world's Rook is moved there.
++//   9. The housing lesson: three stops, each with a signpost and one plain goal (Trades row housing.basics).
++
++#nullable enable
++
++using System;
++using System.Collections.Generic;
++using ModernUO.Serialization;
++using Server.Items;
++using Server.Mobiles;
++
++namespace Server.Tutorial
++{
++    /// <summary>cc-P743: a creature kept for one player: PlayerMobile.CanSee shows it only to them (and staff).</summary>
++    public interface IPrivateMobile
++    {
++        bool ShowsTo(Mobile viewer);
++    }
++
++    public static partial class TutorialWingTrials
++    {
++        /// <summary>cc-P743: every line these lessons say, through the tutorial's System voice; a seam for the tests.</summary>
++        public static Action<Mobile, string>? Said { get; set; }
++
++        public static void Line(Mobile m, string text)
++        {
++            ClusterFTutorial.SystemLine(m, text);
++            Said?.Invoke(m, text);
++        }
++
++        // -- Places and words (items 1, 3, 4, 7, 9) --
++
++        public const string MiningWhere =
++            "the cave on the mountain path south of town (out past the Albatross tavern, south along the east shore, then west round the hill)";
++
++        public const string StablesWhere = "the stables beside Uzeraan's mansion, west of the square (the injured horse is in the stall on the left)";
++
++        public const string BardWhere = "the Bardic Guild's hall, north of the square";
++
++        /// <summary>The bard lesson's two echoes, side by side on the hall's open floor.</summary>
++        public static readonly Point3D BardEchoA = new(3668, 2530, 0);
++        public static readonly Point3D BardEchoB = new(3669, 2531, 0);
++
++        /// <summary>The mining cave's floor (cave floor statics at Z 9), whose ore banks start full when the lesson arms.</summary>
++        public static readonly Point3D[] MiningTiles =
++        [
++            new(3610, 2742, 9), new(3611, 2742, 9), new(3612, 2742, 9), new(3613, 2742, 9),
++            new(3610, 2743, 9), new(3611, 2743, 9), new(3612, 2743, 9), new(3613, 2743, 9), new(3613, 2744, 9)
++        ];
++
++        /// <summary>The housing lesson's first two stops (the third is the bank).</summary>
++        public static Point3D HousingStop(int i) => i == 0 ? Ground(3712, 2593) : Ground(3704, 2605); // stop 1 within 2 of its sign (cc-P755); stop 2 in the open grass, clear of the trees
++
++        public const string HousingStop1 =
++            "Stop 1 of 3: this cottage is a small house. A house comes from a house deed: double-click the deed, pick a spot, and the house appears there. " +
++            "Inside your own house you can lock items down so they stay put, and secure a chest so only you can open it. " +
++            "Tip: TazUO's Options can make roofs and walls see-through when you walk inside. Next: follow the arrow to stop 2, the field just south of here.";
++
++        public const string HousingStop2 =
++            "Stop 2 of 3: you cannot build a house here. Towns and all of Haven island are no-building areas. " +
++            "Out in the wilds, on flat open ground, you can: when you use a deed, your client shows the house's outline, green where it fits and red where it does not. " +
++            "Next: follow the arrow to stop 3, the bank on the square.";
++
++        public const string HousingStop3 =
++            "Stop 3 of 3: keep a house deed in your bank until you are ready to use it. Once your house stands, visit it every so often to refresh it, or it slowly decays. " +
++            "That is the end of the housing lesson; double-click Rook for another.";
++
++
++        /// <summary>Where a P290 lesson (not a trade) arms: its own building, or the training yard.</summary>
++        public static Point3D PlaceOf(string key) => key switch
++        {
++            "combat.weapons" => HavenSpots.ProvingGrounds,
++            "magic.magery" => HavenSpots.MageryHall,
++            _ => YardSpot
++        };
++
++        /// <summary>Where its training echo stands.</summary>
++        public static Point3D TargetOf(string key) => key switch
++        {
++            "combat.weapons" => new Point3D(3733, 2580, 40),
++            "magic.magery" => new Point3D(3654, 2472, 0),
++            _ => TargetSpot
++        };
++
++        /// <summary>cc-P743 item 7: where the mage echo stands to show the spell.</summary>
++        public static readonly Point3D MageDemoSpot = new(3650, 2471, 0);
++
++        public static string PlaceName(string key) => key switch
++        {
++            "combat.weapons" => "the Proving Grounds, the fenced warrior training yard on the east side of town",
++            "magic.magery" => "the Haven Magery School, the stone hall at the north end of town",
++            _ => "the training yard, behind the Little Shop of Magic"
++        };
++
++        public static string PlaceShort(string key) => key switch
++        {
++            "combat.weapons" => "the Proving Grounds",
++            "magic.magery" => "the Haven Magery School",
++            _ => "the training yard"
++        };
++
++        public static bool NearWing(PlayerMobile pm, string key, int range = 4)
++        {
++            var at = PlaceOf(key);
++            return pm.Map == Map.Trammel && pm.InRange(new Point3D(at.X, at.Y, pm.Z), range);
++        }
++
++        // -- Item 7: the mage echo shows Magic Arrow --
++
++        public const string MageDemoLine =
++            "Watch the mage echo: it says the words of power, In Por Ylem, raises its hands, and a Magic Arrow flies at the training echo. Then cast it yourself.";
++
++        public static void StartMageDemo(Trial trial)
++        {
++            if (trial.Key != "magic.magery" || trial.Target == null) { return; }
++            var demo = new TutorialMageEcho { TrialOwner = trial.Player.Serial };
++            demo.MoveToWorld(MageDemoSpot, Map.Trammel);
++            trial.Demo = demo;
++            Line(trial.Player, MageDemoLine);
++            Server.Timer.StartTimer(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(6), () =>
++            {
++                if (trial.Finished || demo.Deleted || trial.Target is not { Deleted: false } target)
++                {
++                    trial.DemoTimer.Cancel();
++                    return;
++                }
++
++                demo.ShowMagicArrow(target);
++            }, out trial.DemoTimer);
++        }
++
++        public static void EndMageDemo(Trial trial)
++        {
++            trial.DemoTimer.Cancel();
++            if (trial.Demo is { Deleted: false } demo)
++            {
++                Effects.SendLocationParticles(EffectItem.Create(demo.Location, demo.Map, EffectItem.DefaultDuration), 0x3728, 10, 15, 5042);
++                demo.Delete();
++            }
++
++            trial.Demo = null;
++        }
++
++        // -- Item 5: provoked echoes fight --
++
++        public static readonly TimeSpan BrawlSeconds = TimeSpan.FromSeconds(12);
++        public static readonly TimeSpan BrawlBeat = TimeSpan.FromSeconds(1.5);
++
++        public const string BrawlLine =
++            "Provocation worked: the two echoes now fight each other instead of you. A provoked creature attacks the one you pointed it at. Watch them for a few seconds.";
++
++        public const string BrawlOverLine = "The echoes stop fighting and catch their breath. Provocation lasts only a short while.";
++
++        public static void StartBrawl(Trial trial)
++        {
++            if (trial.Brawling || trial.Creatures.Count < 2 ||
++                trial.Creatures[0] is not TutorialTrainingEcho a || trial.Creatures[1] is not TutorialTrainingEcho b)
++            {
++                return;
++            }
++
++            trial.Brawling = true;
++            a.BrawlFoe = b;
++            b.BrawlFoe = a;
++            var pm = trial.Player;
++            Line(pm, BrawlLine);
++            BardGuildmasterSays(pm, "Ha! See them go at each other? That is Provocation. Keep your distance while it lasts.");
++            var beats = 0;
++            var total = (int)(BrawlSeconds.TotalMilliseconds / BrawlBeat.TotalMilliseconds);
++            Server.Timer.StartTimer(TimeSpan.FromMilliseconds(300), BrawlBeat, () =>
++            {
++                if (trial.Finished && !trial.FinishAfterBrawl || a.Deleted || b.Deleted)
++                {
++                    trial.BrawlTimer.Cancel();
++                    return;
++                }
++
++                var (hitter, hit) = beats % 2 == 0 ? (a, b) : (b, a);
++                hitter.SwingAt(hit);
++                if (++beats >= total)
++                {
++                    EndBrawl(trial);
++                }
++            }, out trial.BrawlTimer);
++        }
++
++        public static void EndBrawl(Trial trial)
++        {
++            trial.BrawlTimer.Cancel();
++            if (!trial.Brawling) { return; }
++            trial.Brawling = false;
++            foreach (var c in trial.Creatures)
++            {
++                if (c is TutorialTrainingEcho e)
++                {
++                    e.BrawlFoe = null;
++                    e.Hits = e.HitsMax;
++                    e.Combatant = null;
++                }
++            }
++
++            Line(trial.Player, BrawlOverLine);
++            if (trial.FinishAfterBrawl)
++            {
++                trial.FinishAfterBrawl = false;
++                Finish(trial);
++            }
++        }
++
++        private static void BardGuildmasterSays(PlayerMobile pm, string line)
++        {
++            foreach (var m in pm.Map.GetMobilesInRange(pm.Location, 14))
++            {
++                if (m is BaseVendor v && v.GetType().Name.Contains("Bard", StringComparison.Ordinal))
++                {
++                    v.SayTo(pm, line);
++                    return;
++                }
++            }
++        }
++
++        // -- Item 8: the practice chest keeps a trap while Remove Trap is to do --
++
++        public const string ChestRetrapLine =
++            "The practice chest's dart trap went off when the chest was opened, so the lesson set a new one. Use Remove Trap on the wooden practice chest.";
++
++        public static void KeepChestTrapped(Trial trial)
++        {
++            if (trial.Key != "thieving.trial" || trial.Steps.Contains(SkillName.RemoveTrap.ToString())) { return; }
++            foreach (var item in trial.Props)
++            {
++                if (item is WoodenChest { Deleted: false } chest && chest.TrapType == TrapType.None)
++                {
++                    chest.TrapType = TrapType.DartTrap;
++                    chest.TrapPower = 1;
++                    chest.TrapLevel = 1;
++                    trial.ChestResets++;
++                    Line(trial.Player, ChestRetrapLine);
++                }
++            }
++        }
++
++        // -- Item 4: the stable horse --
++
++        public const string HorseLine =
++            "An injured horse lies in the sick-bay stall, bleeding from a cut. Double-click a bandage, then click the horse to treat it (Veterinary). Once it is healed, use Animal Taming from your Skills on it. It is yours to keep.";
++
++        public const string HorseHealedLine =
++            "The horse's wound is bandaged and it calms down. Now open Skills on your character window, use Animal Taming, and click the horse.";
++
++        public const string HorseKeptLine =
++            "The horse trusts you and is yours to keep. Double-click it to ride; say 'all follow me' to lead it. A stablemaster can keep it for you.";
++
++        public const string HorseReplayLine =
++            "You already have a horse from this lesson, so this one goes back to its stall when the lesson ends.";
++
++        public const string HorseNoSlotLine =
++            "Your pets already fill your follower slots, so you cannot tame the horse yet. Stable a pet with a stablemaster (or release one), then come back.";
++
++        public static void ArmStable(Trial trial)
++        {
++            var pm = trial.Player;
++            if (pm.Backpack?.GetAmount(typeof(Bandage)) is null or 0)
++            {
++                Lend(trial, new Bandage(10));
++            }
++
++            LendSkill(trial, SkillName.Veterinary, 60);
++            LendSkill(trial, SkillName.AnimalLore, 60);
++            LendSkill(trial, SkillName.AnimalTaming, 60);
++            var horse = new TutorialStableHorse(pm);
++            horse.MoveToWorld(HavenSpots.SickStall, Map.Trammel);
++            trial.Horse = horse;
++            Line(pm, HorseLine);
++            if (TutorialStableHorseStore.Has(pm))
++            {
++                Line(pm, HorseReplayLine);
++            }
++            else if (pm.Followers + horse.ControlSlots > pm.FollowersMax)
++            {
++                Line(pm, HorseNoSlotLine);
++            }
++        }
++
++        public static void TickStable(Trial trial)
++        {
++            if (trial.Horse is not { Deleted: false } horse) { return; }
++            var pm = trial.Player;
++            if (horse.Healed && !trial.Steps.Contains(SkillName.Veterinary.ToString()))
++            {
++                Step(trial, SkillName.Veterinary.ToString());
++            }
++
++            if (horse.Controlled && horse.ControlMaster == pm && !trial.Steps.Contains(SkillName.AnimalTaming.ToString()))
++            {
++                if (!TutorialStableHorseStore.Has(pm))
++                {
++                    TutorialStableHorseStore.Add(pm);
++                    horse.Kept = true;
++                    Line(pm, HorseKeptLine);
++                }
++
++                Step(trial, SkillName.AnimalTaming.ToString());
++            }
++        }
++
++        /// <summary>At the lesson's end: a kept horse stays with its owner; any other goes back to its stall (deleted).</summary>
++        public static void ReturnStable(Trial trial)
++        {
++            if (trial.Horse is { Deleted: false } horse && !horse.Kept)
++            {
++                horse.Delete();
++            }
++
++            trial.Horse = null;
++        }
++
++        // -- Seeding in New Haven (items 2, 3, 4, 6, 9) --
++
++        public sealed record HavenPiece(int Id, Point3D At, string Name);
++
++        /// <summary>The fixed pieces this prompt adds to New Haven. Each sign stands north of its path, beside it.</summary>
++        /// <remarks>cc-P755 (P754 review): the mountain-path sign moved off the dirt road to the first grass tile north of
++        /// it (3702,2742); the stables sign moved out of the dirt lane east of the barn to the porch strip by the hitching
++        /// posts, just north of the door path (3608,2614).</remarks>
++        public static readonly HavenPiece[] HavenPieces =
++        [
++            new(0x0B2C, HavenSpots.RookBench[0], "wooden bench"),
++            new(0x0B2C, HavenSpots.RookBench[1], "wooden bench"),
++            new(0xA854, new Point3D(3702, 2742, 0), "The mountain path: the mining lesson's cave is west, round the hill"),
++            new(0xA854, new Point3D(3608, 2614, 0), "The stables: the sick-bay stall is inside, on the left"),
++            new(0x0FFA, new Point3D(3605, 2620, 0), "bucket of water"),
++            new(0x1036, new Point3D(3606, 2619, 0), "clean straw"),
++            new(0x0F34, new Point3D(3605, 2619, 0), "clean straw"),
++            new(0xA854, new Point3D(3713, 2591, 0), "Housing lesson, stop 1: a small house"),
++            new(0xA854, new Point3D(3704, 2604, 0), "Housing lesson, stop 2: where houses can be built")
++        ];
++
++        /// <summary>
++        /// Places what is missing in New Haven, moves an older world's Rook to his bench and takes away the old west farm.
++        /// Returns a line for the log.
++        /// </summary>
++        public static string SeedHaven(bool dryRun)
++        {
++            var map = HavenSpots.Map;
++            var placed = 0;
++            var moved = MoveRook(dryRun) ? 1 : 0;
++            // Upgrade in place (the building guide, section 7): a named piece found anywhere but its spot is taken away.
++            var moved743 = 0;
++            foreach (var piece in HavenPieces)
++            {
++                foreach (var item in StrayPieces(map, piece))
++                {
++                    moved743++;
++                    if (!dryRun) { item.Delete(); }
++                }
++            }
++
++            foreach (var piece in HavenPieces)
++            {
++                if (HasPiece(map, piece)) { continue; }
++                placed++;
++                if (!dryRun)
++                {
++                    // A signpost stands on the land; a prop indoors keeps its floor's Z.
++                    var z = piece.Id == 0xA854 ? map.GetAverageZ(piece.At.X, piece.At.Y) : piece.At.Z;
++                    new Static(piece.Id) { Name = piece.Name }.MoveToWorld(new Point3D(piece.At.X, piece.At.Y, z), map);
++                }
++            }
++
++            var farm = TutorialFarm.ClearHaven(dryRun);
++            return $"New Haven (cc-P743){(dryRun ? " dry run" : "")}: {(dryRun ? "would place" : "placed")} {placed} pieces (took away {moved743} from old spots), moved {moved} Rook, {farm}";
++        }
++
++        private static List<Item> StrayPieces(Map map, HavenPiece piece)
++        {
++            var stray = new List<Item>();
++            foreach (var item in map.GetItemsInRange(piece.At, 30))
++            {
++                if (item is Static && item.ItemID == piece.Id && item.Name == piece.Name &&
++                    !Array.Exists(HavenPieces, q => q.Id == piece.Id && q.Name == piece.Name && q.At.X == item.X && q.At.Y == item.Y))
++                {
++                    stray.Add(item);
++                }
++            }
++
++            return stray;
++        }
++
++        private static bool HasPiece(Map map, HavenPiece piece)
++        {
++            foreach (var item in map.GetItemsAt(piece.At.X, piece.At.Y))
++            {
++                if (item.ItemID == piece.Id && item.Name == piece.Name) { return true; }
++            }
++
++            return false;
++        }
++
++        /// <summary>An older world's Rook (anywhere in town, not at his bench) moves to the bench, seated, facing the square.</summary>
++        public static bool MoveRook(bool dryRun)
++        {
++            if (FindOldRook() is not { } rook)
++            {
++                return false;
++            }
++
++            if (!dryRun)
++            {
++                rook.MoveToWorld(HavenSpots.Rook, HavenSpots.Map);
++                rook.Home = HavenSpots.Rook;
++                rook.Direction = Direction.North;
++            }
++
++            return true;
++        }
++
++        /// <summary>A Rook in town that is not on his bench (an older world's, on the square), or null.</summary>
++        public static TutorialRecruiter? FindOldRook()
++        {
++            foreach (var m in HavenSpots.Map.GetMobilesInRange(HavenSpots.Centre, 100))
++            {
++                if (m is TutorialRecruiter { Deleted: false } rook && rook.Location != HavenSpots.Rook)
++                {
++                    return rook;
++                }
++            }
++
++            return null;
++        }
++    }
++
++    /// <summary>cc-P743: the characters that have kept their stable horse (one per character, never again).</summary>
++    public class TutorialStableHorseStore : GenericPersistence
++    {
++        private static TutorialStableHorseStore? _instance;
++        internal static readonly HashSet<Serial> Kept = new();
++
++        public TutorialStableHorseStore() : base("TutorialStableHorses", 10)
++        {
++        }
++
++        public static TutorialStableHorseStore Instance => _instance ??= new TutorialStableHorseStore();
++
++        public static void Configure() => _ = Instance;
++
++        public static bool Has(Mobile m) => Kept.Contains(m.Serial);
++
++        public static void Add(Mobile m) => Kept.Add(m.Serial);
++
++        public override void Serialize(IGenericWriter writer)
++        {
++            writer.WriteEncodedInt(0);
++            writer.WriteEncodedInt(Kept.Count);
++            foreach (var s in Kept)
++            {
++                writer.Write(s);
++            }
++        }
++
++        public override void Deserialize(IGenericReader reader)
++        {
++            reader.ReadEncodedInt();
++            Kept.Clear();
++            var n = reader.ReadEncodedInt();
++            for (var i = 0; i < n; i++)
++            {
++                Kept.Add(reader.ReadSerial());
++            }
++        }
++    }
++}
++
++namespace Server.Mobiles
++{
++    using Server.Tutorial;
++
++    /// <summary>cc-P743 item 7: the magery lesson's mage echo, who shows Magic Arrow at the training echo.</summary>
++    [SerializationGenerator(0, false)]
++    public partial class TutorialMageEcho : TutorialCreature
++    {
++        public Serial TrialOwner { get; set; }
++
++        public TutorialMageEcho() : base(AIType.AI_Animal)
++        {
++            Name = "a mage echo";
++            Body = 0x190;
++            Hue = 0x4F2;
++            FightMode = FightMode.None;
++            CantWalk = true;
++            Blessed = true;
++            SetStr(40);
++            SetDex(40);
++            SetInt(80);
++            SetHits(100);
++            AddItem(new Robe { Movable = false, Hue = 0x4F2 });
++            AddItem(new WizardsHat { Movable = false, Hue = 0x4F2 });
++        }
++
++        public override bool ClickTitle => false;
++
++        /// <summary>The words of power, the cast motion, then the bolt (pinned MagicArrowSpell's effect and sound).</summary>
++        public void ShowMagicArrow(Mobile target)
++        {
++            Direction = GetDirectionTo(target);
++            PublicOverheadMessage(MessageType.Spell, 0x3B2, false, "In Por Ylem");
++            Animate(16, 7, 1, true, false, 0);
++            Server.Timer.StartTimer(TimeSpan.FromSeconds(1.2), () =>
++            {
++                if (Deleted || target.Deleted) { return; }
++                MovingParticles(target, 0x36E4, 5, 0, false, true, 3006, 4006, 0);
++                target.PlaySound(0x1E5);
++            });
++        }
++
++        [AfterDeserialization(false)] private void ClearAbandonedLesson() => Delete();
++    }
++
++    /// <summary>
++    /// cc-P743 item 4: the stables' injured horse. Only its trainee sees it until it is tamed; it cannot be tamed until
++    /// that trainee has bandaged it, and then always can (MinTameSkill 0 against the lesson's 60, no anger). Bleeds while
++    /// hurt. A tamed, kept horse is an ordinary owned mount from then on.
++    /// </summary>
++    [SerializationGenerator(0, false)]
++    public partial class TutorialStableHorse : Horse, IPrivateMobile
++    {
++        [SerializableField(0)]
++        private Mobile? _trainee;
++
++        [SerializableField(1)]
++        private bool _kept;
++
++        public bool Healed { get; private set; }
++        private DateTime _nextBleed;
++
++        public TutorialStableHorse(Mobile trainee)
++        {
++            Name = "an injured horse";
++            _trainee = trainee;
++            Tamable = false;
++            MinTameSkill = 0.0;
++            Hits = Math.Max(1, HitsMax / 10);
++            CantWalk = true;
++            Direction = Direction.North;
++        }
++
++        public bool ShowsTo(Mobile viewer) => Kept || Controlled || viewer == Trainee;
++
++        public override void OnHeal(ref int amount, Mobile from)
++        {
++            base.OnHeal(ref amount, from);
++            if (!Healed && from == Trainee && amount > 0)
++            {
++                Healed = true;
++                Tamable = true;
++                Name = "a calmer horse";
++                if (Trainee != null) { TutorialWingTrials.Line(Trainee, TutorialWingTrials.HorseHealedLine); }
++            }
++        }
++
++        public override void OnThink()
++        {
++            base.OnThink();
++            if (Controlled)
++            {
++                CantWalk = false;
++                if (Name is "an injured horse" or "a calmer horse") { Name = "a horse"; }
++                return;
++            }
++
++            if (!Healed && Core.Now >= _nextBleed)
++            {
++                _nextBleed = Core.Now + TimeSpan.FromSeconds(4);
++                new Blood(Utility.RandomList(0x122A, 0x122B, 0x122D)).MoveToWorld(Location, Map);
++            }
++        }
++
++        [AfterDeserialization(false)]
++        private void ClearAbandonedLesson()
++        {
++            if (!Kept && !Controlled) { Delete(); }
++        }
++    }
++}
+diff --git a/server/customizations/Tutorial/TutorialCorePlacement.cs b/server/customizations/Tutorial/TutorialCorePlacement.cs
+index 3869aba..22735cb 100644
+--- a/server/customizations/Tutorial/TutorialCorePlacement.cs
++++ b/server/customizations/Tutorial/TutorialCorePlacement.cs
+@@ -270,7 +270,8 @@ public static class TutorialCorePlacement
+             (typeof(LeagueRegistrar), ElaraSpot, () => new LeagueRegistrar { CantWalk = true }),
+             (typeof(TutorialVeterinarian), FarmVetSpot, () => new TutorialVeterinarian { Name = "Tobin", Direction = Direction.East })
+         }.Where(row => FindMobile(map, row.Type, row.Spot) == null).ToList();
+-        var rookMissing = withHaven && TutorialRecruiter.Find() == null;
++        // cc-P743: an older world's Rook (elsewhere in town) is moved to his bench below, not doubled.
++        var rookMissing = withHaven && TutorialRecruiter.Find() == null && TutorialWingTrials.FindOldRook() == null;
+         // New Haven's own vet, when the town has none (pinned's spawn data has none there).
+         var townVetMissing = withHaven && FindTownVet() == null;
+         var gateMissing = !HasItem<TutorialTravelGate>(map, GateSpot);
+@@ -301,6 +302,9 @@ public static class TutorialCorePlacement
+         }
+         var farm = TutorialFarm.Seed(map, dryRun);
+         if (farm.Refused) { return farm.Message; }
++        // cc-P743: New Haven's own pieces (Rook moved to his bench, the bench, signs, the stall; the old farm away), once
++        // nothing has refused.
++        var haven743 = withHaven ? TutorialWingTrials.SeedHaven(dryRun) : "";
+         string addons;
+         if (!dryRun)
+         {
+@@ -309,7 +313,7 @@ public static class TutorialCorePlacement
+             { new TutorialStationMarker(station.Key).MoveToWorld(TutorialWorld.Ground(map, SignPoint(station.Key)), map); }
+             foreach (var row in mobiles)
+             { Place(row.Make(), row.Spot, map); }
+-            if (rookMissing) { Place(new TutorialRecruiter(), HavenSpots.Rook, haven); }
++            if (rookMissing) { Place(new TutorialRecruiter { Direction = Direction.North }, HavenSpots.Rook, haven); } // cc-P743: seated, facing the square
+             if (townVetMissing) { Place(new TutorialVeterinarian(), HavenSpots.VetSpot, haven); }
+             if (gateMissing) { new TutorialTravelGate().MoveToWorld(GateSpot, map); }
+             if (blueMissing) { new TutorialBlueWalkTile().MoveToWorld(FirstMark, map); }
+@@ -324,7 +328,7 @@ public static class TutorialCorePlacement
+         else { addons = TutorialIsleAddons.Seed(map, true); }
+         var tiles = (blueMissing ? 1 : 0) + (goldMissing ? 1 : 0);
+         var npcs = mobiles.Count + (rookMissing ? 1 : 0) + (townVetMissing ? 1 : 0);
+-        return $"Tutorial{(dryRun ? " dry run" : "")}: {(dryRun ? "would place" : "placed")} {markers.Length} station markers, {npcs} NPCs/echo/vets, {(gateMissing ? 1 : 0)} moongate, {tiles} walking tiles, {doors.Length} doors, {props.Length + (boardMissing ? 1 : 0)} props. {farm.Message} {addons}";
++        return $"Tutorial{(dryRun ? " dry run" : "")}: {(dryRun ? "would place" : "placed")} {markers.Length} station markers, {npcs} NPCs/echo/vets, {(gateMissing ? 1 : 0)} moongate, {tiles} walking tiles, {doors.Length} doors, {props.Length + (boardMissing ? 1 : 0)} props. {farm.Message} {addons} {haven743}";
+     }
+ 
+     private static Point3D OldSpot(BaseDoor d) => d.Open ? new Point3D(d.X - d.Offset.X, d.Y - d.Offset.Y, d.Z - d.Offset.Z) : d.Location;
+diff --git a/server/customizations/Tutorial/TutorialCoreTrials.cs b/server/customizations/Tutorial/TutorialCoreTrials.cs
+index c4ced09..f46754f 100644
+--- a/server/customizations/Tutorial/TutorialCoreTrials.cs
++++ b/server/customizations/Tutorial/TutorialCoreTrials.cs
+@@ -74,7 +74,7 @@ public static class TutorialCoreTrials
+             pm.SendGump(new TutorialTrialGump(next, false));
+             return true;
+         }
+-        ClusterFTutorial.SystemLine(pm, "You finished the main lessons. Double-click Rook on the New Haven plaza to graduate or try an optional lesson.");
++        ClusterFTutorial.SystemLine(pm, "You finished the main lessons. Double-click Rook on his bench by the Albatross tavern in New Haven to graduate or try an optional lesson.");
+         return false;
+     }
+ 
+@@ -152,7 +152,7 @@ public static class TutorialCoreTrials
+         "core.banking" => "Follow the arrow through the practice bank's door in the trades square to Merrin the banker and say 'bank' to open your bank box. Drag the blue practice token, a small blue pile of coins in your backpack, into that box.",
+         "core.league" => "Follow the arrow to the League lodge and double-click the door on its north side to enter. Double-click Elara Voss to finish this lesson; you can read about the League without joining.",
+         "core.loop" => "Follow the arrow up the knoll to the standing stones and double-click the lesson's signpost there. Watch the vision; it lasts about a minute, holds you still, and will not change your character.",
+-        "core.travel" => "Follow the arrow to the end of the dock and walk into the shimmering blue moongate, or double-click it. It takes you, and your pet, to Rook on the New Haven plaza.",
++        "core.travel" => "Follow the arrow to the end of the dock and walk into the shimmering blue moongate, or double-click it. It takes you, and your pet, to Rook on his bench by the Albatross tavern in New Haven.",
+         _ => "Double-click Tamsin on the Wakening Isle's beach to choose this lesson."
+     };
+ 
+@@ -435,7 +435,7 @@ public sealed class TutorialTrialGump : Gump
+                 if (ClusterFTutorial.CoreLeft(record).FirstOrDefault() is { } next) { ClusterFTutorial.RunStation(pm, next); }
+                 else
+                 {
+-                    ClusterFTutorial.SystemLine(pm, "You finished the main lessons. Follow the arrow to Rook on the New Haven plaza and choose Graduate, or try an optional lesson there.");
++                    ClusterFTutorial.SystemLine(pm, "You finished the main lessons. Follow the arrow to Rook on his bench by the Albatross tavern in New Haven and choose Graduate, or try an optional lesson there.");
+                     TutorialRecruiter.PointTo(pm);
+                 }
+             }
+diff --git a/server/customizations/Tutorial/TutorialFarm.cs b/server/customizations/Tutorial/TutorialFarm.cs
+index 578e0ee..cecb208 100644
+--- a/server/customizations/Tutorial/TutorialFarm.cs
++++ b/server/customizations/Tutorial/TutorialFarm.cs
+@@ -673,7 +673,8 @@ namespace Server.Tutorial
+                 return false;
+             }
+ 
+-            ClusterFTutorial.CompleteStation(pm, TamingStation); // cc-P726: the pet and its commands
++            // cc-P743 (Chase 10-30: "Animals showed done even though all we did was get the evo cat/dog"): the isle's pet
++            // and its commands no longer complete New Haven's Animals lesson (animals.taming); only the stable horse does.
+ 
+             TutorialCoreTrials.FarmFinished(pm);
+             ClusterFTutorial.SystemLine(pm, TutorialPetCare.FarmPetLessonLine); // cc-P666: the farm's pet lesson line
+@@ -1194,9 +1195,9 @@ namespace Server.Tutorial
+             return n;
+         }
+ 
+-        [Usage("ClusterFSeedTutorialFarm [dryrun | force]")]
+-        [Description("Places New Haven's tutorial farm props (the farmhouse and field addon, its door and the pen spawner) that the wing trials use, where missing. The core farm, with Wren and the pests, is on the Wakening Isle ([ClusterFSeedTutorial). Test shard only unless clusterf.tutorialFarm.allowLive; refuses while the map still has the two trees the farm's map patch removes, unless force. Moves and deletes nothing.")]
+-        [ShardCommand(CommandCategory.WorldSetup, Rerun = CommandRerun.Skips, Shard = CommandShard.TestOnly, DryRun = "dryrun", Summary = "Places New Haven's tutorial farm props (farmhouse, field, pen) for the wing trials on the test shard. Moves and deletes nothing.")]
++        [Usage("ClusterFSeedTutorialFarm [dryrun]")]
++        [Description("cc-P743: takes away New Haven's old tutorial farm (the farmhouse and field addon, its door and the pen spawner at the ML map's west farm); nothing uses it any more (the animals lesson is in the stables). The core farm, with Wren and the pests, is on the Wakening Isle ([ClusterFSeedTutorial). Test shard only.")]
++        [ShardCommand(CommandCategory.WorldSetup, Rerun = CommandRerun.Skips, Shard = CommandShard.TestOnly, DryRun = "dryrun", Summary = "Takes away New Haven's old tutorial farm (addon, door, pen spawner) on the test shard.")]
+         private static void OnSeedCommand(CommandEventArgs e)
+         {
+             var mode = e.Length > 0 ? e.GetString(0).ToLowerInvariant() : "";
+@@ -1206,7 +1207,7 @@ namespace Server.Tutorial
+                 return;
+             }
+ 
+-            e.Mobile.SendMessage(SeedHaven(mode == "dryrun", mode == "force").Message);
++            e.Mobile.SendMessage(ClearHaven(mode == "dryrun"));
+         }
+ 
+         private static SeedResult? Refusal(bool island)
+@@ -1432,6 +1433,38 @@ namespace Server.Tutorial
+             return null;
+         }
+ 
++        /// <summary>
++        /// cc-P743 item 2 (Chase 10-30: "extra farm near Haven needs to be cleared out"): takes away what SeedHaven placed in
++        /// New Haven (the farm addon, its door, the pen spawner and the animals it spawned). The ground there was never
++        /// changed on the SoS land (no map op inside the old fence), so nothing else needs restoring. Returns a line.
++        /// </summary>
++        public static string ClearHaven(bool dryRun)
++        {
++            var map = HavenSpots.Map;
++            var gone = new List<IEntity>();
++            if (FindAddon<TutorialFarmAddon>(map, TutorialFarmLayout.Anchor) is { } addon) { gone.Add(addon); }
++            if (FindDoor(map, TutorialFarmLayout.DoorSpot) is { } door) { gone.Add(door); }
++            foreach (var (spot, _, _, types) in HavenSpawnerRows)
++            {
++                if (FindSpawner(map, spot, types[0]) is { } spawner)
++                {
++                    if (spawner.Spawned != null)
++                    {
++                        gone.AddRange(spawner.Spawned.Keys);
++                    }
++
++                    gone.Add(spawner);
++                }
++            }
++
++            if (!dryRun)
++            {
++                foreach (var e in gone) { e.Delete(); }
++            }
++
++            return $"old New Haven farm: {(dryRun ? "would take away" : "took away")} {gone.Count} thing(s).";
++        }
++
+         /// <summary>New Haven's farm props for the wing trials: the farm addon, its door and the pen (no Wren, no pests).</summary>
+         public static SeedResult SeedHaven(bool dryRun, bool force = false)
+         {
+diff --git a/server/customizations/Tutorial/TutorialGumps.cs b/server/customizations/Tutorial/TutorialGumps.cs
+index a9cf2cb..9c8e7fe 100644
+--- a/server/customizations/Tutorial/TutorialGumps.cs
++++ b/server/customizations/Tutorial/TutorialGumps.cs
+@@ -247,7 +247,7 @@ public class TutorialRecruiterGump : Gump
+             case BtnGraduate:
+                 if (Guide || !TutorialCoreTrials.Nearby(_pm, TutorialRecruiter.Spot, 4, HavenSpots.Map))
+                 {
+-                    ClusterFTutorial.SystemLine(_pm, "Follow the arrow back to Rook on the New Haven plaza. Double-click Rook and choose Graduate.");
++                    ClusterFTutorial.SystemLine(_pm, "Follow the arrow back to Rook on his bench by the Albatross tavern in New Haven. Double-click Rook and choose Graduate.");
+                     TutorialRecruiter.PointTo(_pm);
+                     return;
+                 }
+diff --git a/server/customizations/Tutorial/TutorialIslandGate.cs b/server/customizations/Tutorial/TutorialIslandGate.cs
+index f96607d..9035b33 100644
+--- a/server/customizations/Tutorial/TutorialIslandGate.cs
++++ b/server/customizations/Tutorial/TutorialIslandGate.cs
+@@ -11,7 +11,7 @@ namespace Server.Tutorial;
+ public static class TutorialIslandGate
+ {
+     public static bool Enabled { get; set; } = true;
+-    public const string Refusal = "Finish the main tutorial lessons, then double-click Rook on the New Haven plaza and choose Graduate. You can leave Haven Island afterward.";
++    public const string Refusal = "Finish the main tutorial lessons, then double-click Rook on his bench by the Albatross tavern in New Haven and choose Graduate. You can leave Haven Island afterward.";
+ 
+     public static void Configure() =>
+         Enabled = ServerConfiguration.GetOrUpdateSetting("clusterf.tutorial.islandGate", true);
+diff --git a/server/customizations/Tutorial/TutorialStart.cs b/server/customizations/Tutorial/TutorialStart.cs
+index d957ee6..cc41f34 100644
+--- a/server/customizations/Tutorial/TutorialStart.cs
++++ b/server/customizations/Tutorial/TutorialStart.cs
+@@ -238,7 +238,7 @@ public static class TutorialStart
+                 }
+ 
+                 ClusterFTutorial.SystemLine(pm, ClusterFTutorial.RecordOf(pm)?.State == TutorialState.Skipped
+-                    ? "Your account skipped the tutorial, so this character starts in New Haven. Double-click Rook on the plaza to take the lessons now and earn their rewards."
++                    ? "Your account skipped the tutorial, so this character starts in New Haven. Double-click Rook on his bench by the Albatross tavern to take the lessons now and earn their rewards."
+                     : "Your account has finished the tutorial, so this character starts in New Haven.");
+                 break;
+             case Outcome.Haven:
+diff --git a/server/customizations/Tutorial/TutorialStations.cs b/server/customizations/Tutorial/TutorialStations.cs
+index 3869418..41eae88 100644
+--- a/server/customizations/Tutorial/TutorialStations.cs
++++ b/server/customizations/Tutorial/TutorialStations.cs
+@@ -89,13 +89,13 @@ public static class TutorialStations
+             ["Swords", "Macing", "Fencing", "Archery", "Throwing", "Wrestling"], ["Tactics", "Anatomy", "Parrying", "Focus"],
+             ["Resisting Spells"],
+             ["Custom health bars", "Nameplate healthbars", "Damage hues", "Buff and cooldown bars"], "a loaned weapon you choose",
+-            "the training yard, behind the Little Shop of Magic"),
++            "the Proving Grounds, the warrior training yard on the east side of town"), // cc-P743 item 1
+         new("combat.healing", TutorialWing.Combat, "Bandages", ["Healing"], ["Anatomy"], None,
+             ["Auto Bandage"], "loaned bandages", "the training yard, behind the Little Shop of Magic"),
+ 
+         // -- Magic wing --
+         new("magic.magery", TutorialWing.Magic, "Magery", ["Magery"], ["Meditation", "Evaluating Intelligence"], None,
+-            ["SpellBar", "Quick spell cast", "Spell indicators", "Counter bar"], "a loaned spellbook and reagents (spell ingredients)", "the training yard, behind the Little Shop of Magic"),
++            ["SpellBar", "Quick spell cast", "Spell indicators", "Counter bar"], "a loaned spellbook and reagents (spell ingredients)", "the Haven Magery School, the stone hall at the north end of town"), // cc-P743 item 7
+         new("magic.necromancy", TutorialWing.Magic, "Necromancy", ["Necromancy"], ["Spirit Speak"], None,
+             ["SpellBar"], "a loaned necromancer spellbook", "the training yard, behind the Little Shop of Magic"),
+         new("magic.chivalry", TutorialWing.Magic, "Chivalry", ["Chivalry"], None, None,
+@@ -109,7 +109,7 @@ public static class TutorialStations
+ 
+         // -- Gathering wing --
+         new("gathering.mining", TutorialWing.Gathering, "Mining", ["Mining"], None, None,
+-            ["Counter bar"], "a loaned pickaxe", "the trades yard, west of the training yard"),
++            ["Counter bar"], "a loaned pickaxe", "the cave on the mountain path south of town"), // cc-P743 item 3
+         new("gathering.lumberjacking", TutorialWing.Gathering, "Lumberjacking", ["Lumberjacking"], None, None,
+             [], "a loaned hatchet", "the trades yard, west of the training yard"),
+         new("gathering.fishing", TutorialWing.Gathering, "Fishing", ["Fishing"], None, None,
+@@ -138,12 +138,13 @@ public static class TutorialStations
+             ["Treasure maps and SOS", "SOS locator"], "a loaned mapmaker's pen", "the trades yard, west of the training yard"),
+ 
+         // -- Animals --
+-        new("animals.taming", TutorialWing.Animals, "Animals", ["Animal Taming", "Animal Lore", "Veterinary", "Herding"], None, None,
+-            ["Pet scaling", "Follow mode"], "a loaned shepherd's crook", "the farm's animal pen, through the gate"),
++        // cc-P743 item 4: heal and tame an injured horse in the stables, and keep it. Herding is explained, not practised.
++        new("animals.taming", TutorialWing.Animals, "Animals: heal and tame a horse", ["Veterinary", "Animal Taming"], ["Animal Lore"], ["Herding"],
++            ["Pet scaling", "Follow mode"], "loaned bandages if you have none", "the stables beside Uzeraan's mansion, west of the square"),
+ 
+         // -- Bard (one trial) --
+         new("bard.trial", TutorialWing.Bard, "Music and bard skills", ["Musicianship", "Peacemaking", "Provocation", "Discordance"],
+-            None, None, [], "a loaned lute", "the trades yard, west of the training yard"),
++            None, None, [], "a loaned lute", "the Bardic Guild's hall, north of the square"), // cc-P743 item 7
+ 
+         // -- Thieving and stealth (one trial) --
+         new("thieving.trial", TutorialWing.Thieving, "Thieving and stealth",
+@@ -152,11 +153,11 @@ public static class TutorialStations
+ 
+         // -- Non-skill wings --
+         new("housing.basics", TutorialWing.Housing, "Houses", None, None, None,
+-            ["Transparent houses", "Circle of transparency"], null, "the farmhouse porch, then the bank"),
++            ["Transparent houses", "Circle of transparency"], null, "the small cottage east of the square, the field south of it, then the bank"), // cc-P743 item 9
+         new("travel.wing", TutorialWing.Travel, "Runes, gates and boats", None, None, None,
+-            ["World Map"], "a loaned blank recall rune", "the farm gate, then the New Haven plaza"),
++            ["World Map"], "a loaned blank recall rune", "the public moongate, then Rook's bench by the Albatross tavern"),
+         new("reputation.wing", TutorialWing.Reputation, "Name colors, reputation, and guards", None, None, None,
+-            [], null, "the training yard, Sera the healer, then the plaza"),
++            [], null, "the training yard, the town healer, then Rook's bench"),
+         new("shard.systems", TutorialWing.ShardSystems, "Rewards and extra jewelry slots", None, None, None,
+             ["Skill progress bar", "Autoloot", "Scavenger", "Nearby loot", "Vendors: advanced shop, trade, auto buy and sell",
+              "Legion scripting (advanced)", "Script library browser (advanced)"], null, "Elara Voss's house, the bank, then Rook"),
+diff --git a/server/customizations/Tutorial/TutorialTradeTrials.cs b/server/customizations/Tutorial/TutorialTradeTrials.cs
+index 4fb296d..717b753 100644
+--- a/server/customizations/Tutorial/TutorialTradeTrials.cs
++++ b/server/customizations/Tutorial/TutorialTradeTrials.cs
+@@ -75,9 +75,10 @@ namespace Server.Tutorial
+         public static readonly TradeTrial[] Trades =
+         [
+             // -- Gathering --
+-            new("gathering.mining", AtYard, TradesYard,
+-                [S(SkillName.Mining, "Mining: dig ore from the gray stone patch")],
+-                "Double-click the loaned pickaxe in your backpack, then click the gray stone patch named practice vein. Repeat until you dig up ore, which you can keep."),
++            // cc-P743 item 3: at the cave on the mountain path south of town, on its own cave floor (no practice vein).
++            new("gathering.mining", MiningWhere, new Point2D(HavenSpots.MiningCave.X, HavenSpots.MiningCave.Y),
++                [S(SkillName.Mining, "Mining: dig ore from the cave floor")],
++                "Double-click the loaned pickaxe in your backpack (your own pickaxe or shovel works too), then click the dark cave floor beside you or the rock of the cave wall. Repeat until you dig up ore, which you can keep."),
+             new("gathering.lumberjacking", AtYard, TradesYard,
+                 [S(SkillName.Lumberjacking, "Lumberjacking: chop logs from the practice tree")],
+                 "Double-click the loaned hatchet, then click the walnut tree beside you. Repeat until you get logs, which you can keep."),
+@@ -128,17 +129,16 @@ namespace Server.Tutorial
+                 null, [typeof(LocalMap)]),
+ 
+             // -- Animals (the farm, P276) --
+-            new("animals.taming", "the farm's animal pen, through the gate", FarmField,
++            // cc-P743 item 4: an injured horse in the stables' sick-bay stall; the trainee keeps it (NewHavenLessons.cs).
++            new("animals.taming", StablesWhere, new Point2D(HavenSpots.Stables.X, HavenSpots.Stables.Y),
+                 [
+-                    S(SkillName.Herding, "Herding: use the crook on the goat, then click a spot"),
+-                    S(SkillName.AnimalTaming, "Animal Taming: use on the practice goat"),
+-                    S(SkillName.AnimalLore, "Animal Lore: use on your goat or gain it while taming"),
+-                    S(SkillName.Veterinary, "Veterinary: double-click a bandage, then your goat")
++                    S(SkillName.Veterinary, "Veterinary: bandage the injured horse"),
++                    S(SkillName.AnimalTaming, "Animal Taming: tame the healed horse")
+                 ],
+-                "Double-click the loaned crook, click the practice goat, then click a place to send it. Use Animal Taming and Animal Lore from Skills, then bandage the goat; it stays at the farm."),
++                "In the stall, double-click a bandage, then click the injured horse. When it is healed, open Skills on your character window, use Animal Taming, and click the horse. Use Animal Lore on it any time to see its health."),
+ 
+             // -- Bard --
+-            new("bard.trial", AtYard, TradesYard,
++            new("bard.trial", BardWhere, new Point2D(HavenSpots.BardicGuild.X, HavenSpots.BardicGuild.Y), // cc-P743 item 7
+                 [
+                     S(SkillName.Peacemaking, "Peacemaking: use on a blue training echo"),
+                     S(SkillName.Provocation, "Provocation: use on one echo, then the other"),
+@@ -164,29 +164,30 @@ namespace Server.Tutorial
+                 ForensicLine),
+ 
+             // -- The tours --
+-            new("housing.basics", "the first stop", TourCentre,
+-                [("stop0", "The farmhouse porch"), ("stop1", "The bank")],
+-                "Follow the arrow to the first stop. Walk close to each stop to read its lesson.",
++            // cc-P743 item 9 (Chase 10-30, "housing tutorial is not clear"): three stops, one goal each, a signpost at each
++            // stop, and each stop's text ends with where to go next.
++            new("housing.basics", "the small cottage east of the square (stop 1 of 3)", TourCentre,
++                [("stop0", "Stop 1: look at a small house"), ("stop1", "Stop 2: learn where houses can be built"), ("stop2", "Stop 3: the bank, where a deed is kept")],
++                "Follow the arrow. At each stop, stand beside its signpost and read the lesson in your System window; then the arrow points to the next stop.",
+                 Stops:
+                 [
+-                    (() => Ground(3708, 2593), "the farmhouse porch", // cc-P678: the stables farmhouse's south porch
+-                        "Use a house deed on open land where housing is allowed, then lock items in place and secure containers inside. TazUO's Options can make nearby roofs and walls transparent."),
+-                    (() => ClusterFNewHavenSeeder.BankAnchor, "the bank",
+-                        "Keep a house deed in your bank until you are ready to use it. Visit your house regularly to refresh it and prevent decay.")
++                    (() => HousingStop(0), "stop 1, the small cottage", HousingStop1),
++                    (() => HousingStop(1), "stop 2, the field south of the cottage", HousingStop2),
++                    (() => ClusterFNewHavenSeeder.BankAnchor, "stop 3, the bank", HousingStop3)
+                 ]),
+             new("travel.wing", "the first stop", TourCentre,
+-                [("stop0", "The moongate"), ("stop1", "The plaza")],
++                [("stop0", "The moongate"), ("stop1", "Rook's bench")],
+                 "Follow the arrow to each stop and read the lesson when you arrive. The blank recall rune in your backpack is a loan and disappears when the tour ends.",
+                 Stops:
+                 [
+                     // cc-P663: the tutorial's own gate is on the isle now; the tour starts at New Haven's public one.
+                     (() => HavenSpots.PublicMoongate, "the moongate",
+                         "This public moongate offers destinations across the lands; the isle's moongate only ever brings trainees to Rook. Shipwrights sell boat deeds for travel by sea."),
+-                    (() => TutorialRecruiter.Spot, "the plaza",
++                    (() => TutorialRecruiter.Spot, "Rook's bench",
+                         "A recall rune stores a location when you cast Mark on it. Return with Recall, Gate Travel, or Sacred Journey; a runebook stores up to 16 runes.")
+                 ]),
+             new("reputation.wing", "the first stop", TourCentre,
+-                [("stop0", "The training yard"), ("stop1", "The healer"), ("stop2", "The plaza")],
++                [("stop0", "The training yard"), ("stop1", "The healer"), ("stop2", "Rook's bench")],
+                 "Follow the arrow to the first stop. Walk close to each stop to read its lesson.",
+                 Stops:
+                 [
+@@ -194,7 +195,7 @@ namespace Server.Tutorial
+                         "Blue names usually mean innocent; gray names can be attacked, and red names mark murderers. Harming an innocent can make you gray for a while."),
+                     (() => HavenSpots.Healer, "the healer",
+                         "Karma and fame affect your title; killing innocent players can give you murder counts. Five murder counts make your name red, and some healers will refuse to help you."),
+-                    (() => TutorialRecruiter.Spot, "the plaza",
++                    (() => TutorialRecruiter.Spot, "Rook's bench",
+                         "In a guarded town, say 'guards' if someone attacks you unlawfully. Trammel generally prevents attacks on other players; Felucca allows them.")
+                 ]),
+             new("shard.systems", "the first stop", TourCentre,
+@@ -218,19 +219,19 @@ namespace Server.Tutorial
+         // -- Places --
+ 
+         public static bool NearPlace(PlayerMobile pm, string key) => Trade(key) is not { } t
+-            ? NearYard(pm)
++            ? NearWing(pm, key) // cc-P743: the lesson's own building (PlaceOf)
+             : pm.Map == Map.Trammel && pm.InRange(new Point3D(t.Place.X, t.Place.Y, pm.Z), t.IsTour ? TourReach : 4);
+ 
+         public static bool InReach(PlayerMobile pm, string key) => Trade(key) is not { } t
+-            ? pm.InRange(new Point3D(Yard.X, Yard.Y, pm.Z), LeaveRange)
++            ? pm.InRange(new Point3D(PlaceOf(key).X, PlaceOf(key).Y, pm.Z), LeaveRange)
+             : pm.InRange(new Point3D(t.Place.X, t.Place.Y, pm.Z), t.IsTour ? TourReach : LeaveRange);
+ 
+         public static string FollowLine(string key) => Trade(key) is not { } t
+-            ? "Follow the arrow to the training yard, behind the Little Shop of Magic. Your lesson begins when you arrive."
++            ? $"Follow the arrow to {PlaceName(key)}. Your lesson begins when you arrive."
+             : $"Follow the arrow to {t.Where}. Your lesson begins when you arrive.";
+ 
+         public static string LeftLine(string key) => Trade(key) is not { } t
+-            ? "You left the training yard, so this lesson stopped and its loaned supplies disappeared. Double-click Rook to start it again."
++            ? $"You left {PlaceShort(key)}, so this lesson stopped and its loaned supplies disappeared. Double-click Rook to start it again."
+             : t.IsTour
+                 ? "You went too far from New Haven, so the tour stopped. Double-click Rook to start it again."
+                 : $"You left {t.Where}, so this lesson stopped and its loaned supplies disappeared. Double-click Rook to start it again.";
+@@ -238,14 +239,20 @@ namespace Server.Tutorial
+         /// <summary>Where the arrow points: the trial's place, or a tour's next stop.</summary>
+         public static (Point3D Spot, string Name) PointAt(Trial trial)
+         {
+-            if (Trade(trial.Key) is not { } t) { return (YardSpot, "the training yard"); }
++            if (Trade(trial.Key) is not { } t) { return (PlaceOf(trial.Key), PlaceShort(trial.Key)); }
+             if (t.Stops is { } stops)
+             {
+                 var i = Math.Min(trial.Steps.Count, stops.Length - 1);
+                 return (stops[i].Spot(), stops[i].Name);
+             }
+ 
+-            return (Ground(t.Place.X, t.Place.Y), t.Key == "animals.taming" ? "the farm's animal pen" : "the trades yard");
++            return t.Key switch
++            {
++                "animals.taming" => (HavenSpots.Stables, "the stables"),
++                "gathering.mining" => (HavenSpots.MiningCave, "the mining cave"),
++                "bard.trial" => (HavenSpots.BardicGuild, "the Bardic Guild"),
++                _ => (Ground(t.Place.X, t.Place.Y), "the trades yard")
++            };
+         }
+ 
+         public static string TradeHint(string key) => Trade(key)?.Hint ?? "This lesson has no activity yet. Ask a staff member for help.";
+@@ -284,8 +291,9 @@ namespace Server.Tutorial
+             var work = Ground(TradesYard.X + 2, TradesYard.Y);
+             var spots = trial.Key switch
+             {
+-                "animals.taming" => new[] { Ground(GoatSpot.X, GoatSpot.Y) },
+-                "bard.trial" => new[] { work, Ground(TradesYard.X + 2, TradesYard.Y + 2) },
++                "animals.taming" => new[] { HavenSpots.SickStall }, // cc-P743
++                "gathering.mining" => Array.Empty<Point3D>(),           // cc-P743: the cave's own floor
++                "bard.trial" => new[] { BardEchoA, BardEchoB },          // cc-P743: inside the Bardic Guild
+                 "thieving.trial" => new[] { Ground(TradesYard.X + 1, TradesYard.Y), Ground(TradesYard.X - 1, TradesYard.Y) },
+                 _ when t.IsTour => Array.Empty<Point3D>(),
+                 // The anvil and forge stand east of the yard's centre, in reach of it (CraftItem: 2 tiles) and out of the
+@@ -307,8 +315,8 @@ namespace Server.Tutorial
+                 case "gathering.mining":
+                     Lend(trial, new Pickaxe());
+                     LendSkill(trial, SkillName.Mining, 60);
+-                    Prop(trial, new Static(0x053B), work, "practice vein");
+-                    FreshBank(Mining.System.OreAndStone, work);
++                    // cc-P743: the cave's own floor and walls; their ore banks start full (others' digging aside).
++                    foreach (var p in MiningTiles) { FreshBank(Mining.System.OreAndStone, p); }
+                     break;
+                 case "gathering.lumberjacking":
+                     Wield(trial, new Hatchet());
+@@ -396,13 +404,7 @@ namespace Server.Tutorial
+                     LendSkill(trial, SkillName.Cartography, 60);
+                     break;
+                 case "animals.taming":
+-                    Lend(trial, new ShepherdsCrook());
+-                    Lend(trial, new Bandage(10));
+-                    LendSkill(trial, SkillName.Herding, 60);
+-                    LendSkill(trial, SkillName.AnimalTaming, 60);
+-                    LendSkill(trial, SkillName.AnimalLore, 60);
+-                    LendSkill(trial, SkillName.Veterinary, 60);
+-                    Creature(trial, new TutorialFarmGoat { TrialOwner = pm.Serial }, spots[0]);
++                    ArmStable(trial); // cc-P743 item 4
+                     break;
+                 case "bard.trial":
+                     Lend(trial, new Lute());
+@@ -506,6 +508,9 @@ namespace Server.Tutorial
+ 
+         private static void ReturnTrade(Trial trial)
+         {
++            trial.BrawlTimer.Cancel(); // cc-P743
++            trial.Brawling = false;
++            ReturnStable(trial);
+             foreach (var item in trial.Props) { item.Delete(); }
+             trial.Props.Clear();
+             foreach (var c in trial.Creatures) { c.Delete(); }
+@@ -562,8 +567,9 @@ namespace Server.Tutorial
+                 }
+             }
+ 
+-            // A tamed goat that has healed: it worries the fence again, so the Veterinary step has a wound to bandage.
+-            if (trial.Steps.Contains(SkillName.AnimalTaming.ToString())) { WoundGoat(trial); }
++            // cc-P743: the stable horse's steps, and the thief chest's trap while Remove Trap is to do.
++            if (trial.Key == "animals.taming") { TickStable(trial); }
++            KeepChestTrapped(trial);
+         }
+ 
+         /// <summary>animals.taming: the goat scraped itself on the fence (Veterinary needs a hurt patient, Bandage.cs).</summary>
+@@ -582,8 +588,11 @@ namespace Server.Tutorial
+             if (success && from is PlayerMobile pm && Current(pm) is { Armed: true, Finished: false } trial &&
+                 Trade(trial.Key) is { IsTour: false } t && Array.Exists(t.Steps, s => s.Id == skill.SkillName.ToString()))
+             {
++                // cc-P743 item 4: the stable horse itself says when it is healed and tamed (TickStable), not any roll.
++                if (trial.Key == "animals.taming") { return; }
++                // cc-P743 item 5: a successful Provocation sets the echoes fighting before the step is counted.
++                if (trial.Key == "bard.trial" && skill.SkillName == SkillName.Provocation) { StartBrawl(trial); }
+                 Step(trial, skill.SkillName.ToString());
+-                if (skill.SkillName == SkillName.AnimalTaming) { WoundGoat(trial); }
+             }
+         }
+ 
+@@ -594,6 +603,7 @@ namespace Server.Tutorial
+             if (t == null || trial.Finished || !trial.Steps.Add(id)) { return; }
+             if (trial.Steps.Count >= t.Steps.Length)
+             {
++                if (trial.Brawling) { trial.FinishAfterBrawl = true; return; } // cc-P743: let the echoes fight first
+                 Finish(trial);
+                 return;
+             }
+diff --git a/server/customizations/Tutorial/TutorialWingTrials.cs b/server/customizations/Tutorial/TutorialWingTrials.cs
+index 3e409aa..b3332bb 100644
+--- a/server/customizations/Tutorial/TutorialWingTrials.cs
++++ b/server/customizations/Tutorial/TutorialWingTrials.cs
+@@ -110,6 +110,14 @@ namespace Server.Tutorial
+             public readonly List<BaseCreature> Creatures = new();      // its goat, its marks
+             public readonly Dictionary<Type, int> ProductsBefore = new();
+             public double HidingBefore = -1;                           // the Hiding base before the Stealth loan (-1: none)
++
++            // cc-P743 (NewHavenLessons.cs): the mage echo, the bard's brawl, the stable horse, the chest's re-traps.
++            public BaseCreature? Demo;
++            public TimerExecutionToken DemoTimer;
++            public bool Brawling, FinishAfterBrawl;
++            public TimerExecutionToken BrawlTimer;
++            public TutorialStableHorse? Horse;
++            public int ChestResets;
+         }
+ 
+         private static readonly Dictionary<Serial, Trial> Active = new();
+@@ -187,7 +195,7 @@ namespace Server.Tutorial
+             if (!ClusterFTutorial.IsParticipant(pm) || !IsWingTrial(station.Key)) { return; }
+             if (!pm.Alive)
+             {
+-                ClusterFTutorial.SystemLine(pm, "Visit Sera the healer at the farm gate and double-click Sera. Click Resurrect to return to life before starting a lesson.");
++                ClusterFTutorial.SystemLine(pm, "Return to life first: visit the Healers of Haven, east of the square, or any healer or ankh, then start the lesson.");
+                 return;
+             }
+ 
+@@ -271,7 +279,7 @@ namespace Server.Tutorial
+             if (Trade(trial.Key) != null) { return ArmTrade(trial); }
+             var needsTarget = trial.Key is not ("combat.healing" or "magic.chivalry");
+             var needsPatient = trial.Key is "combat.healing" or "magic.chivalry";
+-            if (needsTarget && !Fits(TargetSpot) || needsPatient && !Fits(PatientSpot))
++            if (needsTarget && !Fits(TargetOf(trial.Key)) || needsPatient && !Fits(PatientSpot))
+             {
+                 ClusterFTutorial.SystemLine(pm, "There is no room to set up this lesson in the training yard. Ask a staff member for help.");
+                 return false;
+@@ -341,7 +349,8 @@ namespace Server.Tutorial
+             if (needsTarget)
+             {
+                 trial.Target = new TutorialTrainingEcho(trial.Key == "combat.weapons", false) { TrialOwner = pm.Serial };
+-                trial.Target.MoveToWorld(TargetSpot, Map.Trammel);
++                trial.Target.MoveToWorld(TargetOf(trial.Key), Map.Trammel); // cc-P743: the lesson's own building
++                StartMageDemo(trial); // cc-P743 item 7: magic.magery only
+             }
+ 
+             if (needsPatient)
+@@ -544,6 +553,7 @@ namespace Server.Tutorial
+                 trial.TithingLoan = 0;
+             }
+ 
++            EndMageDemo(trial); // cc-P743
+             trial.Target?.Delete();
+             trial.Patient?.Delete();
+             trial.Target = trial.Patient = null;
+@@ -882,9 +892,33 @@ namespace Server.Mobiles
+         public override void Damage(int amount, Mobile? from = null, bool informMount = true, bool ignoreEvilOmen = false)
+         {
+             if (!IsPatient && Hits - amount < 20) { Hits = HitsMax; }
++            // cc-P743 item 5: its provoked partner's blows land too (TutorialCreature ignores anyone outside the tutorial).
++            if (from != null && from == BrawlFoe)
++            {
++                BrawlBlowsTaken++;
++                base.Damage(amount, null, informMount, ignoreEvilOmen);
++                return;
++            }
++
+             base.Damage(amount, from, informMount, ignoreEvilOmen);
+         }
+ 
++        /// <summary>cc-P743 item 5: the echo it was provoked against, while the lesson's brawl lasts.</summary>
++        public TutorialTrainingEcho? BrawlFoe { get; set; }
++
++        /// <summary>cc-P743 item 5: blows taken from its brawl partner (for the lesson's tests).</summary>
++        public int BrawlBlowsTaken { get; private set; }
++
++        /// <summary>One visible blow at its brawl partner: face it, swing, the hit sound and a little damage.</summary>
++        public void SwingAt(TutorialTrainingEcho foe)
++        {
++            Direction = GetDirectionTo(foe);
++            Combatant = foe;
++            Animate(Utility.RandomList(9, 10, 11), 7, 1, true, false, 0);
++            PlaySound(Utility.RandomList(0x13C, 0x13D, 0x13E));
++            foe.Damage(Utility.RandomMinMax(3, 7), this);
++        }
++
+         public override void OnHeal(ref int amount, Mobile from)
+         {
+             base.OnHeal(ref amount, from);
+diff --git a/server/patches/PlayerMobile-private-mobile.patch b/server/patches/PlayerMobile-private-mobile.patch
+new file mode 100644
+index 0000000..871f120
+--- /dev/null
++++ b/server/patches/PlayerMobile-private-mobile.patch
+@@ -0,0 +1,15 @@
++--- a/Projects/UOContent/Mobiles/PlayerMobile.cs	2026-10-31 00:00:00.000000000 -0500
+++++ b/Projects/UOContent/Mobiles/PlayerMobile.cs	2026-10-31 00:00:00.000000000 -0500
++@@ -3313,6 +3313,12 @@
++                 return true;
++             }
++ 
+++            // cc-P743: a creature kept for one player (the New Haven stable horse) shows to that player and staff only.
+++            if (m is Server.Tutorial.IPrivateMobile own && AccessLevel == AccessLevel.Player && !own.ShowsTo(this))
+++            {
+++                return false;
+++            }
+++
++             if (DuelContext?.Finished == false && DuelContext.m_Tournament != null && m_DuelPlayer?.Eliminated == false)
++             {
++                 var owner = m;
+diff --git a/server/tests/Tutorial/HavenMoveVerification.cs b/server/tests/Tutorial/HavenMoveVerification.cs
+index a6297e5..d44396b 100644
+--- a/server/tests/Tutorial/HavenMoveVerification.cs
++++ b/server/tests/Tutorial/HavenMoveVerification.cs
+@@ -36,8 +36,9 @@ public class HavenMoveVerification
+     [Fact]
+     public void RookTheMoongateExitAndTheTownsOwnPiecesStandOnTheSquare()
+     {
+-        Assert.Equal(new Point3D(3631, 2584, 0), TutorialRecruiter.Spot);
+-        Assert.Equal(new Point3D(3632, 2584, 0), HavenSpots.MoongateExit);
++        // cc-P743 item 6: Rook sits on a bench by the Albatross tavern's patio; the isle's moongate sets you down before him.
++        Assert.Equal(new Point3D(3669, 2636, 0), TutorialRecruiter.Spot);
++        Assert.Equal(new Point3D(3669, 2634, 0), HavenSpots.MoongateExit);
+         Assert.Equal(new Point3D(3633, 2585, 0), NewHavenQuestBoard.HomeLocation);
+         Assert.Equal(new Point3D(3632, 2587, 0), ClusterFResetStoneSeeder.Location);
+         Assert.Equal(new Point3D(3646, 2596, 0), FountainOfYouthSystem.NewHavenSpot);
+diff --git a/server/tests/Tutorial/NewHavenFixesVerification.cs b/server/tests/Tutorial/NewHavenFixesVerification.cs
+new file mode 100644
+index 0000000..e4d9b93
+--- /dev/null
++++ b/server/tests/Tutorial/NewHavenFixesVerification.cs
+@@ -0,0 +1,427 @@
++// NewHavenFixesVerification.cs
++//
++// cc-P743: Chase's New Haven notes of 2026-10-30 (shard-migration notes/cc-P743-new-haven-tutorial-fixes.md).
++//
++// Facts:
++//   1. The sparring lesson arms in the Proving Grounds, its echo inside the palisade, and not in the old training yard.
++//   2. New Haven's old tutorial farm (addon, door, pen spawner and its animals) is taken away, and nothing places it again.
++//   3. The mining lesson arms at the cave on the mountain path, with no practice vein; a signpost marks the path's start.
++//   4. The stable horse: seen only by its trainee; not tamable until that trainee bandages it; then tamed it is kept,
++//      visible to all, one per character (a replay's horse goes back to its stall); full follower slots are said; the
++//      isle's pet never marks Animals done.
++//   5. Bard: a successful Provocation makes the echoes hurt each other for about 12 s; the lesson finishes after.
++//   6. Rook: an older world's Rook moves to the bench by the Albatross tavern, facing north; the bench is placed.
++//   7. Magery arms in the Haven Magery School with a mage echo that shows Magic Arrow until the trainee casts; it fades.
++//   8. Thieving: a trap that went off is set again while Remove Trap is to do, in every order of the steps; after Remove
++//      Trap it is left alone.
++//   9. Housing: three stops, each line one goal ending with the next stop, a signpost beside the first two.
++
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using Server;
++using Server.Accounting;
++using Server.Items;
++using Server.LootBoxes;
++using Server.Misc;
++using Server.Mobiles;
++using Server.Network;
++using Server.Tests.Network;
++using Server.Tutorial;
++using Xunit;
++
++namespace ShatteredLegacy.Tests;
++
++[Collection("Sequential UOContent Tests")]
++public class NewHavenFixesVerification : IDisposable
++{
++    private readonly Func<Point3D, bool> _fits = TutorialWingTrials.Fits;
++
++    public NewHavenFixesVerification()
++    {
++        ShardTestClock.Arm();
++        ShardTestHost.EnsureAccounts();
++        ClusterFTutorial.Enabled = true;
++        TutorialCoreTrials.EnsureHooks();
++        TutorialFarm.EnsureHooks();
++        TutorialWingTrials.EnsureHooks();
++        TutorialWingTrials.Fits = _ => true;
++    }
++
++    public void Dispose() => TutorialWingTrials.Fits = _fits;
++
++    private sealed class Player : IDisposable
++    {
++        public readonly Account Account = new($"p743{Guid.NewGuid():N}"[..16], "p743-test-only");
++        public readonly PlayerMobile Pm;
++        public readonly NetState Ns;
++
++        public Player(Point3D at, bool tutorial = true)
++        {
++            Pm = new PlayerMobile { Player = true, Race = Race.Human, Body = 0x190, Name = "Trainee", RawStr = 60, RawDex = 60, RawInt = 40 };
++            Pm.Hits = Pm.HitsMax;
++            Pm.AddItem(new Backpack());
++            Account[0] = Pm;
++            Pm.MoveToWorld(at, Map.Trammel);
++            Ns = PacketTestUtilities.CreateTestNetState();
++            Ns.Account = Account;
++            Pm.NetState = Ns;
++            Ns.Mobile = Pm;
++            if (tutorial)
++            {
++                Assert.True(ClusterFTutorial.TryEnter(Pm));
++            }
++        }
++
++        public TutorialRecord Record => ClusterFTutorial.RecordOf(Pm)!;
++        public TutorialWingTrials.Trial Trial => TutorialWingTrials.Current(Pm)!;
++
++        public void Dispose()
++        {
++            TutorialWingTrials.Cancel(Pm);
++            TutorialCoreTrials.Cancel(Pm);
++            ClusterFFanfare.FlushAll();
++            Pm.NetState = null;
++            Ns.Mobile = null;
++            Ns.Dispose();
++            Pm.Delete();
++            Accounts.Remove(Account);
++        }
++    }
++
++    private static TutorialWingTrials.Trial Begin(Player p, string key)
++    {
++        ClusterFTutorial.RunStation(p.Pm, TutorialStations.Find(key)!);
++        var trial = p.Trial;
++        Assert.Equal(key, trial.Key);
++        Assert.True(trial.Armed);
++        return trial;
++    }
++
++    private static void Roll(Player p, SkillName skill, bool success = true) =>
++        SkillEvents.InvokeSkillUsed(p.Pm, p.Pm.Skills[skill], success);
++
++    private static void Tick() => ShardTestClock.Advance(TimeSpan.FromSeconds(0.5));
++
++    // ---------------------------------------------------------------- 1
++
++    [Fact]
++    public void TheSparringLessonIsInTheProvingGrounds()
++    {
++        using var away = new Player(TutorialWingTrials.YardSpot);
++        ClusterFTutorial.RunStation(away.Pm, TutorialStations.Find("combat.weapons")!);
++        Assert.False(away.Trial.Armed); // the old yard is not its place any more
++        TutorialWingTrials.Cancel(away.Pm);
++
++        using var p = new Player(HavenSpots.ProvingGrounds);
++        var trial = Begin(p, "combat.weapons");
++        TutorialWingTrials.PickWeapon(p.Pm, 0);
++        Assert.NotNull(trial.Target);
++        Assert.Equal(TutorialWingTrials.TargetOf("combat.weapons"), trial.Target!.Location);
++        Assert.Contains("Proving Grounds", TutorialWingTrials.FollowLine("combat.weapons"));
++        Assert.Contains("Proving Grounds", TutorialStations.Find("combat.weapons")!.Where);
++    }
++
++    // ---------------------------------------------------------------- 2
++
++    [Fact]
++    public void TheOldNewHavenFarmIsTakenAway()
++    {
++        var map = HavenSpots.Map;
++        var testShard = TutorialFarm.IsTestShard;
++        TutorialFarm.IsTestShard = () => true;
++        TutorialFarm.ClearHaven(false);
++        bool refused;
++        try
++        {
++            refused = TutorialFarm.SeedHaven(false, true).Refused; // what an older world may still have
++        }
++        finally
++        {
++            TutorialFarm.IsTestShard = testShard;
++        }
++
++        Assert.False(refused);
++        Assert.NotNull(TutorialFarm.FindAddon<TutorialFarmAddon>(map, TutorialFarmLayout.Anchor));
++        Assert.Contains("took away", TutorialFarm.ClearHaven(false));
++        Assert.Null(TutorialFarm.FindAddon<TutorialFarmAddon>(map, TutorialFarmLayout.Anchor));
++        Assert.Null(TutorialFarm.FindDoor(map, TutorialFarmLayout.DoorSpot));
++        Assert.Null(TutorialFarm.FindSpawner(map, TutorialFarm.HavenSpawnerRows[0].Spot, TutorialFarm.HavenSpawnerRows[0].Types[0]));
++        Assert.Equal("old New Haven farm: took away 0 thing(s).", TutorialFarm.ClearHaven(false));
++        // No lesson points at the old farm any more.
++        Assert.All(TutorialWingTrials.Trades, t => Assert.False(t.Place == TutorialWingTrials.FarmField));
++    }
++
++    // ---------------------------------------------------------------- 3
++
++    [Fact]
++    public void MiningIsAtTheMountainCaveWithASignAtThePathsStart()
++    {
++        using var p = new Player(HavenSpots.MiningCave);
++        var trial = Begin(p, "gathering.mining");
++        Assert.Empty(trial.Props);
++        Assert.Single(trial.Loaners.OfType<Pickaxe>());
++        Assert.Contains("cave", TutorialWingTrials.FollowLine("gathering.mining"));
++        Assert.Equal(HavenSpots.MiningCave, TutorialWingTrials.PointAt(trial).Spot);
++        var sign = Assert.Single(TutorialWingTrials.HavenPieces, x => x.Name.StartsWith("The mountain path", StringComparison.Ordinal));
++        Assert.Equal(0xA854, sign.Id);
++        Roll(p, SkillName.Mining);
++        Assert.Contains("gathering.mining", p.Record.StationsDone);
++    }
++
++    // ---------------------------------------------------------------- 4
++
++    [Fact]
++    public void TheStableHorseIsHealedTamedAndKeptOncePerCharacter()
++    {
++        TutorialStableHorseStore.Kept.Clear();
++        using var p = new Player(HavenSpots.Stables);
++        using var other = new Player(new Point3D(HavenSpots.Stables.X + 1, HavenSpots.Stables.Y, 0), false);
++        var trial = Begin(p, "animals.taming");
++        var horse = trial.Horse!;
++        Assert.Equal(HavenSpots.SickStall, horse.Location);
++        Assert.True(horse.Hits <= horse.HitsMax / 10);
++        Assert.True(p.Pm.CanSee(horse));
++        Assert.False(other.Pm.CanSee(horse)); // private until tamed (PlayerMobile-private-mobile.patch)
++        Assert.False(horse.Tamable);
++
++        horse.Heal(20, other.Pm); // someone else's bandage does not count
++        Assert.False(horse.Tamable);
++        horse.Heal(20, p.Pm);
++        Assert.True(horse.Tamable);
++        Tick();
++        Assert.Contains(SkillName.Veterinary.ToString(), trial.Steps);
++
++        horse.SetControlMaster(p.Pm); // what a successful taming does (AnimalTaming.cs)
++        Tick();
++        Assert.Contains("animals.taming", p.Record.StationsDone);
++        Assert.False(horse.Deleted);
++        Assert.True(horse.Kept);
++        Assert.True(other.Pm.CanSee(horse));
++        Assert.True(TutorialStableHorseStore.Has(p.Pm));
++
++        // A replay: the second horse goes back to its stall when the lesson ends.
++        TutorialWingTrials.Cancel(p.Pm);
++        var again = Begin(p, "animals.taming");
++        var second = again.Horse!;
++        second.Heal(20, p.Pm);
++        second.SetControlMaster(p.Pm);
++        Tick();
++        Assert.True(second.Deleted);
++        Assert.False(horse.Deleted);
++        horse.Delete();
++    }
++
++    [Fact]
++    public void FullFollowerSlotsAreSaidAndTheIslePetNeverFinishesAnimals()
++    {
++        using var p = new Player(HavenSpots.Stables);
++        p.Pm.FollowersMax = 1;
++        p.Pm.Followers = 1;
++        var lines = new List<string>();
++        TutorialWingTrials.Said = (_, line) => lines.Add(line);
++        try
++        {
++            Begin(p, "animals.taming");
++        }
++        finally
++        {
++            TutorialWingTrials.Said = null;
++        }
++
++        Assert.Contains(TutorialWingTrials.HorseNoSlotLine, lines);
++        // The isle's farm lesson (pet, pests and commands) completes core.farm only.
++        Assert.DoesNotContain("animals.taming", p.Record.StationsDone);
++    }
++
++    // ---------------------------------------------------------------- 5
++
++    [Fact]
++    public void ProvokedEchoesFightEachOtherForAWhile()
++    {
++        using var p = new Player(HavenSpots.BardicGuild);
++        var trial = Begin(p, "bard.trial");
++        var a = (TutorialTrainingEcho)trial.Creatures[0];
++        var b = (TutorialTrainingEcho)trial.Creatures[1];
++        Assert.Equal(TutorialWingTrials.BardEchoA, a.Location);
++        Roll(p, SkillName.Provocation);
++        Assert.True(trial.Brawling);
++        for (var i = 0; i < 6; i++)
++        {
++            Tick();
++        }
++
++        // Hits refill at once in the test host, so the blows are counted where they land.
++        Assert.True(a.BrawlBlowsTaken > 0 && b.BrawlBlowsTaken > 0, $"blows taken: {a.BrawlBlowsTaken}, {b.BrawlBlowsTaken}");
++        for (var i = 0; i < 30 && trial.Brawling; i++)
++        {
++            Tick();
++        }
++
++        Assert.False(trial.Brawling);
++        Assert.False(a.Deleted || b.Deleted); // nobody died
++        Assert.Equal(a.HitsMax, a.Hits);
++    }
++
++    // ---------------------------------------------------------------- 6
++
++    [Fact]
++    public void AnOlderWorldsRookMovesToHisBenchByTheTavern()
++    {
++        var old = new TutorialRecruiter();
++        try
++        {
++            old.MoveToWorld(HavenSpots.OldRook, HavenSpots.Map);
++            Assert.True(TutorialWingTrials.MoveRook(false));
++            Assert.Equal(HavenSpots.Rook, old.Location);
++            Assert.Equal(Direction.North, old.Direction & Direction.Mask);
++            Assert.False(TutorialWingTrials.MoveRook(false));
++            Assert.Same(old, TutorialRecruiter.Find());
++            Assert.Equal(2, TutorialWingTrials.HavenPieces.Count(x => x.Id == 0x0B2C));
++            Assert.Equal(HavenSpots.Rook, TutorialWingTrials.HavenPieces.First(x => x.Id == 0x0B2C).At);
++        }
++        finally
++        {
++            old.Delete();
++        }
++    }
++
++    // ---------------------------------------------------------------- 7
++
++    [Fact]
++    public void TheMageryLessonShowsMagicArrowInTheMagerySchoolUntilTheTraineeCasts()
++    {
++        using var p = new Player(HavenSpots.MageryHall);
++        var trial = Begin(p, "magic.magery");
++        Assert.NotNull(trial.Demo);
++        var demo = trial.Demo!;
++        Assert.Equal(TutorialWingTrials.MageDemoSpot, demo.Location);
++        for (var i = 0; i < 30; i++)
++        {
++            Tick();
++        }
++
++        Assert.False(demo.Deleted); // it stays until the trainee has cast
++        TutorialWingTrials.OnSkillUsed(p.Pm, p.Pm.Skills[SkillName.Magery], true);
++        TutorialWingTrials.OnTargetDamaged(trial.Target!, p.Pm);
++        Assert.Contains("magic.magery", p.Record.StationsDone);
++        Assert.True(demo.Deleted);
++    }
++
++    // ---------------------------------------------------------------- 8
++
++    public static IEnumerable<object[]> ThiefOrders()
++    {
++        var steps = new[]
++        {
++            SkillName.DetectHidden, SkillName.RemoveTrap, SkillName.Lockpicking, SkillName.Stealing, SkillName.Snooping,
++            SkillName.Begging, SkillName.Poisoning, SkillName.Tracking, SkillName.Hiding, SkillName.Stealth
++        };
++        yield return [steps];
++        yield return [steps.Reverse().ToArray()];
++        yield return [new[] { SkillName.Lockpicking, SkillName.Stealing }.Concat(steps.Where(s => s is not (SkillName.Lockpicking or SkillName.Stealing))).ToArray()];
++        var rng = new System.Random(743);
++        for (var i = 0; i < 4; i++)
++        {
++            yield return [steps.OrderBy(_ => rng.Next()).ToArray()];
++        }
++    }
++
++    [Theory]
++    [MemberData(nameof(ThiefOrders))]
++    public void TheThiefChestAlwaysHasATrapUntilRemoveTrapIsDone(SkillName[] order)
++    {
++        using var p = new Player(new Point3D(TutorialWingTrials.TradesYard.X, TutorialWingTrials.TradesYard.Y, 0));
++        var trial = Begin(p, "thieving.trial");
++        var chest = trial.Props.OfType<WoodenChest>().Single();
++        foreach (var skill in order)
++        {
++            chest.TrapType = TrapType.None; // the trap went off (opening the chest fires it, TrappableContainer.ExecuteTrap)
++            Tick();
++            if (!trial.Steps.Contains(SkillName.RemoveTrap.ToString()))
++            {
++                Assert.Equal(TrapType.DartTrap, chest.TrapType);
++            }
++
++            Roll(p, skill);
++        }
++
++        Assert.Contains("thieving.trial", p.Record.StationsDone);
++        Assert.True(trial.ChestResets >= 1);
++    }
++
++    // ---------------------------------------------------------------- 6b
++
++    [Fact]
++    public void ASeededPieceAtAnOldSpotIsMovedAndBothBenchHalvesStay()
++    {
++        var map = HavenSpots.Map;
++        var sign = TutorialWingTrials.HavenPieces.First(x => x.Name.StartsWith("Housing lesson, stop 2", StringComparison.Ordinal));
++        var old = new Static(sign.Id) { Name = sign.Name };
++        old.MoveToWorld(new Point3D(3703, 2599, 0), map); // where an earlier run of this prompt put it
++        try
++        {
++            TutorialWingTrials.SeedHaven(false);
++            Assert.True(old.Deleted);
++            var here = new List<Item>();
++            foreach (var item in map.GetItemsAt(sign.At.X, sign.At.Y)) { here.Add(item); }
++            Assert.Contains(here, i => i.ItemID == sign.Id && i.Name == sign.Name);
++            foreach (var bench in TutorialWingTrials.HavenPieces.Where(x => x.Id == 0x0B2C))
++            {
++                var at = new List<Item>();
++                foreach (var item in map.GetItemsAt(bench.At.X, bench.At.Y)) { at.Add(item); }
++                Assert.Single(at, i => i.ItemID == 0x0B2C);
++            }
++
++            Assert.Contains("placed 0 pieces (took away 0", TutorialWingTrials.SeedHaven(false));
++        }
++        finally
++        {
++            foreach (var piece in TutorialWingTrials.HavenPieces)
++            {
++                var gone = new List<Item>();
++                foreach (var item in map.GetItemsAt(piece.At.X, piece.At.Y))
++                {
++                    if (item.Name == piece.Name) { gone.Add(item); }
++                }
++
++                foreach (var item in gone) { item.Delete(); }
++            }
++
++            old.Delete();
++        }
++    }
++
++    // ---------------------------------------------------------------- 9
++
++    [Fact]
++    public void TheHousingLessonHasThreeClearStopsWithSigns()
++    {
++        var t = TutorialWingTrials.Trade("housing.basics")!;
++        Assert.Equal(3, t.Stops!.Length);
++        Assert.Contains("Stop 1 of 3", t.Stops[0].Text);
++        Assert.Contains("Next: follow the arrow to stop 2", t.Stops[0].Text);
++        Assert.Contains("Next: follow the arrow to stop 3", t.Stops[1].Text);
++        Assert.Contains("end of the housing lesson", t.Stops[2].Text);
++        for (var i = 0; i < 2; i++)
++        {
++            var stop = t.Stops[i].Spot();
++            Assert.Contains(TutorialWingTrials.HavenPieces, x => x.Id == 0xA854 && x.Name.StartsWith($"Housing lesson, stop {i + 1}", StringComparison.Ordinal) &&
++                Math.Abs(x.At.X - stop.X) <= 2 && Math.Abs(x.At.Y - stop.Y) <= 2 && (x.At.X != stop.X || x.At.Y != stop.Y)); // guide 6: within 2, never on it
++        }
++    }
++
++    // cc-P755 (P754 build review item 1, and the Codex review's two flags): the signposts stand off the roads.
++    [Fact]
++    public void TheMountainAndStableSignsStandOffTheRoad()
++    {
++        var mountain = TutorialWingTrials.HavenPieces.Single(x => x.Name.StartsWith("The mountain path", StringComparison.Ordinal));
++        var stables = TutorialWingTrials.HavenPieces.Single(x => x.Name.StartsWith("The stables", StringComparison.Ordinal));
++        // the first grass tile north of the dirt road where the mountain path leaves the shore road (it stood in the road at 3702,2745)
++        Assert.Equal((3702, 2742), (mountain.At.X, mountain.At.Y));
++        // the barn's porch strip by the hitching posts, north of the door path (it stood in the dirt lane at 3610,2613)
++        Assert.Equal((3608, 2614), (stables.At.X, stables.At.Y));
++        // and neither stands on the barn door's approach line (the door is 3607,2615-2616, opening east)
++        Assert.DoesNotContain(TutorialWingTrials.HavenPieces, x => x.Id == 0xA854 && x.At.X is (3608 or 3609) && x.At.Y is (2615 or 2616));
++    }
++}
+diff --git a/server/tests/Tutorial/TutorialFarmVerification.cs b/server/tests/Tutorial/TutorialFarmVerification.cs
+index b4ed572..a03af7b 100644
+--- a/server/tests/Tutorial/TutorialFarmVerification.cs
++++ b/server/tests/Tutorial/TutorialFarmVerification.cs
+@@ -353,7 +353,8 @@ public class TutorialFarmVerification
+             TutorialFarm.CheckCommands(p.Pm);
+             pet.ControlOrder = OrderType.Guard;
+             Assert.True(TutorialFarm.CheckCommands(p.Pm));
+-            Assert.Contains(TutorialFarm.TamingStation, p.Record.StationsDone);
++            // cc-P743 item 4: the isle's pet and its commands do not finish New Haven's Animals lesson.
++            Assert.DoesNotContain(TutorialFarm.TamingStation, p.Record.StationsDone);
+             Assert.Equal(4, TutorialFarm.StepOf(p.Pm));
+ 
+             // 4. The healing lesson (cc-P726: its own, after the farm): bandages, then a heal that worked (on the pet).
+diff --git a/server/tests/Tutorial/TutorialLoanLifecycleVerification.cs b/server/tests/Tutorial/TutorialLoanLifecycleVerification.cs
+index a0376a5..6887d93 100644
+--- a/server/tests/Tutorial/TutorialLoanLifecycleVerification.cs
++++ b/server/tests/Tutorial/TutorialLoanLifecycleVerification.cs
+@@ -97,8 +97,10 @@ public class TutorialLoanLifecycleVerification : IDisposable
+     }
+ 
+     // Where each lesson arms: the training yard for combat and magic, the trades yard for crafting and thieving.
++    // cc-P743: the sparring and magery lessons have their own buildings (TutorialWingTrials.PlaceOf).
+     private static Point2D PlaceOf(string key) =>
+-        key.StartsWith("crafting.", StringComparison.Ordinal) || key == "thieving.trial" ? TutorialWingTrials.TradesYard : TutorialWingTrials.Yard;
++        key.StartsWith("crafting.", StringComparison.Ordinal) || key == "thieving.trial" ? TutorialWingTrials.TradesYard
++        : new Point2D(TutorialWingTrials.PlaceOf(key).X, TutorialWingTrials.PlaceOf(key).Y);
+ 
+     private static void Run(Player p, string key)
+     {
+diff --git a/server/tests/Tutorial/TutorialTradeTrialVerification.cs b/server/tests/Tutorial/TutorialTradeTrialVerification.cs
+index 5855360..3f7ffe4 100644
+--- a/server/tests/Tutorial/TutorialTradeTrialVerification.cs
++++ b/server/tests/Tutorial/TutorialTradeTrialVerification.cs
+@@ -139,13 +139,13 @@ public class TutorialTradeTrialVerification : IDisposable
+     // ---------------------------------------------------------------- 2
+ 
+     [Theory]
+-    [InlineData("gathering.mining", SkillName.Mining, typeof(Pickaxe), 1)]
++    [InlineData("gathering.mining", SkillName.Mining, typeof(Pickaxe), 0)] // cc-P743: the cave's own floor, no vein
+     [InlineData("gathering.lumberjacking", SkillName.Lumberjacking, typeof(Hatchet), 2)]
+     [InlineData("gathering.fishing", SkillName.Fishing, typeof(FishingPole), 4)]
+     [InlineData("gathering.camping", SkillName.Camping, typeof(Kindling), 0)]
+     public void AHarvestFinishesGatheringAndTheToolAndPropsGoBack(string key, SkillName skill, Type tool, int props)
+     {
+-        using var p = new Player(TutorialWingTrials.TradesYard);
++        using var p = new Player(TutorialWingTrials.Trade(key)!.Place);
+         var trial = Begin(p, key);
+         var loaners = trial.Loaners.ToList();
+         var placed = trial.Props.ToList();
+@@ -230,43 +230,19 @@ public class TutorialTradeTrialVerification : IDisposable
+ 
+     // ---------------------------------------------------------------- 4
+ 
++    // cc-P743 item 4: the goat in the old farm pen became the injured stable horse (NewHavenFixesVerification covers it).
+     [Fact]
+-    public void HerdingTamingLoreAndVeterinaryOnTheFarmGoatFinishAnimals()
++    public void TheAnimalsLessonIsInTheStablesWithTheInjuredHorse()
+     {
+-        using var p = new Player(TutorialWingTrials.FarmField);
++        using var p = new Player(new Point2D(HavenSpots.Stables.X, HavenSpots.Stables.Y));
+         var trial = Begin(p, "animals.taming");
+-        var loaners = trial.Loaners.ToList();
+-        Assert.Single(loaners.OfType<ShepherdsCrook>());
+-        Assert.Single(loaners.OfType<Bandage>());
+-        var goat = Assert.IsType<TutorialFarmGoat>(trial.Creatures.Single());
+-        Assert.True(goat.InRange(new Point3D(TutorialWingTrials.GoatSpot.X, TutorialWingTrials.GoatSpot.Y, goat.Z), 0));
+-        Assert.True(goat.Tamable);
+-
+-        Roll(p, SkillName.Herding);
+-        Roll(p, SkillName.AnimalTaming);
+-        Assert.True(goat.Hits < goat.HitsMax, $"the tamed goat has {goat.Hits} of {goat.HitsMax}"); // a wound for the bandage
+-        goat.Controlled = true;
+-        goat.ControlMaster = p.Pm;
+-        goat.Hits = goat.HitsMax; // it healed before the bandage
+-        // The test host has no regeneration rates (pinned Mobile.DefaultHitsRate is zero, RegenRates never configures),
+-        // so a wounded creature would refill on the next wheel tick. Two seconds, as RegenRates gives a creature.
+-        var rate = Mobile.DefaultHitsRate;
+-        Mobile.DefaultHitsRate = TimeSpan.FromSeconds(2);
+-        try
+-        {
+-            Tick();
+-        }
+-        finally
+-        {
+-            Mobile.DefaultHitsRate = rate;
+-        }
+-
+-        Assert.True(goat.Hits < goat.HitsMax, $"after a tick the goat has {goat.Hits} of {goat.HitsMax}");
+-        Roll(p, SkillName.AnimalLore);
+-        Assert.DoesNotContain("animals.taming", p.Record.StationsDone);
+-        Roll(p, SkillName.Veterinary);
+-        Assert.Contains("animals.taming", p.Record.StationsDone);
+-        AssertAllReturned(p, trial, loaners, trial.Props.ToList(), new List<BaseCreature> { goat });
++        Assert.NotNull(trial.Horse);
++        Assert.Equal(HavenSpots.SickStall, trial.Horse!.Location);
++        Roll(p, SkillName.Veterinary);   // a roll alone is not the horse healed
++        Roll(p, SkillName.AnimalTaming); // nor tamed
++        Assert.Empty(trial.Steps);
++        TutorialWingTrials.Cancel(p.Pm);
++        Assert.True(trial.Horse == null || trial.Horse.Deleted);
+     }
+ 
+     // ---------------------------------------------------------------- 5
+@@ -274,7 +250,7 @@ public class TutorialTradeTrialVerification : IDisposable
+     [Fact]
+     public void PeaceProvocationAndDiscordFinishTheBard()
+     {
+-        using var p = new Player(TutorialWingTrials.TradesYard);
++        using var p = new Player(new Point2D(HavenSpots.BardicGuild.X, HavenSpots.BardicGuild.Y)); // cc-P743 item 7
+         var trial = Begin(p, "bard.trial");
+         var loaners = trial.Loaners.ToList();
+         Assert.Single(loaners.OfType<Lute>());
+@@ -287,6 +263,13 @@ public class TutorialTradeTrialVerification : IDisposable
+         Roll(p, SkillName.Provocation);
+         Assert.DoesNotContain("bard.trial", p.Record.StationsDone);
+         Roll(p, SkillName.Discordance);
++        // cc-P743 item 5: the provoked echoes fight first; the lesson finishes when the brawl is over.
++        Assert.DoesNotContain("bard.trial", p.Record.StationsDone);
++        for (var i = 0; i < 40 && !p.Record.StationsDone.Contains("bard.trial"); i++)
++        {
++            Tick();
++        }
++
+         Assert.Contains("bard.trial", p.Record.StationsDone);
+         AssertAllReturned(p, trial, loaners, trial.Props.ToList(), echoes);
+     }
+@@ -380,11 +363,11 @@ public class TutorialTradeTrialVerification : IDisposable
+         Tick();
+         Assert.Null(TutorialWingTrials.Current(p.Pm));
+ 
+-        p.Pm.MoveToWorld(new Point3D(TutorialWingTrials.TradesYard.X, TutorialWingTrials.TradesYard.Y, 0), Map.Trammel);
++        p.Pm.MoveToWorld(HavenSpots.MiningCave, Map.Trammel); // cc-P743: the mining lesson is at the cave
+         var trial = Begin(p, "gathering.mining");
+         var loaners = trial.Loaners.ToList();
+         var placed = trial.Props.ToList();
+-        p.Pm.MoveToWorld(new Point3D(TutorialWingTrials.TradesYard.X + 30, TutorialWingTrials.TradesYard.Y, 0), Map.Trammel);
++        p.Pm.MoveToWorld(new Point3D(HavenSpots.MiningCave.X + 30, HavenSpots.MiningCave.Y, 0), Map.Trammel);
+         Tick();
+         Assert.Null(TutorialWingTrials.Current(p.Pm));
+         AssertAllReturned(p, trial, loaners, placed, new List<BaseCreature>());
+diff --git a/server/tests/Tutorial/TutorialWingTrialVerification.cs b/server/tests/Tutorial/TutorialWingTrialVerification.cs
+index 197c629..ce75a50 100644
+--- a/server/tests/Tutorial/TutorialWingTrialVerification.cs
++++ b/server/tests/Tutorial/TutorialWingTrialVerification.cs
+@@ -91,6 +91,7 @@ public class TutorialWingTrialVerification : IDisposable
+ 
+     private static TutorialWingTrials.Trial Begin(Player p, string key)
+     {
++        p.Pm.MoveToWorld(TutorialWingTrials.PlaceOf(key), Map.Trammel); // cc-P743: weapons and magery have their own buildings
+         ClusterFTutorial.RunStation(p.Pm, TutorialStations.Find(key)!);
+         var trial = p.Trial;
+         Assert.Equal(key, trial.Key);
