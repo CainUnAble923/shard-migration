@@ -1,0 +1,3155 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 4a9df4b..522db1e 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -29,6 +29,18 @@ Example:
+ - Restoring a Jacob's Pickaxe no longer refuses ingots kept in your bank.
+ -->
+ 
++## 2026.11.03.2
++
++### Added
++- Herbalism arrives: forage wild herbs and grow your own reagents. It's a new skill to 200 with the Order of the Alembic. Wild garlic, ginseng, mandrake, nightshade, blood moss and rarer herbs grow around the land and regrow after picking, and [herbalism keeps your ledger of finds. The Order's herb table in New Haven gives each character a bowl and seeds, and sells a raised bed deed. Plants in bowls grow at the usual pace, a bed is tended as one, and crossing plants of the same strain can breed a better one, up the metal ladder to Celestial. Harvest herbs, double-click them to work them into bundles, and open a bundle for reagents. Plants forgive a few days away, more as your skill rises. Green Thumb is yours for your first harvest. Vendors still sell reagents.
++
++### Changed
++- The Camping lesson now has you pick wild garlic with Herbalism.
++
++### Staff
++- Every Herbalism number and the wild patch list are in Configuration/herbalism.json, written with the defaults on first start. [Herbalism reload reads it again.
++- Herbalism needs the new player package: the skill's name is written into each player's skill files, and the client shows a skill no saved group lists.
++
+ ## 2026.11.03.1
+ 
+ ### Changed
+diff --git a/VERSION b/VERSION
+index 9105ef1..4883fb6 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-2026.11.03.1
++2026.11.03.2
+diff --git a/client/patches/0011-unplaced-skills.patch b/client/patches/0011-unplaced-skills.patch
+new file mode 100644
+index 0000000..516f3f7
+--- /dev/null
++++ b/client/patches/0011-unplaced-skills.patch
+@@ -0,0 +1,56 @@
++From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
++From: Chase Fleming <ckfleming@gmail.com>
++Date: Thu, 5 Nov 2026 12:00:00 -0600
++Subject: [PATCH] Skills: a skill no group lists goes to Miscellaneous (Shattered Legacy cc-P804)
++
++Both skill windows list only grouped skills, and groups come from the profile's saved
++skillsgroups.xml or from skillgrp.mul, neither of which knows a new skill. Herbalism is the first.
++---
++diff --git a/src/ClassicUO.Client/Game/Managers/SkillsGroupManager.cs b/src/ClassicUO.Client/Game/Managers/SkillsGroupManager.cs
++--- a/src/ClassicUO.Client/Game/Managers/SkillsGroupManager.cs
+++++ b/src/ClassicUO.Client/Game/Managers/SkillsGroupManager.cs
++@@ -258,6 +258,35 @@
++                     Add(g);
++                 }
++             }
+++
+++            AddUnplacedSkills();
+++        }
+++
+++        // Shattered Legacy (cc-P804): a skill no group lists (Herbalism, for a profile saved before it existed, or skillgrp.mul,
+++        // which stops at the stock skills) goes to the first group, so both skill windows show it.
+++        private void AddUnplacedSkills()
+++        {
+++            if (Groups.Count == 0)
+++            {
+++                return;
+++            }
+++
+++            SkillsGroup misc = Groups.Find(g => g.Name == TazLang.Get("miscellaneous")) ?? Groups[0];
+++            bool added = false;
+++
+++            for (int i = 0; i < Client.Game.UO.FileManager.Skills.SkillsCount; i++)
+++            {
+++                if (!Groups.Exists(g => g.Contains((byte) i)))
+++                {
+++                    misc.Add((byte) i);
+++                    added = true;
+++                }
+++            }
+++
+++            if (added)
+++            {
+++                misc.Sort();
+++            }
++         }
++ 
++ 
++@@ -301,6 +330,8 @@
++                 MakeDefaultThieving();
++                 MakeDefaultBard();
++             }
+++
+++            AddUnplacedSkills();
++ 
++             foreach (SkillsGroup g in Groups)
++             {
+diff --git a/docker/uo/apply-patches.sh b/docker/uo/apply-patches.sh
+index fb8a11e..a335a6e 100644
+--- a/docker/uo/apply-patches.sh
++++ b/docker/uo/apply-patches.sh
+@@ -1020,6 +1020,12 @@ apply_patch "$PATCHES/MLQuestEntry-quest-milestones.patch"
+ apply_patch "$PATCHES/Fishing-loot-box-firsts.patch"
+ apply_patch "$PATCHES/SetToDecorativeGump-loot-box-herbalist.patch"
+ 
++
++# cc-P804 (F-51): the Herbalism skill and the reagent lane. Last: the lane's context includes the raised bed hooks above.
++apply_patch "$PATCHES/Skills-herbalism.patch"
++apply_patch "$PATCHES/skills-json-herbalism.patch"
++apply_patch "$PATCHES/FeatureFlagManager-skill-count.patch"
++apply_patch "$PATCHES/Plants-herbalism-lane.patch"
+ # A .patch file that no apply_patch line above names would be dead weight applied to
+ # nothing, with no way to tell from the build log. Account for every file explicitly.
+ echo "[patches] Checking every patch file is accounted for..."
+diff --git a/player-package/payload/app/Build-UoOverrides.ps1 b/player-package/payload/app/Build-UoOverrides.ps1
+index 78b7c0f..150ce5b 100644
+--- a/player-package/payload/app/Build-UoOverrides.ps1
++++ b/player-package/payload/app/Build-UoOverrides.ps1
+@@ -163,8 +163,11 @@ $AnimEntry   = 68
+ $StampFormat = 'uo-overrides 1'
+ $ClilocStampFormat = 'uo-cliloc 1'
+ $EquipStampFormat = 'uo-equip 1'
+-$SkillsStampFormat = 'uo-skills 1'
++$SkillsStampFormat = 'uo-skills 2'
+ $MusicStampFormat = 'uo-music 2'   # cc-P456: 2 adds the lines written ("lines ..."), so a restored mp3 rebuilds
++# cc-P804 (F-51): skills we add. TazUO numbers the filled slots in order, so a new one must follow the last filled slot with no gap.
++$SkillAdds = @([pscustomobject]@{ Index = 58; Action = 0; Name = 'Herbalism' })
++
+ # cc-P239 (F-14): the skills we rename for everyone. Index (SkillName), the name the player's file must hold, ours.
+ $SkillRenames = @(@{ Index = 3; From = 'Item Identification'; To = 'Appraisal' })
+ 
+@@ -763,7 +766,7 @@ function Build-Skills {
+     $stampOut = Join-Path $OutDir 'skills-stamp.txt'
+     $m = Get-Item -LiteralPath $srcMul
+     $x = Get-Item -LiteralPath $srcIdx
+-    $renames = ($SkillRenames | ForEach-Object { "$($_.Index) $($_.From) > $($_.To)" }) -join '; '
++    $renames = (@($SkillRenames | ForEach-Object { "$($_.Index) $($_.From) > $($_.To)" }) + @($SkillAdds | ForEach-Object { "$($_.Index) + $($_.Name)" })) -join '; '
+     $stamp = "$SkillsStampFormat`nskills.mul $($m.Length) $($m.LastWriteTimeUtc.Ticks)`nSkills.idx $($x.Length) $($x.LastWriteTimeUtc.Ticks)`nrenames $renames"
+     $lines = { "skills.mul=$(Join-Path $ListRoot 'skills.mul')"; "skills.idx=$(Join-Path $ListRoot 'Skills.idx')" }
+ 
+@@ -806,6 +809,26 @@ function Build-Skills {
+         [Array]::Copy([BitConverter]::GetBytes([int]$entry.Length), 0, $newIdx, $i * 12 + 4, 4)
+         $packed.Write($entry, 0, $entry.Length)
+     }
++    foreach ($add in $SkillAdds) {
++        if (($add.Index + 1) * 12 -gt $idx.Length) { continue }    # a small test file with no such slot
++        $at = $add.Index * 12
++        if ([BitConverter]::ToInt32($idx, $at) -ge 0 -and [BitConverter]::ToInt32($idx, $at + 4) -gt 0) {
++            Say-Skip "Shattered Legacy skill names: skill $($add.Index) is left alone: your Ultima Online files already use that slot."
++            continue
++        }
++        if ($add.Index -gt 0 -and ([BitConverter]::ToInt32($idx, $at - 12) -lt 0 -or [BitConverter]::ToInt32($idx, $at - 8) -le 0)) {
++            Say-Skip "Shattered Legacy skill names: $($add.Name) is left out: the slot before it is empty in your Ultima Online files."
++            continue
++        }
++        $name  = $ascii.GetBytes($add.Name)
++        $entry = New-Object byte[] ($name.Length + 2)
++        $entry[0] = [byte]$add.Action
++        [Array]::Copy($name, 0, $entry, 1, $name.Length)
++        [Array]::Copy([BitConverter]::GetBytes([int]$packed.Position), 0, $newIdx, $at, 4)
++        [Array]::Copy([BitConverter]::GetBytes([int]$entry.Length), 0, $newIdx, $at + 4, 4)
++        $packed.Write($entry, 0, $entry.Length)
++        $changed++
++    }
+     if ($changed -eq 0) { Stop-Step; return }
+ 
+     if (-not (Test-Path -LiteralPath $OutDir)) { New-Item -ItemType Directory -Path $OutDir -Force | Out-Null }
+diff --git a/player-package/tests/Build-UoOverrides.Tests.ps1 b/player-package/tests/Build-UoOverrides.Tests.ps1
+index 2db3365..3624892 100644
+--- a/player-package/tests/Build-UoOverrides.Tests.ps1
++++ b/player-package/tests/Build-UoOverrides.Tests.ps1
+@@ -1099,6 +1099,57 @@ Fact 'TheSkillsCopiesCallItemIdentificationAppraisalAndKeepEveryOtherSkill' {
+     Assert-True ($r.Said -notmatch 'skill') "nothing said about skills: $($r.Said)"
+ }
+ 
++# cc-P804: slot 58 of a full-size file. Every slot is filled up to 57, then empty to 255, as EA ships it.
++function Write-FullSkills([string]$dir) {
++    $ascii = New-Object Text.ASCIIEncoding
++    $mul = New-Object IO.MemoryStream
++    $idx = New-Object IO.MemoryStream
++    for ($i = 0; $i -lt 256; $i++) {
++        if ($i -lt 58) {
++            $name = $ascii.GetBytes($(if ($i -eq 3) { 'Item Identification' } else { "Skill$i" }))
++            $at = [int]$mul.Position
++            $mul.WriteByte(0)
++            $mul.Write($name, 0, $name.Length)
++            $mul.WriteByte(0)
++            $idx.Write([BitConverter]::GetBytes($at), 0, 4)
++            $idx.Write([BitConverter]::GetBytes($name.Length + 2), 0, 4)
++        } else {
++            $idx.Write([BitConverter]::GetBytes(-1), 0, 4)
++            $idx.Write([BitConverter]::GetBytes(0), 0, 4)
++        }
++        $idx.Write([BitConverter]::GetBytes(0), 0, 4)
++    }
++    [IO.File]::WriteAllBytes((Join-Path $dir 'skills.mul'), $mul.ToArray())
++    [IO.File]::WriteAllBytes((Join-Path $dir 'Skills.idx'), $idx.ToArray())
++}
++
++Fact 'HerbalismIsAddedAtSlot58AndEveryStockSlotIsKept' {
++    $uo = New-UoDir 'skills-add' (New-Tiledata) (New-Animdata)
++    Write-FullSkills $uo
++    $out = Join-Path $work 'skills-add-out'
++    $r = Invoke-BuilderSaying $uo $out
++    Assert-True ($r.Result) "an override list was written ($($r.Said))"
++    $got = @(Read-Skills (Join-Path $out 'skills.mul') (Join-Path $out 'Skills.idx'))
++    Assert-Equal 256 $got.Count 'every slot is still there'
++    Assert-Equal '0:Skill0:0' $got[0] 'the first skill'
++    Assert-Equal '0:Skill57:0' $got[57] 'the last stock skill'
++    Assert-Equal '0:Herbalism:0' $got[58] 'the new skill'
++    Assert-Equal '-' $got[59] 'the next slot stays empty'
++    Assert-True ($r.Said -notmatch 'skill') "nothing said about skills: $($r.Said)"
++}
++
++Fact 'ASlot58TheFilesAlreadyUseIsLeftAloneWithOneLine' {
++    $uo = New-UoDir 'skills-taken' (New-Tiledata) (New-Animdata)
++    Write-FullSkills $uo
++    $idxPath = Join-Path $uo 'Skills.idx'
++    $idx = [IO.File]::ReadAllBytes($idxPath)
++    [Array]::Copy([BitConverter]::GetBytes(0), 0, $idx, 58 * 12, 4)
++    [Array]::Copy([BitConverter]::GetBytes(8), 0, $idx, 58 * 12 + 4, 4)
++    [IO.File]::WriteAllBytes($idxPath, $idx)
++    $r = Invoke-BuilderSaying $uo (Join-Path $work 'skills-taken-out')
++    Assert-True ($r.Said -match 'skill 58 is left alone') "one line says so: $($r.Said)"
++}
++
+ Fact 'ASkillThreeTheFilesNoLongerCallItemIdentificationIsLeftAloneWithOneLine' {
+     $uo = New-UoDir 'skills-changed' (New-Tiledata) (New-Animdata)
+     Write-Skills $uo 'Merchant Lore'
+diff --git a/server/customizations/ClusterFAchievements.cs b/server/customizations/ClusterFAchievements.cs
+index 0a03f7a..74a50c7 100644
+--- a/server/customizations/ClusterFAchievements.cs
++++ b/server/customizations/ClusterFAchievements.cs
+@@ -126,6 +126,7 @@ public enum TriggerKind
+     // claimed (ClusterFQuestMilestones.cs). Last, so no saved value moves.
+     TutorialLesson,
+     FirstQuest,
++    FirstHarvest, // cc-P804: granted by name
+ }
+ 
+ public sealed class AchievementTrigger
+@@ -199,6 +200,7 @@ public sealed class AchievementTrigger
+             TriggerKind.NewHavenQuests     => n == 1 ? "finished a New Haven trainer quest" : $"finished {n:N0} New Haven trainer quests",
+             TriggerKind.AchievementPoints  => $"reached {n:N0} Achievement Points",
+             TriggerKind.Renown             => $"reached {n:N0} Renown",
++            TriggerKind.FirstHarvest       => "harvested your first herbs",
+             TriggerKind.Logins             => $"logged in {n:N0} times",
+             TriggerKind.TutorialSkipped    => "skipped the New Haven tutorial",
+             TriggerKind.TutorialRemedial   => "completed the tutorial after skipping it",
+@@ -911,6 +913,15 @@ public static partial class ClusterFAchievementSystem // partial: cc-P231's joke
+             flavor:          "Step one of a very long relationship with rocks.",
+             itemGumpId:      0x0E86);
+ 
++        // cc-P804 (F-51): granted by HerbalLane.TryHarvest.
++        Reg(Server.Engines.Plants.HerbalLane.FirstHarvestAchievement,
++            "Green Thumb",
++            "Harvest herbs you grew yourself. The System notes that you kept something alive.",
++            AchievementCategory.Skills, ap: 10, renown: 25,
++            trigger:          T.Event(TriggerKind.FirstHarvest),
++            flavor:          "It lived. The bar was low. You cleared it.",
++            itemGumpId:      0x18E1);
++
+         Reg("mining.prospector",
+             "Certified Rock Enthusiast",
+             "Discover 5 different ore types in your Prospector's Logbook. The rocks respect you now.",
+diff --git a/server/customizations/ClusterFGuildStarterPath.cs b/server/customizations/ClusterFGuildStarterPath.cs
+index f7f4392..7bddfbc 100644
+--- a/server/customizations/ClusterFGuildStarterPath.cs
++++ b/server/customizations/ClusterFGuildStarterPath.cs
+@@ -47,7 +47,7 @@ public static class GuildSkillTable
+             ["arcane"]     = [SkillName.Magery, SkillName.EvalInt, SkillName.Meditation, SkillName.MagicResist, SkillName.Inscribe, SkillName.Mysticism, SkillName.Spellweaving],
+             ["healers"]    = [SkillName.Healing, SkillName.Anatomy], // cc-P77: Alchemy and Taste ID to the Order of the Alembic
+             // cc-P77 (F-43): guild 18. Glassblowing follows Alchemy (a book unlock in the Alchemy menu, not a SkillName).
+-            [ClusterFAlembicGuild.Key] = [SkillName.Alchemy, SkillName.TasteID],
++            [ClusterFAlembicGuild.Key] = [SkillName.Alchemy, SkillName.TasteID, SkillName.Herbalism], // cc-P804: F-51
+             ["rangers"]    = [SkillName.Archery, SkillName.Tracking, SkillName.AnimalTaming, SkillName.AnimalLore, SkillName.Herding, SkillName.Veterinary, SkillName.Camping],
+             ["mining"]     = [SkillName.Mining],
+             ["smithing"]   = [SkillName.Blacksmith, SkillName.ArmsLore],
+diff --git a/server/customizations/ClusterFGuildSystem.cs b/server/customizations/ClusterFGuildSystem.cs
+index 793cdf1..c33f1ec 100644
+--- a/server/customizations/ClusterFGuildSystem.cs
++++ b/server/customizations/ClusterFGuildSystem.cs
+@@ -329,13 +329,19 @@ public static class ClusterFGuildSystem
+         return true;
+     }
+ 
++    /// <summary>cc-P804 (F-51): the Order of the Alembic counts the higher of Alchemy and Herbalism.</summary>
++    public static double TaskSkillValue(PlayerMobile pm, GuildDef def) =>
++        def.Key == ClusterFAlembicGuild.Key
++            ? System.Math.Max(pm.Skills[def.TaskSkill].Base, pm.Skills[SkillName.Herbalism].Base)
++            : pm.Skills[def.TaskSkill].Base;
++
+     /// <summary>The old join task, now the Apprentice task: skill, tribute in the backpack, or either.</summary>
+     public static bool MeetsApprenticeTask(PlayerMobile pm, GuildDef def, out string reason)
+     {
+         switch (def.TaskType)
+         {
+             case GuildTaskType.SkillOnly:
+-                if (pm.Skills[def.TaskSkill].Base >= def.TaskSkillMin)
++                if (TaskSkillValue(pm, def) >= def.TaskSkillMin)
+                 {
+                     reason = string.Empty;
+                     return true;
+@@ -353,7 +359,7 @@ public static class ClusterFGuildSystem
+                 return false;
+ 
+             case GuildTaskType.SkillOrItem:
+-                if (pm.Skills[def.TaskSkill].Base >= def.TaskSkillMin)
++                if (TaskSkillValue(pm, def) >= def.TaskSkillMin)
+                 {
+                     reason = string.Empty;
+                     return true;
+@@ -398,7 +404,7 @@ public static class ClusterFGuildSystem
+             return false;
+ 
+         if (def.TaskType != GuildTaskType.SkillOnly &&
+-            pm.Skills[def.TaskSkill].Base < def.TaskSkillMin &&
++            TaskSkillValue(pm, def) < def.TaskSkillMin &&
+             def.TaskItemType != null)
+         {
+             // F-11: the tribute comes from the pack, then the bank, all or nothing.
+diff --git a/server/customizations/Herbalism/HerbalItems.cs b/server/customizations/Herbalism/HerbalItems.cs
+new file mode 100644
+index 0000000..94883bc
+--- /dev/null
++++ b/server/customizations/Herbalism/HerbalItems.cs
+@@ -0,0 +1,588 @@
++// HerbalItems.cs
++//
++// cc-P804 (F-51, phase 1): the items of Herbalism. Notes: shard-migration notes/cc-P804-herbalism-phase-1.md.
++//
++//   ReagentSeed       a Seed that carries its strain tier
++//   RawHerb           picked or harvested herbs, stackable by herb; double-click to process
++//   ReagentBundle     processed herbs; double-click to open into reagents
++//   HerbPatch         a wild patch; picked, it hides and comes back on a timer
++//   AlembicHerbTable  the Order's starter: a bowl and seeds once per character, and a bed deed for gold
++//
++// Every item uses the source generator (D40). Wild patches and the table appear on an existing world at load, by key, idempotent.
++
++using System;
++using System.Collections.Generic;
++using ModernUO.Serialization;
++using Server.Accounting;
++using Server.Commands;
++using Server.Gumps;
++using Server.Items;
++using Server.Mobiles;
++using Server.Network;
++using Server.Targeting;
++
++namespace Server.Engines.Plants;
++
++[SerializationGenerator(0, false)]
++public partial class ReagentSeed : Seed
++{
++    [InvalidateProperties]
++    [SerializableField(0)]
++    [SerializedCommandProperty(AccessLevel.GameMaster)]
++    private int _strainTier;
++
++    [Constructible]
++    public ReagentSeed() : this(PlantType.Garlic, 0)
++    {
++    }
++
++    public ReagentSeed(PlantType type, int strainTier) : base(type, PlantHue.Plain, true)
++    {
++        _strainTier = Math.Clamp(strainTier, 0, HerbalLane.TopStrain);
++        Hue = HerbalLane.StrainHue(_strainTier);
++    }
++
++    public string Words => $"{HerbalLane.StrainName(_strainTier)} {HerbalLane.HerbOf(PlantType)?.Name ?? "herb"} seed";
++
++    public override void AddNameProperty(IPropertyList list) => list.Add(Amount > 1 ? $"{Amount} {Words}s" : $"a {Words}");
++
++    public override void OnSingleClick(Mobile from) => LabelTo(from, Amount > 1 ? $"{Amount} {Words}s" : $"a {Words}");
++
++    public override bool StackWith(Mobile from, Item dropped, bool playSound) =>
++        dropped is ReagentSeed other && other.StrainTier == _strainTier && base.StackWith(from, other, playSound);
++}
++
++[SerializationGenerator(0, false)]
++public partial class RawHerb : Item
++{
++    [InvalidateProperties]
++    [SerializableField(0)]
++    [SerializedCommandProperty(AccessLevel.GameMaster)]
++    private string _herbKey;
++
++    [Constructible]
++    public RawHerb() : this("Garlic")
++    {
++    }
++
++    public RawHerb(string herbKey, int amount = 1) : base(HerbalismSettings.Current.Herb(herbKey)?.RawArt ?? 0xF84)
++    {
++        _herbKey = herbKey;
++        Stackable = true;
++        Amount = Math.Max(1, amount);
++        Hue = HerbalismSettings.Current.Herb(herbKey)?.RawHue ?? 0;
++    }
++
++    public HerbRow Herb => HerbalismSettings.Current.Herb(_herbKey);
++
++    public override double DefaultWeight => 0.1;
++
++    public override string DefaultName => $"raw {Herb?.Name ?? "herb"}";
++
++    public override bool StackWith(Mobile from, Item dropped, bool playSound) =>
++        dropped is RawHerb other && other.HerbKey == _herbKey && base.StackWith(from, other, playSound);
++
++    public override void OnDoubleClick(Mobile from)
++    {
++        if (!IsChildOf(from.Backpack))
++        {
++            from.SendLocalizedMessage(1042664); // You must have the object in your backpack to use it.
++            return;
++        }
++
++        Process(from);
++    }
++
++    /// <summary>Every whole lot of this stack into bundles, with a Herbalism gain. Returns the bundles made.</summary>
++    public int Process(Mobile from)
++    {
++        var s = HerbalismSettings.Current;
++        var herb = Herb;
++
++        if (herb == null || herb.Stub)
++        {
++            return 0;
++        }
++
++        if (HerbalLane.Skill(from) < HerbalLane.SkillFloor(herb))
++        {
++            from.SendMessage(0x22, $"You need {HerbalLane.SkillFloor(herb)} Herbalism to process {herb.Name}.");
++            return 0;
++        }
++
++        var bundles = Amount / s.HerbsPerBundle;
++
++        if (bundles <= 0)
++        {
++            from.SendMessage(0x22, $"It takes {s.HerbsPerBundle} raw {herb.Name} to make a bundle.");
++            return 0;
++        }
++
++        var bundle = new ReagentBundle(herb.Key, HerbalLane.ReagentsInBundle(HerbalLane.Skill(from))) { Amount = bundles };
++
++        if (!from.PlaceInBackpack(bundle))
++        {
++            bundle.Delete();
++            from.SendLocalizedMessage(500720); // You don't have enough room in your backpack!
++            return 0;
++        }
++
++        Consume(bundles * s.HerbsPerBundle);
++        from.PlaySound(0x242);
++        from.SendMessage(0x44, $"You work the {herb.Name} into {bundles} bundle{(bundles == 1 ? "" : "s")}.");
++        var (min, max) = HerbalLane.GainWindow(herb, 0);
++        from.CheckSkill(SkillName.Herbalism, min, max);
++        return bundles;
++    }
++}
++
++[SerializationGenerator(0, false)]
++public partial class ReagentBundle : Item
++{
++    [InvalidateProperties]
++    [SerializableField(0)]
++    [SerializedCommandProperty(AccessLevel.GameMaster)]
++    private string _herbKey;
++
++    [InvalidateProperties]
++    [SerializableField(1)]
++    [SerializedCommandProperty(AccessLevel.GameMaster)]
++    private int _reagents;
++
++    [Constructible]
++    public ReagentBundle() : this("Garlic", 10)
++    {
++    }
++
++    public ReagentBundle(string herbKey, int reagents) : base(0x1A9C)
++    {
++        _herbKey = herbKey;
++        _reagents = reagents;
++        Stackable = true;
++        Hue = HerbalismSettings.Current.Herb(herbKey)?.RawHue ?? 0;
++    }
++
++    public HerbRow Herb => HerbalismSettings.Current.Herb(_herbKey);
++
++    public override double DefaultWeight => 1.0;
++
++    public override string DefaultName => $"a bundle of {Herb?.Name ?? "herbs"}";
++
++    public override void GetProperties(IPropertyList list)
++    {
++        base.GetProperties(list);
++        list.Add($"Opens into {_reagents} reagents");
++    }
++
++    public override bool StackWith(Mobile from, Item dropped, bool playSound) =>
++        dropped is ReagentBundle other && other.HerbKey == _herbKey && other.Reagents == _reagents && base.StackWith(from, other, playSound);
++
++    public override void OnDoubleClick(Mobile from)
++    {
++        if (!IsChildOf(from.Backpack))
++        {
++            from.SendLocalizedMessage(1042664); // You must have the object in your backpack to use it.
++            return;
++        }
++
++        var type = AssemblyHandler.FindTypeByName(Herb?.Reagent ?? "");
++
++        if (type == null || type.CreateInstance<Item>() is not { } reagent)
++        {
++            return;
++        }
++
++        reagent.Amount = _reagents * Amount;
++
++        if (!from.PlaceInBackpack(reagent))
++        {
++            reagent.Delete();
++            from.SendLocalizedMessage(500720); // You don't have enough room in your backpack!
++            return;
++        }
++
++        from.SendMessage(0x44, $"You open the bundle: {reagent.Amount} reagents.");
++        Delete();
++    }
++}
++
++[SerializationGenerator(0, false)]
++public partial class HerbPatch : Item
++{
++    public static readonly List<HerbPatch> Patches = [];
++
++    [SerializableField(0)]
++    [SerializedCommandProperty(AccessLevel.GameMaster)]
++    private string _herbKey;
++
++    [SerializableField(1)]
++    [SerializedCommandProperty(AccessLevel.GameMaster)]
++    private string _spotKey;
++
++    [SerializableField(2)]
++    [SerializedCommandProperty(AccessLevel.GameMaster)]
++    private DateTime _ripeAt;
++
++    [Constructible]
++    public HerbPatch() : this("Garlic", "")
++    {
++    }
++
++    public HerbPatch(string herbKey, string spotKey) : base(HerbalismSettings.Current.Herb(herbKey)?.PatchArt ?? 0x18E1)
++    {
++        _herbKey = herbKey;
++        _spotKey = spotKey;
++        Movable = false;
++        Patches.Add(this);
++    }
++
++    public HerbRow Herb => HerbalismSettings.Current.Herb(_herbKey);
++
++    public override string DefaultName => $"wild {Herb?.Name ?? "herbs"}";
++
++    public bool Ripe => Visible;
++
++    public override void OnDoubleClick(Mobile from) => Pick(from);
++
++    /// <summary>One try. Picked herbs go to the pack, the find goes in the ledger, and the patch hides until it regrows.</summary>
++    public bool Pick(Mobile from, bool? force = null)
++    {
++        var s = HerbalismSettings.Current;
++        var herb = Herb;
++
++        if (herb == null || !Ripe)
++        {
++            return false;
++        }
++
++        if (!from.InRange(GetWorldLocation(), 2) || !from.InLOS(this))
++        {
++            from.LocalOverheadMessage(MessageType.Regular, 0x3E9, 1019045); // I can't reach that.
++            return false;
++        }
++
++        var floor = HerbalLane.SkillFloor(herb);
++
++        if (HerbalLane.Skill(from) < floor)
++        {
++            from.SendMessage(0x22, $"You don't know how to pick {herb.Name}. It takes {floor} Herbalism.");
++            return false;
++        }
++
++        var (min, max) = HerbalLane.GainWindow(herb, 0);
++        var ok = from.CheckSkill(SkillName.Herbalism, min - 25, max);
++
++        if (force ?? ok)
++        {
++            var amount = Utility.RandomMinMax(s.ForageMin, s.ForageMax);
++            from.AddToBackpack(new RawHerb(herb.Key, amount));
++            HerbalLane.LogFind(from, herb.Key, amount);
++            from.SendMessage(0x44, $"You pick {amount} {herb.Name}.");
++
++            if (herb.Grown && Enum.TryParse<PlantType>(herb.Key, out var type) && Utility.Random(100) < s.SeedChancePercent)
++            {
++                from.AddToBackpack(new ReagentSeed(type, 0));
++                from.SendMessage(0x44, "Among the leaves, you find a seed.");
++            }
++
++            Visible = false;
++            RipeAt = Core.Now + TimeSpan.FromMinutes(s.RespawnMinutes);
++            return true;
++        }
++
++        from.SendMessage(0x22, $"You damage the {herb.Name} and get nothing usable.");
++        return false;
++    }
++
++    public static int RespawnDue()
++    {
++        var count = 0;
++
++        foreach (var patch in Patches)
++        {
++            if (!patch.Visible && !patch.Deleted && Core.Now >= patch.RipeAt)
++            {
++                patch.Visible = true;
++                count++;
++            }
++        }
++
++        return count;
++    }
++
++    [AfterDeserialization]
++    private void AfterDeserialization() => Patches.Add(this);
++
++    public override void OnAfterDelete()
++    {
++        base.OnAfterDelete();
++        Patches.Remove(this);
++    }
++}
++
++public static class HerbalismSystem
++{
++    public const string StarterFlag = "herbalism.starter";
++
++    private static string StarterKey(Mobile m) => $"character:{(uint)m.Serial}:{StarterFlag}";
++
++    public static void Configure()
++    {
++        foreach (var line in HerbalismSettings.LoadOrWriteDefaults(HerbalismSettings.FilePath))
++        {
++            Console.WriteLine($"[Herbalism] {line}");
++        }
++
++        CommandSystem.Register("Herbalism", AccessLevel.Player, OnCommand);
++
++        // Items made during the load reach World.Items only after it.
++        EventSink.WorldLoad += () => Timer.DelayCall(TimeSpan.Zero, () =>
++            {
++                Console.WriteLine($"[Herbalism] {SeedWorld()}");
++                Timer.DelayCall(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1), () => HerbPatch.RespawnDue());
++            }
++        );
++    }
++
++    /// <summary>Places what is missing and nothing else: a patch per spot, by key, and one table.</summary>
++    public static string SeedWorld()
++    {
++        var s = HerbalismSettings.Current;
++        var have = new HashSet<string>();
++
++        foreach (var patch in HerbPatch.Patches)
++        {
++            have.Add(patch.SpotKey);
++        }
++
++        var placed = 0;
++        var blocked = new List<string>();
++
++        foreach (var spot in s.Patches)
++        {
++            if (have.Contains(spot.Key))
++            {
++                continue;
++            }
++
++            var map = Map.Parse(spot.Map);
++
++            if (!FindGround(map, spot.X, spot.Y, out var at))
++            {
++                blocked.Add(spot.Key);
++                continue;
++            }
++
++            new HerbPatch(spot.Herb, spot.Key).MoveToWorld(at, map);
++            placed++;
++        }
++
++        var tables = 0;
++
++        foreach (var item in World.Items.Values)
++        {
++            if (item is AlembicHerbTable)
++            {
++                tables++;
++            }
++        }
++
++        if (tables == 0)
++        {
++            new AlembicHerbTable().MoveToWorld(new Point3D(s.TableX, s.TableY, s.TableZ), Map.Trammel);
++        }
++
++        return $"wild patches: {placed} placed, {have.Count} already there, {blocked.Count} with no open ground ({string.Join(", ", blocked)}); herb table {(tables == 0 ? "placed" : "already there")}.";
++    }
++
++    /// <summary>The spot, or the nearest open ground within 8 tiles: a tree or a grave on the tile must not lose the patch.</summary>
++    public static bool FindGround(Map map, int x, int y, out Point3D at)
++    {
++        at = default;
++
++        if (map == null || map == Map.Internal)
++        {
++            return false;
++        }
++
++        for (var r = 0; r <= 8; r++)
++        {
++            for (var dx = -r; dx <= r; dx++)
++            {
++                for (var dy = -r; dy <= r; dy++)
++                {
++                    if (System.Math.Max(System.Math.Abs(dx), System.Math.Abs(dy)) != r)
++                    {
++                        continue;
++                    }
++
++                    var z = map.GetAverageZ(x + dx, y + dy);
++
++                    if (map.CanFit(x + dx, y + dy, z, 16, true, false))
++                    {
++                        at = new Point3D(x + dx, y + dy, z);
++                        return true;
++                    }
++                }
++            }
++        }
++
++        return false;
++    }
++
++    [Usage("Herbalism [reload]")]
++    [Description("Shows your herb ledger. Staff: 'reload' reads Configuration/herbalism.json again; a bad file is refused whole and the settings in force are kept.")]
++    [ShardCommand(CommandCategory.Player, Shard = CommandShard.Any)]
++    private static void OnCommand(CommandEventArgs e)
++    {
++        var from = e.Mobile;
++
++        if (e.Length >= 1 && e.GetString(0).Equals("reload", StringComparison.OrdinalIgnoreCase) && from.AccessLevel >= AccessLevel.GameMaster)
++        {
++            foreach (var line in HerbalismSettings.Reload(HerbalismSettings.FilePath))
++            {
++                from.SendMessage(line);
++            }
++
++            return;
++        }
++
++        from.SendGump(new HerbLedgerGump(from));
++    }
++
++    public static bool HadStarter(Mobile m) =>
++        m.Account is IAccount acct && ClusterFAccountPersistence.Get(acct)?.FlagValues.ContainsKey(StarterKey(m)) == true;
++
++    /// <summary>The Order's starter: a bowl and each starting herb's seeds, once per character.</summary>
++    public static bool GiveStarter(Mobile from, out string message)
++    {
++        if (HadStarter(from) || from.Account is not IAccount acct)
++        {
++            message = "The Order has already given you your bowl and seeds.";
++            return false;
++        }
++
++        ClusterFAccountPersistence.GetOrCreate(acct).FlagValues[StarterKey(from)] = "1";
++        from.AddToBackpack(new PlantBowl());
++        from.AddToBackpack(new ReagentSeed(PlantType.Garlic, 0) { Amount = HerbalismSettings.Current.StarterSeeds });
++        from.AddToBackpack(new ReagentSeed(PlantType.Ginseng, 0) { Amount = HerbalismSettings.Current.StarterSeeds });
++        message = "Fill the bowl with dirt, soften it with water and plant a seed. Lock it down at home, or keep it in your pack. " +
++                  "Pick wild herbs too: [herbalism keeps your ledger.";
++        return true;
++    }
++
++    public static bool BuyBedDeed(Mobile from, out string message)
++    {
++        var fee = HerbalismSettings.Current.BedDeedGold;
++
++        if (from.Backpack?.ConsumeTotal(typeof(Gold), fee) != true && !Banker.Withdraw(from, fee))
++        {
++            message = $"A raised bed deed costs {fee:N0} gold.";
++            return false;
++        }
++
++        from.AddToBackpack(new RaisedGardenDeed());
++        message = "A raised bed for your house. Plant in every plot, and tend the bed as one.";
++        return true;
++    }
++}
++
++[SerializationGenerator(0, false)]
++public partial class AlembicHerbTable : Item
++{
++    [Constructible]
++    public AlembicHerbTable() : base(0x0B7D)
++    {
++        Movable = false;
++    }
++
++    public override string DefaultName => "the Order's herb table";
++
++    public override void OnDoubleClick(Mobile from)
++    {
++        if (!from.InRange(GetWorldLocation(), 3))
++        {
++            from.LocalOverheadMessage(MessageType.Regular, 0x3E9, 1019045); // I can't reach that.
++            return;
++        }
++
++        from.SendGump(new HerbTableGump(from));
++    }
++}
++
++public class HerbTableGump : Gump
++{
++    public const int BtnStarter = 1;
++    public const int BtnDeed = 2;
++
++    public HerbTableGump(Mobile from) : base(100, 80)
++    {
++        AddBackground(0, 0, 420, 230, 9270);
++        RequirementStyle.AddSolidPanel(this, 420, 230);
++        AddLabel(20, 16, RequirementStyle.HeadingHue, "The Order's herb table");
++        AddHtml(20, 42, 380, 90,
++            "<BASEFONT COLOR=#AAAAAA>The Order of the Alembic teaches Herbalism. Forage wild herbs, grow your own in a bowl or a raised bed, " +
++            "and work the harvest into reagent bundles. Vendors will still sell to you, of course. They hate this.</BASEFONT>", false, false);
++
++        if (!HerbalismSystem.HadStarter(from))
++        {
++            AddButton(20, 140, 4011, 4012, BtnStarter);
++            AddLabel(50, 142, 999, "Take a bowl and seeds (free, once)");
++        }
++
++        AddButton(20, 170, 4011, 4012, BtnDeed);
++        AddLabel(50, 172, 999, $"Buy a raised bed deed ({HerbalismSettings.Current.BedDeedGold:N0} gold)");
++    }
++
++    public override void OnResponse(NetState sender, in RelayInfo info)
++    {
++        var from = sender.Mobile;
++        string message = null;
++        var ok = false;
++
++        switch (info.ButtonID)
++        {
++            case BtnStarter:
++                ok = HerbalismSystem.GiveStarter(from, out message);
++                break;
++            case BtnDeed:
++                ok = HerbalismSystem.BuyBedDeed(from, out message);
++                break;
++        }
++
++        if (message != null)
++        {
++            from.SendMessage(ok ? 0x44 : 0x22, message);
++        }
++    }
++}
++
++public class HerbLedgerGump : Gump
++{
++    public HerbLedgerGump(Mobile from) : base(100, 80)
++    {
++        var herbs = HerbalismSettings.Current.Herbs;
++        var h = 90 + herbs.Count * 22;
++
++        AddBackground(0, 0, 380, h, 9270);
++        RequirementStyle.AddSolidPanel(this, 380, h);
++        AddLabel(20, 16, RequirementStyle.HeadingHue, "Herb ledger");
++        AddLabel(20, 40, 999, $"Herbalism {HerbalLane.Skill(from):F1}");
++
++        var y = 66;
++
++        foreach (var herb in herbs)
++        {
++            if (herb.Stub)
++            {
++                continue;
++            }
++
++            var found = HerbalLane.Found(from, herb.Key);
++            AddLabel(20, y, found > 0 ? 0x44 : 999, herb.Name);
++            AddLabel(170, y, 999, found > 0 ? $"{found:N0} found" : "not yet found");
++            AddLabel(280, y, 999, $"{HerbalLane.SkillFloor(herb)}+ skill");
++            y += 22;
++        }
++    }
++}
+diff --git a/server/customizations/Herbalism/HerbalLane.cs b/server/customizations/Herbalism/HerbalLane.cs
+new file mode 100644
+index 0000000..581e3a5
+--- /dev/null
++++ b/server/customizations/Herbalism/HerbalLane.cs
+@@ -0,0 +1,510 @@
++// HerbalLane.cs
++//
++// cc-P804 (F-51, phase 1): the reagent lane on pinned's plant engine. Design: D:\UO\cc-prompts\design\f-herbalism-reagents.md. Notes:
++// shard-migration notes/cc-P804-herbalism-phase-1.md. The engine calls here from Plants-herbalism-lane.patch; stock decorative
++// plants pass through every hook untouched.
++//
++// THE LANE. Five PlantType rows appended after the stock 43 (Garlic to BloodMoss). They cross only each other: a cross with a stock
++// plant is refused, and a reagent cross averages along the lane (P260 For Chase 1, P392 U47).
++//
++// STRAIN TIER is its own value, not PlantHue, because the dye and basket tables key on PlantHue (P392 U48). Tier 0 to 16 runs up the
++// League's metal ladder, Iron to Celestial, and the grown plant shows that metal's hue. It lives in HerbalStore beside the plant, keyed
++// by the plant's serial, so no engine type changes its save (D40). ReagentSeed carries it on a seed.
++//
++// YIELD is perennial (U49): a mature tended reagent plant makes herbs every growth day and never runs out; stock plants keep OSI's
++// eight. A bed mound is the same plant in a RaisedGardenPlantItem. All the mounds of a bed are one unit: watering, potions and the
++// harvest of one reach them all.
++//
++// NEGLECT. Tending stamps the plant with the tender's grace (base days plus Herbalism). Inside it, a reagent plant takes no OSI damage.
++// Past it, health falls a little each growth check, to 1 hit and never to death. Every further grace length past that drops one strain
++// tier. Maladies do not hurt inside the lane; they cut the harvest, so the bowl's full OSI potion loop still pays.
++//
++// Phase 2 bolts on at GrowthDelay (kit and Herbalism speed), MayTendFrom (items that extend grace) and HerbalRecord's version.
++
++using System;
++using System.Collections.Generic;
++using System.Globalization;
++using System.IO;
++using Server.Accounting;
++using Server.Items;
++using Server.Mobiles;
++
++namespace Server.Engines.Plants;
++
++/// <summary>What the lane keeps beside one plant.</summary>
++public sealed class HerbalRecord
++{
++    public int Tier;
++    public int SeedTier = -1;       // the strain its seeds will be; -1 is the plant's own
++    public DateTime LastTended;
++    public double TenderSkill;      // the skill of whoever last tended it: its grace and yield
++    public int TierDrops;           // windows already charged since the last tending
++
++    public HerbalRecord()
++    {
++    }
++
++    public HerbalRecord(IGenericReader r)
++    {
++        Tier = r.ReadEncodedInt();
++        SeedTier = r.ReadEncodedInt() - 1;
++        LastTended = r.ReadDateTime();
++        TenderSkill = r.ReadDouble();
++        TierDrops = r.ReadEncodedInt();
++    }
++
++    public void Serialize(IGenericWriter w)
++    {
++        w.WriteEncodedInt(Tier);
++        w.WriteEncodedInt(SeedTier + 1);
++        w.Write(LastTended);
++        w.Write(TenderSkill);
++        w.WriteEncodedInt(TierDrops);
++    }
++}
++
++/// <summary>The lane's records, saved through pinned's GenericPersistence; versioned, an unknown version fails loudly (D40).</summary>
++public class HerbalStore : GenericPersistence
++{
++    public const int CurrentVersion = 0;
++
++    private static HerbalStore _instance;
++
++    internal static readonly Dictionary<Serial, HerbalRecord> Rows = new();
++
++    public HerbalStore() : base("Herbalism", 10)
++    {
++    }
++
++    public static void Configure() => _instance ??= new HerbalStore();
++
++    public override void Serialize(IGenericWriter writer)
++    {
++        var live = new List<KeyValuePair<Serial, HerbalRecord>>();
++        var dead = new List<Serial>();
++
++        foreach (var pair in Rows)
++        {
++            if (World.FindItem(pair.Key) is PlantItem { Deleted: false })
++            {
++                live.Add(pair);
++            }
++            else
++            {
++                dead.Add(pair.Key);
++            }
++        }
++
++        foreach (var serial in dead)
++        {
++            Rows.Remove(serial);
++        }
++
++        writer.WriteEncodedInt(CurrentVersion);
++        writer.WriteEncodedInt(live.Count);
++
++        foreach (var (serial, record) in live)
++        {
++            writer.Write(serial);
++            record.Serialize(writer);
++        }
++    }
++
++    public override void Deserialize(IGenericReader reader)
++    {
++        var version = reader.ReadEncodedInt();
++
++        if (version is < 0 or > CurrentVersion)
++        {
++            throw new InvalidDataException($"HerbalStore version {version} is not one this build can read.");
++        }
++
++        Rows.Clear();
++        var count = reader.ReadEncodedInt();
++
++        for (var i = 0; i < count; i++)
++        {
++            var serial = reader.ReadSerial();
++            Rows[serial] = new HerbalRecord(reader);
++        }
++    }
++}
++
++public static class HerbalLane
++{
++    public const int TopStrain = 16; // Iron, rank 1, is tier 0; Celestial, rank 17, is tier 16
++    public const string FirstHarvestAchievement = "herbalism.green_thumb";
++
++    private static HerbalismSettings S => HerbalismSettings.Current;
++
++    public static bool IsReagent(PlantType type) => type >= PlantType.Garlic;
++
++    public static bool IsReagent(PlantItem plant) => IsReagent(plant.PlantType) && plant.PlantStatus is > PlantStatus.BowlOfDirt and < PlantStatus.DecorativePlant;
++
++    public static HerbRow HerbOf(PlantType type) => S.Herb(type.ToString());
++
++    public static double Skill(Mobile m) => m?.Skills[SkillName.Herbalism].Base ?? 0;
++
++    public static HerbalRecord Record(PlantItem plant)
++    {
++        if (!HerbalStore.Rows.TryGetValue(plant.Serial, out var record))
++        {
++            HerbalStore.Rows[plant.Serial] = record = new HerbalRecord { LastTended = Core.Now };
++        }
++
++        return record;
++    }
++
++    // -- The strain ladder ----------------------------------------------------------------------------
++
++    public static string StrainName(int tier) => ClusterFLeagueRanks.GetRankInfo(Math.Clamp(tier, 0, TopStrain) + 1)?.MetalName ?? "Iron";
++
++    public static int StrainHue(int tier) => ClusterFLeagueRanks.GetRankInfo(Math.Clamp(tier, 0, TopStrain) + 1)?.Hue ?? 0;
++
++    /// <summary>The highest strain this skill can breed up to.</summary>
++    public static int StrainCap(double skill) => Math.Clamp((int)(skill / 200.0 * S.TopStrainAt200), 0, TopStrain);
++
++    public static int PlantHueFor(PlantItem plant, int stockHue) =>
++        IsReagent(plant.PlantType) && plant.PlantStatus < PlantStatus.DeadTwigs ? StrainHue(Record(plant).Tier) : stockHue;
++
++    private static void SetTier(PlantItem plant, int tier)
++    {
++        Record(plant).Tier = Math.Clamp(tier, 0, TopStrain);
++
++        if (plant.PlantStatus >= PlantStatus.FullGrownPlant && plant.PlantStatus < PlantStatus.DeadTwigs)
++        {
++            plant.Hue = StrainHue(tier);
++        }
++
++        plant.InvalidateProperties();
++    }
++
++    public static void AddProperties(PlantItem plant, IPropertyList list)
++    {
++        if (IsReagent(plant))
++        {
++            list.Add($"{StrainName(Record(plant).Tier)} strain");
++        }
++    }
++
++    // -- Alembic gates --------------------------------------------------------------------------------
++
++    public static int AlembicRank(Mobile m) =>
++        m is PlayerMobile pm ? ClusterFGuildSystem.GuildRankIndex(ClusterFAlembicGuild.Key, ClusterFAccountPersistence.GetOrCreateGuild(pm)) : 0;
++
++    public static int RankNeeded(PlantType type, int tier) => Math.Max(HerbOf(type)?.AlembicRank ?? 0, tier / S.StrainTiersPerAlembicRank);
++
++    /// <summary>Recipe gating: the type and the strain each need an Alembic rank. Says why when it refuses.</summary>
++    public static bool MayPlant(Mobile from, Seed seed)
++    {
++        if (!IsReagent(seed.PlantType))
++        {
++            return true;
++        }
++
++        var need = RankNeeded(seed.PlantType, (seed as ReagentSeed)?.StrainTier ?? 0);
++
++        if (AlembicRank(from) >= need)
++        {
++            return true;
++        }
++
++        from.SendMessage(0x22, "The Order of the Alembic has not taught you this strain. You need a higher rank in the Order.");
++        return false;
++    }
++
++    public static Seed NewSeed(PlantItem plant, PlantSystem system)
++    {
++        if (!IsReagent(system.SeedType))
++        {
++            return new Seed(system.SeedType, system.SeedHue, true);
++        }
++
++        var record = Record(plant);
++        return new ReagentSeed(system.SeedType, record.SeedTier >= 0 ? record.SeedTier : record.Tier);
++    }
++
++    public static void OnPlanted(Mobile from, PlantItem plant, int tier)
++    {
++        if (!IsReagent(plant.PlantType))
++        {
++            return;
++        }
++
++        HerbalStore.Rows.Remove(plant.Serial);
++        SetTier(plant, tier);
++
++        if (plant is RaisedGardenPlantItem)
++        {
++            plant.PlantSystem.Water = 2; // a mound starts soft
++        }
++
++        Tended(from, plant);
++        Gain(from, plant.PlantType, tier);
++    }
++
++    // -- Crossing -------------------------------------------------------------------------------------
++
++    public static PlantType Cross(PlantType first, PlantType second)
++    {
++        if (!IsReagent(first) || !IsReagent(second))
++        {
++            return first;
++        }
++
++        var a = (int)first;
++        var b = (int)second;
++
++        return Math.Abs(a - b) == 1 ? Utility.RandomBool() ? first : second : (PlantType)((a + b) / 2);
++    }
++
++    public static bool RefusesPollen(PlantItem source, PlantItem target) => IsReagent(source.PlantType) != IsReagent(target.PlantType);
++
++    public static double MutationChance(double skill) => (S.MutationPercentBase + S.MutationPercentAt200 * skill / 200.0) / 100.0;
++
++    /// <summary>
++    /// Sets the seeds' strain: the better parent's, and a same-strain cross of two plants can mutate up one tier, up to what the
++    /// breeder's skill can reach.
++    /// </summary>
++    public static bool OnPollinated(Mobile from, PlantItem source, PlantItem target, double? roll = null)
++    {
++        if (!IsReagent(target.PlantType))
++        {
++            return false;
++        }
++
++        var a = Record(source).Tier;
++        var b = Record(target).Tier;
++        var tier = Math.Max(a, b);
++        var mutated = false;
++
++        if (source != target && a == b && tier + 1 <= StrainCap(Skill(from)) && (roll ?? Utility.RandomDouble()) < MutationChance(Skill(from)))
++        {
++            tier++;
++            mutated = true;
++        }
++
++        Record(target).SeedTier = tier;
++        Tended(from, target);
++        Gain(from, target.PlantType, tier);
++
++        if (mutated)
++        {
++            for (var i = 0; i < S.TierJumpGainRolls; i++)
++            {
++                Gain(from, target.PlantType, tier);
++            }
++
++            from.SendMessage(0x44, $"The cross takes! Its seeds will be the {StrainName(tier)} strain.");
++        }
++
++        return mutated;
++    }
++
++    // -- Gains ----------------------------------------------------------------------------------------
++
++    public static (double Min, double Max) GainWindow(HerbRow herb, int strain)
++    {
++        var low = Math.Min(((herb?.Tier ?? 1) - 1) * 50.0 + strain * S.GainPerStrainTier, 200.0 - S.GainWindow);
++        return (low, low + S.GainWindow);
++    }
++
++    public static void Gain(Mobile from, PlantType type, int strain)
++    {
++        var (min, max) = GainWindow(HerbOf(type), strain);
++        from?.CheckSkill(SkillName.Herbalism, min, max);
++    }
++
++    // -- Tending and beds -----------------------------------------------------------------------------
++
++    public static List<PlantItem> BedOf(PlantItem plant)
++    {
++        var bed = new List<PlantItem> { plant };
++
++        if (plant is RaisedGardenPlantItem { Component.Addon: { } addon })
++        {
++            foreach (var part in addon.Components)
++            {
++                if (part is GardenAddonComponent { Plant: { } other } && other != plant && IsReagent(other))
++                {
++                    bed.Add(other);
++                }
++            }
++        }
++
++        return bed;
++    }
++
++    public static void Tended(Mobile from, PlantItem plant)
++    {
++        if (!IsReagent(plant))
++        {
++            return;
++        }
++
++        var system = plant.PlantSystem;
++
++        foreach (var p in BedOf(plant))
++        {
++            var record = Record(p);
++            record.LastTended = Core.Now;
++            record.TierDrops = 0;
++            record.TenderSkill = Skill(from);
++
++            if (p != plant)
++            {
++                p.PlantSystem.Water = system.Water;
++                p.PlantSystem.PoisonPotion = system.PoisonPotion;
++                p.PlantSystem.CurePotion = system.CurePotion;
++                p.PlantSystem.HealPotion = system.HealPotion;
++                p.PlantSystem.StrengthPotion = system.StrengthPotion;
++            }
++        }
++    }
++
++    // -- Growth (PlantSystem) -------------------------------------------------------------------------
++
++    /// <summary>Phase 2's speed goes here. Bowls stay at OSI's pace for good.</summary>
++    public static TimeSpan GrowthDelay(PlantSystem system) => PlantSystem.CheckDelay;
++
++    public static double GraceDays(double skill) => S.GraceBaseDays + S.GraceExtraDaysAt200 * skill / 200.0;
++
++    public static bool SparesDamage(PlantSystem system) => IsReagent(system.Plant);
++
++    public static bool SkipsMaladies(PlantSystem system, double? roll = null) =>
++        IsReagent(system.Plant) && system.Plant is RaisedGardenPlantItem && (roll ?? Utility.RandomDouble()) * 100 >= S.BedMaladyPercent;
++
++    public static void OnGrowthCheck(PlantSystem system)
++    {
++        var plant = system.Plant;
++
++        if (!IsReagent(plant))
++        {
++            return;
++        }
++
++        var record = Record(plant);
++        var grace = GraceDays(record.TenderSkill);
++        var past = (Core.Now - record.LastTended).TotalDays - grace;
++
++        if (past <= 0)
++        {
++            return;
++        }
++
++        system.Hits = Math.Max(1, system.Hits - S.NeglectHitsPerCheck);
++
++        var windows = grace > 0 ? (int)(past / grace) : 0;
++
++        if (windows > record.TierDrops)
++        {
++            SetTier(plant, record.Tier - (windows - record.TierDrops));
++            record.TierDrops = windows;
++        }
++    }
++
++    public static int MaladyCount(PlantSystem system) => system.Infestation + system.Fungus + system.Poison + system.Disease;
++
++    public static int DailyYield(PlantItem plant)
++    {
++        var record = Record(plant);
++        var system = plant.PlantSystem;
++        double herbs = plant is RaisedGardenPlantItem ? S.BedHerbsPerDay : S.BowlHerbsPerDay;
++
++        herbs += record.Tier * S.HerbsPerStrainTier;
++        herbs *= 1 + S.YieldBonusPercentAt200 / 100.0 * record.TenderSkill / 200.0;
++        herbs *= Math.Max(0, 1 - MaladyCount(system) * S.MaladyYieldLossPercent / 100.0);
++
++        return (int)herbs;
++    }
++
++    /// <summary>A mature plant's day: perennial for the lane. True when the lane handled it.</summary>
++    public static bool OnMature(PlantSystem system)
++    {
++        var plant = system.Plant;
++
++        if (!IsReagent(plant))
++        {
++            return false;
++        }
++
++        var day = DailyYield(plant);
++        system.AvailableResources = Math.Min(system.AvailableResources + day, day * S.MaxStoredDays);
++        return true;
++    }
++
++    /// <summary>The Gather button for the lane: the whole bed at once. False for a stock plant.</summary>
++    public static bool TryHarvest(Mobile from, PlantItem plant)
++    {
++        if (!IsReagent(plant))
++        {
++            return false;
++        }
++
++        var bed = BedOf(plant);
++        var total = 0;
++
++        foreach (var p in bed)
++        {
++            total += p.PlantSystem.AvailableResources;
++        }
++
++        if (total <= 0)
++        {
++            plant.LabelTo(from, 1053056); // This plant has no resources to gather!
++            return true;
++        }
++
++        var herb = HerbOf(plant.PlantType);
++        var raw = new RawHerb(herb.Key, total);
++
++        if (!from.PlaceInBackpack(raw))
++        {
++            raw.Delete();
++            plant.LabelTo(from, 1053058); // You attempt to gather as many resources as you can hold, but your backpack is full.
++            return true;
++        }
++
++        foreach (var p in bed)
++        {
++            p.PlantSystem.AvailableResources = 0;
++        }
++
++        plant.LabelTo(from, 1053059); // You gather resources from the plant.
++        Tended(from, plant);
++        Gain(from, plant.PlantType, Record(plant).Tier);
++        LogFind(from, herb.Key, total);
++
++        if (from.Account is IAccount acct)
++        {
++            ClusterFAchievementSystem.TryGrant(acct, FirstHarvestAchievement);
++        }
++
++        return true;
++    }
++
++    // -- The ledger -----------------------------------------------------------------------------------
++
++    private static string LedgerKey(Mobile m, string herb) => $"character:{(uint)m.Serial}:herbs:{herb}";
++
++    public static int Found(Mobile m, string herb) =>
++        m.Account is IAccount acct && ClusterFAccountPersistence.Get(acct) is { } data &&
++        data.FlagValues.TryGetValue(LedgerKey(m, herb), out var text) &&
++        int.TryParse(text, NumberStyles.None, CultureInfo.InvariantCulture, out var n) ? n : 0;
++
++    public static void LogFind(Mobile m, string herb, int amount)
++    {
++        if (m.Account is IAccount acct)
++        {
++            var total = Found(m, herb) + amount;
++            ClusterFAccountPersistence.GetOrCreate(acct).FlagValues[LedgerKey(m, herb)] = total.ToString(CultureInfo.InvariantCulture);
++        }
++    }
++
++    // -- Processing -----------------------------------------------------------------------------------
++
++    public static int ReagentsInBundle(double skill) =>
++        (int)(S.ReagentsPerBundle * (1 + S.BundleBonusPercentAt200 / 100.0 * skill / 200.0));
++
++    public static int SkillFloor(HerbRow herb) => (herb.Tier - 1) * 50;
++}
+diff --git a/server/customizations/Herbalism/HerbalismSettings.cs b/server/customizations/Herbalism/HerbalismSettings.cs
+new file mode 100644
+index 0000000..7b7f32d
+--- /dev/null
++++ b/server/customizations/Herbalism/HerbalismSettings.cs
+@@ -0,0 +1,302 @@
++// HerbalismSettings.cs
++//
++// cc-P804 (F-51, phase 1): every Herbalism number and the wild patch list. Configuration/herbalism.json, written with these
++// defaults on first start, read at start and by [Herbalism reload. A bad file is refused whole, every error is printed, and the
++// table in force is kept. All numbers are placeholders for playtest. Notes: shard-migration notes/cc-P804-herbalism-phase-1.md.
++
++using System;
++using System.Collections.Generic;
++using System.IO;
++using System.Text.Json;
++
++namespace Server.Engines.Plants;
++
++/// <summary>One herb: its key (a PlantType name when it can be grown), words, tier (1 is 0-50 skill) and what it makes.</summary>
++public sealed class HerbRow
++{
++    public string Key { get; set; } = "";
++    public string Name { get; set; } = "";
++    public int Tier { get; set; } = 1;
++    public string Reagent { get; set; } = "";
++    public int PatchArt { get; set; }
++    public int RawArt { get; set; }
++    public int RawHue { get; set; }
++    public int AlembicRank { get; set; }
++    public bool Grown { get; set; }
++    public bool Stub { get; set; }
++}
++
++/// <summary>One wild patch: its herb, facet and tile. The tile's height comes from the map.</summary>
++public sealed class HerbSpot
++{
++    public string Herb { get; set; } = "";
++    public string Map { get; set; } = "Trammel";
++    public int X { get; set; }
++    public int Y { get; set; }
++
++    public string Key => $"{Map}:{X}:{Y}";
++}
++
++public sealed class HerbalismSettings
++{
++    public const string FileName = "herbalism.json";
++
++    public static string FilePath => Path.Combine(Core.BaseDirectory, "Configuration", FileName);
++
++    public static HerbalismSettings Current { get; set; } = new();
++
++    // Neglect
++    public double GraceBaseDays { get; set; } = 2;
++    public double GraceExtraDaysAt200 { get; set; } = 5;
++    public int NeglectHitsPerCheck { get; set; } = 6;
++
++    // Harvest (herbs a mature plant makes in a day)
++    public int BowlHerbsPerDay { get; set; } = 6;
++    public int BedHerbsPerDay { get; set; } = 4;
++    public int HerbsPerStrainTier { get; set; } = 1;
++    public int YieldBonusPercentAt200 { get; set; } = 100;
++    public int MaladyYieldLossPercent { get; set; } = 15;
++    public int MaxStoredDays { get; set; } = 7;
++
++    // Processing
++    public int HerbsPerBundle { get; set; } = 5;
++    public int ReagentsPerBundle { get; set; } = 10;
++    public int BundleBonusPercentAt200 { get; set; } = 50;
++
++    // Breeding
++    public double MutationPercentBase { get; set; } = 5;
++    public double MutationPercentAt200 { get; set; } = 20;
++    public int TopStrainAt200 { get; set; } = 16;
++    public int StrainTiersPerAlembicRank { get; set; } = 3;
++
++    // Beds
++    public int BedMaladyPercent { get; set; } = 33;
++
++    // Gains
++    public int GainWindow { get; set; } = 50;
++    public int GainPerStrainTier { get; set; } = 5;
++    public int TierJumpGainRolls { get; set; } = 3;
++
++    // Foraging
++    public int RespawnMinutes { get; set; } = 60;
++    public int ForageMin { get; set; } = 2;
++    public int ForageMax { get; set; } = 5;
++    public int SeedChancePercent { get; set; } = 15;
++
++    // The Alembic
++    public int BedDeedGold { get; set; } = 5000;
++    public int StarterSeeds { get; set; } = 2;
++    public int TableX { get; set; } = 3458; // the Order's hall, New Haven
++    public int TableY { get; set; } = 2566;
++    public int TableZ { get; set; } = 35;
++
++    public List<HerbRow> Herbs { get; set; } = DefaultHerbs();
++
++    public List<HerbSpot> Patches { get; set; } = DefaultPatches();
++
++    private static List<HerbRow> DefaultHerbs() =>
++    [
++        new() { Key = "Garlic", Name = "garlic", Tier = 1, Reagent = "Garlic", PatchArt = 0x18E1, RawArt = 0xF84, RawHue = 0x7D6, Grown = true },
++        new() { Key = "Ginseng", Name = "ginseng", Tier = 1, Reagent = "Ginseng", PatchArt = 0x18E9, RawArt = 0xF85, RawHue = 0x7D6, Grown = true },
++        new() { Key = "Mandrake", Name = "mandrake", Tier = 2, Reagent = "MandrakeRoot", PatchArt = 0x18DF, RawArt = 0xF86, RawHue = 0x7D6, AlembicRank = 1, Grown = true },
++        new() { Key = "Nightshade", Name = "nightshade", Tier = 2, Reagent = "Nightshade", PatchArt = 0x18E5, RawArt = 0xF88, RawHue = 0x7D6, AlembicRank = 1, Grown = true },
++        new() { Key = "BloodMoss", Name = "blood moss", Tier = 2, Reagent = "Bloodmoss", PatchArt = 0xC9F, RawArt = 0xF7B, RawHue = 0x7D6, AlembicRank = 1, Grown = true },
++        new() { Key = "GraveMoss", Name = "grave moss", Tier = 3, Reagent = "GraveDust", PatchArt = 0xCA7, RawArt = 0xF8F, RawHue = 0x7D6 },
++        new() { Key = "NoxBloom", Name = "nox bloom", Tier = 3, Reagent = "NoxCrystal", PatchArt = 0xC86, RawArt = 0xF8E, RawHue = 0x7D6 },
++        new() { Key = "DragonsTongue", Name = "dragon's tongue", Tier = 3, Reagent = "DragonsBlood", PatchArt = 0xC97, RawArt = 0xF82, RawHue = 0x7D6 },
++        new() { Key = "Exotic", Name = "exotic herb", Tier = 4, Reagent = "", Stub = true },
++    ];
++
++    private static HerbSpot S(string herb, int x, int y, string map = "Trammel") => new() { Herb = herb, X = x, Y = y, Map = map };
++
++    private static List<HerbSpot> DefaultPatches() =>
++    [
++        // New Haven: the first patches a new player meets, and the Camping lesson's.
++        S("Garlic", 3432, 2630), S("Ginseng", 3436, 2634), S("Garlic", 3420, 2640), S("Ginseng", 3414, 2646),
++
++        // Forests and fields near the mainland towns: the two starting herbs.
++        S("Garlic", 1450, 1680), S("Ginseng", 1460, 1700), S("Garlic", 2510, 500), S("Ginseng", 2530, 480),
++        S("Garlic", 620, 2200), S("Ginseng", 640, 2220), S("Garlic", 1860, 2750), S("Ginseng", 1880, 2770),
++
++        // Deep woods and wet ground: the second tier.
++        S("Mandrake", 520, 1000), S("Nightshade", 540, 960), S("BloodMoss", 580, 1020),
++        S("Mandrake", 2100, 1100), S("Nightshade", 2150, 1150), S("BloodMoss", 2200, 1180),
++        S("Nightshade", 3550, 2750), S("BloodMoss", 1880, 2100), S("Mandrake", 780, 1500),
++
++        // Graveyards, the swamp and the volcanic south: the third.
++        S("GraveMoss", 780, 1120), S("GraveMoss", 1380, 1500), S("NoxBloom", 2120, 310), S("NoxBloom", 3990, 2860),
++        S("DragonsTongue", 4760, 3770), S("DragonsTongue", 5300, 3800),
++    ];
++
++    public HerbRow Herb(string key)
++    {
++        foreach (var h in Herbs)
++        {
++            if (h.Key.Equals(key, StringComparison.OrdinalIgnoreCase))
++            {
++                return h;
++            }
++        }
++
++        return null;
++    }
++
++    private static readonly JsonSerializerOptions _json = new()
++    {
++        WriteIndented = true,
++        AllowTrailingCommas = true,
++        ReadCommentHandling = JsonCommentHandling.Skip,
++        PropertyNameCaseInsensitive = true
++    };
++
++    public static string ToJson(HerbalismSettings settings) => JsonSerializer.Serialize(settings, _json) + "\n";
++
++    private static void Range(double value, double min, double max, string name, List<string> errors)
++    {
++        if (double.IsNaN(value) || value < min || value > max)
++        {
++            errors.Add($"{name} must be from {min} to {max} (it is {value}).");
++        }
++    }
++
++    /// <summary>Reads settings, or returns null and fills errors: accepted whole or not at all.</summary>
++    public static HerbalismSettings Parse(string json, List<string> errors)
++    {
++        HerbalismSettings s;
++
++        try
++        {
++            s = JsonSerializer.Deserialize<HerbalismSettings>(json, _json);
++        }
++        catch (JsonException ex)
++        {
++            errors.Add($"not valid JSON: {ex.Message}");
++            return null;
++        }
++
++        if (s == null)
++        {
++            errors.Add("the file is empty.");
++            return null;
++        }
++
++        Range(s.GraceBaseDays, 0, 60, nameof(GraceBaseDays), errors);
++        Range(s.GraceExtraDaysAt200, 0, 60, nameof(GraceExtraDaysAt200), errors);
++        Range(s.NeglectHitsPerCheck, 0, 100, nameof(NeglectHitsPerCheck), errors);
++        Range(s.BowlHerbsPerDay, 0, 1000, nameof(BowlHerbsPerDay), errors);
++        Range(s.BedHerbsPerDay, 0, 1000, nameof(BedHerbsPerDay), errors);
++        Range(s.HerbsPerStrainTier, 0, 100, nameof(HerbsPerStrainTier), errors);
++        Range(s.YieldBonusPercentAt200, 0, 1000, nameof(YieldBonusPercentAt200), errors);
++        Range(s.MaladyYieldLossPercent, 0, 100, nameof(MaladyYieldLossPercent), errors);
++        Range(s.MaxStoredDays, 1, 365, nameof(MaxStoredDays), errors);
++        Range(s.HerbsPerBundle, 1, 1000, nameof(HerbsPerBundle), errors);
++        Range(s.ReagentsPerBundle, 1, 1000, nameof(ReagentsPerBundle), errors);
++        Range(s.BundleBonusPercentAt200, 0, 1000, nameof(BundleBonusPercentAt200), errors);
++        Range(s.MutationPercentBase, 0, 100, nameof(MutationPercentBase), errors);
++        Range(s.MutationPercentAt200, 0, 100, nameof(MutationPercentAt200), errors);
++        Range(s.TopStrainAt200, 0, HerbalLane.TopStrain, nameof(TopStrainAt200), errors);
++        Range(s.StrainTiersPerAlembicRank, 1, 100, nameof(StrainTiersPerAlembicRank), errors);
++        Range(s.BedMaladyPercent, 0, 100, nameof(BedMaladyPercent), errors);
++        Range(s.GainWindow, 1, 200, nameof(GainWindow), errors);
++        Range(s.GainPerStrainTier, 0, 50, nameof(GainPerStrainTier), errors);
++        Range(s.TierJumpGainRolls, 0, 20, nameof(TierJumpGainRolls), errors);
++        Range(s.RespawnMinutes, 1, 100000, nameof(RespawnMinutes), errors);
++        Range(s.ForageMin, 1, 100, nameof(ForageMin), errors);
++        Range(s.ForageMax, s.ForageMin, 100, nameof(ForageMax), errors);
++        Range(s.SeedChancePercent, 0, 100, nameof(SeedChancePercent), errors);
++        Range(s.BedDeedGold, 0, 100000000, nameof(BedDeedGold), errors);
++        Range(s.StarterSeeds, 0, 100, nameof(StarterSeeds), errors);
++
++        var keys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
++
++        foreach (var h in s.Herbs ?? [])
++        {
++            if (!keys.Add(h.Key ?? ""))
++            {
++                errors.Add($"herb {h.Key}: a second row.");
++            }
++
++            if (h.Tier is < 1 or > 4)
++            {
++                errors.Add($"herb {h.Key}: tier must be 1 to 4.");
++            }
++
++            if (h.Grown && !Enum.TryParse<PlantType>(h.Key, out _))
++            {
++                errors.Add($"herb {h.Key}: a grown herb's key must be a plant type.");
++            }
++
++            if (!h.Stub && AssemblyHandler.FindTypeByName(h.Reagent ?? "")?.IsSubclassOf(typeof(Item)) != true)
++            {
++                errors.Add($"herb {h.Key}: \"{h.Reagent}\" is not an item.");
++            }
++        }
++
++        var spots = new HashSet<string>();
++
++        foreach (var spot in s.Patches ?? [])
++        {
++            if (s.Herb(spot.Herb) is null or { Stub: true })
++            {
++                errors.Add($"patch {spot.Key}: \"{spot.Herb}\" is not a herb that grows wild.");
++            }
++
++            if (Server.Map.Parse(spot.Map ?? "") == null)
++            {
++                errors.Add($"patch {spot.Key}: no such facet.");
++            }
++
++            if (!spots.Add(spot.Key))
++            {
++                errors.Add($"patch {spot.Key}: a second patch on that tile.");
++            }
++        }
++
++        return errors.Count == 0 ? s : null;
++    }
++
++    public static List<string> LoadOrWriteDefaults(string path)
++    {
++        if (File.Exists(path))
++        {
++            return Reload(path);
++        }
++
++        Current = new HerbalismSettings();
++
++        try
++        {
++            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
++            File.WriteAllText(path, ToJson(Current));
++            return [$"{FileName} was missing; wrote the built-in defaults to {path}."];
++        }
++        catch (Exception ex)
++        {
++            return [$"{FileName} is missing and could not be written ({ex.Message}); using the built-in defaults."];
++        }
++    }
++
++    public static List<string> Reload(string path)
++    {
++        var errors = new List<string>();
++        HerbalismSettings s = null;
++
++        try
++        {
++            s = Parse(File.ReadAllText(path), errors);
++        }
++        catch (Exception ex)
++        {
++            errors.Add($"could not read it: {ex.Message}");
++        }
++
++        if (s == null)
++        {
++            errors.Insert(0, $"{FileName} REFUSED, the settings in force are kept:");
++            return errors;
++        }
++
++        Current = s;
++        return [$"{FileName} loaded: {s.Herbs.Count} herbs, {s.Patches.Count} wild patches."];
++    }
++}
+diff --git a/server/customizations/Services/Plants/Raised Garden Beds/RaisedGardenPlantItem.cs b/server/customizations/Services/Plants/Raised Garden Beds/RaisedGardenPlantItem.cs
+index 04e060a..9a3ea7a 100644
+--- a/server/customizations/Services/Plants/Raised Garden Beds/RaisedGardenPlantItem.cs	
++++ b/server/customizations/Services/Plants/Raised Garden Beds/RaisedGardenPlantItem.cs	
+@@ -26,7 +26,8 @@ public partial class RaisedGardenPlantItem : PlantItem
+         ItemID = BowlOfDirtID;
+     }
+ 
+-    public override bool RequiresUpkeep => false;
++    // cc-P804: a reagent mound is tended like a bowl (HerbalLane); a stock mound stays carefree.
++    public override bool RequiresUpkeep => HerbalLane.IsReagent(this);
+     public override int BowlOfDirtID => 2323;
+     public override int GreenBowlID => PlantStatus <= PlantStatus.Stage3 ? 0xC7E : 0xC62;
+ 
+diff --git a/server/customizations/Tutorial/TutorialStations.cs b/server/customizations/Tutorial/TutorialStations.cs
+index 2020b29..c0903c1 100644
+--- a/server/customizations/Tutorial/TutorialStations.cs
++++ b/server/customizations/Tutorial/TutorialStations.cs
+@@ -114,7 +114,7 @@ public static class TutorialStations
+             [], "a loaned hatchet", "the trades yard, southeast of the training yard"),
+         new("gathering.fishing", TutorialWing.Gathering, "Fishing", ["Fishing"], None, None,
+             [], "a loaned fishing pole", "the trades yard, southeast of the training yard"),
+-        new("gathering.camping", TutorialWing.Gathering, "Camping", ["Camping"], None, ["Herbalism (not available yet)"],
++        new("gathering.camping", TutorialWing.Gathering, "Camping", ["Camping"], None, ["Herbalism (the wild garlic in the yard)"],
+             [], "loaned kindling", "the trades yard, southeast of the training yard"),
+ 
+         // -- Crafting yard, one item each --
+diff --git a/server/customizations/Tutorial/TutorialTradeTrials.cs b/server/customizations/Tutorial/TutorialTradeTrials.cs
+index 02b664b..a4f289a 100644
+--- a/server/customizations/Tutorial/TutorialTradeTrials.cs
++++ b/server/customizations/Tutorial/TutorialTradeTrials.cs
+@@ -17,7 +17,7 @@
+ // PropPrefix and, like loaners, any left by a restart are deleted when the world loads.
+ //
+ // Covered and explained skills: Blacksmithy also rolls Arms Lore (on the dagger), Tinkering Item Identification (on a
+-// curio), Alchemy Taste Identification (on an apple). Camping explains Herbalism, Blacksmithy Imbuing, thieving Forensic
++// curio), Alchemy Taste Identification (on an apple). Camping picks wild garlic (cc-P804), Blacksmithy Imbuing, thieving Forensic
+ // Evaluation (one line each). Stealth needs a Hiding base of 30 (pinned Stealth.cs:77), which a skill mod cannot give, so
+ // the thieving trial lifts the Hiding base to 30 for the lesson and puts it back at the end, keeping any gain made.
+ 
+@@ -67,7 +67,7 @@ namespace Server.Tutorial
+         private static (string, string) S(SkillName skill, string label) => (skill.ToString(), label);
+ 
+         public const string HerbalismLine =
+-            "Herbalism is not available yet. In this lesson, double-click kindling to light a campfire.";
++            "Herbalism is taught by the Order of the Alembic. Pick the wild garlic beside you, then double-click kindling to light a campfire.";
+         public const string ImbuingLine =
+             "Imbuing adds magical properties to equipment at a soul forge. This tutorial does not teach it.";
+         public const string ForensicLine =
+@@ -86,8 +86,8 @@ namespace Server.Tutorial
+                 [S(SkillName.Fishing, "Fishing: catch something in the small practice pond")],
+                 "Double-click the loaned fishing pole in your backpack, then click the water in the small practice pond. Repeat until you catch something, which you can keep."),
+             new("gathering.camping", AtYard, TradesYard,
+-                [S(SkillName.Camping, "Camping: light a campfire with kindling")],
+-                "Double-click the loaned kindling in your backpack to light a campfire beside you.",
++                [S(SkillName.Camping, "Camping: light a campfire with kindling"), S(SkillName.Herbalism, "Herbalism: pick the wild garlic beside you")],
++                "Double-click the wild garlic beside you to pick it. Double-click the loaned kindling in your backpack to light a campfire beside you.",
+                 HerbalismLine),
+ 
+             // -- The crafting yard --
+@@ -334,6 +334,8 @@ namespace Server.Tutorial
+                 case "gathering.camping":
+                     Lend(trial, new Kindling(3));
+                     LendSkill(trial, SkillName.Camping, 60);
++                    LendSkill(trial, SkillName.Herbalism, 30); // cc-P804: F-51 is built
++                    Prop(trial, new Server.Engines.Plants.HerbPatch("Garlic", ""), Ground(work.X + 1, work.Y), "wild garlic");
+                     break;
+                 case "crafting.blacksmithy":
+                     Lend(trial, new SmithHammer());
+diff --git a/server/patches/FeatureFlagManager-skill-count.patch b/server/patches/FeatureFlagManager-skill-count.patch
+new file mode 100644
+index 0000000..2c8a8fe
+--- /dev/null
++++ b/server/patches/FeatureFlagManager-skill-count.patch
+@@ -0,0 +1,11 @@
++--- a/Projects/UOContent/Engines/FeatureFlags/FeatureFlagManager.cs
+++++ b/Projects/UOContent/Engines/FeatureFlags/FeatureFlagManager.cs
++@@ -17,7 +17,7 @@
++     private static readonly Dictionary<Type, GumpBlockEntry> _gumpBlocks = new();
++     private static readonly Dictionary<Type, ItemBlockEntry> _itemBlocks = new();
++     private static readonly SpellBlockEntry[] _spellBlocks = new SpellBlockEntry[SpellRegistry.Types.Length];
++-    private static readonly SkillBlockEntry[] _skillBlocks = new SkillBlockEntry[58];
+++    private static readonly SkillBlockEntry[] _skillBlocks = new SkillBlockEntry[SkillInfo.Table.Length]; // Shattered Legacy (cc-P804): 59 with Herbalism
++ 
++     // Fast bailout flags
++     private static bool _hasActiveGumpBlocks;
+diff --git a/server/patches/Plants-herbalism-lane.patch b/server/patches/Plants-herbalism-lane.patch
+new file mode 100644
+index 0000000..a1395b0
+--- /dev/null
++++ b/server/patches/Plants-herbalism-lane.patch
+@@ -0,0 +1,231 @@
++--- a/Projects/UOContent/Engines/Plants/PlantType.cs
+++++ b/Projects/UOContent/Engines/Plants/PlantType.cs
++@@ -44,7 +44,14 @@
++         HedgeTall,
++         HopsSouth,
++         SugarCanes,
++-        CocoaTree
+++        CocoaTree,
+++
+++        // Shattered Legacy (cc-P804, F-51): the reagent lane (HerbalLane). They cross only each other.
+++        Garlic,
+++        Ginseng,
+++        Mandrake,
+++        Nightshade,
+++        BloodMoss
++     }
++ 
++     public enum PlantCategory
++@@ -187,7 +194,12 @@
++                 1080531,
++                 1080533,
++                 1113716
++-            )
+++            ),
+++            new(0x18E1, 0, 0, PlantType.Garlic, false, false, true, true, PlantCategory.Default),
+++            new(0x18E9, 0, 0, PlantType.Ginseng, false, false, true, true, PlantCategory.Default),
+++            new(0x18DF, 0, 0, PlantType.Mandrake, false, false, true, true, PlantCategory.Default),
+++            new(0x18E5, 0, 0, PlantType.Nightshade, false, false, true, true, PlantCategory.Default),
+++            new(0x0C9F, 0, 0, PlantType.BloodMoss, false, false, true, true, PlantCategory.Default),
++         };
++ 
++         private readonly int m_PlantLabelDecorative;
++@@ -383,6 +395,11 @@
++ 
++         public static PlantType Cross(PlantType first, PlantType second)
++         {
+++            if (HerbalLane.IsReagent(first) || HerbalLane.IsReagent(second))
+++            {
+++                return HerbalLane.Cross(first, second); // Shattered Legacy (cc-P804)
+++            }
+++
++             if (!IsCrossable(first) || !IsCrossable(second))
++             {
++                 return PlantType.CampionFlowers;
++--- a/Projects/UOContent/Engines/Plants/PlantResources.cs
+++++ b/Projects/UOContent/Engines/Plants/PlantResources.cs
++@@ -15,7 +15,14 @@
++             new(PlantType.PampasGrass, PlantHue.BrightOrange, typeof(OrangePetals)),
++             new(PlantType.SnakePlant, PlantHue.BrightGreen, typeof(GreenThorns)),
++             new(PlantType.BarrelCactus, PlantHue.BrightGreen, typeof(GreenThorns)),
++-            new(PlantType.CocoaTree, PlantHue.Plain, typeof(CocoaPulp))
+++            new(PlantType.CocoaTree, PlantHue.Plain, typeof(CocoaPulp)),
+++
+++            // Shattered Legacy (cc-P804): the lane. HerbalLane.TryHarvest does the gathering; these rows show the count in the gump.
+++            new(PlantType.Garlic, PlantHue.Plain, typeof(RawHerb)),
+++            new(PlantType.Ginseng, PlantHue.Plain, typeof(RawHerb)),
+++            new(PlantType.Mandrake, PlantHue.Plain, typeof(RawHerb)),
+++            new(PlantType.Nightshade, PlantHue.Plain, typeof(RawHerb)),
+++            new(PlantType.BloodMoss, PlantHue.Plain, typeof(RawHerb))
++         };
++ 
++         private PlantResourceInfo(PlantType plantType, PlantHue plantHue, Type resourceType)
++--- a/Projects/UOContent/Engines/Plants/PollinateTarget.cs
+++++ b/Projects/UOContent/Engines/Plants/PollinateTarget.cs
++@@ -57,12 +57,18 @@
++                     {
++                         targ.LabelTo(from, 1053072); // This plant has already been pollinated!
++                     }
+++                    else if (HerbalLane.RefusesPollen(m_Plant, targ))
+++                    {
+++                        // Shattered Legacy (cc-P804): reagent plants and stock plants do not cross.
+++                        targ.LabelTo(from, "These plants will not cross.");
+++                    }
++                     else if (targ == m_Plant)
++                     {
++                         targ.PlantSystem.Pollinated = true;
++                         targ.PlantSystem.SeedType = m_Plant.PlantType;
++                         targ.PlantSystem.SeedHue = m_Plant.PlantHue;
++ 
+++                        HerbalLane.OnPollinated(from, m_Plant, targ); // Shattered Legacy (cc-P804)
++                         targ.LabelTo(from, 1053071); // You pollinate the plant with its own pollen.
++                     }
++                     else
++@@ -71,6 +77,7 @@
++                         targ.PlantSystem.SeedType = PlantTypeInfo.Cross(m_Plant.PlantType, targ.PlantType);
++                         targ.PlantSystem.SeedHue = PlantHueInfo.Cross(m_Plant.PlantHue, targ.PlantHue);
++ 
+++                        HerbalLane.OnPollinated(from, m_Plant, targ); // Shattered Legacy (cc-P804)
++                         targ.LabelTo(from, 1053076); // You successfully cross-pollinate the plant.
++                     }
++                 }
++--- a/Projects/UOContent/Engines/Plants/ReproductionGump.cs
+++++ b/Projects/UOContent/Engines/Plants/ReproductionGump.cs
++@@ -214,6 +214,11 @@
++                 }
++             case 7: // Gather resources
++                 {
+++                    if (HerbalLane.TryHarvest(from, _plant)) // Shattered Legacy (cc-P804)
+++                    {
+++                        break;
+++                    }
+++
++                     var resInfo = PlantResourceInfo.GetInfo(_plant.PlantType, _plant.PlantHue);
++                     var system = _plant.PlantSystem;
++ 
++@@ -265,7 +270,7 @@
++                     }
++                     else
++                     {
++-                        var seed = new Seed(system.SeedType, system.SeedHue, true);
+++                        var seed = HerbalLane.NewSeed(_plant, system); // Shattered Legacy (cc-P804)
++ 
++                         if (from.PlaceInBackpack(seed))
++                         {
++--- a/Projects/UOContent/Engines/Plants/PlantItem.cs
+++++ b/Projects/UOContent/Engines/Plants/PlantItem.cs
++@@ -255,7 +255,7 @@
++         else if (_plantStatus >= PlantStatus.FullGrownPlant)
++         {
++             ItemID = PlantTypeInfo.GetInfo(_plantType).ItemID;
++-            Hue = PlantHueInfo.GetInfo(_plantHue).Hue;
+++            Hue = HerbalLane.PlantHueFor(this, PlantHueInfo.GetInfo(_plantHue).Hue); // Shattered Legacy (cc-P804)
++         }
++         else if (_plantStatus >= PlantStatus.Plant)
++         {
++@@ -421,6 +421,7 @@
++                 typeInfo.GetPlantLabelFullGrown(hueInfo),
++                 $"{health:#}\t{hueInfo.Name:#}\t{typeInfo.Name:#}"
++             );
+++            HerbalLane.AddProperties(this, list); // Shattered Legacy (cc-P804)
++             return;
++         }
++ 
++@@ -517,8 +518,10 @@
++         {
++             LabelTo(from, 1061920); // The dirt needs to be softened first.
++         }
++-        else
++-        {
+++        else if (HerbalLane.MayPlant(from, seed)) // Shattered Legacy (cc-P804): its own message when not
+++        {
+++            var strain = (seed as ReagentSeed)?.StrainTier ?? 0;
+++
++             PlantType = seed.PlantType;
++             PlantHue = seed.PlantHue;
++             ShowType = seed.ShowType;
++@@ -528,6 +531,7 @@
++             PlantStatus = PlantStatus.Seed;
++ 
++             PlantSystem.Reset(false);
+++            HerbalLane.OnPlanted(from, this, strain);
++ 
++             LabelTo(from, OnPlantLocalization); // You plant the seed in the bowl of dirt.
++         }
++@@ -588,6 +592,7 @@
++             PlantSystem.Water++;
++ 
++             from.PlaySound(0x4E);
+++            HerbalLane.Tended(from, this); // Shattered Legacy (cc-P804)
++             LabelTo(from, 1061858); // You soften the dirt with water.
++         }
++         else if (item is BasePotion potion)
++@@ -597,6 +602,7 @@
++                 potion.Consume();
++                 from.PlaySound(0x240);
++                 from.AddToBackpack(new Bottle());
+++                HerbalLane.Tended(from, this); // Shattered Legacy (cc-P804)
++             }
++ 
++             LabelTo(from, message);
++@@ -613,6 +619,7 @@
++             {
++                 keg.Held--;
++                 from.PlaySound(0x240);
+++                HerbalLane.Tended(from, this); // Shattered Legacy (cc-P804)
++             }
++ 
++             LabelTo(from, message);
++--- a/Projects/UOContent/Engines/Plants/PlantSystem.cs
+++++ b/Projects/UOContent/Engines/Plants/PlantSystem.cs
++@@ -503,7 +503,7 @@
++                 return;
++             }
++ 
++-            NextGrowth = now + CheckDelay;
+++            NextGrowth = now + HerbalLane.GrowthDelay(this); // Shattered Legacy (cc-P804)
++ 
++             if (!Plant.ValidGrowthLocation)
++             {
++@@ -521,6 +521,8 @@
++                 return;
++             }
++ 
+++            HerbalLane.OnGrowthCheck(this); // Shattered Legacy (cc-P804): neglect
+++
++             ApplyBeneficialEffects();
++ 
++             if (!ApplyMaladiesEffects()) // Dead
++@@ -597,7 +599,8 @@
++         private bool ApplyMaladiesEffects()
++         {
++             // Shattered Legacy (cc-P128): no water or malady damage without upkeep (ServUO PlantSystem.cs:523).
++-            if (!Plant.RequiresUpkeep)
+++            // cc-P804: the reagent lane owns its plants' damage (HerbalLane.OnGrowthCheck).
+++            if (!Plant.RequiresUpkeep || HerbalLane.SparesDamage(this))
++             {
++                 return true;
++             }
++@@ -666,7 +669,11 @@
++                     AvailableSeeds++;
++                 }
++ 
++-                if (LeftResources > 0 && PlantResourceInfo.GetInfo(Plant.PlantType, Plant.PlantHue) != null)
+++                if (HerbalLane.OnMature(this))
+++                {
+++                    // Shattered Legacy (cc-P804): perennial
+++                }
+++                else if (LeftResources > 0 && PlantResourceInfo.GetInfo(Plant.PlantType, Plant.PlantHue) != null)
++                 {
++                     LeftResources--;
++                     AvailableResources++;
++@@ -686,7 +693,8 @@
++         private void UpdateMaladies()
++         {
++             // Shattered Legacy (cc-P128): no new maladies without upkeep (ServUO PlantSystem.cs:597).
++-            if (!Plant.RequiresUpkeep)
+++            // cc-P804: a reagent bed's rate is a share of a bowl's.
+++            if (!Plant.RequiresUpkeep || HerbalLane.SkipsMaladies(this))
++             {
++                 return;
++             }
+diff --git a/server/patches/Skills-herbalism.patch b/server/patches/Skills-herbalism.patch
+new file mode 100644
+index 0000000..2384a95
+--- /dev/null
++++ b/server/patches/Skills-herbalism.patch
+@@ -0,0 +1,32 @@
++--- a/Projects/Server/Skills.cs
+++++ b/Projects/Server/Skills.cs
++@@ -73,7 +73,8 @@
++     Spellweaving = 54,
++     Mysticism = 55,
++     Imbuing = 56,
++-    Throwing = 57
+++    Throwing = 57,
+++    Herbalism = 58 // Shattered Legacy (cc-P804, F-51)
++ }
++ 
++ public enum Stat
++@@ -766,6 +767,9 @@
++     [CommandProperty(AccessLevel.Counselor, canModify: true)]
++     public Skill Throwing => this[SkillName.Throwing];
++ 
+++    [CommandProperty(AccessLevel.Counselor)]
+++    public Skill Herbalism => this[SkillName.Herbalism];
+++
++     public override string ToString() => "...";
++ 
++     public static bool UseSkill(Mobile from, SkillName name) => UseSkill(from, (int)name);
++--- a/Projects/UOContent/Skills/AntiMacroSystem.cs
+++++ b/Projects/UOContent/Skills/AntiMacroSystem.cs
++@@ -73,6 +73,7 @@
++         true,  // Mysticism = 55
++         true,  // Imbuing = 56
++         false, // Throwing = 57
+++        false, // Herbalism = 58, Shattered Legacy (cc-P804): the table must hold every SkillName
++     };
++ 
++     private static Dictionary<Mobile, PlayerAntiMacro> _antiMacroTable;
+diff --git a/server/patches/skills-json-herbalism.patch b/server/patches/skills-json-herbalism.patch
+new file mode 100644
+index 0000000..e08abb5
+--- /dev/null
++++ b/server/patches/skills-json-herbalism.patch
+@@ -0,0 +1,24 @@
++--- a/Distribution/Data/skills.json
+++++ b/Distribution/Data/skills.json
++@@ -926,5 +926,21 @@
++     "ProfessionSkillName": "Throwing",
++     "PrimaryStat": "Dex",
++     "SecondaryStat": "Str"
+++  },
+++  {
+++    "SkillID": 58,
+++    "Name": "Herbalism",
+++    "Title": "Herbalist",
+++    "StrScale": 0,
+++    "DexScale": 0.05,
+++    "IntScale": 0.05,
+++    "StatTotal": 10,
+++    "StrGain": 0,
+++    "DexGain": 0.5,
+++    "IntGain": 0.5,
+++    "GainFactor": 1,
+++    "ProfessionSkillName": "Herbalism",
+++    "PrimaryStat": "Int",
+++    "SecondaryStat": "Dex"
++   }
++ ]
+diff --git a/server/tests/Engines/Craft/CraftCeilingsVerification.cs b/server/tests/Engines/Craft/CraftCeilingsVerification.cs
+index 984b67b..1b1c178 100644
+--- a/server/tests/Engines/Craft/CraftCeilingsVerification.cs
++++ b/server/tests/Engines/Craft/CraftCeilingsVerification.cs
+@@ -108,7 +108,7 @@ public class CraftCeilingsVerification
+     {
+         var pm = new PlayerMobile { Player = true, Race = Race.Human };
+         pm.AddItem(new Backpack());
+-        pm.Skills.Cap = 58 * 2000;
++        pm.Skills.Cap = SkillInfo.Table.Length * 2000;
+         foreach (var name in new[] { SkillName.Blacksmith, SkillName.Tinkering, SkillName.Carpentry, SkillName.Fletching })
+         {
+             pm.Skills[name].Cap = Cap;
+diff --git a/server/tests/Misc/AchievementEarnedLineVerification.cs b/server/tests/Misc/AchievementEarnedLineVerification.cs
+index ee67a45..fff78f2 100644
+--- a/server/tests/Misc/AchievementEarnedLineVerification.cs
++++ b/server/tests/Misc/AchievementEarnedLineVerification.cs
+@@ -97,7 +97,7 @@ public class AchievementEarnedLineVerification
+     public void EveryRegisteredAchievementHasAnEarnedLine()
+     {
+         var defs = ClusterFAchievementSystem.Definitions.Values.ToList();
+-        Assert.Equal(158, defs.Count); // cc-P769: the 11 isle lesson ones and Gainfully Employed; cc-P762: Didn't Read the Sign; cc-P80: the two tutorial achievements; cc-P82: the two Fortune's Favor ones; cc-P192: Second Childhood; cc-P231: the 16 joke achievements; cc-P262: the 5 accessory ones; cc-P263: the 45 Noted by the System ones
++        Assert.Equal(159, defs.Count); // cc-P804: Green Thumb; // cc-P769: the 11 isle lesson ones and Gainfully Employed; cc-P762: Didn't Read the Sign; cc-P80: the two tutorial achievements; cc-P82: the two Fortune's Favor ones; cc-P192: Second Childhood; cc-P231: the 16 joke achievements; cc-P262: the 5 accessory ones; cc-P263: the 45 Noted by the System ones
+ 
+         foreach (var def in defs.OrderBy(d => d.Key))
+         {
+@@ -320,7 +320,7 @@ public class AchievementEarnedLineVerification
+             var (count, total) = ClusterFAchievementSystem.ProgressCount(p.Account.Username);
+             _out.WriteLine($"holder: earned {count} of {total} (retired held, not counted)");
+             Assert.Equal(2, count);
+-            Assert.Equal(158 - RetiredKeys.Length, total); // cc-P82: 78 registered; cc-P192: 79; cc-P231: 95; cc-P262: 100; cc-P263: 145; cc-P762: 146; cc-P769: 158
++            Assert.Equal(159 - RetiredKeys.Length, total); // cc-P82: 78 registered; cc-P192: 79; cc-P231: 95; cc-P262: 100; cc-P263: 145; cc-P762: 146; cc-P769: 158
+ 
+             // Every page of the Skills tab (five rows a page; the Retired section is last).
+             var pages = Enumerable.Range(0, 20).Select(i => new AchievementsGump(p.Pm, AchievementCategory.Skills, false, i)).ToList();
+diff --git a/server/tests/Misc/AlembicGuildVerification.cs b/server/tests/Misc/AlembicGuildVerification.cs
+index 2dd16f9..a7f42cc 100644
+--- a/server/tests/Misc/AlembicGuildVerification.cs
++++ b/server/tests/Misc/AlembicGuildVerification.cs
+@@ -170,7 +170,7 @@ public class AlembicGuildVerification
+     [Fact]
+     public void AlchemyAndTasteIdAreTheOrdersAndTheHealersKeepHealingAndAnatomy()
+     {
+-        Assert.Equal(new[] { SkillName.Alchemy, SkillName.TasteID }, GuildSkillTable.For(ClusterFAlembicGuild.Key));
++        Assert.Equal(new[] { SkillName.Alchemy, SkillName.TasteID, SkillName.Herbalism }, GuildSkillTable.For(ClusterFAlembicGuild.Key));
+         Assert.Equal(new[] { SkillName.Healing, SkillName.Anatomy }, GuildSkillTable.For("healers"));
+ 
+         foreach (var skill in new[] { SkillName.Alchemy, SkillName.TasteID })
+diff --git a/server/tests/Misc/HerbalismVerification.cs b/server/tests/Misc/HerbalismVerification.cs
+new file mode 100644
+index 0000000..8fde197
+--- /dev/null
++++ b/server/tests/Misc/HerbalismVerification.cs
+@@ -0,0 +1,936 @@
++// HerbalismVerification.cs
++//
++// cc-P804 (F-51, phase 1). Notes in shard-migration notes/cc-P804-herbalism-phase-1.md.
++//
++// Facts: the skill and its gain windows; a patch picks, hides and respawns; patches by tier; the world seed is idempotent; a bowl grows
++// and yields without end; a bed is one unit; a cross stays in the lane, mutates up, and obeys the skill cap; processing amounts and the
++// starter farm's daily reagents; neglect's windows; recipe gating; save and load of every new type; the settings file.
++
++using System;
++using System.IO;
++using System.Linq;
++using Server;
++using Server.Accounting;
++using Server.Engines.Plants;
++using Server.Items;
++using Server.Mobiles;
++using Server.Tests.Network;
++using Xunit;
++using Xunit.Abstractions;
++
++namespace ShatteredLegacy.Tests;
++
++[Collection("Sequential UOContent Tests")]
++public class HerbalismVerification : IDisposable
++{
++    private static bool _achievements;
++    private readonly ITestOutputHelper _out;
++    private readonly Account _account;
++    private readonly PlayerMobile _pm;
++    private static readonly Point3D Spot = new(3460, 2604, 18);
++
++    public HerbalismVerification(ITestOutputHelper output)
++    {
++        _out = output;
++        ShardTestHost.EnsureAccounts();
++        ClusterFGuildSystem.EnsureRegistered();
++        HerbalismSettings.Current = new HerbalismSettings();
++
++        if (!_achievements)
++        {
++            ClusterFAchievementSystem.Configure();
++            _achievements = true;
++        }
++
++        _account = new Account($"p804{Guid.NewGuid():N}"[..16], "p804-test-only");
++        _pm = new PlayerMobile { Player = true, Race = Race.Human, Name = "Tester" };
++        _pm.AddItem(new Backpack());
++        _account[0] = _pm;
++        _pm.MoveToWorld(Spot, Map.Trammel);
++    }
++
++    public void Dispose()
++    {
++        HerbalismSettings.Current = new HerbalismSettings();
++        _pm.Delete();
++        Accounts.Remove(_account);
++    }
++
++    private void SetSkill(double value) => _pm.Skills[SkillName.Herbalism].Base = value;
++
++    private PlantItem Bowl(PlantType type, int tier = 0, PlantStatus status = PlantStatus.Stage9, Mobile tender = null)
++    {
++        var bowl = new PlantItem { PlantType = type, PlantHue = PlantHue.Plain, PlantStatus = status };
++        _pm.Backpack.DropItem(bowl);
++        HerbalLane.OnPlanted(tender, bowl, tier);
++        return bowl;
++    }
++
++    private static void Day(PlantItem plant)
++    {
++        plant.PlantSystem.NextGrowth = Core.Now.AddMinutes(-1);
++        plant.PlantSystem.Water = 2;
++        plant.PlantSystem.Hits = plant.PlantSystem.MaxHits;
++        plant.PlantSystem.Infestation = plant.PlantSystem.Fungus = 0; // a well-kept plant: maladies cut the yield
++        plant.PlantSystem.DoGrowthCheck();
++    }
++
++    private static void Idle(PlantItem plant, double days) => HerbalLane.Record(plant).LastTended = Core.Now.AddDays(-days);
++
++    private static T RoundTrip<T>(T original) where T : Item
++    {
++        var buffer = new byte[65536];
++        var writer = new BufferWriter(buffer, true);
++        original.Serialize(writer);
++        writer.Flush();
++        var copy = (T)Activator.CreateInstance(original.GetType(), original.Serial)!;
++        copy.Deserialize(new BufferReader(buffer));
++        return copy;
++    }
++
++    private System.Collections.Generic.List<T> InPack<T>() where T : Item
++    {
++        var list = new System.Collections.Generic.List<T>();
++
++        foreach (var item in _pm.Backpack.FindItemsByType<T>())
++        {
++            list.Add(item);
++        }
++
++        return list;
++    }
++
++    private int RawInPack(string key)
++    {
++        var total = 0;
++
++        foreach (var raw in _pm.Backpack.FindItemsByType<RawHerb>())
++        {
++            if (raw.HerbKey == key)
++            {
++                total += raw.Amount;
++            }
++        }
++
++        return total;
++    }
++
++    // ---------------------------------------------------------------- the skill
++
++    [Fact]
++    public void TheSkillIsRow58AndTheAlembicOwnsIt()
++    {
++        Assert.Equal(59, SkillInfo.Table.Length);
++        Assert.Equal("Herbalism", SkillInfo.Table[58].Name);
++        Assert.Equal(58, (int)SkillName.Herbalism);
++        Assert.Contains(SkillName.Herbalism, GuildSkillTable.For(ClusterFAlembicGuild.Key));
++    }
++
++    [Theory]
++    [InlineData("Garlic", 0, 0, 50)]
++    [InlineData("Mandrake", 0, 50, 100)]
++    [InlineData("GraveMoss", 0, 100, 150)]
++    [InlineData("Garlic", 8, 40, 90)]
++    [InlineData("Mandrake", 16, 130, 180)]
++    public void GainWindowsClimbByHerbTierAndStrain(string herb, int strain, double min, double max)
++    {
++        var (low, high) = HerbalLane.GainWindow(HerbalismSettings.Current.Herb(herb), strain);
++        Assert.Equal(min, low);
++        Assert.Equal(max, high);
++    }
++
++    [Fact]
++    public void TopStrainsKeepTheSkillRisingTo200()
++    {
++        var (_, high) = HerbalLane.GainWindow(HerbalismSettings.Current.Herb("GraveMoss"), 16);
++        Assert.Equal(200, high);
++    }
++
++    // ---------------------------------------------------------------- foraging
++
++    private HerbPatch Patch(string herb)
++    {
++        var patch = new HerbPatch(herb, $"test:{Guid.NewGuid():N}");
++        patch.MoveToWorld(new Point3D(Spot.X + 1, Spot.Y, Spot.Z), Map.Trammel);
++        return patch;
++    }
++
++    [Fact]
++    public void APickedPatchHidesLogsTheFindAndRespawns()
++    {
++        var patch = Patch("Garlic");
++
++        try
++        {
++            Assert.True(patch.Pick(_pm, true));
++            Assert.False(patch.Ripe);
++            var got = RawInPack("Garlic");
++            Assert.InRange(got, HerbalismSettings.Current.ForageMin, HerbalismSettings.Current.ForageMax);
++            Assert.Equal(got, HerbalLane.Found(_pm, "Garlic"));
++
++            // Hidden: nothing to pick until it regrows.
++            Assert.False(patch.Pick(_pm, true));
++            Assert.Equal(0, HerbPatch.RespawnDue());
++            Assert.False(patch.Ripe);
++
++            patch.RipeAt = Core.Now.AddSeconds(-1);
++            Assert.Equal(1, HerbPatch.RespawnDue());
++            Assert.True(patch.Ripe);
++        }
++        finally
++        {
++            patch.Delete();
++        }
++    }
++
++    [Theory]
++    [InlineData("Garlic", 0, true)]
++    [InlineData("Mandrake", 49.9, false)]
++    [InlineData("Mandrake", 50, true)]
++    [InlineData("GraveMoss", 99.9, false)]
++    [InlineData("GraveMoss", 100, true)]
++    public void PatchesAskForTheirTier(string herb, double skill, bool picked)
++    {
++        SetSkill(skill);
++        var patch = Patch(herb);
++
++        try
++        {
++            Assert.Equal(picked, patch.Pick(_pm, true));
++        }
++        finally
++        {
++            patch.Delete();
++        }
++    }
++
++    [Fact]
++    public void ExoticsAreAStubWithNoWildPatch()
++    {
++        var s = HerbalismSettings.Current;
++        Assert.True(s.Herb("Exotic").Stub);
++        Assert.DoesNotContain(s.Patches, p => p.Herb == "Exotic");
++    }
++
++    [Fact]
++    public void TheWorldSeedPlacesOnlyWhatIsMissing()
++    {
++        HerbalismSettings.Current.Patches = [new HerbSpot { Herb = "Garlic", X = Spot.X + 3, Y = Spot.Y, Map = "Trammel" }];
++        var before = HerbPatch.Patches.ToList();
++        var first = HerbalismSystem.SeedWorld();
++        _out.WriteLine(first);
++        var second = HerbalismSystem.SeedWorld();
++        _out.WriteLine(second);
++
++        try
++        {
++            Assert.Contains("0 placed", second);
++            Assert.Contains("already there; herb table", second.Replace(", 0 with no open ground ()", ""));
++            Assert.Single(HerbPatch.Patches.Except(before));
++            Assert.Single(World.Items.Values.OfType<AlembicHerbTable>());
++        }
++        finally
++        {
++            foreach (var p in HerbPatch.Patches.Except(before).ToList())
++            {
++                p.Delete();
++            }
++        }
++    }
++
++    // ---------------------------------------------------------------- bowls
++
++    [Fact]
++    public void ABowlGrowsAtOsiPaceThenYieldsWithoutEnd()
++    {
++        var bowl = Bowl(PlantType.Garlic, 0, PlantStatus.Seed);
++
++        try
++        {
++            Assert.Equal(PlantSystem.CheckDelay, HerbalLane.GrowthDelay(bowl.PlantSystem));
++
++            for (var day = 0; day < 8; day++)
++            {
++                HerbalLane.Tended(_pm, bowl);
++                Day(bowl);
++            }
++
++            Assert.Equal(PlantStatus.Stage9, bowl.PlantStatus);
++            Assert.Equal(0, bowl.PlantSystem.AvailableResources);
++
++            // Past OSI's eight, it keeps giving, and the stock count never moves.
++            for (var day = 0; day < 20; day++)
++            {
++                HerbalLane.Tended(_pm, bowl);
++                Day(bowl);
++                Assert.True(HerbalLane.TryHarvest(_pm, bowl));
++            }
++
++            Assert.Equal(20 * HerbalismSettings.Current.BowlHerbsPerDay, RawInPack("Garlic"));
++            Assert.Equal(8, bowl.PlantSystem.LeftResources);
++            Assert.Equal(StrainHueOf(0), bowl.Hue);
++        }
++        finally
++        {
++            bowl.Delete();
++        }
++    }
++
++    private static int StrainHueOf(int tier) => ClusterFLeagueRanks.Ladder[tier].Hue;
++
++    [Fact]
++    public void AStockPlantKeepsOsisEightAndPassesEveryHook()
++    {
++        var plant = new PlantItem { PlantType = PlantType.Poppies, PlantHue = PlantHue.BrightOrange, PlantStatus = PlantStatus.Stage9 };
++        _pm.Backpack.DropItem(plant);
++
++        try
++        {
++            Assert.False(HerbalLane.IsReagent(plant));
++            Assert.False(HerbalLane.TryHarvest(_pm, plant));
++            Assert.False(HerbalLane.SparesDamage(plant.PlantSystem));
++            Day(plant);
++            Assert.Equal(1, plant.PlantSystem.AvailableResources);
++            Assert.Equal(7, plant.PlantSystem.LeftResources);
++            Assert.False(HerbalismSeedHeld(plant));
++        }
++        finally
++        {
++            plant.Delete();
++        }
++    }
++
++    private static bool HerbalismSeedHeld(PlantItem plant) => HerbalStore.Rows.ContainsKey(plant.Serial);
++
++    [Fact]
++    public void TheHarvestStoresOnlySoManyDays()
++    {
++        var bowl = Bowl(PlantType.Ginseng);
++
++        try
++        {
++            for (var day = 0; day < 30; day++)
++            {
++                HerbalLane.Tended(_pm, bowl);
++                Day(bowl);
++            }
++
++            var s = HerbalismSettings.Current;
++            Assert.Equal(s.BowlHerbsPerDay * s.MaxStoredDays, bowl.PlantSystem.AvailableResources);
++        }
++        finally
++        {
++            bowl.Delete();
++        }
++    }
++
++    [Fact]
++    public void TierSkillAndMaladiesMoveTheYield()
++    {
++        var bowl = Bowl(PlantType.Garlic, 4, tender: _pm);
++
++        try
++        {
++            Assert.Equal(10, HerbalLane.DailyYield(bowl)); // 6 + 4 tiers
++            SetSkill(200);
++            HerbalLane.Tended(_pm, bowl);
++            Assert.Equal(20, HerbalLane.DailyYield(bowl));
++            bowl.PlantSystem.Infestation = 2;
++            Assert.Equal(14, HerbalLane.DailyYield(bowl)); // 30% off
++        }
++        finally
++        {
++            bowl.Delete();
++        }
++    }
++
++    [Fact]
++    public void TheFirstHarvestEarnsGreenThumbOnce()
++    {
++        var bowl = Bowl(PlantType.Garlic);
++
++        try
++        {
++            Assert.False(ClusterFAchievementSystem.HasEarned(_account, HerbalLane.FirstHarvestAchievement));
++            bowl.PlantSystem.AvailableResources = 3;
++            HerbalLane.TryHarvest(_pm, bowl);
++            Assert.True(ClusterFAchievementSystem.HasEarned(_account, HerbalLane.FirstHarvestAchievement));
++            Assert.Equal(3, HerbalLane.Found(_pm, "Garlic"));
++        }
++        finally
++        {
++            bowl.Delete();
++        }
++    }
++
++    // ---------------------------------------------------------------- beds
++
++    private RaisedGardenPlantItem[] Bed(PlantType type, out RaisedGardenAddon addon, int tier = 0)
++    {
++        addon = new RaisedGardenAddon(RaisedGardenDirection.Small);
++        addon.MoveToWorld(new Point3D(Spot.X + 4, Spot.Y + 4, Spot.Z), Map.Trammel);
++        var mounds = new System.Collections.Generic.List<RaisedGardenPlantItem>();
++
++        foreach (var part in addon.Components.OfType<GardenAddonComponent>())
++        {
++            var mound = new RaisedGardenPlantItem();
++            mound.MoveToWorld(new Point3D(part.X, part.Y, part.Z + 5), part.Map);
++            mound.Component = part;
++            part.Plant = mound;
++            mound.PlantType = type;
++            mound.PlantHue = PlantHue.Plain;
++            mound.PlantStatus = PlantStatus.Stage9;
++            HerbalLane.OnPlanted(_pm, mound, tier);
++            mounds.Add(mound);
++        }
++
++        return mounds.ToArray();
++    }
++
++    [Fact]
++    public void ABedIsOneUnit()
++    {
++        var mounds = Bed(PlantType.Mandrake, out var addon);
++
++        try
++        {
++            Assert.Equal(4, mounds.Length);
++            Assert.All(mounds, m => Assert.True(m.RequiresUpkeep));
++            Assert.All(mounds, m => Assert.Equal(2, m.PlantSystem.Water));
++
++            // One watering reaches them all.
++            mounds[0].PlantSystem.Water = 4;
++            Idle(mounds[1], 3);
++            HerbalLane.Tended(_pm, mounds[0]);
++            Assert.All(mounds, m => Assert.Equal(4, m.PlantSystem.Water));
++            Assert.All(mounds, m => Assert.True((Core.Now - HerbalLane.Record(m).LastTended).TotalMinutes < 1));
++
++            // Grows and yields: one harvest takes the whole bed.
++            foreach (var m in mounds)
++            {
++                Day(m);
++            }
++
++            Assert.True(HerbalLane.TryHarvest(_pm, mounds[2]));
++            Assert.Equal(4 * HerbalismSettings.Current.BedHerbsPerDay, RawInPack("Mandrake"));
++            Assert.All(mounds, m => Assert.Equal(0, m.PlantSystem.AvailableResources));
++        }
++        finally
++        {
++            addon.Delete();
++
++            foreach (var m in mounds)
++            {
++                m.Delete();
++            }
++        }
++    }
++
++    [Fact]
++    public void AStockMoundStaysCarefreeAndBedsTakeFewerMaladies()
++    {
++        var stock = new RaisedGardenPlantItem();
++        stock.MoveToWorld(Spot, Map.Trammel);
++        var mounds = Bed(PlantType.Garlic, out var addon);
++
++        try
++        {
++            Assert.False(stock.RequiresUpkeep);
++            Assert.True(HerbalLane.SkipsMaladies(mounds[0].PlantSystem, 0.5));
++            Assert.False(HerbalLane.SkipsMaladies(mounds[0].PlantSystem, 0.1));
++        }
++        finally
++        {
++            stock.Delete();
++            addon.Delete();
++
++            foreach (var m in mounds)
++            {
++                m.Delete();
++            }
++        }
++    }
++
++    // ---------------------------------------------------------------- crossing
++
++    [Fact]
++    public void ReagentCrossesStayInTheLaneAndRefuseStock()
++    {
++        for (var i = 0; i < 50; i++)
++        {
++            var type = PlantTypeInfo.Cross(PlantType.Garlic, PlantType.BloodMoss);
++            Assert.True(HerbalLane.IsReagent(type));
++            Assert.Equal(PlantType.Mandrake, type);
++        }
++
++        var bowl = Bowl(PlantType.Garlic);
++        var stock = new PlantItem { PlantType = PlantType.Fern, PlantHue = PlantHue.Plain, PlantStatus = PlantStatus.Stage9 };
++
++        try
++        {
++            Assert.True(HerbalLane.RefusesPollen(bowl, stock));
++            Assert.False(HerbalLane.RefusesPollen(bowl, bowl));
++        }
++        finally
++        {
++            bowl.Delete();
++            stock.Delete();
++        }
++    }
++
++    [Fact]
++    public void ASameTierCrossCanMutateUpAndHerbalismRaisesTheChance()
++    {
++        SetSkill(200);
++        var a = Bowl(PlantType.Garlic, 3);
++        var b = Bowl(PlantType.Ginseng, 3);
++
++        try
++        {
++            Assert.True(HerbalLane.OnPollinated(_pm, a, b, 0.0));
++            Assert.Equal(4, HerbalLane.Record(b).SeedTier);
++
++            var seed = Assert.IsType<ReagentSeed>(HerbalLane.NewSeed(b, b.PlantSystem.Also(PlantType.Garlic)));
++            Assert.Equal(4, seed.StrainTier);
++            seed.Delete();
++
++            // No luck: the parents' strain.
++            Assert.False(HerbalLane.OnPollinated(_pm, a, b, 0.99));
++            Assert.Equal(3, HerbalLane.Record(b).SeedTier);
++
++            Assert.True(HerbalLane.MutationChance(200) > HerbalLane.MutationChance(0));
++        }
++        finally
++        {
++            a.Delete();
++            b.Delete();
++        }
++    }
++
++    [Fact]
++    public void CrossesOfDifferentTiersTakeTheBetterAndNeverMutate()
++    {
++        SetSkill(200);
++        var a = Bowl(PlantType.Garlic, 2);
++        var b = Bowl(PlantType.Ginseng, 5);
++
++        try
++        {
++            Assert.False(HerbalLane.OnPollinated(_pm, a, b, 0.0));
++            Assert.Equal(5, HerbalLane.Record(b).SeedTier);
++        }
++        finally
++        {
++            a.Delete();
++            b.Delete();
++        }
++    }
++
++    [Fact]
++    public void TheBreedersSkillCapsTheStrain()
++    {
++        SetSkill(50); // cap tier 4
++        var a = Bowl(PlantType.Garlic, 4);
++        var b = Bowl(PlantType.Ginseng, 4);
++
++        try
++        {
++            Assert.Equal(4, HerbalLane.StrainCap(50));
++            Assert.False(HerbalLane.OnPollinated(_pm, a, b, 0.0));
++            Assert.Equal(4, HerbalLane.Record(b).SeedTier);
++        }
++        finally
++        {
++            a.Delete();
++            b.Delete();
++        }
++    }
++
++    [Fact]
++    public void AStrainShowsItsMetalHueOnThePlantAndTheSeed()
++    {
++        var bowl = Bowl(PlantType.Garlic, 7);
++        var seed = new ReagentSeed(PlantType.Garlic, 7);
++
++        try
++        {
++            bowl.PlantStatus = PlantStatus.Stage8;
++            bowl.PlantStatus = PlantStatus.Stage9;
++            Assert.Equal(StrainHueOf(7), bowl.Hue);
++            Assert.Equal(StrainHueOf(7), seed.Hue);
++            Assert.Contains("garlic seed", seed.Words);
++        }
++        finally
++        {
++            bowl.Delete();
++            seed.Delete();
++        }
++    }
++
++    // ---------------------------------------------------------------- processing
++
++    [Theory]
++    [InlineData(0, 12, 2, 2, 10)]
++    [InlineData(200, 10, 2, 0, 15)]
++    [InlineData(100, 5, 1, 0, 12)]
++    public void HerbsProcessIntoBundlesOfReagents(double skill, int herbs, int bundles, int left, int each)
++    {
++        SetSkill(skill);
++        var raw = new RawHerb("Garlic", herbs);
++        _pm.Backpack.DropItem(raw);
++
++        Assert.Equal(bundles, raw.Process(_pm));
++        Assert.Equal(left, RawInPack("Garlic"));
++
++        var bundle = Assert.Single(InPack<ReagentBundle>());
++        Assert.Equal(bundles, bundle.Amount);
++        Assert.Equal(each, bundle.Reagents);
++
++        bundle.OnDoubleClick(_pm);
++        Assert.Equal(bundles * each, _pm.Backpack.GetAmount(typeof(Garlic)));
++        Assert.True(bundle.Deleted);
++    }
++
++    [Fact]
++    public void AHerbAboveYourSkillWillNotProcess()
++    {
++        var raw = new RawHerb("GraveMoss", 10);
++        _pm.Backpack.DropItem(raw);
++        Assert.Equal(0, raw.Process(_pm));
++        Assert.Equal(10, raw.Amount);
++    }
++
++    [Fact]
++    public void TooFewHerbsMakeNoBundle()
++    {
++        var raw = new RawHerb("Garlic", 4);
++        _pm.Backpack.DropItem(raw);
++        Assert.Equal(0, raw.Process(_pm));
++        Assert.Equal(4, raw.Amount);
++        Assert.Empty(InPack<ReagentBundle>());
++    }
++
++    [Fact]
++    public void AStarterFarmMakesFiftyToAHundredReagentsADay()
++    {
++        var bowls = new[] { Bowl(PlantType.Garlic), Bowl(PlantType.Ginseng) };
++        var mounds = Bed(PlantType.Garlic, out var addon);
++
++        try
++        {
++            // Two bowls and a regular six-plot bed at no skill; a small bed has four plots.
++            var s = HerbalismSettings.Current;
++            var herbs = bowls.Sum(HerbalLane.DailyYield) + 6 * HerbalLane.DailyYield(mounds[0]);
++            var regs = herbs / s.HerbsPerBundle * HerbalLane.ReagentsInBundle(0);
++            _out.WriteLine($"{herbs} herbs, {regs} reagents a day");
++            Assert.InRange(regs, 50, 100);
++        }
++        finally
++        {
++            addon.Delete();
++
++            foreach (var p in bowls.Cast<PlantItem>().Concat(mounds))
++            {
++                p.Delete();
++            }
++        }
++    }
++
++    // ---------------------------------------------------------------- neglect
++
++    [Theory]
++    [InlineData(0, 2)]
++    [InlineData(200, 7)]
++    [InlineData(100, 4.5)]
++    public void GraceIsTwoDaysPlusUpToFiveAt200(double skill, double days) => Assert.Equal(days, HerbalLane.GraceDays(skill));
++
++    [Fact]
++    public void InsideGraceNothingIsLost()
++    {
++        var bowl = Bowl(PlantType.Garlic, 5);
++
++        try
++        {
++            var hits = bowl.PlantSystem.Hits;
++            Idle(bowl, 1.9);
++            bowl.PlantSystem.Water = 0; // bone dry, which OSI would punish
++            bowl.PlantSystem.NextGrowth = Core.Now.AddMinutes(-1);
++            bowl.PlantSystem.DoGrowthCheck();
++            Assert.True(bowl.PlantSystem.Hits >= hits);
++            Assert.Equal(5, HerbalLane.Record(bowl).Tier);
++        }
++        finally
++        {
++            bowl.Delete();
++        }
++    }
++
++    [Fact]
++    public void PastGraceHealthFallsFirstThenAWindowLaterATier()
++    {
++        var bowl = Bowl(PlantType.Garlic, 5);
++
++        try
++        {
++            var hits = bowl.PlantSystem.Hits;
++
++            // Day 3: one day past a two-day grace. Health, no tier.
++            Idle(bowl, 3);
++            HerbalLane.OnGrowthCheck(bowl.PlantSystem);
++            Assert.Equal(hits - HerbalismSettings.Current.NeglectHitsPerCheck, bowl.PlantSystem.Hits);
++            Assert.Equal(5, HerbalLane.Record(bowl).Tier);
++
++            // Day 4: a full window past grace. One tier, once.
++            Idle(bowl, 4);
++            HerbalLane.OnGrowthCheck(bowl.PlantSystem);
++            Assert.Equal(4, HerbalLane.Record(bowl).Tier);
++            HerbalLane.OnGrowthCheck(bowl.PlantSystem);
++            Assert.Equal(4, HerbalLane.Record(bowl).Tier);
++
++            // Day 6: the next window.
++            Idle(bowl, 6);
++            HerbalLane.OnGrowthCheck(bowl.PlantSystem);
++            Assert.Equal(3, HerbalLane.Record(bowl).Tier);
++
++            // Tended, the clock and the windows start over.
++            HerbalLane.Tended(_pm, bowl);
++            Assert.Equal(0, HerbalLane.Record(bowl).TierDrops);
++            Idle(bowl, 1);
++            HerbalLane.OnGrowthCheck(bowl.PlantSystem);
++            Assert.Equal(3, HerbalLane.Record(bowl).Tier);
++        }
++        finally
++        {
++            bowl.Delete();
++        }
++    }
++
++    [Fact]
++    public void NeglectNeverKillsAPlant()
++    {
++        var bowl = Bowl(PlantType.Garlic);
++
++        try
++        {
++            Idle(bowl, 500);
++
++            for (var i = 0; i < 40; i++)
++            {
++                bowl.PlantSystem.NextGrowth = Core.Now.AddMinutes(-1);
++                bowl.PlantSystem.DoGrowthCheck();
++            }
++
++            Assert.True(bowl.PlantSystem.Hits >= 1);
++            Assert.Equal(PlantStatus.Stage9, bowl.PlantStatus);
++            Assert.Equal(0, HerbalLane.Record(bowl).Tier);
++        }
++        finally
++        {
++            bowl.Delete();
++        }
++    }
++
++    // ---------------------------------------------------------------- gates
++
++    [Theory]
++    [InlineData(PlantType.Garlic, 0, 0, true)]
++    [InlineData(PlantType.Mandrake, 0, 0, false)]
++    [InlineData(PlantType.Mandrake, 0, 1, true)]
++    [InlineData(PlantType.Garlic, 3, 0, false)]
++    [InlineData(PlantType.Garlic, 3, 1, true)]
++    [InlineData(PlantType.Garlic, 6, 1, false)]
++    public void TypesAndStrainsAskForAnAlembicRank(PlantType type, int tier, int rank, bool expected)
++    {
++        Assert.Equal(expected, HerbalLane.RankNeeded(type, tier) <= rank);
++    }
++
++    [Fact]
++    public void AnUnrankedCharacterCannotPlantARankedSeed()
++    {
++        var seed = new ReagentSeed(PlantType.Mandrake, 0);
++        var starter = new ReagentSeed(PlantType.Garlic, 0);
++        var stock = new Seed(PlantType.Poppies, PlantHue.Plain);
++
++        try
++        {
++            Assert.False(HerbalLane.MayPlant(_pm, seed));
++            Assert.True(HerbalLane.MayPlant(_pm, starter));
++            Assert.True(HerbalLane.MayPlant(_pm, stock));
++        }
++        finally
++        {
++            seed.Delete();
++            starter.Delete();
++            stock.Delete();
++        }
++    }
++
++    [Fact]
++    public void TheAlembicCountsTheHigherOfItsTwoSkills()
++    {
++        var def = ClusterFGuildSystem.GetDef(ClusterFAlembicGuild.Key);
++        _pm.Skills[SkillName.Alchemy].Base = 10;
++        SetSkill(40);
++        Assert.Equal(40, ClusterFGuildSystem.TaskSkillValue(_pm, def));
++        _pm.Skills[SkillName.Alchemy].Base = 60;
++        Assert.Equal(60, ClusterFGuildSystem.TaskSkillValue(_pm, def));
++    }
++
++    [Fact]
++    public void TheStarterIsGivenOnce()
++    {
++        Assert.False(HerbalismSystem.HadStarter(_pm));
++        Assert.True(HerbalismSystem.GiveStarter(_pm, out _));
++        Assert.True(HerbalismSystem.HadStarter(_pm));
++        Assert.Single(InPack<PlantBowl>());
++        Assert.Equal(2, InPack<ReagentSeed>().Count);
++        Assert.False(HerbalismSystem.GiveStarter(_pm, out _));
++        Assert.Single(InPack<PlantBowl>());
++    }
++
++    // ---------------------------------------------------------------- saves
++
++    [Fact]
++    public void EveryNewItemSurvivesASave()
++    {
++        var seed = new ReagentSeed(PlantType.Nightshade, 9);
++        var raw = new RawHerb("BloodMoss", 7);
++        var bundle = new ReagentBundle("Ginseng", 13);
++        var patch = new HerbPatch("Mandrake", "Trammel:1:2") { RipeAt = new DateTime(2026, 11, 5, 1, 2, 3, DateTimeKind.Utc) };
++        var table = new AlembicHerbTable();
++
++        try
++        {
++            var seed2 = RoundTrip(seed);
++            Assert.Equal(9, seed2.StrainTier);
++            Assert.Equal(PlantType.Nightshade, seed2.PlantType);
++            Assert.Equal("BloodMoss", RoundTrip(raw).HerbKey);
++            var bundle2 = RoundTrip(bundle);
++            Assert.Equal("Ginseng", bundle2.HerbKey);
++            Assert.Equal(13, bundle2.Reagents);
++            var patch2 = RoundTrip(patch);
++            Assert.Equal("Mandrake", patch2.HerbKey);
++            Assert.Equal("Trammel:1:2", patch2.SpotKey);
++            Assert.Equal(patch.RipeAt, patch2.RipeAt);
++            HerbPatch.Patches.Remove(patch2);
++            Assert.NotNull(RoundTrip(table));
++        }
++        finally
++        {
++            seed.Delete();
++            raw.Delete();
++            bundle.Delete();
++            patch.Delete();
++            table.Delete();
++        }
++    }
++
++    [Fact]
++    public void TheLaneRecordsSurviveASaveAndTheDeadArePruned()
++    {
++        var bowl = Bowl(PlantType.Garlic, 6);
++        var gone = Bowl(PlantType.Ginseng, 2);
++        var record = HerbalLane.Record(bowl);
++        record.SeedTier = 7;
++        record.TenderSkill = 123.5;
++        record.TierDrops = 2;
++        var when = record.LastTended;
++        gone.Delete();
++
++        try
++        {
++            var store = new HerbalStore();
++            var buffer = new byte[65536];
++            var writer = new BufferWriter(buffer, true);
++            store.Serialize(writer);
++            writer.Flush();
++            Assert.False(HerbalStore.Rows.ContainsKey(gone.Serial));
++
++            HerbalStore.Rows.Clear();
++            store.Deserialize(new BufferReader(buffer));
++
++            var back = HerbalStore.Rows[bowl.Serial];
++            Assert.Equal(6, back.Tier);
++            Assert.Equal(7, back.SeedTier);
++            Assert.Equal(123.5, back.TenderSkill);
++            Assert.Equal(2, back.TierDrops);
++            Assert.Equal(when, back.LastTended);
++        }
++        finally
++        {
++            bowl.Delete();
++        }
++    }
++
++    [Fact]
++    public void AnUnknownStoreVersionFailsLoudly()
++    {
++        var buffer = new byte[16];
++        var writer = new BufferWriter(buffer, true);
++        writer.WriteEncodedInt(HerbalStore.CurrentVersion + 1);
++        writer.Flush();
++        Assert.Throws<InvalidDataException>(() => new HerbalStore().Deserialize(new BufferReader(buffer)));
++    }
++
++    // ---------------------------------------------------------------- the file
++
++    [Fact]
++    public void TheFileRoundTripsAndABadOneIsRefusedWhole()
++    {
++        var dir = Path.Combine(Path.GetTempPath(), $"p804{Guid.NewGuid():N}");
++        var path = Path.Combine(dir, HerbalismSettings.FileName);
++
++        try
++        {
++            var lines = HerbalismSettings.LoadOrWriteDefaults(path);
++            Assert.Contains(lines, l => l.Contains("wrote the built-in defaults"));
++
++            var errors = new System.Collections.Generic.List<string>();
++            var read = HerbalismSettings.Parse(File.ReadAllText(path), errors);
++            _out.WriteLine(string.Join(" | ", errors));
++            Assert.True(read != null, string.Join(" | ", errors));
++            Assert.Equal(HerbalismSettings.ToJson(HerbalismSettings.Current), HerbalismSettings.ToJson(read));
++
++            File.WriteAllText(path, File.ReadAllText(path).Replace("\"BowlHerbsPerDay\": 6", "\"BowlHerbsPerDay\": 9"));
++            HerbalismSettings.Reload(path);
++            Assert.Equal(9, HerbalismSettings.Current.BowlHerbsPerDay);
++
++            var inForce = HerbalismSettings.Current;
++            var good = File.ReadAllText(path);
++
++            foreach (var bad in new[]
++                     {
++                         "not json",
++                         good.Replace("\"BowlHerbsPerDay\": 9", "\"BowlHerbsPerDay\": -1"),
++                         good.Replace("\"MaxStoredDays\": 7", "\"MaxStoredDays\": 0"),
++                         good.Replace("\"Reagent\": \"Garlic\"", "\"Reagent\": \"NotAnItem\""),
++                         good.Replace("\"Herb\": \"Mandrake\"", "\"Herb\": \"Exotic\""),
++                         good.Replace("\"Map\": \"Trammel\"", "\"Map\": \"Nowhere\""),
++                     })
++            {
++                File.WriteAllText(path, bad);
++                var report = HerbalismSettings.Reload(path);
++                _out.WriteLine(string.Join(" | ", report).Length > 200 ? report[0] + " " + report[1] : string.Join(" | ", report));
++                Assert.Contains("REFUSED", report[0]);
++                Assert.Same(inForce, HerbalismSettings.Current);
++            }
++        }
++        finally
++        {
++            if (Directory.Exists(dir))
++            {
++                Directory.Delete(dir, true);
++            }
++        }
++    }
++}
++
++internal static class HerbalismTestExtensions
++{
++    /// <summary>The plant system with a reagent seed type set, for NewSeed.</summary>
++    public static PlantSystem Also(this PlantSystem system, PlantType type)
++    {
++        system.SeedType = type;
++        return system;
++    }
++}
+diff --git a/server/tests/Misc/TwoHundredCapVerification.cs b/server/tests/Misc/TwoHundredCapVerification.cs
+index bbb8ee8..10d2bf8 100644
+--- a/server/tests/Misc/TwoHundredCapVerification.cs
++++ b/server/tests/Misc/TwoHundredCapVerification.cs
+@@ -118,7 +118,7 @@ public class TwoHundredCapVerification
+             }
+ 
+             Assert.Equal(SkillInfo.Table.Length * 2000, pm.Skills.Cap);
+-            Assert.Equal(11600.0, ClusterFSkillCaps.TotalSkillCap);
++            Assert.Equal(SkillInfo.Table.Length * 200.0, ClusterFSkillCaps.TotalSkillCap);
+             pm.Delete();
+         }
+         finally
+diff --git a/server/tests/Tutorial/TutorialTradeTrialVerification.cs b/server/tests/Tutorial/TutorialTradeTrialVerification.cs
+index 8e39b73..f8c3fdc 100644
+--- a/server/tests/Tutorial/TutorialTradeTrialVerification.cs
++++ b/server/tests/Tutorial/TutorialTradeTrialVerification.cs
+@@ -142,7 +142,7 @@ public class TutorialTradeTrialVerification : IDisposable
+     [InlineData("gathering.mining", SkillName.Mining, typeof(Pickaxe), 1)]
+     [InlineData("gathering.lumberjacking", SkillName.Lumberjacking, typeof(Hatchet), 2)]
+     [InlineData("gathering.fishing", SkillName.Fishing, typeof(FishingPole), 4)]
+-    [InlineData("gathering.camping", SkillName.Camping, typeof(Kindling), 0)]
++    [InlineData("gathering.camping", SkillName.Camping, typeof(Kindling), 1)] // cc-P804: the wild garlic
+     public void AHarvestFinishesGatheringAndTheToolAndPropsGoBack(string key, SkillName skill, Type tool, int props)
+     {
+         using var p = new Player(TutorialWingTrials.TradesYard);
+@@ -162,6 +162,13 @@ public class TutorialTradeTrialVerification : IDisposable
+         var ore = new IronOre(3);                // what the harvest gave stays the trainee's
+         p.Pm.AddToBackpack(ore);
+         Roll(p, skill);
++        if (key == "gathering.camping")
++        {
++            Assert.DoesNotContain(key, p.Record.StationsDone); // cc-P804: the garlic is still to pick
++            Assert.True(p.Pm.Skills[SkillName.Herbalism].Value >= 30.0);
++            Roll(p, SkillName.Herbalism);
++        }
++
+         Assert.Contains(key, p.Record.StationsDone);
+         AssertAllReturned(p, trial, loaners, placed, trial.Creatures.ToList());
+         Assert.False(ore.Deleted);
