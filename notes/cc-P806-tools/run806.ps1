@@ -1,0 +1,2 @@
+Start-Process python -ArgumentList '-P D:\UO\golems\Iron\shard-migration\notes\cc-P806-tools\stage806.py' -WindowStyle Hidden -RedirectStandardOutput D:\UO\golems\Iron\p740-proof\stage-out.txt -RedirectStandardError D:\UO\golems\Iron\p740-proof\stage-err.txt
+& powershell.exe -NoProfile -ExecutionPolicy Bypass -File D:\UO\golems\Iron\shard-migration\notes\cc-P806-tools\run-tazuo.ps1 -Image sl-modernuo:cc-p806-isle -Character "Iron Stock" -Script Walk806.py -Out D:\UO\golems\Iron\shard-migration\notes\cc-P806-shots-isle -MaxMinutes 12 -KeepWorld
