@@ -1,0 +1,2 @@
+Start-Process python -ArgumentList '-P D:\UO\golems\Iron\shard-migration\notes\cc-P799-tools\stage799.py --name "Iron Main"' -WindowStyle Hidden -RedirectStandardOutput D:\UO\golems\Iron\p740-proof\stage-out.txt -RedirectStandardError D:\UO\golems\Iron\p740-proof\stage-err.txt
+& powershell.exe -NoProfile -ExecutionPolicy Bypass -File D:\UO\golems\Iron\shard-migration\notes\cc-P799-tools\main\run-tazuo.ps1 -Image sl-modernuo:cc-p799 -Character "Iron Main" -Script Walk799Main.py -Out D:\UO\golems\Iron\shard-migration\notes\cc-P799-shots-main -MaxMinutes 6
