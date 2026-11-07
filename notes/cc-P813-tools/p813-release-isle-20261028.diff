@@ -1,0 +1,1100 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index eea4f30..a54e23c 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -29,6 +29,14 @@ Example:
+ - Restoring a Jacob's Pickaxe no longer refuses ingots kept in your bank.
+ -->
+ 
++## 2026.11.07.1
++
++### Changed
++- The pet choice scroll, the "Didn't Read the Sign" achievement and the League shop have new windows: a parchment scroll with Dog and Cat tiles, a dark System panel, and a dark shop with tabs for Titles and the Hall and a Buy button on every row you can buy. Get the new player package to see them.
++
++### Staff
++- [add FinishersBanner places the Hall of Finishers banner, a dark hanging banner with a broken sword (new art in the player package).
++
+ ## 2026.11.06.1
+ 
+ ### Added
+diff --git a/VERSION b/VERSION
+index 52fee99..073a8fd 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-2026.11.06.1
+\ No newline at end of file
++2026.11.07.1
+\ No newline at end of file
+diff --git a/player-package/tests/Build-UoOverrides.Tests.ps1 b/player-package/tests/Build-UoOverrides.Tests.ps1
+index 3624892..58e6eec 100644
+--- a/player-package/tests/Build-UoOverrides.Tests.ps1
++++ b/player-package/tests/Build-UoOverrides.Tests.ps1
+@@ -261,7 +261,8 @@ Fact 'TheServersCopyOfTheRecordsIsRecordsJsonAndEveryIdIsRegistered' {
+     # cc-P277: the dragons' mount items (28295-28296), checked by their own fact.
+     # cc-P365: the reward mounts' mount items (46672-46689), checked by their own fact.
+     # cc-P632: the scoring archery butte's hit pictures (46690-46709), checked by their own fact.
+-    $k = @($rec.tiledata | Where-Object { $_.name -ne 'shattered runestone' -and ([int]$_.id -lt 15424 -or [int]$_.id -gt 15470) -and ([int]$_.id -lt 15472 -or [int]$_.id -gt 15489) -and ([int]$_.id -lt 15496 -or [int]$_.id -gt 15529) -and ([int]$_.id -lt 13184 -or [int]$_.id -gt 13189) -and ([int]$_.id -lt 15592 -or [int]$_.id -gt 15629) -and ([int]$_.id -lt 15536 -or [int]$_.id -gt 15589) -and ([int]$_.id -lt 28016 -or [int]$_.id -gt 28296) -and ([int]$_.id -lt 13192 -or [int]$_.id -gt 13238) -and ([int]$_.id -lt 46672 -or [int]$_.id -gt 46689) -and ([int]$_.id -lt 46690 -or [int]$_.id -gt 46709) })
++    # cc-P813: the Hall of Finishers banner (46710), checked by its own fact.
++    $k = @($rec.tiledata | Where-Object { $_.name -ne 'shattered runestone' -and ([int]$_.id -lt 15424 -or [int]$_.id -gt 15470) -and ([int]$_.id -lt 15472 -or [int]$_.id -gt 15489) -and ([int]$_.id -lt 15496 -or [int]$_.id -gt 15529) -and ([int]$_.id -lt 13184 -or [int]$_.id -gt 13189) -and ([int]$_.id -lt 15592 -or [int]$_.id -gt 15629) -and ([int]$_.id -lt 15536 -or [int]$_.id -gt 15589) -and ([int]$_.id -lt 28016 -or [int]$_.id -gt 28296) -and ([int]$_.id -lt 13192 -or [int]$_.id -gt 13238) -and ([int]$_.id -lt 46672 -or [int]$_.id -gt 46689) -and ([int]$_.id -lt 46690 -or [int]$_.id -gt 46709) -and [int]$_.id -ne 46710 })
+     Assert-Equal 1 $k.Count 'one record besides the stones'
+     $k = $k[0]
+     Assert-Equal ([Convert]::ToInt32([regex]::Match($kc, 'ItemIdValue = (0x[0-9A-F]+);').Groups[1].Value, 16)) ([int]$k.id) 'item ID'
+@@ -306,11 +307,12 @@ Fact 'TheServersCopyOfTheRecordsIsRecordsJsonAndEveryIdIsRegistered' {
+     # cc-P266 the 47 second-block winter decor IDs (13192-13238) and the advent calendar gump 22469; cc-P364 the 14 League
+     # bestiary bodies (2072-2085); cc-P362 the 29 UI skin gumps (23052-23080) and 64 scroll skin art IDs (13049-13112); cc-P365 the 34 mount and evo bodies (2088-2133)
+     # and 18 mount items (46672-46689); cc-P436 the nine guild and League frame gumps (23200-23208).
+-    # cc-P665 the two vision panel gumps (23209-23210), fixed in cc-P674.
+-    Assert-Equal 803 $reg.Count 'registry rows'   # cc-P665: + 2 gumps (the vision panels); cc-P632: + 20 art; cc-P139: + body 2048; cc-P140: + 23 Burrows bodies; cc-P147: + 3 gumps; cc-P237: + 34 art; cc-P236: + 6 art; cc-P241: + 10 gumps; cc-P243: + 38 art; cc-P242: + 54 art; cc-P265: + 279 art; cc-P266: + 47 art + 1 gump; cc-P364: + 14 bodies; cc-P277: + 2 bodies + 2 art; cc-P362: + 29 gumps + 64 art; cc-P365: + 34 bodies + 18 art; cc-P436: + 9 gumps
++    # cc-P665 the two vision panel gumps (23209-23210), fixed in cc-P674; cc-P813 the twelve Claude Design gumps
++    # (23211-23222) and the Finishers banner art 46710.
++    Assert-Equal 816 $reg.Count 'registry rows'   # cc-P813: + 12 gumps + 1 art; cc-P665: + 2 gumps (the vision panels); cc-P632: + 20 art; cc-P139: + body 2048; cc-P140: + 23 Burrows bodies; cc-P147: + 3 gumps; cc-P237: + 34 art; cc-P236: + 6 art; cc-P241: + 10 gumps; cc-P243: + 38 art; cc-P242: + 54 art; cc-P265: + 279 art; cc-P266: + 47 art + 1 gump; cc-P364: + 14 bodies; cc-P277: + 2 bodies + 2 art; cc-P362: + 29 gumps + 64 art; cc-P365: + 34 bodies + 18 art; cc-P436: + 9 gumps
+     Assert-Equal 74 @($reg | Where-Object { $_.kind -eq 'body' }).Count 'body rows: 2048 (cc-P139), 2049-2071 (cc-P140), 2072-2085 (cc-P364), 2086-2087 (cc-P277), 34 of 2088-2133 (cc-P365)'
+-    Assert-Equal 56 @($reg | Where-Object { $_.kind -eq 'gump' }).Count 'gump rows: 64783, 54783, 22456-22458, 22459-22468, 22469, 23052-23080 (cc-P362), 23200-23208 (cc-P436) and 23209-23210 (cc-P665)'
+-    Assert-Equal 672 @($reg | Where-Object { $_.kind -eq 'art' }).Count 'art rows (cc-P632: + 20 butte pictures)'
++    Assert-Equal 68 @($reg | Where-Object { $_.kind -eq 'gump' }).Count 'gump rows: 64783, 54783, 22456-22458, 22459-22468, 22469, 23052-23080 (cc-P362), 23200-23208 (cc-P436), 23209-23210 (cc-P665) and 23211-23222 (cc-P813)'
++    Assert-Equal 673 @($reg | Where-Object { $_.kind -eq 'art' }).Count 'art rows (cc-P632: + 20 butte pictures; cc-P813: + the Finishers banner)'
+ }
+ 
+ Fact 'TheScoringButteRecordsAreTheServersTableAndEveryPictureIsThere' {
+@@ -1212,6 +1214,63 @@ Fact 'TheGuildFrameIsNineRegisteredCreditedPngsTheServerDraws' {
+     Assert-True ($style -match 'public const int Frame = 23200;') 'the server draws gump 23200'
+ }
+ 
++Fact 'TheClaudeDesignGumpsAndTheFinishersBannerAreRegisteredOursAndTheServersDrawThem' {
++    # cc-P813: Chase's Claude Design gump art is gumps 23211-23222 (no text in any: the server draws it), each registered
++    # once as a gump credited to Chase and Claude Design with its PNG at the cut's size, RGBA; the Hall of Finishers
++    # banner is art 46710, 44 x 88, with OSI's banner 0x1586's record, the same in records.json and FinishersBanner.cs.
++    $reg = @(Get-Content (Join-Path $pkg 'vendor\shattered-legacy-art\registry.csv') | Where-Object { $_ -and -not $_.StartsWith('#') } | ConvertFrom-Csv)
++    $sizes = @('340x280', '143x96', '143x96', '143x96', '143x96', '400x136', '560x420', '8x1', '104x32', '104x32', '72x28', '72x28', '44x88')
++    $pieces = @(@(23211..23222 | ForEach-Object { @{ Id = $_; Kind = 'gump'; Dir = 'gumps' } }) + @(@{ Id = 46710; Kind = 'art'; Dir = 'art' }))
++    Assert-Equal 13 $pieces.Count 'twelve gumps and the banner'
++    for ($i = 0; $i -lt $pieces.Count; $i++) {
++        $id = $pieces[$i].Id
++        $rows = @($reg | Where-Object { [int]$_.id -eq $id })
++        Assert-Equal 1 $rows.Count "$id registered once"
++        Assert-Equal $pieces[$i].Kind $rows[0].kind "$id kind"
++        Assert-True ($rows[0].source -like 'Chase (Shattered Legacy), made with Claude Design*') "$id credits Chase and Claude Design: $($rows[0].source)"
++        Assert-Equal 'ours' $rows[0].license "$id license"
++        $png = Join-Path $pkg "vendor\shattered-legacy-art\$($pieces[$i].Dir)\$id.png"
++        Assert-True (Test-Path -LiteralPath $png) "PNG for $id"
++        $b = [IO.File]::ReadAllBytes($png)
++        $w = ([int]$b[16] -shl 24) -bor ([int]$b[17] -shl 16) -bor ([int]$b[18] -shl 8) -bor [int]$b[19]
++        $h = ([int]$b[20] -shl 24) -bor ([int]$b[21] -shl 16) -bor ([int]$b[22] -shl 8) -bor [int]$b[23]
++        Assert-Equal $sizes[$i] "${w}x${h}" "size of $id.png"
++        Assert-Equal 6 ([int]$b[25]) "$id.png is RGBA (PNG colour type 6)"
++    }
++    $source = [IO.File]::ReadAllText((Join-Path $pkg 'vendor\shattered-legacy-art\SOURCE.txt'))
++    Assert-True ($source -match 'gumps 23211-23222' -and $source -match 'art 46710') 'SOURCE.txt describes the pieces'
++
++    # The server draws each piece: the IDs in DesignGumpArt.cs, and the gumps that use them.
++    $srv = Join-Path (Split-Path $pkg -Parent) 'server\customizations'
++    $art = [IO.File]::ReadAllText((Join-Path $srv 'DesignGumpArt.cs'))
++    $ids = @([regex]::Matches($art, 'public const int \w+ = (232\d\d);') | ForEach-Object { [int]$_.Groups[1].Value } | Sort-Object)
++    Assert-Equal ((23211..23222) -join ',') ($ids -join ',') 'DesignGumpArt names every gump once'
++    Assert-True ([IO.File]::ReadAllText((Join-Path $srv 'Tutorial\TutorialGateSkip.cs')) -match 'DesignGumpArt\.PetScrollBackground') 'the pet scroll draws its background'
++    Assert-True ([IO.File]::ReadAllText((Join-Path $srv 'ClusterFAchievements.cs')) -match 'DesignGumpArt\.SkipPopupBackground') 'the skip popup draws its panel'
++    Assert-True ([IO.File]::ReadAllText((Join-Path $srv 'LeagueShop\LeagueShopGumps.cs')) -match 'DesignGumpArt\.StoreBackground') 'the League shop draws the store window'
++
++    # The banner's record: records.json and FinishersBanner.cs, and OSI's banner 0x1586's values.
++    $cs = [IO.File]::ReadAllText((Join-Path $srv 'Items\FinishersBanner.cs'))
++    $rec = [IO.File]::ReadAllText($records) | ConvertFrom-Json
++    $j = @($rec.tiledata | Where-Object { [int]$_.id -eq 46710 })
++    Assert-Equal 1 $j.Count 'one record for 46710'
++    $j = $j[0]
++    Assert-Equal 46710 ([int][regex]::Match($cs, 'ItemIdValue = (\d+);').Groups[1].Value) 'item ID in C#'
++    $flagValue = @{ ArticleA = 0x4000; PartialHue = 0x40000 }
++    $v = 0
++    foreach ($nm in ([regex]::Match($cs, 'TileFlags = ([^;]+);').Groups[1].Value -split '\|' | ForEach-Object { $_.Trim() -replace '^TileFlag\.', '' })) {
++        if (-not $flagValue.ContainsKey($nm)) { throw "unknown flag $nm in C#" }
++        $v = $v -bor $flagValue[$nm]
++    }
++    Assert-Equal 0x44000 $v 'C# flags are OSI banner 0x1586 flags'
++    Assert-Equal $v ([Convert]::ToInt32(($j.flags -replace '^0x', ''), 16)) 'records.json flags'
++    Assert-Equal ([regex]::Match($cs, 'TileName = "([^"]+)";').Groups[1].Value) $j.name 'name'
++    Assert-Equal ([int][regex]::Match($cs, 'TileWeight = (\d+);').Groups[1].Value) ([int]$j.weight) 'weight'
++    Assert-Equal ([int][regex]::Match($cs, 'TileHeight = (\d+);').Groups[1].Value) ([int]$j.height) 'height'
++    foreach ($f in 'layer', 'count', 'animId', 'hue', 'light') { Assert-Equal 0 ([int]$j.$f) "$f of 46710" }
++    Assert-Equal 0 @($rec.animdata | Where-Object { [int]$_.id -eq 46710 }).Count 'no animdata for the banner'
++}
++
+ Fact 'EveryRegistryRowsHexIsItsId' {
+     # cc-P427 (cc-P379 finding 5): the id_hex column is read by people, not tools (find-free-art.py and these facts key on
+     # id), so nothing caught 54783 written as 0xD5EF (54767). Every row's hex is its decimal id.
+diff --git a/player-package/vendor/shattered-legacy-art/SOURCE.txt b/player-package/vendor/shattered-legacy-art/SOURCE.txt
+index bfda04c..528cb02 100644
+--- a/player-package/vendor/shattered-legacy-art/SOURCE.txt
++++ b/player-package/vendor/shattered-legacy-art/SOURCE.txt
+@@ -650,3 +650,28 @@ broken sword, 23210 the League crest (a ring of stones round a broken sword). Ea
+ label, made by shard-migration notes\cc-P665-tools\make_placeholders.py. The server shows them only when
+ clusterf.tutorial.visionPanels is on (off by default), so the loop vision runs without them. Ours; no third-party
+ content.
++
++Claude Design gump art and the Hall of Finishers banner: gumps 23211-23222 (0x5AAB-0x5AB6), art 46710 (0xB676) (cc-P813)
++--------------------------------------------------------------------------------------------------------------------------
++Author:      Chase, made with Claude Design in the Shattered Legacy design system: canvas "Shattered Legacy gump art"
++             (https://claude.ai/artifact/8vPhbPHmE6xoJ8nq5YVXgm), made 2026-11-01, approved by Chase 2026-11-05. Ours.
++Sources:     the canvas's boards as plain HTML at true size, kept with the renders in shard-migration
++             notes\cc-P813-tools\source and renders (and beside the overseer's copies in D:\UO\overseer\gump-art-20261105).
++Made by:     notes\cc-P813-tools\render_gump_art.py in shard-migration: headless Edge renders each window at the size in
++             its file name, transparent outside the panel, then renders it again with the text hidden (and for a window
++             background, its buttons and rows hidden too) and cuts each piece out by the element's own rectangle. No
++             text is baked into any gump: the server draws every word, price and button label on top.
++  23211        pet choice scroll background, 340 x 280         (PetChoiceGump)
++  23212/23213  Dog tile with its icon, normal and pressed       (143 x 96, the tile's button)
++  23214/23215  Cat tile with its icon, normal and pressed
++  23216        moongate skip achievement background, 400 x 136 (AchievementEarnedGump for "Didn't Read the Sign")
++  23217        reward store window background, 560 x 420       (LeagueShopGump)
++  23218        the store's row rule, 8 x 1, tiled
++  23219/23220  a store tab, inactive and active (104 x 32; one width for every label)
++  23221/23222  the store's Buy button, normal and pressed (72 x 28)
++  The pressed looks are the design's own colours one step darker (tile #ddcfa6 with border #5c4110; Buy #2a2317); the
++  active tab is the design's own "Gear" tab.
++  46710        the Hall of Finishers banner, 44 x 88: the overseer's true-size export finishers-banner-44x88.png, unchanged
++               (it matches the 4x preview pixel for pixel but for 2 of its 2,044 opaque pixels, at nearest-neighbour).
++Records (records.json): 46710 only, OSI's hanging banner 0x1586's own tiledata read from the client's tiledata.mul:
++"banner", 0x00044000 (ArticleA | PartialHue), weight 255, height 0. Server copy: FinishersBannerArt.
+diff --git a/player-package/vendor/shattered-legacy-art/art/46710.png b/player-package/vendor/shattered-legacy-art/art/46710.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..1444780e0cb13b08d45d9504578948aaa7f869ac
+GIT binary patch
+literal 449
+zcmeAS@N?(olHy`uVBq!ia0vp^IzSx3!3HGz%tfy;Fff*Rx;TbZ%y~20zKh9F<k)?^
+z;-<CRZgRijoVNEs(@`;{8xfTZ+S+TkZu-O!X4bUz0qYUr2yLZ^N>){7!Op<PXMU$F
+zy1$;YFY(jkz3EBM{FNq7^hi0PYa?&^ZQ0+I-|jDA_))V*FfY{pdr-i<#cjJ6zcpkv
+z)9rs`^7ntLrL^_VD?2%U)HHc7x+lXm$#K2dmHy8LQe2A{Zb-DsTmCkFsq!s@Lm6?w
+zH)5BXou2xA$FZ!RvjoeO)6+SHGvEGK_;YdLLa=fKv4L@8^tKgT{$Betqi3C2CwH28
+zkIEJo-BpKf71<>Sy1jjE;k^Ju5BK{*kCcELO}oqvax6xY-H^EP-co+8`uf@x_IKB6
+z<+$EGKkL!^MJ?LWzwYjR(pRveCv1x`cY1GB+{XozEbe;DVl)kUGf%x_b5%HR_O+yI
+z#rNLi1hosCwF+ApXTsU2EerCR!K@c8{J`-4|34?bc@mJp28sb@hTFoW0SP5jW&lMP
+NJYD@<);T3K0RZSZz-s^i
+
+literal 0
+HcmV?d00001
+
+diff --git a/player-package/vendor/shattered-legacy-art/gumps/23211.png b/player-package/vendor/shattered-legacy-art/gumps/23211.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..81a30669b22571bc2c2987566d9e114976c805d8
+GIT binary patch
+literal 1253
+zcmeAS@N?(olHy`uVBq!ia0y~yU<?6b2@W=(2r~!YA_fMQHJ&bxAr*7pUO(T}%P4XD
+z<M%z!W$M$MJr|xhc4%Jf?|^j&`nYF^F1^#3v!h|BP^<KeH*SfIi+s|~ovFUV^vf^#
+z%g>ktm-D}_O*i8?yy0(EcCpkl_Sc7-wV4_A=bFXWNTfa9JbU|l+qt>>@7{{hJ8x%I
+z|MAz$rz?9O-(xFSwB}oRd;a|Lx_9sYRv7tR{u1EB`0w1OE5{1n9olOA`s=TUJM3(B
+z=qzKX&#$aXp1~JB{n%qUrVslCLK-?2FuAaZDk!aB5Oiei;Lvh#31C!e;t~)XV5yWs
+z5%>H1t4l@F8I8j8@0`q+^9<-u(m1gH+-d#+cibQeqfuuJ!h}ncNO_#I@5hc?_if+F
+zGN@n6$}g9Ae%k+Wj?Db}|C@~0esd9h;J@};S$lqb`Le=&6_(O%i8tytf34U%@11`;
+udw5^9%mGiMbK>&P9)CL88(l8{m#Jfd-}Jt$dMRM>#o+1c=d#Wzp$Py?aBk-S
+
+literal 0
+HcmV?d00001
+
+diff --git a/player-package/vendor/shattered-legacy-art/gumps/23212.png b/player-package/vendor/shattered-legacy-art/gumps/23212.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..5a15511b80b20051c995bf3e4245b45d792e70a8
+GIT binary patch
+literal 1184
+zcmeAS@N?(olHy`uVBq!ia0vp^{Xm?+!3HE%3KfqqFtDV1x;TbZ%z1mWKI2NM%<+%c
+zzZac*aBg-@X86l<Y3Y91TW57`bIw^jO;K7`S-iMjWk;&uH)lzgBU;@|+B}^u&5m!_
+z!`_@pF)qJ(>xR@?H#S|1i|@AG{9YFSzU24flFz@i9j%hSf7|!_-n-vbf6C+cegC=V
+zf5oStbvuLAlp23D?B{j1wR;gI;PT(SbZ6oI?LygJ^AGJ|te5^L@sDwKc3jJ=Q^wV1
+zUd6k_obuDT84j3TdF*_0@l~GoG?&t+3zzJXvj6@g;qq36!wZ+JSZ4z?$ZRwF!kyh8
+zCrCV2G(6^<)YE=Mg1^&HPAJ(%<yeJB4{nJ&4SnCzN@{D5yfO4KKL3XC*{b*ca?bA6
+z#taD`FIfi`oM%?^H~C%hiDM2o&*Rh2ny=f*XIeG9T&XFnZp8lB^U~23eTRSFZ@K%<
+z;W4}KjgV00+8F2SAJ3na%e`hePbFq&kz~7F4fEv5!Z-dM$}Z3g3f#4l>y@tFoFA)r
+z18sA@b!<Kr^xo!jaPSMeN}h)s74(iS`tkcyyk~8F(IcgQGQ3Hrw^iMFsL8;Pl6v;|
+zv|Dq3q}+e~<IRKLE7soUeXex1<KyMNRKIy2ehR+HzQY>-T9M~leS3t?q%Trs?ZT=3
+zwv72VpS@nUUPs66<E~zd&%f8-xE;{`@15{UDeJYVPfk9z|Htaql>XtzW$OnKGn!Y2
+zFTeQZ<L(YOr4{$~acA#M4G>XXTAjDLp7nJ2-R^JK4rlx=v3GjTRI#Zn-RrxDxum3j
+zi2QN?zjrzQlu2zp|L))pv$l&5BCouu;9M=QW14fnR9fy}*Y55MKRy|E#CrTonVoH9
+zG;h@`s~dAIUu5JTYy2K}bkfq(3pBX8uG^>lxHmmXoPpu=yQtJ3acQSdl*_pW2E=U?
+zJ^%J5cl+JW3pW`yZ5ChhCvd7q!VeRM1Dh9J_^|iPw2A8H_uH_x-uQdXy<+!5zR1s;
+zgZI^aH+TPdI^lll^+U<ZC*lf>KYg;*ysv*ZrNo8-=uc+T?_ti@<X*gW`te8O&d<~9
+zV^8m`<@{u;ow)gK%87X|RUSWPWKiWh!dsD~S*Y-R+tG@B59eOdw_{IvVtw9c&Z{pE
+zLzbW4@O$lnO&|Z<cz!(L{`R)J`K;4=+w)|QQ(xqx@_DA5|6Jqu+U>OW5WYJ<BUXE(
+zi;cA0x*zAa_CB5Jxpv}<e=e`1IOU@Wq*2mSHFb2P1;^&Sh&u7cGK25pR)LV|(%Y2s
+zRjaI{Bm~ZOtZTh+`)1Q`FRcYWE=(U8>$Tge`kbyerJZ-n^ef#N_+;&YTbI`UU>8y5
+Vi|tG81r|9B44$rjF6*2UngAaZLiGRu
+
+literal 0
+HcmV?d00001
+
+diff --git a/player-package/vendor/shattered-legacy-art/gumps/23213.png b/player-package/vendor/shattered-legacy-art/gumps/23213.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..63f719466bca68039092793160d9a897f11404d6
+GIT binary patch
+literal 1183
+zcmeAS@N?(olHy`uVBq!ia0vp^{Xm?+!3HE%3KfqqFtDU~x;TbZ%z1k=J}0<T;@HRM
+zCa)W|Dl1FB4a>bNk?f*uEPNwH!^n(z(~MqG)|E`V4^<@ceDq2-QF}Gl@Q6pxq)ugS
+ztBwh}rFyT;a+!i>aww{?oQzreKVthj1EGa$;yjJkw(a}!ro{IA^L6UW_usGn_|`JF
+zzbN-l(4zgnIrhD`Zktfg<MRJ_R`G+6$8v96dE(?(U(T-A!*l56Ene@!&TE?k+ql`8
+zKkV4u=)!dBUo5}+oOQN5?eC&2Bpj}bzcpz2W7p=axlv@gg2;!13%)9t)EmkPCEKVR
+ztMKUgI6>mEqTw;;q@MO868xRGCFWHd+_=r0U%&oZa)z4wYsP1*6W=SaRaG-E9Q}TK
+z<DO5Bz3Q{7_k7~`;iiB1@7M71xbpJSM`bqa9=hC0u+i*tUHrnPM4+-#?M?mX*ql3e
+zT26Yf+-tO3>pr`<N1b*1qwN<eUnJkzVc0u2_xFY!3m8hj_C^FnbS$(pUo=@bs^4OH
+z$=A8h%WV1*-wPabW{l}RTJZVVe9gV}Rlls(u`%Dc^-Jc>($fqK$7GbZZF}c%TwVU*
+zkBMa#vAGd30SgX&ndxr+(dCe$jO`yyr+?Z8QpJHgt~9lFi!I&Kb~42+wO0AswcHt{
+zdy<|yM}+QWd+t_ur1AUxW7DR+U9m25`niwBL1D)pfBm9ZakTxc?(Iag=gDblZ1Hmc
+zc!Gr|XWaY9Bo`UX?HYJ#SNiH~{Zm?6AJ29sTNG|#uDky}qv)N_Yq^<f+K)S3)eHVT
+zpKtK%wkyzC9X;``7yh$vv)wNpx;i`L_V!(AveVW^bn@S;WZt-PMb__>t~EXB-lsR8
+zFn*r=;kMis`9A`x-)}C|;0m+d74~)S`s2$O82UC9UHyJ3D(v5_AQ4u7yRRnS-c+-y
+z1>61EXDCrze7SD5SK60Lt_%*Dm94L;Gj+As+th2v?qky5`^}1P&v&sNx8z&b?f>3o
+zsI#pvySDLT0SC93PRrSU4!6FaHi?wwXP9yJXGBoQl2f<R&(CpF5otU7Zb$K&6G^R$
+z*T}Frhs9k<Kl!VI!NHS(Q}kVg7n8=8s14trhF{+Q!)C%?`TqX}Stpu<o#n2cyUu*~
+z*yqzH49?B{>A3atSBLE%FYHB0eX)Pe2XEaa_P@p`Fm&!M=1VEh)uY4xO9cJj3QPYl
+zeY27GtLEB?Z~mmbe#My|O<JlYJ)M)OBW=U2HyrHDQRf{$dss*`Y(2tv_}8(piaY9(
+z0(Ykt7%=qzR(T~gYvSb#Pnd)_OG<0{Ce-`9zNv9IGM8`7{VP3f>2XKm4<F^cu>Sdz
+R<G_N4!PC{xWt~$(69Ae)EieE8
+
+literal 0
+HcmV?d00001
+
+diff --git a/player-package/vendor/shattered-legacy-art/gumps/23214.png b/player-package/vendor/shattered-legacy-art/gumps/23214.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..e8c54ccef72ddd978108c17a16c72ed8c418b6e2
+GIT binary patch
+literal 1252
+zcmeAS@N?(olHy`uVBq!ia0vp^{Xm?+!3HE%3KfqqFtDulba4!+nDh2dea4kind2Xy
+zm*>UZ_B*O)ll|_N6nC?u)-(QXi<Tu!*{^jp#$Mn`5XTmIl`Hmw9s+`n9`&sc?LS|)
+z-!5rkp1!O1p~p6^lSQ*`FMV@KyX3Oz_Pbx*rH*C3s=i;g{rz6K`nrAdYxljkpSS(}
+zUA|{u;$HY{F@3jav89jBt=<#$oGi{~)<hgjp1S%(UiKZ=>z#{r>VEn%9Xu3rUM*8k
+ztoK4tIIlyPd-04<%fq#0b}Ba}C_e2DyL?YZO<U}3m_<=I(?O@Ci+P)ZY&&{lyWG!+
+z^v}?gGYqy#T2^ty=VQmrM}o#jmD31HELQ$%dgb~%zbN~F&6Ah4-4gLJ`L!w7_CUnd
+zYef^{&(B%3{=3ro(6#Id@B8#K^8U=qbXB$4SK!&D{^!5uJVC1(1)rLV84DLWM)6-~
+zeDGjN#j1-7E8G&I0y$mzeV4y{V8@`PHUH_Em%=I@ODZ;j<T8$~mj3wk8PkT8r&4x5
+z6N0<crEI&7pYU{ebn9~F$y280vEQxyj~6f5*H&S3aB}ywyI+1yJ-zqJyMJAuFBX^A
+zmTh^i6Z}r!BkKH=f&-7`uS$P=`|!!fzS(iv`PoUYr(MsmjXD0{!PVV%)*&&c?sT;(
+z&nd|H{3d_iztgobyMC|-bIbeeD%-NM@s+-P@}(yX()WH&c$vC6X7~F1Kek`K#udHY
+zQ}XO)#jd)ak`3%!-T$}B*@`Eg@5`NXcFu8a>3heXpDz8nukv5#mpR=#s?v6SdXube
+zZOz`GUAy=H8s0eBgx}lxKm06O8MXc7*8+w|ofegK`(Hm_rhNWbaLg|b%bS*4Os`Jv
+zIL`QE;a?5g^xcvBs&p%V3dih!{^5c^>|Fbx5Tm<aH(#EZ{#epnZ?@~{)g2{slj?uG
+z|DRI&Yx(0RPkPe7{aGHf|Na37d+Y7>=N#(ox#v|L{Q4QF<Njv`otQn7PR#Usb?7S3
+zpUT$B>ig6~V!9?jeV4s#Uzs^OQ1o~^&|x!IvYyPpwD-j2j|?Ge@1I$6^82ML8~PVM
+zRP>V5^S<@jH&)`ow0izsclW*T+bS?eEa|QEd*h$`H1&Mv{j>RfW7oOor=R|u9+&=j
+z+FA?F55Lvb-u~RSbz<_`_PpwAYrk1u-*@WNk^%+hM?2RoSim9EKJ)WDkFOf@CK`Tx
+z^6Yn^O#6*|+m&)hjg8dg8fyNtBs~}Hk2cbo=lQ2j@zt-LGry$1=(YKu`PwaY^Rr3Q
+zr_bMFS6%m1_V1sy-_B~rH#|<c@>+o5`QFfA;r!Y?=2wePNPK>|TifXMM%8ygq^5h)
+za|)?CQdyf6lP-F!dOpEWMXXnVqwU13z>PiA{$Azsc;}%bwQ%XWS?;H&KZ2GEOBU~J
+si`Zg)b+hLzZeYo<BI4AXQ{q3lPnoMlS9o<O0ZT6iPgg&ebxsLQ0M)pA^Z)<=
+
+literal 0
+HcmV?d00001
+
+diff --git a/player-package/vendor/shattered-legacy-art/gumps/23215.png b/player-package/vendor/shattered-legacy-art/gumps/23215.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..e403d20446d8747910d6cab3941038ee0c41aa16
+GIT binary patch
+literal 1239
+zcmeAS@N?(olHy`uVBq!ia0vp^{Xm?+!3HE%3KfqqFtE(?ba4!+nDh45-TdHEnd2YJ
+zx360)ZKYfoZEby^Jwc$6fssdnYqm?|7K=rTqy_X%;wm4?KU}(9?Vg8&AT#HqgcFC;
+z*jqNHG;~NUR*F1%tCX21hc)fxM<+vLX}*0j*WZ2lyz9@`FXj6@@1M1-{SYhr<EZ7G
+zPnzz0?-s4!&OY&fkm$Np*T33p@-hz9??{!tKmSkLSKrwy*6=;8GCNtkGNozTHL(Jj
+zn)myEPT9OKbMv8z*3-PyZtVOj-1V#KF_-&0uhi0xeJ*nr#qcXlp8iPC_^5JPm-`u!
+z{u!EbhQT&T%PNleeC(J>NaFa4&5P&uIsbNFdz^1u(Iby)KDAjD|6=$JBImw)ry|&I
+zY+`YO`{GxIH+Q!-uS+&`n#kcDW;6XU=l}Yy=W?ZGTOOw5Pdb_M;++j!!}*U-D^_(b
+zta#_BA*2}en?t?t7(>LK9MzBWiY+WG=j9}6%&XqA?V~Bv(xnVn%w2xIILu#UbMZ)^
+zjhh{NUhLdg(u<PURnJ}i_~o07<ApNw;&x`8Ilg{ryTy%7v%CMU+<mWFVQNxT=+hNn
+zojBQT<j!B*wx09ql|ISyH!t4>x^C{5fLZO!&mVZNzjO88!xN*@&d+^+Y02ct>5q5T
+z>7Ko+9X?~bhRv&u!Li40{{0#DZhb|=v+{e7Hb!oawa#C#WXhKZ3$lMdH9mi=c;Ry!
+zhN}-})vx{jUG-<y^RjsrMS8twXLGVF+fj8dA=2{i$(GgC&$Q3i9e$(#?{)1&KmNa)
+zr~OQxAscPC%p}08#Ch}UhYS{d&KvgJ`C9vVV*2CGGc_Xn@1K9U?y<#99R~Y(w$AlN
+z2WL%}=A5?kKhym)DIN3e-BW(~T>pN~eO~YK9Xn>E&yV+h-)ixe{Tt(j;&<VHR8`MJ
+z@3`^xGcSMq^V9lv$v=*jPFuUGy!L<1lbh9Y4WgylFZNz=esjRCEkEY*_WAXT)Qn`~
+zC+>bf6Bw_ZvNzn#W~=_HGM;*MasH*fCoX?vSW~@t=5H;n7gj>bllPwNS=rxj^{iqI
+z?}Kgk*?Y_H@ZX>NXkkDH@9cZa9v#fo^PTtKruybCRe>3Yx?jhoKHmNQVex{Tp6a>z
+z{_`IAlwaRbefOQk{rmQ*qCpk`3?J_V$*yCZ-*3q+_OwdmyvB@*Wh|#Z{Cx1~fWtcX
+zk3CJD><STPQ%_G9>5t~pn)m6`%0G247rp*1cBy}%a^=6v*E}{qJEJPW(-$>=d%{Us
+z+y7<9&&KZ%i4S}z8WQla=g<AK9*=8X<lpaDdcNZS|5M4DD^5?_;Y~y`Cp}|Oq$4au
+zv~Pl!T9IwLj}kB^uL@{c^z>`*maXps9g5t8PO{{#t&Rv2KN^4i0!!cFbGgwkUcWv0
+pHD}WERfo3f#LF&yx3u>UXJD?<bM5;f`+x-&gQu&X%Q~loCIGc5akT&d
+
+literal 0
+HcmV?d00001
+
+diff --git a/player-package/vendor/shattered-legacy-art/gumps/23216.png b/player-package/vendor/shattered-legacy-art/gumps/23216.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..99efc12c74a38eb757057ae8e52d50d623b82bf1
+GIT binary patch
+literal 770
+zcmeAS@N?(olHy`uVBq!ia0y~yV4MJCcW|%)$&<c&`xqFQPI|gHhE&XXd)3fu8Y4r)
+z!}IGMy;-L(`M2$yf~?~U2G?BPR_{FBts*R@rfve3CZXypjISt4HSM3k_R!y0_$AB4
+zJ>6{Qi<`=;pSLASnBBA8U7u!CT%P#zP6|WA{u}e(`ttMh&)>hN^8Lv>$9AWG-(Ual
+z(}&Bm`9E7<emgmj`GH9E%r$)Bc`<kG>wjK)Tqtwg_cOx-i?U_64<FzDUi{gy!eX1<
+zdnzv4Fj%ac`|{g{4SPxwZC(m6{PSmHa!68OP#L9$Xb?O;fAih-sV84~mNR^q9|24R
+zzc<U@KX#v;UH{s;_3|@082)cEij=*!Zms;^S#R^s@*Xz0Q}_4F#XpyBT7T|-uBI-_
+qe&FTT?DG6w_P49ImcBlC*#3~Q7mvi`(6zv{&EV<k=d#Wzp$P!<tJ2Q^
+
+literal 0
+HcmV?d00001
+
+diff --git a/player-package/vendor/shattered-legacy-art/gumps/23217.png b/player-package/vendor/shattered-legacy-art/gumps/23217.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..68d420fe1329e4f24e5e9b24a7e42302d26a19a5
+GIT binary patch
+literal 2130
+zcmeAS@N?(olHy`uVBq!ia0y~yU@~A}U|hn%1{BeMC%>G5fkV>M#WAE}&fA-gS#hZn
+zZ4cki`8>PBu_>X6O-IrrCNe!wVKE15xq@Fw@}nbSmjqZfMLJEN|LL1^v@yXWf5$r3
+zJvN7>?`8HF>Yek~TW+{7ZraZr28KQD*GhNadw;y#{_m&P+b<vedGhJ*{olg#@BOQ+
+z*l+vQgrTAR?K8tZd%Hc>5zE9chd)=pzJ34wTD>@ihVOUtW*&Q~E`RULX`^m&28D-p
+zcl%T4+0C9`#ldi(UNwQCL57i;;R%NXgM#}31_nzeHii>|1`G~;4U7y$EIbSol!vI2
+zH*$|(h%cA7Jr>EJ@Z#!Q`TxJqx^vDrF2Tj{fnQ%`xcPSY#owrphDA0UjmFVv9I92w
+znb*7a-a84b856eqB;WmJ{(0N|`uduZ4R5EtTxrh8@Mra1qu$4h`M3T4{q;Do%HCJ=
+z?WOr?Bm4MgFW;;@&d6Ysa`)Ty*Sr3H_<Z{Qx_@l*CU{I;_NVnTu&u!0>FVdQ&MBb@
+E0Ara5zyJUM
+
+literal 0
+HcmV?d00001
+
+diff --git a/player-package/vendor/shattered-legacy-art/gumps/23218.png b/player-package/vendor/shattered-legacy-art/gumps/23218.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..cb943d74416044fcd5bbb33b62ed9c5eab9a14c3
+GIT binary patch
+literal 73
+zcmeAS@N?(olHy`uVBq!ia0vp^96-#-!3HEBGrV^OQUabXjv*CulCK1b{XgHp&cL7<
+W!kC&8y=xUvj=|H_&t;ucLK6TBMiD#!
+
+literal 0
+HcmV?d00001
+
+diff --git a/player-package/vendor/shattered-legacy-art/gumps/23219.png b/player-package/vendor/shattered-legacy-art/gumps/23219.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..1943de883ed0294e85998b636237bb101f3f65d8
+GIT binary patch
+literal 270
+zcmeAS@N?(olHy`uVBq!ia0vp^89=PS!3HG%iQ6s!Qdd1)978JRyuEEGbXbAM<)W)Y
+zlFg5Q;;IKEnuC{~WZiRgpK!)A@hp{cnd5UOyZZ?mN<6829HmjZ;7jL($;bbF)7YB4
+z?)S@^EDh%EwbhJ#8|Elw*^9QHh%wKypBUV7G@;8mW1Y02#Fmm1ngW)rO3NLdh;+<h
+zni#B5#O31GNP^(a9b$WSE`L73{+`UStqDtc-`w_|*zu?DxqYs}6f;JK%KKmHoRVU=
+em-0?A`^cKzYn5j9F2NJ%K?YA(KbLh*2~7YXsb~=Z
+
+literal 0
+HcmV?d00001
+
+diff --git a/player-package/vendor/shattered-legacy-art/gumps/23220.png b/player-package/vendor/shattered-legacy-art/gumps/23220.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..e38694bf29282a6e3780e12d8d7eb7304ec1e318
+GIT binary patch
+literal 317
+zcmeAS@N?(olHy`uVBq!ia0vp^89=PS!3HG%iQ6t<U|?kNba4!+nDh4b#=NEkh9e&z
+zcfS_DF=4`nteFybA|*UhF20!jlSB6QjiplTzDLvxvQkwQTX^RkcqbdP^I@HT!O42N
+z<59n3QVqLG+B7~WJYIcU?*4W5eR}(6tl1>dUD0*7x^tQIv3qI^PWO+h`7^K^xLO@P
+z{&Jm#%dETu&tLW_%{}bWxZI*;R-S`Mg+Vg^#Oop*bC@OuD-?0L_%)u;6tHAfTJG?K
+zctM}L-#BW^-^hOQf3bVTZMkOwVK<(2DhYDdir=<5_%ZC@#%p%hZ%R*l8S`COsPy(@
+ep!EFu59}*GTK3#6U19<Z76wmOKbLh*2~7Z?JcXD5
+
+literal 0
+HcmV?d00001
+
+diff --git a/player-package/vendor/shattered-legacy-art/gumps/23221.png b/player-package/vendor/shattered-legacy-art/gumps/23221.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..742424f5cdd4117ce79119cfa5dbb6c0c99104ea
+GIT binary patch
+literal 297
+zcmeAS@N?(olHy`uVBq!ia0vp^9zZO^!3HD`efqf!NPX~haSW-L^Y*4~S91bG%fpY!
+zxB0gSJL(+0B%>g9(=RCExm$JHl-X8__R+Z<CmAp0>9`75?{y4nap-E*+&beq%i-I7
+z$!qtDZ)T|!Q|7Ya2r!lX_FUTRxU^kYWRuCqk6UdP=KWr{z1Qi*?uaw$1rH89iR^j*
+zHni~GmE8WT@49Td6Biu_o>LFxX?#d%lQSyga?uc2=+MF>NDO0HmQ~9>>o0v5Icvp3
+zFCUaSrz-Y2Wa2%W{=*{n(}nuBev7M7JF$G%y!chi4nGV^`un?`T_VJ?c*0wMd7$4J
+NJYD@<);T3K0RS1pcANkJ
+
+literal 0
+HcmV?d00001
+
+diff --git a/player-package/vendor/shattered-legacy-art/gumps/23222.png b/player-package/vendor/shattered-legacy-art/gumps/23222.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..fe002acda8a28e88a252e69e9571b508075a9ab9
+GIT binary patch
+literal 299
+zcmeAS@N?(olHy`uVBq!ia0vp^9zZO^!3HD`efqf!NPY5jaSW-L^Y-S#yh8yDtq(8H
+zzIppf$Q{))PP3wPOxNBtNcBH1o#4TH@W7<To7@5tlNHvj$o$2$z(c^hFX!mbc@Lg!
+zSKn~$URq^Se@=(FxMM?i{)S)wT)&ncI<4bx;1_Qg|L4H<-0Qci4jxrJW#cNqkT#1q
+zFqg0E^O5VitKKqR&S5bwnE2?=;p@6=dQC5@Jnm}>EOcmL66A8xAc8Stb^e1#8(z!q
+zef&ru{QiM8W$9B~S9$oy$Sl$cTJyc0W6jp>=amlrcDerf@KN)K_va(>`gSnaZMU2_
+Tw_|=X(Dw|Uu6{1-oD!M<3b=nv
+
+literal 0
+HcmV?d00001
+
+diff --git a/player-package/vendor/shattered-legacy-art/records.json b/player-package/vendor/shattered-legacy-art/records.json
+index 750d2c4..4fc34a5 100644
+--- a/player-package/vendor/shattered-legacy-art/records.json
++++ b/player-package/vendor/shattered-legacy-art/records.json
+@@ -1,5 +1,5 @@
+ {
+-  "about": "Our own tiledata and animdata records (cc-P26, F-8), and our worn-item animations (cc-P62, F-35), and our creature bodies (cc-P139, F-46: bodyAnims, a .vd each, into anim7 beside the worn items), and the winter decor records (cc-P34, F-22: OSI's statue 0x1224, animated fire pit 0x29FD, animated oven 0x462, tree 0xCCA and fireplace 0x45D give the flags; the statue adds Impassable; frame interval 2 as OSI's fire 0x19AB and campfire 0xDE3). Nothing here is copied from EA's files: every value is ours, and the tiledata values follow OSI's animated runestone 0xADBA 'Runestone01 Glow01' and OSI's earrings 0x1087 (flags, weight, layer and height read from the client's tiledata.mul; see SOURCE.txt). app\\Play.ps1 writes the tiledata and animdata records into copies of the player's own tiledata.mul and animdata.mul, and gives each equipAnims body a Bodyconv.def line, in a copy of the player's own Bodyconv.def, that sends it to slot 'slot' of app\\sl-anim7.bin (scripts\\build-equip-anims.py). Change only together with registry.csv. cc-P50 (F-32), the chest mimic: flags and height follow OSI's wooden chest 0xE43 (Impassable | ArticleA, without Container, since the mimic is not a container); its idle loop adds Animation, interval 4; the two dead tiles are ArticleA only. cc-P237 (F-21), New Haven community art: carts as OSI's ore cart 0x1A82, the oil lantern as OSI's lantern 0x0A15 (without Wearable; its animdata is 0x0A15's steps and interval 6), railings as OSI's wooden banister 0x08AE, beams as OSI's wood supports 0x019C, the palisades as OSI's palisade 0x0221 and the tents as OSI's tent wall 0x01F0 (both without Damaging), the campfire as OSI's campfire 0x0DE3 (one frame: no Animation, no Damaging), the cage and meat rack ours (Impassable, heights 20 and 15); shard-migration notes/cc-P237-tools/records.py gives each value its source. cc-P236, Chase's satchel and guild bag icons (13184-13189): each copies the stock graphic it replaces, read from the client's tiledata.mul, and adds PartialHue (the icons hold exact grays, so tier hues tint only the leather): the satchels OSI's 0xA272 'Ore_Satchel_east' (Container, weight 3, height 1), the two bags OSI's bag 0xE76 (Container | ArticleA, weight 2, height 2). cc-P265, the guild hall decor packs (28016-28294): one record per piece on its base ID, each copying a named OSI tile (vat 0x1550, flask 0x182A, crystal balls 0xE2D/0xE2E, fire pit 0x29FD, brazier 0x19AA, moongate 0xF6C, wooden banister 0x08AE, tall ladder 0x2FDE, stone wall 0x001B) or the author's own recommendation (RedRooster's tanks and crystal ball, with his frame timings), plus Animation on every animated base; shard-migration notes/cc-P265-tools/decor.py gives each value its source. cc-P277 (P139-D6): the rideable dragons, bodies 2086 (red; its .vd is over the 5 MB rule, so it is kept outside git and bodyAnims 'outsideGit' names its source and SHA-256, which scripts\\build-equip-anims.py copies in and checks) and 2087 (colorable), each with a mount item (28295, 28296) whose tiledata record is on the Mount layer (25) and names the body as its Animation, which is how TazUO draws a ridden mount (Item.GetGraphicForAnimation); flags Wearable as OSI's old mount items.",
++  "about": "Our own tiledata and animdata records (cc-P26, F-8), and our worn-item animations (cc-P62, F-35), and our creature bodies (cc-P139, F-46: bodyAnims, a .vd each, into anim7 beside the worn items), and the winter decor records (cc-P34, F-22: OSI's statue 0x1224, animated fire pit 0x29FD, animated oven 0x462, tree 0xCCA and fireplace 0x45D give the flags; the statue adds Impassable; frame interval 2 as OSI's fire 0x19AB and campfire 0xDE3). Nothing here is copied from EA's files: every value is ours, and the tiledata values follow OSI's animated runestone 0xADBA 'Runestone01 Glow01' and OSI's earrings 0x1087 (flags, weight, layer and height read from the client's tiledata.mul; see SOURCE.txt). app\\Play.ps1 writes the tiledata and animdata records into copies of the player's own tiledata.mul and animdata.mul, and gives each equipAnims body a Bodyconv.def line, in a copy of the player's own Bodyconv.def, that sends it to slot 'slot' of app\\sl-anim7.bin (scripts\\build-equip-anims.py). Change only together with registry.csv. cc-P50 (F-32), the chest mimic: flags and height follow OSI's wooden chest 0xE43 (Impassable | ArticleA, without Container, since the mimic is not a container); its idle loop adds Animation, interval 4; the two dead tiles are ArticleA only. cc-P237 (F-21), New Haven community art: carts as OSI's ore cart 0x1A82, the oil lantern as OSI's lantern 0x0A15 (without Wearable; its animdata is 0x0A15's steps and interval 6), railings as OSI's wooden banister 0x08AE, beams as OSI's wood supports 0x019C, the palisades as OSI's palisade 0x0221 and the tents as OSI's tent wall 0x01F0 (both without Damaging), the campfire as OSI's campfire 0x0DE3 (one frame: no Animation, no Damaging), the cage and meat rack ours (Impassable, heights 20 and 15); shard-migration notes/cc-P237-tools/records.py gives each value its source. cc-P236, Chase's satchel and guild bag icons (13184-13189): each copies the stock graphic it replaces, read from the client's tiledata.mul, and adds PartialHue (the icons hold exact grays, so tier hues tint only the leather): the satchels OSI's 0xA272 'Ore_Satchel_east' (Container, weight 3, height 1), the two bags OSI's bag 0xE76 (Container | ArticleA, weight 2, height 2). cc-P265, the guild hall decor packs (28016-28294): one record per piece on its base ID, each copying a named OSI tile (vat 0x1550, flask 0x182A, crystal balls 0xE2D/0xE2E, fire pit 0x29FD, brazier 0x19AA, moongate 0xF6C, wooden banister 0x08AE, tall ladder 0x2FDE, stone wall 0x001B) or the author's own recommendation (RedRooster's tanks and crystal ball, with his frame timings), plus Animation on every animated base; shard-migration notes/cc-P265-tools/decor.py gives each value its source. cc-P277 (P139-D6): the rideable dragons, bodies 2086 (red; its .vd is over the 5 MB rule, so it is kept outside git and bodyAnims 'outsideGit' names its source and SHA-256, which scripts\\build-equip-anims.py copies in and checks) and 2087 (colorable), each with a mount item (28295, 28296) whose tiledata record is on the Mount layer (25) and names the body as its Animation, which is how TazUO draws a ridden mount (Item.GetGraphicForAnimation); flags Wearable as OSI's old mount items. cc-P813, the Hall of Finishers banner 46710: OSI's hanging banner 0x1586's record (banner, ArticleA | PartialHue, weight 255, height 0); the server's copy is FinishersBannerArt.",
+   "tiledata": [
+     { "id": 15376, "name": "shattered runestone", "flags": "0x01040040", "weight": 1, "layer": 0, "count": 0, "animId": 0, "hue": 0, "light": 0, "height": 3 },
+     { "id": 15387, "name": "shattered runestone", "flags": "0x01040040", "weight": 1, "layer": 0, "count": 0, "animId": 0, "hue": 0, "light": 0, "height": 3 },
+@@ -326,7 +326,8 @@
+     { "id": 46706, "name": "archery butte", "flags": "0x00008040", "weight": 255, "layer": 0, "count": 0, "animId": 0, "hue": 0, "light": 0, "height": 10 },
+     { "id": 46707, "name": "archery butte", "flags": "0x00008040", "weight": 255, "layer": 0, "count": 0, "animId": 0, "hue": 0, "light": 0, "height": 10 },
+     { "id": 46708, "name": "archery butte", "flags": "0x00008040", "weight": 255, "layer": 0, "count": 0, "animId": 0, "hue": 0, "light": 0, "height": 10 },
+-    { "id": 46709, "name": "archery butte", "flags": "0x00008040", "weight": 255, "layer": 0, "count": 0, "animId": 0, "hue": 0, "light": 0, "height": 10 }
++    { "id": 46709, "name": "archery butte", "flags": "0x00008040", "weight": 255, "layer": 0, "count": 0, "animId": 0, "hue": 0, "light": 0, "height": 10 },
++    { "id": 46710, "name": "banner", "flags": "0x00044000", "weight": 255, "layer": 0, "count": 0, "animId": 0, "hue": 0, "light": 0, "height": 0 }
+   ],
+   "animdata": [
+     { "id": 15376, "frames": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], "interval": 1, "start": 0 },
+diff --git a/player-package/vendor/shattered-legacy-art/registry.csv b/player-package/vendor/shattered-legacy-art/registry.csv
+index 1020040..0696dfd 100644
+--- a/player-package/vendor/shattered-legacy-art/registry.csv
++++ b/player-package/vendor/shattered-legacy-art/registry.csv
+@@ -808,3 +808,16 @@ id,id_hex,what,source,license,kind
+ 46709,0xB675,"scoring archery butte (cc-P632, P571) south-facing (stock 0x100B facing): bolt hit, a miss, stuck in the frame (still; has our tiledata record)","Archaaz ""Archery Butte that Shows Where Arrows and Bolts Hit"" (servuo.dev resource 1340) Archery Butte/Bolts/Bolt South Total Miss.bmp",none stated; see SOURCE.txt,art
+ 23209,0x5AA9,"loop vision panel 1, the broken sword: a full-screen still (cc-P665, P481 section 6; TutorialVisionScene.PanelBrokenSword, shown only with clusterf.tutorial.visionPanels on)","Ours (cc-P665 placeholder): a dark 800 x 600 field with a label, made by shard-migration notes\cc-P665-tools\make_placeholders.py; Chase draws the real one (art request p665-vision-panels)",placeholder; see SOURCE.txt,gump
+ 23210,0x5AAA,"loop vision panel 2, the League crest (a ring of stones round a broken sword): a full-screen still (cc-P665, P481 section 6; TutorialVisionScene.PanelCrest, shown only with clusterf.tutorial.visionPanels on)","Ours (cc-P665 placeholder): a dark 800 x 600 field with a label, made by shard-migration notes\cc-P665-tools\make_placeholders.py; Chase draws the real one (art request p665-vision-panels)",placeholder; see SOURCE.txt,gump
++23211,0x5AAB,"Pet choice scroll window (cc-P813, P762's PetChoiceGump): background, no text (the server draws it)","Chase (Shattered Legacy), made with Claude Design: canvas ""Shattered Legacy gump art"" (2026-11-01, approved 2026-11-05), Main.dc.html; rendered at true size by headless Edge and cut by shard-migration notes\cc-P813-tools\render_gump_art.py; text and tiles hidden",ours,gump
++23212,0x5AAC,"Pet choice scroll (cc-P813): Dog tile with its icon, the button's normal look (the server draws the word)","Chase (Shattered Legacy), made with Claude Design: canvas ""Shattered Legacy gump art"" (2026-11-01, approved 2026-11-05), Main.dc.html; rendered at true size by headless Edge and cut by shard-migration notes\cc-P813-tools\render_gump_art.py; text hidden",ours,gump
++23213,0x5AAD,"Pet choice scroll (cc-P813): Dog tile, pressed (the design's tile one step darker)","Chase (Shattered Legacy), made with Claude Design: canvas ""Shattered Legacy gump art"" (2026-11-01, approved 2026-11-05), Main.dc.html; rendered at true size by headless Edge and cut by shard-migration notes\cc-P813-tools\render_gump_art.py; text hidden, tile #ddcfa6 and border #5c4110",ours,gump
++23214,0x5AAE,"Pet choice scroll (cc-P813): Cat tile with its icon, the button's normal look (the server draws the word)","Chase (Shattered Legacy), made with Claude Design: canvas ""Shattered Legacy gump art"" (2026-11-01, approved 2026-11-05), Main.dc.html; rendered at true size by headless Edge and cut by shard-migration notes\cc-P813-tools\render_gump_art.py; text hidden",ours,gump
++23215,0x5AAF,"Pet choice scroll (cc-P813): Cat tile, pressed (the design's tile one step darker)","Chase (Shattered Legacy), made with Claude Design: canvas ""Shattered Legacy gump art"" (2026-11-01, approved 2026-11-05), Main.dc.html; rendered at true size by headless Edge and cut by shard-migration notes\cc-P813-tools\render_gump_art.py; text hidden, tile #ddcfa6 and border #5c4110",ours,gump
++23216,0x5AB0,"Moongate skip achievement popup (cc-P813, P762's ""Didn't Read the Sign"" in AchievementEarnedGump): background, no text","Chase (Shattered Legacy), made with Claude Design: canvas ""Shattered Legacy gump art"" (2026-11-01, approved 2026-11-05), Achievement.dc.html; rendered at true size by headless Edge and cut by shard-migration notes\cc-P813-tools\render_gump_art.py; text hidden",ours,gump
++23217,0x5AB1,"Reward store window (cc-P813, the League shop, LeagueShopGump): background (panel, border, header rule), no text, tabs or rows","Chase (Shattered Legacy), made with Claude Design: canvas ""Shattered Legacy gump art"" (2026-11-01, approved 2026-11-05), RewardStore.dc.html; rendered at true size by headless Edge and cut by shard-migration notes\cc-P813-tools\render_gump_art.py; text, buttons and rows hidden",ours,gump
++23218,0x5AB2,"Reward store window (cc-P813): the row rule, 8 x 1, tiled under each row","Chase (Shattered Legacy), made with Claude Design: canvas ""Shattered Legacy gump art"" (2026-11-01, approved 2026-11-05), RewardStore.dc.html; rendered at true size by headless Edge and cut by shard-migration notes\cc-P813-tools\render_gump_art.py; the first row's bottom border",ours,gump
++23219,0x5AB3,"Reward store window (cc-P813): a tab, inactive (one width for every label; the server draws the word)","Chase (Shattered Legacy), made with Claude Design: canvas ""Shattered Legacy gump art"" (2026-11-01, approved 2026-11-05), RewardStore.dc.html; rendered at true size by headless Edge and cut by shard-migration notes\cc-P813-tools\render_gump_art.py; text hidden, tabs 104 px wide",ours,gump
++23220,0x5AB4,"Reward store window (cc-P813): a tab, active (the design's ""Gear"" tab) and the pressed look","Chase (Shattered Legacy), made with Claude Design: canvas ""Shattered Legacy gump art"" (2026-11-01, approved 2026-11-05), RewardStore.dc.html; rendered at true size by headless Edge and cut by shard-migration notes\cc-P813-tools\render_gump_art.py; text hidden, tabs 104 px wide",ours,gump
++23221,0x5AB5,"Reward store window (cc-P813): the Buy button (the server draws the word)","Chase (Shattered Legacy), made with Claude Design: canvas ""Shattered Legacy gump art"" (2026-11-01, approved 2026-11-05), RewardStore.dc.html; rendered at true size by headless Edge and cut by shard-migration notes\cc-P813-tools\render_gump_art.py; text hidden",ours,gump
++23222,0x5AB6,"Reward store window (cc-P813): the Buy button, pressed","Chase (Shattered Legacy), made with Claude Design: canvas ""Shattered Legacy gump art"" (2026-11-01, approved 2026-11-05), RewardStore.dc.html; rendered at true size by headless Edge and cut by shard-migration notes\cc-P813-tools\render_gump_art.py; text hidden, button #2a2317",ours,gump
++46710,0xB676,"Hall of Finishers banner (cc-P813): a hanging banner with a sword snapped across the blade, 44 x 88, decor ([add FinishersBanner); has our tiledata record (OSI's banner 0x1586's)","Chase (Shattered Legacy), made with Claude Design: canvas ""Shattered Legacy gump art"" (2026-11-01, approved 2026-11-05), Banner.dc.html; exported by the overseer at true size as finishers-banner-44x88.png (D:\UO\overseer\gump-art-20261105), unchanged",ours,art
+diff --git a/server/customizations/ClusterFAchievements.cs b/server/customizations/ClusterFAchievements.cs
+index 4f104c6..a09a26f 100644
+--- a/server/customizations/ClusterFAchievements.cs
++++ b/server/customizations/ClusterFAchievements.cs
+@@ -2060,11 +2060,23 @@ public class ClusterFAchievementPersistence : Item
+ /// </summary>
+ public class AchievementEarnedGump : Gump
+ {
++    /// <summary>
++    /// cc-P813: the achievement whose popup Chase had designed in Claude Design (P762's moongate skip, "Didn't Read the
++    /// Sign"): drawn on that panel (DesignGumpArt.SkipPopupBackground), the text drawn here as for every popup.
++    /// </summary>
++    public const string DesignedPopupKey = "tutorial.gateSkip";
++
+     public AchievementEarnedGump(Mobile m, AchievementDef def) : base(320, 185)
+     {
+         Closable   = true;
+         Disposable = true;
+ 
++        if (def.Key == DesignedPopupKey)
++        {
++            AddDesignedPopup(def);
++            return;
++        }
++
+         const int W = 420;
+         const int H = 156; // cc-P55 Part F: 20 taller for the Earned line
+ 
+@@ -2112,6 +2124,36 @@ public class AchievementEarnedGump : Gump
+         AddImageTiled(4, H - 4, W - 8, 2, 9304);
+     }
+ 
++    /// <summary>
++    /// cc-P813: the design's popup, 400 x 136: "ACHIEVEMENT UNLOCKED" and "SYSTEM" across the top, the title, the System's
++    /// flavor and the earned line, then the category and rewards, as the standard popup has them.
++    /// </summary>
++    private void AddDesignedPopup(AchievementDef def)
++    {
++        const int W = DesignGumpArt.SkipPopupWidth;
++        const int H = DesignGumpArt.SkipPopupHeight;
++
++        AddImage(0, 0, DesignGumpArt.SkipPopupBackground);
++        AddHtml(18, 10, 220, 18, DesignGumpArt.Color(DesignGumpArt.Alarm, "ACHIEVEMENT UNLOCKED"), false, false);
++        AddHtml(W - 118, 10, 100, 18, $"<DIV ALIGN=RIGHT>{DesignGumpArt.Color(DesignGumpArt.Teal, "SYSTEM")}</DIV>", false, false);
++        AddHtml(18, 28, W - 36, 24, $"<BIG>{DesignGumpArt.Color(DesignGumpArt.Cream, def.Title)}</BIG>", false, false);
++
++        var bodyText = string.IsNullOrWhiteSpace(def.FlavorText) ? def.Description : def.FlavorText;
++        AddHtml(
++            18, 52, W - 36, 56,
++            $"{DesignGumpArt.Color(DesignGumpArt.Body, bodyText)} {DesignGumpArt.Color(DesignGumpArt.Teal, def.EarnedLine)}",
++            false, false
++        );
++
++        var catLabel = def.Hidden ? $"[{def.Category}] [Secret]" : $"[{def.Category}]";
++        AddHtml(18, H - 26, 160, 18, DesignGumpArt.Color(DesignGumpArt.Grey, catLabel), false, false);
++        AddHtml(
++            W - 218, H - 26, 200, 18,
++            $"<DIV ALIGN=RIGHT>{DesignGumpArt.Color(DesignGumpArt.Cream, $"+{def.AP} AP")}  {DesignGumpArt.Color(DesignGumpArt.Grey, $"+{def.Renown} Renown")}</DIV>",
++            false, false
++        );
++    }
++
+     public override void OnResponse(NetState sender, in RelayInfo info) { }
+ }
+ 
+diff --git a/server/customizations/DesignGumpArt.cs b/server/customizations/DesignGumpArt.cs
+new file mode 100644
+index 0000000..9319d90
+--- /dev/null
++++ b/server/customizations/DesignGumpArt.cs
+@@ -0,0 +1,70 @@
++// cc-P813: the Claude Design gump art Chase approved on 2026-11-05 (canvas "Shattered Legacy gump art", made 11-01 in
++// the Shattered Legacy design system). Each window is cut into a text-free background and button pieces, shipped in the
++// player package as gumps 23211-23222 (player-package\vendor\shattered-legacy-art, registry.csv); the server draws every
++// word, price and button label on top. Used by PetChoiceGump (P762's pet choice scroll), AchievementEarnedGump (P762's
++// "Didn't Read the Sign") and LeagueShopGump (P229, P760's bigger shop). Notes: shard-migration
++// notes/cc-P813-gump-art-import.md; the cut is notes/cc-P813-tools/render_gump_art.py.
++//
++// A client without the package (no ExternalImages gumps) draws nothing for these IDs: the text and buttons still work,
++// on a bare window. Every player plays from the package, so that is a staff-client case only.
++
++#nullable enable
++
++namespace Server.Gumps;
++
++public static class DesignGumpArt
++{
++    // The pet choice scroll, 340 x 280; its two tiles 143 x 96 at (21, 143) and (176, 143).
++    public const int PetScrollBackground = 23211;
++    public const int PetDogTile = 23212;
++    public const int PetDogTilePressed = 23213;
++    public const int PetCatTile = 23214;
++    public const int PetCatTilePressed = 23215;
++    public const int PetScrollWidth = 340;
++    public const int PetScrollHeight = 280;
++
++    // The moongate skip achievement popup, 400 x 136.
++    public const int SkipPopupBackground = 23216;
++    public const int SkipPopupWidth = 400;
++    public const int SkipPopupHeight = 136;
++
++    // The reward store window, 560 x 420: the panel, an 8 x 1 row rule to tile, a 104 x 32 tab (inactive, active) and a
++    // 72 x 28 Buy button (normal, pressed).
++    public const int StoreBackground = 23217;
++    public const int StoreRowRule = 23218;
++    public const int StoreTab = 23219;
++    public const int StoreTabActive = 23220;
++    public const int StoreBuy = 23221;
++    public const int StoreBuyPressed = 23222;
++    public const int StoreWidth = 560;
++    public const int StoreHeight = 420;
++    public const int StoreTabWidth = 104;
++    public const int StoreBuyWidth = 72;
++
++    // The design's colours as UO hues for labels (labels draw over buttons without taking their clicks; html would).
++    // A gump label's hue is one less than the hues.mul number (TazUO's Label adds 1). Nearest hues.mul colour, by its
++    // palette entry 24, to the design's: notes/cc-P813-gump-art-import.md lists each.
++    public const int HueDesignBrown = 0x5AD;  // #5c4110, the pet tiles' words
++    public const int HueDesignCream = 0x490;  // #e3c98d, the store's tab and Buy words
++    public const int HueDesignBody = 0xB8D;   // #cfcabd, the store's row names
++    public const int HueDesignWhite = 0x481;  // #ffffff, the store's active tab word
++
++    // The same colours for html text, which is drawn where nothing clickable lies beneath.
++    public const string Gold = "#7a5718";
++    public const string Ink = "#2b2519";
++    public const string Muted = "#675d4b";
++    public const string Tan = "#c8a96e";
++    public const string Cream = "#e3c98d";
++    public const string Body = "#cfcabd";
++    public const string Grey = "#8a8578";
++    public const string Alarm = "#e0674c";
++    public const string Teal = "#72b89a";
++
++    public static string Color(string color, string text) => $"<BASEFONT COLOR={color}>{text}</BASEFONT>";
++
++    /// <summary>
++    /// Where a label starts to sit near the middle of a box <paramref name="width"/> wide. Gump labels cannot be centred
++    /// by the client, so this guesses 7 pixels a letter (the label font's usual width; close enough for short words).
++    /// </summary>
++    public static int CenterX(int x, int width, string text) => x + System.Math.Max(0, (width - text.Length * 7) / 2);
++}
+diff --git a/server/customizations/Items/FinishersBanner.cs b/server/customizations/Items/FinishersBanner.cs
+new file mode 100644
+index 0000000..c059917
+--- /dev/null
++++ b/server/customizations/Items/FinishersBanner.cs
+@@ -0,0 +1,46 @@
++// cc-P813: the Hall of Finishers banner, Chase's Claude Design art (canvas "Shattered Legacy gump art", 11-01; approved
++// 11-05): a dark hanging banner with a sword snapped across the blade, 44 x 88, one tile wide. It ships in the player
++// package as our art ID 46710 (0xB676; registry.csv, art\46710.png). Notes: shard-migration
++// notes/cc-P813-gump-art-import.md.
++//
++// Record: OSI's hanging banner 0x1586's own tiledata, read from the approved client's tiledata.mul (7.0.117): "banner",
++// 0x00044000 (ArticleA | PartialHue), weight 255, height 0. records.json carries the players' copy;
++// player-package\tests\Build-UoOverrides.Tests.ps1 compares the two. ShatteredLegacyArt.Apply writes it into the
++// server's TileData.
++//
++// Placed as decor by staff: [add FinishersBanner (not movable, does not decay). The art faces the viewer, so it reads
++// best on the tile in front of a south or east wall.
++
++using ModernUO.Serialization;
++
++namespace Server.Items;
++
++public static class FinishersBannerArt
++{
++    public const int ItemIdValue = 46710; // 0xB676
++
++    public const string TileName = "banner";
++    public const TileFlag TileFlags = TileFlag.ArticleA | TileFlag.PartialHue;
++    public const int TileWeight = 255;
++    public const int TileHeight = 0;
++
++    public static void Apply()
++    {
++        TileData.ItemTable[ItemIdValue] = new ItemData(TileName, TileFlags, TileWeight, 0, 0, 0, 0, TileHeight);
++    }
++}
++
++/// <summary>cc-P813: the Hall of Finishers banner as decor. Staff place it with [add FinishersBanner.</summary>
++[SerializationGenerator(0, false)]
++public partial class FinishersBanner : Item
++{
++    [Constructible]
++    public FinishersBanner() : base(FinishersBannerArt.ItemIdValue)
++    {
++        Name = "the Hall of Finishers banner";
++        Movable = false;
++        Weight = 10.0;
++    }
++
++    public override bool Decays => false;
++}
+diff --git a/server/customizations/LeagueShop/LeagueShopGumps.cs b/server/customizations/LeagueShop/LeagueShopGumps.cs
+index 1598578..2928cc6 100644
+--- a/server/customizations/LeagueShop/LeagueShopGumps.cs
++++ b/server/customizations/LeagueShop/LeagueShopGumps.cs
+@@ -1,6 +1,7 @@
+ // cc-P229 (F-13): the League shop's window, its confirm step, and the title picker.
+ //
+-// LeagueShopGump      shaped like CleanUpBritanniaRewardGump (Services/CleanUpBritannia/CleanUpBritanniaRewards.cs) so the
++// LeagueShopGump      cc-P813: drawn on Chase's Claude Design store window (DesignGumpArt), tabs for Titles and Hall, five
++//                     rows a page as before. Until then it was shaped like CleanUpBritanniaRewardGump (Services/CleanUpBritannia/CleanUpBritanniaRewards.cs) so the
+ //                     shard's stores feel alike: the same scroll frame, five rows a page, the item art greyed until it can
+ //                     be bought. Each row shows its Renown price and its AP; a locked row reads "Requires 500 AP". Prices
+ //                     and AP use cc-P169's requirement colours (RequirementStyle): green when met, red when not.
+@@ -31,6 +32,11 @@ public class LeagueShopGump : Gump
+     // Item art drawn in this hue on a locked row (CleanUpBritanniaRewardGump's grey, ServUO GetItemHue).
+     public const int LockedArtHue = 0x3E9;
+ 
++    // cc-P813: rows on Chase's Claude Design store window (DesignGumpArt.StoreBackground, 560 x 420): the design's
++    // grid, name | requirement | price | Buy, under the header rule and the tabs.
++    public const int RowTop = 112;
++    public const int DesignRowHeight = 49;
++
+     public LeagueShopGump(PlayerMobile pm) : base(50, 50)
+     {
+         pm.CloseGump<LeagueShopGump>();
+@@ -44,29 +50,22 @@ public class LeagueShopGump : Gump
+ 
+         AddPage(0);
+ 
+-        AddImage(0, 0, 0x1F40);
+-        AddImageTiled(20, 37, 300, 308, 0x1F42);
+-        AddImage(20, 325, 0x1F43);
+-        AddImage(35, 8, 0x39);
+-        AddImageTiled(65, 8, 257, 10, 0x3A);
+-        AddImage(290, 8, 0x3B);
+-        AddImage(32, 33, 0x2635);
+-        AddImageTiled(70, 55, 230, 2, 0x23C5);
++        // cc-P813: the design's window. Every word is drawn here; the art holds none.
++        AddImage(0, 0, DesignGumpArt.StoreBackground);
++        AddHtml(20, 18, 260, 26, $"<BIG>{DesignGumpArt.Color(DesignGumpArt.Tan, "The League Shop")}</BIG>", false, false);
++        AddHtml(
++            280, 22, 260, 20,
++            $"<DIV ALIGN=RIGHT>{DesignGumpArt.Color(DesignGumpArt.Grey, "Renown")} {DesignGumpArt.Color(DesignGumpArt.Cream, data.Renown.ToString("N0"))}" +
++            $"   {DesignGumpArt.Color(DesignGumpArt.Grey, "AP")} {DesignGumpArt.Color(DesignGumpArt.Cream, data.AchievementPoints.ToString("N0"))}</DIV>",
++            false, false
++        );
+ 
+-        // Dark text on the scroll, as the Clean Up store's cliloc lines (colour 0x1): cc-P169's ice white heading is for
+-        // the dark panels and would not read on parchment.
+-        AddLabel(70, 35, 0, "The League Shop");
+-        AddLabel(50, 65, 0, "Renown:");
+-        AddLabel(110, 65, 0x64, data.Renown.ToString("N0"));
+-        AddLabel(180, 65, 0, "AP:");
+-        AddLabel(210, 65, 0x64, data.AchievementPoints.ToString("N0"));
+-        AddImageTiled(35, 85, 270, 2, 0x23C5);
+-        AddLabel(35, 90, 0, "AP opens a row for good. Renown buys.");
++        // The tabs: this page (the active tab, not a button), then Titles and Hall.
++        AddTab(21, "Shop", 0);
++        AddTab(133, "Titles", BtnTitles);
++        AddTab(245, "Hall", BtnHall);
+ 
+-        AddButton(35, 337, 4011, 4012, BtnTitles);
+-        AddLabel(69, 337, 0, "Titles");
+-        AddButton(105, 337, 4011, 4012, BtnHall);
+-        AddLabel(139, 337, 0, "Hall");
++        AddHtml(20, 392, 300, 20, DesignGumpArt.Color(DesignGumpArt.Grey, "AP opens a row for good. Renown buys."), false, false);
+ 
+         var stock = LeagueShop.Stock;
+         var pages = (stock.Length + RowsPerPage - 1) / RowsPerPage;
+@@ -75,40 +74,57 @@ public class LeagueShopGump : Gump
+         {
+             AddPage(page + 1);
+ 
+-            var offset = 110;
++            var top = RowTop;
+ 
+             for (var i = page * RowsPerPage; i < Math.Min(stock.Length, (page + 1) * RowsPerPage); i++)
+             {
+                 var entry = stock[i];
+                 var row = Row.Of(data, entry);
+ 
++                AddItem(24, top + 4, entry.ItemID, row.Unlocked ? entry.Hue : LockedArtHue);
++                AddLabel(80, top + 4, row.Unlocked ? DesignGumpArt.HueDesignBody : RequirementStyle.DisabledHue, entry.Label);
++                AddLabel(80, top + 24, row.PriceHue, $"{entry.Renown:N0} Renown");
++                // The AP text beside the price, so a long name has the row to the Buy button (cc-P813 shot 1).
++                AddLabel(200, top + 24, row.ApHue, row.ApText);
++
+                 if (row.CanBuy)
+                 {
+-                    AddButton(35, offset + RowHeight / 2 - 5, 0x837, 0x838, BtnRowBase + i);
++                    AddButton(467, top + 10, DesignGumpArt.StoreBuy, DesignGumpArt.StoreBuyPressed, BtnRowBase + i);
++                    AddLabel(DesignGumpArt.CenterX(467, DesignGumpArt.StoreBuyWidth, "Buy"), top + 14, DesignGumpArt.HueDesignCream, "Buy");
+                 }
+ 
+-                AddItem(55, offset + 4, entry.ItemID, row.Unlocked ? entry.Hue : LockedArtHue);
+-                AddLabel(110, offset + 2, row.Unlocked ? 0 : RequirementStyle.DisabledHue, entry.Label);
+-                AddLabel(110, offset + 20, row.PriceHue, $"{entry.Renown:N0} Renown");
+-                AddLabel(200, offset + 20, row.ApHue, row.ApText);
+-
+-                offset += RowHeight + 2;
++                AddImageTiled(21, top + DesignRowHeight - 1, 518, 1, DesignGumpArt.StoreRowRule);
++                top += DesignRowHeight;
+             }
+ 
+             if (page > 0)
+             {
+-                AddButton(150, 335, 0x15E3, 0x15E7, 0, GumpButtonType.Page, page);
+-                AddHtmlLocalized(170, 335, 60, 20, 1074880, 0x1); // Previous
++                AddButton(320, 382, DesignGumpArt.StoreTab, DesignGumpArt.StoreTabActive, 0, GumpButtonType.Page, page);
++                AddLabel(DesignGumpArt.CenterX(320, DesignGumpArt.StoreTabWidth, "Previous"), 388, DesignGumpArt.HueDesignCream, "Previous");
+             }
+ 
+             if (page < pages - 1)
+             {
+-                AddButton(300, 335, 0x15E1, 0x15E5, 0, GumpButtonType.Page, page + 2);
+-                AddHtmlLocalized(240, 335, 60, 20, 1072854, 0x1); // <div align=right>Next</div>
++                AddButton(435, 382, DesignGumpArt.StoreTab, DesignGumpArt.StoreTabActive, 0, GumpButtonType.Page, page + 2);
++                AddLabel(DesignGumpArt.CenterX(435, DesignGumpArt.StoreTabWidth, "Next"), 388, DesignGumpArt.HueDesignCream, "Next");
+             }
+         }
+     }
+ 
++    /// <summary>cc-P813: a tab on the design's tab row; button 0 is the page you are on (drawn active, not a button).</summary>
++    private void AddTab(int x, string text, int button)
++    {
++        if (button == 0)
++        {
++            AddImage(x, 68, DesignGumpArt.StoreTabActive);
++            AddLabel(DesignGumpArt.CenterX(x, DesignGumpArt.StoreTabWidth, text), 74, DesignGumpArt.HueDesignWhite, text);
++            return;
++        }
++
++        AddButton(x, 68, DesignGumpArt.StoreTab, DesignGumpArt.StoreTabActive, button);
++        AddLabel(DesignGumpArt.CenterX(x, DesignGumpArt.StoreTabWidth, text), 74, DesignGumpArt.HueDesignCream, text);
++    }
++
+     /// <summary>How one row draws for this account: open or locked, the price's and the AP's words and colours.</summary>
+     public readonly record struct Row(bool Unlocked, bool Owned, bool CanBuy, int PriceHue, string ApText, int ApHue)
+     {
+diff --git a/server/customizations/ShatteredRunestone.cs b/server/customizations/ShatteredRunestone.cs
+index 5403298..f1d5d9a 100644
+--- a/server/customizations/ShatteredRunestone.cs
++++ b/server/customizations/ShatteredRunestone.cs
+@@ -69,6 +69,9 @@ namespace Server
+ 
+             // cc-P632: the scoring archery butte's hit pictures (ScoringArcheryButteArt.Records).
+             Items.ScoringArcheryButteArt.Apply();
++
++            // cc-P813: the Hall of Finishers banner (FinishersBannerArt).
++            Items.FinishersBannerArt.Apply();
+         }
+     }
+ }
+diff --git a/server/customizations/Tutorial/TutorialGateSkip.cs b/server/customizations/Tutorial/TutorialGateSkip.cs
+index 9804943..f0ec0db 100644
+--- a/server/customizations/Tutorial/TutorialGateSkip.cs
++++ b/server/customizations/Tutorial/TutorialGateSkip.cs
+@@ -161,24 +161,30 @@ public partial class PetChoiceScroll : Item
+     }
+ }
+ 
+-/// <summary>cc-P762: two buttons, Dog and Cat.</summary>
++/// <summary>
++/// cc-P762: two buttons, Dog and Cat. cc-P813: drawn on Chase's Claude Design scroll (DesignGumpArt): the text-free
++/// parchment, a Dog tile and a Cat tile with their icons as the buttons, and every word drawn here.
++/// </summary>
+ public class PetChoiceGump : Gump
+ {
++    public const string Heading = "A companion for the road";
++    public const string Lead = "Read the scroll aloud and one friend answers. Choose carefully: the scroll is used up either way.";
++    public const string Footer = "Your pet follows, guards and comes when called. It will not fight dragons for you.";
++
+     private readonly PetChoiceScroll _scroll;
+ 
+     public PetChoiceGump(PetChoiceScroll scroll) : base(160, 120)
+     {
+         _scroll = scroll;
+         AddPage(0);
+-        TutorialStyle.Panel(this, 360, 190);
+-        AddLabel(24, 18, TutorialStyle.HeadingHue, "Choose your pet");
+-        AddLabel(24, 40, TutorialStyle.TextHue, "It follows you, guards you and takes your orders.");
+-        AddItem(30, 80, 0x2588);
+-        AddButton(110, 90, 4005, 4007, 1);
+-        AddLabel(146, 92, TutorialStyle.ActionHue, "Dog");
+-        AddItem(30, 130, 0x211B);
+-        AddButton(110, 140, 4005, 4007, 2);
+-        AddLabel(146, 142, TutorialStyle.ActionHue, "Cat");
++        AddImage(0, 0, DesignGumpArt.PetScrollBackground);
++        AddHtml(20, 20, 300, 26, $"<BIG>{DesignGumpArt.Color(DesignGumpArt.Gold, Heading)}</BIG>", false, false);
++        AddHtml(20, 62, 300, 72, DesignGumpArt.Color(DesignGumpArt.Ink, Lead), false, false);
++        AddButton(21, 143, DesignGumpArt.PetDogTile, DesignGumpArt.PetDogTilePressed, 1);
++        AddLabel(DesignGumpArt.CenterX(21, 143, "Dog"), 199, DesignGumpArt.HueDesignBrown, "Dog");
++        AddButton(176, 143, DesignGumpArt.PetCatTile, DesignGumpArt.PetCatTilePressed, 2);
++        AddLabel(DesignGumpArt.CenterX(176, 143, "Cat"), 199, DesignGumpArt.HueDesignBrown, "Cat");
++        AddHtml(20, 244, 300, 34, DesignGumpArt.Color(DesignGumpArt.Muted, Footer), false, false);
+     }
+ 
+     public override void OnResponse(NetState sender, in RelayInfo info)
+diff --git a/server/tests/Misc/AchievementsLayoutVerification.cs b/server/tests/Misc/AchievementsLayoutVerification.cs
+index 2b8f16a..88daf1a 100644
+--- a/server/tests/Misc/AchievementsLayoutVerification.cs
++++ b/server/tests/Misc/AchievementsLayoutVerification.cs
+@@ -249,7 +249,9 @@ public class AchievementsLayoutVerification
+         foreach (var def in ClusterFAchievementSystem.Definitions.Values)
+         {
+             var popup = new AchievementEarnedGump(p.Pm, def);
+-            var block = Assert.Single(popup.Entries.OfType<GumpHtml>());
++            // cc-P813: the designed popup (Didn't Read the Sign) draws its heading, title and footer as html blocks of
++            // their own; the body is the block with the earned line, on every popup.
++            var block = Assert.Single(popup.Entries.OfType<GumpHtml>(), h => h.Text.Contains(def.EarnedLine));
+             var lines = GumpTextWidth.Lines(Plain(block.Text), block.Width);
+             if (lines > worst.Lines)
+             {
+diff --git a/server/tests/Misc/DesignGumpArtVerification.cs b/server/tests/Misc/DesignGumpArtVerification.cs
+new file mode 100644
+index 0000000..2bfd987
+--- /dev/null
++++ b/server/tests/Misc/DesignGumpArtVerification.cs
+@@ -0,0 +1,229 @@
++// DesignGumpArtVerification.cs
++//
++// cc-P813: Chase's Claude Design gump art and the Hall of Finishers banner, on the server. Notes in shard-migration
++// notes/cc-P813-gump-art-import.md. The players' copy (gump and art PNGs, registry.csv, records.json) is checked against
++// this by player-package\tests\Build-UoOverrides.Tests.ps1. Every ID here is written out, not read from DesignGumpArt,
++// so a constant moved to another gump fails here.
++//
++// Facts:
++//   1. The pet choice scroll is drawn on its background 23211; Dog is button 1 on tile 23212 (pressed 23213), Cat is
++//      button 2 on tile 23214 (pressed 23215), and their words are labels (html would take the tile's clicks).
++//      None of the old stock arrows (4005) is left.
++//   2. "Didn't Read the Sign" pops up on its panel 23216, with the title, the System's flavor and the earned line;
++//      any other achievement keeps the standard popup and never shows 23216.
++//   3. The League shop is drawn on the store window 23217: Titles and Hall are tab buttons (23219, pressed 23220),
++//      the shop's own tab is drawn active (23220) and is no button, an open row's Buy is 23221 (pressed 23222) with
++//      the word "Buy" as a label, every row has the rule 23218 under it, and no stock scroll piece (0x1F40) is left.
++//   4. The Finishers banner is art 46710, not movable, never decays, and after ShatteredLegacyArt.Apply carries OSI's
++//      banner 0x1586's record: "banner", ArticleA | PartialHue, weight 255, height 0.
++
++using System;
++using System.Linq;
++using Server;
++using Server.Accounting;
++using Server.Engines.LeagueRewards;
++using Server.Gumps;
++using Server.Items;
++using Server.Mobiles;
++using Server.Tutorial;
++using Xunit;
++
++namespace ShatteredLegacy.Tests;
++
++[Collection("Sequential UOContent Tests")]
++public class DesignGumpArtVerification
++{
++    public DesignGumpArtVerification()
++    {
++        ShardTestHost.EnsureAccounts();
++        ClusterFGuildSystem.EnsureRegistered();
++        if (!_achievements)
++        {
++            ClusterFAchievementSystem.Configure();
++            _achievements = true;
++        }
++    }
++
++    private static bool _achievements;
++
++    private static PlayerMobile NewCharacter(Account account)
++    {
++        var pm = new PlayerMobile { Player = true, Race = Race.Human, Name = "Tester" };
++        pm.AddItem(new Backpack());
++        account[0] = pm;
++        pm.MoveToWorld(new Point3D(3460, 2604, 18), Map.Trammel);
++        return pm;
++    }
++
++    private static Account NewAccount() => new($"p813{Guid.NewGuid():N}"[..16], "p813-test-only");
++
++    private static void Cleanup(Account account)
++    {
++        for (var i = 0; i < account.Length; i++)
++        {
++            account[i]?.Delete();
++        }
++
++        account.Delete();
++    }
++
++    // ---------------------------------------------------------------- 1
++
++    [Fact]
++    public void ThePetScrollIsDrawnOnItsDesignWithTheTilesAsButtons()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++        try
++        {
++            var scroll = new PetChoiceScroll();
++            pm.Backpack!.DropItem(scroll);
++            var g = new PetChoiceGump(scroll);
++
++            var images = g.Entries.OfType<GumpImage>().ToList();
++            Assert.Contains(images, i => i.GumpID == 23211 && i.X == 0 && i.Y == 0);
++
++            var buttons = g.Entries.OfType<GumpButton>().ToList();
++            Assert.Equal(2, buttons.Count);
++            var dog = buttons.Single(b => b.ButtonID == 1);
++            var cat = buttons.Single(b => b.ButtonID == 2);
++            Assert.Equal((23212, 23213), (dog.NormalID, dog.PressedID));
++            Assert.Equal((23214, 23215), (cat.NormalID, cat.PressedID));
++            Assert.DoesNotContain(buttons, b => b.NormalID == 4005);
++
++            var labels = g.Entries.OfType<GumpLabel>().ToList();
++            var dogLabel = labels.Single(l => l.Text == "Dog");
++            var catLabel = labels.Single(l => l.Text == "Cat");
++            // Each word lies on its own tile (143 x 96).
++            Assert.InRange(dogLabel.X, dog.X, dog.X + 143);
++            Assert.InRange(dogLabel.Y, dog.Y, dog.Y + 96);
++            Assert.InRange(catLabel.X, cat.X, cat.X + 143);
++            Assert.InRange(catLabel.Y, cat.Y, cat.Y + 96);
++
++            // No html over a tile (it would take the tile's clicks).
++            foreach (var h in g.Entries.OfType<GumpHtml>())
++            {
++                foreach (var b in buttons)
++                {
++                    var overlaps = h.X < b.X + 143 && b.X < h.X + h.Width && h.Y < b.Y + 96 && b.Y < h.Y + h.Height;
++                    Assert.False(overlaps, $"html at {h.X},{h.Y} {h.Width}x{h.Height} covers button {b.ButtonID}");
++                }
++            }
++
++            var html = string.Join(" ", g.Entries.OfType<GumpHtml>().Select(h => h.Text));
++            Assert.Contains("A companion for the road", html);
++            Assert.Contains("the scroll is used up either way", html);
++        }
++        finally
++        {
++            Cleanup(account);
++        }
++    }
++
++    // ---------------------------------------------------------------- 2
++
++    [Fact]
++    public void TheMoongateSkipPopupIsDrawnOnItsPanelAndOthersAreNot()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++        try
++        {
++            var skip = ClusterFAchievementSystem.Definitions["tutorial.gateSkip"];
++            Assert.Equal("Didn't Read the Sign", skip.Title);
++            var popup = new AchievementEarnedGump(pm, skip);
++            Assert.Contains(popup.Entries.OfType<GumpImage>(), i => i.GumpID == 23216 && i.X == 0 && i.Y == 0);
++            var html = string.Join(" ", popup.Entries.OfType<GumpHtml>().Select(h => h.Text));
++            Assert.Contains("ACHIEVEMENT UNLOCKED", html);
++            Assert.Contains(skip.Title, html);
++            Assert.Contains(skip.FlavorText, html);
++            Assert.Contains(skip.EarnedLine, html);
++            Assert.Contains($"+{skip.AP} AP", html);
++            Assert.Empty(popup.Entries.OfType<GumpBackground>());
++
++            var other = ClusterFAchievementSystem.Definitions["league.registered_citizen"];
++            var standard = new AchievementEarnedGump(pm, other);
++            Assert.DoesNotContain(standard.Entries.OfType<GumpImage>(), i => i.GumpID == 23216);
++            Assert.NotEmpty(standard.Entries.OfType<GumpBackground>());
++        }
++        finally
++        {
++            Cleanup(account);
++        }
++    }
++
++    // ---------------------------------------------------------------- 3
++
++    [Fact]
++    public void TheLeagueShopIsDrawnOnTheStoreWindow()
++    {
++        var account = NewAccount();
++        var pm = NewCharacter(account);
++        try
++        {
++            var data = LeagueShop.DataOf(pm)!;
++            data.AchievementPoints = 250;
++            data.Renown = 100;
++
++            var shop = new LeagueShopGump(pm);
++            var images = shop.Entries.OfType<GumpImage>().ToList();
++            var buttons = shop.Entries.OfType<GumpButton>().ToList();
++            var labels = shop.Entries.OfType<GumpLabel>().ToList();
++
++            Assert.Contains(images, i => i.GumpID == 23217 && i.X == 0 && i.Y == 0);
++            Assert.DoesNotContain(images, i => i.GumpID == 0x1F40);
++
++            var titles = buttons.Single(b => b.ButtonID == LeagueShopGump.BtnTitles);
++            var hall = buttons.Single(b => b.ButtonID == LeagueShopGump.BtnHall);
++            Assert.Equal((23219, 23220), (titles.NormalID, titles.PressedID));
++            Assert.Equal((23219, 23220), (hall.NormalID, hall.PressedID));
++            Assert.Contains(images, i => i.GumpID == 23220);
++            Assert.Contains(labels, l => l.Text == "Shop");
++            Assert.Contains(labels, l => l.Text == "Titles");
++            Assert.Contains(labels, l => l.Text == "Hall");
++
++            var rows = buttons.Where(b => b.ButtonID >= LeagueShopGump.BtnRowBase).ToList();
++            Assert.NotEmpty(rows);
++            Assert.All(rows, b => Assert.Equal((23221, 23222), (b.NormalID, b.PressedID)));
++            Assert.Equal(rows.Count, labels.Count(l => l.Text == "Buy"));
++
++            // One rule under each row shown, on every page.
++            var rules = shop.Entries.OfType<GumpImageTiled>().Count(t => t.GumpID == 23218);
++            Assert.Equal(LeagueShop.Stock.Length, rules);
++
++            // The paging buttons are tabs too, and every piece of the window stays inside its 560 x 420.
++            Assert.All(buttons.Where(b => b.Type == GumpButtonType.Page), b => Assert.Equal(23219, b.NormalID));
++            Assert.All(buttons, b => Assert.InRange(b.X, 0, 560 - 72));
++            Assert.All(buttons, b => Assert.InRange(b.Y, 0, 420 - 28));
++        }
++        finally
++        {
++            Cleanup(account);
++        }
++    }
++
++    // ---------------------------------------------------------------- 4
++
++    [Fact]
++    public void TheFinishersBannerIsDecorWithOsisBannerRecord()
++    {
++        ShatteredLegacyArt.Apply();
++        var banner = new FinishersBanner();
++        try
++        {
++            Assert.Equal(46710, banner.ItemID);
++            Assert.False(banner.Movable);
++            Assert.False(banner.Decays);
++
++            var tile = TileData.ItemTable[46710];
++            Assert.Equal("banner", tile.Name);
++            Assert.Equal(TileFlag.ArticleA | TileFlag.PartialHue, tile.Flags);
++            Assert.Equal(255, tile.Weight);
++            Assert.Equal(0, tile.Height);
++        }
++        finally
++        {
++            banner.Delete();
++        }
++    }
++}
