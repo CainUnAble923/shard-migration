@@ -239,7 +239,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 675 prompts done, 5 more stopped early and not counted)
+### Queue (Golem on; 676 prompts done, 5 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -247,6 +247,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P813 gump-art-import | queued |  |
 | P9772 remote-answer-test | done | 2026-11-02 |
 | P9770 run-next-test | done | 2026-11-02 |
+| P816 review-build-fixup-stop1-sign | done | 2026-11-07 |
 | P815 review-build-name-colors-lesson | done | 2026-11-07 |
 | P810 staff-events-egg-hunt-mine-maze | done | 2026-11-07 |
 | P809 pet-perch-horse-barding | done | 2026-11-07 |
@@ -254,7 +255,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P807 review-build-league-ankh | done | 2026-11-05 |
 | P805 review-build-league-ankh | done | 2026-11-05 |
 | P804 herbalism-phase-1 | done | 2026-11-05 |
-| P800 league-sash | done | 2026-11-05 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 198 patches, 12 replacements
 
