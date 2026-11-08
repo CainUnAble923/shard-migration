@@ -1,0 +1,38 @@
+    0.00 harness  == P66-4 run 1: Musicianship: an instrument played at 119.9 raises the base past 120 (the Peacemaking half is not measured)
+    0.00 admin    -> say '[go 0x66'
+    1.01 admin    -> say '[SetSkill Musicianship 119.9'
+    1.01 admin    <- 0x6C target cursor 95 (type 0)
+    1.22 admin    -> 0x6C target object 0x00000066
+    1.22 admin    <- unicode(0) System: Musicianship : 119.9 (Base: 119.9)
+    1.22 player   <- 0x3A skill 29 now 119.9 (cap 200.0)
+    1.83 player   <- 0x3A 58 skills
+    2.63 admin    -> say '[go 0x66'
+    3.65 admin    -> say '[AddToPack Lute'
+    3.65 admin    <- 0x6C target cursor 96 (type 0)
+    3.86 admin    -> 0x6C target object 0x00000066
+    3.87 admin    <- unicode(0) System: 1 object generated in 0.00 seconds.
+    3.87 player   <- 0x11 status {'name': 'Bot Human F Aa', 'hits': 100, 'hitsMax': 100, 'version': 6, 'female': 1, 'str': 101, 'dex': 11, 'int': 11, 'stam': 11, 'stamMax': 11, 'mana': 11, 'manaMax': 11, 'gold': 1000, 'ar': 0, 'weight': 189, 'maxWeight': 453, 'race': 1, 'statCap': 1500, 'followers': 0, 'followersMax': 5}
+    3.87 player   <- 0x25 item 0x40000F5E graphic 0xEB3 x1 into 0x40000658
+    3.87 player   -> 0x06 double click 0x40000F5E
+    3.87 player   <- 0x3A skill 29 now 120.0 (cap 200.0)
+    3.87 player   <- 0x3A skill 29 now 120.1 (cap 200.0)
+    3.87 player   <- 0x3A skill 29 now 120.2 (cap 200.0)
+    3.87 player   <- 0x3A skill 29 now 120.3 (cap 200.0)
+    3.87 player   <- 0x3A skill 29 now 120.4 (cap 200.0)
+    3.87 player   <- 0x3A skill 29 now 120.5 (cap 200.0)
+    3.87 player   <- 0x3A skill 29 now 120.6 (cap 200.0)
+    3.87 player   <- 0x3A skill 29 now 120.7 (cap 200.0)
+    3.87 player   <- 0x3A skill 29 now 120.8 (cap 200.0)
+    3.87 player   <- 0x3A skill 29 now 120.9 (cap 200.0)
+    4.82 player   <- cliloc(0) Kerry #1078099: Double Click On Me For Help!
+    4.82 admin    <- cliloc(0) Kerry #1078099: Double Click On Me For Help!
+    5.47 player   -> 0x06 double click 0x40000F5E
+    5.47 player   <- cliloc(0) System #500119: You must wait to perform another action.
+    7.08 player   -> 0x06 double click 0x40000F5E
+    7.08 player   <- cliloc(0) System #500119: You must wait to perform another action.
+    8.68 player   -> 0x06 double click 0x40000F5E
+    8.68 player   <- cliloc(0) System #500119: You must wait to perform another action.
+   10.28 player   -> 0x06 double click 0x40000F5E
+   11.89 player   <- 0x3A 58 skills
+   12.50 player   <- 0x3A 58 skills
+   13.11 harness  == P66-4 run 1: PASS (base 119.9 -> 120.9 after 5 plays (Peacemaking 200 vs 120 success rates: not measured by this check))
