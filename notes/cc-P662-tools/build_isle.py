@@ -41,7 +41,7 @@ PATCH_REL = os.path.join('player-package', 'vendor', 'shattered-legacy-map', 'tr
 # The buildings (P481 11.2): floor rects from the plan, one door each, at P663's door spots (TutorialWorld.BankDoor
 # 6762,3980 and LodgeDoor 6782,3995, less the shift).
 BANK_DOOR = (6338, 1988)
-LODGE_DOOR = (6358, 2003)
+LODGE_DOOR = (6363, 2008)   # cc-P818: the east wall (6787,4000); was (6358, 2003), the north wall
 YARD_GATE = [(6311, 2002), (6312, 2002), (6313, 2002)]
 # The dock's end: a stone landing at the deck's height holds the moongate and the dock-end stop, so P663's spots
 # (TutorialWorld.DockEnd 6831,3991 and Moongate 6832,3991) stand on land: its seeder's CanFit reads the land's
