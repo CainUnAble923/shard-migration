@@ -239,7 +239,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 712 prompts done, 5 more stopped early and not counted)
+### Queue (Golem on; 713 prompts done, 5 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -250,13 +250,13 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P9772 remote-answer-test | done | 2026-11-02 |
 | P9770 run-next-test | done | 2026-11-02 |
 | P836 review-build-league-building-deco | done | 2026-11-08 |
+| P833 review-build-build-guard-patrols-pilot | done | 2026-11-08 |
 | P832 cont-fixup-quest-markers-keys-gates | done | 2026-11-08 |
 | P831 cont-fixup-high-seas-fishing-second-half | done | 2026-11-08 |
 | P829 review-build-port-wrong-and-covetous-void | done | 2026-11-08 |
 | P828 review-build-fixup-jail | done | 2026-11-08 |
 | P826 review-build-isle-notes-2 | done | 2026-11-08 |
 | P825 review-build-creation-and-wake | done | 2026-11-08 |
-| P824 review-build-league-building-deco | done | 2026-11-08 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 198 patches, 12 replacements
 
