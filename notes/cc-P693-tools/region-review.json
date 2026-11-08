@@ -1,0 +1,891 @@
+{
+  "status": "candidate-data-only; not approved for runtime installation",
+  "credit": "Zigholtul, Siege of Sosaria Trammel Map 3.0; ModernUO pinned d4531cd94b739613155225c234900de9f47d2c88",
+  "p692": "not present in either work copy on 2026-10-27",
+  "sources": [
+    {
+      "path": "../shard-migration/notes/sos-author-data/Regions.xml",
+      "sha256": "82a17a10339fff97b8cd17e5109cf7f171ed57443c6821bde7793bb3f9e22b9a"
+    },
+    {
+      "path": "../shard-migration/notes/sos-author-data/locations-trammel.xml",
+      "sha256": "7ff14eaf70a665097a3b1888080c519238d2d8860f8de927c09059aa40cb89be"
+    },
+    {
+      "path": "../shard-migration/notes/cc-P669-tools/out/felucca-summary.csv",
+      "sha256": "5324f3bfe11050c39a6ca3a51e8a4bd07d5c128dc020f3a073db1705375e61c6"
+    },
+    {
+      "path": "D:/UO/ModernUO-pinned/Distribution/Data/regions.json",
+      "sha256": "cbfe5df4097d16185ce3fd9b902b42f71029227c366247214ca16a401340687d"
+    },
+    {
+      "path": "D:/UO/ModernUO-pinned/Projects/UOContent/Engines/CannedEvil/GenChamps.cs",
+      "sha256": "74fcf757e51fa4820bc2eed190adb71cd8a8d17cae1483243ec2d921765069bf"
+    },
+    {
+      "path": "D:/UO/ModernUO-pinned/Distribution/Data/map-definitions.json",
+      "sha256": "c931e8afdaac3b7fdcfb600307f01df88b72eebaf03dcdbf1008a3f1ccbc601a"
+    }
+  ],
+  "scope": "Felucca slice only; replace its old slice when S13 is implemented, retain other facets. No runtime paths changed here.",
+  "mapPolicy": {
+    "index": 0,
+    "id": 0,
+    "name": "Felucca",
+    "rules": "FeluccaRules",
+    "terrainFileIndex": "S2 sets 1; this region file does not set map rules or file indices"
+  },
+  "counts": {
+    "sourceRegions": 150,
+    "sourceRectangles": 1128,
+    "outputRegions": 150,
+    "outputRectangles": 1121,
+    "pinnedFeluccaRegions": 107,
+    "pinnedFeluccaRectangles": 272,
+    "types": {
+      "TownRegion": 32,
+      "BaseRegion": 53,
+      "NoHousingRegion": 5,
+      "SeaMarketRegion": 1,
+      "DungeonRegion": 51,
+      "PoisonedTreeRegion": 1,
+      "AcidRiverRegion": 1,
+      "CrystalFieldRegion": 1,
+      "IcyRiverRegion": 1,
+      "MondainRegion": 2,
+      "JailRegion": 1,
+      "GreenAcresRegion": 1
+    },
+    "activeTownRegions": 31,
+    "championEntries": 17
+  },
+  "geometryChanges": [
+    {
+      "sourceIndex": 45,
+      "rectIndex": 2,
+      "reason": "child-clipped-to-town-guard-footprint",
+      "removed": [
+        {
+          "x1": 2776,
+          "y1": 952,
+          "z1": -128,
+          "x2": 2792,
+          "y2": 984,
+          "z2": 128
+        }
+      ]
+    },
+    {
+      "sourceIndex": 45,
+      "rectIndex": 3,
+      "reason": "child-clipped-to-town-guard-footprint",
+      "removed": [
+        {
+          "x1": 2768,
+          "y1": 960,
+          "z1": -128,
+          "x2": 2776,
+          "y2": 976,
+          "z2": 128
+        }
+      ]
+    },
+    {
+      "sourceIndex": 87,
+      "rectIndex": 9,
+      "reason": "empty-rectangle-omitted",
+      "source": {
+        "x": "6237",
+        "y": "350",
+        "width": "0",
+        "height": "1"
+      }
+    },
+    {
+      "sourceIndex": 87,
+      "rectIndex": 59,
+      "reason": "empty-rectangle-omitted",
+      "source": {
+        "x": "6414",
+        "y": "408",
+        "width": "1",
+        "height": "0"
+      }
+    },
+    {
+      "sourceIndex": 87,
+      "rectIndex": 122,
+      "reason": "empty-rectangle-omitted",
+      "source": {
+        "x": "6406",
+        "y": "576",
+        "width": "0",
+        "height": "1"
+      }
+    },
+    {
+      "sourceIndex": 87,
+      "rectIndex": 124,
+      "reason": "empty-rectangle-omitted",
+      "source": {
+        "x": "6408",
+        "y": "577",
+        "width": "0",
+        "height": "1"
+      }
+    },
+    {
+      "sourceIndex": 87,
+      "rectIndex": 147,
+      "reason": "empty-rectangle-omitted",
+      "source": {
+        "x": "6493",
+        "y": "529",
+        "width": "6",
+        "height": "0"
+      }
+    }
+  ],
+  "goLocationsOutsideOwnArea": [
+    {
+      "index": 68,
+      "name": "Fire",
+      "point": {
+        "x": 5760,
+        "y": 2908,
+        "z": 15
+      },
+      "source": "author-region-go"
+    },
+    {
+      "index": 76,
+      "name": "Ice",
+      "point": {
+        "x": 5210,
+        "y": 2322,
+        "z": 30
+      },
+      "source": "author-region-go"
+    },
+    {
+      "index": 106,
+      "name": "Misc Dungeons",
+      "point": {
+        "x": 6032,
+        "y": 1499,
+        "z": 0
+      },
+      "source": "author-region-go"
+    },
+    {
+      "index": 107,
+      "name": "Blackthorn Castle",
+      "point": {
+        "x": 1529,
+        "y": 1477,
+        "z": 0
+      },
+      "source": "author-region-go"
+    },
+    {
+      "index": 133,
+      "name": "Shrine of Chaos",
+      "point": {
+        "x": 1456,
+        "y": 854,
+        "z": 0
+      },
+      "source": "author-region-go"
+    },
+    {
+      "index": 135,
+      "name": "Shrine of Honesty",
+      "point": {
+        "x": 4217,
+        "y": 564,
+        "z": 36
+      },
+      "source": "author-region-go"
+    },
+    {
+      "index": 136,
+      "name": "Shrine of Honor",
+      "point": {
+        "x": 1730,
+        "y": 3528,
+        "z": 3
+      },
+      "source": "author-region-go"
+    },
+    {
+      "index": 138,
+      "name": "Shrine of Justice",
+      "point": {
+        "x": 1301,
+        "y": 639,
+        "z": 16
+      },
+      "source": "author-region-go"
+    },
+    {
+      "index": 139,
+      "name": "Shrine of Sacrifice",
+      "point": {
+        "x": 3355,
+        "y": 299,
+        "z": 9
+      },
+      "source": "author-region-go"
+    },
+    {
+      "index": 140,
+      "name": "Shrine of Spirituality",
+      "point": {
+        "x": 1589,
+        "y": 2485,
+        "z": 5
+      },
+      "source": "author-region-go"
+    }
+  ],
+  "regionsWithoutGoLocation": [
+    {
+      "index": 0,
+      "name": "Lord British Castle",
+      "parent": null
+    },
+    {
+      "index": 2,
+      "name": null,
+      "parent": "Britain"
+    },
+    {
+      "index": 5,
+      "name": null,
+      "parent": "Buccaneer's Den"
+    },
+    {
+      "index": 8,
+      "name": null,
+      "parent": "Delucia"
+    },
+    {
+      "index": 9,
+      "name": "Elandrim Nur Shaz",
+      "parent": null
+    },
+    {
+      "index": 10,
+      "name": "Elmhaven",
+      "parent": null
+    },
+    {
+      "index": 11,
+      "name": "Fort Yondall",
+      "parent": null
+    },
+    {
+      "index": 18,
+      "name": null,
+      "parent": "Jhelom"
+    },
+    {
+      "index": 22,
+      "name": null,
+      "parent": "Magincia"
+    },
+    {
+      "index": 24,
+      "name": null,
+      "parent": "Minoc"
+    },
+    {
+      "index": 26,
+      "name": "The Scholar's Inn",
+      "parent": "Moonglow"
+    },
+    {
+      "index": 28,
+      "name": null,
+      "parent": "Nujel'm"
+    },
+    {
+      "index": 30,
+      "name": null,
+      "parent": "Papua"
+    },
+    {
+      "index": 31,
+      "name": "Plunderers Peak",
+      "parent": null
+    },
+    {
+      "index": 32,
+      "name": "Red Baron Stronghold",
+      "parent": null
+    },
+    {
+      "index": 33,
+      "name": "Red Dagger Keep",
+      "parent": null
+    },
+    {
+      "index": 35,
+      "name": "Seraphim Peak",
+      "parent": null
+    },
+    {
+      "index": 37,
+      "name": null,
+      "parent": "Serpent's Hold"
+    },
+    {
+      "index": 38,
+      "name": "Skaddria Naddheim",
+      "parent": null
+    },
+    {
+      "index": 40,
+      "name": null,
+      "parent": "Skara Brae"
+    },
+    {
+      "index": 42,
+      "name": null,
+      "parent": "Trinsic"
+    },
+    {
+      "index": 45,
+      "name": null,
+      "parent": "Vesper"
+    },
+    {
+      "index": 46,
+      "name": "Viligant Valley",
+      "parent": null
+    },
+    {
+      "index": 48,
+      "name": null,
+      "parent": "Wind"
+    },
+    {
+      "index": 50,
+      "name": null,
+      "parent": "Yew"
+    },
+    {
+      "index": 58,
+      "name": null,
+      "parent": "Blighted Grove"
+    },
+    {
+      "index": 60,
+      "name": "Britain Sewers",
+      "parent": null
+    },
+    {
+      "index": 63,
+      "name": "Delucia Passage",
+      "parent": null
+    },
+    {
+      "index": 87,
+      "name": null,
+      "parent": "The Palace of Paroxysmus"
+    },
+    {
+      "index": 88,
+      "name": null,
+      "parent": "The Palace of Paroxysmus"
+    },
+    {
+      "index": 89,
+      "name": null,
+      "parent": "The Palace of Paroxysmus"
+    },
+    {
+      "index": 92,
+      "name": "CrystalField",
+      "parent": "The Prism of Light"
+    },
+    {
+      "index": 93,
+      "name": "IcyRiver",
+      "parent": "The Prism of Light"
+    },
+    {
+      "index": 108,
+      "name": "Britain Forest North",
+      "parent": null
+    },
+    {
+      "index": 109,
+      "name": "Britain Forest South",
+      "parent": null
+    },
+    {
+      "index": 111,
+      "name": "Hedge Maze",
+      "parent": null
+    },
+    {
+      "index": 118,
+      "name": "Moonglow Forest",
+      "parent": null
+    },
+    {
+      "index": 120,
+      "name": "Cove Orc Fort",
+      "parent": null
+    },
+    {
+      "index": 124,
+      "name": "Isle of Colossus",
+      "parent": null
+    },
+    {
+      "index": 125,
+      "name": "Poultry Paradise",
+      "parent": null
+    },
+    {
+      "index": 131,
+      "name": "Dragonstorm Isle",
+      "parent": null
+    },
+    {
+      "index": 147,
+      "name": "Lost Lands Outskirts",
+      "parent": null
+    },
+    {
+      "index": 148,
+      "name": "Papua Desert",
+      "parent": null
+    },
+    {
+      "index": 149,
+      "name": "Ice Island",
+      "parent": null
+    }
+  ],
+  "guardDungeonOverlaps": [],
+  "stockDispositions": {
+    "retired-outside-town-guards": 2,
+    "replaced-from-author-trammel": 41,
+    "replaced-lodging": 15,
+    "unresolved-no-author-footprint": 47,
+    "superseded-pending-S7-guard-footprint": 1,
+    "unresolved-lodging": 1
+  },
+  "terrainVerification": "unverified; no map MULs in work copy scratch; no dry-land, statics, wall, walkability, Z or client proof claimed",
+  "runtimeVerification": "unverified; no build, server boot, native deserialization or gameplay probe; data-only task",
+  "dependencies": [
+    "P692/S3 final Trammel region alignment",
+    "S7 guarded Haven town core and start points",
+    "S12 final altar/ejection/spawn-area positions",
+    "S13 native loader/region lookup/guard/dungeon proofs",
+    "S14 fences/seals, not provided by ordinary NoHousingRegion",
+    "S2 Fold mirror relocation and Felucca twin"
+  ],
+  "literalNamedRegionLookupCandidatesInCanonicalCode": [
+    {
+      "path": "server/customizations/FountainOfYouth/FountainPool.cs",
+      "line": 252,
+      "name": "Jail",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Imbuing/ImbueSites.cs",
+      "line": 94,
+      "name": "Queen's Palace",
+      "presentInCandidate": false,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": false,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Items/Functional/Automaton/KotlAutomaton.cs",
+      "line": 191,
+      "name": "KotlCity",
+      "presentInCandidate": false,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": false,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Mobiles/Normal/AcidSlug.cs",
+      "line": 69,
+      "name": "Underworld",
+      "presentInCandidate": false,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": false,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Mobiles/Normal/SilverbackGorilla.cs",
+      "line": 112,
+      "name": "GreatApeLair",
+      "presentInCandidate": false,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": false,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Expansions/High Seas/Items/Fish/FishInfo.cs",
+      "line": 433,
+      "name": "Twisted Weald",
+      "presentInCandidate": false,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": false,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Expansions/High Seas/Items/Fish/FishInfo.cs",
+      "line": 433,
+      "name": "Sanctuary",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Expansions/High Seas/Items/Fish/FishInfo.cs",
+      "line": 433,
+      "name": "Prism of Light",
+      "presentInCandidate": false,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": false,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Expansions/High Seas/Items/Fish/FishInfo.cs",
+      "line": 434,
+      "name": "Citadel",
+      "presentInCandidate": false,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": false,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Expansions/High Seas/Items/Fish/FishInfo.cs",
+      "line": 434,
+      "name": "Bedlam",
+      "presentInCandidate": false,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": false,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Expansions/High Seas/Items/Fish/FishInfo.cs",
+      "line": 434,
+      "name": "Blighted Grove",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Expansions/High Seas/Items/Fish/FishInfo.cs",
+      "line": 435,
+      "name": "Painted Caves",
+      "presentInCandidate": false,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": false,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Expansions/High Seas/Items/Fish/FishInfo.cs",
+      "line": 435,
+      "name": "Palace of Paroxysmus",
+      "presentInCandidate": false,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": false,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Expansions/High Seas/Items/Fish/FishInfo.cs",
+      "line": 435,
+      "name": "Labyrinth",
+      "presentInCandidate": false,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": false,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/PointsSystems/BlackthornData.cs",
+      "line": 71,
+      "name": "BlackthornDungeon",
+      "presentInCandidate": false,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": false,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/BlackthornDungeon/Items/MinaxArtifacts.cs",
+      "line": 289,
+      "name": "Fan Dancer's Dojo",
+      "presentInCandidate": false,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": false,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/BlackthornDungeon/Items/MinaxArtifacts.cs",
+      "line": 289,
+      "name": "Yomotsu Mines",
+      "presentInCandidate": false,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": false,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/Shame Revamped/Mobiles/Creatures.cs",
+      "line": 4,
+      "name": "Shame",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/Shame Revamped/Mobiles/Creatures.cs",
+      "line": 97,
+      "name": "Shame",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/Shame Revamped/Mobiles/Creatures.cs",
+      "line": 158,
+      "name": "Shame",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/Shame Revamped/Mobiles/Creatures.cs",
+      "line": 242,
+      "name": "Shame",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/Shame Revamped/Mobiles/Creatures.cs",
+      "line": 299,
+      "name": "Shame",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/Shame Revamped/Mobiles/Creatures.cs",
+      "line": 346,
+      "name": "Shame",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/Shame Revamped/Mobiles/Creatures.cs",
+      "line": 400,
+      "name": "Shame",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/Shame Revamped/Mobiles/Creatures.cs",
+      "line": 449,
+      "name": "Shame",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/Shame Revamped/Mobiles/Creatures.cs",
+      "line": 505,
+      "name": "Shame",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/Shame Revamped/Mobiles/Creatures.cs",
+      "line": 584,
+      "name": "Shame",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/Shame Revamped/Mobiles/Creatures.cs",
+      "line": 642,
+      "name": "Shame",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/Shame Revamped/Mobiles/Creatures.cs",
+      "line": 718,
+      "name": "Shame",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/Shame Revamped/Mobiles/Creatures.cs",
+      "line": 853,
+      "name": "Shame",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/Shame Revamped/Mobiles/Creatures.cs",
+      "line": 951,
+      "name": "Shame",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/Shame Revamped/Mobiles/Creatures.cs",
+      "line": 1024,
+      "name": "Shame",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/Shame Revamped/Mobiles/Creatures.cs",
+      "line": 1073,
+      "name": "Shame",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/Shame Revamped/Mobiles/Creatures.cs",
+      "line": 1172,
+      "name": "Shame",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/Shame Revamped/Mobiles/Creatures.cs",
+      "line": 1312,
+      "name": "Shame",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/Shame Revamped/Mobiles/Creatures.cs",
+      "line": 1394,
+      "name": "Shame",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/Shame Revamped/Mobiles/Creatures.cs",
+      "line": 1450,
+      "name": "Shame",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/Shame Revamped/Mobiles/Creatures.cs",
+      "line": 1502,
+      "name": "Shame",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/Shame Revamped/Mobiles/Creatures.cs",
+      "line": 1551,
+      "name": "Shame",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/Shame Revamped/Mobiles/Creatures.cs",
+      "line": 1587,
+      "name": "Shame",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/WrongDungeon/EnchantedHotItem.cs",
+      "line": 113,
+      "name": "Wrong",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Revamped Dungeons/WrongDungeon/Region.cs",
+      "line": 68,
+      "name": "Wrong",
+      "presentInCandidate": true,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": true,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Seasonal Events/TreasuresOfSorceresDungeon/EnchantedOriginArtifacts.cs",
+      "line": 122,
+      "name": "Fan Dancer's Dojo",
+      "presentInCandidate": false,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": false,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    },
+    {
+      "path": "server/customizations/Services/Seasonal Events/TreasuresOfSorceresDungeon/EnchantedOriginArtifacts.cs",
+      "line": 122,
+      "name": "Yomotsu Mines",
+      "presentInCandidate": false,
+      "mapScope": "not inferred; Trammel and other-facet calls are included",
+      "presentInPinnedFelucca": false,
+      "status": "literal candidate only; comments, map scope and call reachability not resolved"
+    }
+  ]
+}
