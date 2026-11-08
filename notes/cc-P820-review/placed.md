@@ -1,0 +1,582 @@
+# cc-P820 placed pieces: the New Haven jail (P801, fixed after the P815 review)
+
+One layout (`notes/cc-P801-tools/gen_jail.py`, generates `TutorialJailLayout.cs`), two plots. Everything is seeded on world load, only what is missing.
+Walls by the guide 2.2 rule: post 0x0036 NW, L corner 0x0033 SE, "south" 0x0034 on the north row to the NE tile and on the south row between the corners, "east" 0x0035 on the west column to the SW tile and on the east column; windows 0x003B (south wall) and 0x003C (west and east walls).
+
+## Main, SoS land: post 3702,2634, floor Z 21
+
+### Lesson items and people
+
+- 0x0675+, 3707,2642,21, WestCCW, MetalDoor, the south door (server item, seeded)
+- 0x0E3D, 3709,2638,21, stands free in the hall, the marked crate (TutorialJailCrate, hue 0x22, seeded), beside the bench; cc-P820 moved it from the south-east corner (9,7)
+- 0x0FEF, 3704,2639,27, on the table, the warden's ledger (TutorialJailLedger, seeded)
+- mobile, 3703,2639,21, East, Warden Hale, yellow
+- mobile, 3708,2638,21, North, Mirren, blue
+- mobile, 3704,2636,21, South, Finn, gray, west cell
+- mobile, 3707,2636,21, South, Sarn, orange, middle cell
+- mobile, 3711,2636,21, South, Black Tam, red, east cell
+- mobile, 3708,2640,21, lesson only, a sneak thief, private to the trainee, gone with the lesson
+- mobile, 3709,2640,21, lesson only, a New Haven guard, private to the trainee, gone with the lesson
+
+### Removed on load from a cc-P801 world (TutorialJail.Retired)
+
+- 0x0034, 3702,2642,21, grey brick "south" piece on the south-west corner tile (stub past the west wall; the tile keeps its 0x0035)
+- 0x0A07, 3703,2640,34, wall torch on the floor tile of the west window
+- 0x0A07, 3703,2638,34, wall torch, west wall (with the other, it showed through the low eave)
+- the marked crate moves from 3711,2641,21 to 3709,2638,21 (the same item)
+
+### Building
+
+- 0x0519, 3703,2635,21, stone paver
+- 0x0519, 3703,2636,21, stone paver
+- 0x0519, 3703,2637,21, stone paver
+- 0x0519, 3703,2638,21, stone paver
+- 0x0519, 3703,2639,21, stone paver
+- 0x0519, 3703,2640,21, stone paver
+- 0x0519, 3703,2641,21, stone paver
+- 0x0519, 3703,2642,21, stone paver
+- 0x0519, 3704,2635,21, stone paver
+- 0x0519, 3704,2636,21, stone paver
+- 0x0519, 3704,2637,21, stone paver
+- 0x0519, 3704,2638,21, stone paver
+- 0x0519, 3704,2639,21, stone paver
+- 0x0519, 3704,2640,21, stone paver
+- 0x0519, 3704,2641,21, stone paver
+- 0x0519, 3704,2642,21, stone paver
+- 0x0519, 3705,2635,21, stone paver
+- 0x0519, 3705,2636,21, stone paver
+- 0x0519, 3705,2637,21, stone paver
+- 0x0519, 3705,2638,21, stone paver
+- 0x0519, 3705,2639,21, stone paver
+- 0x0519, 3705,2640,21, stone paver
+- 0x0519, 3705,2641,21, stone paver
+- 0x0519, 3705,2642,21, stone paver
+- 0x0519, 3706,2635,21, stone paver
+- 0x0519, 3706,2636,21, stone paver
+- 0x0519, 3706,2637,21, stone paver
+- 0x0519, 3706,2638,21, stone paver
+- 0x0519, 3706,2639,21, stone paver
+- 0x0519, 3706,2640,21, stone paver
+- 0x0519, 3706,2641,21, stone paver
+- 0x0519, 3706,2642,21, stone paver
+- 0x0519, 3707,2635,21, stone paver
+- 0x0519, 3707,2636,21, stone paver
+- 0x0519, 3707,2637,21, stone paver
+- 0x0519, 3707,2638,21, stone paver
+- 0x0519, 3707,2639,21, stone paver
+- 0x0519, 3707,2640,21, stone paver
+- 0x0519, 3707,2641,21, stone paver
+- 0x0519, 3707,2642,21, stone paver
+- 0x0519, 3708,2635,21, stone paver
+- 0x0519, 3708,2636,21, stone paver
+- 0x0519, 3708,2637,21, stone paver
+- 0x0519, 3708,2638,21, stone paver
+- 0x0519, 3708,2639,21, stone paver
+- 0x0519, 3708,2640,21, stone paver
+- 0x0519, 3708,2641,21, stone paver
+- 0x0519, 3708,2642,21, stone paver
+- 0x0519, 3709,2635,21, stone paver
+- 0x0519, 3709,2636,21, stone paver
+- 0x0519, 3709,2637,21, stone paver
+- 0x0519, 3709,2638,21, stone paver
+- 0x0519, 3709,2639,21, stone paver
+- 0x0519, 3709,2640,21, stone paver
+- 0x0519, 3709,2641,21, stone paver
+- 0x0519, 3709,2642,21, stone paver
+- 0x0519, 3710,2635,21, stone paver
+- 0x0519, 3710,2636,21, stone paver
+- 0x0519, 3710,2637,21, stone paver
+- 0x0519, 3710,2638,21, stone paver
+- 0x0519, 3710,2639,21, stone paver
+- 0x0519, 3710,2640,21, stone paver
+- 0x0519, 3710,2641,21, stone paver
+- 0x0519, 3710,2642,21, stone paver
+- 0x0519, 3711,2635,21, stone paver
+- 0x0519, 3711,2636,21, stone paver
+- 0x0519, 3711,2637,21, stone paver
+- 0x0519, 3711,2638,21, stone paver
+- 0x0519, 3711,2639,21, stone paver
+- 0x0519, 3711,2640,21, stone paver
+- 0x0519, 3711,2641,21, stone paver
+- 0x0519, 3711,2642,21, stone paver
+- 0x0519, 3712,2635,21, stone paver
+- 0x0519, 3712,2636,21, stone paver
+- 0x0519, 3712,2637,21, stone paver
+- 0x0519, 3712,2638,21, stone paver
+- 0x0519, 3712,2639,21, stone paver
+- 0x0519, 3712,2640,21, stone paver
+- 0x0519, 3712,2641,21, stone paver
+- 0x0519, 3712,2642,21, stone paver
+- 0x0036, 3702,2634,21, grey brick wall
+- 0x0033, 3712,2642,21, grey brick wall
+- 0x0034, 3703,2634,21, grey brick wall
+- 0x0034, 3704,2634,21, grey brick wall
+- 0x0034, 3705,2634,21, grey brick wall
+- 0x0034, 3706,2634,21, grey brick wall
+- 0x0034, 3707,2634,21, grey brick wall
+- 0x0034, 3708,2634,21, grey brick wall
+- 0x0034, 3709,2634,21, grey brick wall
+- 0x0034, 3710,2634,21, grey brick wall
+- 0x0034, 3711,2634,21, grey brick wall
+- 0x0034, 3712,2634,21, grey brick wall
+- 0x0034, 3703,2642,21, grey brick wall
+- 0x003B, 3704,2642,21, grey brick wall
+- 0x0034, 3705,2642,21, grey brick wall
+- 0x0034, 3706,2642,21, grey brick wall
+- 0x0034, 3708,2642,21, grey brick wall
+- 0x0034, 3709,2642,21, grey brick wall
+- 0x003B, 3710,2642,21, grey brick wall
+- 0x0034, 3711,2642,21, grey brick wall
+- 0x0035, 3702,2635,21, grey brick wall
+- 0x0035, 3702,2636,21, grey brick wall
+- 0x0035, 3702,2637,21, grey brick wall
+- 0x0035, 3702,2638,21, grey brick wall
+- 0x0035, 3702,2639,21, grey brick wall
+- 0x003C, 3702,2640,21, grey brick wall
+- 0x0035, 3702,2641,21, grey brick wall
+- 0x0035, 3702,2642,21, grey brick wall
+- 0x0035, 3712,2635,21, grey brick wall
+- 0x0035, 3712,2636,21, grey brick wall
+- 0x0035, 3712,2637,21, grey brick wall
+- 0x0035, 3712,2638,21, grey brick wall
+- 0x0035, 3712,2639,21, grey brick wall
+- 0x003C, 3712,2640,21, grey brick wall
+- 0x0035, 3712,2641,21, grey brick wall
+- 0x0035, 3705,2635,21, grey brick wall
+- 0x0035, 3705,2636,21, grey brick wall
+- 0x0035, 3705,2637,21, grey brick wall
+- 0x0035, 3709,2635,21, grey brick wall
+- 0x0035, 3709,2636,21, grey brick wall
+- 0x0035, 3709,2637,21, grey brick wall
+- 0x0821, 3703,2637,21, iron bars
+- 0x0828, 3704,2637,21, locked cell gate (static)
+- 0x0821, 3706,2637,21, iron bars
+- 0x0828, 3707,2637,21, locked cell gate (static)
+- 0x0821, 3708,2637,21, iron bars
+- 0x0821, 3710,2637,21, iron bars
+- 0x0828, 3711,2637,21, locked cell gate (static)
+- 0x05C4, 3703,2635,40, shingle roof
+- 0x05C4, 3703,2636,40, shingle roof
+- 0x05C4, 3703,2637,40, shingle roof
+- 0x05C4, 3703,2638,40, shingle roof
+- 0x05C4, 3703,2639,40, shingle roof
+- 0x05C4, 3703,2640,40, shingle roof
+- 0x05C4, 3703,2641,40, shingle roof
+- 0x05C4, 3703,2642,40, shingle roof
+- 0x05C4, 3703,2643,40, shingle roof
+- 0x05C4, 3704,2635,43, shingle roof
+- 0x05C4, 3704,2636,43, shingle roof
+- 0x05C4, 3704,2637,43, shingle roof
+- 0x05C4, 3704,2638,43, shingle roof
+- 0x05C4, 3704,2639,43, shingle roof
+- 0x05C4, 3704,2640,43, shingle roof
+- 0x05C4, 3704,2641,43, shingle roof
+- 0x05C4, 3704,2642,43, shingle roof
+- 0x05C4, 3704,2643,43, shingle roof
+- 0x05C4, 3705,2635,46, shingle roof
+- 0x05C4, 3705,2636,46, shingle roof
+- 0x05C4, 3705,2637,46, shingle roof
+- 0x05C4, 3705,2638,46, shingle roof
+- 0x05C4, 3705,2639,46, shingle roof
+- 0x05C4, 3705,2640,46, shingle roof
+- 0x05C4, 3705,2641,46, shingle roof
+- 0x05C4, 3705,2642,46, shingle roof
+- 0x05C4, 3705,2643,46, shingle roof
+- 0x05C4, 3706,2635,49, shingle roof
+- 0x05C4, 3706,2636,49, shingle roof
+- 0x05C4, 3706,2637,49, shingle roof
+- 0x05C4, 3706,2638,49, shingle roof
+- 0x05C4, 3706,2639,49, shingle roof
+- 0x05C4, 3706,2640,49, shingle roof
+- 0x05C4, 3706,2641,49, shingle roof
+- 0x05C4, 3706,2642,49, shingle roof
+- 0x05C4, 3706,2643,49, shingle roof
+- 0x05C4, 3707,2635,52, shingle roof
+- 0x05C4, 3707,2636,52, shingle roof
+- 0x05C4, 3707,2637,52, shingle roof
+- 0x05C4, 3707,2638,52, shingle roof
+- 0x05C4, 3707,2639,52, shingle roof
+- 0x05C4, 3707,2640,52, shingle roof
+- 0x05C4, 3707,2641,52, shingle roof
+- 0x05C4, 3707,2642,52, shingle roof
+- 0x05C4, 3707,2643,52, shingle roof
+- 0x05C2, 3708,2635,55, shingle roof
+- 0x05C2, 3708,2636,55, shingle roof
+- 0x05C2, 3708,2637,55, shingle roof
+- 0x05C2, 3708,2638,55, shingle roof
+- 0x05C2, 3708,2639,55, shingle roof
+- 0x05C2, 3708,2640,55, shingle roof
+- 0x05C2, 3708,2641,55, shingle roof
+- 0x05C2, 3708,2642,55, shingle roof
+- 0x05C2, 3708,2643,55, shingle roof
+- 0x05C3, 3709,2635,52, shingle roof
+- 0x05C3, 3709,2636,52, shingle roof
+- 0x05C3, 3709,2637,52, shingle roof
+- 0x05C3, 3709,2638,52, shingle roof
+- 0x05C3, 3709,2639,52, shingle roof
+- 0x05C3, 3709,2640,52, shingle roof
+- 0x05C3, 3709,2641,52, shingle roof
+- 0x05C3, 3709,2642,52, shingle roof
+- 0x05C3, 3709,2643,52, shingle roof
+- 0x05C3, 3710,2635,49, shingle roof
+- 0x05C3, 3710,2636,49, shingle roof
+- 0x05C3, 3710,2637,49, shingle roof
+- 0x05C3, 3710,2638,49, shingle roof
+- 0x05C3, 3710,2639,49, shingle roof
+- 0x05C3, 3710,2640,49, shingle roof
+- 0x05C3, 3710,2641,49, shingle roof
+- 0x05C3, 3710,2642,49, shingle roof
+- 0x05C3, 3710,2643,49, shingle roof
+- 0x05C3, 3711,2635,46, shingle roof
+- 0x05C3, 3711,2636,46, shingle roof
+- 0x05C3, 3711,2637,46, shingle roof
+- 0x05C3, 3711,2638,46, shingle roof
+- 0x05C3, 3711,2639,46, shingle roof
+- 0x05C3, 3711,2640,46, shingle roof
+- 0x05C3, 3711,2641,46, shingle roof
+- 0x05C3, 3711,2642,46, shingle roof
+- 0x05C3, 3711,2643,46, shingle roof
+- 0x05C3, 3712,2635,43, shingle roof
+- 0x05C3, 3712,2636,43, shingle roof
+- 0x05C3, 3712,2637,43, shingle roof
+- 0x05C3, 3712,2638,43, shingle roof
+- 0x05C3, 3712,2639,43, shingle roof
+- 0x05C3, 3712,2640,43, shingle roof
+- 0x05C3, 3712,2641,43, shingle roof
+- 0x05C3, 3712,2642,43, shingle roof
+- 0x05C3, 3712,2643,43, shingle roof
+- 0x05C3, 3713,2635,40, shingle roof
+- 0x05C3, 3713,2636,40, shingle roof
+- 0x05C3, 3713,2637,40, shingle roof
+- 0x05C3, 3713,2638,40, shingle roof
+- 0x05C3, 3713,2639,40, shingle roof
+- 0x05C3, 3713,2640,40, shingle roof
+- 0x05C3, 3713,2641,40, shingle roof
+- 0x05C3, 3713,2642,40, shingle roof
+- 0x05C3, 3713,2643,40, shingle roof
+- 0x0055, 3704,2642,41, grey brick gable
+- 0x0055, 3705,2642,41, grey brick gable
+- 0x0055, 3705,2642,44, grey brick gable
+- 0x0055, 3706,2642,41, grey brick gable
+- 0x0055, 3706,2642,44, grey brick gable
+- 0x0055, 3706,2642,47, grey brick gable
+- 0x0055, 3707,2642,41, grey brick gable
+- 0x0055, 3707,2642,44, grey brick gable
+- 0x0055, 3707,2642,47, grey brick gable
+- 0x0055, 3707,2642,50, grey brick gable
+- 0x0055, 3708,2642,41, grey brick gable
+- 0x0055, 3708,2642,44, grey brick gable
+- 0x0055, 3708,2642,47, grey brick gable
+- 0x0055, 3708,2642,50, grey brick gable
+- 0x0055, 3708,2642,53, grey brick gable
+- 0x0055, 3709,2642,41, grey brick gable
+- 0x0055, 3709,2642,44, grey brick gable
+- 0x0055, 3709,2642,47, grey brick gable
+- 0x0055, 3709,2642,50, grey brick gable
+- 0x0055, 3710,2642,41, grey brick gable
+- 0x0055, 3710,2642,44, grey brick gable
+- 0x0055, 3710,2642,47, grey brick gable
+- 0x0055, 3711,2642,41, grey brick gable
+- 0x0055, 3711,2642,44, grey brick gable
+- 0x0055, 3712,2642,41, grey brick gable
+- 0x0B4A, 3704,2639,21, the warden's writing table
+- 0x0E34, 3704,2639,27, a scroll on the table
+- 0x0B26, 3704,2638,21, standing candelabra, free-standing north of the table (replaces the two west-wall torches; 15 high, under the roof at floor + 22)
+- 0x0B2C, 3710,2638,21, bench along the bars, facing the hall
+- 0x0B2C, 3711,2638,21, bench along the bars, facing the hall
+- 0x1262, 3703,2635,28, shackles on the cell wall
+- 0x1262, 3710,2635,28, shackles on the cell wall
+- 0x0F34, 3707,2635,21, hay in a cell
+- 0x0F34, 3703,2636,21, hay in a cell
+- 0x0F34, 3711,2635,21, hay in a cell
+- 0x0B98, 3709,2643,19, shop sign hanger, sticks out from the south wall, two tiles east of the door
+- 0x0BD2, 3709,2643,19, its board, named The New Haven Jail
+
+## Release branch, stock New Haven: post 3469,2597, floor Z 11
+
+### Lesson items and people
+
+- 0x0675+, 3474,2605,11, WestCCW, MetalDoor, the south door (server item, seeded)
+- 0x0E3D, 3476,2601,11, stands free in the hall, the marked crate (TutorialJailCrate, hue 0x22, seeded), beside the bench; cc-P820 moved it from the south-east corner (9,7)
+- 0x0FEF, 3471,2602,17, on the table, the warden's ledger (TutorialJailLedger, seeded)
+- mobile, 3470,2602,11, East, Warden Hale, yellow
+- mobile, 3475,2601,11, North, Mirren, blue
+- mobile, 3471,2599,11, South, Finn, gray, west cell
+- mobile, 3474,2599,11, South, Sarn, orange, middle cell
+- mobile, 3478,2599,11, South, Black Tam, red, east cell
+- mobile, 3475,2603,11, lesson only, a sneak thief, private to the trainee, gone with the lesson
+- mobile, 3476,2603,11, lesson only, a New Haven guard, private to the trainee, gone with the lesson
+
+### Removed on load from a cc-P801 world (TutorialJail.Retired)
+
+- 0x0034, 3469,2605,11, grey brick "south" piece on the south-west corner tile (stub past the west wall; the tile keeps its 0x0035)
+- 0x0A07, 3470,2603,24, wall torch on the floor tile of the west window
+- 0x0A07, 3470,2601,24, wall torch, west wall (with the other, it showed through the low eave)
+- the marked crate moves from 3478,2604,11 to 3476,2601,11 (the same item)
+
+### Building
+
+- 0x0519, 3470,2598,11, stone paver
+- 0x0519, 3470,2599,11, stone paver
+- 0x0519, 3470,2600,11, stone paver
+- 0x0519, 3470,2601,11, stone paver
+- 0x0519, 3470,2602,11, stone paver
+- 0x0519, 3470,2603,11, stone paver
+- 0x0519, 3470,2604,11, stone paver
+- 0x0519, 3470,2605,11, stone paver
+- 0x0519, 3471,2598,11, stone paver
+- 0x0519, 3471,2599,11, stone paver
+- 0x0519, 3471,2600,11, stone paver
+- 0x0519, 3471,2601,11, stone paver
+- 0x0519, 3471,2602,11, stone paver
+- 0x0519, 3471,2603,11, stone paver
+- 0x0519, 3471,2604,11, stone paver
+- 0x0519, 3471,2605,11, stone paver
+- 0x0519, 3472,2598,11, stone paver
+- 0x0519, 3472,2599,11, stone paver
+- 0x0519, 3472,2600,11, stone paver
+- 0x0519, 3472,2601,11, stone paver
+- 0x0519, 3472,2602,11, stone paver
+- 0x0519, 3472,2603,11, stone paver
+- 0x0519, 3472,2604,11, stone paver
+- 0x0519, 3472,2605,11, stone paver
+- 0x0519, 3473,2598,11, stone paver
+- 0x0519, 3473,2599,11, stone paver
+- 0x0519, 3473,2600,11, stone paver
+- 0x0519, 3473,2601,11, stone paver
+- 0x0519, 3473,2602,11, stone paver
+- 0x0519, 3473,2603,11, stone paver
+- 0x0519, 3473,2604,11, stone paver
+- 0x0519, 3473,2605,11, stone paver
+- 0x0519, 3474,2598,11, stone paver
+- 0x0519, 3474,2599,11, stone paver
+- 0x0519, 3474,2600,11, stone paver
+- 0x0519, 3474,2601,11, stone paver
+- 0x0519, 3474,2602,11, stone paver
+- 0x0519, 3474,2603,11, stone paver
+- 0x0519, 3474,2604,11, stone paver
+- 0x0519, 3474,2605,11, stone paver
+- 0x0519, 3475,2598,11, stone paver
+- 0x0519, 3475,2599,11, stone paver
+- 0x0519, 3475,2600,11, stone paver
+- 0x0519, 3475,2601,11, stone paver
+- 0x0519, 3475,2602,11, stone paver
+- 0x0519, 3475,2603,11, stone paver
+- 0x0519, 3475,2604,11, stone paver
+- 0x0519, 3475,2605,11, stone paver
+- 0x0519, 3476,2598,11, stone paver
+- 0x0519, 3476,2599,11, stone paver
+- 0x0519, 3476,2600,11, stone paver
+- 0x0519, 3476,2601,11, stone paver
+- 0x0519, 3476,2602,11, stone paver
+- 0x0519, 3476,2603,11, stone paver
+- 0x0519, 3476,2604,11, stone paver
+- 0x0519, 3476,2605,11, stone paver
+- 0x0519, 3477,2598,11, stone paver
+- 0x0519, 3477,2599,11, stone paver
+- 0x0519, 3477,2600,11, stone paver
+- 0x0519, 3477,2601,11, stone paver
+- 0x0519, 3477,2602,11, stone paver
+- 0x0519, 3477,2603,11, stone paver
+- 0x0519, 3477,2604,11, stone paver
+- 0x0519, 3477,2605,11, stone paver
+- 0x0519, 3478,2598,11, stone paver
+- 0x0519, 3478,2599,11, stone paver
+- 0x0519, 3478,2600,11, stone paver
+- 0x0519, 3478,2601,11, stone paver
+- 0x0519, 3478,2602,11, stone paver
+- 0x0519, 3478,2603,11, stone paver
+- 0x0519, 3478,2604,11, stone paver
+- 0x0519, 3478,2605,11, stone paver
+- 0x0519, 3479,2598,11, stone paver
+- 0x0519, 3479,2599,11, stone paver
+- 0x0519, 3479,2600,11, stone paver
+- 0x0519, 3479,2601,11, stone paver
+- 0x0519, 3479,2602,11, stone paver
+- 0x0519, 3479,2603,11, stone paver
+- 0x0519, 3479,2604,11, stone paver
+- 0x0519, 3479,2605,11, stone paver
+- 0x0036, 3469,2597,11, grey brick wall
+- 0x0033, 3479,2605,11, grey brick wall
+- 0x0034, 3470,2597,11, grey brick wall
+- 0x0034, 3471,2597,11, grey brick wall
+- 0x0034, 3472,2597,11, grey brick wall
+- 0x0034, 3473,2597,11, grey brick wall
+- 0x0034, 3474,2597,11, grey brick wall
+- 0x0034, 3475,2597,11, grey brick wall
+- 0x0034, 3476,2597,11, grey brick wall
+- 0x0034, 3477,2597,11, grey brick wall
+- 0x0034, 3478,2597,11, grey brick wall
+- 0x0034, 3479,2597,11, grey brick wall
+- 0x0034, 3470,2605,11, grey brick wall
+- 0x003B, 3471,2605,11, grey brick wall
+- 0x0034, 3472,2605,11, grey brick wall
+- 0x0034, 3473,2605,11, grey brick wall
+- 0x0034, 3475,2605,11, grey brick wall
+- 0x0034, 3476,2605,11, grey brick wall
+- 0x003B, 3477,2605,11, grey brick wall
+- 0x0034, 3478,2605,11, grey brick wall
+- 0x0035, 3469,2598,11, grey brick wall
+- 0x0035, 3469,2599,11, grey brick wall
+- 0x0035, 3469,2600,11, grey brick wall
+- 0x0035, 3469,2601,11, grey brick wall
+- 0x0035, 3469,2602,11, grey brick wall
+- 0x003C, 3469,2603,11, grey brick wall
+- 0x0035, 3469,2604,11, grey brick wall
+- 0x0035, 3469,2605,11, grey brick wall
+- 0x0035, 3479,2598,11, grey brick wall
+- 0x0035, 3479,2599,11, grey brick wall
+- 0x0035, 3479,2600,11, grey brick wall
+- 0x0035, 3479,2601,11, grey brick wall
+- 0x0035, 3479,2602,11, grey brick wall
+- 0x003C, 3479,2603,11, grey brick wall
+- 0x0035, 3479,2604,11, grey brick wall
+- 0x0035, 3472,2598,11, grey brick wall
+- 0x0035, 3472,2599,11, grey brick wall
+- 0x0035, 3472,2600,11, grey brick wall
+- 0x0035, 3476,2598,11, grey brick wall
+- 0x0035, 3476,2599,11, grey brick wall
+- 0x0035, 3476,2600,11, grey brick wall
+- 0x0821, 3470,2600,11, iron bars
+- 0x0828, 3471,2600,11, locked cell gate (static)
+- 0x0821, 3473,2600,11, iron bars
+- 0x0828, 3474,2600,11, locked cell gate (static)
+- 0x0821, 3475,2600,11, iron bars
+- 0x0821, 3477,2600,11, iron bars
+- 0x0828, 3478,2600,11, locked cell gate (static)
+- 0x05C4, 3470,2598,30, shingle roof
+- 0x05C4, 3470,2599,30, shingle roof
+- 0x05C4, 3470,2600,30, shingle roof
+- 0x05C4, 3470,2601,30, shingle roof
+- 0x05C4, 3470,2602,30, shingle roof
+- 0x05C4, 3470,2603,30, shingle roof
+- 0x05C4, 3470,2604,30, shingle roof
+- 0x05C4, 3470,2605,30, shingle roof
+- 0x05C4, 3470,2606,30, shingle roof
+- 0x05C4, 3471,2598,33, shingle roof
+- 0x05C4, 3471,2599,33, shingle roof
+- 0x05C4, 3471,2600,33, shingle roof
+- 0x05C4, 3471,2601,33, shingle roof
+- 0x05C4, 3471,2602,33, shingle roof
+- 0x05C4, 3471,2603,33, shingle roof
+- 0x05C4, 3471,2604,33, shingle roof
+- 0x05C4, 3471,2605,33, shingle roof
+- 0x05C4, 3471,2606,33, shingle roof
+- 0x05C4, 3472,2598,36, shingle roof
+- 0x05C4, 3472,2599,36, shingle roof
+- 0x05C4, 3472,2600,36, shingle roof
+- 0x05C4, 3472,2601,36, shingle roof
+- 0x05C4, 3472,2602,36, shingle roof
+- 0x05C4, 3472,2603,36, shingle roof
+- 0x05C4, 3472,2604,36, shingle roof
+- 0x05C4, 3472,2605,36, shingle roof
+- 0x05C4, 3472,2606,36, shingle roof
+- 0x05C4, 3473,2598,39, shingle roof
+- 0x05C4, 3473,2599,39, shingle roof
+- 0x05C4, 3473,2600,39, shingle roof
+- 0x05C4, 3473,2601,39, shingle roof
+- 0x05C4, 3473,2602,39, shingle roof
+- 0x05C4, 3473,2603,39, shingle roof
+- 0x05C4, 3473,2604,39, shingle roof
+- 0x05C4, 3473,2605,39, shingle roof
+- 0x05C4, 3473,2606,39, shingle roof
+- 0x05C4, 3474,2598,42, shingle roof
+- 0x05C4, 3474,2599,42, shingle roof
+- 0x05C4, 3474,2600,42, shingle roof
+- 0x05C4, 3474,2601,42, shingle roof
+- 0x05C4, 3474,2602,42, shingle roof
+- 0x05C4, 3474,2603,42, shingle roof
+- 0x05C4, 3474,2604,42, shingle roof
+- 0x05C4, 3474,2605,42, shingle roof
+- 0x05C4, 3474,2606,42, shingle roof
+- 0x05C2, 3475,2598,45, shingle roof
+- 0x05C2, 3475,2599,45, shingle roof
+- 0x05C2, 3475,2600,45, shingle roof
+- 0x05C2, 3475,2601,45, shingle roof
+- 0x05C2, 3475,2602,45, shingle roof
+- 0x05C2, 3475,2603,45, shingle roof
+- 0x05C2, 3475,2604,45, shingle roof
+- 0x05C2, 3475,2605,45, shingle roof
+- 0x05C2, 3475,2606,45, shingle roof
+- 0x05C3, 3476,2598,42, shingle roof
+- 0x05C3, 3476,2599,42, shingle roof
+- 0x05C3, 3476,2600,42, shingle roof
+- 0x05C3, 3476,2601,42, shingle roof
+- 0x05C3, 3476,2602,42, shingle roof
+- 0x05C3, 3476,2603,42, shingle roof
+- 0x05C3, 3476,2604,42, shingle roof
+- 0x05C3, 3476,2605,42, shingle roof
+- 0x05C3, 3476,2606,42, shingle roof
+- 0x05C3, 3477,2598,39, shingle roof
+- 0x05C3, 3477,2599,39, shingle roof
+- 0x05C3, 3477,2600,39, shingle roof
+- 0x05C3, 3477,2601,39, shingle roof
+- 0x05C3, 3477,2602,39, shingle roof
+- 0x05C3, 3477,2603,39, shingle roof
+- 0x05C3, 3477,2604,39, shingle roof
+- 0x05C3, 3477,2605,39, shingle roof
+- 0x05C3, 3477,2606,39, shingle roof
+- 0x05C3, 3478,2598,36, shingle roof
+- 0x05C3, 3478,2599,36, shingle roof
+- 0x05C3, 3478,2600,36, shingle roof
+- 0x05C3, 3478,2601,36, shingle roof
+- 0x05C3, 3478,2602,36, shingle roof
+- 0x05C3, 3478,2603,36, shingle roof
+- 0x05C3, 3478,2604,36, shingle roof
+- 0x05C3, 3478,2605,36, shingle roof
+- 0x05C3, 3478,2606,36, shingle roof
+- 0x05C3, 3479,2598,33, shingle roof
+- 0x05C3, 3479,2599,33, shingle roof
+- 0x05C3, 3479,2600,33, shingle roof
+- 0x05C3, 3479,2601,33, shingle roof
+- 0x05C3, 3479,2602,33, shingle roof
+- 0x05C3, 3479,2603,33, shingle roof
+- 0x05C3, 3479,2604,33, shingle roof
+- 0x05C3, 3479,2605,33, shingle roof
+- 0x05C3, 3479,2606,33, shingle roof
+- 0x05C3, 3480,2598,30, shingle roof
+- 0x05C3, 3480,2599,30, shingle roof
+- 0x05C3, 3480,2600,30, shingle roof
+- 0x05C3, 3480,2601,30, shingle roof
+- 0x05C3, 3480,2602,30, shingle roof
+- 0x05C3, 3480,2603,30, shingle roof
+- 0x05C3, 3480,2604,30, shingle roof
+- 0x05C3, 3480,2605,30, shingle roof
+- 0x05C3, 3480,2606,30, shingle roof
+- 0x0055, 3471,2605,31, grey brick gable
+- 0x0055, 3472,2605,31, grey brick gable
+- 0x0055, 3472,2605,34, grey brick gable
+- 0x0055, 3473,2605,31, grey brick gable
+- 0x0055, 3473,2605,34, grey brick gable
+- 0x0055, 3473,2605,37, grey brick gable
+- 0x0055, 3474,2605,31, grey brick gable
+- 0x0055, 3474,2605,34, grey brick gable
+- 0x0055, 3474,2605,37, grey brick gable
+- 0x0055, 3474,2605,40, grey brick gable
+- 0x0055, 3475,2605,31, grey brick gable
+- 0x0055, 3475,2605,34, grey brick gable
+- 0x0055, 3475,2605,37, grey brick gable
+- 0x0055, 3475,2605,40, grey brick gable
+- 0x0055, 3475,2605,43, grey brick gable
+- 0x0055, 3476,2605,31, grey brick gable
+- 0x0055, 3476,2605,34, grey brick gable
+- 0x0055, 3476,2605,37, grey brick gable
+- 0x0055, 3476,2605,40, grey brick gable
+- 0x0055, 3477,2605,31, grey brick gable
+- 0x0055, 3477,2605,34, grey brick gable
+- 0x0055, 3477,2605,37, grey brick gable
+- 0x0055, 3478,2605,31, grey brick gable
+- 0x0055, 3478,2605,34, grey brick gable
+- 0x0055, 3479,2605,31, grey brick gable
+- 0x0B4A, 3471,2602,11, the warden's writing table
+- 0x0E34, 3471,2602,17, a scroll on the table
+- 0x0B26, 3471,2601,11, standing candelabra, free-standing north of the table (replaces the two west-wall torches; 15 high, under the roof at floor + 22)
+- 0x0B2C, 3477,2601,11, bench along the bars, facing the hall
+- 0x0B2C, 3478,2601,11, bench along the bars, facing the hall
+- 0x1262, 3470,2598,18, shackles on the cell wall
+- 0x1262, 3477,2598,18, shackles on the cell wall
+- 0x0F34, 3474,2598,11, hay in a cell
+- 0x0F34, 3470,2599,11, hay in a cell
+- 0x0F34, 3478,2598,11, hay in a cell
+- 0x0B98, 3476,2606,9, shop sign hanger, sticks out from the south wall, two tiles east of the door
+- 0x0BD2, 3476,2606,9, its board, named The New Haven Jail
