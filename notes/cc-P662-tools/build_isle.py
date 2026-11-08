@@ -664,6 +664,11 @@ def plan(farm, props, pts, quiet=False):
         xs = [c[0] for c in floor]; ys = [c[1] for c in floor]
         x1, x2, y1, y2 = min(xs), max(xs), min(ys), max(ys)
         for (x, y) in cells((x1, y1, x2 + 1, y2 + 1)):
+            # cc-P823 (P821 review item 1): not on the west eave column. The pitched roof's west slope sits there at
+            # floor + eaveDz (19), under the ceiling's +20, so the ceiling drew as a row of grey squares on the slope
+            # (bank x 6758, lodge x 6778). Every other column's roof is at +22 or higher and covers it.
+            if x == x1 and RULES['pitched']['eaveDz'] < RULES['roof']['z']:
+                continue
             put(x, y, RULES['roof']['z'], hx(RULES['roof']['id']), '%s roof' % name)
         for (x, y, z, tid, what) in pitched_roof(x1 - 1, y1 - 1, x2 + 1, y2 + 1, RULES['pitched']):
             put(x, y, z, tid, '%s %s' % (name, what))
