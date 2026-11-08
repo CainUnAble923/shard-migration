@@ -63,23 +63,23 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-25. Shard version 2026.11.07.9. Golem on, 4 queued, latest done P9772. Play tests: 1507 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-25. Shard version 2026.11.07.9. Golem on, 3 queued, latest done P9772. Play tests: 1508 open, 4 failed, 43 passed.
 
 ### Needs overseer review (13)
 
-- **gate The shard runs and holds a world**: Last confirmed 2026-10-25 (13 days ago). Re-read its sources; still met? `python tools/judge.py confirm gate "The shard runs and holds a world"` or `python tools/judge.py gate "The shard runs and holds a world" --done no --detail "..."`
+- **gate The shard runs and holds a world**: Last confirmed 2026-10-25 (14 days ago). Re-read its sources; still met? `python tools/judge.py confirm gate "The shard runs and holds a world"` or `python tools/judge.py gate "The shard runs and holds a world" --done no --detail "..."`
 - **gate The player package installs on a clean PC**: Waits on a confirmation: Chase: which package is published on get.shatteredlegacyuo.com (the one with the 10-24 launcher?), and has a package with our TazUO build passed a clean-PC install? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "The player package installs on a clean PC" --done no --detail "..."` or `python tools/judge.py confirm gate "The player package installs on a clean PC"`
-- **gate A new character can train without hitting a wall**: Last confirmed 2026-10-25 (13 days ago). Re-read its sources; still not met? `python tools/judge.py confirm gate "A new character can train without hitting a wall"` or `python tools/judge.py gate "A new character can train without hitting a wall" --done yes --detail "..."`
-- **gate A new character's first hour**: Last confirmed 2026-10-25 (13 days ago). Re-read its sources; still not met? `python tools/judge.py confirm gate "A new character's first hour"` or `python tools/judge.py gate "A new character's first hour" --done yes --detail "..."`
-- **gate Levels and loops work end to end**: Last confirmed 2026-10-25 (13 days ago). Re-read its sources; still not met? `python tools/judge.py confirm gate "Levels and loops work end to end"` or `python tools/judge.py gate "Levels and loops work end to end" --done yes --detail "..."`
+- **gate A new character can train without hitting a wall**: Last confirmed 2026-10-25 (14 days ago). Re-read its sources; still not met? `python tools/judge.py confirm gate "A new character can train without hitting a wall"` or `python tools/judge.py gate "A new character can train without hitting a wall" --done yes --detail "..."`
+- **gate A new character's first hour**: Last confirmed 2026-10-25 (14 days ago). Re-read its sources; still not met? `python tools/judge.py confirm gate "A new character's first hour"` or `python tools/judge.py gate "A new character's first hour" --done yes --detail "..."`
+- **gate Levels and loops work end to end**: Last confirmed 2026-10-25 (14 days ago). Re-read its sources; still not met? `python tools/judge.py confirm gate "Levels and loops work end to end"` or `python tools/judge.py gate "Levels and loops work end to end" --done yes --detail "..."`
 - **gate What is built is seen in a client, not only compiled**: Waits on a confirmation: Chase: deploy main (2026.10.25.7) to the test shard, and mark the bot's 10-25 evidence on the play-test page? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "What is built is seen in a client, not only compiled" --done yes --detail "..."` or `python tools/judge.py confirm gate "What is built is seen in a client, not only compiled"`
 - **gate Somewhere to go**: Waits on a confirmation: Chase: which of [GenWrongRevamp, [SetupNewCovetous, [GenExodusEncounter, [GenBlackthorn and [GenEodon have been run on the test world? Settle it with whoever was asked, then record the answer (or re-confirm as it stands). `python tools/judge.py gate "Somewhere to go" --done yes --detail "..."` or `python tools/judge.py confirm gate "Somewhere to go"`
-- **gate Things to fight**: Last confirmed 2026-10-25 (13 days ago). Re-read its sources; still not met? `python tools/judge.py confirm gate "Things to fight"` or `python tools/judge.py gate "Things to fight" --done yes --detail "..."`
-- **gate Set mechanics actually fire**: Last confirmed 2026-10-25 (13 days ago). Re-read its sources; still not met? `python tools/judge.py confirm gate "Set mechanics actually fire"` or `python tools/judge.py gate "Set mechanics actually fire" --done yes --detail "..."`
-- **gate No live gap a player would call a bug**: Last confirmed 2026-10-25 (13 days ago). Re-read its sources; still not met? `python tools/judge.py confirm gate "No live gap a player would call a bug"` or `python tools/judge.py gate "No live gap a player would call a bug" --done yes --detail "..."`
-- **gate The fresh-world wipe is ready**: Last confirmed 2026-10-25 (13 days ago). Re-read its sources; still not met? `python tools/judge.py confirm gate "The fresh-world wipe is ready"` or `python tools/judge.py gate "The fresh-world wipe is ready" --done yes --detail "..."`
+- **gate Things to fight**: Last confirmed 2026-10-25 (14 days ago). Re-read its sources; still not met? `python tools/judge.py confirm gate "Things to fight"` or `python tools/judge.py gate "Things to fight" --done yes --detail "..."`
+- **gate Set mechanics actually fire**: Last confirmed 2026-10-25 (14 days ago). Re-read its sources; still not met? `python tools/judge.py confirm gate "Set mechanics actually fire"` or `python tools/judge.py gate "Set mechanics actually fire" --done yes --detail "..."`
+- **gate No live gap a player would call a bug**: Last confirmed 2026-10-25 (14 days ago). Re-read its sources; still not met? `python tools/judge.py confirm gate "No live gap a player would call a bug"` or `python tools/judge.py gate "No live gap a player would call a bug" --done yes --detail "..."`
+- **gate The fresh-world wipe is ready**: Last confirmed 2026-10-25 (14 days ago). Re-read its sources; still not met? `python tools/judge.py confirm gate "The fresh-world wipe is ready"` or `python tools/judge.py gate "The fresh-world wipe is ready" --done yes --detail "..."`
 - **shard status**: Last confirmed 2026-10-25: "the test shard is the only shard: live was retired and deleted on 2026-10-14 until the fresh 1.0 world, and the launcher's Play button now connects to the test shard (2026.10.24.2); the test shard (2594, up) runs sl-modernuo:latest, built 2026-10-23 from main 0f1871f (version 2026.10.23.2), while main is 2026.10.25.7, 33 merges ahead; the overnight bot tests the newest main on its own world copy each night; which player package is published is not visible from the repos". Still what runs? `python tools/judge.py status "..."` or `python tools/judge.py confirm status`
-- **play tests not sorted**: 1064 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
+- **play tests not sorted**: 1065 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
 
 ## Port list: 6 of 16 systems in. 833 of 983 files (85%).
 
@@ -239,24 +239,23 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 685 prompts done, 5 more stopped early and not counted)
+### Queue (Golem on; 686 prompts done, 5 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
-| P818 isle-notes-2 | queued |  |
-| P819 pause-bots-for-games | queued |  |
 | P820 fixup-jail | queued |  |
-| P824 review-build-league-building-deco | queued |  |
+| P825 review-build-creation-and-wake | queued |  |
+| P826 review-build-isle-notes-2 | queued |  |
 | P9772 remote-answer-test | done | 2026-11-02 |
 | P9770 run-next-test | done | 2026-11-02 |
 | P822 review-build-haven-notes-2 | done | 2026-11-07 |
 | P821 review-build-creation-and-wake | done | 2026-11-07 |
+| P819 pause-bots-for-games | done | 2026-11-08 |
 | P816 review-build-fixup-stop1-sign | done | 2026-11-07 |
 | P815 review-build-name-colors-lesson | done | 2026-11-07 |
 | P814 fixup-stop1-sign | done | 2026-11-07 |
 | P813 gump-art-import | done | 2026-11-07 |
 | P812 decor-capture-animation-locator | done | 2026-11-07 |
-| P811 casino | done | 2026-11-07 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 198 patches, 12 replacements
 

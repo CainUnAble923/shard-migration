@@ -1,0 +1,26 @@
+7a8,10
+>                       cc-P819: and, on the game PC, not while Chase plays another game (GamePause.ps1): it refuses
+>                       with "waiting: Chase is playing <game>" and how to wait (Test-GameRunning.ps1 -Wait, in the
+>                       background); every client-opening driver calls it first, so proof shots and two-client tests wait
+17a21,27
+> # cc-P819: the game pause (GamePause.ps1 beside this file); the facts turn the real look off.
+> $script:LegionKitRoot = $(if ($PSScriptRoot) { $PSScriptRoot } else { 'D:\UO\golem' })
+> $script:LegionGameCheck = $true
+> if (-not (Get-Command Get-GamePauseState -ErrorAction SilentlyContinue)) {
+>     $gpz = Join-Path $script:LegionKitRoot 'GamePause.ps1'
+>     if (Test-Path -LiteralPath $gpz) { . $gpz } else { $script:LegionGameCheck = $false }
+> }
+28c38
+< function Test-LegionTarget([string]$TargetHost, [int]$Port, [string[]]$OwnHosts = $null) {
+---
+> function Test-LegionTarget([string]$TargetHost, [int]$Port, [string[]]$OwnHosts = $null, $GameState = $null) {
+37a48,56
+>     }
+>     # cc-P819: on the game PC, no client opens while Chase plays another game (the pause's switch: settings.json
+>     # gamePause). $script:LegionGameCheck off (the facts) or -GameState given (a fact's fake) skips the real look.
+>     if ($script:LegionGameCheck -or $GameState) {
+>         $gs = $GameState
+>         if (-not $gs) { try { $gs = Get-GamePauseState -Root $script:LegionKitRoot } catch { $gs = $null } }
+>         if ($gs -and $gs.Applies -and $gs.Running) {
+>             return (& $no ($gs.Why + ': no game client opens on the game PC while he plays. Wait with D:\UO\golem\Test-GameRunning.ps1 -Wait (in the background; it ends when the game closes), then run this again'))
+>         }
