@@ -1,0 +1,1911 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index c13d6f2..2a91962 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -29,6 +29,18 @@ Example:
+ - Restoring a Jacob's Pickaxe no longer refuses ingots kept in your bank.
+ -->
+ 
++## 2026.11.07.9
++
++### Changed
++- Waking on the Wakening Isle is quiet now: one window tells you where you are, how to get up and that you are a young player, instead of a wall of System messages. The "Your skill in ... has increased by 30" lines for your starting skills are gone.
++- New Haven's lessons keep their teaching in the lesson window, which stays open until you close it: each step, each tour stop and the skills a lesson only explains.
++- The Runes lesson starts at New Haven's public moongate and gives you a blank rune, a Mark scroll and two Recall scrolls: mark your rune, recall to Rook's bench, then recall back. The scrolls always work in the lesson.
++- New Haven's lessons happen in fitting places: blacksmithing at the smithy, fishing off the docks pier, lumberjacking at the Woodsman's lodge, cooking in the Albatross kitchen, scribing in the library, thieving in the Thieves' Guild, and the other crafts in their shops.
++- Mysticism is taught in the Haven Magery School by Ilyra Moonwhisper, its elven adjunct instructor, and Necromancy at the necromancer's shrine at the north-east of town, where Morvain Ashgrave keeps the candles.
++
++### Fixed
++- The old tutorial farm west of New Haven is cleared from every world by itself.
++
+ ## 2026.11.07.8
+ 
+ ### Changed
+diff --git a/VERSION b/VERSION
+index 160e15f..e5ac8be 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-2026.11.07.8
++2026.11.07.9
+diff --git a/server/customizations/CharacterCreation.cs b/server/customizations/CharacterCreation.cs
+index 3766148..e56a83b 100644
+--- a/server/customizations/CharacterCreation.cs
++++ b/server/customizations/CharacterCreation.cs
+@@ -294,6 +294,14 @@ public static partial class CharacterCreation
+                 GiveProfessionItems(newChar, profession?.Name, args.ShirtHue, args.PantsHue);
+             }
+ 
++            // cc-P802 item 7: the shard's skill caps now, while no client is attached, so the first login's pass changes
++            // nothing: each cap that changed there sent a single-skill update, and TazUO printed "Your skill in ... has
++            // increased by 30.0" for every starting skill.
++            if (newChar is PlayerMobile capped)
++            {
++                ClusterFSkillCaps.ApplyTo(capped);
++            }
++
+             if (race.ValidateHair(newChar, args.HairID))
+             {
+                 newChar.HairItemID = args.HairID;
+diff --git a/server/customizations/ClusterFYoungPlayer.cs b/server/customizations/ClusterFYoungPlayer.cs
+index 6b933b9..b827bd7 100644
+--- a/server/customizations/ClusterFYoungPlayer.cs
++++ b/server/customizations/ClusterFYoungPlayer.cs
+@@ -106,6 +106,13 @@ public static class ClusterFYoungPlayer
+     }
+ 
+     /// <summary>The login line (pinned Account.cs:788-806 counted hours only), in days and hours.</summary>
++    /// <summary>
++    /// cc-P802 item 7: the login line (Account-young-duration.patch). A trainee waking on the Wakening Isle reads it in
++    /// the welcome window instead (Tutorial.TutorialWelcome.Note); everyone else in the System window, as before.
++    /// </summary>
++    public static void SendLoginMessage(PlayerMobile pm, TimeSpan remaining) =>
++        Server.Tutorial.TutorialWelcome.Note(pm, LoginMessage(remaining));
++
+     public static string LoginMessage(TimeSpan remaining) =>
+         "You will enjoy the benefits and relatively safe status of a young player for another " +
+         $"{FormatRemaining(remaining)} of play time. Say \"{GrowUpPhrase}\" to give it up sooner.";
+diff --git a/server/customizations/PlayTest/PlayTestTasks.cs b/server/customizations/PlayTest/PlayTestTasks.cs
+index 84df698..b814e30 100644
+--- a/server/customizations/PlayTest/PlayTestTasks.cs
++++ b/server/customizations/PlayTest/PlayTestTasks.cs
+@@ -642,7 +642,7 @@ public static class PlayTestTasks
+         {
+             if (HasNewTasks(pm))
+             {
+-                pm.SendMessage(0x35, NewTasksLine);
++                TutorialWelcome.Note(pm, NewTasksLine, 0x35); // cc-P802 item 7: in the welcome window while waking
+             }
+         }
+         catch (Exception e)
+diff --git a/server/customizations/Tutorial/ClusterFTutorial.cs b/server/customizations/Tutorial/ClusterFTutorial.cs
+index 1a081e0..99f52d7 100644
+--- a/server/customizations/Tutorial/ClusterFTutorial.cs
++++ b/server/customizations/Tutorial/ClusterFTutorial.cs
+@@ -165,6 +165,8 @@ public static class ClusterFTutorial
+     /// lessons, times, skip, pet and bandage counts as they are. A living recorded character of the account keeps it, and
+     /// staff never take it. Called at login and at Rook, never from an eligibility check. True when it was taken up.
+     /// </summary>
++    public const string ContinuesLine = "Your account's tutorial continues with this character. Your finished lessons are saved.";
++
+     public static bool AdoptOrphanedRecord(PlayerMobile pm)
+     {
+         if (pm.AccessLevel > AccessLevel.Player || pm.Account?.AccessLevel > AccessLevel.Player ||
+@@ -176,7 +178,7 @@ public static class ClusterFTutorial
+ 
+         TutorialCoreTrials.Cancel(pm);
+         record.CharacterSerial = (uint)pm.Serial;
+-        SystemLine(pm, "Your account's tutorial continues with this character. Your finished lessons are saved.");
++        TutorialWelcome.Note(pm, ContinuesLine); // cc-P802 item 7: in the welcome window while waking
+         return true;
+     }
+ 
+diff --git a/server/customizations/Tutorial/NewHavenLessons.cs b/server/customizations/Tutorial/NewHavenLessons.cs
+index 6555937..8350354 100644
+--- a/server/customizations/Tutorial/NewHavenLessons.cs
++++ b/server/customizations/Tutorial/NewHavenLessons.cs
+@@ -44,6 +44,12 @@ namespace Server.Tutorial
+         {
+             ClusterFTutorial.SystemLine(m, text);
+             Said?.Invoke(m, text);
++            // cc-P802 item 1: and in the running lesson's window, which stays until closed.
++            if (m is PlayerMobile pm && Current(pm) is { } trial && text != NextLessonLine)
++            {
++                trial.Latest = text;
++                Refresh(pm, trial);
++            }
+         }
+ 
+         // -- Places and words (items 1, 3, 4, 7, 9) --
+@@ -89,6 +95,8 @@ namespace Server.Tutorial
+         {
+             "combat.weapons" => HavenSpots.ProvingGrounds,
+             "magic.magery" => HavenSpots.MageryHall,
++            "magic.mysticism" => new Point3D(3653, 2477, 0),    // cc-P802 item 3: the Magery School's south room
++            "magic.necromancy" => new Point3D(3686, 2475, 0),   // cc-P802 item 8: before the shrine's skull candles
+             _ => YardSpot
+         };
+ 
+@@ -97,6 +105,8 @@ namespace Server.Tutorial
+         {
+             "combat.weapons" => new Point3D(3733, 2580, 40),
+             "magic.magery" => new Point3D(3654, 2472, 0),
++            "magic.mysticism" => MysticEchoSpot,   // cc-P802
++            "magic.necromancy" => ShrineEchoSpot,  // cc-P802
+             _ => TargetSpot
+         };
+ 
+@@ -107,6 +117,8 @@ namespace Server.Tutorial
+         {
+             "combat.weapons" => "the Proving Grounds, the fenced warrior training yard on the east side of town",
+             "magic.magery" => "the Haven Magery School, the stone hall at the north end of town",
++            "magic.mysticism" => MysticWhere,   // cc-P802
++            "magic.necromancy" => ShrineWhere,  // cc-P802
+             _ => "the training yard, behind the Little Shop of Magic"
+         };
+ 
+@@ -114,6 +126,8 @@ namespace Server.Tutorial
+         {
+             "combat.weapons" => "the Proving Grounds",
+             "magic.magery" => "the Haven Magery School",
++            "magic.mysticism" => "the Haven Magery School",       // cc-P802
++            "magic.necromancy" => "the necromancer's shrine",    // cc-P802
+             _ => "the training yard"
+         };
+ 
+@@ -395,7 +409,63 @@ namespace Server.Tutorial
+             }
+ 
+             var farm = TutorialFarm.ClearHaven(dryRun);
+-            return $"New Haven (cc-P743){(dryRun ? " dry run" : "")}: {(dryRun ? "would place" : "placed")} {placed} pieces (took away {moved743} from old spots), moved {moved} Rook, {farm}";
++            var teachers = SeedTeachers(map, dryRun); // cc-P802 items 3 and 8
++            return $"New Haven (cc-P743){(dryRun ? " dry run" : "")}: {(dryRun ? "would place" : "placed")} {placed} pieces (took away {moved743} from old spots), moved {moved} Rook, {farm} {teachers}";
++        }
++
++        /// <summary>cc-P802 items 3 and 8: the Mysticism instructor and the shrine keeper, placed when missing, put back on their spot and facing.</summary>
++        public static string SeedTeachers(Map map, bool dryRun)
++        {
++            int placed = 0, moved = 0;
++            foreach (var (key, spot, make) in new (string, Point3D, Func<TutorialLessonTeacher>)[]
++                     {
++                         ("magic.mysticism", MysticInstructorSpot, TutorialLessonTeacher.Mystic),
++                         ("magic.necromancy", ShrineKeeperSpot, TutorialLessonTeacher.ShrineKeeper)
++                     })
++            {
++                var found = FindTeacher(key);
++                if (found == null)
++                {
++                    placed++;
++                    if (!dryRun)
++                    {
++                        var t = make();
++                        t.Home = spot;
++                        t.MoveToWorld(spot, map);
++                    }
++
++                    continue;
++                }
++
++                var facing = make();
++                var dir = facing.Direction;
++                facing.Delete();
++                if (found.Location != spot || found.Map != map || found.Direction != dir)
++                {
++                    moved++;
++                    if (!dryRun)
++                    {
++                        found.Home = spot;
++                        found.MoveToWorld(spot, map);
++                        found.Direction = dir;
++                    }
++                }
++            }
++
++            return $"teachers: {(dryRun ? "would place" : "placed")} {placed}, moved {moved}.";
++        }
++
++        public static TutorialLessonTeacher? FindTeacher(string key)
++        {
++            foreach (var m in World.Mobiles.Values)
++            {
++                if (m is TutorialLessonTeacher { Deleted: false } t && t.LessonKey == key)
++                {
++                    return t;
++                }
++            }
++
++            return null;
+         }
+ 
+         /// <summary>cc-P806: a world seeded with the crosswise pieces loses them, or they would stay under the new bench.</summary>
+diff --git a/server/customizations/Tutorial/TutorialFarm.cs b/server/customizations/Tutorial/TutorialFarm.cs
+index 8bf94dd..aaf1082 100644
+--- a/server/customizations/Tutorial/TutorialFarm.cs
++++ b/server/customizations/Tutorial/TutorialFarm.cs
+@@ -239,8 +239,17 @@ namespace Server.Tutorial
+         {
+             CommandSystem.Register("ClusterFSeedTutorialFarm", AccessLevel.Administrator, OnSeedCommand);
+             EnsureHooks();
++            // cc-P802 item 4 (Chase 11-05: "with tutorial island we can probably clear the farm we placed in Haven"): the old
++            // farm went only when the tutorial seed ran to its end (TutorialWingTrials.SeedHaven), so a world whose seed was
++            // skipped (the tutorial off) or refused early kept it. Now it goes at every start by itself, on the first tick
++            // (Initialize runs after World.Load). Idempotent, and only our pieces: the addon, its door, the pen spawner and
++            // what it spawned. The crop fields at the town's east edge are the SoS map's own, not ours, and stay.
++            Timer.DelayCall(TimeSpan.Zero, () => Console.WriteLine($"[Tutorial] {ClearHavenOnLoad()}"));
+         }
+ 
++        /// <summary>cc-P802 item 4: the start's pass over New Haven's old farm; the line it logs.</summary>
++        public static string ClearHavenOnLoad() => HavenSpots.Map == null ? "old New Haven farm: no Trammel map." : ClearHaven(false);
++
+         /// <summary>The station's handler and the heal hook, once. The test host calls it: Initialize never runs there.</summary>
+         public static void EnsureHooks()
+         {
+diff --git a/server/customizations/Tutorial/TutorialIslandGate.cs b/server/customizations/Tutorial/TutorialIslandGate.cs
+index 9035b33..e199b15 100644
+--- a/server/customizations/Tutorial/TutorialIslandGate.cs
++++ b/server/customizations/Tutorial/TutorialIslandGate.cs
+@@ -45,9 +45,16 @@ public static class TutorialIslandGate
+         return false;
+     }
+ 
++    /// <summary>
++    /// cc-P802 item 2: the travel lesson teaches Mark on Haven Island with a loaned blank rune, taken back when the lesson
++    /// ends, so Mark is allowed while it runs. Recall still goes only to places on the island (CanTravel, RecallTo).
++    /// </summary>
++    private static bool MarkLesson(Mobile? mobile) =>
++        mobile is PlayerMobile pm && TutorialWingTrials.IsDoing(pm, TutorialWingTrials.TravelKey);
++
+     public static bool CanCast(Mobile mobile, ISpell spell)
+     {
+-        if (spell is not MarkSpell || !NeedsGraduation(mobile))
++        if (spell is not MarkSpell || !NeedsGraduation(mobile) || MarkLesson(mobile))
+         {
+             return true;
+         }
+@@ -63,7 +70,7 @@ public static class TutorialIslandGate
+         }
+         return type switch
+         {
+-            TravelCheckType.Mark => false,
++            TravelCheckType.Mark => MarkLesson(mobile), // cc-P802 item 2
+             TravelCheckType.RecallTo or TravelCheckType.GateTo or TravelCheckType.TeleportTo =>
+                 CanMove(mobile, destination, map, false),
+             _ => true
+diff --git a/server/customizations/Tutorial/TutorialStart.cs b/server/customizations/Tutorial/TutorialStart.cs
+index 539ab67..ab7b5e3 100644
+--- a/server/customizations/Tutorial/TutorialStart.cs
++++ b/server/customizations/Tutorial/TutorialStart.cs
+@@ -339,18 +339,11 @@ public static class TutorialStart
+             return;
+         }
+ 
++        // cc-P802 item 7 (Chase 11-07: "it should all be gumps"): the first step is in the welcome window; the System window
++        // echoes it in a few words.
+         void FirstLines()
+         {
+-            ClusterFTutorial.SystemLine(pm, "You wake on a quiet shore: the Wakening Isle.");
+-            if (visitor)
+-            {
+-                ClusterFTutorial.SystemLine(pm, VisitorLine(pm));
+-                ClusterFTutorial.SystemLine(pm, "Follow the road east to the moongate at the end of the dock; it takes you to New Haven.");
+-                TutorialGuide.PointTo(pm);
+-                return;
+-            }
+-
+-            ClusterFTutorial.SystemLine(pm, "Follow the arrow and double-click Tamsin, your guide, with two quick left clicks. Tamsin's window starts each lesson.");
++            TutorialWelcome.Standing(pm, visitor ? $"{VisitorLine(pm)} {TutorialWelcome.VisitorStep}" : null);
+             TutorialGuide.PointTo(pm);
+         }
+ 
+diff --git a/server/customizations/Tutorial/TutorialStations.cs b/server/customizations/Tutorial/TutorialStations.cs
+index 76b66e2..ea37f22 100644
+--- a/server/customizations/Tutorial/TutorialStations.cs
++++ b/server/customizations/Tutorial/TutorialStations.cs
+@@ -97,7 +97,7 @@ public static class TutorialStations
+         new("magic.magery", TutorialWing.Magic, "Magery", ["Magery"], ["Meditation", "Evaluating Intelligence"], None,
+             ["SpellBar", "Quick spell cast", "Spell indicators", "Counter bar"], "a loaned spellbook and reagents (spell ingredients)", "the Haven Magery School, the stone hall at the north end of town"), // cc-P743 item 7
+         new("magic.necromancy", TutorialWing.Magic, "Necromancy", ["Necromancy"], ["Spirit Speak"], None,
+-            ["SpellBar"], "a loaned necromancer spellbook", "the training yard, behind the Little Shop of Magic"),
++            ["SpellBar"], "a loaned necromancer spellbook", "the necromancer's shrine at the north-east of the loop road"), // cc-P802 item 8
+         new("magic.chivalry", TutorialWing.Magic, "Chivalry", ["Chivalry"], None, None,
+             ["SpellBar"], "a loaned Book of Chivalry", "the training yard, behind the Little Shop of Magic"),
+         new("magic.bushido", TutorialWing.Magic, "Bushido", ["Bushido"], None, None,
+@@ -105,37 +105,37 @@ public static class TutorialStations
+         new("magic.ninjitsu", TutorialWing.Magic, "Ninjitsu", ["Ninjitsu"], None, None,
+             ["Buff and cooldown bars"], "a loaned Book of Ninjitsu", "the training yard, behind the Little Shop of Magic"),
+         new("magic.mysticism", TutorialWing.Magic, "Mysticism", ["Mysticism"], None, ["Spellweaving (start with a quest)"],
+-            ["SpellBar"], "a loaned mystic book", "the training yard, behind the Little Shop of Magic"),
++            ["SpellBar"], "a loaned mystic book", "the Haven Magery School, with its elven adjunct instructor"), // cc-P802 item 3
+ 
+         // -- Gathering wing --
+         new("gathering.mining", TutorialWing.Gathering, "Mining", ["Mining"], None, None,
+             ["Counter bar"], "a loaned pickaxe", "the cave on the mountain path south of town"), // cc-P743 item 3
+         new("gathering.lumberjacking", TutorialWing.Gathering, "Lumberjacking", ["Lumberjacking"], None, None,
+-            [], "a loaned hatchet", "the trades yard, west of the training yard"),
++            [], "a loaned hatchet", "the Woodsman's lodge"),
+         new("gathering.fishing", TutorialWing.Gathering, "Fishing", ["Fishing"], None, None,
+-            [], "a loaned fishing pole", "the trades yard, west of the training yard"),
++            [], "a loaned fishing pole", "the docks"),
+         new("gathering.camping", TutorialWing.Gathering, "Camping", ["Camping"], None, ["Herbalism (the wild garlic in the yard)"],
+-            [], "loaned kindling", "the trades yard, west of the training yard"),
++            [], "loaned kindling", "the camp spot by the road to the east fields"),
+ 
+         // -- Crafting yard, one item each --
+         new("crafting.blacksmithy", TutorialWing.Crafting, "Blacksmithy", ["Blacksmithy"], ["Arms Lore"], ["Imbuing"],
+-            ["Counter bar", "Grid highlighting by property", "Item database", "Organizer agent"], "a loaned smith's hammer", "the trades yard, west of the training yard"),
++            ["Counter bar", "Grid highlighting by property", "Item database", "Organizer agent"], "a loaned smith's hammer", "the Hammer and Steel smithy"),
+         new("crafting.tailoring", TutorialWing.Crafting, "Tailoring", ["Tailoring"], None, None,
+-            ["Counter bar"], "a loaned sewing kit", "the trades yard, west of the training yard"),
++            ["Counter bar"], "a loaned sewing kit", "A Stitch in Time"),
+         new("crafting.carpentry", TutorialWing.Crafting, "Carpentry", ["Carpentry"], None, None,
+-            [], "a loaned saw", "the trades yard, west of the training yard"),
++            [], "a loaned saw", "Carpenters of Haven"),
+         new("crafting.tinkering", TutorialWing.Crafting, "Tinkering", ["Tinkering"], ["Item Identification"], None,
+-            [], "loaned tinker's tools", "the trades yard, west of the training yard"),
++            [], "loaned tinker's tools", "the Haven Clockworks and Tinker Shop"),
+         new("crafting.alchemy", TutorialWing.Crafting, "Alchemy", ["Alchemy"], ["Taste Identification"], None,
+-            [], "a loaned mortar and pestle", "the trades yard, west of the training yard"),
++            [], "a loaned mortar and pestle", "the reagent kitchen behind the mage's shop"),
+         new("crafting.fletching", TutorialWing.Crafting, "Bowcraft and Fletching", ["Fletching"], None, None,
+-            [], "loaned fletcher's tools", "the trades yard, west of the training yard"),
++            [], "loaned fletcher's tools", "the Bullseye Marksmen archery range"),
+         new("crafting.cooking", TutorialWing.Crafting, "Cooking", ["Cooking"], None, None,
+-            [], "a loaned skillet", "the trades yard, west of the training yard"),
++            [], "a loaned skillet", "the Albatross kitchen"),
+         new("crafting.inscription", TutorialWing.Crafting, "Inscription", ["Inscription"], None, None,
+-            [], "a loaned scribe's pen", "the trades yard, west of the training yard"),
++            [], "a loaned scribe's pen", "the Haven Public Library"),
+         new("crafting.cartography", TutorialWing.Crafting, "Cartography", ["Cartography"], None, None,
+-            ["Treasure maps and SOS", "SOS locator"], "a loaned mapmaker's pen", "the trades yard, west of the training yard"),
++            ["Treasure maps and SOS", "SOS locator"], "a loaned mapmaker's pen", "Mapmakers of Haven"),
+ 
+         // -- Animals --
+         // cc-P743 item 4: heal and tame an injured horse in the stables, and keep it. Herding is explained, not practised.
+@@ -149,7 +149,7 @@ public static class TutorialStations
+         // -- Thieving and stealth (one trial) --
+         new("thieving.trial", TutorialWing.Thieving, "Thieving and stealth",
+             ["Hiding", "Stealth", "Detecting Hidden", "Lockpicking", "Remove Trap", "Snooping", "Stealing", "Poisoning", "Tracking", "Begging"],
+-            None, ["Forensic Evaluation"], ["Hidden characters"], "loaned lockpicks", "the trades yard, west of the training yard"),
++            None, ["Forensic Evaluation"], ["Hidden characters"], "loaned lockpicks", "the Haven Thieves' Guild"),
+ 
+         // -- Non-skill wings --
+         new("housing.basics", TutorialWing.Housing, "Houses", None, None, None,
+diff --git a/server/customizations/Tutorial/TutorialTradeTrials.cs b/server/customizations/Tutorial/TutorialTradeTrials.cs
+index 7624c1e..24fa348 100644
+--- a/server/customizations/Tutorial/TutorialTradeTrials.cs
++++ b/server/customizations/Tutorial/TutorialTradeTrials.cs
+@@ -79,53 +79,53 @@ namespace Server.Tutorial
+             new("gathering.mining", MiningWhere, new Point2D(HavenSpots.MiningCave.X, HavenSpots.MiningCave.Y),
+                 [S(SkillName.Mining, "Mining: dig ore from the cave floor")],
+                 "Double-click the loaned pickaxe in your backpack (your own pickaxe or shovel works too), then click the dark cave floor beside you or the rock of the cave wall. Repeat until you dig up ore, which you can keep."),
+-            new("gathering.lumberjacking", AtYard, TradesYard,
+-                [S(SkillName.Lumberjacking, "Lumberjacking: chop logs from the practice tree")],
+-                "Double-click the loaned hatchet, then click the walnut tree beside you. Repeat until you get logs, which you can keep."),
+-            new("gathering.fishing", AtYard, TradesYard,
+-                [S(SkillName.Fishing, "Fishing: catch something in the small practice pond")],
+-                "Double-click the loaned fishing pole in your backpack, then click the water in the small practice pond. Repeat until you catch something, which you can keep."),
+-            new("gathering.camping", AtYard, TradesYard,
++            new("gathering.lumberjacking", HavenPlaceOf("gathering.lumberjacking").Where, P2(HavenPlaceOf("gathering.lumberjacking").Arm), // cc-P802 item 6
++                [S(SkillName.Lumberjacking, "Lumberjacking: chop logs from the oak tree")],
++                "Double-click the loaned hatchet, then click the oak tree just south of you, by the Woodsman's lodge. Repeat until you get logs, which you can keep."),
++            new("gathering.fishing", HavenPlaceOf("gathering.fishing").Where, P2(HavenPlaceOf("gathering.fishing").Arm), // cc-P802 item 6
++                [S(SkillName.Fishing, "Fishing: catch something off the pier")],
++                "Double-click the loaned fishing pole in your backpack, then click the water just east of the pier. Repeat until you catch something, which you can keep."),
++            new("gathering.camping", HavenPlaceOf("gathering.camping").Where, P2(HavenPlaceOf("gathering.camping").Arm), // cc-P802 item 6
+                 [S(SkillName.Camping, "Camping: light a campfire with kindling"), S(SkillName.Herbalism, "Herbalism: pick the wild garlic beside you")],
+                 "Double-click the wild garlic beside you to pick it. Double-click the loaned kindling in your backpack to light a campfire beside you.",
+                 HerbalismLine),
+ 
+             // -- The crafting yard --
+-            new("crafting.blacksmithy", AtYard, TradesYard,
++            new("crafting.blacksmithy", HavenPlaceOf("crafting.blacksmithy").Where, P2(HavenPlaceOf("crafting.blacksmithy").Arm), // cc-P802 item 6
+                 [(Made, "Blacksmithy: make a dagger at the anvil"), S(SkillName.ArmsLore, "Arms Lore: use on the dagger you made")],
+                 "Beside the anvil and forge, double-click the loaned smith's hammer, choose Bladed, then make a Dagger. Open Skills on your character window, use Arms Lore, and click your dagger.",
+                 ImbuingLine, [typeof(Dagger)]),
+-            new("crafting.tailoring", AtYard, TradesYard,
++            new("crafting.tailoring", HavenPlaceOf("crafting.tailoring").Where, P2(HavenPlaceOf("crafting.tailoring").Arm), // cc-P802 item 6
+                 [(Made, "Tailoring: sew a skullcap")],
+                 "Double-click the loaned sewing kit in your backpack. Choose Hats, then make a Skullcap with the loaned cloth.",
+                 null, [typeof(SkullCap)]),
+-            new("crafting.carpentry", AtYard, TradesYard,
++            new("crafting.carpentry", HavenPlaceOf("crafting.carpentry").Where, P2(HavenPlaceOf("crafting.carpentry").Arm), // cc-P802 item 6
+                 [(Made, "Carpentry: make barrel staves")],
+                 "Double-click the loaned saw in your backpack. Choose Other, then make Barrel Staves with the loaned boards.",
+                 null, [typeof(BarrelStaves)]),
+-            new("crafting.tinkering", AtYard, TradesYard,
++            new("crafting.tinkering", HavenPlaceOf("crafting.tinkering").Where, P2(HavenPlaceOf("crafting.tinkering").Arm), // cc-P802 item 6
+                 [(Made, "Tinkering: make scissors"), S(SkillName.ItemID, "Item Identification: double-click the odd blue curio, then click it")],
+                 // cc-P769 item 13 (the tester: "I could not find the skill to investigate an item"): the skill named, and the
+                 // curio's own double-click starts it (TutorialCurio.OnDoubleClick), so the Skills window is not needed.
+                 "Double-click the loaned tinker's tools, choose Tools, then make Scissors. Then investigate the odd blue curio in your backpack with the Item Identification skill: double-click the curio and click it when the target cursor appears. (The skill is also in the Skills window: click Skills on your character window, then the small button beside Item Identification.)",
+                 null, [typeof(Scissors)]),
+-            new("crafting.alchemy", AtYard, TradesYard,
++            new("crafting.alchemy", HavenPlaceOf("crafting.alchemy").Where, P2(HavenPlaceOf("crafting.alchemy").Arm), // cc-P802 item 6
+                 [(Made, "Alchemy: make a refresh potion"), S(SkillName.TasteID, "Taste Identification: use on the loaned apple")],
+                 "Double-click the loaned mortar and pestle, choose Refresh, then make a Refresh Potion. Open Skills on your character window, use Taste Identification, and click the loaned apple.",
+                 null, [typeof(RefreshPotion)]),
+-            new("crafting.fletching", AtYard, TradesYard,
++            new("crafting.fletching", HavenPlaceOf("crafting.fletching").Where, P2(HavenPlaceOf("crafting.fletching").Arm), // cc-P802 item 6
+                 [(Made, "Fletching: make kindling")],
+                 "Double-click the loaned fletcher's tools in your backpack. Choose Materials, then make Kindling with the loaned logs.",
+                 null, [typeof(Kindling)]),
+-            new("crafting.cooking", AtYard, TradesYard,
++            new("crafting.cooking", HavenPlaceOf("crafting.cooking").Where, P2(HavenPlaceOf("crafting.cooking").Arm), // cc-P802 item 6
+                 [(Made, "Cooking: make dough")],
+                 "Double-click the loaned skillet in your backpack. Choose Ingredients, then make Dough with the loaned flour and water.",
+                 null, [typeof(Dough)]),
+-            new("crafting.inscription", AtYard, TradesYard,
++            new("crafting.inscription", HavenPlaceOf("crafting.inscription").Where, P2(HavenPlaceOf("crafting.inscription").Arm), // cc-P802 item 6
+                 [(Made, "Inscription: write a Magic Arrow scroll")],
+                 "Double-click the loaned scribe's pen in your backpack. Choose First Circle, then make a Magic Arrow scroll with the loaned supplies.",
+                 null, [typeof(MagicArrowScroll)]),
+-            new("crafting.cartography", AtYard, TradesYard,
++            new("crafting.cartography", HavenPlaceOf("crafting.cartography").Where, P2(HavenPlaceOf("crafting.cartography").Arm), // cc-P802 item 6
+                 [(Made, "Cartography: draw a local map")],
+                 "Double-click the loaned mapmaker's pen in your backpack. Choose Maps, then make a Local Map on a loaned blank map.",
+                 null, [typeof(LocalMap)]),
+@@ -149,7 +149,7 @@ namespace Server.Tutorial
+                 "Open Skills on your character window and use Peacemaking, Provocation, and Discordance on the two blue human figures. Choose the loaned lute when asked; for Provocation, click one figure, then the other."),
+ 
+             // -- Thieving and stealth --
+-            new("thieving.trial", AtYard, TradesYard,
++            new("thieving.trial", HavenPlaceOf("thieving.trial").Where, P2(HavenPlaceOf("thieving.trial").Arm), // cc-P802 item 6
+                 [
+                     S(SkillName.DetectHidden, "Detecting Hidden: use on the wooden practice chest"),
+                     S(SkillName.RemoveTrap, "Remove Trap: use on the wooden practice chest"),
+@@ -170,24 +170,25 @@ namespace Server.Tutorial
+             // stop, and each stop's text ends with where to go next.
+             new("housing.basics", "the small cottage east of the square (stop 1 of 3)", TourCentre,
+                 [("stop0", "Stop 1: look at a small house"), ("stop1", "Stop 2: learn where houses can be built"), ("stop2", "Stop 3: the bank, where a deed is kept")],
+-                "Follow the arrow. At each stop, stand beside its signpost and read the lesson in your System window; then the arrow points to the next stop.",
++                "Follow the arrow. At each stop, stand beside its signpost and read the lesson here in this window; then the arrow points to the next stop.",
+                 Stops:
+                 [
+                     (() => HousingStop(0), "stop 1, the small cottage", HousingStop1),
+                     (() => HousingStop(1), "stop 2, the field south of the cottage", HousingStop2),
+                     (() => ClusterFNewHavenSeeder.BankAnchor, "stop 3, the bank", HousingStop3)
+                 ]),
+-            new("travel.wing", "the first stop", TourCentre,
+-                [("stop0", "The moongate"), ("stop1", "Rook's bench")],
+-                "Follow the arrow to each stop and read the lesson when you arrive. The blank recall rune in your backpack is a loan and disappears when the tour ends.",
+-                Stops:
++            // cc-P802 item 2 (Chase 11-05: "the lesson should give scrolls to have player mark/recall"): at the public
++            // moongate the trainee marks a blank rune, recalls away to Rook's bench with the lesson's own rune, and recalls
++            // back with their own; the return finishes it (TickTravel). The scrolls cast without Magery: the lesson lends
++            // Magery 100 and +30 Intelligence (a skill mod, never saved), so each scroll always works; a gain is then very
++            // unlikely, never more than a scroll gives. Everything is a loan and goes back at the end.
++            new("travel.wing", TravelWhere, new Point2D(HavenSpots.PublicMoongate.X, HavenSpots.PublicMoongate.Y),
+                 [
+-                    // cc-P663: the tutorial's own gate is on the isle now; the tour starts at New Haven's public one.
+-                    (() => HavenSpots.PublicMoongate, "the moongate",
+-                        "This public moongate offers destinations across the lands; the isle's moongate only ever brings trainees to Rook. Shipwrights sell boat deeds for travel by sea."),
+-                    (() => TutorialRecruiter.Spot, "Rook's bench",
+-                        "A recall rune stores a location when you cast Mark on it. Return with Recall, Gate Travel, or Sacred Journey; a runebook stores up to 16 runes.")
+-                ]),
++                    ("mark", "Mark: read the Mark scroll and click your blank rune, here by the moongate"),
++                    ("away", "Recall away: read a Recall scroll and click the lesson's rune to Rook's bench"),
++                    ("back", "Recall back: read your other Recall scroll and click your own rune")
++                ],
++                TravelHint),
+             new("reputation.wing", "the first stop", TourCentre,
+                 [("stop0", "The training yard"), ("stop1", "The healer"), ("stop2", "Rook's bench")],
+                 "Follow the arrow to the first stop. Walk close to each stop to read its lesson.",
+@@ -214,6 +215,79 @@ namespace Server.Tutorial
+                 ]),
+         ];
+ 
++        // -- cc-P802 item 2: Mark and Recall --
++
++        public const string TravelKey = "travel.wing";
++
++        public const string TravelWhere = "New Haven's public moongate, in the open field east of the square";
++
++        public const string TravelHint =
++            "A recall rune remembers a place. 1. Here by the moongate, double-click the Mark scroll in your backpack and click your blank rune: it now holds this spot. " +
++            "2. Double-click a Recall scroll and click the lesson's rune (it says Rook's bench): you are carried to Rook. " +
++            "3. Double-click your other Recall scroll and click your own rune: it brings you back here. The scrolls work for everyone in this lesson.";
++
++        public const string RunebookLine =
++            "A runebook holds up to 16 marked runes, and you can recall from it straight away. Mages also open Gate Travel to a rune; paladins use Sacred Journey. " +
++            "This moongate offers towns across the lands, and shipwrights sell boat deeds for travel by sea.";
++
++        /// <summary>Where the lesson's own rune is marked: in front of Rook's bench (the isle moongate's way out).</summary>
++        public static Point3D TravelLessonTarget => HavenSpots.MoongateExit;
++
++        private static void ArmTravel(Trial trial)
++        {
++            var rune = new RecallRune();
++            Lend(trial, rune);
++            trial.TravelRune = rune;
++            Lend(trial, new RecallRune
++            {
++                Target = TravelLessonTarget, TargetMap = Map.Trammel, Marked = true, Description = "Rook's bench (the lesson's rune)"
++            });
++            Lend(trial, new MarkScroll());
++            Lend(trial, new RecallScroll(2));
++            LendSkill(trial, SkillName.Magery, 100);
++            LendMind(trial);
++        }
++
++        /// <summary>The loaned Recall scrolls still in the trainee's backpack.</summary>
++        public static int RecallScrollsLeft(PlayerMobile pm)
++        {
++            var n = 0;
++            if (pm.Backpack is { } pack)
++            {
++                foreach (var scroll in pack.FindItemsByType<RecallScroll>())
++                {
++                    if (IsLoaner(scroll)) { n += scroll.Amount; }
++                }
++            }
++
++            return n;
++        }
++
++        /// <summary>cc-P802 item 2: the rune marked, the trainee carried to Rook's bench, then back to their own rune.</summary>
++        private static void TickTravel(Trial trial)
++        {
++            var pm = trial.Player;
++            if (trial.TravelRune is not { Deleted: false } rune || trial.Finished)
++            {
++                return;
++            }
++
++            if (!trial.Steps.Contains("mark"))
++            {
++                if (rune.Marked) { Step(trial, "mark"); }
++                return;
++            }
++
++            var left = RecallScrollsLeft(pm);
++            if (!trial.Steps.Contains("away"))
++            {
++                if (left < 2 && pm.Map == Map.Trammel && pm.InRange(TravelLessonTarget, 3)) { Step(trial, "away"); }
++                return;
++            }
++
++            if (left < 1 && pm.Map == rune.TargetMap && pm.InRange(rune.Target, 3)) { Step(trial, "back"); }
++        }
++
+         public static TradeTrial? Trade(string key) => Array.Find(Trades, t => t.Key.Equals(key, StringComparison.OrdinalIgnoreCase));
+ 
+         public static bool IsWingTrial(string key) => Array.IndexOf(Keys, key) >= 0 || Trade(key) != null;
+@@ -226,7 +300,7 @@ namespace Server.Tutorial
+ 
+         public static bool InReach(PlayerMobile pm, string key) => Trade(key) is not { } t
+             ? pm.InRange(new Point3D(PlaceOf(key).X, PlaceOf(key).Y, pm.Z), LeaveRange)
+-            : pm.InRange(new Point3D(t.Place.X, t.Place.Y, pm.Z), t.IsTour ? TourReach : LeaveRange);
++            : pm.InRange(new Point3D(t.Place.X, t.Place.Y, pm.Z), t.IsTour || t.Key == TravelKey ? TourReach : LeaveRange); // cc-P802: a recall to Rook stays in the lesson
+ 
+         public static string FollowLine(string key) => Trade(key) is not { } t
+             ? $"Follow the arrow to {PlaceName(key)}. Your lesson begins when you arrive."
+@@ -253,6 +327,8 @@ namespace Server.Tutorial
+                 "animals.taming" => (HavenSpots.Stables, "the stables"),
+                 "gathering.mining" => (HavenSpots.MiningCave, "the mining cave"),
+                 "bard.trial" => (HavenSpots.BardicGuild, "the Bardic Guild"),
++                TravelKey => (HavenSpots.PublicMoongate, "the public moongate"), // cc-P802
++                _ when HavenPlace(t.Key) is { } hp => (hp.Arm, hp.Short), // cc-P802 item 6: its building
+                 _ => (Ground(t.Place.X, t.Place.Y), "the trades yard")
+             };
+         }
+@@ -279,6 +355,7 @@ namespace Server.Tutorial
+             "BlankMap" => "blank maps", "ShepherdsCrook" => "shepherd's crook", "Lute" => "lute", "Lockpick" => "lockpicks",
+             "Dagger" => "dagger", "LesserPoisonPotion" => "lesser poison potion", "RecallRune" => "recall rune",
+             "TutorialCurio" => "odd curio",
++            "MarkScroll" => "Mark scroll", "RecallScroll" => "Recall scroll", // cc-P802
+             "TutorialLoanCloth" => "cloth", "TutorialLoanLog" => "logs", // cc-P610
+             _ => item.GetType().Name.ToLowerInvariant()
+         };
+@@ -290,13 +367,16 @@ namespace Server.Tutorial
+         {
+             var pm = trial.Player;
+             var t = Trade(trial.Key)!;
+-            var work = Ground(TradesYard.X + 2, TradesYard.Y);
++            var hp = HavenPlace(trial.Key); // cc-P802 item 6: the lesson's building and its prop tiles
++            var work = hp != null ? (hp.Props.Length > 0 ? hp.Props[0] : hp.Fixture ?? hp.Arm) : Ground(TradesYard.X + 2, TradesYard.Y);
+             var spots = trial.Key switch
+             {
+                 "animals.taming" => new[] { HavenSpots.SickStall }, // cc-P743
+                 "gathering.mining" => Array.Empty<Point3D>(),           // cc-P743: the cave's own floor
++                TravelKey => Array.Empty<Point3D>(),                    // cc-P802: nothing set up, only loans
+                 "bard.trial" => new[] { BardEchoA, BardEchoB },          // cc-P743: inside the Bardic Guild
+-                "thieving.trial" => new[] { Ground(TradesYard.X + 1, TradesYard.Y), Ground(TradesYard.X - 1, TradesYard.Y) },
++                "thieving.trial" => hp!.Props, // cc-P802: the mark and the chest in the Thieves' Guild
++                _ when hp != null => hp.Props,  // cc-P802: the building's own prop tiles (none where its fixtures serve)
+                 _ when t.IsTour => Array.Empty<Point3D>(),
+                 // The anvil and forge stand east of the yard's centre, in reach of it (CraftItem: 2 tiles) and out of the
+                 // way in from town (the first test-world run walked into them at x + 1 and stopped short).
+@@ -323,36 +403,31 @@ namespace Server.Tutorial
+                 case "gathering.lumberjacking":
+                     Wield(trial, new Hatchet());
+                     LendSkill(trial, SkillName.Lumberjacking, 60);
+-                    Prop(trial, new Static(0x0CE0), work, "practice tree");
+-                    Prop(trial, new Static(0x0CE1), work, "practice tree");
+-                    FreshBank(Lumberjacking.System.GetDefinition(), work);
++                    FreshBank(Lumberjacking.System.GetDefinition(), work); // cc-P802: the lodge's own oak
+                     break;
+                 case "gathering.fishing":
+                     Lend(trial, new FishingPole());
+                     LendSkill(trial, SkillName.Fishing, 60);
+-                    for (var dx = 0; dx < 2; dx++)
+-                    {
+-                        for (var dy = 0; dy < 2; dy++)
+-                        {
+-                            Prop(trial, new Static(0x1797), Ground(work.X + dx, work.Y + dy), "practice pond");
+-                        }
+-                    }
+-
+-                    FreshBank(Fishing.System.GetDefinition(), work);
++                    FreshBank(Fishing.System.GetDefinition(), work); // cc-P802: the water off the pier
+                     break;
+                 case "gathering.camping":
+                     Lend(trial, new Kindling(3));
+                     LendSkill(trial, SkillName.Camping, 60);
+                     LendSkill(trial, SkillName.Herbalism, 30); // cc-P804: F-51 is built
+-                    Prop(trial, new Server.Engines.Plants.HerbPatch("Garlic", ""), Ground(work.X + 1, work.Y), "wild garlic");
++                    Prop(trial, new Server.Engines.Plants.HerbPatch("Garlic", ""), spots[1], "wild garlic"); // cc-P802: beside the camp spot
+                     break;
+                 case "crafting.blacksmithy":
+                     Lend(trial, new SmithHammer());
+                     Lend(trial, new IronIngot(12));
+                     LendSkill(trial, SkillName.Blacksmith, 50);
+                     LendSkill(trial, SkillName.ArmsLore, 60);
+-                    Prop(trial, new Anvil(), spots[1], "anvil");
+-                    Prop(trial, new Forge(), spots[2], "forge");
++                    // cc-P802: the smithy's own anvil and forge, two steps away; a lent pair only if the town's are missing.
++                    Server.Engines.Craft.DefBlacksmithy.CheckAnvilAndForge(pm, 2, out var hasAnvil, out var hasForge);
++                    if (!hasAnvil || !hasForge)
++                    {
++                        Prop(trial, new Anvil(), spots[0], "anvil");
++                        Prop(trial, new Forge(), new Point3D(spots[0].X, spots[0].Y + 1, spots[0].Z), "forge");
++                    }
+                     break;
+                 case "crafting.tailoring":
+                     Lend(trial, new SewingKit());
+@@ -423,8 +498,8 @@ namespace Server.Tutorial
+                 case "thieving.trial":
+                     ArmThief(trial, spots[0], spots[1]);
+                     break;
+-                case "travel.wing":
+-                    Lend(trial, new RecallRune());
++                case TravelKey:
++                    ArmTravel(trial); // cc-P802 item 2
+                     break;
+             }
+ 
+@@ -561,7 +636,9 @@ namespace Server.Tutorial
+                 var spot = stops[i].Spot();
+                 if (pm.InRange(new Point3D(spot.X, spot.Y, pm.Z), StopRange))
+                 {
+-                    ClusterFTutorial.SystemLine(pm, stops[i].Text);
++                    // cc-P802 item 1: the stop's lesson in the window (it stays), the System window says where to read it.
++                    trial.Latest = stops[i].Text;
++                    ClusterFTutorial.SystemLine(pm, $"You reached {stops[i].Name}: read it in the lesson window.");
+                     Step(trial, t.Steps[i].Id);
+                     if (!trial.Finished)
+                     {
+@@ -573,6 +650,7 @@ namespace Server.Tutorial
+ 
+             // cc-P743: the stable horse's steps, and the thief chest's trap while Remove Trap is to do.
+             if (trial.Key == "animals.taming") { TickStable(trial); }
++            if (trial.Key == TravelKey) { TickTravel(trial); } // cc-P802 item 2
+             KeepChestTrapped(trial);
+         }
+ 
+@@ -614,7 +692,7 @@ namespace Server.Tutorial
+ 
+             var label = Array.Find(t.Steps, s => s.Id == id).Label;
+             ClusterFTutorial.SystemLine(trial.Player, $"Finished: {label} ({trial.Steps.Count} of {t.Steps.Length}).");
+-            Show(trial.Player, trial);
++            Refresh(trial.Player, trial); // cc-P802 item 1: the window marks it; the steps were echoed once already
+         }
+     }
+ }
+diff --git a/server/customizations/Tutorial/TutorialWake.cs b/server/customizations/Tutorial/TutorialWake.cs
+index 57ff644..5fc0b1d 100644
+--- a/server/customizations/Tutorial/TutorialWake.cs
++++ b/server/customizations/Tutorial/TutorialWake.cs
+@@ -152,7 +152,7 @@ public static class TutorialWake
+         pm.CheckLightLevels(true);
+         HoldPose(pm, lie);
+         pm.NetState.SendSoundEffect(WaveSound, pm.Location);
+-        ClusterFTutorial.SystemLine(pm, LyingLine);
++        TutorialWelcome.Lying(pm); // cc-P802 item 7: the wake text and how to get up in a window, not the System window
+         Timer.StartTimer(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1), () => Tick(pm, lie), out lie.Timer);
+         return true;
+     }
+@@ -213,8 +213,7 @@ public static class TutorialWake
+ 
+         if (s == HintSeconds)
+         {
+-            ClusterFTutorial.SystemLine(pm, MoveHintLine);
+-            Overhead(pm, lie, MoveHintLine);
++            Overhead(pm, lie, MoveHintLine); // cc-P802 item 7: the window says it; over the head only
+         }
+         else if (s > HintSeconds && (s - HintSeconds) % HintEverySeconds == 0)
+         {
+diff --git a/server/customizations/Tutorial/TutorialWingTrials.cs b/server/customizations/Tutorial/TutorialWingTrials.cs
+index 841807b..366d9cc 100644
+--- a/server/customizations/Tutorial/TutorialWingTrials.cs
++++ b/server/customizations/Tutorial/TutorialWingTrials.cs
+@@ -118,6 +118,15 @@ namespace Server.Tutorial
+             public TimerExecutionToken BrawlTimer;
+             public TutorialStableHorse? Horse;
+             public int ChestResets;
++
++            // cc-P802 item 1 (Chase 11-05: "all lessons should have more info in gumps than system messages that could be
++            // missed"): the lesson's last line, shown in its window under the steps, and whether the System window has had
++            // its short echo of the steps.
++            public string? Latest;
++            public bool Echoed;
++
++            // cc-P802 item 2: the travel lesson's own blank rune (the one the trainee marks).
++            public RecallRune? TravelRune;
+         }
+ 
+         private static readonly Dictionary<Serial, Trial> Active = new();
+@@ -215,9 +224,8 @@ namespace Server.Tutorial
+             var trial = new Trial(pm, station);
+             Active[pm.Serial] = trial;
+             Server.Timer.StartTimer(TimeSpan.FromMilliseconds(250), TimeSpan.FromMilliseconds(250), () => Tick(trial), out trial.Timer);
+-            if (station.Key == "combat.weapons") { ClusterFTutorial.SystemLine(pm, ResistingSpellsLine); }
+-            if (station.Key == "magic.mysticism") { ClusterFTutorial.SystemLine(pm, SpellweavingLine); }
+-            if (Trade(station.Key)?.Line is { } line) { ClusterFTutorial.SystemLine(pm, line); }
++            // cc-P802 item 1: the lesson's explained skill (Resisting Spells, Spellweaving, Imbuing, Herbalism, Forensic
++            // Evaluation) is in its window (NoteOf), not a System line that scrolls away.
+             if (NearPlace(pm, station.Key)) { Arm(trial); }
+             Show(pm, trial);
+         }
+@@ -235,14 +243,32 @@ namespace Server.Tutorial
+                 return false;
+             }
+ 
++            // cc-P802 items 1 and 8: the demonstration happens at the lesson's own place (the necromancer's shrine for
++            // Necromancy), and what it says is in a window, with a few words in the System window.
++            var station = TutorialStations.Find(key)!;
++            if (!NearPlace(pm, key))
++            {
++                TutorialCoreTrials.Point(pm, PlaceOf(key), PlaceShort(key), HavenSpots.Map);
++                ClusterFTutorial.SystemLine(pm, FollowLine(key));
++                pm.CloseGump<TutorialNoteGump>();
++                pm.SendGump(new TutorialNoteGump(station.Title, $"{FollowLine(key)} {PreviewWhy}"));
++                return true;
++            }
++
+             ClusterFSchoolGate.ProgressOf(pm, school.Id).IntroViewed = true;
+             pm.FixedParticles(skill == SkillName.Chivalry ? 0x376A : 0x374A, 9, 32, 5005, skill == SkillName.Chivalry ? 0x47E : 0x455, 0, EffectLayer.Waist);
+-            ClusterFTutorial.SystemLine(pm, PreviewLine(skill));
+-            ClusterFTutorial.SystemLine(pm, $"To learn {school.Name}, speak with {school.Teacher} at {school.Place}: the quest {school.Quest} comes first. " +
+-                "This casting lesson opens after you learn the school. You can graduate without it.");
++            ClusterFTutorial.SystemLine(pm, $"{station.Title}: read the demonstration in the lesson window.");
++            pm.CloseGump<TutorialNoteGump>();
++            pm.SendGump(new TutorialNoteGump(station.Title, $"{PreviewLine(skill)}<br><br>{ReferralLine(school)}"));
+             return true;
+         }
+ 
++        public const string PreviewWhy = "There you see the school's first spell shown; casting it yourself comes after you learn the school.";
++
++        public static string ReferralLine(GatedSchool school) =>
++            $"To learn {school.Name}, speak with {school.Teacher} at {school.Place}: the quest {school.Quest} comes first. " +
++            "This casting lesson opens after you learn the school. You can graduate without it.";
++
+         public static string PreviewLine(SkillName skill) => skill == SkillName.Chivalry
+             ? "Rook shows you Chivalry: a soft light passes over a wounded villager. That is Close Wounds. Chivalry's abilities spend mana and tithing points, and your karma sets their strength."
+             : "Rook shows you Necromancy: a cold mist curls round a training dummy. That is Pain Spike. Necromancy's spells use reagents such as grave dust and pig iron, lower your karma, and grow stronger with Spirit Speak.";
+@@ -250,15 +276,40 @@ namespace Server.Tutorial
+         public static bool NearYard(PlayerMobile pm, int range = 4) =>
+             pm.Map == Map.Trammel && pm.InRange(new Point3D(Yard.X, Yard.Y, pm.Z), range);
+ 
++        /// <summary>
++        /// cc-P802 item 1: what a lesson explains without a task (a skill this tutorial only names, a pointer onward), shown
++        /// in its window under the steps. Null for none.
++        /// </summary>
++        public static string? NoteOf(string key) => key switch
++        {
++            "combat.weapons" => ResistingSpellsLine,
++            "magic.mysticism" => SpellweavingLine,
++            "travel.wing" => RunebookLine,
++            _ => Trade(key)?.Line
++        };
++
++        /// <summary>cc-P802 item 1: the System window's few words once the steps are in the window.</summary>
++        public static string EchoLine(TutorialStation station) => $"{station.Title}: the steps are in the lesson window.";
++
++        /// <summary>cc-P802 item 1: the lesson's window again, without a System line (a new latest line, a finished step).</summary>
++        public static void Refresh(PlayerMobile pm, Trial trial)
++        {
++            pm.CloseGump<TutorialWingTrialGump>();
++            pm.SendGump(new TutorialWingTrialGump(trial.Station, trial.Choice, trial.Finished, trial.Armed, Progress(trial),
++                NoteOf(trial.Key), trial.Latest));
++        }
++
+         private static void Show(PlayerMobile pm, Trial trial)
+         {
+             if (!trial.Armed)
+             {
+                 ClusterFTutorial.SystemLine(pm, FollowLine(trial.Key));
+             }
+-            else if (!trial.Finished) // cc-P291: the done line is enough; the hint again read as a new task
++            else if (!trial.Finished && !trial.Echoed) // cc-P291: the done line is enough; the hint again read as a new task
+             {
+-                ClusterFTutorial.SystemLine(pm, Hint(trial.Key, trial.Choice));
++                // cc-P802 item 1: the steps are in the window; the System window says where, once.
++                trial.Echoed = true;
++                ClusterFTutorial.SystemLine(pm, EchoLine(trial.Station));
+             }
+ 
+             if (pm.Map == Map.Trammel && !trial.Finished)
+@@ -267,8 +318,7 @@ namespace Server.Tutorial
+                 TutorialCoreTrials.Point(pm, spot, name, HavenSpots.Map);
+             }
+ 
+-            pm.CloseGump<TutorialWingTrialGump>();
+-            pm.SendGump(new TutorialWingTrialGump(trial.Station, trial.Choice, trial.Finished, trial.Armed, Progress(trial)));
++            Refresh(pm, trial);
+         }
+ 
+         /// <summary>At the yard: the loans and the creatures. False when the yard is blocked (nothing is lent then).</summary>
+@@ -746,19 +796,42 @@ namespace Server.Tutorial
+ 
+         private readonly TutorialStation _station;
+ 
+-        public TutorialWingTrialGump(TutorialStation station, int choice, bool done, bool armed, string? progress = null) : base(80, 80)
++        /// <summary>cc-P802 item 1 (tests): the window's main text, its note and its latest line.</summary>
++        public string Text { get; }
++        public string? Note { get; }
++        public string? Latest { get; }
++        public const int NoteHeight = 64;
++
++        public TutorialWingTrialGump(TutorialStation station, int choice, bool done, bool armed, string? progress = null,
++            string? note = null, string? latest = null) : base(80, 80)
+         {
+             _station = station;
++            Note = note;
++            Latest = latest;
+             var pick = station.Key == "combat.weapons" && armed && choice < 0 && !done;
+             var steps = done || !armed || progress == null ? 0 : progress.Split('\n').Length;
+-            var h = 250 + (pick ? TutorialWingTrials.Weapons.Length * 24 : 0) + steps * 20;
++            var extra = (latest != null ? NoteHeight : 0) + (note != null && !done ? NoteHeight : 0);
++            var h = 290 + (pick ? TutorialWingTrials.Weapons.Length * 24 : 0) + steps * 20 + extra;
+             TutorialStyle.Panel(this, 500, h);
+             AddLabel(24, 18, TutorialStyle.HeadingHue, station.Title);
+             var text = done ? "Lesson finished and loaned supplies returned. Double-click Rook to choose another lesson." :
+                 !armed ? TutorialWingTrials.FollowLine(station.Key) :
+                 TutorialWingTrials.Hint(station.Key, choice);
+-            AddHtml(24, 46, 452, 90, TutorialStyle.Html(text), false, false);
+-            var y = 140;
++            Text = text;
++            AddHtml(24, 46, 452, 130, TutorialStyle.Html(text), false, false);
++            var y = 180;
++            if (latest != null)
++            {
++                // cc-P802 item 1: the lesson's last line (a tour stop, a step said, a demonstration), kept here.
++                AddHtml(24, y, 452, NoteHeight - 4, TutorialStyle.HeadingHtml(latest), false, false);
++                y += NoteHeight;
++            }
++
++            if (note != null && !done)
++            {
++                AddHtml(24, y, 452, NoteHeight - 4, TutorialStyle.Html(note), false, false);
++                y += NoteHeight;
++            }
+             if (steps > 0)
+             {
+                 // cc-P291: a trade trial's steps, each marked done or still to do.
+diff --git a/server/patches/Account-young-duration.patch b/server/patches/Account-young-duration.patch
+index 1ff51f3..0e20784 100644
+--- a/server/patches/Account-young-duration.patch
++++ b/server/patches/Account-young-duration.patch
+@@ -28,7 +28,7 @@
+ -            pm.SendAsciiMessage($"You will enjoy the benefits and relatively safe status of a young player for {hours} more hours.");
+ -        }
+ +        // cc-P18 (F-5): days and hours, and how to end it sooner (ClusterFYoungPlayer.cs).
+-+        pm.SendAsciiMessage(ClusterFYoungPlayer.LoginMessage(ts));
+++        ClusterFYoungPlayer.SendLoginMessage(pm, ts);
+      }
+  
+      public void RemoveYoungStatus(int message)
+diff --git a/server/tests/Skills/PersuasionVerification.cs b/server/tests/Skills/PersuasionVerification.cs
+index c3e4092..f5bd11c 100644
+--- a/server/tests/Skills/PersuasionVerification.cs
++++ b/server/tests/Skills/PersuasionVerification.cs
+@@ -507,7 +507,7 @@ public class PersuasionVerification : IDisposable
+         pm.Hits = pm.HitsMax;
+         pm.AddItem(new Backpack());
+         acct[0] = pm;
+-        pm.MoveToWorld(new Point3D(TutorialWingTrials.TradesYard.X, TutorialWingTrials.TradesYard.Y, 0), Map.Trammel);
++        pm.MoveToWorld(new Point3D(TutorialWingTrials.Trade("thieving.trial")!.Place.X, TutorialWingTrials.Trade("thieving.trial")!.Place.Y, 0), Map.Trammel); // cc-P802
+         _made.Add(pm);
+         var ns = PacketTestUtilities.CreateTestNetState();
+         ns.Account = acct;
+diff --git a/server/tests/Tutorial/NewHavenFixesVerification.cs b/server/tests/Tutorial/NewHavenFixesVerification.cs
+index e5cdfaf..f7bcb13 100644
+--- a/server/tests/Tutorial/NewHavenFixesVerification.cs
++++ b/server/tests/Tutorial/NewHavenFixesVerification.cs
+@@ -426,7 +426,7 @@ public class NewHavenFixesVerification : IDisposable
+     [MemberData(nameof(ThiefOrders))]
+     public void TheThiefChestAlwaysHasATrapUntilRemoveTrapIsDone(SkillName[] order)
+     {
+-        using var p = new Player(new Point3D(TutorialWingTrials.TradesYard.X, TutorialWingTrials.TradesYard.Y, 0));
++        using var p = new Player(new Point3D(TutorialWingTrials.Trade("thieving.trial")!.Place.X, TutorialWingTrials.Trade("thieving.trial")!.Place.Y, 0));
+         var trial = Begin(p, "thieving.trial");
+         var chest = trial.Props.OfType<WoodenChest>().Single();
+         foreach (var skill in order)
+diff --git a/server/tests/Tutorial/TutorialLoanLifecycleVerification.cs b/server/tests/Tutorial/TutorialLoanLifecycleVerification.cs
+index 6887d93..f40fee1 100644
+--- a/server/tests/Tutorial/TutorialLoanLifecycleVerification.cs
++++ b/server/tests/Tutorial/TutorialLoanLifecycleVerification.cs
+@@ -99,7 +99,7 @@ public class TutorialLoanLifecycleVerification : IDisposable
+     // Where each lesson arms: the training yard for combat and magic, the trades yard for crafting and thieving.
+     // cc-P743: the sparring and magery lessons have their own buildings (TutorialWingTrials.PlaceOf).
+     private static Point2D PlaceOf(string key) =>
+-        key.StartsWith("crafting.", StringComparison.Ordinal) || key == "thieving.trial" ? TutorialWingTrials.TradesYard
++        TutorialWingTrials.Trade(key) is { } t ? t.Place // cc-P802: each trade in its own building
+         : new Point2D(TutorialWingTrials.PlaceOf(key).X, TutorialWingTrials.PlaceOf(key).Y);
+ 
+     private static void Run(Player p, string key)
+diff --git a/server/tests/Tutorial/TutorialTradeTrialVerification.cs b/server/tests/Tutorial/TutorialTradeTrialVerification.cs
+index e4817b5..5dfeb05 100644
+--- a/server/tests/Tutorial/TutorialTradeTrialVerification.cs
++++ b/server/tests/Tutorial/TutorialTradeTrialVerification.cs
+@@ -140,8 +140,8 @@ public class TutorialTradeTrialVerification : IDisposable
+ 
+     [Theory]
+     [InlineData("gathering.mining", SkillName.Mining, typeof(Pickaxe), 0)] // cc-P743: the cave's own floor, no vein
+-    [InlineData("gathering.lumberjacking", SkillName.Lumberjacking, typeof(Hatchet), 2)]
+-    [InlineData("gathering.fishing", SkillName.Fishing, typeof(FishingPole), 4)]
++    [InlineData("gathering.lumberjacking", SkillName.Lumberjacking, typeof(Hatchet), 0)] // cc-P802: the lodge's own oak
++    [InlineData("gathering.fishing", SkillName.Fishing, typeof(FishingPole), 0)] // cc-P802: the water off the pier
+     [InlineData("gathering.camping", SkillName.Camping, typeof(Kindling), 1)] // cc-P804: the wild garlic
+     public void AHarvestFinishesGatheringAndTheToolAndPropsGoBack(string key, SkillName skill, Type tool, int props)
+     {
+@@ -188,7 +188,7 @@ public class TutorialTradeTrialVerification : IDisposable
+     [InlineData("crafting.cartography", typeof(LocalMap), null)]
+     public void AProductInTheBackpackFinishesACraftAndIsKept(string key, Type product, SkillName? covered)
+     {
+-        using var p = new Player(TutorialWingTrials.TradesYard);
++        using var p = new Player(TutorialWingTrials.Trade(key)!.Place); // cc-P802: each craft in its own building
+         var trial = Begin(p, key);
+         var loaners = trial.Loaners.ToList();
+         Assert.True(loaners.Count >= 2); // a tool and its materials
+@@ -225,7 +225,7 @@ public class TutorialTradeTrialVerification : IDisposable
+     [Fact]
+     public void ProductsAlreadyInTheBackpackDoNotCount()
+     {
+-        using var p = new Player(TutorialWingTrials.TradesYard);
++        using var p = new Player(TutorialWingTrials.Trade("crafting.fletching")!.Place);
+         p.Pm.AddToBackpack(new Kindling(4)); // the trainee's own kindling, before the lesson
+         var trial = Begin(p, "crafting.fletching");
+         Tick();
+@@ -286,7 +286,7 @@ public class TutorialTradeTrialVerification : IDisposable
+     [Fact]
+     public void TheTenThiefSkillsFinishThievingAndTheHidingBaseComesBack()
+     {
+-        using var p = new Player(TutorialWingTrials.TradesYard);
++        using var p = new Player(TutorialWingTrials.Trade("thieving.trial")!.Place);
+         p.Pm.Skills[SkillName.Hiding].Base = 12.0;
+         var trial = Begin(p, "thieving.trial");
+         var loaners = trial.Loaners.ToList();
+@@ -330,7 +330,6 @@ public class TutorialTradeTrialVerification : IDisposable
+ 
+     [Theory]
+     [InlineData("housing.basics")]
+-    [InlineData("travel.wing")]
+     [InlineData("reputation.wing")]
+     [InlineData("shard.systems")]
+     public void ATourCountsItsStopsInOrderAndFinishesAtTheLast(string key)
+@@ -362,7 +361,7 @@ public class TutorialTradeTrialVerification : IDisposable
+     [Fact]
+     public void GoingFarFromNewHavenStopsATourAndLeavingTheYardStopsATrade()
+     {
+-        using var p = new Player(TutorialWingTrials.TourCentre);
++        using var p = new Player(new Point2D(HavenSpots.PublicMoongate.X, HavenSpots.PublicMoongate.Y)); // cc-P802: the travel lesson arms at the moongate (reach 160 like a tour)
+         Begin(p, "travel.wing");
+         // 200 tiles south: past the tour's reach (160) and still on the island, which the island gate keeps a trainee on
+         // (cc-P678: 200 east of the new centre is off the island)
+@@ -416,7 +415,7 @@ public class TutorialTradeTrialVerification : IDisposable
+         TutorialWingTrials.Said = (_, line) => said.Add(line);
+         try
+         {
+-            using var p = new Player(TutorialWingTrials.TradesYard);
++            using var p = new Player(TutorialWingTrials.Trade("crafting.tinkering")!.Place);
+             var trial = Begin(p, "crafting.tinkering");
+             Assert.Contains("Item Identification skill", TutorialWingTrials.Hint("crafting.tinkering"));
+             Assert.Contains("double-click the curio", TutorialWingTrials.Hint("crafting.tinkering"));
+diff --git a/server/customizations/Tutorial/NewHavenLessonPlaces.cs b/server/customizations/Tutorial/NewHavenLessonPlaces.cs
+new file mode 100644
+index 0000000..700e16f
+--- /dev/null
++++ b/server/customizations/Tutorial/NewHavenLessonPlaces.cs
+@@ -0,0 +1,154 @@
++// cc-P802 items 3, 6 and 8 (Chase 11-05: "All lessons should take place in appropriate location on island", "mysticism
++// lesson should be at mage building in Haven with an elven adjunct instructor"; 11-07: "necromancy did not point to
++// necromancy temple in new haven"). Each New Haven lesson that armed on the open grass of the trades yard or the training
++// yard now arms in the building that does its work, on the Siege of Sosaria map's Haven: every tile below was checked on
++// the shard's own map files and decoration (shard-migration notes/cc-P802-tools/lesson-places.json, renders in
++// notes/cc-P802-review/places/). The lesson's real fixtures are used where the town has them (the smithy's anvils and
++// forges, the woodsman's oak, the pier's water); its own props stand on the listed prop tiles otherwise.
++//
++// Two teachers stand in their halls (seeded with New Haven's pieces, moved back to their spot and facing at every seed):
++//   - Ilyra Moonwhisper, an elf, the adjunct instructor of Mysticism, behind the table in the Haven Magery School's south
++//     room, facing the door. Elves are not playable (P762); an elf NPC is.
++//   - Morvain Ashgrave, keeper of the necromancer's shrine, on the skull-candle dais in the shrine at the north-east of
++//     the loop road, facing the room.
++// Double-clicking either starts their lesson. The lessons with no fitting building yet (Bushido and Ninjitsu: no dojo;
++// combat.healing) stay in the training yard; the notes list them for Chase.
++
++#nullable enable
++
++using System;
++using ModernUO.Serialization;
++using Server.Items;
++using Server.Mobiles;
++
++namespace Server.Tutorial
++{
++    /// <summary>cc-P802: a New Haven lesson's place: where it arms, the words for it, and its prop tiles and fixture.</summary>
++    public sealed record HavenLessonPlace(Point3D Arm, string Where, string Short, Point3D[] Props, Point3D? Fixture = null);
++
++    public static partial class TutorialWingTrials
++    {
++        public static readonly Point3D ShrineEchoSpot = new(3688, 2475, 0);
++        public static readonly Point3D MysticEchoSpot = new(3654, 2475, 0);
++        public static readonly Point3D MysticInstructorSpot = new(3652, 2473, 0);
++        public static readonly Point3D ShrineKeeperSpot = new(3693, 2475, 2);
++
++        public const string ShrineWhere =
++            "the necromancer's shrine, the stone hall at the north-east of the loop road (enter by its south door, then walk east to the skull candles)";
++
++        public const string MysticWhere = "the Haven Magery School, the stone hall at the north end of town (the elven instructor in its south room)";
++
++        /// <summary>cc-P802 item 6: the lesson's building, or null for a lesson that keeps its old place.</summary>
++        public static HavenLessonPlace? HavenPlace(string key) => key switch
++        {
++            "gathering.lumberjacking" => new(new(3744, 2699, 40),
++                "the Woodsman's lodge on the hill at the south-east edge of town (the oak tree south of its door)", "the Woodsman's lodge",
++                [], new Point3D(3744, 2700, 40)),
++            "gathering.fishing" => new(new(3650, 2667, -2),
++                "the west pier of the docks, south of the docks street", "the docks", [], new Point3D(3651, 2667, -5)),
++            "gathering.camping" => new(new(3709, 2606, 20),
++                "the camp spot on the grass beside the road to the east fields, south of the Proving Grounds", "the camp spot",
++                [new(3710, 2605, 20), new(3711, 2607, 20)]),
++            "crafting.blacksmithy" => new(new(3645, 2616, 0),
++                "the Hammer and Steel smithy, the open forge on the street south of the bank", "the smithy", [new(3646, 2617, 0)]),
++            "crafting.tailoring" => new(new(3676, 2475, 0),
++                "A Stitch in Time, the west room of the long stone house at the north-east of the loop road", "A Stitch in Time", []),
++            "crafting.carpentry" => new(new(3642, 2499, 0),
++                "Carpenters of Haven, the workshop behind the counter, on the north side of the loop road", "the carpenters", []),
++            "crafting.tinkering" => new(new(3666, 2506, 0),
++                "Haven Clockworks and Tinker Shop, on the north side of the loop road east of the carpenters", "the tinker shop", []),
++            "crafting.alchemy" => new(new(3628, 2547, 0),
++                "the reagent kitchen at the back of the mage's shop, on the courtyard north of the bank", "the reagent kitchen", []),
++            "crafting.fletching" => new(new(3745, 2579, 40),
++                "the Bullseye Marksmen archery range, east of the Proving Grounds", "the archery range", []),
++            "crafting.cooking" => new(new(3667, 2643, 0),
++                "the kitchen of the Albatross Bar and Grill, on the docks street", "the Albatross kitchen", []),
++            "crafting.inscription" => new(new(3612, 2475, 0),
++                "the Haven Public Library, at the reading tables, at the north-west corner of the loop road", "the library", []),
++            "crafting.cartography" => new(new(3630, 2634, 0),
++                "Mapmakers of Haven, the stone house on the north side of the docks street", "the mapmakers", []),
++            "thieving.trial" => new(new(3696, 2509, 0),
++                "the Haven Thieves' Guild, the hall at the east end of the loop road", "the Thieves' Guild",
++                [new(3697, 2509, 0), new(3699, 2509, 0)]),
++            _ => null
++        };
++
++        private static Point2D P2(Point3D p) => new(p.X, p.Y);
++
++        private static HavenLessonPlace HavenPlaceOf(string key) => HavenPlace(key)!;
++    }
++}
++
++namespace Server.Mobiles
++{
++    using Server.Tutorial;
++
++    /// <summary>cc-P802 items 3 and 8: a New Haven lesson's teacher, standing in their hall; a double-click starts the lesson.</summary>
++    [SerializationGenerator(0, false)]
++    public partial class TutorialLessonTeacher : BaseCreature
++    {
++        [SerializableField(0)]
++        private string _lessonKey = "";
++
++        [Constructible]
++        public TutorialLessonTeacher() : base(AIType.AI_Vendor, FightMode.None, 2, 1)
++        {
++            Blessed = true;
++            CantWalk = true;
++            RangeHome = 0;
++        }
++
++        public static TutorialLessonTeacher Mystic()
++        {
++            var t = new TutorialLessonTeacher { LessonKey = "magic.mysticism", Name = "Ilyra Moonwhisper", Title = "the adjunct instructor of Mysticism" };
++            t.Race = Race.Elf;
++            t.Female = true;
++            t.Body = 0x25E;
++            t.Hue = Race.Elf.RandomSkinHue();
++            t.HairItemID = 0x2FCD; // long elven hair
++            t.HairHue = 0x34;
++            t.AddItem(new Robe { Hue = 0x48D });
++            t.AddItem(new ElvenBoots { Hue = 0x497 });
++            t.Direction = Direction.South; // to the door, across her table
++            return t;
++        }
++
++        public static TutorialLessonTeacher ShrineKeeper()
++        {
++            var t = new TutorialLessonTeacher { LessonKey = "magic.necromancy", Name = "Morvain Ashgrave", Title = "keeper of the necromancer's shrine" };
++            t.Body = 0x190;
++            t.Hue = 0x83EA;
++            t.HairItemID = 0x203C;
++            t.HairHue = 0x455;
++            t.AddItem(new Robe { Hue = 0x455 });
++            t.AddItem(new Sandals { Hue = 0x455 });
++            t.Direction = Direction.West; // to the room, over the candles
++            return t;
++        }
++
++        public override bool IsInvulnerable => true;
++        public override bool ClickTitle => true;
++        public override bool CanTeach => false;
++
++        public override void OnDoubleClick(Mobile from)
++        {
++            if (from is not PlayerMobile pm || !pm.InRange(this, 4))
++            {
++                return;
++            }
++
++            if (!ClusterFTutorial.IsParticipant(pm) || TutorialStations.Find(LessonKey) is not { } station)
++            {
++                SayTo(pm, LessonKey == "magic.mysticism"
++                    ? "Mysticism draws on the deep magic of the elves. Speak with Rook on his bench by the Albatross if you would take its lesson."
++                    : "The dead keep their secrets close. Rook, on his bench by the Albatross, sends trainees to me.");
++                return;
++            }
++
++            SayTo(pm, LessonKey == "magic.mysticism"
++                ? "Welcome to the Magery School. Stand by me and I will show you Eagle Strike."
++                : "Come in, quietly. Stand before the candles and watch.");
++            ClusterFTutorial.RunStation(pm, station);
++        }
++    }
++}
+diff --git a/server/customizations/Tutorial/TutorialWelcome.cs b/server/customizations/Tutorial/TutorialWelcome.cs
+new file mode 100644
+index 0000000..7b23111
+--- /dev/null
++++ b/server/customizations/Tutorial/TutorialWelcome.cs
+@@ -0,0 +1,206 @@
++// cc-P802 item 7 (Chase 11-07, a fresh character waking on the Wakening Isle: "Still too much going on in system messages.
++// it should all be gumps."). His shot showed ten system lines at once over Tamsin's greeting: the young status, four "Your
++// skill in ... has increased by 30.0" lines, the play test tasks note, "Your account's tutorial continues", the wake text,
++// "The chat system has been disabled" and the get-up hint. The first minutes are quiet now:
++//
++//   - One welcome window (the lesson window's style), shown as the trainee lies on the sand (TutorialWake.Play): the wake
++//     text, how to get up, and a Notes part: the young status in one line, the play test tasks note, the tutorial-
++//     continues line. Each of those comes here instead of the System window while the trainee is holding (lying, getting
++//     up, or about to: TutorialWake.IsHolding), through Note. Once they stand, the window turns to the first step (follow
++//     the arrow to Tamsin) and the System window echoes it in a few words.
++//   - The skill lines were TazUO's (UpdateSkills.cs prints a single-skill update's change when "show skills changed" is
++//     on): ClusterFSkillCaps set every cap at the first login, each cap that changed sent a single-skill update, and the
++//     client, which had no skill values yet, read 0 -> 30. The caps are set at creation now (CharacterCreation, before the
++//     client is attached), so the login pass changes nothing and sends nothing. Real gains still print.
++//   - The chat line was pinned's answer to the open-chat request TazUO sends as it enters the world (ChatPackets.cs:34).
++//     Our handler (Initialize, after pinned's Configure) answers it only for a request made after QuietChatSeconds in the
++//     world, so a player who presses Chat still hears that chat is off; the one at login is not answered.
++// Notes: shard-migration notes/cc-P802-haven-notes-2.md.
++
++#nullable enable
++
++using System;
++using System.Buffers;
++using System.Collections.Generic;
++using Server.Engines.Chat;
++using Server.Gumps;
++using Server.Mobiles;
++using Server.Network;
++
++namespace Server.Tutorial;
++
++public static class TutorialWelcome
++{
++    public const string Title = "The Wakening Isle";
++    public const string StandHint = "To get up, take a step: hold the right mouse button on the ground, or press an arrow key.";
++    public const string FirstStep =
++        "You are up. Follow the arrow to Tamsin, your guide, and double-click her (two quick left clicks). Her window starts each lesson.";
++    public const string FirstStepEcho = "Follow the arrow to Tamsin and double-click her.";
++    public const string VisitorStep =
++        "Follow the road east to the moongate at the end of the dock; it takes you to New Haven.";
++    public const string VisitorEcho = "Follow the road east to the moongate.";
++    public const int QuietChatSeconds = 30;
++
++    // The notes held for each trainee's welcome window (not saved: a restart's login says them again).
++    private static readonly Dictionary<Serial, List<string>> _notes = new();
++    private static readonly HashSet<Serial> _standing = new();
++    private static readonly Dictionary<Serial, string> _stepText = new();
++
++    /// <summary>The notes the window shows for <paramref name="m"/> (tests).</summary>
++    public static IReadOnlyList<string> NotesOf(Mobile m) => _notes.TryGetValue(m.Serial, out var list) ? list : [];
++
++    /// <summary>
++    /// A line a new player must read at login: into the welcome window while <paramref name="pm"/> is holding (the window is
++    /// refreshed if open), otherwise to the System window as before (<paramref name="hue"/>). True when the window took it.
++    /// </summary>
++    public static bool Note(PlayerMobile pm, string line, int hue = 0x3B2)
++    {
++        if (!TutorialWake.IsHolding(pm))
++        {
++            pm.SendMessage(hue, line);
++            return false;
++        }
++
++        if (!_notes.TryGetValue(pm.Serial, out var list))
++        {
++            _notes[pm.Serial] = list = new List<string>();
++        }
++
++        if (!list.Contains(line))
++        {
++            list.Add(line);
++        }
++
++        if (pm.HasGump<TutorialWelcomeGump>())
++        {
++            Show(pm);
++        }
++
++        return true;
++    }
++
++    /// <summary>TutorialWake.Play: the window as the trainee lies on the sand.</summary>
++    public static void Lying(PlayerMobile pm)
++    {
++        _standing.Remove(pm.Serial);
++        Show(pm);
++    }
++
++    /// <summary>
++    /// TutorialStart's first lines, once the trainee is up: the window turns to the first step (<paramref name="text"/> for a
++    /// visitor's), and the System window echoes it in a few words.
++    /// </summary>
++    public static void Standing(PlayerMobile pm, string? text = null)
++    {
++        _standing.Add(pm.Serial);
++        if (text != null) { _stepText[pm.Serial] = text; } else { _stepText.Remove(pm.Serial); }
++        Show(pm);
++        ClusterFTutorial.SystemLine(pm, text != null ? VisitorEcho : FirstStepEcho);
++    }
++
++    public static bool IsStanding(Mobile m) => _standing.Contains(m.Serial);
++
++    public static void Show(PlayerMobile pm)
++    {
++        pm.CloseGump<TutorialWelcomeGump>();
++        pm.SendGump(new TutorialWelcomeGump(Body(pm), NotesOf(pm)));
++    }
++
++    /// <summary>The window's main text for <paramref name="pm"/> now.</summary>
++    public static string Body(Mobile pm) => !_standing.Contains(pm.Serial)
++        ? $"{TutorialWake.LyingLine}<br><br>{StandHint}"
++        : _stepText.GetValueOrDefault(pm.Serial) ?? FirstStep;
++
++    /// <summary>Closing the window ends its notes (they were read).</summary>
++    public static void Forget(Mobile m)
++    {
++        _notes.Remove(m.Serial);
++        _standing.Remove(m.Serial);
++        _stepText.Remove(m.Serial);
++    }
++
++    // -- The open-chat request at login --
++
++    private static readonly Dictionary<Serial, DateTime> _enteredAt = new();
++
++    public static unsafe void Initialize()
++    {
++        EventSink.Disconnected += m => { _enteredAt.Remove(m.Serial); Forget(m); };
++        IncomingPackets.Register(0xB5, 0x40, true, &OpenChatWindowRequest);
++    }
++
++    [ModernUO.CodeGeneratedEvents.OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
++    public static void OnLogin(PlayerMobile pm) => _enteredAt[pm.Serial] = Core.Now;
++
++    /// <summary>True when an open-chat request now is the client's own at login (not answered while chat is off).</summary>
++    public static bool IsLoginChatRequest(Mobile m) =>
++        m is PlayerMobile pm && (TutorialWake.IsHolding(pm) ||
++                                 _enteredAt.TryGetValue(pm.Serial, out var at) && Core.Now - at < TimeSpan.FromSeconds(QuietChatSeconds));
++
++    public static void OpenChatWindowRequest(NetState state, SpanReader reader)
++    {
++        if (!ChatSystem.Enabled && state.Mobile is { } from && IsLoginChatRequest(from))
++        {
++            return; // cc-P802: the client asks by itself as it enters the world; nobody pressed Chat
++        }
++
++        ChatPackets.OpenChatWindowRequest(state, reader);
++    }
++}
++
++/// <summary>cc-P802 item 7: the welcome window on the Wakening Isle's beach.</summary>
++public sealed class TutorialWelcomeGump : Gump
++{
++    public string Text { get; }
++    public IReadOnlyList<string> Notes { get; }
++
++    public TutorialWelcomeGump(string text, IReadOnlyList<string> notes) : base(80, 80)
++    {
++        Text = text;
++        Notes = [.. notes];
++        var notesHeight = Notes.Count == 0 ? 0 : 30 + Notes.Count * 48;
++        TutorialStyle.Panel(this, 480, 190 + notesHeight);
++        AddLabel(24, 18, TutorialStyle.HeadingHue, TutorialWelcome.Title);
++        AddHtml(24, 46, 432, 96, TutorialStyle.Html(text), false, false);
++        var y = 146;
++        if (Notes.Count > 0)
++        {
++            AddLabel(24, y, TutorialStyle.HeadingHue, "Notes");
++            y += 26;
++            foreach (var note in Notes)
++            {
++                AddHtml(24, y, 432, 46, TutorialStyle.Html(note), false, false);
++                y += 48;
++            }
++        }
++
++        AddButton(24, y + 4, 4005, 4007, 1);
++        AddLabel(60, y + 6, TutorialStyle.ActionHue, "Close");
++    }
++
++    public override void OnResponse(NetState sender, in RelayInfo info)
++    {
++        if (info.ButtonID == 1 && sender.Mobile is PlayerMobile pm && TutorialWelcome.IsStanding(pm))
++        {
++            TutorialWelcome.Forget(pm);
++        }
++    }
++}
++
++/// <summary>cc-P802 item 1: a lesson's words in a window that stays until closed (a demonstration, a pointer).</summary>
++public sealed class TutorialNoteGump : Gump
++{
++    public string Title { get; }
++    public string Text { get; }
++
++    public TutorialNoteGump(string title, string text) : base(80, 80)
++    {
++        Title = title;
++        Text = text;
++        TutorialStyle.Panel(this, 480, 250);
++        AddLabel(24, 18, TutorialStyle.HeadingHue, title);
++        AddHtml(24, 46, 432, 150, TutorialStyle.Html(text), false, false);
++        AddButton(24, 206, 4005, 4007, 1);
++        AddLabel(60, 208, TutorialStyle.ActionHue, "Close");
++    }
++}
+diff --git a/server/tests/Tutorial/HavenNotes2Verification.cs b/server/tests/Tutorial/HavenNotes2Verification.cs
+new file mode 100644
+index 0000000..f5f078d
+--- /dev/null
++++ b/server/tests/Tutorial/HavenNotes2Verification.cs
+@@ -0,0 +1,415 @@
++// cc-P802: New Haven tutorial notes, batch 2 (Chase playing 2026.11.03.1, and the isle wake of 11-07). Notes:
++// shard-migration notes/cc-P802-haven-notes-2.md.
++//
++//   1. Lessons teach in their window: a tour stop's lesson, a lesson's explained skill and its last line stay in the window.
++//   2. The travel lesson: a blank rune, the lesson's rune to Rook's bench, a Mark scroll and two Recall scrolls; marked,
++//      away, back; Mark is allowed on Haven Island only while it runs.
++//   4. New Haven's old farm goes at every start by itself.
++//   7. The wake is one window: the wake text, how to get up, the young status and other login notes; the starting skills'
++//      caps are set at creation (no "Your skill in ... has increased" at the first login); the client's own open-chat
++//      request at login is not answered with "The chat system has been disabled."
++
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using Server;
++using Server.Accounting;
++using Server.Accounting.Security;
++using Server.Engines.CharacterCreation;
++using Server.Gumps;
++using Server.Items;
++using Server.LootBoxes;
++using Server.Misc;
++using Server.Mobiles;
++using Server.Network;
++using Server.Spells;
++using Server.Tests.Network;
++using Server.Tutorial;
++using Xunit;
++
++namespace ShatteredLegacy.Tests;
++
++[Collection("Sequential UOContent Tests")]
++public class HavenNotes2Verification : IDisposable
++{
++    private readonly Func<Point3D, bool> _fits = TutorialWingTrials.Fits;
++
++    public HavenNotes2Verification()
++    {
++        ShardTestClock.Arm();
++        ShardTestHost.EnsureAccounts();
++        ClusterFTutorial.Enabled = true;
++        TutorialCoreTrials.EnsureHooks();
++        TutorialFarm.EnsureHooks();
++        TutorialWingTrials.EnsureHooks();
++        TutorialWingTrials.Fits = _ => true;
++    }
++
++    public void Dispose() => TutorialWingTrials.Fits = _fits;
++
++    private sealed class Player : IDisposable
++    {
++        public readonly Account Account = new($"p802{Guid.NewGuid():N}"[..16], "p802-test-only");
++        public readonly PlayerMobile Pm;
++        public readonly NetState Ns;
++
++        public Player(Point3D at, bool tutorial = true)
++        {
++            Pm = new PlayerMobile { Player = true, Race = Race.Human, Body = 0x190, Name = "Trainee", RawStr = 60, RawDex = 60, RawInt = 20 };
++            Pm.Hits = Pm.HitsMax;
++            Pm.AddItem(new Backpack());
++            Account[0] = Pm;
++            Pm.MoveToWorld(at, Map.Trammel);
++            Ns = PacketTestUtilities.CreateTestNetState();
++            Ns.Account = Account;
++            Pm.NetState = Ns;
++            Ns.Mobile = Pm;
++            if (tutorial)
++            {
++                Assert.True(ClusterFTutorial.TryEnter(Pm));
++            }
++        }
++
++        public TutorialRecord Record => ClusterFTutorial.RecordOf(Pm)!;
++        public TutorialWingTrials.Trial Trial => TutorialWingTrials.Current(Pm)!;
++
++        public void Dispose()
++        {
++            TutorialWingTrials.Cancel(Pm);
++            TutorialCoreTrials.Cancel(Pm);
++            ClusterFFanfare.FlushAll();
++            Pm.NetState = null;
++            Ns.Mobile = null;
++            Ns.Dispose();
++            Pm.Delete();
++            Accounts.Remove(Account);
++        }
++    }
++
++    private static TutorialWingTrials.Trial Begin(Player p, string key)
++    {
++        ClusterFTutorial.RunStation(p.Pm, TutorialStations.Find(key)!);
++        var trial = p.Trial;
++        Assert.Equal(key, trial.Key);
++        Assert.True(trial.Armed);
++        return trial;
++    }
++
++    private static void Tick() => ShardTestClock.Advance(TimeSpan.FromSeconds(0.5));
++
++    private static List<T> Held<T>(PlayerMobile pm) where T : Item
++    {
++        var list = new List<T>();
++        foreach (var item in pm.Backpack!.FindItemsByType<T>()) { list.Add(item); }
++        return list;
++    }
++
++    // ---------------------------------------------------------------- 2
++
++    [Fact]
++    public void P802_TheTravelLessonHandsRunesAndScrollsAndFinishesOnTheReturn()
++    {
++        using var p = new Player(HavenSpots.PublicMoongate);
++        var mageryBefore = p.Pm.Skills.Magery.Value;
++        var trial = Begin(p, TutorialWingTrials.TravelKey);
++
++        var runes = Held<RecallRune>(p.Pm);
++        Assert.Equal(2, runes.Count);
++        var own = Assert.Single(runes, r => !r.Marked);
++        var lessons = Assert.Single(runes, r => r.Marked);
++        Assert.Same(own, trial.TravelRune);
++        Assert.Equal(TutorialWingTrials.TravelLessonTarget, lessons.Target);
++        Assert.Equal(Map.Trammel, lessons.TargetMap);
++        Assert.Equal(1, Held<MarkScroll>(p.Pm).Sum(s => s.Amount));
++        Assert.Equal(2, TutorialWingTrials.RecallScrollsLeft(p.Pm));
++        Assert.True(p.Pm.Skills.Magery.Value >= 100); // the scrolls always work in the lesson
++        Assert.Equal(0, p.Pm.Skills.Magery.Base);     // a loan, never the player's own
++
++        // The steps are in the window, with the runebook note.
++        var gump = p.Pm.FindGump<TutorialWingTrialGump>();
++        Assert.NotNull(gump);
++        Assert.Contains("Mark scroll", gump.Text);
++        Assert.Contains("Recall scroll", gump.Text);
++        Assert.Equal(TutorialWingTrials.RunebookLine, gump.Note);
++        Assert.Contains("runebook", TutorialWingTrials.RunebookLine);
++
++        // Recalling to Rook first counts for nothing: the rune is not marked yet.
++        p.Pm.MoveToWorld(TutorialWingTrials.TravelLessonTarget, Map.Trammel);
++        Tick();
++        Assert.Empty(trial.Steps);
++        p.Pm.MoveToWorld(HavenSpots.PublicMoongate, Map.Trammel);
++
++        own.Mark(p.Pm);
++        Tick();
++        Assert.Contains("mark", trial.Steps);
++
++        Held<RecallScroll>(p.Pm)[0].Consume();
++        p.Pm.MoveToWorld(TutorialWingTrials.TravelLessonTarget, Map.Trammel); // the recall to Rook's bench
++        Tick();
++        Assert.Contains("away", trial.Steps);
++        Assert.NotNull(TutorialWingTrials.Current(p.Pm)); // 66 tiles from the moongate: still in the lesson
++
++        Assert.DoesNotContain(TutorialWingTrials.TravelKey, p.Record.StationsDone);
++        Held<RecallScroll>(p.Pm)[0].Consume();
++        p.Pm.MoveToWorld(own.Target, Map.Trammel); // the recall home
++        Tick();
++        Assert.Contains(TutorialWingTrials.TravelKey, p.Record.StationsDone);
++        Assert.Empty(Held<RecallRune>(p.Pm)); // the loans went back
++        Assert.Equal(0.0, p.Pm.Skills.Magery.Base);
++        Assert.Equal(mageryBefore, p.Pm.Skills.Magery.Value); // the loan went back
++        Assert.Empty(TutorialWingTrials.Current(p.Pm)?.SkillMods ?? []);
++    }
++
++    [Fact]
++    public void P802_MarkIsAllowedOnTheIslandOnlyDuringTheTravelLesson()
++    {
++        using var p = new Player(HavenSpots.PublicMoongate);
++        Assert.False(TutorialIslandGate.CanTravel(p.Pm, Map.Trammel, p.Pm.Location, TravelCheckType.Mark));
++        Begin(p, TutorialWingTrials.TravelKey);
++        Assert.True(TutorialIslandGate.CanTravel(p.Pm, Map.Trammel, p.Pm.Location, TravelCheckType.Mark));
++        // Recall still keeps a trainee on the island.
++        Assert.False(TutorialIslandGate.CanTravel(p.Pm, Map.Trammel, new Point3D(1434, 1699, 0), TravelCheckType.RecallTo));
++        TutorialWingTrials.Cancel(p.Pm);
++        Assert.False(TutorialIslandGate.CanTravel(p.Pm, Map.Trammel, p.Pm.Location, TravelCheckType.Mark));
++    }
++
++    // ---------------------------------------------------------------- 1
++
++    [Fact]
++    public void P802_ATourStopsLessonStaysInTheWindow()
++    {
++        using var p = new Player(new Point3D(TutorialWingTrials.TourCentre.X, TutorialWingTrials.TourCentre.Y, 0));
++        var trial = Begin(p, "housing.basics");
++        p.Pm.MoveToWorld(TutorialWingTrials.HousingStop(0), Map.Trammel);
++        Tick();
++        Assert.Equal(TutorialWingTrials.HousingStop1, trial.Latest);
++        Assert.Equal(TutorialWingTrials.HousingStop1, p.Pm.FindGump<TutorialWingTrialGump>()!.Latest);
++        Assert.DoesNotContain("System window", TutorialWingTrials.Trade("housing.basics")!.Hint);
++    }
++
++    [Theory]
++    [InlineData("combat.weapons")]
++    [InlineData("gathering.camping")]
++    [InlineData("crafting.blacksmithy")]
++    [InlineData("thieving.trial")]
++    public void P802_ALessonsExplainedSkillIsInItsWindow(string key)
++    {
++        var station = TutorialStations.Find(key)!;
++        var note = TutorialWingTrials.NoteOf(key);
++        Assert.False(string.IsNullOrEmpty(note));
++        var gump = new TutorialWingTrialGump(station, -1, false, true, null, note, null);
++        Assert.Equal(note, gump.Note);
++        Assert.Contains("lesson window", TutorialWingTrials.EchoLine(station));
++    }
++
++    // ---------------------------------------------------------------- 4
++
++    [Fact]
++    public void P802_TheOldFarmGoesAtEveryStartByItself()
++    {
++        var map = HavenSpots.Map;
++        var testShard = TutorialFarm.IsTestShard;
++        TutorialFarm.IsTestShard = () => true;
++        try
++        {
++            Assert.False(TutorialFarm.SeedHaven(false, true).Refused); // an older world's farm
++        }
++        finally
++        {
++            TutorialFarm.IsTestShard = testShard;
++        }
++
++        Assert.NotNull(TutorialFarm.FindAddon<TutorialFarmAddon>(map, TutorialFarmLayout.Anchor));
++        ClusterFTutorial.Enabled = false; // the tutorial seed would skip the world; the farm goes anyway
++        try
++        {
++            Assert.Contains("took away", TutorialFarm.ClearHavenOnLoad());
++        }
++        finally
++        {
++            ClusterFTutorial.Enabled = true;
++        }
++
++        Assert.Null(TutorialFarm.FindAddon<TutorialFarmAddon>(map, TutorialFarmLayout.Anchor));
++        Assert.Null(TutorialFarm.FindDoor(map, TutorialFarmLayout.DoorSpot));
++        Assert.Equal("old New Haven farm: took away 0 thing(s).", TutorialFarm.ClearHavenOnLoad());
++    }
++
++    // ---------------------------------------------------------------- 7
++
++    private static bool _creationHooks;
++
++    [Fact]
++    public void P802_TheStartingSkillsGetTheShardsCapsAtCreation()
++    {
++        if (!_creationHooks)
++        {
++            Accounts.Configure();
++            WelcomeTimer.Initialize();
++            _creationHooks = true;
++        }
++
++        if (AccountSecurity.CurrentAlgorithm == PasswordProtectionAlgorithm.None)
++        {
++            AccountSecurity.CurrentAlgorithm = PasswordProtectionAlgorithm.PBKDF2;
++        }
++
++        ClusterFSkillCaps.ReloadForTests();
++        var account = new Account($"p802cap{Guid.NewGuid():N}"[..16], "p802-test-only");
++        var ns = PacketTestUtilities.CreateTestNetState();
++        var stats = ns.NewCharacterCreation ? new byte[] { 30, 30, 30 } : new byte[] { 30, 25, 25 };
++        var city = new CityInfo("New Haven", "The Bountiful Harvest Inn", 1150168, 3503, 2574, 14, Map.Trammel);
++        (SkillName, byte)[] skills = [(SkillName.Swords, 30), (SkillName.Tactics, 30), (SkillName.Anatomy, 30), (SkillName.Healing, 30)];
++        var args = new CharacterCreatedEventArgs(ns, account, "Capped", false, 0, stats, city, skills, 0, 0, 0, 0, 0, 0, 0, Race.Human);
++        CharacterCreation.CharacterCreatedEvent(args);
++        var m = args.Mobile;
++        try
++        {
++            Assert.NotNull(m);
++            var cap = (int)Math.Round(ClusterFSkillCaps.IndividualSkillCap * 10);
++            // Every cap is the shard's already, so the first login's pass (ClusterFSkillCaps.OnLogin) changes none and sends
++            // no single-skill update: TazUO printed one "has increased by 30.0" line per starting skill.
++            for (var i = 0; i < m.Skills.Length; i++)
++            {
++                Assert.Equal(cap, m.Skills[i].CapFixedPoint);
++            }
++        }
++        finally
++        {
++            m?.Delete();
++            Accounts.Remove(account);
++        }
++    }
++
++    [Fact]
++    public void P802_TheClientsOwnChatRequestAtLoginIsNotAnswered()
++    {
++        using var p = new Player(HavenSpots.Start, tutorial: false);
++        TutorialWelcome.OnLogin(p.Pm);
++        Assert.True(TutorialWelcome.IsLoginChatRequest(p.Pm));
++        ShardTestClock.Advance(TimeSpan.FromSeconds(TutorialWelcome.QuietChatSeconds + 1));
++        Assert.False(TutorialWelcome.IsLoginChatRequest(p.Pm)); // a player pressing Chat later still hears it is off
++    }
++
++    [Fact]
++    public void P802_ALoginNoteGoesToTheSystemWindowWhenNotWaking()
++    {
++        using var p = new Player(HavenSpots.Start, tutorial: false);
++        Assert.False(TutorialWelcome.Note(p.Pm, ClusterFYoungPlayer.LoginMessage(TimeSpan.FromDays(3))));
++        Assert.Empty(TutorialWelcome.NotesOf(p.Pm));
++    }
++
++    // ---------------------------------------------------------------- 6
++
++    public static IEnumerable<object[]> MovedLessons() =>
++        TutorialWingTrials.Trades.Where(t => TutorialWingTrials.HavenPlace(t.Key) != null).Select(t => new object[] { t.Key });
++
++    [Theory]
++    [MemberData(nameof(MovedLessons))]
++    public void P802_AMovedLessonArmsInItsBuildingNotOnTheOpenYard(string key)
++    {
++        var place = TutorialWingTrials.HavenPlace(key)!;
++        Assert.Equal(new Point2D(place.Arm.X, place.Arm.Y), TutorialWingTrials.Trade(key)!.Place);
++        Assert.Contains(place.Where, TutorialWingTrials.FollowLine(key));
++        Assert.DoesNotContain("trades yard", TutorialStations.Find(key)!.Where);
++
++        using (var yard = new Player(new Point3D(TutorialWingTrials.TradesYard.X, TutorialWingTrials.TradesYard.Y, 0)))
++        {
++            ClusterFTutorial.RunStation(yard.Pm, TutorialStations.Find(key)!);
++            Assert.False(yard.Trial.Armed); // the old open yard is not its place any more
++        }
++
++        using var p = new Player(place.Arm);
++        var trial = Begin(p, key);
++        Assert.Equal(place.Short, TutorialWingTrials.PointAt(trial).Name);
++        Assert.All(trial.Props.Where(i => i.Parent == null), i => Assert.True(i.GetDistanceToSqrt(place.Arm) <= 3)); // a chest's purse is inside it
++    }
++
++    // ---------------------------------------------------------------- 3 and 8
++
++    [Fact]
++    public void P802_MysticismIsInTheMagerySchoolWithItsElvenAdjunctInstructor()
++    {
++        Assert.Equal(new Point3D(3653, 2477, 0), TutorialWingTrials.PlaceOf("magic.mysticism"));
++        Assert.Contains("Magery School", TutorialWingTrials.FollowLine("magic.mysticism"));
++        Assert.Contains("Magery School", TutorialStations.Find("magic.mysticism")!.Where);
++        Assert.Equal(TutorialWingTrials.MysticEchoSpot, TutorialWingTrials.TargetOf("magic.mysticism"));
++
++        TutorialWingTrials.FindTeacher("magic.mysticism")?.Delete();
++        TutorialWingTrials.FindTeacher("magic.necromancy")?.Delete();
++        Assert.Contains("placed 2", TutorialWingTrials.SeedTeachers(Map.Trammel, false));
++        var ilyra = TutorialWingTrials.FindTeacher("magic.mysticism")!;
++        try
++        {
++            Assert.Same(Race.Elf, ilyra.Race);
++            Assert.Equal(0x25E, ilyra.Body.BodyID);
++            Assert.Contains("adjunct instructor of Mysticism", ilyra.Title);
++            Assert.Equal(TutorialWingTrials.MysticInstructorSpot, ilyra.Location);
++            Assert.Equal(Direction.South, ilyra.Direction);
++            Assert.True(ilyra.IsInvulnerable);
++            ilyra.Direction = Direction.North; // an older world's, turned: the next seed puts her right
++            Assert.Contains("placed 0, moved 1", TutorialWingTrials.SeedTeachers(Map.Trammel, false));
++            Assert.Equal(Direction.South, ilyra.Direction);
++
++            using var p = new Player(TutorialWingTrials.PlaceOf("magic.mysticism"));
++            ilyra.OnDoubleClick(p.Pm);
++            Assert.Equal("magic.mysticism", p.Trial.Key);
++            Assert.True(p.Trial.Armed);
++            Assert.Equal(TutorialWingTrials.MysticEchoSpot, p.Trial.Target!.Location);
++        }
++        finally
++        {
++            TutorialWingTrials.FindTeacher("magic.mysticism")?.Delete();
++            TutorialWingTrials.FindTeacher("magic.necromancy")?.Delete();
++        }
++    }
++
++    [Fact]
++    public void P802_NecromancyLeadsToTheShrineWithItsKeeper()
++    {
++        Assert.Equal(new Point3D(3686, 2475, 0), TutorialWingTrials.PlaceOf("magic.necromancy"));
++        Assert.Contains("necromancer's shrine", TutorialWingTrials.FollowLine("magic.necromancy"));
++        Assert.Contains("necromancer's shrine", TutorialStations.Find("magic.necromancy")!.Where);
++        Assert.Equal(TutorialWingTrials.ShrineEchoSpot, TutorialWingTrials.TargetOf("magic.necromancy"));
++
++        // Before the school is learned, the lesson is a demonstration: at Rook it points to the shrine, in a window.
++        var mode = ClusterFSchoolGate.Mode;
++        ClusterFSchoolGate.Mode = "on";
++        try
++        {
++        using (var away = new Player(new Point3D(HavenSpots.Rook.X, HavenSpots.Rook.Y - 2, 0)))
++        {
++            ClusterFTutorial.RunStation(away.Pm, TutorialStations.Find("magic.necromancy")!);
++            var note = away.Pm.FindGump<TutorialNoteGump>();
++            Assert.NotNull(note);
++            Assert.Contains("necromancer's shrine", note.Text);
++            Assert.NotNull(away.Pm.QuestArrow);
++        }
++
++        // At the shrine: the demonstration, in the window.
++        using (var there = new Player(TutorialWingTrials.PlaceOf("magic.necromancy")))
++        {
++            ClusterFTutorial.RunStation(there.Pm, TutorialStations.Find("magic.necromancy")!);
++            Assert.Contains(TutorialWingTrials.PreviewLine(SkillName.Necromancy), there.Pm.FindGump<TutorialNoteGump>()!.Text);
++        }
++        }
++        finally
++        {
++            ClusterFSchoolGate.Mode = mode;
++        }
++
++        TutorialWingTrials.FindTeacher("magic.necromancy")?.Delete();
++        TutorialWingTrials.SeedTeachers(Map.Trammel, false);
++        var keeper = TutorialWingTrials.FindTeacher("magic.necromancy")!;
++        try
++        {
++            Assert.Equal(TutorialWingTrials.ShrineKeeperSpot, keeper.Location);
++            Assert.Equal(Direction.West, keeper.Direction);
++        }
++        finally
++        {
++            TutorialWingTrials.FindTeacher("magic.mysticism")?.Delete();
++            keeper.Delete();
++        }
++    }
++}
+diff --git a/server/tests/Tutorial/HavenNotes2WakeVerification.cs b/server/tests/Tutorial/HavenNotes2WakeVerification.cs
+new file mode 100644
+index 0000000..5547d94
+--- /dev/null
++++ b/server/tests/Tutorial/HavenNotes2WakeVerification.cs
+@@ -0,0 +1,98 @@
++// cc-P802 item 7 (Chase 11-07, a fresh character waking on the Wakening Isle: "Still too much going on in system messages.
++// it should all be gumps."): the wake is one window that holds the wake text, how to get up and the login notes, then the
++// first step. Notes: shard-migration notes/cc-P802-haven-notes-2.md.
++
++#nullable enable
++
++using System;
++using Server;
++using Server.Accounting;
++using Server.Gumps;
++using Server.LootBoxes;
++using Server.Misc;
++using Server.Mobiles;
++using Server.Network;
++using Server.Tests.Network;
++using Server.Tutorial;
++using Xunit;
++
++namespace ShatteredLegacy.Tests;
++
++[Collection("Sequential UOContent Tests")]
++public class HavenNotes2WakeVerification : IDisposable
++{
++    private readonly Func<PlayerMobile, int> _loopProvider = ClusterFLootBoxes.LoopProvider;
++
++    public HavenNotes2WakeVerification()
++    {
++        ShardTestClock.Arm();
++        ShardTestHost.EnsureAccounts();
++        ClusterFTutorial.Enabled = true;
++        FoldMaps.Configure();
++        TutorialCoreTrials.EnsureHooks();
++        TutorialFarm.EnsureHooks();
++        TutorialWake.EnsureHooks();
++        ClusterFLootBoxes.LoopProvider = ClusterFLoops.LoopOf;
++        TutorialWorld.IsleReady = () => true;
++        TutorialTestStart.ReleaseIdleCopies();
++    }
++
++    public void Dispose()
++    {
++        ClusterFLootBoxes.LoopProvider = _loopProvider;
++        TutorialTestStart.ReleaseIdleCopies();
++    }
++
++    [Fact]
++    public void P802_TheWakeIsOneWindowWithTheLoginNotesThenTheFirstStep()
++    {
++        var account = new Account($"p802w{Guid.NewGuid():N}"[..16], "p802-test-only");
++        var pm = new PlayerMobile { Player = true, Race = Race.Human, Body = 0x190, Name = "Ashore", RawStr = 60, RawDex = 60, RawInt = 60 };
++        pm.Hits = pm.HitsMax;
++        pm.AddItem(new Server.Items.Backpack());
++        account[0] = pm;
++        pm.MoveToWorld(HavenSpots.Start, HavenSpots.Map);
++        var ns = PacketTestUtilities.CreateTestNetState();
++        ns.Account = account;
++        pm.NetState = ns;
++        ns.Mobile = pm;
++        try
++        {
++            TutorialStart.Record(pm, TutorialStart.Choice.Isle);
++            TutorialTestStart.Begin(pm);
++            Assert.True(TutorialWake.IsLying(pm));
++
++            var gump = pm.FindGump<TutorialWelcomeGump>();
++            Assert.NotNull(gump);
++            Assert.Contains(TutorialWake.LyingLine, gump.Text);
++            Assert.Contains(TutorialWelcome.StandHint, gump.Text);
++
++            // The login's notes come into the window, not the System window, while they lie there.
++            var young = ClusterFYoungPlayer.LoginMessage(TimeSpan.FromDays(13));
++            Assert.True(TutorialWelcome.Note(pm, young));
++            Assert.True(TutorialWelcome.Note(pm, ClusterFTutorial.ContinuesLine));
++            Assert.True(TutorialWelcome.Note(pm, young)); // once only
++            gump = pm.FindGump<TutorialWelcomeGump>()!;
++            Assert.Equal(new[] { young, ClusterFTutorial.ContinuesLine }, gump.Notes);
++
++            // Up: the window turns to the first step.
++            TutorialWake.Stand(pm, true);
++            ShardTestClock.Advance(TimeSpan.FromSeconds(TutorialWake.DawnLight.Length + 1));
++            gump = pm.FindGump<TutorialWelcomeGump>()!;
++            Assert.Equal(TutorialWelcome.FirstStep, gump.Text);
++            Assert.Equal(2, gump.Notes.Count); // still there to read until closed
++        }
++        finally
++        {
++            TutorialCoreTrials.Cancel(pm);
++            TutorialWake.Stand(pm, true);
++            TutorialWelcome.Forget(pm);
++            ClusterFFanfare.FlushAll();
++            pm.NetState = null;
++            ns.Mobile = null;
++            ns.Dispose();
++            pm.Delete();
++            Accounts.Remove(account);
++        }
++    }
++}
