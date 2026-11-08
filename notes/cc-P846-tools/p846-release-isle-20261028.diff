@@ -1,0 +1,779 @@
+diff --git a/player-package/vendor/shattered-legacy-map/SOURCE.txt b/player-package/vendor/shattered-legacy-map/SOURCE.txt
+index 0e08248..6748550 100644
+--- a/player-package/vendor/shattered-legacy-map/SOURCE.txt
++++ b/player-package/vendor/shattered-legacy-map/SOURCE.txt
+@@ -35,6 +35,13 @@ trammel.mapops   facet 1 (Trammel): the Rootdeep Burrows (x 5136-5247, y 1128-12
+                  west eave column of the bank (x 6758, y 3973-3980) and the lodge (x 6778, y 3996-4003),
+                  where it stood over the roof's west slope at Z 19 and drew as grey squares. 16 S+ lines
+                  gone, no B line changed; the driver (notes/cc-P662-tools/build_isle.py) skips that column.
++                 cc-P818, 2026-11-07 (Chase 11-07: the isle's League lodge hides its door): the lodge's door
++                 moved from its north wall (6782,3995, now a wall piece 0x0058) to its east wall (6787,4000,
++                 the opening), with two braziers 0x0E31 either side outside, a walk of sandstone bricks
++                 0x0525-0x0528 from the road (6789,3990-4000, 6788,4000), the inside brazier gone, a
++                 candelabra off a window and a banner off the door. Rebuilt by the isle driver
++                 (notes/cc-P662-tools/build_isle.py, isle-sets.json); 12 S+ lines more, 5 changed, no L or
++                 B line changed (notes/cc-P818-tools/patch_lines818.py on this release copy).
+ 
+ Format: shard-migration scripts/mapbuild/mapops.py (one line per changed land cell, L x y tile z; per static added,
+ S+ x y z id hue; per EA static removed, S- x y z id hue; B lines fingerprint EA's blocks so the applier can say
+diff --git a/player-package/vendor/shattered-legacy-map/trammel.mapops b/player-package/vendor/shattered-legacy-map/trammel.mapops
+index 3d26124..a545cca 100644
+--- a/player-package/vendor/shattered-legacy-map/trammel.mapops
++++ b/player-package/vendor/shattered-legacy-map/trammel.mapops
+@@ -55725,7 +55725,7 @@ S+ 6782 3977 0 3237 0
+ S+ 6782 3978 0 6009 0
+ S+ 6782 3983 0 6006 0
+ S+ 6782 3984 0 3515 0
+-S+ 6782 3995 0 1193 0
++S+ 6782 3995 0 88 0
+ S+ 6782 3996 0 1193 0
+ S+ 6782 3996 20 1180 0
+ S+ 6782 3996 31 1476 0
+@@ -55903,14 +55903,13 @@ S+ 6786 3997 0 1193 0
+ S+ 6786 3997 20 1180 0
+ S+ 6786 3997 25 1475 0
+ S+ 6786 3998 0 1193 0
+-S+ 6786 3998 0 2854 0
+ S+ 6786 3998 20 1180 0
+ S+ 6786 3998 25 1475 0
+ S+ 6786 3999 0 1193 0
++S+ 6786 3999 0 2854 0
+ S+ 6786 3999 20 1180 0
+ S+ 6786 3999 25 1475 0
+ S+ 6786 4000 0 1193 0
+-S+ 6786 4000 0 3633 0
+ S+ 6786 4000 20 1180 0
+ S+ 6786 4000 25 1475 0
+ S+ 6786 4001 0 1193 0
+@@ -55949,7 +55948,6 @@ S+ 6787 3999 0 87 0
+ S+ 6787 3999 0 1193 0
+ S+ 6787 3999 20 1180 0
+ S+ 6787 3999 22 1475 0
+-S+ 6787 4000 0 87 0
+ S+ 6787 4000 0 1193 0
+ S+ 6787 4000 20 1180 0
+ S+ 6787 4000 22 1475 0
+@@ -55972,10 +55970,13 @@ S+ 6788 3996 19 1475 0
+ S+ 6788 3997 8 5513 0
+ S+ 6788 3997 19 1475 0
+ S+ 6788 3998 19 1475 0
++S+ 6788 3999 0 3633 0
+ S+ 6788 3999 19 1475 0
+-S+ 6788 4000 8 5513 0
++S+ 6788 4000 0 1317 0
+ S+ 6788 4000 19 1475 0
++S+ 6788 4001 0 3633 0
+ S+ 6788 4001 19 1475 0
++S+ 6788 4002 8 5513 0
+ S+ 6788 4002 19 1475 0
+ S+ 6788 4003 19 1475 0
+ S+ 6788 4004 19 1475 0
+@@ -55985,6 +55986,17 @@ S+ 6788 4009 -5 6039 0
+ S+ 6789 3967 -5 6049 0
+ S+ 6789 3968 -5 6045 0
+ S+ 6789 3969 -5 6055 0
++S+ 6789 3990 0 1320 0
++S+ 6789 3991 0 1317 0
++S+ 6789 3992 0 1318 0
++S+ 6789 3993 0 1319 0
++S+ 6789 3994 0 1320 0
++S+ 6789 3995 0 1317 0
++S+ 6789 3996 0 1318 0
++S+ 6789 3997 0 1319 0
++S+ 6789 3998 0 1320 0
++S+ 6789 3999 0 1317 0
++S+ 6789 4000 0 1318 0
+ S+ 6789 4007 -5 6060 0
+ S+ 6789 4008 -5 6039 0
+ S+ 6790 3966 -5 6039 0
+diff --git a/server/customizations/Tutorial/TutorialCorePlacement.cs b/server/customizations/Tutorial/TutorialCorePlacement.cs
+index 168d9ec..63febed 100644
+--- a/server/customizations/Tutorial/TutorialCorePlacement.cs
++++ b/server/customizations/Tutorial/TutorialCorePlacement.cs
+@@ -89,7 +89,7 @@ public static class TutorialCorePlacement
+         // east end, in front of the door's side, and read as clutter. North of the road where it passes the bank's
+         // south-west corner, on grass, off the apron and the door's line (the road runs y 3983-3986 below it).
+         "core.banking" => new Point2D(6757, 3982),
+-        "core.league" => new Point2D(6782, 3989),
++        "core.league" => new Point2D(6789, 3984), // cc-P818: north of the road where the walk to the east door leaves it
+         "core.loop" => new Point2D(6794, 3981),
+         "core.travel" => new Point2D(6811, 3988),
+         _ => new Point2D(MarkerSpot(key).X, MarkerSpot(key).Y)
+@@ -133,9 +133,33 @@ public static class TutorialCorePlacement
+     // lesson sign (6782,3989), as the chat lesson's two signs stand. Two tiles east of the door, outside the north wall
+     // (6784,3994), it stood behind the lodge's north eave from the client's camera and could not be seen (P751's shot);
+     // and a wall hanger (0x0B98) hangs only from a wall to its north, so none fits outside a north wall.
+-    public static readonly Point2D LodgeSign = new(6781, 3989);
++    // cc-P818: the door moved to the east wall (TutorialWorld.LodgeDoor 6787,4000) and a paved walk runs from the road
++    // (6789,3989) south to it; the name sign stands north of the road at the walk's mouth, beside the League lesson sign
++    // (6789,3984), as before (build_isle.signs_off_path: road within 3 south, none north or beside). It stood at 6781,3989,
++    // where the old walk to the north door left the road; an existing world's sign is moved (MoveLodgeSign).
++    public static readonly Point2D LodgeSign = new(6788, 3984);
++    public static readonly Point2D OldLodgeSign = new(6781, 3989);
++
++    /// <summary>cc-P818: where the walk to the lodge's east door leaves the road; the League lesson's sign and the
++    /// lodge's name sign stand just north of it, as the travel lesson's stands north of DockRoadEnd.</summary>
++    public static readonly Point2D LodgeWalkMouth = new(6789, 3989);
++
++    /// <summary>
++    /// cc-P818: the lodge's door before, in its north wall; an existing world's door there is taken away. Kept here, not in
++    /// TutorialWorld, whose every Point2D the isle driver (build_isle.server_items) keeps clear of walls.
++    /// </summary>
++    public static readonly Point2D OldLodgeDoor = new(6782, 3995);
+     public const string LodgeSignName = "The League lodge";
+ 
++    /// <summary>cc-P818: the lodge's floor (inside its walls); the League lesson's arrow points at the door until the
++    /// trainee stands in here, then at Elara.</summary>
++    public static readonly Rectangle2D LodgeFloor = new(new Point2D(6778, 3996), new Point2D(6787, 4003));
++
++    public static bool InLodge(Point3D p) => LodgeFloor.Contains(new Point2D(p.X, p.Y));
++
++    /// <summary>cc-P818: Elara faces the east door, where trainees come in.</summary>
++    public const Direction ElaraFacing = Direction.East;
++
+     // cc-P718 item 5: the clothes stop's table, beside the rack, where each trainee's cloak waits.
+     public static readonly Point2D ClothesTable = new(TutorialWorld.Rack.X - 1, TutorialWorld.Rack.Y - 2);
+     public const int TableId = 0x0B8F; // "table": a surface 6 high
+@@ -231,25 +255,76 @@ public static class TutorialCorePlacement
+     }
+ 
+     /// <summary>
+-    /// The practice bank's and the lodge's doors, both in an east-west wall (south and north walls). cc-P720: hung
+-    /// WestCCW, so open the door folds back into the wall line (pinned offset -1, 0); WestCW swung it out past the wall
+-    /// (Chase 10-28).
++    /// The practice bank's door, in an east-west wall (its south wall). cc-P720: hung WestCCW, so open the door folds back
++    /// into the wall line (pinned offset -1, 0); WestCW swung it out past the wall (Chase 10-28).
+     /// </summary>
+     public static BaseDoor MakeDoor() => new DarkWoodDoor(DoorFacing.WestCCW);
+ 
+     public const int DoorClosedId = 0x06A9; // DarkWoodDoor WestCCW, closed
+ 
+-    /// <summary>cc-P720: a door at <paramref name="spot"/> hung another way (before cc-P720), or null.</summary>
+-    private static BaseDoor? OldDoor(Map map, Point3D spot)
++    /// <summary>
++    /// cc-P818: the lodge's door, in a north-south wall (its east wall). Hung NorthCW, so open it folds north into the
++    /// wall line (pinned offset 0, -1), as WestCCW does in an east-west wall: not out across the walk, not onto the carpet.
++    /// </summary>
++    public static BaseDoor MakeLodgeDoor() => new DarkWoodDoor(DoorFacing.NorthCW);
++
++    public const int LodgeDoorClosedId = 0x06B3; // DarkWoodDoor NorthCW, closed (0x06A5 + 2 x 7)
++
++    /// <summary>cc-P720: a door at <paramref name="spot"/> hung another way than <paramref name="closedId"/>, or null.</summary>
++    private static BaseDoor? OldDoor(Map map, Point3D spot, int closedId)
+     {
+         foreach (var door in map.GetItemsInRange<BaseDoor>(spot, 2))
+         {
+             var closed = door.Open ? new Point3D(door.X - door.Offset.X, door.Y - door.Offset.Y, door.Z - door.Offset.Z) : door.Location;
+-            if (!door.Deleted && closed == spot && door.ClosedId != DoorClosedId) { return door; }
++            if (!door.Deleted && closed == spot && door.ClosedId != closedId) { return door; }
+         }
+         return null;
+     }
+ 
++    /// <summary>
++    /// cc-P818: takes away the lodge's old north door (OldLodgeDoor), which an existing world still has; the
++    /// map's wall now stands on its tile. Matched by its closed tile's x and y. Returns how many.
++    /// </summary>
++    public static int RemoveOldLodgeDoor(Map map)
++    {
++        var old = new List<BaseDoor>();
++        foreach (var door in map.GetItemsInRange<BaseDoor>(TutorialWorld.Ground(map, OldLodgeDoor), 2))
++        {
++            var closed = OldSpot(door);
++            if (!door.Deleted && closed.X == OldLodgeDoor.X && closed.Y == OldLodgeDoor.Y) { old.Add(door); }
++        }
++        foreach (var d in old) { d.Delete(); }
++        return old.Count;
++    }
++
++    /// <summary>
++    /// cc-P818: moves the lodge's name sign from its old spot by the road's dip (OldLodgeSign) to the east walk's mouth;
++    /// one sign only. Returns how many it moved or removed.
++    /// </summary>
++    public static int MoveLodgeSign(Map map)
++    {
++        var old = new List<Item>();
++        foreach (var i in map.GetItemsInRange<Static>(TutorialWorld.Ground(map, OldLodgeSign), 0))
++        { if (!i.Deleted && i.ItemID == SignpostId && i.Name == LodgeSignName) { old.Add(i); } }
++        if (HasItem<Static>(map, TutorialWorld.Ground(map, LodgeSign), i => i.ItemID == SignpostId && i.Name == LodgeSignName))
++        {
++            foreach (var i in old) { i.Delete(); }
++            return old.Count;
++        }
++        foreach (var i in old.Take(1)) { i.MoveToWorld(TutorialWorld.Ground(map, LodgeSign), map); }
++        foreach (var i in old.Skip(1)) { i.Delete(); }
++        return old.Count;
++    }
++
++    /// <summary>cc-P818: Elara turned to the east door on an existing world (she faced the old north door). Returns 1 if turned.</summary>
++    public static int TurnElara(Map map)
++    {
++        var elara = FindMobile(map, typeof(LeagueRegistrar), TutorialWorld.Ground(map, TutorialWorld.Elara));
++        if (elara == null || elara.Direction == ElaraFacing) { return 0; }
++        elara.Direction = ElaraFacing;
++        return 1;
++    }
++
+     /// <summary>
+     /// cc-P720: moves every lesson marker still on its stop (a rune, before cc-P720) to its sign spot. cc-P741: every
+     /// lesson marker anywhere on the isle that is not at its sign spot (the signs moved north of their paths), and one
+@@ -298,6 +373,7 @@ public static class TutorialCorePlacement
+         if (!dryRun) { TutorialFarm.MoveFromOldLayout(map); } // cc-P741: Tobin moved before he is looked for
+         if (!dryRun) { TutorialBankerVoice.FaceCounter(map); } // cc-P817: an already placed Merrin turned to his counter
+         if (!dryRun) { MoveOldProps(map); } // cc-P817: the practice bank box moved to the back wall
++        if (!dryRun) { RemoveOldLodgeDoor(map); MoveLodgeSign(map); } // cc-P818: the lodge's door is in its east wall now
+         var markers = TutorialStations.Core.Where(s => FindMarker(s.Key, map) == null).ToArray();
+         var mobiles = new (Type Type, Point3D Spot, Func<Mobile> Make)[]
+         {
+@@ -305,7 +381,7 @@ public static class TutorialCorePlacement
+             (typeof(TutorialDeathEcho), DeathSpot, () => new TutorialDeathEcho()),
+             (typeof(TutorialHealer), HealerSpot, () => new TutorialHealer()),
+             (typeof(Banker), BankerSpot, () => new Banker { Name = "Merrin", CantWalk = true, Direction = TutorialBankerVoice.Facing }), // cc-P817: facing his counter's customer side
+-            (typeof(LeagueRegistrar), ElaraSpot, () => new LeagueRegistrar { CantWalk = true }),
++            (typeof(LeagueRegistrar), ElaraSpot, () => new LeagueRegistrar { CantWalk = true, Direction = ElaraFacing }), // cc-P818
+             (typeof(TutorialVeterinarian), FarmVetSpot, () => new TutorialVeterinarian { Name = "Tobin", Direction = Direction.East })
+         }.Where(row => FindMobile(map, row.Type, row.Spot) == null).ToList();
+         // cc-P743: an older world's Rook (elsewhere in town) is moved to his bench below, not doubled.
+@@ -315,8 +391,13 @@ public static class TutorialCorePlacement
+         var gateMissing = !HasItem<TutorialTravelGate>(map, GateSpot);
+         var goldMissing = !HasItem<TutorialWalkMark>(map, SecondMark);
+         var blueMissing = !HasItem<TutorialBlueWalkTile>(map, FirstMark);
+-        var doorSpots = new[] { Ground(TutorialWorld.BankDoor), Ground(TutorialWorld.LodgeDoor) };
+-        var rehung = doorSpots.Select(p => OldDoor(map, p)).Where(d => d != null).ToArray(); // cc-P720
++        // cc-P818: each door with its own hanging (the lodge's is in a north-south wall now)
++        var doorKinds = new (Point3D Spot, int ClosedId, Func<BaseDoor> Make)[]
++        {
++            (Ground(TutorialWorld.BankDoor), DoorClosedId, MakeDoor), (Ground(TutorialWorld.LodgeDoor), LodgeDoorClosedId, MakeLodgeDoor)
++        };
++        var doorSpots = doorKinds.Select(k => k.Spot).ToArray();
++        var rehung = doorKinds.Select(k => OldDoor(map, k.Spot, k.ClosedId)).Where(d => d != null).ToArray(); // cc-P720
+         var doors = doorSpots.Where(p => !HasDoor(map, p) || rehung.Any(d => d!.Map == map && OldSpot(d) == p)).ToArray();
+         var boardMissing = !HasItem<TutorialLeagueBoard>(map, Ground(LeagueBoard));
+         var props = Props.Where(p => !HasItem<Item>(map, Ground(p.At), i => i.ItemID == p.Id && i.Name == p.Name)).ToArray();
+@@ -357,7 +438,8 @@ public static class TutorialCorePlacement
+             if (blueMissing) { new TutorialBlueWalkTile().MoveToWorld(FirstMark, map); }
+             if (goldMissing) { new TutorialWalkMark().MoveToWorld(SecondMark, map); }
+             foreach (var d in rehung) { d!.Delete(); } // cc-P720: rehung WestCCW
+-            foreach (var spot in doors) { MakeDoor().MoveToWorld(spot, map); }
++            foreach (var spot in doors) { doorKinds.First(k => k.Spot == spot).Make().MoveToWorld(spot, map); }
++            TurnElara(map); // cc-P818
+             if (boardMissing) { new TutorialLeagueBoard().MoveToWorld(Ground(LeagueBoard), map); }
+             RemoveOldSignpost(map); // cc-P718
+             foreach (var (id, at, name) in props) { new Static(id) { Name = name }.MoveToWorld(Ground(at), map); }
+diff --git a/server/customizations/Tutorial/TutorialCoreTrials.cs b/server/customizations/Tutorial/TutorialCoreTrials.cs
+index f07ab9d..0cc184a 100644
+--- a/server/customizations/Tutorial/TutorialCoreTrials.cs
++++ b/server/customizations/Tutorial/TutorialCoreTrials.cs
+@@ -176,7 +176,8 @@ public static class TutorialCoreTrials
+         "core.death" => "Follow the arrow into the training yard to the pale gray rat, double-click it, and click Ready. After you die, double-click Sera beside it and click Resurrect to return to life.",
+         "core.banking" => "Follow the arrow through the practice bank's door in the trades square to Merrin the banker and say 'bank' to open your bank box. Drag the blue practice token, a small blue pile of coins in your backpack, into that box.",
+         // cc-P769 item 5: what to do with Elara, exactly (her window opens and the lesson is done).
+-        "core.league" => "Follow the arrow to the League lodge and double-click the door on its north side to enter. Double-click Elara Voss (or click her once and choose Talk): her League window opens and this lesson is done. In that window, click Join the League to join now, or the X to close it; you can join later in New Haven.",
++        // cc-P818: the door is in the lodge's east wall now, between two braziers at the end of a paved walk from the road.
++        "core.league" => "Follow the arrow to the League lodge. Its door is on the east side, facing you as you come along the road: take the paved walk south from the road, between the two fires, and double-click the door to enter. Double-click Elara Voss (or click her once and choose Talk): her League window opens and this lesson is done. In that window, click Join the League to join now, or the X to close it; you can join later in New Haven.",
+         "core.loop" => "Follow the arrow up the knoll to the standing stones and double-click the lesson's signpost there. Watch the vision; it lasts about a minute, holds you still, and will not change your character.",
+         "core.travel" => "Follow the arrow to the end of the dock and walk into the shimmering blue moongate, or double-click it. It takes you, and your pet, to Rook on his bench by the Bountiful Harvest Inn in New Haven.",
+         _ => "Double-click Tamsin on the Wakening Isle's beach to choose this lesson."
+@@ -295,9 +296,37 @@ public static class TutorialCoreTrials
+     }
+ 
+     // cc-P720 item 4: what the arrow is pointing at, named.
+-    private static string ArrowLabel(Trial t) => t.Station.Key == "core.banking"
+-        ? TutorialCorePlacement.InBank(t.Player.Location) ? "Merrin the banker" : "the practice bank's door"
+-        : t.Station.Title;
++    private static string ArrowLabel(Trial t) => t.Station.Key switch
++    {
++        "core.banking" => TutorialCorePlacement.InBank(t.Player.Location) ? "Merrin the banker" : "the practice bank's door",
++        "core.league" => TutorialCorePlacement.InLodge(t.Player.Location) ? "Elara Voss" : LodgeDoorLabel, // cc-P818
++        _ => t.Station.Title
++    };
++
++    /// <summary>cc-P818: what the League lesson's arrow names outside the lodge.</summary>
++    public const string LodgeDoorLabel = "the League lodge's door, on its east side";
++
++    /// <summary>cc-P818: what Elara calls to a trainee outside the lodge on the League lesson, every 25 seconds.</summary>
++    public const string ElaraDoorLine = "In here! The lodge door is on the east side, between the two fires.";
++
++    /// <summary>cc-P818: how near the lodge (tiles from Elara) a trainee outside hears her call.</summary>
++    public const int ElaraCallRange = 12;
++
++    /// <summary>
++    /// cc-P818 (Chase 11-07: "something for player to know where door is"): on the League lesson, a trainee outside the
++    /// lodge and near it hears Elara say where the door is, to them alone. Returns true when she spoke.
++    /// </summary>
++    public static bool CallFromLodge(PlayerMobile pm)
++    {
++        var map = TutorialWorld.MapOf(pm);
++        if (map == null || !pm.Alive || TutorialCorePlacement.InLodge(pm.Location)) { return false; }
++        Mobile? elara = null;
++        foreach (var m in map.GetMobilesInRange(TutorialWorld.Ground(map, TutorialWorld.Elara), 2))
++        { if (m is LeagueRegistrar { Deleted: false }) { elara = m; break; } }
++        if (elara == null || !pm.InRange(elara.Location, ElaraCallRange)) { return false; }
++        elara.SayTo(pm, ElaraDoorLine);
++        return true;
++    }
+ 
+     private static Point3D Destination(Trial t) => t.Station.Key switch
+     {
+@@ -305,6 +334,8 @@ public static class TutorialCoreTrials
+         "core.death" => t.Progress.Step == 0 ? TutorialCorePlacement.DeathSpot : TutorialCorePlacement.HealerSpot,
+         // cc-P720 item 4: the bank's door until the trainee is inside, then Merrin
+         "core.banking" when !TutorialCorePlacement.InBank(t.Player.Location) => TutorialWorld.Ground(TutorialWorld.MapOf(t.Player) ?? TutorialWorld.Isle, TutorialWorld.BankDoor),
++        // cc-P818: the lodge's east door until the trainee is inside, then Elara
++        "core.league" when !TutorialCorePlacement.InLodge(t.Player.Location) => TutorialWorld.Ground(TutorialWorld.MapOf(t.Player) ?? TutorialWorld.Isle, TutorialWorld.LodgeDoor),
+         _ => TutorialCorePlacement.Spot(t.Station.Key)
+     };
+ 
+@@ -379,6 +410,14 @@ public static class TutorialCoreTrials
+             case "core.banking" when pm.Alive && trial.Supply?.IsChildOf(pm.FindBankNoCreate()) == true:
+                 Observe(pm, TutorialAction.Deposited);
+                 break;
++            case "core.league" when Destination(trial) != trial.ArrowAt:
++                // cc-P818: through the east door, the arrow turns to Elara (and back to the door on leaving)
++                Point(pm, Destination(trial), ArrowLabel(trial));
++                trial.ArrowAt = Destination(trial);
++                break;
++            case "core.league" when trial.Ticks % 100 == 4:
++                CallFromLodge(pm); // cc-P818: Elara says where the door is, every 25 s, while the trainee is outside
++                break;
+             case "core.banking" when Destination(trial) != trial.ArrowAt:
+                 // cc-P720 item 4: through the door, the arrow turns to Merrin (and back to the door on leaving)
+                 Point(pm, Destination(trial), ArrowLabel(trial));
+diff --git a/server/customizations/Tutorial/TutorialWorld.cs b/server/customizations/Tutorial/TutorialWorld.cs
+index bcb538d..3a16f22 100644
+--- a/server/customizations/Tutorial/TutorialWorld.cs
++++ b/server/customizations/Tutorial/TutorialWorld.cs
+@@ -67,9 +67,14 @@ public static class TutorialWorld
+     public static readonly Point2D BankDoor = new(6762, 3980);
+     public static readonly Point2D Banker = new(6762, 3976);
+     public static readonly Point2D BankBox = new(6760, 3975);
+-    /// <summary>Stop 8, the League lodge's door (north wall); Elara inside.</summary>
+-    public static readonly Point2D LodgeStop = new(6782, 3994);
+-    public static readonly Point2D LodgeDoor = new(6782, 3995);
++    /// <summary>
++    /// Stop 8, the League lodge's door; Elara inside. cc-P818 (Chase 11-07: "league building needs either to rotate so
++    /// player can see door or something for player to know where door is"): the door moved from the north wall (6782,3995),
++    /// which the client's camera (from the south-east) never shows, to the east wall, which faces the road's east stretch
++    /// and the camera. A paved walk runs from the road (6789,3989) south to it, between two braziers.
++    /// </summary>
++    public static readonly Point2D LodgeStop = new(6789, 4000);
++    public static readonly Point2D LodgeDoor = new(6787, 4000);
+     public static readonly Point2D Elara = new(6782, 3999);
+     /// <summary>Stop 9, the standing stones on the knoll (the ring's gap faces the road).</summary>
+     public static readonly Point2D Stones = new(6794, 3982);
+diff --git a/server/tests/Tutorial/TutorialIsleReviewFixesVerification.cs b/server/tests/Tutorial/TutorialIsleReviewFixesVerification.cs
+index f48ce20..067667a 100644
+--- a/server/tests/Tutorial/TutorialIsleReviewFixesVerification.cs
++++ b/server/tests/Tutorial/TutorialIsleReviewFixesVerification.cs
+@@ -9,7 +9,8 @@
+ //   3. The farmhouse door is hung WestCCW, so open it folds along the south wall; a door hung WestCW before is rehung
+ //      in place on an existing world, once (guide 2.4).
+ //   4. The League lodge has its own name sign on its door's side, north of the road beside the League lesson sign, where
+-//      the camera shows it, off the door's approach; an existing world gets it once (guide 1.1, 2.5, 6).
++//      the camera shows it, off the door's approach; an existing world gets it once (guide 1.1, 2.5, 6). cc-P818: the
++//      door moved to the east wall; the sign stands where the walk to it leaves the road.
+ 
+ #nullable enable
+ 
+@@ -160,16 +161,16 @@ public class TutorialIsleReviewFixesVerification : IDisposable
+     {
+         var door = TutorialWorld.LodgeDoor;
+         var sign = TutorialCorePlacement.LodgeSign;
+-        // on the door's side of the lodge (north of its north wall), within a few tiles of the door, out of the eave's
+-        // shadow from the camera (more than 2 tiles out: at 6784,3994 the north eave hid it), beside the League sign
+-        Assert.InRange(door.Y - sign.Y, 3, 6);
+-        Assert.InRange(sign.X - door.X, -2, 2);
++        // cc-P818: the door moved to the east wall; the sign stands north of the road where the walk to it leaves the road
++        // (x 6789), out of the eave's shadow from the camera, beside the League sign
++        Assert.True(sign.Y < door.Y);
++        Assert.InRange(sign.X - TutorialWorld.LodgeStop.X, -2, 2);
+         var league = TutorialCorePlacement.SignPoint("core.league");
+         Assert.Equal(1, Math.Max(Math.Abs(league.X - sign.X), Math.Abs(league.Y - sign.Y)));
+         Assert.Contains(TutorialCorePlacement.Props, p => p.At == sign && p.Id == TutorialCorePlacement.SignpostId &&
+                                                           p.Name == TutorialCorePlacement.LodgeSignName);
+         // the door's two-tile approach is clear of signs (P722: a signpost in front of a door made TazUO slide)
+-        Assert.DoesNotContain(TutorialCorePlacement.Props, p => p.At.X == door.X && p.At.Y < door.Y && p.At.Y >= door.Y - 2);
++        Assert.DoesNotContain(TutorialCorePlacement.Props, p => p.At.Y == door.Y && p.At.X > door.X && p.At.X <= door.X + 2);
+ 
+         bool IsSign(Item i) => i.ItemID == TutorialCorePlacement.SignpostId && i.Name == TutorialCorePlacement.LodgeSignName;
+         var map = SeededCopy();
+diff --git a/server/tests/Tutorial/TutorialIsleWalkFixes2Verification.cs b/server/tests/Tutorial/TutorialIsleWalkFixes2Verification.cs
+index cb7154b..880ec09 100644
+--- a/server/tests/Tutorial/TutorialIsleWalkFixes2Verification.cs
++++ b/server/tests/Tutorial/TutorialIsleWalkFixes2Verification.cs
+@@ -283,7 +283,13 @@ public class TutorialIsleWalkFixes2Verification : IDisposable
+             Assert.NotEqual((at.X, at.Y), (sign.X, sign.Y)); // beside the stop, never on it
+             // cc-P741: north of its path, which puts a sign across the road from a stop south of it (the yard's, 6
+             // north), and the travel lesson's where the road meets the dock (TutorialCorePlacement.DockRoadEnd)
+-            var near = key == "core.travel" ? TutorialCorePlacement.DockRoadEnd : new Point2D(at.X, at.Y);
++            // cc-P818: and the League lesson's where the walk to the lodge's east door leaves the road
++            var near = key switch
++            {
++                "core.travel" => TutorialCorePlacement.DockRoadEnd,
++                "core.league" => TutorialCorePlacement.LodgeWalkMouth,
++                _ => new Point2D(at.X, at.Y)
++            };
+             Assert.True(Math.Max(Math.Abs(near.X - sign.X), Math.Abs(near.Y - sign.Y)) <= 6, $"{key}'s sign at {sign.Location}");
+         }
+ 
+@@ -328,13 +334,18 @@ public class TutorialIsleWalkFixes2Verification : IDisposable
+ 
+         Seed();
+         Assert.True(old.Deleted);
+-        foreach (var spot in new[] { bankDoor, TutorialWorld.Ground(TutorialWorld.LodgeDoor) })
++        // cc-P818: the bank's door is in an east-west wall (folds west); the lodge's moved to its east wall (folds north)
++        foreach (var (spot, closedId, dx, dy) in new[]
++                 {
++                     (bankDoor, TutorialCorePlacement.DoorClosedId, -1, 0),
++                     (TutorialWorld.Ground(TutorialWorld.LodgeDoor), TutorialCorePlacement.LodgeDoorClosedId, 0, -1)
++                 })
+         {
+             var door = Assert.Single(ItemsAt<BaseDoor>(spot));
+-            Assert.Equal(TutorialCorePlacement.DoorClosedId, door.ClosedId);
++            Assert.Equal(closedId, door.ClosedId);
+             door.Open = true;
+-            Assert.Equal(spot.Y, door.Y); // open, it stays in the wall's line
+-            Assert.Equal(spot.X - 1, door.X);
++            Assert.Equal(spot.Y + dy, door.Y); // open, it stays in the wall's line
++            Assert.Equal(spot.X + dx, door.X);
+             door.Open = false;
+         }
+ 
+diff --git a/server/tests/Tutorial/TutorialLodgeDoorVerification.cs b/server/tests/Tutorial/TutorialLodgeDoorVerification.cs
+new file mode 100644
+index 0000000..f2f76e1
+--- /dev/null
++++ b/server/tests/Tutorial/TutorialLodgeDoorVerification.cs
+@@ -0,0 +1,332 @@
++// cc-P818 item 1 (Chase 11-07: "tutorial island league building needs either to rotate so player can see door or
++// something for player to know where door is"). Notes: shard-migration notes/cc-P818-isle-notes-2.md; the guide is
++// notes/guides/building-and-decorating.md. The lodge's door moved from its north wall, which the client's camera (from
++// the south-east) never shows, to its east wall, which faces the road's east stretch and the camera; a walk of sandstone
++// bricks runs to it from the road between two braziers (map statics, the isle driver), the lodge's two signs stand north
++// of the road at the walk's mouth, the lesson says the door is on the east side and points the arrow at it, and Elara
++// calls where it is to a trainee outside.
++//
++// Facts, each watched failing first on main's code (red.log):
++//   1. The door is in the east wall, hung NorthCW, so open it folds north along the wall line (guide 2.4).
++//   2. An existing world's north door is taken away and the east door hung, once.
++//   3. The lodge's name sign and the League lesson sign stand north of the road where the walk leaves it; an existing
++//      world's name sign is moved, not doubled.
++//   4. Elara faces the east door; an existing world's Elara is turned.
++//   5. The lesson names the east side, and its arrow points at the door until the trainee is inside, then at Elara.
++//   6. Elara says where the door is to a trainee outside the lodge and near it, and not to one inside.
++
++#nullable enable
++
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using Server;
++using Server.Accounting;
++using Server.Items;
++using Server.LootBoxes;
++using Server.Misc;
++using Server.Mobiles;
++using Server.Network;
++using Server.Tests.Network;
++using Server.Tutorial;
++using Xunit;
++
++namespace ShatteredLegacy.Tests;
++
++[Collection("Sequential UOContent Tests")]
++public class TutorialLodgeDoorVerification : IDisposable
++{
++    private readonly Func<Point3D, Map, bool> _fits = TutorialCorePlacement.FitsOn;
++    private readonly Func<bool> _testShard = TutorialCorePlacement.IsTestShard;
++    private readonly Func<bool> _farmTestShard = TutorialFarm.IsTestShard;
++    private readonly Func<bool> _patched = TutorialFarm.MapPatched;
++    private readonly HashSet<Item> _items = new(World.Items.Values);
++    private readonly HashSet<Mobile> _mobiles = new(World.Mobiles.Values);
++
++    public TutorialLodgeDoorVerification()
++    {
++        ShardTestClock.Arm();
++        ShardTestHost.EnsureAccounts();
++        if (ClusterFAchievementSystem.Definitions.Count == 0)
++        {
++            ClusterFAchievementSystem.Configure();
++        }
++
++        ClusterFTutorial.Enabled = true;
++        ClusterFTutorial.SkipCountsAsGraduation = true;
++        FoldMaps.Configure();
++        TutorialCoreTrials.EnsureHooks();
++        TutorialFarm.EnsureHooks();
++        TutorialCorePlacement.IsTestShard = () => true;
++        TutorialCorePlacement.FitsOn = (_, _) => true;
++        TutorialFarm.IsTestShard = () => true;
++        TutorialFarm.MapPatched = () => true;
++    }
++
++    public void Dispose()
++    {
++        TutorialCorePlacement.FitsOn = _fits;
++        TutorialCorePlacement.IsTestShard = _testShard;
++        TutorialFarm.IsTestShard = _farmTestShard;
++        TutorialFarm.MapPatched = _patched;
++        foreach (var item in World.Items.Values.ToArray())
++        {
++            if (!_items.Contains(item))
++            {
++                item.Delete();
++            }
++        }
++
++        foreach (var mobile in World.Mobiles.Values.ToArray())
++        {
++            if (!_mobiles.Contains(mobile))
++            {
++                mobile.Delete();
++            }
++        }
++    }
++
++    private sealed class Player : IDisposable
++    {
++        public readonly Account Account = new($"p818{Guid.NewGuid():N}"[..16], "p818-test-only");
++        public readonly PlayerMobile Pm;
++        public readonly NetState Ns;
++
++        public Player()
++        {
++            Pm = new PlayerMobile { Player = true, Race = Race.Human, Body = 0x190, Name = "Walker", RawStr = 60, RawDex = 60, RawInt = 60 };
++            Pm.Hits = Pm.HitsMax;
++            Pm.AddItem(new Backpack());
++            Account[0] = Pm;
++            Pm.MoveToWorld(HavenSpots.Start, HavenSpots.Map);
++            Ns = PacketTestUtilities.CreateTestNetState();
++            Ns.Account = Account;
++            Pm.NetState = Ns;
++            Ns.Mobile = Pm;
++        }
++
++        public void Dispose()
++        {
++            TutorialCoreTrials.Cancel(Pm);
++            ClusterFFanfare.FlushAll();
++            Pm.NetState = null;
++            Ns.Mobile = null;
++            Ns.Dispose();
++            Pm.Delete();
++            Accounts.Remove(Account);
++        }
++    }
++
++    private static TutorialAction[] Evidence(string key) => key switch
++    {
++        "core.movement" => [TutorialAction.FirstMark, TutorialAction.SecondMark],
++        "core.paperdoll" => [TutorialAction.Equipped],
++        "core.backpack" => [TutorialAction.OpenedPaperdoll, TutorialAction.OpenedBag],
++        "core.chat" => [TutorialAction.SaidPhrase],
++        "core.farm" => [TutorialAction.FarmDone],
++        "core.healing" => [TutorialAction.Healed],
++        "core.death" => [TutorialAction.EchoDeath, TutorialAction.HealerOffer, TutorialAction.Resurrected],
++        "core.banking" => [TutorialAction.Deposited],
++        "core.travel" => [TutorialAction.UsedGate],
++        "core.league" => [TutorialAction.TalkedToLeague],
++        "core.loop" => [TutorialAction.VisionStarted, TutorialAction.VisionFinished],
++        _ => throw new InvalidOperationException(key)
++    };
++
++    private static void PlayCoreUntil(PlayerMobile pm, string stop)
++    {
++        foreach (var station in TutorialStations.Core.ToList())
++        {
++            if (station.Key == stop)
++            {
++                return;
++            }
++
++            ClusterFTutorial.RunStation(pm, station);
++            foreach (var action in Evidence(station.Key))
++            {
++                TutorialCoreTrials.Observe(pm, action);
++            }
++        }
++    }
++
++    private static string Seed() => TutorialCorePlacement.SeedOn(TutorialWorld.Isle, false, withHaven: false);
++
++    private static List<T> ItemsAt<T>(Point3D p, int range = 0) where T : Item
++    {
++        var found = new List<T>();
++        foreach (var item in TutorialWorld.Isle.GetItemsInRange<T>(p, range))
++        {
++            if (!item.Deleted)
++            {
++                found.Add(item);
++            }
++        }
++
++        return found;
++    }
++
++    private static LeagueRegistrar Elara()
++    {
++        foreach (var m in TutorialWorld.Isle.GetMobilesInRange(TutorialCorePlacement.ElaraSpot, 2))
++        {
++            if (m is LeagueRegistrar { Deleted: false } r)
++            {
++                return r;
++            }
++        }
++
++        throw new InvalidOperationException("no Elara on the isle");
++    }
++
++    // ---------------------------------------------------------------- 1
++
++    [Fact]
++    public void P818_TheLodgeDoorIsInTheEastWallAndFoldsAlongIt()
++    {
++        // the east wall: x 6787 (the lodge's floor is x 6778-6786, y 3996-4002), not the north wall (y 3995)
++        Assert.Equal(new Point2D(6787, 4000), TutorialWorld.LodgeDoor);
++        Assert.True(TutorialWorld.LodgeStop.X > TutorialWorld.LodgeDoor.X); // the stop is outside, east of the door
++        Assert.Equal(TutorialWorld.LodgeDoor.Y, TutorialWorld.LodgeStop.Y);
++
++        var door = TutorialCorePlacement.MakeLodgeDoor();
++        try
++        {
++            Assert.Equal(0x06A5 + 2 * (int)DoorFacing.NorthCW, door.ClosedId); // DarkWoodDoor: closed art 0x06A5 + 2 x facing
++            Assert.Equal(TutorialCorePlacement.LodgeDoorClosedId, door.ClosedId);
++            Assert.Equal(new Point3D(0, -1, 0), door.Offset); // open, it folds north along the east wall's line
++        }
++        finally
++        {
++            door.Delete();
++        }
++    }
++
++    // ---------------------------------------------------------------- 2
++
++    [Fact]
++    public void P818_AnOldNorthDoorIsTakenAwayAndTheEastDoorHungOnce()
++    {
++        Seed();
++        var isle = TutorialWorld.Isle;
++        var oldSpot = TutorialWorld.Ground(isle, TutorialCorePlacement.OldLodgeDoor);
++        var old = new DarkWoodDoor(DoorFacing.WestCCW); // the world as P720-P817 left it
++        old.MoveToWorld(oldSpot, isle);
++        var eastSpot = TutorialWorld.Ground(isle, TutorialWorld.LodgeDoor);
++        foreach (var d in ItemsAt<BaseDoor>(eastSpot))
++        {
++            d.Delete(); // an existing world has no east door yet
++        }
++
++        Seed();
++
++        Assert.True(old.Deleted);
++        Assert.Empty(ItemsAt<BaseDoor>(oldSpot));
++        var hung = Assert.Single(ItemsAt<BaseDoor>(eastSpot));
++        Assert.Equal(TutorialCorePlacement.LodgeDoorClosedId, hung.ClosedId);
++        hung.Open = true;
++        Assert.Equal(eastSpot.X, hung.X); // open, it stays in the wall's line
++        Assert.Equal(eastSpot.Y - 1, hung.Y);
++        hung.Open = false;
++
++        Seed();
++        Assert.Same(hung, Assert.Single(ItemsAt<BaseDoor>(eastSpot)));
++    }
++
++    // ---------------------------------------------------------------- 3
++
++    [Fact]
++    public void P818_TheLodgeSignsStandNorthOfTheRoadAtTheWalkAndAnOldSignMoves()
++    {
++        var sign = TutorialCorePlacement.LodgeSign;
++        var league = TutorialCorePlacement.SignPoint("core.league");
++        // where the walk (x 6789, y 3990-4000) leaves the road: the road runs at y 3985-3989 there, so north of it
++        Assert.Equal(new Point2D(6789, 3984), league);
++        Assert.Equal(1, Math.Max(Math.Abs(league.X - sign.X), Math.Abs(league.Y - sign.Y)));
++        Assert.InRange(sign.X, 6787, 6790);
++        Assert.True(sign.Y < 3985);
++
++        bool IsSign(Item i) => i.ItemID == TutorialCorePlacement.SignpostId && i.Name == TutorialCorePlacement.LodgeSignName;
++        Seed();
++        var isle = TutorialWorld.Isle;
++        var placed = Assert.Single(ItemsAt<Static>(TutorialWorld.Ground(isle, sign), 12), IsSign);
++        Assert.Equal(TutorialWorld.Ground(isle, sign), placed.Location);
++
++        // an existing world's sign by the road's dip, at the old spot, is moved
++        placed.MoveToWorld(TutorialWorld.Ground(isle, TutorialCorePlacement.OldLodgeSign), isle);
++        Seed();
++        var moved = Assert.Single(ItemsAt<Static>(TutorialWorld.Ground(isle, sign), 12), IsSign);
++        Assert.Same(placed, moved);
++        Assert.Equal(TutorialWorld.Ground(isle, sign), moved.Location);
++
++        // the League lesson's marker stands at its new sign spot too
++        var marker = TutorialCorePlacement.FindMarker("core.league");
++        Assert.NotNull(marker);
++        Assert.Equal(TutorialWorld.Ground(isle, league), marker!.Location);
++    }
++
++    // ---------------------------------------------------------------- 4
++
++    [Fact]
++    public void P818_ElaraFacesTheEastDoorAndAnOldWorldsElaraIsTurned()
++    {
++        Seed();
++        var elara = Elara();
++        Assert.Equal(Direction.East, elara.Direction & Direction.Mask);
++
++        elara.Direction = Direction.North; // she faced the old north door
++        Seed();
++        Assert.Equal(Direction.East, Elara().Direction & Direction.Mask);
++        Assert.Same(elara, Elara());
++    }
++
++    // ---------------------------------------------------------------- 5
++
++    [Fact]
++    public void P818_TheLeagueLessonNamesTheEastDoorAndItsArrowPointsAtItUntilInside()
++    {
++        var hint = TutorialCoreTrials.Hint("core.league");
++        Assert.Contains("east side", hint);
++        Assert.DoesNotContain("north side", hint);
++        Assert.Contains("between the two fires", hint);
++
++        Seed();
++        using var p = new Player();
++        TutorialTestStart.Begin(p.Pm);
++        PlayCoreUntil(p.Pm, "core.league");
++        var isle = TutorialWorld.MapOf(p.Pm)!;
++        p.Pm.MoveToWorld(TutorialWorld.Ground(isle, new Point2D(6789, 3992)), isle); // on the walk, outside
++        ClusterFTutorial.RunStation(p.Pm, TutorialStations.Find("core.league")!);
++        var trial = TutorialCoreTrials.Current(p.Pm)!;
++        Assert.Equal(TutorialWorld.Ground(isle, TutorialWorld.LodgeDoor), trial.ArrowAt);
++        Assert.NotNull(p.Pm.QuestArrow);
++
++        p.Pm.MoveToWorld(new Point3D(6785, 4000, 0), isle); // through the door
++        ShardTestClock.Advance(TimeSpan.FromSeconds(0.6));
++        Assert.Equal(TutorialCorePlacement.ElaraSpot, trial.ArrowAt);
++
++        p.Pm.MoveToWorld(TutorialWorld.Ground(isle, TutorialWorld.LodgeStop), isle); // and out again
++        ShardTestClock.Advance(TimeSpan.FromSeconds(0.6));
++        Assert.Equal(TutorialWorld.Ground(isle, TutorialWorld.LodgeDoor), trial.ArrowAt);
++    }
++
++    // ---------------------------------------------------------------- 6
++
++    [Fact]
++    public void P818_ElaraSaysWhereTheDoorIsToATraineeOutside()
++    {
++        Assert.Contains("east side", TutorialCoreTrials.ElaraDoorLine);
++
++        Seed();
++        using var p = new Player();
++        var isle = TutorialWorld.Isle;
++        p.Pm.MoveToWorld(TutorialWorld.Ground(isle, new Point2D(6782, 3993)), isle); // by the north wall, where the door was
++        Assert.True(TutorialCoreTrials.CallFromLodge(p.Pm));
++
++        p.Pm.MoveToWorld(new Point3D(6784, 3999, 0), isle); // inside: she does not call
++        Assert.False(TutorialCoreTrials.CallFromLodge(p.Pm));
++
++        p.Pm.MoveToWorld(TutorialWorld.Ground(isle, TutorialWorld.Stones), isle); // far off on the knoll
++        Assert.False(TutorialCoreTrials.CallFromLodge(p.Pm));
++    }
++}
