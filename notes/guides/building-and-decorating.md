@@ -326,6 +326,11 @@ of a dock or bridge sits within 2 of the deck; lower the deck or raise the bank,
   ground. Use the standing signpost 0xA854, named ("Lesson 3: Healing"), **beside** the stop (within 2, never on it),
   off the walked route, the road, door lines and gates. A signpost is impassable. When you change a marker's art,
   update every tool that finds it by art ID (the bot's route still searched for 0x1F14, Codex P720).
+- **Two signposts never stand on diagonal tiles (x+1, y+1).** On screen, the south-east one stands right under the
+  other, and the two draw as one tall pole with two boards. A player sees one post and clicks only one name
+  (cc-P844, `notes/cc-P844-review/signpost-one-left-two-diagonal-right.png`). Keep paired posts apart along one axis
+  (x+2 or more, or y+2). Open finding: the isle's chat stop (6690,3986 and 6691,3987) and farm gate (6697,3977 and
+  6698,3978) each have such a pair.
 - **Every sign stands north of its path, facing it.** Chase 10-30 ("lesson 1 sign needs to go to north side of path",
   "all signs should be north of path"): lesson signs, direction signs and building signs all go on the **north side**
   of the road or walk they mark, beside it (road within 3 tiles south of the sign, none north of it or beside it), so
@@ -337,9 +342,11 @@ of a dock or bridge sits within 2 of the deck; lower the deck or raise the bank,
   the path reaches it, not beside the landmark itself: the isle's travel sign stands where the road meets the dock,
   not on the moongate's frame (Chase 10-30: "sign next to moongate at end is hard to see").
 - **A hurt NPC on a bench with blood.** Chase 10-28 12:24-12:26: the injured farmhand "sits or lies on a bench with
-  blood on the ground around". Pip: bench 0x0B2D against the farmhouse's east wall, blood decals 0x122A, 0x122D, 0x122C
-  (stock 0x122A-0x122E) around it, NPC facing into the room, `RangeHome = 0`. (The bench's art facing and the seated
-  look are unverified in a shot: check yours.)
+  blood on the ground around". Pip: bench 0x0B2C (two tiles, north-south) against the farmhouse's east wall, blood
+  decals 0x122A, 0x122D, 0x122C (stock 0x122A-0x122E) around it, NPC facing into the room, `RangeHome = 0`. The wooden
+  bench comes in two runs: **0x0B2C joins along y (north-south), 0x0B2D along x (east-west)**. Two of the wrong one
+  draw as two crosswise stubs (cc-P805 for Rook's east-west bench; cc-P844 for Pip's, which had 0x0B2D:
+  `notes/cc-P844-review/bench-0B2D-left-0B2C-right.png`). Check the seated look in a client shot.
 - **Containers appear for a player when an item is handed over.** Chase 10-28 15:23: "the cloak comes in a chest that
   appears". A personal chest (0x0E43) appears on a table with a sparkle (0x376A) and sound (0x1F5), only its player can
   open it, nothing can be dropped in, and it vanishes once the item is taken. Make it **Movable but refuse its own
@@ -957,7 +964,7 @@ from them.
 | 0x0426-0x042F | tattered banner (fallen guild) | verified (tiledata) |
 | 0x0E31-0x0E33, 0x19AA, 0x19BB | brazier | verified (tiledata) |
 | 0x0B1D-0x0B28 candelabra; 0x0A0C wall torch | light | verified |
-| 0x0B2C wooden bench; 0x0B4E/0x0B4F chair; 0x0B90 table | seating | verified (code) |
+| 0x0B2C wooden bench (runs north-south; 0x0B2D runs east-west, cc-P844); 0x0B4E/0x0B4F chair; 0x0B90 table | seating | verified (code) |
 | 0x0972 crossed swords; 0x0953/0x0959 fireplace | hall trim | verified (code) |
 | 0x1E5E bulletin board | guild notices | verified (code) |
 | 0x4037, 0x4038 gargoyle banner; 0x9FAC-0x9FB3 cult banners (fire, air, earth, water) | themed banners | verified (tiledata); high IDs |
@@ -1082,7 +1089,7 @@ Our guild menu already uses 0xE21 (bandage) as the Healers' ankh icon: an icon o
 | 0x0C37, 0x0C38, 0x0C45-0x0C4E, 0x0D29-0x0D36 flowers; 0x0C83-0x0C8C, 0x0CC0-0x0CC1 named flowers | flower beds | verified (tiledata) |
 | 0x4B22-0x4B27, 0xA30D-0xA31B | flower bed corners | verified (tiledata); high ID |
 | 0x0CE0, 0x0CE1 walnut tree and leaves; 0x0CE6, 0x0CE7 willow tree and leaves | garden trees (as the isle meadow used) | verified (code) |
-| 0x0B2C | wooden bench | verified (code) |
+| 0x0B2C | wooden bench, runs north-south (0x0B2D runs east-west, cc-P844) | verified (code) |
 | 0x0E9C-0x0E9F | birdbath | unverified |
 
 **Packs**
