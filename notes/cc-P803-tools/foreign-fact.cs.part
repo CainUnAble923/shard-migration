@@ -1,0 +1,26 @@
+
+    [Fact]
+    public void ABoardInSoSHavensHallIsAnotherBuildingHereAndIsLeftAlone()
+    {
+        var at = new Point3D(3662, 2547, 0);
+        Assert.DoesNotContain(ClusterFRequisitionSeeder.OldOfficeBoardSpots, p => p.X == at.X && p.Y == at.Y);
+        var made = ClearBoards(at.X, at.Y);
+        var appraisers = Appraisers();
+        var other = new RequisitionsBoard();
+        try
+        {
+            other.MoveToWorld(at, Map.Trammel);
+            ClusterFRequisitionSeeder.Seed(false);
+            Assert.False(other.Deleted);
+            Assert.Equal(at, other.Location);
+            var one = Assert.Single(LeagueBoardsNear());
+            Assert.Equal(BoardSpot, one.Location);
+        }
+        finally
+        {
+            other.Delete();
+            ClearBoards(at.X, at.Y);
+            Restore(made);
+            DeleteNewAppraisers(appraisers);
+        }
+    }
