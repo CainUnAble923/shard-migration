@@ -239,13 +239,14 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem off; 736 prompts done, 5 more stopped early and not counted)
+### Queue (Golem off; 737 prompts done, 5 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
 | P840 cont-fixup-port-wrong-and-covetous-void | queued |  |
 | P9772 remote-answer-test | done | 2026-11-02 |
 | P9770 run-next-test | done | 2026-11-02 |
+| P854 tools-minigames-assessment | done | 2026-11-08 |
 | P853 creatures-mounts-assessment | done | 2026-11-08 |
 | P852 deco-addons-assessment | done | 2026-11-08 |
 | P851 review-build-fixup-league-boards | done | 2026-11-08 |
@@ -253,7 +254,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P849 fixup | done | 2026-11-08 |
 | P848 fixup | done | 2026-11-08 |
 | P847 review-build-isle-diff-p818 | done | 2026-11-08 |
-| P846 isle-diff-p818 | done | 2026-11-08 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 199 patches, 12 replacements
 
