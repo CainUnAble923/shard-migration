@@ -1,0 +1,1205 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 02381c7..1b7c710 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -29,6 +29,16 @@ Example:
+ - Restoring a Jacob's Pickaxe no longer refuses ingots kept in your bank.
+ -->
+ 
++## 2026.11.07.2
++
++### Changed
++- Character creation: humans only, Tutorial Island start, a brighter wake, and your pet waits at the end of the isle.
++- The trade (Blacksmith) starting choice is gone; you can still pick Blacksmithy, Mining, Tailoring and Tinkering with Advanced, where you choose your own skills.
++- On the Wakening Isle, Merrin the banker faces his counter and tells you what to do as you walk in, and the island bank is tidier: its lesson sign stands by the path instead of before the door.
++
++### Staff
++- The creation screen's race row and profession list need the new player package; the server already makes any other race Human and refuses the Blacksmith choice.
++
+ ## 2026.11.07.1
+ 
+ ### Changed
+diff --git a/VERSION b/VERSION
+index 073a8fd..e6031e5 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-2026.11.07.1
+\ No newline at end of file
++2026.11.07.2
+diff --git a/client/patches/0012-humans-only.patch b/client/patches/0012-humans-only.patch
+new file mode 100644
+index 0000000..ad37b63
+--- /dev/null
++++ b/client/patches/0012-humans-only.patch
+@@ -0,0 +1,63 @@
++From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
++From: Chase Fleming <ckfleming@gmail.com>
++Date: Sat, 7 Nov 2026 12:00:00 -0600
++Subject: [PATCH] Character creation: Human is the only race (Shattered Legacy
++ cc-P817)
++
++Chase, 2026-11-07: "I still want Gargoyle and Elf removed from selection page". The appearance screen adds only the
++Human race button; Human was already the default selection. The server makes any other race Human anyway.
++---
++diff --git a/src/ClassicUO.Client/Game/UI/Gumps/CharCreation/CreateCharAppearanceGump.cs b/src/ClassicUO.Client/Game/UI/Gumps/CharCreation/CreateCharAppearanceGump.cs
++index 73d19c4..1ec1e47 100644
++--- a/src/ClassicUO.Client/Game/UI/Gumps/CharCreation/CreateCharAppearanceGump.cs
+++++ b/src/ClassicUO.Client/Game/UI/Gumps/CharCreation/CreateCharAppearanceGump.cs
++@@ -158,44 +158,11 @@ namespace ClassicUO.Game.UI.Gumps.CharCreation
++                 1
++             );
++ 
++-            Add
++-            (
++-                _elfRadio = new Button((int)Buttons.ElfButton, 0x0768, 0x0767, 0x0768)
++-                {
++-                    X = 180, Y = 455, ButtonAction = ButtonAction.Activate
++-                },
++-                1
++-            );
++-
++-            Add
++-            (
++-                new Button((int) Buttons.ElfButton, 0x0705, 0x0707, 0x0706)
++-                {
++-                    X = 200, Y = 455, ButtonAction = ButtonAction.Activate
++-                },
++-                1
++-            );
++-
++-            if (Client.Game.UO.Version >= ClientVersion.CV_60144)
++-            {
++-                Add
++-                (
++-                    _gargoyleRadio = new Button((int)Buttons.GargoyleButton, 0x0768, 0x0767)
++-                    {
++-                        X = 60, Y = 435, ButtonAction = ButtonAction.Activate
++-                    },
++-                    1
++-                );
++-
++-                Add
++-                (
++-                    new Button((int) Buttons.GargoyleButton, 0x07D3, 0x07D5, 0x07D4)
++-                    {
++-                        X = 80, Y = 435, ButtonAction = ButtonAction.Activate
++-                    },
++-                    1
++-                );
++-            }
+++            // Shattered Legacy patch (cc-P817, Chase 2026-11-07: "I still want Gargoyle and Elf removed from selection page"):
+++            // Human is the only race on the creation screen, and selected (below). The Elf and Gargoyle buttons are not added,
+++            // so _elfRadio and _gargoyleRadio stay null: the Human button's handler already checks them for null, and their own
+++            // handlers are only reached from those buttons. The server makes any other race Human as well
+++            // (NewCharacterRules.RaceFor, newCharacters.races).
++ 
++             // Prev/Next
++             Add
+diff --git a/player-package/payload/app/Build-UoOverrides.ps1 b/player-package/payload/app/Build-UoOverrides.ps1
+index 150ce5b..550f86d 100644
+--- a/player-package/payload/app/Build-UoOverrides.ps1
++++ b/player-package/payload/app/Build-UoOverrides.ps1
+@@ -108,6 +108,15 @@
+        ("music/digital/config.txt=...") and each track ("music/digital/<file>.mp3=<app\music\file.mp3>"): TazUO asks its
+        override map for both (Sound.GetMusic, SoundsLoader.Load), so no mp3 is ever written into the player's folder.
+ 
++  cc-P817 (Chase 2026-11-07: "I also want to remove the trade choice"): Prof.txt, the creation screen's professions.
++    1. Skipped if the player has no Prof.txt, or if it already lists none of the professions in $ProfRemoved.
++    2. If app\uo-overrides\prof-stamp.txt matches the player's Prof.txt (size and time) and the list, it is done.
++    3. Otherwise writes the player's Prof.txt with each Begin ... End block whose Desc (the profession number the
++       client sends) is in $ProfRemoved left out, everything else byte for byte, to app\uo-overrides\Prof.txt, then
++       the stamp. The list names it "prof.txt=..."; TazUO reads the file through its override map
++       (ProfessionLoader.Load: FileManager.GetUOFilePath("Prof.txt")). The server refuses the same numbers
++       (isle release: server\customizations\Tutorial\NewCharacterRules.cs, RefusedProfessions), so the screen offers only what is made.
++
+   Then files-override.txt lists whichever copies were made. The player's EA files are only ever
+   read. app\uo-overrides\ is made here and never shipped; the updater leaves it alone and the
+   package build refuses a payload that holds it.
+@@ -165,6 +174,10 @@ $ClilocStampFormat = 'uo-cliloc 1'
+ $EquipStampFormat = 'uo-equip 1'
+ $SkillsStampFormat = 'uo-skills 2'
+ $MusicStampFormat = 'uo-music 2'   # cc-P456: 2 adds the lines written ("lines ..."), so a restored mp3 rebuilds
++$ProfStampFormat = 'uo-prof 1'
++# cc-P817: the professions the server refuses at creation, by Desc number. On the isle release that is the stock
++# Blacksmith alone (Chase's "trade choice"; server\customizations\Tutorial\NewCharacterRules.cs, RefusedProfessions).
++$ProfRemoved = @(3)
+ # cc-P804 (F-51): skills we add. TazUO numbers the filled slots in order, so a new one must follow the last filled slot with no gap.
+ $SkillAdds = @([pscustomobject]@{ Index = 58; Action = 0; Name = 'Herbalism' })
+ 
+@@ -840,6 +853,49 @@ function Build-Skills {
+     & $lines
+ }
+ 
++# cc-P817: returns the Prof.txt override line, or none: the player's own Prof.txt without the refused professions.
++function Build-Prof {
++    $src = Join-Path $UoDir 'Prof.txt'
++    if (-not (Test-Path -LiteralPath $src)) { return }
++    $outFile  = Join-Path $OutDir 'Prof.txt'
++    $stampOut = Join-Path $OutDir 'prof-stamp.txt'
++    $f = Get-Item -LiteralPath $src
++    $stamp = "$ProfStampFormat`nProf.txt $($f.Length) $($f.LastWriteTimeUtc.Ticks)`nremoved $($ProfRemoved -join ',')"
++    $lines = { "prof.txt=$(Join-Path $ListRoot 'Prof.txt')" }
++
++    if ((Test-Path -LiteralPath $stampOut) -and (Test-Path -LiteralPath $outFile) -and
++        [IO.File]::ReadAllText($stampOut) -ceq $stamp) {
++        & $lines
++        return
++    }
++    if ($CheckOnly) { $script:Stale.Add('prof'); return }
++
++    Start-Step 'prof'
++    # Latin-1 both ways: every byte comes back as it was, whatever the file's encoding.
++    $latin = [Text.Encoding]::GetEncoding(28591)
++    $text = $latin.GetString([IO.File]::ReadAllBytes($src))
++    $kept = New-Object Text.StringBuilder
++    $dropped = 0
++    $at = 0
++    foreach ($m in [regex]::Matches($text, '(?ims)^[ \t]*Begin[ \t]*\r?\n.*?^[ \t]*End[ \t]*(?:\r?\n|$)(?:[ \t]*\r?\n)*')) {
++        $desc = [regex]::Match($m.Value, '(?im)^[ \t]*Desc[ \t]+(\d+)')
++        if ($desc.Success -and ($ProfRemoved -contains [int]$desc.Groups[1].Value)) {
++            [void]$kept.Append($text.Substring($at, $m.Index - $at))
++            $at = $m.Index + $m.Length
++            $dropped++
++        }
++    }
++    [void]$kept.Append($text.Substring($at))
++    if ($dropped -eq 0) { Stop-Step; return }    # nothing of ours to take out: the player's own file is used
++
++    if (-not (Test-Path -LiteralPath $OutDir)) { New-Item -ItemType Directory -Path $OutDir -Force | Out-Null }
++    if (Test-Path -LiteralPath $stampOut) { Remove-Item -LiteralPath $stampOut -Force }
++    [IO.File]::WriteAllBytes($outFile, $latin.GetBytes($kept.ToString()))
++    [IO.File]::WriteAllText($stampOut, $stamp, (New-Object Text.ASCIIEncoding))
++    Stop-Step
++    & $lines
++}
++
+ # cc-P368: returns the music's override lines, or none (no track shipped): "music/digital/config.txt=<copy>" and one
+ # "music/digital/<file>.mp3=<app\music\file.mp3>" per track. The copy is the player's own Music\Digital\Config.txt with
+ # our lines (app\music\shard-music.txt, "<id> <file>.mp3[,loop] [fallback]", IDs 105 up) added at the end; a stock line
+@@ -953,6 +1009,9 @@ try {
+     try { $lines += @(Build-Skills) }
+     catch { Skip-Part 'skills' "Shattered Legacy skill names could not be prepared ($($_.Exception.Message)). Starting without them." }
+ 
++    try { $lines += @(Build-Prof) }
++    catch { Skip-Part 'prof' "Shattered Legacy professions could not be prepared ($($_.Exception.Message)). Starting with every profession listed." }
++
+     try { $lines += @(Build-Map) }
+     catch { Skip-Part 'map' "Shattered Legacy map (the Rootdeep Burrows) could not be prepared ($($_.Exception.Message)). Starting without it." }
+ 
+diff --git a/player-package/tests/Prof-Overrides.Tests.ps1 b/player-package/tests/Prof-Overrides.Tests.ps1
+new file mode 100644
+index 0000000..a0386db
+--- /dev/null
++++ b/player-package/tests/Prof-Overrides.Tests.ps1
+@@ -0,0 +1,122 @@
++#Requires -Version 5.1
++# Facts for the creation screen's professions (cc-P817, Chase 2026-11-07: "I also want to remove the trade choice"): the
++# Prof.txt part of payload\app\Build-UoOverrides.ps1, which writes a copy of the player's own Prof.txt without the
++# professions the server refuses at creation, and its agreement with the server's list
++# (server\customizations\ClusterFStartChoices.cs, RemovedProfessions).
++#
++#     powershell -NoProfile -ExecutionPolicy Bypass -File player-package\tests\Prof-Overrides.Tests.ps1
++#
++# Exit code is the number of failed facts, so 0 is green. Same shape as Music-Overrides.Tests.ps1.
++#
++# No EA file is read. The Prof.txt here is made up in the client's shape (Begin ... End blocks, tab separated, CRLF).
++
++$ErrorActionPreference = 'Stop'
++$here    = $PSScriptRoot
++$pkg     = Split-Path $here -Parent
++$repo    = Split-Path $pkg -Parent
++$builder = Join-Path $pkg 'payload\app\Build-UoOverrides.ps1'
++$startCs = Join-Path $repo 'server\customizations\Tutorial\NewCharacterRules.cs'   # the isle release's list
++$work    = Join-Path $env:TEMP ("sl-prof-tests-" + [Guid]::NewGuid().ToString('N').Substring(0, 8))
++New-Item -ItemType Directory -Path $work -Force | Out-Null
++
++$results = New-Object 'System.Collections.Generic.List[object]'
++
++function Fact {
++    param([string]$Name, [scriptblock]$Body)
++    try {
++        & $Body
++        $results.Add([pscustomobject]@{ Name = $Name; Passed = $true; Message = '' })
++        Write-Host "  PASS  $Name" -ForegroundColor Green
++    } catch {
++        $results.Add([pscustomobject]@{ Name = $Name; Passed = $false; Message = $_.Exception.Message })
++        Write-Host "  FAIL  $Name" -ForegroundColor Red
++        Write-Host "        $($_.Exception.Message)" -ForegroundColor Red
++    }
++}
++
++function Assert-Equal {
++    param($Expected, $Actual, [string]$Because = '')
++    if ($Expected -ne $Actual) { throw "expected [$Expected] but got [$Actual]. $Because" }
++}
++
++function Assert-True {
++    param($Condition, [string]$Because)
++    if (-not $Condition) { throw "not true: $Because" }
++}
++
++# One profession block in the client's shape.
++function Block([string]$name, [int]$desc) {
++    "Begin`r`n`tName`t`t`t$name`r`n`tTrueName`t`t`"$name`"`r`n`tDesc`t`t`t$desc`r`n`tTopLevel`t`ttrue`r`n`tType`t`t`tProfession`r`n`tSkill`t`t`tTactics`t`t30`r`nEnd`r`n`r`n"
++}
++
++$stockNames = @(@('Samurai', 6), @('Ninja', 7), @('Paladin', 5), @('Necromancer', 4), @('Warrior', 1), @('Mage', 2), @('Blacksmith', 3))
++$header = "# made up for the tests: the professions on the creation screen`r`n`r`n"
++
++function New-UoDir([string]$name, [object[]]$profs = $stockNames, [switch]$NoProf) {
++    $dir = Join-Path $work $name
++    New-Item -ItemType Directory -Path $dir -Force | Out-Null
++    if (-not $NoProf) {
++        $text = $header + (($profs | ForEach-Object { Block $_[0] $_[1] }) -join '')
++        [IO.File]::WriteAllText((Join-Path $dir 'Prof.txt'), $text, (New-Object Text.ASCIIEncoding))
++    }
++    return $dir
++}
++
++function Invoke-Builder([string]$uo, [string]$out) {
++    $none = Join-Path $work 'no-such-file'
++    $res = $null
++    foreach ($x in @(& $builder -UoDir $uo -OutDir $out -Music $none -Records $none -Clilocs $none -MapOps $none -AnimMul $none -AnimIdx $none 6>&1)) {
++        if ($x -isnot [Management.Automation.InformationRecord]) { $res = $x }
++    }
++    $lines = @()
++    if ($res -and (Test-Path -LiteralPath $res)) { $lines = @([IO.File]::ReadAllLines($res) | Where-Object { $_ -and -not $_.StartsWith('#') }) }
++    return [pscustomobject]@{ Result = $res; Lines = $lines }
++}
++
++Fact 'TheCopyLeavesOutTheRefusedProfessionsAndKeepsEverythingElseByteForByte' {
++    $uo = New-UoDir 'stock'
++    $out = Join-Path $work 'out-stock'
++    $r = Invoke-Builder $uo $out
++    $copy = Join-Path $out 'Prof.txt'
++    Assert-True (Test-Path -LiteralPath $copy) 'the copy is written'
++    Assert-Equal "prof.txt=$copy" (@($r.Lines | Where-Object { $_ -like 'prof.txt=*' }) -join '') 'the list names it'
++    $want = $header + (Block 'Samurai' 6) + (Block 'Ninja' 7) + (Block 'Paladin' 5) + (Block 'Necromancer' 4) + (Block 'Warrior' 1) + (Block 'Mage' 2)
++    Assert-Equal $want ([IO.File]::ReadAllText($copy)) 'every profession as it was but the trade (Blacksmith), gone (the isle release offers the rest)'
++    $orig = [IO.File]::ReadAllText((Join-Path $uo 'Prof.txt'))
++    Assert-True ($orig -match 'Blacksmith') 'the player''s own file is untouched'
++}
++
++Fact 'ASecondRunWithNothingChangedKeepsTheCopy' {
++    $uo = New-UoDir 'twice'
++    $out = Join-Path $work 'out-twice'
++    [void](Invoke-Builder $uo $out)
++    $copy = Join-Path $out 'Prof.txt'
++    $before = (Get-Item -LiteralPath $copy).LastWriteTimeUtc
++    Start-Sleep -Milliseconds 1100
++    $r = Invoke-Builder $uo $out
++    Assert-Equal $before (Get-Item -LiteralPath $copy).LastWriteTimeUtc 'not rewritten'
++    Assert-True (@($r.Lines | Where-Object { $_ -like 'prof.txt=*' }).Count -eq 1) 'still listed'
++}
++
++Fact 'AProfTxtWithNothingToTakeOutAndNoProfTxtGiveNoLine' {
++    $r1 = Invoke-Builder (New-UoDir 'clean' @(@('Warrior', 1), @('Mage', 2))) (Join-Path $work 'out-clean')
++    Assert-Equal 0 @($r1.Lines | Where-Object { $_ -like 'prof.txt=*' }).Count 'the player''s own file serves as it is'
++    $r2 = Invoke-Builder (New-UoDir 'none' -NoProf) (Join-Path $work 'out-none')
++    Assert-Equal 0 @($r2.Lines | Where-Object { $_ -like 'prof.txt=*' }).Count 'no Prof.txt, no line'
++}
++
++Fact 'TheScreenLeavesOutExactlyWhatTheServerRefuses' {
++    $ps = [IO.File]::ReadAllText($builder)
++    $client = @([regex]::Match($ps, '\$ProfRemoved = @\(([^)]*)\)').Groups[1].Value.Split(',') | ForEach-Object { [int]$_.Trim() } | Sort-Object)
++    $cs = [IO.File]::ReadAllText($startCs)
++    $server = @([regex]::Match($cs, 'RefusedProfessions = \[([^\]]*)\]').Groups[1].Value.Split(',') | ForEach-Object { [int]$_.Trim() } | Sort-Object)
++    Assert-Equal ($server -join ',') ($client -join ',') 'Build-UoOverrides.ps1 and NewCharacterRules.cs'
++    Assert-True ($server -contains 3) 'the Maker (the client''s Blacksmith, 3) is refused: the trade choice'
++}
++
++Remove-Item -LiteralPath $work -Recurse -Force -ErrorAction SilentlyContinue
++
++$failed = @($results | Where-Object { -not $_.Passed }).Count
++Write-Host ""
++Write-Host ("{0} facts, {1} passed, {2} failed" -f $results.Count, ($results.Count - $failed), $failed) -ForegroundColor $(if ($failed) { 'Red' } else { 'Green' })
++exit $failed
+diff --git a/player-package/vendor/shattered-legacy-map/SOURCE.txt b/player-package/vendor/shattered-legacy-map/SOURCE.txt
+index 70f9a96..f3dbed0 100644
+--- a/player-package/vendor/shattered-legacy-map/SOURCE.txt
++++ b/player-package/vendor/shattered-legacy-map/SOURCE.txt
+@@ -26,6 +26,11 @@ trammel.mapops   facet 1 (Trammel): the Rootdeep Burrows (x 5136-5247, y 1128-12
+                  (palms, banana, o'hii, OSI's jungle trees whole, ferns, pampas). P725 built it on both bases; this
+                  stock-land file (release/isle-20261028, cc-P733) takes the same isle lines (they sit on void in both
+                  maps), and is byte for byte P725's stock-base build (notes/cc-P725-tools/trammel-stock-base.mapops).
++                 cc-P817, 2026-11-07 (Chase 11-07: the isle bank's "sign and deco are not optimized"): two
++                 of the bank's statics, by hand in this file and in the driver's isle-sets.json (so a rebuild
++                 lays the same): the strongbox 0x09A8 from 6766,3974 to 6762,3973 on the back wall, and the
++                 potted plant 0x11CA inside at 6766,3978 removed. One S+ line moved, one gone; no B line changed
++                 (they fingerprint EA's base). notes/cc-P817-tools/bank_statics.py.
+ 
+ Format: shard-migration scripts/mapbuild/mapops.py (one line per changed land cell, L x y tile z; per static added,
+ S+ x y z id hue; per EA static removed, S- x y z id hue; B lines fingerprint EA's blocks so the applier can say
+diff --git a/player-package/vendor/shattered-legacy-map/trammel.mapops b/player-package/vendor/shattered-legacy-map/trammel.mapops
+index e8af11e..97e0dfe 100644
+--- a/player-package/vendor/shattered-legacy-map/trammel.mapops
++++ b/player-package/vendor/shattered-legacy-map/trammel.mapops
+@@ -55176,6 +55176,7 @@ S+ 6762 3961 0 3239 0
+ S+ 6762 3965 0 3268 0
+ S+ 6762 3972 0 88 0
+ S+ 6762 3973 0 1302 0
++S+ 6762 3973 0 2472 0
+ S+ 6762 3973 13 2572 0
+ S+ 6762 3973 20 1180 0
+ S+ 6762 3973 31 1476 0
+@@ -55355,7 +55356,6 @@ S+ 6766 3973 0 3649 0
+ S+ 6766 3973 20 1180 0
+ S+ 6766 3973 25 1475 0
+ S+ 6766 3974 0 1303 0
+-S+ 6766 3974 0 2472 0
+ S+ 6766 3974 20 1180 0
+ S+ 6766 3974 25 1475 0
+ S+ 6766 3975 0 1301 0
+@@ -55368,7 +55368,6 @@ S+ 6766 3977 0 1302 0
+ S+ 6766 3977 20 1180 0
+ S+ 6766 3977 25 1475 0
+ S+ 6766 3978 0 1303 0
+-S+ 6766 3978 0 4554 0
+ S+ 6766 3978 20 1180 0
+ S+ 6766 3978 25 1475 0
+ S+ 6766 3979 0 1302 0
+diff --git a/server/customizations/CharacterCreation.cs b/server/customizations/CharacterCreation.cs
+index 241ef27..3698f06 100644
+--- a/server/customizations/CharacterCreation.cs
++++ b/server/customizations/CharacterCreation.cs
+@@ -206,6 +206,16 @@ public static partial class CharacterCreation
+             return;
+         }
+ 
++        // cc-P817 (isle release): the trade choice, the stock Blacksmith, makes no character; the client is told
++        // "Character creation blocked." (pinned's handler for a null Mobile) and the log says why.
++        if (Server.Tutorial.NewCharacterRules.ProfessionRefused(args.Account, args.Profession))
++        {
++            logger.Information("Login: {NetState}: Character creation refused (account={Account}): profession {Profession} (the Blacksmith) is no longer offered",
++                state, args.Account?.Username, args.Profession);
++            args.Mobile = null;
++            return;
++        }
++
+         // cc-P762: only the races newCharacters.races allows (Human, for now); any other is made Human, with a line once
+         // the character is in the world. Staff are exempt (and the staff branch below makes every staff character Human).
+         var askedRace = Core.Expansion >= args.Race.RequiredExpansion ? args.Race : Race.DefaultRace;
+diff --git a/server/customizations/Tutorial/NewCharacterRules.cs b/server/customizations/Tutorial/NewCharacterRules.cs
+index ab11126..32cbd19 100644
+--- a/server/customizations/Tutorial/NewCharacterRules.cs
++++ b/server/customizations/Tutorial/NewCharacterRules.cs
+@@ -81,6 +81,18 @@ public static class NewCharacterRules
+     private static void OnBotStaffAccount(CommandEventArgs e) =>
+         e.Mobile.SendMessage(MakeBotStaff(e.Length > 0 ? e.GetString(0) : null, GolemTestAccounts.CurrentRefusal()));
+ 
++    /// <summary>
++    /// cc-P817 (the isle release; Chase 2026-11-07: "I also want to remove the trade choice"): the stock Blacksmith
++    /// (profession 3: Blacksmithy, Tailoring, Tinkering and Mining at 30) is not offered. The player package's Prof.txt
++    /// copy leaves it off the creation screen (Build-UoOverrides.ps1, $ProfRemoved), and a client that asks for it anyway
++    /// (an old package, a third-party client) makes no character (CharacterCreation.OnCharacterCreated). Main refuses
++    /// the same number as P714's Maker (ClusterFStartChoices.RemovedProfessions). Staff are exempt.
++    /// </summary>
++    public static readonly int[] RefusedProfessions = [3];
++
++    public static bool ProfessionRefused(IAccount? account, int profession) =>
++        !IsExempt(account) && Array.IndexOf(RefusedProfessions, profession) >= 0;
++
+     /// <summary>GameMaster and up: neither lock applies.</summary>
+     public static bool IsExempt(IAccount? account) => account?.AccessLevel >= AccessLevel.GameMaster;
+ 
+diff --git a/server/customizations/Tutorial/TutorialBankerVoice.cs b/server/customizations/Tutorial/TutorialBankerVoice.cs
+new file mode 100644
+index 0000000..0145525
+--- /dev/null
++++ b/server/customizations/Tutorial/TutorialBankerVoice.cs
+@@ -0,0 +1,92 @@
++// cc-P817 (Chase 11-07: "banker on tutorial island facing wrong way", "he should also be speaking telling player what to
++// do"). Merrin, the isle's practice banker, stands behind the counter (TutorialWorld.Banker 6762,3976; the counter runs
++// west to east at y 3977, isle-sets.json interiors.bank) and faces its customer side, south, toward the carpet and the
++// door in the bank's south wall (6762,3980), the way a trainee walks up (guide 3 and 11.2: a counter's serving side
++// toward the door, the keeper behind it). He was placed with no facing, so he stood facing north, at the vault chests on
++// the back wall. Seeding turns an already placed Merrin too (TutorialCorePlacement.SeedOn, every world load).
++//
++// His voice: while a trainee is on the bank lesson and within VoiceRange of him, he greets them over his head and says the
++// lesson's next step in a few words, as Wren and Tamsin do (SayTo: that trainee alone), once and then again only after
++// VoicePause: open the box by saying "bank", then put the blue practice token in it. The full steps stay in the lesson
++// window. Notes: shard-migration notes/cc-P817-creation-and-wake.md.
++
++#nullable enable
++
++using System;
++using System.Collections.Generic;
++using Server.Mobiles;
++
++namespace Server.Tutorial;
++
++public static class TutorialBankerVoice
++{
++    public const Direction Facing = Direction.South;
++    public const int VoiceRange = 5;
++    public static readonly TimeSpan VoicePause = TimeSpan.FromSeconds(25);
++
++    public const string OpenLine = "Welcome to the bank! Say 'bank' and I will open your bank box.";
++    public const string DepositLine = "Your bank box is open. Drag the blue practice token from your backpack into it.";
++
++    // When each trainee last heard him (not saved: a restart greets them again).
++    private static readonly Dictionary<Serial, DateTime> _lastSaid = new();
++
++    /// <summary>The isle's banker on <paramref name="map"/> (beside his spot), or null.</summary>
++    public static Banker? Find(Map? map)
++    {
++        if (map == null)
++        {
++            return null;
++        }
++
++        foreach (var m in map.GetMobilesInRange(TutorialWorld.Ground(map, TutorialWorld.Banker), 2))
++        {
++            if (m is Banker b && !b.Deleted)
++            {
++                return b;
++            }
++        }
++
++        return null;
++    }
++
++    /// <summary>Turns the isle's banker on <paramref name="map"/> to his counter's customer side. True when he was turned.</summary>
++    public static bool FaceCounter(Map? map)
++    {
++        if (Find(map) is not { } banker || banker.Direction == Facing)
++        {
++            return false;
++        }
++
++        banker.Direction = Facing;
++        return true;
++    }
++
++    /// <summary>The next step for this trainee, in his words: open the box, then put the token in it.</summary>
++    public static string LineFor(PlayerMobile pm) =>
++        pm.FindBankNoCreate() is { Opened: true } ? DepositLine : OpenLine;
++
++    /// <summary>
++    /// The bank lesson's tick: near Merrin, he says the next step, then not again for VoicePause. Returns what he said,
++    /// or null.
++    /// </summary>
++    public static string? Speak(PlayerMobile pm)
++    {
++        if (!pm.Alive || Find(pm.Map) is not { } banker || !pm.InRange(banker, VoiceRange) || Math.Abs(pm.Z - banker.Z) > 16)
++        {
++            return null;
++        }
++
++        if (_lastSaid.TryGetValue(pm.Serial, out var at) && Core.Now - at < VoicePause)
++        {
++            return null;
++        }
++
++        var line = LineFor(pm);
++        _lastSaid[pm.Serial] = Core.Now;
++        banker.SayTo(pm, line);
++        return line;
++    }
++
++    /// <summary>Forgets when a trainee last heard him (a new lesson start greets them at once).</summary>
++    public static void Forget(PlayerMobile pm) => _lastSaid.Remove(pm.Serial);
++}
+diff --git a/server/customizations/Tutorial/TutorialCorePlacement.cs b/server/customizations/Tutorial/TutorialCorePlacement.cs
+index 5f324c9..168d9ec 100644
+--- a/server/customizations/Tutorial/TutorialCorePlacement.cs
++++ b/server/customizations/Tutorial/TutorialCorePlacement.cs
+@@ -85,7 +85,10 @@ public static class TutorialCorePlacement
+         "core.farm" => new Point2D(6698, 3978),
+         "core.healing" => HealingSign,
+         "core.death" => new Point2D(6736, 3989),
+-        "core.banking" => new Point2D(6766, 3981),
++        // cc-P817 (Chase 11-07: the bank's "sign and deco are not optimized"): 6766,3981 stood on the road at the apron's
++        // east end, in front of the door's side, and read as clutter. North of the road where it passes the bank's
++        // south-west corner, on grass, off the apron and the door's line (the road runs y 3983-3986 below it).
++        "core.banking" => new Point2D(6757, 3982),
+         "core.league" => new Point2D(6782, 3989),
+         "core.loop" => new Point2D(6794, 3981),
+         "core.travel" => new Point2D(6811, 3988),
+@@ -148,6 +151,39 @@ public static class TutorialCorePlacement
+     public const int OldSignpostId = 0x0B97;
+     public const string OldChatSignpostName = "signpost: the farm, east";
+ 
++    // cc-P817 (the bank decoration pass): the practice bank box stood alone mid-floor behind the counter
++    // (TutorialWorld.BankBox, 6760,3975); it stands with the vault chests on the back wall now, beside the strongbox and
++    // clear of the north window's floor tile (6760,3973). MoveOldProps takes the old one away on load.
++    public static readonly Point2D BankBoxSpot = new(6761, 3973);
++
++    public static readonly (int Id, Point2D At, string Name)[] OldProps =
++    [
++        (0x0E7C, TutorialWorld.BankBox, "practice bank box")
++    ];
++
++    /// <summary>cc-P817: removes the props that stood where OldProps says (an older layout). Returns how many.</summary>
++    public static int MoveOldProps(Map map)
++    {
++        var gone = new List<Item>();
++        foreach (var (id, at, name) in OldProps)
++        {
++            foreach (var item in map.GetItemsInRange<Item>(TutorialWorld.Ground(map, at), 0))
++            {
++                if (!item.Deleted && item.ItemID == id && item.Name == name && item.X == at.X && item.Y == at.Y)
++                {
++                    gone.Add(item);
++                }
++            }
++        }
++
++        foreach (var item in gone)
++        {
++            item.Delete();
++        }
++
++        return gone.Count;
++    }
++
+     // The stops' props (all stock art, server items so P662's statics stay the map's own): id, spot, name.
+     public static readonly (int Id, Point2D At, string Name)[] Props =
+     [
+@@ -157,7 +193,7 @@ public static class TutorialCorePlacement
+         (0x0EC6, new Point2D(TutorialWorld.Rack.X, TutorialWorld.Rack.Y - 2), "clothes rack"),
+         (TableId, ClothesTable, "table"),
+         (SignpostId, ChatSignpost, ChatSignpostName),
+-        (0x0E7C, TutorialWorld.BankBox, "practice bank box"),
++        (0x0E7C, BankBoxSpot, "practice bank box"), // cc-P817: on the back wall with the vault chests
+         (SignpostId, LodgeSign, LodgeSignName) // cc-P751
+     ];
+ 
+@@ -260,13 +296,15 @@ public static class TutorialCorePlacement
+         if (!dryRun) { MoveOldMarkers(map); } // cc-P720: a rune on its stop becomes the sign beside it
+         if (!dryRun) { MoveChatSignpost(map); } // cc-P741: before the props are counted, so it is moved, not doubled
+         if (!dryRun) { TutorialFarm.MoveFromOldLayout(map); } // cc-P741: Tobin moved before he is looked for
++        if (!dryRun) { TutorialBankerVoice.FaceCounter(map); } // cc-P817: an already placed Merrin turned to his counter
++        if (!dryRun) { MoveOldProps(map); } // cc-P817: the practice bank box moved to the back wall
+         var markers = TutorialStations.Core.Where(s => FindMarker(s.Key, map) == null).ToArray();
+         var mobiles = new (Type Type, Point3D Spot, Func<Mobile> Make)[]
+         {
+             (typeof(TutorialGuide), Ground(TutorialWorld.Guide), () => new TutorialGuide { Direction = Direction.West }),
+             (typeof(TutorialDeathEcho), DeathSpot, () => new TutorialDeathEcho()),
+             (typeof(TutorialHealer), HealerSpot, () => new TutorialHealer()),
+-            (typeof(Banker), BankerSpot, () => new Banker { Name = "Merrin", CantWalk = true }),
++            (typeof(Banker), BankerSpot, () => new Banker { Name = "Merrin", CantWalk = true, Direction = TutorialBankerVoice.Facing }), // cc-P817: facing his counter's customer side
+             (typeof(LeagueRegistrar), ElaraSpot, () => new LeagueRegistrar { CantWalk = true }),
+             (typeof(TutorialVeterinarian), FarmVetSpot, () => new TutorialVeterinarian { Name = "Tobin", Direction = Direction.East })
+         }.Where(row => FindMobile(map, row.Type, row.Spot) == null).ToList();
+diff --git a/server/customizations/Tutorial/TutorialCoreTrials.cs b/server/customizations/Tutorial/TutorialCoreTrials.cs
+index 0b62e10..3e55c67 100644
+--- a/server/customizations/Tutorial/TutorialCoreTrials.cs
++++ b/server/customizations/Tutorial/TutorialCoreTrials.cs
+@@ -171,7 +171,7 @@ public static class TutorialCoreTrials
+         "core.backpack" => "Follow the arrow to the camp beside the road. 1. Open your character window: click your character once and choose Open Paperdoll in the small menu that appears (or double-click yourself). 2. In that window, double-click the backpack picture to open your backpack. 3. Inside your backpack, double-click the blue practice bag.",
+         "core.paperdoll" => "Follow the arrow to the table by the clothes rack: a chest appears there for you, with your blue cloak of the Wakening Isle inside. Double-click the chest to open it. To move a thing, click it, hold the left mouse button down, move the mouse, and let go: that is drag and drop. Drag the cloak onto your character's picture in the character window to wear it, or into your backpack and double-click it there. If you already wear a cloak, drag it into your backpack first. The cloak is yours to keep.",
+         "core.chat" => $"Follow the arrow to the signpost. Press Enter, type '{Phrase}', then press Enter again to speak. The Journal records what you say.",
+-        "core.farm" => "Follow the arrow east along the road to the farm gate and double-click Wren the Farmhand, who wears a straw hat. Hold the pitchfork she gives you and switch to war mode (press Tab), clear the pests in the cabbage rows, then go back to Wren: she gives you a pet of your own and teaches its commands.",
++        "core.farm" => "Follow the arrow back west along the road to the farm gate, past the farmhouse, and double-click Wren the Farmhand, who wears a straw hat. Hold the pitchfork she gives you and switch to war mode (press Tab), clear the pests in the cabbage rows, then go back to Wren: she gives you a pet of your own and teaches its commands.",
+         "core.healing" => "Follow the arrow into the farmhouse by the field: Pip, the farm boy, sits hurt on the bench inside. Double-click a bandage in your backpack (this lesson gives you some; more lie on the table beside Pip, or double-click Wren), then click Pip. A bandage takes a few seconds: stand still until you see 'You finish applying the bandages'.",
+         "core.death" => "Follow the arrow into the training yard to the pale gray rat, double-click it, and click Ready. After you die, double-click Sera beside it and click Resurrect to return to life.",
+         "core.banking" => "Follow the arrow through the practice bank's door in the trades square to Merrin the banker and say 'bank' to open your bank box. Drag the blue practice token, a small blue pile of coins in your backpack, into that box.",
+@@ -355,6 +355,8 @@ public static class TutorialCoreTrials
+         if (Current(pm) != trial) { trial.Timer.Cancel(); return; }
+         if (pm.Deleted || pm.NetState == null || !ClusterFTutorial.IsParticipant(pm)) { Cancel(pm); return; }
+         trial.Ticks++;
++        // cc-P817: Merrin says the bank lesson's next step to a trainee who comes near (TutorialBankerVoice).
++        if (trial.Station.Key == "core.banking" && trial.Progress.Step == 0) { TutorialBankerVoice.Speak(pm); }
+         switch (trial.Station.Key)
+         {
+             case "core.movement" when pm.Alive && Nearby(pm, Destination(trial), 0):
+diff --git a/server/customizations/Tutorial/TutorialFarm.cs b/server/customizations/Tutorial/TutorialFarm.cs
+index 8bf94dd..a0537e1 100644
+--- a/server/customizations/Tutorial/TutorialFarm.cs
++++ b/server/customizations/Tutorial/TutorialFarm.cs
+@@ -224,7 +224,7 @@ namespace Server.Tutorial
+         public const string ScratchAgainLine = "A rat nipped your ankle in the rows. Double-click a bandage again, then click yourself to treat it.";
+         public const string NoMoreBandagesLine = "I have no more free bandages for you. You can buy more from a healer in town.";
+         public const string NoRoomForBandagesLine = "Your backpack is too full for these bandages. Make room in it, then double-click me again.";
+-        public const string DoneLine = "You finished the farm lesson. If your bonded pet dies, bring its ghost to Tobin the vet beside me. While you are Young, he brings it back free. Pip, in the farmhouse, could use your help next.";
++        public const string DoneLine = "You finished the farm lesson. If your bonded pet dies, bring its ghost to Tobin the vet beside me. While you are Young, he brings it back free. Your last lesson is the moongate at the end of the dock, and your pet goes through it with you.";
+         public const string EchoPetLine = "This pet is yours to keep.";
+         public const string EchoPestsLine = "The cabbage rows are clear! Go back to Wren at the farm gate and double-click her.";
+         public const string EchoHealLine = "Your bandage restored health and finished the healing lesson.";
+@@ -367,7 +367,7 @@ namespace Server.Tutorial
+         /// <summary>The station's handler: a line and a quest arrow to the Farmhand.</summary>
+         public static void PointTo(PlayerMobile pm)
+         {
+-            ClusterFTutorial.SystemLine(pm, "Follow the arrow east along the road to the farm gate. Double-click Wren the Farmhand, who wears a straw hat and carries a pitchfork.");
++            ClusterFTutorial.SystemLine(pm, "Follow the arrow west along the road to the farm gate, past the farmhouse. Double-click Wren the Farmhand, who wears a straw hat and carries a pitchfork."); // cc-P817: from the standing stones
+             if (TutorialFarmhand.Find(TutorialWorld.MapOf(pm)) is { } hand && hand.Map == pm.Map)
+             {
+                 pm.QuestArrow = new GuildDirectionArrow(pm, hand, hand.Location, hand.Map, "Wren the Farmhand");
+@@ -380,6 +380,13 @@ namespace Server.Tutorial
+             var step = StepOf(pm);
+             TutorialCoreTrials.ClearNow(pm); // cc-P728: Wren gives the next step herself
+ 
++            // cc-P817: the healing lesson comes before the farm now; Wren still hands bandages for it (its hint says so).
++            if (step is >= 1 and <= 3 && TutorialCoreTrials.IsDoing(pm, HealingStationKey) && HealingOn(pm))
++            {
++                hand.SayTo(pm, WrenBandages(pm));
++                return 0;
++            }
++
+             // cc-P663: the farm is a core station; a trainee with earlier lessons left is sent back to them.
+             if (step is >= 1 and <= 3 && RecordOf(pm) is { } record && !ClusterFTutorial.IsDone(record, CoreStation) &&
+                 System.Linq.Enumerable.FirstOrDefault(ClusterFTutorial.CoreLeft(record)) is { } next && next.Key != CoreStation)
+diff --git a/server/customizations/Tutorial/TutorialStart.cs b/server/customizations/Tutorial/TutorialStart.cs
+index 7391c80..ad46a9e 100644
+--- a/server/customizations/Tutorial/TutorialStart.cs
++++ b/server/customizations/Tutorial/TutorialStart.cs
+@@ -22,8 +22,8 @@
+ // cc-P717 (Chase, 2026-10-28) made the account's first character take the isle, with New Haven unlocked per account.
+ // cc-P762 (Chase, 2026-11-01) replaced that with a shard-wide lock, one switch (NewCharacterRules, newCharacters.newHavenStart,
+ // false): while it is off, every new player character starts on the Wakening Isle, on every account, whatever the screen
+-// sends. The list's second entry is "New Haven (locked)" with its one line ("New Haven opens once the Wakening Isle is
+-// finished"), and Decide turns any pick into the isle. The account's tutorial record still runs once per account, so the
++// sends. The list's second entry was "New Haven (locked)" with its one line ("New Haven opens once the Wakening Isle is
++// finished"); cc-P817 sends the isle alone (Cities). Decide turns any pick into the isle. The account's tutorial record still runs once per account, so the
+ // isle start has two kinds:
+ //
+ //   | Account state (switch off)                         | Outcome                                                        |
+@@ -94,20 +94,16 @@ public static class TutorialStart
+     ];
+ 
+     /// <summary>
+-    /// cc-P762: the list for this account: both entries while New Haven's switch is on and for staff, otherwise the isle
+-    /// and New Haven shown locked with its one line.
++    /// cc-P762: the list for this account: both entries while New Haven's switch is on and for staff. cc-P817 (Chase
++    /// 2026-11-07: "I also want New Haven removed from map start"): otherwise the isle alone. P762 sent New Haven shown
++    /// locked; a client that still asks for a second entry (an old or third-party one) is refused by pinned's create
++    /// handler ("Invalid city selected during character creation.", IncomingAccountPackets.cs:156), and Decide turns any
++    /// pick into the isle as before. New Haven is reached through the isle's moongate, or the moongate skip (P762).
+     /// </summary>
+     public static CityInfo[] Cities(IAccount? account)
+     {
+         var cities = Cities();
+-        if (NewCharacterRules.HavenStartOpenFor(account))
+-        {
+-            return cities;
+-        }
+-
+-        var haven = cities[1];
+-        cities[1] = new CityInfo(LockedHavenCity, haven.Building, ShardClilocs.NewHavenLockedCity, haven.X, haven.Y, haven.Z, haven.Map);
+-        return cities;
++        return NewCharacterRules.HavenStartOpenFor(account) ? cities : [cities[0]];
+     }
+ 
+     public static Choice ChoiceOf(CityInfo? city) => city?.City switch
+diff --git a/server/customizations/Tutorial/TutorialStations.cs b/server/customizations/Tutorial/TutorialStations.cs
+index 49b46c7..21026ce 100644
+--- a/server/customizations/Tutorial/TutorialStations.cs
++++ b/server/customizations/Tutorial/TutorialStations.cs
+@@ -60,6 +60,10 @@ public static class TutorialStations
+         //    cc-P663: on the Wakening Isle, one line west to east (P481 11.2): the farm joins the core after chat, and
+         //    travel, the dock moongate out to New Haven, is last (ClusterFTutorial.IsDone counts an old travel key only
+         //    once the rest are done).
++        //    cc-P817 (Chase 11-07: "move evo dog/cat later in tutorial"; asked where, the last isle lesson): the farm, with
++        //    the pet pick, is the last lesson before the moongate, so the pet is the reward for finishing the isle. Pip's
++        //    healing stays where it stood, after chat, at the farmhouse by the chat signpost. Records hold done keys, not
++        //    positions: a trainee already past the farm keeps it done, and the pet is never offered twice (PetClaimed).
+         new("core.movement", TutorialWing.Core, "Walk and run", None, None, None,
+             ["Options", "Global Scaling", "Hotkeys"], null, "the bright tiles in the road, up from the beach"),
+         new("core.backpack", TutorialWing.Core, "Your backpack", None, None, None,
+@@ -68,9 +72,7 @@ public static class TutorialStations
+             ["Alternate Paperdoll", "Durability gump"], null, "the clothes rack"),
+         new("core.chat", TutorialWing.Core, "Speak and read your Journal", None, None, None,
+             ["Journal and filters", "TTF fonts", "Nameplates"], null, "the signpost at the meadow's edge"),
+-        new("core.farm", TutorialWing.Core, "The farm: pests, then your pet", None, None, None,
+-            ["Pet scaling", "Follow mode"], null, "the farm gate, with Wren the Farmhand"),
+-        // cc-P726 item 4: bandaging is its own lesson after the farm, at Pip on his bench in the farmhouse.
++        // cc-P726 item 4: bandaging is its own lesson, at Pip on his bench in the farmhouse (cc-P817: before the farm now).
+         new("core.healing", TutorialWing.Core, "Healing: bandage Pip", None, None, None,
+             [], null, "the farmhouse, where Pip sits hurt on a bench"),
+         new("core.death", TutorialWing.Core, "Death and resurrection", None, None, None,
+@@ -81,6 +83,9 @@ public static class TutorialStations
+             [], null, "the League lodge"),
+         new("core.loop", TutorialWing.Core, "Watch a loop vision", None, None, None,
+             ["Skill progress bar"], null, "the standing stones on the knoll"),
++        // cc-P817: the farm and the pet pick, last before the moongate.
++        new("core.farm", TutorialWing.Core, "The farm: pests, then your pet", None, None, None,
++            ["Pet scaling", "Follow mode"], null, "the farm gate, with Wren the Farmhand"),
+         new("core.travel", TutorialWing.Core, "Getting around", None, None, None,
+             ["World Map", "Macros"], null, "the moongate at the end of the dock"),
+ 
+diff --git a/server/customizations/Tutorial/TutorialWake.cs b/server/customizations/Tutorial/TutorialWake.cs
+index 57ff644..c3f1a2a 100644
+--- a/server/customizations/Tutorial/TutorialWake.cs
++++ b/server/customizations/Tutorial/TutorialWake.cs
+@@ -61,8 +61,13 @@ public static class TutorialWake
+     public const int HoldEverySeconds = 20;
+     // cc-P740: a dusk the trainee and the sand show in (P732's 24 was near night). Picked from TazUO shots of a new
+     // character (notes/cc-P740-isle-wake-visible.md).
+-    public const int DarkLight = 16;     // 0 day, 30 near black
+-    public static readonly int[] DawnLight = [10, 5]; // after the get-up, one a second
++    // cc-P817 (Chase 11-07, a fresh tester on update 11: "too dark on startup", his shot dim and gray): P740's 16 kept the
++    // whole lie dim, up to SafetySeconds when the trainee does not know to step yet, so the first minute read as night.
++    // Now only a touch of early-morning shade (BrightestWake at most), and one short dawn step; the isle itself is always
++    // day (FoldRegion.AlterLightLevel: LightCycle.DayLevel, whatever the shard clock says). Light elsewhere is untouched.
++    public const int DarkLight = 6;      // 0 day, 30 near black
++    public const int BrightestWake = 8;  // cc-P817: the wake is never darker than this
++    public static readonly int[] DawnLight = [3]; // after the get-up, one a second
+     // cc-P740: the get-up, the same animation backward from the ground at a slow pace (TazUO: 80 ms x (delay + 1) a
+     // frame, five frames, so about 2.4 s), sent again GetUpResend later (ClassicUO), and the seconds it is given before
+     // the dawn (moves refused meanwhile; the second-long tick makes it GetUpSeconds - 1 to GetUpSeconds).
+diff --git a/server/tests/Tutorial/TutorialIsleBandageWaitVerification.cs b/server/tests/Tutorial/TutorialIsleBandageWaitVerification.cs
+index fc0ece8..c189c6f 100644
+--- a/server/tests/Tutorial/TutorialIsleBandageWaitVerification.cs
++++ b/server/tests/Tutorial/TutorialIsleBandageWaitVerification.cs
+@@ -366,7 +366,7 @@ public class TutorialIsleBandageWaitVerification : IDisposable
+         Assert.True(TutorialWorld.IsOnIsle(p.Pm));
+         Assert.True(TutorialWake.IsLying(p.Pm));
+         Assert.False(p.Pm.Frozen); // cc-P732: held down by refusing their moves, not frozen
+-        Assert.True(TutorialWake.LightOf(p.Pm) > 10); // dark
++        Assert.Equal(TutorialWake.DarkLight, TutorialWake.LightOf(p.Pm)); // the wake's shade (cc-P817)
+ 
+         TutorialWake.Advance(p.Pm, 10);
+         Assert.True(TutorialWake.IsLying(p.Pm)); // still down
+diff --git a/server/tests/Tutorial/TutorialIslePetRewardVerification.cs b/server/tests/Tutorial/TutorialIslePetRewardVerification.cs
+index 3f2dca1..dcbfdd1 100644
+--- a/server/tests/Tutorial/TutorialIslePetRewardVerification.cs
++++ b/server/tests/Tutorial/TutorialIslePetRewardVerification.cs
+@@ -188,7 +188,8 @@ public class TutorialIslePetRewardVerification : IDisposable
+         Assert.True(TutorialFarm.CheckCommands(p.Pm));
+         Assert.Equal(4, TutorialFarm.StepOf(p.Pm));
+         Assert.Contains(TutorialFarm.CoreStation, p.Record.StationsDone);
+-        Assert.Equal(TutorialFarm.HealingStationKey, ClusterFTutorial.CoreLeft(p.Record).First().Key);
++        // cc-P817: the farm is the last lesson before the moongate; healing came before it, after chat.
++        Assert.Equal("core.travel", ClusterFTutorial.CoreLeft(p.Record).First().Key);
+     }
+ 
+     // ---------------------------------------------------------------- 2
+@@ -241,12 +242,16 @@ public class TutorialIslePetRewardVerification : IDisposable
+         TutorialFarm.IsTestShard = () => true;
+         TutorialTestStart.FreeAllCopies();
+         using var p = new Player();
+-        AtTheFarm(p);
++        // cc-P817: healing comes after chat, before the farm (which is last before the moongate).
++        TutorialTestStart.Begin(p.Pm);
++        TutorialWake.OnMoveRequest(p.Pm);
++        TutorialTestStart.DoneBefore(p.Pm, TutorialFarm.HealingStationKey);
+         var map = TutorialWorld.MapOf(p.Pm)!;
+ 
+-        // The station, after the farm; Pip on his bench in the farmhouse with blood around him.
++        // The station, after chat; Pip on his bench in the farmhouse with blood around him.
+         var core = TutorialStations.Core.Select(s => s.Key).ToList();
+-        Assert.Equal(core.IndexOf(TutorialFarm.CoreStation) + 1, core.IndexOf(TutorialFarm.HealingStationKey));
++        Assert.Equal(core.IndexOf("core.chat") + 1, core.IndexOf(TutorialFarm.HealingStationKey));
++        Assert.True(core.IndexOf(TutorialFarm.CoreStation) > core.IndexOf(TutorialFarm.HealingStationKey));
+         var pip = TutorialFarm.FindPip(map);
+         Assert.NotNull(pip);
+         Assert.Equal(TutorialFarm.PipBench, pip!.Location);
+@@ -254,13 +259,8 @@ public class TutorialIslePetRewardVerification : IDisposable
+         Assert.Equal(3, StaticsAt(map, TutorialFarm.PipBench, 1).Count(s => s.Name == "blood"));
+         Assert.Equal(TutorialFarm.PipBench, TutorialCorePlacement.Spot(TutorialFarm.HealingStationKey));
+ 
+-        // Not before the farm is done.
++        // Not before its lesson starts.
+         Assert.False(TutorialFarm.HealingOn(p.Pm));
+-        p.Record.PetClaimed = true;
+-        p.Record.StationsDone.UnionWith([TutorialFarm.PestsKey, TutorialFarm.FollowKey, TutorialFarm.GuardKey]);
+-        TutorialFarm.CheckDone(p.Pm);
+-        Assert.Contains(TutorialFarm.CoreStation, p.Record.StationsDone);
+-        Assert.DoesNotContain(TutorialFarm.HealKey, p.Record.StationsDone); // the farm no longer heals
+ 
+         // The lesson: bandages and the arrow to Pip; a heal finishes it.
+         ClusterFTutorial.RunStation(p.Pm, TutorialStations.Find(TutorialFarm.HealingStationKey)!);
+diff --git a/server/tests/Tutorial/TutorialIsleVerification.cs b/server/tests/Tutorial/TutorialIsleVerification.cs
+index 598476d..c24499d 100644
+--- a/server/tests/Tutorial/TutorialIsleVerification.cs
++++ b/server/tests/Tutorial/TutorialIsleVerification.cs
+@@ -186,8 +186,9 @@ public class TutorialIsleVerification : IDisposable
+     public void TheCoreRunsWestToEastWithTheFarmAndTravelLast()
+     {
+         Assert.Equal(
+-            ["core.movement", "core.backpack", "core.paperdoll", "core.chat", "core.farm", "core.healing", "core.death", "core.banking",
+-             "core.league", "core.loop", "core.travel"],
++            // cc-P817: the farm (with the pet pick) moved to last before the moongate; healing stays after chat.
++            ["core.movement", "core.backpack", "core.paperdoll", "core.chat", "core.healing", "core.death", "core.banking",
++             "core.league", "core.loop", "core.farm", "core.travel"],
+             TutorialStations.Core.Select(s => s.Key).ToArray());
+ 
+         using var t = new Trainees();
+@@ -205,13 +206,13 @@ public class TutorialIsleVerification : IDisposable
+         ClusterFTutorial.RunStation(pm, TutorialStations.Find("core.farm")!);
+         Assert.Null(TutorialCoreTrials.Current(pm));
+ 
+-        foreach (var key in new[] { "core.chat", "core.farm", "core.healing", "core.death", "core.banking", "core.league" })
++        foreach (var key in new[] { "core.chat", "core.healing", "core.death", "core.banking", "core.league", "core.loop" })
+         {
+             Play(pm, key);
+             Assert.False(ClusterFTutorial.CoreDone(t.Record));
+         }
+ 
+-        Play(pm, "core.loop");
++        Play(pm, "core.farm"); // cc-P817: the farm last before the moongate
+         // The old travel key counts now that the rest are done: no lesson repeated, the core finished.
+         Assert.True(ClusterFTutorial.IsDone(t.Record, "core.travel"));
+         Assert.True(ClusterFTutorial.CoreDone(t.Record));
+@@ -671,14 +672,71 @@ public class TutorialIsleVerification : IDisposable
+     // ---------------------------------------------------------------- cc-P762: the new-character lockdown
+ 
+     [Fact]
+-    public void P762_APlayerAccountSeesNewHavenLockedWithItsOneLine()
++    public void P762_APlayerAccountSeesOnlyTheIsle()
+     {
++        // cc-P817 (Chase: "I also want New Haven removed from map start"): P762 showed New Haven locked; now the isle alone.
+         using var locked = new Switches();
+         using var t = new Trainees();
+         var cities = Server.Engines.CharacterCreation.CharacterCreation.GetStartingCities(t.Account);
+-        Assert.Equal([TutorialStart.IsleCity, TutorialStart.LockedHavenCity], cities.Select(c => c.City).ToArray());
+-        Assert.Equal([ShardClilocs.TutorialIslandCity, ShardClilocs.NewHavenLockedCity], cities.Select(c => c.Description).ToArray());
+-        Assert.Equal(TutorialStart.Choice.Isle, TutorialStart.ChoiceOf(cities[1])); // the locked entry is the isle
++        Assert.Equal([TutorialStart.IsleCity], cities.Select(c => c.City).ToArray());
++        Assert.Equal([ShardClilocs.TutorialIslandCity], cities.Select(c => c.Description).ToArray());
++        // An old list's locked entry still reads as the isle, should one come back.
++        Assert.Equal(TutorialStart.Choice.Isle, TutorialStart.ChoiceOf(new CityInfo(TutorialStart.LockedHavenCity, "", 0, 0, 0, 0, Map.Trammel)));
++    }
++
++    // ---------------------------------------------------------------- cc-P817: creation (Chase 11-07, update 11)
++
++    // Item 3: the start map is the isle alone for a player account; staff still see New Haven as well.
++    [Fact]
++    public void P817_TheStartMapIsTutorialIslandAloneAndStaffKeepBoth()
++    {
++        using var locked = new Switches();
++        using var t = new Trainees();
++        Assert.Equal(["Tutorial Island"], CityNames(t.Account));
++
++        var staff = new Account($"p817s{Guid.NewGuid():N}"[..16], "p817-test-only") { AccessLevel = AccessLevel.GameMaster };
++        try
++        {
++            Assert.Equal(["Tutorial Island", "New Haven"], CityNames(staff));
++        }
++        finally
++        {
++            staff.Delete();
++        }
++    }
++
++    // Item 1: an old or third-party client that asks for an elf or a gargoyle gets a Human, and is told.
++    [Theory]
++    [InlineData("Elf")]
++    [InlineData("Gargoyle")]
++    public void P817_AnElfOrGargoyleAskedForIsMadeHuman(string asked)
++    {
++        using var locked = new Switches();
++        using var t = new Trainees();
++        var race = asked == "Elf" ? Race.Elf : Race.Gargoyle;
++        Assert.Same(Race.Human, NewCharacterRules.RaceFor(t.Account, race, out var refused));
++        Assert.True(refused);
++        Assert.Same(Race.Human, NewCharacterRules.RaceFor(t.Account, Race.Human, out refused));
++        Assert.False(refused);
++    }
++
++    // Item 2 (isle release): the trade choice, the stock Blacksmith (profession 3), makes no character; staff are exempt.
++    [Fact]
++    public void P817_TheTradeProfessionIsRefused()
++    {
++        using var t = new Trainees();
++        Assert.True(NewCharacterRules.ProfessionRefused(t.Account, 3));
++        Assert.False(NewCharacterRules.ProfessionRefused(t.Account, 1)); // the Warrior still is
++        Assert.False(NewCharacterRules.ProfessionRefused(t.Account, 2)); // and the Mage
++        var staff = new Account($"p817s{Guid.NewGuid():N}"[..16], "p817-test-only") { AccessLevel = AccessLevel.GameMaster };
++        try
++        {
++            Assert.False(NewCharacterRules.ProfessionRefused(staff, 3));
++        }
++        finally
++        {
++            staff.Delete();
++        }
+     }
+ 
+     [Fact]
+@@ -744,7 +802,7 @@ public class TutorialIsleVerification : IDisposable
+         // [ResetMyAccount and [ClusterFReset both run ExecuteReset; its "account flags" box clears the tutorial record too.
+         ClusterFDevTools.ExecuteReset(first, first, t.Account, new ResetOptions { Flags = true });
+         Assert.Equal(TutorialState.NotStarted, t.Record.State);
+-        Assert.Equal([TutorialStart.IsleCity, TutorialStart.LockedHavenCity], CityNames(t.Account));
++        Assert.Equal([TutorialStart.IsleCity], CityNames(t.Account)); // cc-P817: the isle alone
+ 
+         var next = t.Add();
+         Create(next, TutorialStart.Choice.Haven);
+@@ -819,7 +877,7 @@ public class TutorialIsleVerification : IDisposable
+ 
+         using (new Switches(races: "Human, Elf"))
+         {
+-            Assert.Equal([TutorialStart.IsleCity, TutorialStart.LockedHavenCity], CityNames(t.Account));
++            Assert.Equal([TutorialStart.IsleCity], CityNames(t.Account)); // cc-P817: the isle alone
+             Assert.Same(Race.Elf, NewCharacterRules.RaceFor(t.Account, Race.Elf, out var refused));
+             Assert.False(refused);
+             Assert.Same(Race.Human, NewCharacterRules.RaceFor(t.Account, Race.Gargoyle, out _));
+diff --git a/server/tests/Tutorial/TutorialIsleWakeVisibleVerification.cs b/server/tests/Tutorial/TutorialIsleWakeVisibleVerification.cs
+index 9197d22..85b93a4 100644
+--- a/server/tests/Tutorial/TutorialIsleWakeVisibleVerification.cs
++++ b/server/tests/Tutorial/TutorialIsleWakeVisibleVerification.cs
+@@ -98,11 +98,8 @@ public class TutorialIsleWakeVisibleVerification : IDisposable
+         TutorialTestStart.FreeAllCopies();
+         TutorialTestStart.Begin(p.Pm);
+         TutorialWake.Stand(p.Pm, true);
+-        TutorialTestStart.ToTheFarm(p.Pm);
+-        ClusterFTutorial.RunStation(p.Pm, TutorialStations.Find(TutorialFarm.CoreStation)!);
+-        p.Record.PetClaimed = true;
+-        p.Record.StationsDone.UnionWith([TutorialFarm.PestsKey, TutorialFarm.FollowKey, TutorialFarm.GuardKey]);
+-        TutorialFarm.CheckDone(p.Pm);
++        // cc-P817: the healing lesson comes after chat now, before the farm.
++        TutorialTestStart.DoneBefore(p.Pm, TutorialFarm.HealingStationKey);
+         ClusterFTutorial.RunStation(p.Pm, TutorialStations.Find(TutorialFarm.HealingStationKey)!);
+         Assert.True(TutorialCoreTrials.IsDoing(p.Pm, TutorialFarm.HealingStationKey));
+         Assert.True(TutorialFarm.HealingOn(p.Pm));
+@@ -226,7 +223,7 @@ public class TutorialIsleWakeVisibleVerification : IDisposable
+         Assert.Contains("table beside Pip", TutorialFarm.WrenBandageHintLine);
+ 
+         // Double-clicked, she hands more (the lesson's first stack was one of BandageIssues).
+-        Assert.Equal(4, TutorialFarm.Talk(p.Pm, wren!));
++        Assert.Equal(0, TutorialFarm.Talk(p.Pm, wren!)); // cc-P817: before the farm now, her answer is the bandages, no farm step
+         Assert.True(Bandages(p.Pm) > 0);
+         Assert.Equal(TutorialFarm.WrenHasBandagesLine, TutorialFarm.WrenBandages(p.Pm));
+ 
+diff --git a/server/tests/Tutorial/TutorialIsleWalkFixes2Verification.cs b/server/tests/Tutorial/TutorialIsleWalkFixes2Verification.cs
+index de1ab98..cb7154b 100644
+--- a/server/tests/Tutorial/TutorialIsleWalkFixes2Verification.cs
++++ b/server/tests/Tutorial/TutorialIsleWalkFixes2Verification.cs
+@@ -381,4 +381,169 @@ public class TutorialIsleWalkFixes2Verification : IDisposable
+         board.OnDoubleClick(p.Pm);
+         Assert.True(p.Pm.HasGump<LeagueRegistrarGump>());
+     }
++
++    // ---------------------------------------------------------------- cc-P817 (Chase 11-07, update 11)
++
++    // Item 5: the farm, with the pet pick, is the last lesson before the moongate; Pip's healing stays after chat.
++    [Fact]
++    public void P817_TheFarmIsTheLastLessonBeforeTheMoongate()
++    {
++        Assert.Equal(
++            new[]
++            {
++                "core.movement", "core.backpack", "core.paperdoll", "core.chat", "core.healing", "core.death",
++                "core.banking", "core.league", "core.loop", "core.farm", "core.travel"
++            },
++            TutorialStations.Core.Select(s => s.Key).ToArray());
++    }
++
++    // Item 5: a trainee past the farm keeps it done, so the farm (and the pet) is never asked again; and one who has
++    // played up to it is sent there next, with the moongate after it.
++    [Fact]
++    public void P817_AFarmDoneEarlierIsNotAskedAgainAndTheFarmComesAfterTheStones()
++    {
++        using var p = new Player();
++        TutorialTestStart.Begin(p.Pm);
++        p.Record.StationsDone.Add("core.farm"); // under the old order the farm came after chat
++        p.Record.PetClaimed = true;
++        Assert.DoesNotContain(ClusterFTutorial.CoreLeft(p.Record), s => s.Key == "core.farm");
++
++        using var q = new Player();
++        TutorialTestStart.Begin(q.Pm);
++        PlayCoreUntil(q.Pm, "core.farm");
++        Assert.Equal(["core.farm", "core.travel"], ClusterFTutorial.CoreLeft(q.Record).Select(s => s.Key).ToArray());
++    }
++
++    // Item 5: the healing lesson now comes before the farm; its hint says Wren has more bandages, and she gives them.
++    [Fact]
++    public void P817_WrenHandsBandagesDuringTheHealingLessonBeforeTheFarm()
++    {
++        Seed();
++        using var p = new Player();
++        TutorialTestStart.Begin(p.Pm);
++        PlayCoreUntil(p.Pm, "core.healing");
++        ClusterFTutorial.RunStation(p.Pm, TutorialStations.Find("core.healing")!);
++        foreach (var b in p.Pm.Backpack!.Items.OfType<Bandage>().ToList())
++        {
++            b.Delete();
++        }
++
++        var wren = TutorialFarmhand.Find(TutorialWorld.MapOf(p.Pm));
++        Assert.NotNull(wren);
++        TutorialFarm.Talk(p.Pm, wren!);
++        Assert.NotNull(p.Pm.Backpack.FindItemByType<Bandage>());
++    }
++
++    // Item 6: Merrin faces his counter's customer side (south, toward the door), and seeding turns one placed before.
++    [Fact]
++    public void P817_TheBankerFacesHisCounterAndSeedingTurnsAnOldOne()
++    {
++        Seed();
++        var banker = BankerOn(TutorialWorld.Isle);
++        Assert.NotNull(banker);
++        Assert.Equal(Direction.South, banker!.Direction & Direction.Mask);
++
++        banker.Direction = Direction.North; // as cc-P720 left him: at the vault chests on the back wall
++        Seed();
++        Assert.Equal(Direction.South, banker.Direction & Direction.Mask);
++    }
++
++    // Item 6: near Merrin on the bank lesson, he says the next step, then not again until the pause is over.
++    [Fact]
++    public void P817_MerrinSaysTheNextStepNearbyAndWaitsBeforeSayingItAgain()
++    {
++        Seed();
++        using var p = new Player();
++        TutorialTestStart.Begin(p.Pm);
++        PlayCoreUntil(p.Pm, "core.banking");
++        var isle = TutorialWorld.Isle; // the seeded isle (this harness does not seed the trainee's own copy)
++        Assert.NotNull(BankerOn(isle));
++        TutorialBankerVoice.Forget(p.Pm);
++        p.Pm.MoveToWorld(new Point3D(6762, 3978, 0), isle); // inside, on the carpet before the counter
++        Assert.Equal(TutorialBankerVoice.OpenLine, TutorialBankerVoice.Speak(p.Pm));
++        Assert.Null(TutorialBankerVoice.Speak(p.Pm)); // not again at once
++        ShardTestClock.Advance(TutorialBankerVoice.VoicePause + TimeSpan.FromSeconds(1));
++        Assert.Equal(TutorialBankerVoice.OpenLine, TutorialBankerVoice.Speak(p.Pm));
++        Assert.Contains("'bank'", TutorialBankerVoice.OpenLine);
++
++        p.Pm.BankBox.Open();
++        Assert.Equal(TutorialBankerVoice.DepositLine, TutorialBankerVoice.LineFor(p.Pm));
++        Assert.Contains("practice token", TutorialBankerVoice.DepositLine);
++
++        // The lesson's own tick says it: started and walked in, the trainee has heard him (so a direct ask is spent).
++        TutorialBankerVoice.Forget(p.Pm);
++        p.Pm.MoveToWorld(TutorialWorld.Ground(isle, TutorialWorld.BankStop), isle);
++        ClusterFTutorial.RunStation(p.Pm, TutorialStations.Find("core.banking")!);
++        p.Pm.MoveToWorld(new Point3D(6762, 3978, 0), isle);
++        ShardTestClock.Advance(TimeSpan.FromSeconds(0.6));
++        Assert.Null(TutorialBankerVoice.Speak(p.Pm));
++
++        // Far away, nothing.
++        TutorialBankerVoice.Forget(p.Pm);
++        p.Pm.MoveToWorld(TutorialWorld.Ground(isle, TutorialWorld.LodgeStop), isle);
++        Assert.Null(TutorialBankerVoice.Speak(p.Pm));
++    }
++
++    // Item 7: the practice bank box stands on the back wall with the vault chests (not mid-floor), and an old one goes.
++    [Fact]
++    public void P817_ThePracticeBankBoxStandsOnTheBackWallAndAnOldOneIsTakenAway()
++    {
++        var old = new Static(0x0E7C) { Name = "practice bank box" };
++        old.MoveToWorld(TutorialWorld.Ground(TutorialWorld.Isle, new Point2D(6760, 3975)), TutorialWorld.Isle);
++        Seed();
++        Assert.True(old.Deleted);
++        Assert.DoesNotContain(ItemsAt<Static>(TutorialWorld.Ground(TutorialWorld.Isle, new Point2D(6760, 3975))), i => i.ItemID == 0x0E7C);
++        Assert.Single(ItemsAt<Static>(TutorialWorld.Ground(TutorialWorld.Isle, new Point2D(6761, 3973))), i => i.ItemID == 0x0E7C && i.Name == "practice bank box");
++    }
++
++    // Item 7 (guide 6): the bank lesson's sign stands off the road and off the paved apron before the door, north of the
++    // road at the bank's south-west corner; a sign seeded at the old spot moves there.
++    [Fact]
++    public void P817_TheBankSignStandsOffTheRoadAndTheApron()
++    {
++        var at = TutorialCorePlacement.SignPoint("core.banking");
++        Assert.Equal(new Point2D(6757, 3982), at);
++        Assert.False(at.X is >= 6759 and <= 6765 && at.Y is >= 3981 and <= 3982, "not on the apron before the door");
++        Seed();
++        var marker = TutorialCorePlacement.FindMarker("core.banking");
++        Assert.NotNull(marker);
++        Assert.Equal(at.X, marker!.X);
++        Assert.Equal(at.Y, marker.Y);
++    }
++
++    // Item 4: the wake is never darker than a light shade, and the isle stays day while the shard clock is at night.
++    [Fact]
++    public void P817_TheWakeIsBrightAndTheIsleIsDayAtAnyHour()
++    {
++        Assert.InRange(TutorialWake.DarkLight, 0, 8);
++        Assert.All(TutorialWake.DawnLight, l => Assert.InRange(l, 0, TutorialWake.DarkLight));
++
++        using var p = new Player();
++        p.Pm.MoveToWorld(TutorialWorld.Arrival, TutorialWorld.Isle);
++        var region = Region.Find(TutorialWorld.Arrival, TutorialWorld.Isle);
++        var global = LightCycle.NightLevel;
++        var personal = 0;
++        region.AlterLightLevel(p.Pm, ref global, ref personal);
++        Assert.Equal(LightCycle.DayLevel, global);
++
++        Assert.True(TutorialWake.Play(p.Pm));
++        Assert.InRange(TutorialWake.LightOf(p.Pm) ?? 99, 0, 8);
++        global = LightCycle.NightLevel;
++        region.AlterLightLevel(p.Pm, ref global, ref personal);
++        Assert.InRange(global, 0, 8);
++        TutorialWake.Advance(p.Pm, TutorialWake.SafetySeconds + 1);
++    }
++
++    private static Banker? BankerOn(Map map)
++    {
++        foreach (var m in map.GetMobilesInRange(TutorialWorld.Ground(map, TutorialWorld.Banker), 2))
++        {
++            if (m is Banker b && !b.Deleted)
++            {
++                return b;
++            }
++        }
++
++        return null;
++    }
+ }
+diff --git a/server/tests/Tutorial/TutorialIsleWalkFixes4Verification.cs b/server/tests/Tutorial/TutorialIsleWalkFixes4Verification.cs
+index b0441b2..713a4ad 100644
+--- a/server/tests/Tutorial/TutorialIsleWalkFixes4Verification.cs
++++ b/server/tests/Tutorial/TutorialIsleWalkFixes4Verification.cs
+@@ -129,6 +129,12 @@ public class TutorialIsleWalkFixes4Verification : IDisposable
+         "core.paperdoll" => [TutorialAction.Equipped],
+         "core.backpack" => [TutorialAction.OpenedPaperdoll, TutorialAction.OpenedBag],
+         "core.chat" => [TutorialAction.SaidPhrase],
++        // cc-P817: the farm comes last before the moongate now, so playing up to it plays these too.
++        "core.healing" => [TutorialAction.Healed],
++        "core.death" => [TutorialAction.EchoDeath, TutorialAction.HealerOffer, TutorialAction.Resurrected],
++        "core.banking" => [TutorialAction.Deposited],
++        "core.league" => [TutorialAction.TalkedToLeague],
++        "core.loop" => [TutorialAction.VisionStarted, TutorialAction.VisionFinished],
+         _ => throw new InvalidOperationException(key)
+     };
+ 
+@@ -215,12 +221,12 @@ public class TutorialIsleWalkFixes4Verification : IDisposable
+         TutorialTestStart.Begin(p.Pm);
+         Assert.True(TutorialWake.IsLying(p.Pm));
+         Assert.False(p.Pm.Frozen); // cc-P732: not frozen, so the real client sends the move that gets them up
+-        Assert.True(TutorialWake.LightOf(p.Pm) > 10); // dark
++        Assert.Equal(TutorialWake.DarkLight, TutorialWake.LightOf(p.Pm)); // the wake's shade (cc-P817: light, not dark)
+         Assert.Equal(1, TutorialWake.PosesSent(p.Pm)); // cc-P732: the lying pose
+ 
+         TutorialWake.Advance(p.Pm, TutorialWake.HintSeconds);
+         Assert.True(TutorialWake.IsLying(p.Pm));
+-        Assert.True(TutorialWake.LightOf(p.Pm) > 10); // cc-P732: still dark while they lie
++        Assert.Equal(TutorialWake.DarkLight, TutorialWake.LightOf(p.Pm)); // cc-P732: the same while they lie
+         Assert.Equal(2, TutorialWake.PosesSent(p.Pm)); // and the pose again a second in
+         Assert.Contains("get up", TutorialWake.MoveHintLine); // cc-P769: it says how, too (PlaytesterNotesVerification)
+         TutorialWake.Advance(p.Pm, 30);
+@@ -302,7 +308,8 @@ public class TutorialIsleWalkFixes4Verification : IDisposable
+     [Fact]
+     public void TheDuskShowsThemLyingAndTheGetUpPlaysBeforeTheLightAndTheWindows()
+     {
+-        Assert.InRange(TutorialWake.DarkLight, 12, 18); // a dusk (P732's 24 hid the trainee in TazUO)
++        // cc-P817 (Chase 11-07: "too dark on startup"): P740's dusk of 12-18 read as night; a light shade now.
++        Assert.InRange(TutorialWake.DarkLight, 1, TutorialWake.BrightestWake);
+         Assert.True(TutorialWake.DawnLight[0] < TutorialWake.DarkLight);
+         Assert.InRange(5 * 80 * (TutorialWake.GetUpDelay + 1), 2000, 3000); // TazUO: five frames up, 2 to 3 s
+         // The dawn waits for it, sent again GetUpResend later (ClassicUO): the rise lasts at least GetUpSeconds - 1 s.
+diff --git a/server/tests/Tutorial/TutorialTestStart.cs b/server/tests/Tutorial/TutorialTestStart.cs
+index 9725927..66c24b5 100644
+--- a/server/tests/Tutorial/TutorialTestStart.cs
++++ b/server/tests/Tutorial/TutorialTestStart.cs
+@@ -49,13 +49,24 @@ internal static class TutorialTestStart
+         TutorialCopies.Waiting.Clear();
+     }
+ 
+-    /// <summary>Marks the four lessons before the farm done: Wren answers a trainee only at core.farm or later.</summary>
+-    public static void ToTheFarm(PlayerMobile pm)
++    /// <summary>
++    /// Marks every core lesson before the farm done: Wren answers a trainee only at core.farm or later. cc-P817: from the
++    /// station order (the farm moved from after chat to last before the moongate), not a fixed list.
++    /// </summary>
++    public static void ToTheFarm(PlayerMobile pm) => DoneBefore(pm, "core.farm");
++
++    /// <summary>cc-P817: marks every core lesson before <paramref name="key"/> done, in the station order.</summary>
++    public static void DoneBefore(PlayerMobile pm, string key)
+     {
+         var record = ClusterFTutorial.RecordOf(pm)!;
+-        foreach (var key in new[] { "core.movement", "core.backpack", "core.paperdoll", "core.chat" })
++        foreach (var station in TutorialStations.Core)
+         {
+-            record.StationsDone.Add(key);
++            if (station.Key == key)
++            {
++                return;
++            }
++
++            record.StationsDone.Add(station.Key);
+         }
+     }
+ }
