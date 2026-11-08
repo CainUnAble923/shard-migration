@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-25. Shard version 2026.11.08. Golem on, 4 queued, latest done P9772. Play tests: 1541 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-25. Shard version 2026.11.08. Golem on, 6 queued, latest done P9772. Play tests: 1543 open, 4 failed, 43 passed.
 
 ### Needs overseer review (13)
 
@@ -79,7 +79,7 @@ Judgment reviewed 2026-10-25. Shard version 2026.11.08. Golem on, 4 queued, late
 - **gate No live gap a player would call a bug**: Last confirmed 2026-10-25 (14 days ago). Re-read its sources; still not met? `python tools/judge.py confirm gate "No live gap a player would call a bug"` or `python tools/judge.py gate "No live gap a player would call a bug" --done yes --detail "..."`
 - **gate The fresh-world wipe is ready**: Last confirmed 2026-10-25 (14 days ago). Re-read its sources; still not met? `python tools/judge.py confirm gate "The fresh-world wipe is ready"` or `python tools/judge.py gate "The fresh-world wipe is ready" --done yes --detail "..."`
 - **shard status**: Last confirmed 2026-10-25: "the test shard is the only shard: live was retired and deleted on 2026-10-14 until the fresh 1.0 world, and the launcher's Play button now connects to the test shard (2026.10.24.2); the test shard (2594, up) runs sl-modernuo:latest, built 2026-10-23 from main 0f1871f (version 2026.10.23.2), while main is 2026.10.25.7, 33 merges ahead; the overnight bot tests the newest main on its own world copy each night; which player package is published is not visible from the repos". Still what runs? `python tools/judge.py status "..."` or `python tools/judge.py confirm status`
-- **play tests not sorted**: 1098 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
+- **play tests not sorted**: 1100 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
 
 ## Port list: 6 of 16 systems in. 833 of 983 files (85%).
 
@@ -239,24 +239,26 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 713 prompts done, 5 more stopped early and not counted)
+### Queue (Golem on; 714 prompts done, 5 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
 | P830 cont-fixup-playtest-bot-checks-first | queued |  |
-| P834 review-build-isle-bandage-healing | queued |  |
 | P835 review-build-isle-pet-reward-and-pet-info | queued |  |
 | P839 review-build-isle-notes-2 | queued |  |
+| P840 cont-fixup-port-wrong-and-covetous-void | queued |  |
+| P842 review-build-fixup-jail | queued |  |
+| P843 review-build-build-guard-patrols-pilot | queued |  |
 | P9772 remote-answer-test | done | 2026-11-02 |
 | P9770 run-next-test | done | 2026-11-02 |
 | P836 review-build-league-building-deco | done | 2026-11-08 |
+| P834 review-build-isle-bandage-healing | done | 2026-11-08 |
 | P833 review-build-build-guard-patrols-pilot | done | 2026-11-08 |
 | P832 cont-fixup-quest-markers-keys-gates | done | 2026-11-08 |
 | P831 cont-fixup-high-seas-fishing-second-half | done | 2026-11-08 |
 | P829 review-build-port-wrong-and-covetous-void | done | 2026-11-08 |
 | P828 review-build-fixup-jail | done | 2026-11-08 |
 | P826 review-build-isle-notes-2 | done | 2026-11-08 |
-| P825 review-build-creation-and-wake | done | 2026-11-08 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 198 patches, 12 replacements
 
