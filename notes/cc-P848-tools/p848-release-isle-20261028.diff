@@ -1,0 +1,1852 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 6bd9154..920456a 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -29,6 +29,16 @@ Example:
+ - Restoring a Jacob's Pickaxe no longer refuses ingots kept in your bank.
+ -->
+ 
++## 2026.11.08.2
++
++### Changed
++- The Name Colors lesson now happens in a new New Haven jail: click five people to learn the colors, take from a marked crate and see your own name turn gray (no real penalty), read your karma and fame in the warden's ledger, and call the guards on a thief.
++
++### Fixed
++- The New Haven jail's south-west corner no longer shows a stub of wall, no torch hangs on a window, and the marked crate stands in the hall where you can see it.
++- The New Haven jail's cells now have closed fronts: the bars run in one line with the gates instead of showing as stubs, the cell walls meet the bars without a gap, and the hall's candelabra no longer stands in front of a cell gate.
++- New Haven's housing lesson no longer sends you into the jail: its second stop and its signpost stand on open lawn outside, and the signpost that stood in the jail hall is gone.
++
+ ## 2026.11.08.1
+ 
+ ### Changed
+diff --git a/VERSION b/VERSION
+index bab3171..692d0d5 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-2026.11.08.1
+\ No newline at end of file
++2026.11.08.2
+diff --git a/docker/uo/apply-patches.sh b/docker/uo/apply-patches.sh
+index 20ada0f..ff16595 100644
+--- a/docker/uo/apply-patches.sh
++++ b/docker/uo/apply-patches.sh
+@@ -1022,6 +1022,8 @@ apply_patch "$PATCHES/MLQuestEntry-quest-milestones.patch"
+ # Notes: shard-migration/notes/cc-P763-cont-loot-boxes-diversified.md; pinned by LootBoxDiversityVerification.
+ apply_patch "$PATCHES/Fishing-loot-box-firsts.patch"
+ apply_patch "$PATCHES/SetToDecorativeGump-loot-box-herbalist.patch"
++# cc-P801: the jail lesson's name colors, one call at the top of MobileNotoriety.
++apply_patch "$PATCHES/Notoriety-lesson-shown-color.patch"
+ 
+ 
+ # cc-P804 (F-51): the Herbalism skill and the reagent lane. Last: the lane's context includes the raised bed hooks above.
+diff --git a/server/customizations/Tutorial/HavenSpots.cs b/server/customizations/Tutorial/HavenSpots.cs
+index 6546239..2c701c4 100644
+--- a/server/customizations/Tutorial/HavenSpots.cs
++++ b/server/customizations/Tutorial/HavenSpots.cs
+@@ -69,6 +69,15 @@ public static class HavenSpots
+     /// <summary>New Haven's public moongate (pinned PublicMoongate.cs:194), the travel tour's first stop.</summary>
+     public static readonly Point3D PublicMoongate = new(3450, 2677, 25);
+ 
++    /// <summary>cc-P801: the jail's north-west wall post (the open yard inside the palisade; the land runs Z 8 to 10).</summary>
++    public static readonly Point3D JailPost = new(3469, 2597, 11);
++
++    /// <summary>cc-P801: the jail's floor, above the land's highest tile.</summary>
++    public const int JailFloorZ = 11;
++
++    /// <summary>cc-P801: the jail's place in words.</summary>
++    public const string JailWhere = "the New Haven jail, the stone building inside the palisade, south-west of the plaza";
++
+     /// <summary>The town healer's spawner (pinned Vendors.json; ClusterFNewHavenServicesSeeder).</summary>
+     public static readonly Point3D Healer = new(3462, 2559, 35);
+ 
+diff --git a/server/customizations/Tutorial/NewHavenLessons.cs b/server/customizations/Tutorial/NewHavenLessons.cs
+index 70ad6a2..8a30c0a 100644
+--- a/server/customizations/Tutorial/NewHavenLessons.cs
++++ b/server/customizations/Tutorial/NewHavenLessons.cs
+@@ -73,12 +73,12 @@ namespace Server.Tutorial
+         ];
+ 
+         /// <summary>The housing lesson's first two stops (the third is the bank).</summary>
+-        public static Point3D HousingStop(int i) => i == 0 ? Ground(3470, 2590) : Ground(3474, 2603); // cc-P806: on the street, in sight of the cottage, its sign north of the street; the flat lawn past it
++        public static Point3D HousingStop(int i) => i == 0 ? Ground(3470, 2590) : Ground(3482, 2623); // cc-P806: on the street, in sight of the cottage, its sign north of the street. cc-P848: stop 2 was 3474,2603, inside the jail (P801); now the flat open lawn south of the town wall, east of the south road
+ 
+         public const string HousingStop1 =
+             "Stop 1 of 3: the thatched cottage across the street, south-west of here, is a small house. A house comes from a house deed: double-click the deed, pick a spot, and the house appears there. " +
+             "Inside your own house you can lock items down so they stay put, and secure a chest so only you can open it. " +
+-            "Tip: TazUO's Options can make roofs and walls see-through when you walk inside. Next: follow the arrow to stop 2, the lawn to the south, past the cottage.";
++            "Tip: TazUO's Options can make roofs and walls see-through when you walk inside. Next: follow the arrow to stop 2, the open lawn outside the town wall: south through the gate by the jail, then east off the road.";
+ 
+         public const string HousingStop2 =
+             "Stop 2 of 3: you cannot build a house here. Towns and all of Haven island are no-building areas. " +
+@@ -370,7 +370,7 @@ namespace Server.Tutorial
+             new(0xA854, new Point3D(3520, 2568, 0), "The stables: the sick-bay stall is inside, in the north row"),
+             new(0x0FFA, new Point3D(3534, 2574, 8), "bucket of water"), // cc-P806: on the stall's straw; at 3535,2575 the east wall hid it from the default camera
+             new(0xA854, new Point3D(3471, 2588, 0), "Housing lesson, stop 1: a small house"), // cc-P814: 3469,2589 stood through a stock bench
+-            new(0xA854, new Point3D(3474, 2601, 0), "Housing lesson, stop 2: where houses can be built")
++            new(0xA854, new Point3D(3481, 2622, 0), "Housing lesson, stop 2: where houses can be built") // cc-P848: was 3474,2601, in the jail hall; StrayPieces takes the old one away on load
+         ];
+ 
+         /// <summary>
+diff --git a/server/customizations/Tutorial/TutorialCoreTrials.cs b/server/customizations/Tutorial/TutorialCoreTrials.cs
+index f07ab9d..eb06790 100644
+--- a/server/customizations/Tutorial/TutorialCoreTrials.cs
++++ b/server/customizations/Tutorial/TutorialCoreTrials.cs
+@@ -91,6 +91,7 @@ public static class TutorialCoreTrials
+             pm.SendGump(new TutorialTrialGump(trial.Station, false, trial.Now));
+             return true;
+         }
++        if (TutorialWingTrials.ReopenJail(pm)) { return true; } // cc-P801: the jail's window again
+         if (ClusterFTutorial.RecordOf(pm) is { } record && ClusterFTutorial.CoreLeft(record).FirstOrDefault() is { } next)
+         {
+             pm.CloseGump<TutorialTrialGump>();
+diff --git a/server/customizations/Tutorial/TutorialJail.cs b/server/customizations/Tutorial/TutorialJail.cs
+new file mode 100644
+index 0000000..3d55483
+--- /dev/null
++++ b/server/customizations/Tutorial/TutorialJail.cs
+@@ -0,0 +1,699 @@
++// cc-P801: the New Haven jail, where the "Name colors, reputation, and guards" lesson (reputation.wing) now happens. Chase,
++// 11-05: "It has you run to a blank spot near bard guild, then healer, then plaza, with info in system messages. It's easy
++// to miss what you're supposed to learn." and "A jail would be a good location for this." Notes: shard-migration
++// notes/cc-P801-name-colors-lesson.md; the plan he chose: notes/cc-P801-name-colors-lesson-plan.md.
++//
++// One place, four parts, in order, and a window (TutorialJailGump) that stays open and always says what is next:
++//   1. Names: click the five people (TutorialJailPerson); each says what their color means.
++//   2. The crate: take the marked pouch and your own name shows gray, then put it back and it shows blue again.
++//   3. The ledger: your own karma, fame and murder counts, with what moves each.
++//   4. Guards: a thief only you can see stands in the hall; say "guards", a guard flashes in and cuts him down.
++//
++// Nothing is real but the colors, by design (the prompt: nobody gets a real murder count, criminal timer or karma loss):
++//   - Name colors come from one line at the top of MobileNotoriety (Notoriety-lesson-shown-color.patch, ShownNotoriety), so
++//     the client draws them as it draws any name. Black Tam has no kills, so real guards leave him be.
++//   - The gray is only what the trainee sees of themself (source == target), for as long as Trial.JailGray is set. Mobile.
++//     Criminal is never touched, so no timer, no guards, and nobody else sees it.
++//   - Nothing can harm the people: they are IsInvulnerable, which pinned's CanBeHarmful refuses for players and creatures alike,
++//     so no attack counts as anything. They are not Blessed: TazUO paints a blessed mobile solid gold unless its name is yellow
++//     (the first client walk).
++//   - A click reaches OnAosSingleClick, not OnSingleClick, on this shard (the first client walk): they answer both.
++
++#nullable enable
++
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using ModernUO.Serialization;
++using Server.Gumps;
++using Server.Items;
++using Server.Mobiles;
++using Server.Network;
++
++namespace Server.Tutorial
++{
++    /// <summary>cc-P801: a lesson person whose name shows a set color, whatever they are (the top of MobileNotoriety).</summary>
++    public interface IShownNotoriety
++    {
++        int ShownNotoriety { get; }
++    }
++
++    public static class TutorialJail
++    {
++        public const string Key = "reputation.wing";
++        public const string ThiefStep = "guards";
++        public const string CrateStep = "crate";
++        public const string LedgerStep = "ledger";
++
++        /// <summary>One person in the jail: who, where (from the post), and what the window says once they are met.</summary>
++        public sealed record Person(
++            string Step, string Color, int Hue, int Noto, string Name, string Title, int X, int Y, Direction Facing, string Line, string Meaning);
++
++        public static readonly Person[] People =
++        [
++            new("yellow", "Yellow", 0x35, Notoriety.Invulnerable, "Warden Hale", "the warden", 1, 5, Direction.East,
++                "Yellow means nobody can harm me. Shopkeepers, guards and guides like me wear it.",
++                "Cannot be harmed: shopkeepers, guards, guides."),
++            new("blue", "Blue", 0x59, Notoriety.Innocent, "Mirren", "visiting her brother", 6, 4, Direction.North,
++                "Blue is an honest name, and yours is blue too. Attack me and you are the criminal.",
++                "Honest. Attack one and you are the criminal."),
++            new("gray", "Gray", 0x3B2, Notoriety.CanBeAttacked, "Finn", "the pickpocket", 2, 2, Direction.South,
++                "Gray is a criminal for now, or someone you may attack freely. It wears off in a couple of minutes.",
++                "A criminal for now, or fair game to attack."),
++            new("orange", "Orange", 0x90, Notoriety.Enemy, "Sarn", "the captured raider", 5, 2, Direction.South,
++                "Orange is an enemy of your guild. You may fight me and not be a criminal for it.",
++                "An enemy of your guild: fight them freely."),
++            new("red", "Red", 0x22, Notoriety.Murderer, "Black Tam", "the murderer", 9, 2, Direction.South,
++                "Red is a murderer: five murder counts. Anyone may kill me, and guards cut me down on sight in town.",
++                "A murderer: five counts. Anyone may kill them.")
++        ];
++
++        public static readonly (string Id, string Label)[] Steps =
++        [
++            .. People.Select(p => (p.Step, $"Click the person with a {p.Color.ToLowerInvariant()} name")),
++            (CrateStep, "Take from the marked crate, then put it back"),
++            (LedgerStep, "Read the warden's ledger"),
++            (ThiefStep, "Call the guards on the thief")
++        ];
++
++        public const string DoneText =
++            "That is what real guards do: in a guarded town, say guards and any criminal or murderer near you is cut down at once. " +
++            "Trammel stops most attacks on other players; Felucca does not. Next: double-click Rook for another lesson.";
++
++        public static Point3D At(int x, int y, int z = 0) => new(HavenSpots.JailPost.X + x, HavenSpots.JailPost.Y + y, HavenSpots.JailFloorZ + z);
++
++        /// <summary>Where the lesson arms: the hall, inside the door.</summary>
++        public static Point2D Place => new(HavenSpots.JailPost.X + 5, HavenSpots.JailPost.Y + 6);
++
++        public static Point3D Hall => At(5, 6);
++        public static Point3D Door => At(5, 8);
++        // cc-P820 (P815 review item 4): in the hall beside the bench, in view of the default camera. cc-P801 stood it at
++        // (9, 7), the south-east corner right inside the south wall, which hid it.
++        public static Point3D CrateSpot => At(7, 4);
++        public static Point3D OldCrateSpot => At(9, 7);
++
++        /// <summary>
++        /// cc-P820: pieces cc-P801's layout placed that the current one does not (P815 review items 1 to 3): the grey brick
++        /// "south" piece on the south-west corner tile (a stub past the west wall) and the two west-wall torches (one on
++        /// the west window's floor tile; both showed through the low eave). Taken away on load.
++        /// cc-P838 (P828 review): the north-south iron fence 0x0821 on the four bar tiles of the cells' east-west front (it
++        /// drew as stubs; the layout has 0x0823 there now), the plain "east" piece 0x0035 that ended each divider at the bar
++        /// row (the L corner 0x0033 closes the front now; only that ID on those two tiles, the dividers' other 0x0035 stay),
++        /// and the candelabra in front of the west cell's gate (moved to (1, 4)).
++        /// </summary>
++        public static readonly (int Id, int X, int Y, int Z)[] Retired =
++        [
++            (0x0034, 0, 8, 0), (0x0A07, 1, 6, 13), (0x0A07, 1, 4, 13),
++            (0x0821, 1, 3, 0), (0x0821, 4, 3, 0), (0x0821, 6, 3, 0), (0x0821, 8, 3, 0),
++            (0x0035, 3, 3, 0), (0x0035, 7, 3, 0), (0x0B26, 2, 4, 0)
++        ];
++        public static Point3D LedgerSpot => At(2, 5, 6);
++        public static Point3D ThiefSpot => At(6, 6);
++        public static Point3D GuardSpot => At(7, 6);
++
++        /// <summary>The name color a lesson shows, or null for the ordinary rules (the patch's one call).</summary>
++        public static int? ShownNotoriety(Mobile source, Mobile target) => target switch
++        {
++            IShownNotoriety shown => shown.ShownNotoriety,
++            PlayerMobile pm when source == target && TutorialWingTrials.Current(pm) is { JailGray: true } => Notoriety.Criminal,
++            _ => null
++        };
++
++        // -- Seeding: on every world load, only what is missing (the building guide, section 7) --
++
++        public static void Configure()
++        {
++            if (!ServerConfiguration.GetOrUpdateSetting("tutorial.seedMissingOnLoad", true)) { return; }
++            EventSink.WorldLoad += () => Timer.DelayCall(TimeSpan.Zero, () => Console.WriteLine(Seed(false)));
++        }
++
++        private static bool Has(Map map, int id, Point3D at)
++        {
++            foreach (var item in map.GetItemsAt(at.X, at.Y))
++            {
++                if (item.ItemID == id && item.Z == at.Z) { return true; }
++            }
++
++            return false;
++        }
++
++        private static bool HasOfType<T>(Map map, Point3D at) where T : Item
++        {
++            foreach (var item in map.GetItemsAt(at.X, at.Y))
++            {
++                if (item is T) { return true; }
++            }
++
++            return false;
++        }
++
++        public static string Seed(bool dryRun)
++        {
++            var map = HavenSpots.Map;
++            var placed = 0;
++            var removed = 0;
++            var moved = 0;
++            foreach (var (id, x, y, z) in Retired)
++            {
++                if (TutorialJailLayout.Pieces.Contains((id, x, y, z))) { continue; } // never fight the current layout
++                var at = At(x, y, z);
++                var stale = new List<Item>();
++                foreach (var item in map.GetItemsAt(at.X, at.Y))
++                {
++                    if (item is Static && item.ItemID == id && item.Z == at.Z) { stale.Add(item); }
++                }
++
++                removed += stale.Count;
++                if (!dryRun) { stale.ForEach(item => item.Delete()); }
++            }
++
++            foreach (var (id, x, y, z) in TutorialJailLayout.Pieces)
++            {
++                var at = At(x, y, z);
++                if (Has(map, id, at)) { continue; }
++                placed++;
++                if (dryRun) { continue; }
++                var piece = new Static(id);
++                if (id is 0x0B98 or 0x0BD2) { piece.Name = "The New Haven Jail"; }
++                piece.MoveToWorld(at, map);
++            }
++
++            if (!HasOfType<BaseDoor>(map, Door))
++            {
++                placed++;
++                if (!dryRun) { new MetalDoor(DoorFacing.WestCCW).MoveToWorld(Door, map); }
++            }
++
++            // cc-P820: a crate on cc-P801's old spot moves to the new one (the same item); a second one is a duplicate.
++            var hasCrate = HasOfType<TutorialJailCrate>(map, CrateSpot);
++            var oldCrates = new List<TutorialJailCrate>();
++            foreach (var item in map.GetItemsAt<TutorialJailCrate>(OldCrateSpot.X, OldCrateSpot.Y)) { oldCrates.Add(item); }
++
++            foreach (var old in oldCrates)
++            {
++                moved++;
++                if (dryRun) { hasCrate = true; continue; }
++                if (hasCrate) { old.Delete(); }
++                else { old.MoveToWorld(CrateSpot, map); hasCrate = true; }
++            }
++
++            if (!hasCrate)
++            {
++                placed++;
++                if (!dryRun) { new TutorialJailCrate().MoveToWorld(CrateSpot, map); }
++            }
++
++            if (!HasOfType<TutorialJailLedger>(map, LedgerSpot))
++            {
++                placed++;
++                if (!dryRun) { new TutorialJailLedger().MoveToWorld(LedgerSpot, map); }
++            }
++
++            var met = new HashSet<int>();
++            foreach (var m in map.GetMobilesInRange(Hall, 12))
++            {
++                if (m is TutorialJailPerson p) { met.Add(p.Role); }
++            }
++
++            for (var i = 0; i < People.Length; i++)
++            {
++                if (met.Contains(i)) { continue; }
++                placed++;
++                if (dryRun) { continue; }
++                var person = new TutorialJailPerson(i);
++                person.MoveToWorld(At(People[i].X, People[i].Y), map);
++                person.Home = person.Location;
++                person.RangeHome = 0;
++            }
++
++            return $"New Haven jail (cc-P801){(dryRun ? " dry run" : "")}: {(dryRun ? "would place" : "placed")} {placed} pieces, " +
++                   $"{(dryRun ? "would remove" : "removed")} {removed} old ones, {(dryRun ? "would move" : "moved")} {moved} crates (cc-P820).";
++        }
++    }
++
++    public static partial class TutorialWingTrials
++    {
++        public const string WardenTakeLine = "Hold there! That pouch is marked. Your name has turned gray. Click yourself and see. Now put it back.";
++        public const string WardenBackLine = "Good. Back in the crate, and your name is blue again. Read my ledger, on the table here.";
++        public const string WardenThiefLine = "Thief! There, in my hall! Say guards, and be quick about it!";
++        public const string GuardCallLine = "Halt, thief!";
++
++        private static Trial? JailTrial(Mobile from) =>
++            from is PlayerMobile pm && Current(pm) is { Key: TutorialJail.Key, Armed: true, Finished: false } trial ? trial : null;
++
++        private static bool NamesDone(Trial trial) => TutorialJail.People.All(p => trial.Steps.Contains(p.Step));
++
++        /// <summary>What the lesson window says to do now: every part ends with the next part said plainly.</summary>
++        public static string JailNow(Trial trial)
++        {
++            if (trial.Finished) { return TutorialJail.DoneText; }
++            if (!NamesDone(trial))
++            {
++                var left = TutorialJail.People.Where(p => !trial.Steps.Contains(p.Step)).Select(p => p.Color.ToLowerInvariant());
++                return $"Click each person here once and read what they say. Still to meet: {string.Join(", ", left)}.";
++            }
++
++            if (trial.JailGray)
++            {
++                return "Your name is gray now. Click yourself to see it. No harm is done, this once. Double-click the marked crate to put the pouch back.";
++            }
++
++            if (!trial.Steps.Contains(TutorialJail.CrateStep))
++            {
++                return "You have met all five. Now see gray for yourself: double-click the marked crate in the corner of the hall and take the pouch.";
++            }
++
++            if (!trial.Steps.Contains(TutorialJail.LedgerStep))
++            {
++                return "Double-click the warden's ledger on his table to read your own karma, fame and murder counts.";
++            }
++
++            return "A thief is in the hall! Say guards out loud.";
++        }
++
++        /// <summary>A person was clicked: their color is ticked off.</summary>
++        public static void JailMet(Mobile from, string step)
++        {
++            if (JailTrial(from) is { } trial) { Step(trial, step); }
++        }
++
++        private static TutorialJailPerson? Warden()
++        {
++            foreach (var m in Map.Trammel.GetMobilesInRange(TutorialJail.Hall, 12))
++            {
++                if (m is TutorialJailPerson { Role: 0 } warden) { return warden; }
++            }
++
++            return null;
++        }
++
++        private static void Overhead(PlayerMobile pm, string text, int hue)
++        {
++            if (pm.NetState is { } ns) { pm.PrivateOverheadMessage(MessageType.Regular, hue, false, text, ns); }
++        }
++
++        private static void SetGray(Trial trial, bool gray)
++        {
++            if (trial.JailGray == gray) { return; }
++            trial.JailGray = gray;
++            trial.Player.Delta(MobileDelta.Noto); // the client hears its own name's new color at once
++        }
++
++        /// <summary>The marked crate: takes the pouch, or puts it back.</summary>
++        public static void JailCrate(Mobile from)
++        {
++            if (JailTrial(from) is not { } trial)
++            {
++                from.SendMessage("The crate is nailed shut. It is held for the warden's lesson.");
++                return;
++            }
++
++            var pm = trial.Player;
++            if (trial.JailGray)
++            {
++                JailPutBack(trial);
++            }
++            else if (trial.Steps.Contains(TutorialJail.CrateStep) || !NamesDone(trial))
++            {
++                Warden()?.SayTo(pm, trial.Steps.Contains(TutorialJail.CrateStep) ? "Leave that crate be. Once is enough." : "Not yet. Meet everyone here first.");
++            }
++            else
++            {
++                var pouch = new Pouch { Name = "marked pouch", Hue = 0x22 };
++                Lend(trial, pouch);
++                if (trial.LendFailed)
++                {
++                    trial.LendFailed = false;
++                    Warden()?.SayTo(pm, "Your backpack is full. Make room, then try again.");
++                    return;
++                }
++
++                SetGray(trial, true);
++                Overhead(pm, "Your name is gray", 0x3B2);
++                Warden()?.SayTo(pm, WardenTakeLine);
++                Show(pm, trial);
++            }
++        }
++
++        /// <summary>The pouch dropped on the crate.</summary>
++        public static bool JailDropped(Mobile from, Item dropped)
++        {
++            if (JailTrial(from) is not { JailGray: true } trial || !trial.Loaners.Contains(dropped)) { return false; }
++            JailPutBack(trial);
++            return true;
++        }
++
++        private static void JailPutBack(Trial trial)
++        {
++            var pm = trial.Player;
++            foreach (var item in trial.Loaners) { item.Delete(); }
++            trial.Loaners.Clear();
++            SetGray(trial, false);
++            Overhead(pm, "Your name is blue", 0x59);
++            Warden()?.SayTo(pm, WardenBackLine);
++            Step(trial, TutorialJail.CrateStep);
++        }
++
++        /// <summary>The ledger was read: only after the crate does it count, and then the thief comes in.</summary>
++        public static void JailLedger(Mobile from)
++        {
++            if (JailTrial(from) is not { } trial || !trial.Steps.Contains(TutorialJail.CrateStep) ||
++                trial.Steps.Contains(TutorialJail.LedgerStep))
++            {
++                return;
++            }
++
++            var pm = trial.Player;
++            var thief = new TutorialJailActor(pm, true);
++            thief.MoveToWorld(TutorialJail.ThiefSpot, Map.Trammel);
++            trial.Creatures.Add(thief);
++            trial.JailThief = thief;
++            Step(trial, TutorialJail.LedgerStep); // the window now says to call the guards
++            thief.SayTo(pm, "*snatches a purse*");
++            Warden()?.SayTo(pm, WardenThiefLine);
++        }
++
++        /// <summary>"guards", said out loud with the thief in the hall (EventSink.Speech). A staged strike, not a crime report.</summary>
++        private static void OnJailSpeech(SpeechEventArgs e)
++        {
++            if (!e.Blocked && JailTrial(e.Mobile) is { JailThief: { Deleted: false } thief, JailStriking: false } trial &&
++                e.Speech.Contains("guards", StringComparison.OrdinalIgnoreCase))
++            {
++                JailStrike(trial, thief);
++            }
++        }
++
++        private static void Flash(Mobile m)
++        {
++            Effects.SendLocationParticles(EffectItem.Create(m.Location, m.Map, EffectItem.DefaultDuration), 0x3728, 10, 10, 5023);
++            m.PlaySound(0x1FE);
++        }
++
++        private static void JailStrike(Trial trial, TutorialJailActor thief)
++        {
++            var pm = trial.Player;
++            trial.JailStriking = true;
++            var guard = new TutorialJailActor(pm, false);
++            guard.MoveToWorld(TutorialJail.GuardSpot, Map.Trammel);
++            guard.Direction = guard.GetDirectionTo(thief);
++            trial.Creatures.Add(guard);
++            Flash(guard);
++            guard.SayTo(pm, GuardCallLine);
++            Server.Timer.StartTimer(TimeSpan.FromSeconds(1), () =>
++            {
++                if (Current(pm) != trial || trial.Finished) { return; }
++                guard.Animate(9, 7, 1, true, false, 0);
++                guard.PlaySound(0x13C);
++                thief.Animate(21, 6, 1, true, false, 0);
++            });
++            Server.Timer.StartTimer(TimeSpan.FromSeconds(3), () =>
++            {
++                if (Current(pm) != trial || trial.Finished) { return; }
++                Flash(guard);
++                Step(trial, TutorialJail.ThiefStep); // the last step: Finish takes the guard and the thief away
++            });
++        }
++
++        /// <summary>A pouch lost another way (dropped, and taken back by the loaner rule): the name goes blue, nothing is earned.</summary>
++        private static void JailTick(Trial trial)
++        {
++            if (trial.JailGray && trial.Loaners.Count == 0)
++            {
++                SetGray(trial, false);
++                Show(trial.Player, trial);
++            }
++        }
++
++        private static void EndJail(Trial trial)
++        {
++            SetGray(trial, false);
++            trial.JailThief = null;
++            trial.JailStriking = false;
++        }
++
++        /// <summary>[lesson: the jail's window again, with its step now.</summary>
++        public static bool ReopenJail(PlayerMobile pm)
++        {
++            if (JailTrial(pm) is not { } trial) { return false; }
++            Show(pm, trial);
++            return true;
++        }
++    }
++
++    /// <summary>The lesson window: stays until closed, and shows the five colors, what each means, and what to do now.</summary>
++    public class TutorialJailGump : Gump
++    {
++        /// <summary>Right of the game view: the first client walk showed it over the hall, on the people to be clicked.</summary>
++        public const int WindowX = 830;
++
++        public const int BtnHint = 1;
++        public const int BtnReset = 2;
++        public const int BtnStop = 3;
++
++        private readonly TutorialStation _station;
++
++        public TutorialJailGump(TutorialWingTrials.Trial trial) : base(WindowX, 60)
++        {
++            _station = trial.Station;
++            TutorialStyle.Panel(this, 440, 370);
++            AddLabel(24, 18, TutorialStyle.HeadingHue, trial.Station.Title);
++            AddHtml(24, 44, 392, 80, TutorialStyle.Html(TutorialWingTrials.JailNow(trial)), false, false);
++            var y = 130;
++            foreach (var p in TutorialJail.People)
++            {
++                var met = trial.Finished || trial.Steps.Contains(p.Step);
++                AddLabel(24, y, p.Hue, p.Color);
++                AddLabel(80, y, met ? TutorialStyle.TextHue : TutorialStyle.ActionHue, met ? p.Meaning : "Not met yet");
++                y += 22;
++            }
++
++            y += 6;
++            foreach (var (id, label) in TutorialJail.Steps.Skip(TutorialJail.People.Length))
++            {
++                var done = trial.Finished || trial.Steps.Contains(id);
++                AddLabel(24, y, done ? TutorialStyle.DoneHue : TutorialStyle.TextHue, (done ? "Done: " : "To do: ") + label);
++                y += 20;
++            }
++
++            y += 8;
++            AddButton(24, y, 4005, 4007, BtnHint);
++            AddLabel(60, y + 2, trial.Finished ? TutorialStyle.DoneHue : TutorialStyle.ActionHue, trial.Finished ? "Back to Rook" : "Hint and arrow");
++            AddButton(24, y + 26, 4017, 4019, BtnReset);
++            AddLabel(60, y + 28, TutorialStyle.TextHue, "Restart this lesson");
++            if (!trial.Finished)
++            {
++                AddButton(230, y + 26, 4017, 4019, BtnStop);
++                AddLabel(266, y + 28, TutorialStyle.TextHue, "Stop this lesson");
++            }
++        }
++
++        public override void OnResponse(NetState sender, in RelayInfo info)
++        {
++            if (sender.Mobile is not PlayerMobile pm || !ClusterFTutorial.IsParticipant(pm)) { return; }
++            switch (info.ButtonID)
++            {
++                case BtnHint when TutorialWingTrials.Current(pm) is null or { Finished: true }:
++                    TutorialRecruiter.PointTo(pm);
++                    break;
++                case BtnHint:
++                    ClusterFTutorial.RunStation(pm, _station);
++                    break;
++                case BtnReset:
++                    TutorialWingTrials.Reset(pm, _station);
++                    break;
++                case BtnStop:
++                    TutorialWingTrials.Cancel(pm, "Lesson stopped. Double-click Rook to start another lesson.");
++                    break;
++            }
++        }
++    }
++
++    /// <summary>The warden's ledger: the reader's own karma, fame and murder counts, and what moves each.</summary>
++    public class TutorialJailLedgerGump : Gump
++    {
++        public static string Page(PlayerMobile pm) =>
++            $"<b>Your name in this ledger: {pm.Name}</b><br>Karma: {pm.Karma}. Fame: {pm.Fame}. Murder counts: {pm.Kills}.<br><br>" +
++            "<b>Karma</b> is your good name. Killing evil creatures raises it; killing innocents lowers it.<br>" +
++            "<b>Fame</b> is how widely you are known. Great deeds raise it, and dying lowers it. Karma and fame together give your title.<br>" +
++            "<b>Murder counts</b> come from killing innocent players. Five turn your name red.<br><br>" +
++            "<b>Black Tam: five counts.</b> One count fades after every 40 hours you are logged in. Until then, some healers will not help him.";
++
++        public TutorialJailLedgerGump(PlayerMobile pm) : base(TutorialJailGump.WindowX, 440)
++        {
++            TutorialStyle.Panel(this, 440, 330);
++            AddLabel(24, 18, TutorialStyle.HeadingHue, "The warden's ledger");
++            AddHtml(24, 46, 392, 262, TutorialStyle.Html(Page(pm)), false, true);
++        }
++    }
++
++    /// <summary>The marked crate: double-click to take the pouch and again to put it back, or drop the pouch on it.</summary>
++    [SerializationGenerator(0, false)]
++    public partial class TutorialJailCrate : Item
++    {
++        public TutorialJailCrate() : base(0x0E3D)
++        {
++            Name = "the marked crate";
++            Hue = 0x22;
++            Movable = false;
++        }
++
++        public override void OnDoubleClick(Mobile from)
++        {
++            if (!from.InRange(GetWorldLocation(), 3))
++            {
++                from.SendMessage("Move closer to the crate.");
++                return;
++            }
++
++            TutorialWingTrials.JailCrate(from);
++        }
++
++        public override bool OnDragDrop(Mobile from, Item dropped) => TutorialWingTrials.JailDropped(from, dropped);
++    }
++
++    /// <summary>The warden's ledger on his table.</summary>
++    [SerializationGenerator(0, false)]
++    public partial class TutorialJailLedger : Item
++    {
++        public TutorialJailLedger() : base(0x0FEF)
++        {
++            Name = "the warden's ledger";
++            Movable = false;
++        }
++
++        public override void OnDoubleClick(Mobile from)
++        {
++            if (from is not PlayerMobile pm) { return; }
++            if (!pm.InRange(GetWorldLocation(), 3))
++            {
++                pm.SendMessage("Move closer to the ledger.");
++                return;
++            }
++
++            TutorialWingTrials.JailLedger(pm);
++            pm.CloseGump<TutorialJailLedgerGump>();
++            pm.SendGump(new TutorialJailLedgerGump(pm));
++        }
++    }
++}
++
++namespace Server.Mobiles
++{
++    using Server.Tutorial;
++
++    /// <summary>cc-P801: one of the jail's five people: answers a click, shows their color, cannot be harmed, never walks.</summary>
++    [SerializationGenerator(0, false)]
++    public partial class TutorialJailPerson : BaseCreature, IShownNotoriety
++    {
++        [SerializableField(0)]
++        private int _role;
++
++        public TutorialJailPerson(int role) : base(AIType.AI_Animal, FightMode.None, 10, 1)
++        {
++            _role = role;
++            var p = TutorialJail.People[role];
++            Name = p.Name;
++            Title = p.Title;
++            Body = role == 1 ? 0x191 : 0x190;
++            Female = role == 1;
++            Hue = 0x83EA;
++            Direction = p.Facing;
++            CantWalk = true;
++            SetStr(80);
++            SetDex(80);
++            SetInt(80);
++            SetHits(150);
++            AddItem(new Item(role == 1 ? 0x203C : 0x203B) { Movable = false, Hue = 0x455, Layer = Layer.Hair });
++            AddItem(new Boots { Movable = false });
++            switch (role)
++            {
++                case 0:
++                    AddItem(new RingmailChest { Movable = false });
++                    AddItem(new LongPants { Movable = false, Hue = 0x455 });
++                    AddItem(new Cloak { Movable = false, Hue = 0x35 });
++                    break;
++                case 1:
++                    AddItem(new PlainDress { Movable = false, Hue = 0x59 });
++                    break;
++                default:
++                    AddItem(new Shirt { Movable = false, Hue = 0x3B1 });
++                    AddItem(new ShortPants { Movable = false, Hue = 0x3B1 });
++                    break;
++            }
++        }
++
++        public int ShownNotoriety => TutorialJail.People[Role].Noto;
++        public override bool IsInvulnerable => true;
++        public override bool ClickTitle => true;
++
++        private void Answer(Mobile from)
++        {
++            SayTo(from, TutorialJail.People[Role].Line);
++            TutorialWingTrials.JailMet(from, TutorialJail.People[Role].Step);
++        }
++
++        public override void OnSingleClick(Mobile from)
++        {
++            base.OnSingleClick(from);
++            Answer(from);
++        }
++
++        public override void OnAosSingleClick(Mobile from)
++        {
++            base.OnAosSingleClick(from);
++            Answer(from);
++        }
++
++        public override void OnDoubleClick(Mobile from) => Answer(from);
++
++        public override void GenerateLoot()
++        {
++        }
++    }
++
++    /// <summary>cc-P801: the thief and the guard of the last step: seen only by their trainee, gone with the lesson.</summary>
++    [SerializationGenerator(0, false)]
++    public partial class TutorialJailActor : BaseCreature, IPrivateMobile, IShownNotoriety
++    {
++        private readonly Mobile? _trainee;
++        private readonly bool _thief;
++
++        public TutorialJailActor(Mobile trainee, bool thief) : base(AIType.AI_Animal, FightMode.None, 10, 1)
++        {
++            _trainee = trainee;
++            _thief = thief;
++            Name = thief ? "a sneak thief" : "a New Haven guard";
++            Body = 0x190;
++            Hue = 0x83EA;
++            CantWalk = true;
++            SetStr(80);
++            SetDex(80);
++            SetInt(80);
++            SetHits(150);
++            if (thief)
++            {
++                AddItem(new Shirt { Movable = false, Hue = 0x455 });
++                AddItem(new ShortPants { Movable = false, Hue = 0x455 });
++                AddItem(new Bandana { Movable = false, Hue = 0x455 });
++            }
++            else
++            {
++                AddItem(new PlateChest { Movable = false });
++                AddItem(new PlateLegs { Movable = false });
++                AddItem(new PlateHelm { Movable = false });
++                AddItem(new Halberd { Movable = false });
++            }
++        }
++
++        public bool ShowsTo(Mobile viewer) => viewer == _trainee;
++        public int ShownNotoriety => _thief ? Notoriety.Criminal : Notoriety.Invulnerable;
++        public override bool IsInvulnerable => true;
++        public override bool ClickTitle => false;
++
++        public override void GenerateLoot()
++        {
++        }
++
++        [AfterDeserialization(false)] private void ClearAbandonedLesson() => Delete();
++    }
++}
+diff --git a/server/customizations/Tutorial/TutorialJailLayout.cs b/server/customizations/Tutorial/TutorialJailLayout.cs
+new file mode 100644
+index 0000000..b9d5a5c
+--- /dev/null
++++ b/server/customizations/Tutorial/TutorialJailLayout.cs
+@@ -0,0 +1,68 @@
++// cc-P801: the New Haven jail, relative to its north-west wall post and floor Z. Generated by shard-migration
++// notes/cc-P801-tools/gen_jail.py; do not edit by hand. The door, the crate, the ledger and the people are placed by
++// TutorialJail.cs. Rules: notes/guides/building-and-decorating.md 2.2, 2.3, 2.5.
++
++#nullable enable
++
++namespace Server.Tutorial;
++
++public static class TutorialJailLayout
++{
++    /// <summary>Item ID, X and Y from the post, Z from the floor.</summary>
++    public static readonly (int Id, int X, int Y, int Z)[] Pieces =
++    [
++        (0x0519, 1, 1, 0), (0x0519, 1, 2, 0), (0x0519, 1, 3, 0), (0x0519, 1, 4, 0), (0x0519, 1, 5, 0),
++        (0x0519, 1, 6, 0), (0x0519, 1, 7, 0), (0x0519, 1, 8, 0), (0x0519, 2, 1, 0), (0x0519, 2, 2, 0),
++        (0x0519, 2, 3, 0), (0x0519, 2, 4, 0), (0x0519, 2, 5, 0), (0x0519, 2, 6, 0), (0x0519, 2, 7, 0),
++        (0x0519, 2, 8, 0), (0x0519, 3, 1, 0), (0x0519, 3, 2, 0), (0x0519, 3, 3, 0), (0x0519, 3, 4, 0),
++        (0x0519, 3, 5, 0), (0x0519, 3, 6, 0), (0x0519, 3, 7, 0), (0x0519, 3, 8, 0), (0x0519, 4, 1, 0),
++        (0x0519, 4, 2, 0), (0x0519, 4, 3, 0), (0x0519, 4, 4, 0), (0x0519, 4, 5, 0), (0x0519, 4, 6, 0),
++        (0x0519, 4, 7, 0), (0x0519, 4, 8, 0), (0x0519, 5, 1, 0), (0x0519, 5, 2, 0), (0x0519, 5, 3, 0),
++        (0x0519, 5, 4, 0), (0x0519, 5, 5, 0), (0x0519, 5, 6, 0), (0x0519, 5, 7, 0), (0x0519, 5, 8, 0),
++        (0x0519, 6, 1, 0), (0x0519, 6, 2, 0), (0x0519, 6, 3, 0), (0x0519, 6, 4, 0), (0x0519, 6, 5, 0),
++        (0x0519, 6, 6, 0), (0x0519, 6, 7, 0), (0x0519, 6, 8, 0), (0x0519, 7, 1, 0), (0x0519, 7, 2, 0),
++        (0x0519, 7, 3, 0), (0x0519, 7, 4, 0), (0x0519, 7, 5, 0), (0x0519, 7, 6, 0), (0x0519, 7, 7, 0),
++        (0x0519, 7, 8, 0), (0x0519, 8, 1, 0), (0x0519, 8, 2, 0), (0x0519, 8, 3, 0), (0x0519, 8, 4, 0),
++        (0x0519, 8, 5, 0), (0x0519, 8, 6, 0), (0x0519, 8, 7, 0), (0x0519, 8, 8, 0), (0x0519, 9, 1, 0),
++        (0x0519, 9, 2, 0), (0x0519, 9, 3, 0), (0x0519, 9, 4, 0), (0x0519, 9, 5, 0), (0x0519, 9, 6, 0),
++        (0x0519, 9, 7, 0), (0x0519, 9, 8, 0), (0x0519, 10, 1, 0), (0x0519, 10, 2, 0), (0x0519, 10, 3, 0),
++        (0x0519, 10, 4, 0), (0x0519, 10, 5, 0), (0x0519, 10, 6, 0), (0x0519, 10, 7, 0), (0x0519, 10, 8, 0),
++        (0x0036, 0, 0, 0), (0x0033, 10, 8, 0), (0x0034, 1, 0, 0), (0x0034, 2, 0, 0), (0x0034, 3, 0, 0),
++        (0x0034, 4, 0, 0), (0x0034, 5, 0, 0), (0x0034, 6, 0, 0), (0x0034, 7, 0, 0), (0x0034, 8, 0, 0),
++        (0x0034, 9, 0, 0), (0x0034, 10, 0, 0), (0x0034, 1, 8, 0), (0x003B, 2, 8, 0), (0x0034, 3, 8, 0),
++        (0x0034, 4, 8, 0), (0x0034, 6, 8, 0), (0x0034, 7, 8, 0), (0x003B, 8, 8, 0), (0x0034, 9, 8, 0),
++        (0x0035, 0, 1, 0), (0x0035, 0, 2, 0), (0x0035, 0, 3, 0), (0x0035, 0, 4, 0), (0x0035, 0, 5, 0),
++        (0x003C, 0, 6, 0), (0x0035, 0, 7, 0), (0x0035, 0, 8, 0), (0x0035, 10, 1, 0), (0x0035, 10, 2, 0),
++        (0x0035, 10, 3, 0), (0x0035, 10, 4, 0), (0x0035, 10, 5, 0), (0x003C, 10, 6, 0), (0x0035, 10, 7, 0),
++        (0x0035, 3, 1, 0), (0x0035, 3, 2, 0), (0x0033, 3, 3, 0), (0x0035, 7, 1, 0), (0x0035, 7, 2, 0),
++        (0x0033, 7, 3, 0), (0x0823, 1, 3, 0), (0x0828, 2, 3, 0), (0x0823, 4, 3, 0), (0x0828, 5, 3, 0),
++        (0x0823, 6, 3, 0), (0x0823, 8, 3, 0), (0x0828, 9, 3, 0), (0x05C4, 1, 1, 19), (0x05C4, 1, 2, 19),
++        (0x05C4, 1, 3, 19), (0x05C4, 1, 4, 19), (0x05C4, 1, 5, 19), (0x05C4, 1, 6, 19), (0x05C4, 1, 7, 19),
++        (0x05C4, 1, 8, 19), (0x05C4, 1, 9, 19), (0x05C4, 2, 1, 22), (0x05C4, 2, 2, 22), (0x05C4, 2, 3, 22),
++        (0x05C4, 2, 4, 22), (0x05C4, 2, 5, 22), (0x05C4, 2, 6, 22), (0x05C4, 2, 7, 22), (0x05C4, 2, 8, 22),
++        (0x05C4, 2, 9, 22), (0x05C4, 3, 1, 25), (0x05C4, 3, 2, 25), (0x05C4, 3, 3, 25), (0x05C4, 3, 4, 25),
++        (0x05C4, 3, 5, 25), (0x05C4, 3, 6, 25), (0x05C4, 3, 7, 25), (0x05C4, 3, 8, 25), (0x05C4, 3, 9, 25),
++        (0x05C4, 4, 1, 28), (0x05C4, 4, 2, 28), (0x05C4, 4, 3, 28), (0x05C4, 4, 4, 28), (0x05C4, 4, 5, 28),
++        (0x05C4, 4, 6, 28), (0x05C4, 4, 7, 28), (0x05C4, 4, 8, 28), (0x05C4, 4, 9, 28), (0x05C4, 5, 1, 31),
++        (0x05C4, 5, 2, 31), (0x05C4, 5, 3, 31), (0x05C4, 5, 4, 31), (0x05C4, 5, 5, 31), (0x05C4, 5, 6, 31),
++        (0x05C4, 5, 7, 31), (0x05C4, 5, 8, 31), (0x05C4, 5, 9, 31), (0x05C2, 6, 1, 34), (0x05C2, 6, 2, 34),
++        (0x05C2, 6, 3, 34), (0x05C2, 6, 4, 34), (0x05C2, 6, 5, 34), (0x05C2, 6, 6, 34), (0x05C2, 6, 7, 34),
++        (0x05C2, 6, 8, 34), (0x05C2, 6, 9, 34), (0x05C3, 7, 1, 31), (0x05C3, 7, 2, 31), (0x05C3, 7, 3, 31),
++        (0x05C3, 7, 4, 31), (0x05C3, 7, 5, 31), (0x05C3, 7, 6, 31), (0x05C3, 7, 7, 31), (0x05C3, 7, 8, 31),
++        (0x05C3, 7, 9, 31), (0x05C3, 8, 1, 28), (0x05C3, 8, 2, 28), (0x05C3, 8, 3, 28), (0x05C3, 8, 4, 28),
++        (0x05C3, 8, 5, 28), (0x05C3, 8, 6, 28), (0x05C3, 8, 7, 28), (0x05C3, 8, 8, 28), (0x05C3, 8, 9, 28),
++        (0x05C3, 9, 1, 25), (0x05C3, 9, 2, 25), (0x05C3, 9, 3, 25), (0x05C3, 9, 4, 25), (0x05C3, 9, 5, 25),
++        (0x05C3, 9, 6, 25), (0x05C3, 9, 7, 25), (0x05C3, 9, 8, 25), (0x05C3, 9, 9, 25), (0x05C3, 10, 1, 22),
++        (0x05C3, 10, 2, 22), (0x05C3, 10, 3, 22), (0x05C3, 10, 4, 22), (0x05C3, 10, 5, 22), (0x05C3, 10, 6, 22),
++        (0x05C3, 10, 7, 22), (0x05C3, 10, 8, 22), (0x05C3, 10, 9, 22), (0x05C3, 11, 1, 19), (0x05C3, 11, 2, 19),
++        (0x05C3, 11, 3, 19), (0x05C3, 11, 4, 19), (0x05C3, 11, 5, 19), (0x05C3, 11, 6, 19), (0x05C3, 11, 7, 19),
++        (0x05C3, 11, 8, 19), (0x05C3, 11, 9, 19), (0x0055, 2, 8, 20), (0x0055, 3, 8, 20), (0x0055, 3, 8, 23),
++        (0x0055, 4, 8, 20), (0x0055, 4, 8, 23), (0x0055, 4, 8, 26), (0x0055, 5, 8, 20), (0x0055, 5, 8, 23),
++        (0x0055, 5, 8, 26), (0x0055, 5, 8, 29), (0x0055, 6, 8, 20), (0x0055, 6, 8, 23), (0x0055, 6, 8, 26),
++        (0x0055, 6, 8, 29), (0x0055, 6, 8, 32), (0x0055, 7, 8, 20), (0x0055, 7, 8, 23), (0x0055, 7, 8, 26),
++        (0x0055, 7, 8, 29), (0x0055, 8, 8, 20), (0x0055, 8, 8, 23), (0x0055, 8, 8, 26), (0x0055, 9, 8, 20),
++        (0x0055, 9, 8, 23), (0x0055, 10, 8, 20), (0x0B4A, 2, 5, 0), (0x0E34, 2, 5, 6), (0x0B26, 1, 4, 0),
++        (0x0B2C, 8, 4, 0), (0x0B2C, 9, 4, 0), (0x1262, 1, 1, 7), (0x1262, 8, 1, 7), (0x0F34, 5, 1, 0),
++        (0x0F34, 1, 2, 0), (0x0F34, 9, 1, 0), (0x0B98, 7, 9, -2), (0x0BD2, 7, 9, -2),
++    ];
++}
+diff --git a/server/customizations/Tutorial/TutorialStations.cs b/server/customizations/Tutorial/TutorialStations.cs
+index f23a3a4..c0dc232 100644
+--- a/server/customizations/Tutorial/TutorialStations.cs
++++ b/server/customizations/Tutorial/TutorialStations.cs
+@@ -162,7 +162,7 @@ public static class TutorialStations
+         new("travel.wing", TutorialWing.Travel, "Runes, gates and boats", None, None, None,
+             ["World Map"], "a loaned blank recall rune", "the public moongate, then Rook's bench by the Bountiful Harvest Inn"),
+         new("reputation.wing", TutorialWing.Reputation, "Name colors, reputation, and guards", None, None, None,
+-            [], null, "the training yard, the town healer, then Rook's bench"),
++            [], null, HavenSpots.JailWhere), // cc-P801
+         new("shard.systems", TutorialWing.ShardSystems, "Rewards and extra jewelry slots", None, None, None,
+             ["Skill progress bar", "Autoloot", "Scavenger", "Nearby loot", "Vendors: advanced shop, trade, auto buy and sell",
+              "Legion scripting (advanced)", "Script library browser (advanced)"], null, "Elara Voss's house, the bank, then Rook"),
+diff --git a/server/customizations/Tutorial/TutorialTradeTrials.cs b/server/customizations/Tutorial/TutorialTradeTrials.cs
+index 563520d..7614b62 100644
+--- a/server/customizations/Tutorial/TutorialTradeTrials.cs
++++ b/server/customizations/Tutorial/TutorialTradeTrials.cs
+@@ -173,7 +173,7 @@ namespace Server.Tutorial
+                 Stops:
+                 [
+                     (() => HousingStop(0), "stop 1, the small cottage", HousingStop1),
+-                    (() => HousingStop(1), "stop 2, the lawn past the cottage", HousingStop2),
++                    (() => HousingStop(1), "stop 2, the lawn outside the town wall", HousingStop2),
+                     (() => ClusterFNewHavenSeeder.BankAnchor, "stop 3, the bank", HousingStop3)
+                 ]),
+             // cc-P802 item 2 (Chase 11-05: "the lesson should give scrolls to have player mark/recall"): at the public
+@@ -188,18 +188,9 @@ namespace Server.Tutorial
+                     ("back", "Recall back: read your other Recall scroll and click your own rune")
+                 ],
+                 TravelHint),
+-            new("reputation.wing", "the first stop", TourCentre,
+-                [("stop0", "The training yard"), ("stop1", "The healer"), ("stop2", "Rook's bench")],
+-                "Follow the arrow to the first stop. Walk close to each stop to read its lesson.",
+-                Stops:
+-                [
+-                    (() => YardSpot, "the training yard",
+-                        "Blue names usually mean innocent; gray names can be attacked, and red names mark murderers. Harming an innocent can make you gray for a while."),
+-                    (() => HavenSpots.Healer, "the healer",
+-                        "Karma and fame affect your title; killing innocent players can give you murder counts. Five murder counts make your name red, and some healers will refuse to help you."),
+-                    (() => TutorialRecruiter.Spot, "Rook's bench",
+-                        "In a guarded town, say 'guards' if someone attacks you unlawfully. Trammel generally prevents attacks on other players; Felucca allows them.")
+-                ]),
++            // cc-P801: one place and a window instead of three stops (TutorialJail.cs).
++            new(TutorialJail.Key, HavenSpots.JailWhere, TutorialJail.Place, TutorialJail.Steps,
++                "Walk into the jail. The lesson window says what to do next and stays open until you close it."),
+             new("shard.systems", "the first stop", TourCentre,
+                 [("stop0", "The League field office"), ("stop1", "The bank"), ("stop2", "Rook")],
+                 "Follow the arrow to the first stop. Walk close to each stop to read its lesson.",
+@@ -327,6 +318,7 @@ namespace Server.Tutorial
+                 "gathering.mining" => (HavenSpots.MiningCave, "the mine"),
+                 "bard.trial" => (HavenSpots.Theater, "the theater"),
+                 TravelKey => (HavenSpots.PublicMoongate, "the public moongate"), // cc-P802
++                TutorialJail.Key => (TutorialJail.Hall, "the New Haven jail"), // cc-P801
+                 _ when HavenPlace(t.Key) is { } hp => (hp.Arm, hp.Short), // cc-P802 item 6: its building
+                 _ => (Ground(t.Place.X, t.Place.Y), "the trades yard")
+             };
+@@ -375,6 +367,7 @@ namespace Server.Tutorial
+                 TravelKey => Array.Empty<Point3D>(),                    // cc-P802: nothing set up, only loans
+                 "bard.trial" => new[] { BardEchoA, BardEchoB },          // cc-P799: on the theater's stage
+                 "thieving.trial" => hp!.Props, // cc-P802: the mark and the chest in the back alley
++                TutorialJail.Key => Array.Empty<Point3D>(), // cc-P801: the jail is seeded
+                 _ when hp != null => hp.Props,  // cc-P802: the building's own prop tiles
+                 _ when t.IsTour => Array.Empty<Point3D>(),
+                 // The anvil and forge stand east of the yard's centre, in reach of it (CraftItem: 2 tiles) and out of the
+@@ -589,6 +582,7 @@ namespace Server.Tutorial
+             trial.BrawlTimer.Cancel(); // cc-P743
+             trial.Brawling = false;
+             ReturnStable(trial);
++            EndJail(trial); // cc-P801
+             foreach (var item in trial.Props) { item.Delete(); }
+             trial.Props.Clear();
+             foreach (var c in trial.Creatures) { c.Delete(); }
+@@ -621,6 +615,7 @@ namespace Server.Tutorial
+         {
+             var pm = trial.Player;
+             var t = Trade(trial.Key)!;
++            if (trial.Key == TutorialJail.Key) { JailTick(trial); } // cc-P801
+             if (t.Products != null && !trial.Steps.Contains(Made))
+             {
+                 foreach (var type in t.Products)
+@@ -690,7 +685,11 @@ namespace Server.Tutorial
+             }
+ 
+             var label = Array.Find(t.Steps, s => s.Id == id).Label;
+-            ClusterFTutorial.SystemLine(trial.Player, $"Finished: {label} ({trial.Steps.Count} of {t.Steps.Length}).");
++            if (t.Key != TutorialJail.Key) // cc-P801: its window ticks the step; the System speaks only at the end
++            {
++                ClusterFTutorial.SystemLine(trial.Player, $"Finished: {label} ({trial.Steps.Count} of {t.Steps.Length}).");
++            }
++
+             Refresh(trial.Player, trial); // cc-P802 item 1: the window marks it; the steps were echoed once already
+         }
+     }
+diff --git a/server/customizations/Tutorial/TutorialWingTrials.cs b/server/customizations/Tutorial/TutorialWingTrials.cs
+index c73d55b..cf88f5a 100644
+--- a/server/customizations/Tutorial/TutorialWingTrials.cs
++++ b/server/customizations/Tutorial/TutorialWingTrials.cs
+@@ -123,6 +123,11 @@ namespace Server.Tutorial
+ 
+             // cc-P802 item 2: the travel lesson's own blank rune (the one the trainee marks).
+             public RecallRune? TravelRune;
++
++            // cc-P801 (TutorialJail.cs): the staged gray name, the thief, the guard's strike under way.
++            public bool JailGray;
++            public TutorialJailActor? JailThief;
++            public bool JailStriking;
+         }
+ 
+         private static readonly Dictionary<Serial, Trial> Active = new();
+@@ -147,6 +152,7 @@ namespace Server.Tutorial
+             if (_hooked) { return; }
+             _hooked = true;
+             SkillEvents.SkillUsed += OnSkillUsed;
++            EventSink.Speech += OnJailSpeech; // cc-P801
+         }
+ 
+         /// <summary>Loaners left behind by a restart (trials live in memory only) are deleted once the world is up.</summary>
+@@ -249,6 +255,13 @@ namespace Server.Tutorial
+ 
+         private static void Show(PlayerMobile pm, Trial trial)
+         {
++            if (trial.Key == TutorialJail.Key && trial.Armed) // cc-P801: its own window; no chat lines to miss
++            {
++                pm.CloseGump<TutorialJailGump>();
++                pm.SendGump(new TutorialJailGump(trial));
++                return;
++            }
++
+             if (!trial.Armed)
+             {
+                 ClusterFTutorial.SystemLine(pm, FollowLine(trial.Key));
+@@ -567,6 +580,7 @@ namespace Server.Tutorial
+             Return(trial);
+             if (why != null && !trial.Finished) { ClusterFTutorial.SystemLine(pm, why); }
+             pm.CloseGump<TutorialWingTrialGump>();
++            pm.CloseGump<TutorialJailGump>(); // cc-P801
+         }
+ 
+         public static void Reset(PlayerMobile pm, TutorialStation station)
+diff --git a/server/patches/Notoriety-lesson-shown-color.patch b/server/patches/Notoriety-lesson-shown-color.patch
+new file mode 100644
+index 0000000..e918c22
+--- /dev/null
++++ b/server/patches/Notoriety-lesson-shown-color.patch
+@@ -0,0 +1,15 @@
++--- a/Projects/UOContent/Misc/Notoriety.cs
+++++ b/Projects/UOContent/Misc/Notoriety.cs
++@@ -388,6 +388,12 @@
++         /* Must be thread-safe */
++         public static int MobileNotoriety(Mobile source, Mobile target)
++         {
+++            // Shattered Legacy (cc-P801): a lesson shows a set name color (the jail's people, the trainee's staged gray).
+++            if (Server.Tutorial.TutorialJail.ShownNotoriety(source, target) is { } shown)
+++            {
+++                return shown;
+++            }
+++
++             var bcTarg = target as BaseCreature;
++ 
++             if (Core.AOS && (target.Blessed || bcTarg?.IsInvulnerable == true || target is PlayerVendor or TownCrier))
+diff --git a/server/tests/Tutorial/HavenHousingStopVerification.cs b/server/tests/Tutorial/HavenHousingStopVerification.cs
+new file mode 100644
+index 0000000..390cfb1
+--- /dev/null
++++ b/server/tests/Tutorial/HavenHousingStopVerification.cs
+@@ -0,0 +1,71 @@
++// cc-P848 (P842's build review of P838): on the release's stock New Haven, P806 put the housing lesson's stop 2 and its
++// signpost on the lawn at 3474,2603 and 3474,2601. P801's jail was then built over that lawn, so the sign stood in the
++// jail hall in front of the middle cell's gate. Stop 2 is now on the open lawn south of the town wall, and a world seeded
++// before keeps no sign in the jail: the seeder takes a named Haven piece away from any spot but its own.
++
++#nullable enable
++
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using Server;
++using Server.Items;
++using Server.Tutorial;
++using Xunit;
++
++namespace ShatteredLegacy.Tests;
++
++[Collection("Sequential UOContent Tests")]
++public class HavenHousingStopVerification
++{
++    /// <summary>Where P806 stood stop 2's sign: in the release jail's hall since P801.</summary>
++    private static readonly Point3D OldStop2Sign = new(3474, 2601, 11);
++
++    private static TutorialWingTrials.HavenPiece Stop2Sign =>
++        TutorialWingTrials.HavenPieces.Single(p => p.Name.StartsWith("Housing lesson, stop 2", StringComparison.Ordinal));
++
++    [Fact]
++    public void Stop2SignInTheJailHallIsTakenAwayOnLoadOnce()
++    {
++        var map = HavenSpots.Map;
++        var sign = Stop2Sign;
++        var old = new Static(sign.Id) { Name = sign.Name };
++        old.MoveToWorld(OldStop2Sign, map);
++        try
++        {
++            TutorialWingTrials.SeedHaven(false);
++            Assert.True(old.Deleted);
++            Assert.Single(ItemsAt(map, sign.At), i => i.ItemID == sign.Id && i.Name == sign.Name);
++            Assert.DoesNotContain(ItemsAt(map, OldStop2Sign), i => i.Name == sign.Name);
++
++            var again = TutorialWingTrials.SeedHaven(false); // idempotent: nothing more to take away or place
++            Assert.Contains("took away 0 from old spots", again);
++            Assert.Single(ItemsAt(map, sign.At), i => i.ItemID == sign.Id && i.Name == sign.Name);
++        }
++        finally
++        {
++            foreach (var piece in TutorialWingTrials.HavenPieces)
++            {
++                foreach (var item in ItemsAt(map, piece.At).Where(i => i.Name == piece.Name)) { item.Delete(); }
++            }
++
++            old.Delete();
++        }
++    }
++
++    [Fact]
++    public void Stop2IsOutsideTheJailOnTheOpenLawn()
++    {
++        var stop = TutorialWingTrials.HousingStop(1);
++        Assert.Equal(new Point3D(3482, 2623, stop.Z), stop);
++        Assert.Equal(new Point3D(3481, 2622, 0), Stop2Sign.At);
++        Assert.False(stop.X >= 3469 && stop.X <= 3479 && stop.Y >= 2597 && stop.Y <= 2606);
++    }
++
++    private static List<Item> ItemsAt(Map map, Point3D at)
++    {
++        var list = new List<Item>();
++        foreach (var item in map.GetItemsAt(at.X, at.Y)) { list.Add(item); }
++        return list;
++    }
++}
+diff --git a/server/tests/Tutorial/HavenSignTileVerification.cs b/server/tests/Tutorial/HavenSignTileVerification.cs
+index b670e9c..8851c87 100644
+--- a/server/tests/Tutorial/HavenSignTileVerification.cs
++++ b/server/tests/Tutorial/HavenSignTileVerification.cs
+@@ -22,7 +22,7 @@ public class HavenSignTileVerification
+     /// <summary>The boxes the table covers: west, north, east, south, inclusive.</summary>
+     private static readonly (int X1, int Y1, int X2, int Y2)[] Boxes =
+     [
+-        (3465, 2620, 3473, 2628), (3516, 2564, 3524, 2572), (3467, 2584, 3475, 2592), (3470, 2597, 3478, 2605),
++        (3465, 2620, 3473, 2628), (3516, 2564, 3524, 2572), (3467, 2584, 3475, 2592), (3477, 2618, 3485, 2626),
+     ];
+ 
+     /// <summary>Every tile in those boxes that holds a static on this branch's client map.</summary>
+@@ -31,8 +31,8 @@ public class HavenSignTileVerification
+         (3466, 2621), (3466, 2623), (3466, 2624), (3467, 2621), (3467, 2623), (3467, 2624), (3468, 2584),
+         (3468, 2588), (3468, 2589), (3468, 2590), (3468, 2621), (3468, 2623), (3469, 2587), (3469, 2588),
+         (3469, 2589), (3469, 2590), (3469, 2620), (3470, 2586), (3470, 2587), (3471, 2586), (3471, 2587),
+-        (3472, 2585), (3472, 2586), (3472, 2587), (3472, 2604), (3473, 2585), (3473, 2586), (3473, 2587),
+-        (3473, 2597), (3473, 2603), (3473, 2604), (3474, 2597), (3474, 2602), (3475, 2598), (3517, 2566),
++        (3472, 2585), (3472, 2586), (3472, 2587), (3473, 2585), (3473, 2586), (3473, 2587), (3477, 2622),
++        (3478, 2624), (3479, 2618), (3479, 2621), (3479, 2623), (3479, 2626), (3485, 2624), (3517, 2566),
+         (3518, 2565), (3518, 2566), (3518, 2567), (3519, 2564), (3519, 2565), (3519, 2566), (3519, 2567),
+         (3520, 2564), (3521, 2564), (3521, 2565), (3522, 2564), (3522, 2565), (3523, 2564), (3523, 2565),
+         (3524, 2564),
+diff --git a/server/tests/Tutorial/TutorialJailVerification.cs b/server/tests/Tutorial/TutorialJailVerification.cs
+new file mode 100644
+index 0000000..93e472c
+--- /dev/null
++++ b/server/tests/Tutorial/TutorialJailVerification.cs
+@@ -0,0 +1,692 @@
++// cc-P801: the New Haven jail lesson (customizations/Tutorial/TutorialJail.cs; reputation.wing). Notes: shard-migration
++// notes/cc-P801-name-colors-lesson.md.
++//
++// Facts:
++//   1. Each of the five people shows their real name color, and none of them is a real criminal or murderer.
++//   2. The lesson completes only when every part is done, and in order: names, crate, ledger, guards.
++//   3. No real penalty sticks: karma, fame, kills and the criminal flag read the same before, during and after.
++//   4. The gray name is seen only by the trainee and goes when the pouch goes back, when it is lost, or when the lesson stops.
++//   5. The thief and the guard are seen only by their trainee and go with the lesson.
++//   6. The ledger shows the reader's own numbers; only after the crate does it count.
++//   7. The jail seeds once: a second seed places nothing. Its walls close at the corners and the door is in the south wall.
++//   8. [lesson brings the window back; a finished lesson still counts for an older character (the key did not change).
++//   9. cc-P820 (P815 review): the south-west corner takes the east piece only, no torch on a window or through the eave,
++//      the marked crate in view in the hall, and an older jail put right on load (the same crate moved, once).
++//  11. cc-P848 (P842 review): no fixed New Haven piece and no other lesson's stop, arm spot or prop stands in the jail or
++//      on its doorstep, and the housing lesson's stop 2 sign stands beside its stop, north of it, outside the jail.
++
++#nullable enable
++
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using Server;
++using Server.Accounting;
++using Server.Gumps;
++using Server.Items;
++using Server.Mobiles;
++using Server.Network;
++using Server.Tests.Network;
++using Server.Tutorial;
++using Xunit;
++
++namespace ShatteredLegacy.Tests;
++
++[Collection("Sequential UOContent Tests")]
++public class TutorialJailVerification : IDisposable
++{
++    private readonly NotorietyHandler _notoriety = Notoriety.Handler;
++    private readonly AllowHarmfulHandler _harmful = Mobile.AllowHarmfulHandler;
++
++    public TutorialJailVerification()
++    {
++        ShardTestClock.Arm();
++        Notoriety.Handler = Server.Misc.NotorietyHandlers.MobileNotoriety; // the name rules alone; the host runs without them
++        Mobile.AllowHarmfulHandler = Server.Misc.NotorietyHandlers.Mobile_AllowHarmful;
++        ShardTestHost.EnsureAccounts();
++        ClusterFTutorial.Enabled = true;
++        TutorialWingTrials.EnsureHooks();
++        TutorialCoreTrials.EnsureHooks();
++        TutorialJail.Seed(false);
++    }
++
++    public void Dispose()
++    {
++        Notoriety.Handler = _notoriety;
++        Mobile.AllowHarmfulHandler = _harmful;
++        var gone = new List<IEntity>();
++        foreach (var m in Map.Trammel.GetMobilesInRange(TutorialJail.Hall, 14))
++        {
++            if (m is TutorialJailPerson or TutorialJailActor) { gone.Add(m); }
++        }
++
++        for (var x = -1; x <= 12; x++)
++        {
++            for (var y = -1; y <= 10; y++)
++            {
++                var at = TutorialJail.At(x, y);
++                foreach (var item in Map.Trammel.GetItemsAt(at.X, at.Y)) { gone.Add(item); }
++            }
++        }
++
++        foreach (var e in gone) { e.Delete(); }
++    }
++
++    private sealed class Player : IDisposable
++    {
++        public readonly Account Account = new($"p801{Guid.NewGuid():N}"[..16], "p801-test-only");
++        public readonly PlayerMobile Pm;
++        public readonly NetState Ns;
++
++        public Player(bool enter = true)
++        {
++            Pm = new PlayerMobile { Player = true, Race = Race.Human, Body = 0x190, Name = "Trainee", RawStr = 60, RawDex = 60, RawInt = 20 };
++            Pm.Hits = Pm.HitsMax;
++            Pm.AddItem(new Backpack());
++            Account[0] = Pm;
++            Pm.MoveToWorld(TutorialJail.Hall, Map.Trammel);
++            Ns = PacketTestUtilities.CreateTestNetState();
++            Ns.Account = Account;
++            Pm.NetState = Ns;
++            Ns.Mobile = Pm;
++            if (enter) { Assert.True(ClusterFTutorial.TryEnter(Pm)); }
++        }
++
++        public TutorialWingTrials.Trial Trial => TutorialWingTrials.Current(Pm)!;
++        public TutorialRecord Record => ClusterFTutorial.RecordOf(Pm)!;
++
++        public void Dispose()
++        {
++            TutorialWingTrials.Cancel(Pm);
++            TutorialCoreTrials.Cancel(Pm);
++            Pm.NetState = null;
++            Ns.Mobile = null;
++            Ns.Dispose();
++            Pm.Delete();
++            Account.Delete();
++        }
++    }
++
++    private static TutorialWingTrials.Trial Begin(Player p)
++    {
++        ClusterFTutorial.RunStation(p.Pm, TutorialStations.Find(TutorialJail.Key)!);
++        Assert.True(p.Trial.Armed);
++        return p.Trial;
++    }
++
++    private static TutorialJailPerson Person(int role)
++    {
++        foreach (var m in Map.Trammel.GetMobilesInRange(TutorialJail.Hall, 12))
++        {
++            if (m is TutorialJailPerson person && person.Role == role) { return person; }
++        }
++
++        throw new InvalidOperationException($"no person {role}");
++    }
++
++    private static T Item<T>(Point3D at) where T : Item
++    {
++        foreach (var item in Map.Trammel.GetItemsAt(at.X, at.Y))
++        {
++            if (item is T found) { return found; }
++        }
++
++        throw new InvalidOperationException($"no {typeof(T).Name} at {at}");
++    }
++
++    private static TutorialJailCrate Crate => Item<TutorialJailCrate>(TutorialJail.CrateSpot);
++    private static TutorialJailLedger Ledger => Item<TutorialJailLedger>(TutorialJail.LedgerSpot);
++
++    private static void ClickAll(Player p)
++    {
++        for (var i = 0; i < TutorialJail.People.Length; i++) { Person(i).OnAosSingleClick(p.Pm); }
++    }
++
++    private static void Say(Player p, string words) =>
++        EventSink.InvokeSpeech(new SpeechEventArgs(p.Pm, words, MessageType.Regular, 0, []));
++
++    private static void Wait(double seconds) => ShardTestClock.Advance(TimeSpan.FromSeconds(seconds));
++
++    private static void ToTheThief(Player p)
++    {
++        ClickAll(p);
++        p.Pm.Location = TutorialJail.At(8, 7);
++        Crate.OnDoubleClick(p.Pm);
++        Crate.OnDoubleClick(p.Pm);
++        p.Pm.Location = TutorialJail.At(3, 5);
++        Ledger.OnDoubleClick(p.Pm);
++    }
++
++    // ---------------------------------------------------------------- 1
++
++    [Theory]
++    [InlineData(0, Notoriety.Invulnerable, 0x35)] // yellow
++    [InlineData(1, Notoriety.Innocent, 0x59)]     // blue
++    [InlineData(2, Notoriety.CanBeAttacked, 0x3B2)] // gray
++    [InlineData(3, Notoriety.Enemy, 0x90)]        // orange
++    [InlineData(4, Notoriety.Murderer, 0x22)]     // red
++    public void EachPersonShowsTheirRealNameColor(int role, int noto, int hue)
++    {
++        using var p = new Player();
++        Assert.Equal(noto, Notoriety.Compute(p.Pm, Person(role)));
++        Assert.Equal(hue, Notoriety.GetHue(Notoriety.Compute(p.Pm, Person(role))));
++    }
++
++    [Fact]
++    public void ThePeopleAreNeitherRealCriminalsNorHarmable()
++    {
++        using var p = new Player();
++        for (var i = 0; i < TutorialJail.People.Length; i++)
++        {
++            var person = Person(i);
++            Assert.False(person.Murderer);
++            Assert.False(person.Criminal);
++            Assert.False(person.Blessed); // TazUO paints a blessed mobile gold unless its name is yellow
++            Assert.False(p.Pm.CanBeHarmful(person, false));
++        }
++    }
++
++    // ---------------------------------------------------------------- 2
++
++    [Fact]
++    public void TheLessonCompletesOnlyWhenEveryPartIsDoneInOrder()
++    {
++        using var p = new Player();
++        var trial = Begin(p);
++
++        // A click for someone else's color, and nothing else, counts for one.
++        Person(0).OnAosSingleClick(p.Pm);
++        Assert.Contains("yellow", trial.Steps);
++        Assert.Single(trial.Steps);
++
++        // The crate waits for all five.
++        p.Pm.Location = TutorialJail.At(8, 7);
++        Crate.OnDoubleClick(p.Pm);
++        Assert.False(trial.JailGray);
++        Assert.Empty(trial.Loaners);
++
++        for (var i = 1; i < TutorialJail.People.Length; i++) { Person(i).OnDoubleClick(p.Pm); }
++        Assert.Equal(5, trial.Steps.Count);
++
++        // The ledger before the crate counts for nothing, and no thief comes.
++        p.Pm.Location = TutorialJail.At(3, 5);
++        Ledger.OnDoubleClick(p.Pm);
++        Assert.DoesNotContain(TutorialJail.LedgerStep, trial.Steps);
++        Assert.Null(trial.JailThief);
++
++        // "guards" with no thief does nothing.
++        Say(p, "guards");
++        Wait(4);
++        Assert.DoesNotContain(TutorialJail.ThiefStep, trial.Steps);
++
++        p.Pm.Location = TutorialJail.At(8, 7);
++        Crate.OnDoubleClick(p.Pm);
++        Assert.True(trial.JailGray);
++        Assert.DoesNotContain(TutorialJail.CrateStep, trial.Steps); // taking it is not the step; putting it back is
++
++        // The ledger while holding the pouch does not count either.
++        p.Pm.Location = TutorialJail.At(3, 5);
++        Ledger.OnDoubleClick(p.Pm);
++        Assert.DoesNotContain(TutorialJail.LedgerStep, trial.Steps);
++
++        p.Pm.Location = TutorialJail.At(8, 7);
++        Crate.OnDoubleClick(p.Pm);
++        Assert.Contains(TutorialJail.CrateStep, trial.Steps);
++        Assert.False(trial.JailGray);
++
++        p.Pm.Location = TutorialJail.At(3, 5);
++        Ledger.OnDoubleClick(p.Pm);
++        Assert.Contains(TutorialJail.LedgerStep, trial.Steps);
++        Assert.NotNull(trial.JailThief);
++        Assert.False(trial.Finished);
++        Assert.DoesNotContain(TutorialJail.Key, p.Record.StationsDone);
++
++        Say(p, "hello there");
++        Wait(4);
++        Assert.False(trial.Finished);
++
++        Say(p, "Guards!");
++        Assert.False(trial.Finished); // the strike takes a moment to see
++        Wait(4);
++        Assert.True(trial.Finished);
++        Assert.Contains(TutorialJail.Key, p.Record.StationsDone);
++    }
++
++    [Fact]
++    public void TheCratePouchCanBeDroppedBack()
++    {
++        using var p = new Player();
++        var trial = Begin(p);
++        ClickAll(p);
++        p.Pm.Location = TutorialJail.At(8, 7);
++        Crate.OnDoubleClick(p.Pm);
++        var pouch = trial.Loaners.Single();
++        Assert.True(Crate.OnDragDrop(p.Pm, pouch));
++        Assert.True(pouch.Deleted);
++        Assert.Contains(TutorialJail.CrateStep, trial.Steps);
++        Assert.False(Crate.OnDragDrop(p.Pm, new Gold(1)));
++    }
++
++    // ---------------------------------------------------------------- 3
++
++    [Fact]
++    public void NoRealPenaltySticks()
++    {
++        using var p = new Player();
++        p.Pm.Karma = 120;
++        p.Pm.Fame = 40;
++        void Same()
++        {
++            Assert.Equal(120, p.Pm.Karma);
++            Assert.Equal(40, p.Pm.Fame);
++            Assert.Equal(0, p.Pm.Kills);
++            Assert.False(p.Pm.Criminal);
++        }
++
++        var trial = Begin(p);
++        ClickAll(p);
++        Same();
++        p.Pm.Location = TutorialJail.At(8, 7);
++        Crate.OnDoubleClick(p.Pm);
++        Assert.True(trial.JailGray);
++        Same();
++        Wait(5);
++        Same();
++        Crate.OnDoubleClick(p.Pm);
++        Same();
++        p.Pm.Location = TutorialJail.At(3, 5);
++        Ledger.OnDoubleClick(p.Pm);
++        Same();
++        Say(p, "guards");
++        Wait(4);
++        Assert.True(trial.Finished);
++        Same();
++        Assert.Equal(Notoriety.Innocent, Notoriety.Compute(p.Pm, p.Pm));
++    }
++
++    // ---------------------------------------------------------------- 4
++
++    [Fact]
++    public void TheGrayIsSeenOnlyByTheTraineeAndGoesWithThePouch()
++    {
++        using var p = new Player();
++        using var other = new Player(false);
++        var trial = Begin(p);
++        ClickAll(p);
++        p.Pm.Location = TutorialJail.At(8, 7);
++        Assert.Equal(Notoriety.Innocent, Notoriety.Compute(p.Pm, p.Pm));
++        Crate.OnDoubleClick(p.Pm);
++        Assert.Equal(Notoriety.Criminal, Notoriety.Compute(p.Pm, p.Pm));
++        Assert.Equal(Notoriety.Innocent, Notoriety.Compute(other.Pm, p.Pm));
++        Crate.OnDoubleClick(p.Pm);
++        Assert.Equal(Notoriety.Innocent, Notoriety.Compute(p.Pm, p.Pm));
++        Assert.Empty(trial.Loaners);
++    }
++
++    [Fact]
++    public void ALostPouchEndsTheGrayAndEarnsNothing()
++    {
++        using var p = new Player();
++        var trial = Begin(p);
++        ClickAll(p);
++        p.Pm.Location = TutorialJail.At(8, 7);
++        Crate.OnDoubleClick(p.Pm);
++        trial.Loaners.Single().MoveToWorld(p.Pm.Location, p.Pm.Map); // the loaner rule takes it back at the next tick
++        Wait(1);
++        Assert.False(trial.JailGray);
++        Assert.Equal(Notoriety.Innocent, Notoriety.Compute(p.Pm, p.Pm));
++        Assert.DoesNotContain(TutorialJail.CrateStep, trial.Steps);
++    }
++
++    [Fact]
++    public void LeavingTheJailEndsTheLessonAndTheGray()
++    {
++        using var p = new Player();
++        var trial = Begin(p);
++        ClickAll(p);
++        p.Pm.Location = TutorialJail.At(8, 7);
++        Crate.OnDoubleClick(p.Pm);
++        var pouch = trial.Loaners.Single();
++        p.Pm.MoveToWorld(TutorialJail.At(40, 40), Map.Trammel);
++        Wait(1);
++        Assert.Null(TutorialWingTrials.Current(p.Pm));
++        Assert.True(pouch.Deleted);
++        Assert.False(trial.JailGray); // cleared, not just forgotten: the client was told its name is blue
++        Assert.Equal(Notoriety.Innocent, Notoriety.Compute(p.Pm, p.Pm));
++        Assert.DoesNotContain(TutorialJail.Key, p.Record.StationsDone);
++    }
++
++    // ---------------------------------------------------------------- 5
++
++    [Fact]
++    public void TheThiefAndGuardAreSeenOnlyByTheirTraineeAndGoWithTheLesson()
++    {
++        using var p = new Player();
++        using var other = new Player(false);
++        var trial = Begin(p);
++        ToTheThief(p);
++        var thief = trial.JailThief!;
++        Assert.True(p.Pm.CanSee(thief));
++        Assert.False(other.Pm.CanSee(thief));
++        Assert.Equal(Notoriety.Criminal, Notoriety.Compute(p.Pm, thief));
++        Say(p, "guards");
++        var guard = trial.Creatures.OfType<TutorialJailActor>().Single(c => c != thief);
++        Assert.True(p.Pm.CanSee(guard));
++        Assert.False(other.Pm.CanSee(guard));
++        Wait(4);
++        Assert.True(trial.Finished);
++        Assert.True(thief.Deleted);
++        Assert.True(guard.Deleted);
++    }
++
++    [Fact]
++    public void GuardsSaidTwiceStrikesOnce()
++    {
++        using var p = new Player();
++        var trial = Begin(p);
++        ToTheThief(p);
++        Say(p, "guards");
++        Say(p, "guards");
++        Assert.Equal(2, trial.Creatures.Count); // the thief and one guard
++    }
++
++    // ---------------------------------------------------------------- 6
++
++    [Fact]
++    public void TheLedgerShowsTheReadersOwnNumbers()
++    {
++        using var p = new Player();
++        p.Pm.Karma = 77;
++        p.Pm.Fame = 33;
++        p.Pm.Kills = 2;
++        var page = TutorialJailLedgerGump.Page(p.Pm);
++        Assert.Contains("Karma: 77", page);
++        Assert.Contains("Fame: 33", page);
++        Assert.Contains("Murder counts: 2", page);
++        p.Pm.Kills = 0;
++    }
++
++    [Fact]
++    public void AnyoneMayReadTheLedgerAndTouchesNothing()
++    {
++        using var p = new Player(false);
++        p.Pm.Location = TutorialJail.At(3, 5);
++        Ledger.OnDoubleClick(p.Pm);
++        Assert.Null(TutorialWingTrials.Current(p.Pm));
++        Person(0).OnAosSingleClick(p.Pm); // a veteran hears the line, nothing more
++        Assert.Null(TutorialWingTrials.Current(p.Pm));
++    }
++
++    // ---------------------------------------------------------------- 7
++
++    [Fact]
++    public void TheJailSeedsOnce()
++    {
++        Assert.Contains("placed 0 pieces", TutorialJail.Seed(false));
++    }
++
++    [Fact]
++    public void TheWallsCloseAndTheDoorIsInTheSouthWall()
++    {
++        var pieces = TutorialJailLayout.Pieces;
++        Assert.Contains(pieces, q => q is { Id: 0x0036, X: 0, Y: 0, Z: 0 });   // post, north-west
++        Assert.Contains(pieces, q => q is { Id: 0x0033, X: 10, Y: 8, Z: 0 });  // corner, south-east
++        Assert.DoesNotContain(pieces, q => q.Y == 8 && q.X == 5 && q.Z == 0 && q.Id != 0x0519); // only floor under the door
++        Assert.NotNull(Item<BaseDoor>(TutorialJail.Door));
++    }
++
++    // ---------------------------------------------------------------- 9 (cc-P820, the P815 build review)
++
++    private static readonly int[] Windows = [0x003B, 0x003C];
++
++    /// <summary>The floor tile inside each window piece: north of a south-wall window, east of a west-wall one, west of an east-wall one.</summary>
++    private static List<(int X, int Y)> WindowFloorTiles() =>
++        TutorialJailLayout.Pieces.Where(q => Windows.Contains(q.Id))
++            .Select(q => q.Y == 8 ? (q.X, 7) : q.X == 0 ? (1, q.Y) : q.X == 10 ? (9, q.Y) : (q.X, q.Y + 1))
++            .ToList();
++
++    [Fact]
++    public void TheSouthWestCornerTakesTheEastPieceOnly()
++    {
++        var sw = TutorialJailLayout.Pieces.Where(q => q is { X: 0, Y: 8, Z: 0 } && q.Id != 0x0519).Select(q => q.Id).ToList();
++        Assert.Equal(new[] { 0x0035 }, sw);
++        // the south row runs between the corners; the north row's "south" piece reaches the north-east tile
++        Assert.DoesNotContain(TutorialJailLayout.Pieces, q => q is { Id: 0x0034, X: 0 });
++        Assert.Contains(TutorialJailLayout.Pieces, q => q is { Id: 0x0034, X: 10, Y: 0, Z: 0 });
++    }
++
++    [Fact]
++    public void NoTorchHangsOnAWindowAndNoneComesThroughTheEave()
++    {
++        var windows = WindowFloorTiles();
++        Assert.Equal(4, windows.Count);
++        foreach (var q in TutorialJailLayout.Pieces.Where(q => q.Z < 19 && q.Id is not (0x0519 or 0x0823 or 0x0828) && !Windows.Contains(q.Id)))
++        {
++            if (q.X is 0 or 10 || q.Y is 0 or 8) { continue; } // the walls themselves
++            Assert.DoesNotContain((q.X, q.Y), windows);
++        }
++
++        // nothing lit or tall stands on the eave columns: a piece's top stays under the roof above it (19 + 3 a column inward)
++        Assert.DoesNotContain(TutorialJailLayout.Pieces, q => q.Id is >= 0x0A05 and <= 0x0A0E);
++        Assert.Contains(TutorialJailLayout.Pieces, q => q is { Id: 0x0B26, X: 1, Y: 4, Z: 0 }); // the hall's light, 15 high under 19 (cc-P838)
++    }
++
++    [Fact]
++    public void TheMarkedCrateStandsInViewInTheHall()
++    {
++        var c = TutorialJail.CrateSpot;
++        var (x, y) = (c.X - HavenSpots.JailPost.X, c.Y - HavenSpots.JailPost.Y);
++        Assert.InRange(y, 4, 6);                        // the hall, off the row right inside the south wall
++        Assert.NotEqual(5, x);                          // off the door line
++        Assert.DoesNotContain((x, y), WindowFloorTiles());
++        Assert.NotNull(Item<TutorialJailCrate>(c));
++        Assert.DoesNotContain(TutorialJail.People, q => q.X == x && q.Y == y);
++    }
++
++    [Fact]
++    public void AnOlderJailIsPutRightOnLoad()
++    {
++        // an older (cc-P801) world: the corner stub, both torches and the crate on its old spot
++        var map = Map.Trammel;
++        var crate = Item<TutorialJailCrate>(TutorialJail.CrateSpot);
++        crate.MoveToWorld(TutorialJail.OldCrateSpot, map);
++        foreach (var (id, x, y, z) in TutorialJail.Retired) { new Static(id).MoveToWorld(TutorialJail.At(x, y, z), map); }
++
++        var line = TutorialJail.Seed(false);
++        Assert.Contains("placed 0 pieces", line);
++        Assert.Contains($"removed {TutorialJail.Retired.Length} old ones", line); // cc-P838: every retired piece
++        Assert.Contains("moved 1 crates", line);
++        Assert.Same(crate, Item<TutorialJailCrate>(TutorialJail.CrateSpot)); // the same item, moved
++        Assert.Throws<InvalidOperationException>(() => Item<TutorialJailCrate>(TutorialJail.OldCrateSpot));
++        foreach (var (id, x, y, z) in TutorialJail.Retired)
++        {
++            var at = TutorialJail.At(x, y, z);
++            foreach (var item in map.GetItemsAt(at.X, at.Y)) { Assert.False(item.ItemID == id && item.Z == at.Z); }
++        }
++
++        // the south-west tile keeps its east piece, and a second load changes nothing
++        Assert.Contains(", removed 0 old ones, moved 0 crates", TutorialJail.Seed(false));
++        var sw = TutorialJail.At(0, 8);
++        var kept = false;
++        foreach (var item in map.GetItemsAt(sw.X, sw.Y)) { kept |= item.ItemID == 0x0035; }
++        Assert.True(kept);
++    }
++
++    [Fact]
++    public void ACrateOnBothSpotsLeavesOne()
++    {
++        var map = Map.Trammel;
++        var second = new TutorialJailCrate();
++        second.MoveToWorld(TutorialJail.OldCrateSpot, map);
++        TutorialJail.Seed(false);
++        Assert.True(second.Deleted);
++        Assert.NotNull(Item<TutorialJailCrate>(TutorialJail.CrateSpot));
++    }
++
++    // ---------------------------------------------------------------- 10 (cc-P838, the P828 build review)
++
++    private static readonly int[] GateXs = [2, 5, 9];
++
++    [Fact]
++    public void TheCellFrontIsOneClosedEastWestLine()
++    {
++        // item 1: the bars take the east-west iron fence 0x0823, never the north-south 0x0821, which drew as stubs
++        Assert.DoesNotContain(TutorialJailLayout.Pieces, q => q.Id == 0x0821);
++        for (var x = 1; x <= 9; x++)
++        {
++            var row = TutorialJailLayout.Pieces.Where(q => q.X == x && q.Y == 3 && q.Z == 0 && q.Id != 0x0519).Select(q => q.Id).ToArray();
++            var want = GateXs.Contains(x) ? 0x0828 : x is 3 or 7 ? 0x0033 : 0x0823;
++            Assert.Equal(new[] { want }, row);
++        }
++    }
++
++    [Fact]
++    public void EachDividerEndsInTheLCornerAtTheBars()
++    {
++        // item 2: the L corner closes the divider tile's south edge too, so the front has no gap beside a divider
++        foreach (var x in new[] { 3, 7 })
++        {
++            Assert.Contains(TutorialJailLayout.Pieces, q => q is { Id: 0x0033, Y: 3, Z: 0 } && q.X == x);
++            Assert.DoesNotContain(TutorialJailLayout.Pieces, q => q is { Id: 0x0035, Y: 3 } && q.X == x);
++            Assert.Contains(TutorialJailLayout.Pieces, q => q is { Id: 0x0035, Y: 1 } && q.X == x); // the run itself stays
++        }
++    }
++
++    [Fact]
++    public void NoLightStandsInFrontOfACellGate()
++    {
++        foreach (var x in GateXs) { Assert.DoesNotContain(TutorialJailLayout.Pieces, q => q is { Id: 0x0B26, Y: 4 } && q.X == x); }
++    }
++
++    [Fact]
++    public void AP820JailGetsTheNewFrontOnLoad()
++    {
++        // a world seeded by cc-P801/P820: the stub bars, the plain divider ends and the candelabra by the gate
++        var map = Map.Trammel;
++        var old = new (int Id, int X, int Y, int Z)[]
++        {
++            (0x0821, 1, 3, 0), (0x0821, 4, 3, 0), (0x0821, 6, 3, 0), (0x0821, 8, 3, 0), (0x0035, 3, 3, 0), (0x0035, 7, 3, 0),
++            (0x0B26, 2, 4, 0)
++        };
++        foreach (var (id, x, y, z) in old) { new Static(id).MoveToWorld(TutorialJail.At(x, y, z), map); }
++
++        Assert.Contains($"removed {old.Length} old ones", TutorialJail.Seed(false));
++        foreach (var (id, x, y, z) in old)
++        {
++            var at = TutorialJail.At(x, y, z);
++            foreach (var item in map.GetItemsAt(at.X, at.Y)) { Assert.False(item.ItemID == id && item.Z == at.Z); }
++        }
++
++        foreach (var (id, x, y, z) in TutorialJailLayout.Pieces.Where(q => q.Y == 3 && q.Id != 0x0519))
++        {
++            var at = TutorialJail.At(x, y, z);
++            var found = false;
++            foreach (var item in map.GetItemsAt(at.X, at.Y)) { found |= item.ItemID == id && item.Z == at.Z; }
++            Assert.True(found);
++        }
++
++        Assert.Contains(", removed 0 old ones", TutorialJail.Seed(false)); // and a second load changes nothing
++    }
++
++    // ---------------------------------------------------------------- 8
++
++    [Fact]
++    public void LessonBringsTheWindowBack()
++    {
++        using var p = new Player();
++        Begin(p);
++        p.Pm.CloseGump<TutorialJailGump>();
++        Assert.True(TutorialCoreTrials.Reopen(p.Pm));
++        Assert.NotNull(p.Pm.FindGump<TutorialJailGump>());
++    }
++
++    [Fact]
++    public void TheWindowStaysThroughEachStep()
++    {
++        using var p = new Player();
++        Begin(p);
++        Assert.NotNull(p.Pm.FindGump<TutorialJailGump>());
++        Person(0).OnAosSingleClick(p.Pm);
++        Assert.NotNull(p.Pm.FindGump<TutorialJailGump>());
++    }
++
++    [Fact]
++    public void TheNowLineNamesWhatIsStillToDo()
++    {
++        using var p = new Player();
++        var trial = Begin(p);
++        Person(0).OnAosSingleClick(p.Pm);
++        var line = TutorialWingTrials.JailNow(trial);
++        Assert.DoesNotContain("yellow", line);
++        Assert.Contains("red", line);
++        Assert.Contains("double-click Rook", TutorialJail.DoneText);
++    }
++
++    // ---------------------------------------------------------------- 11 (cc-P848, the P842 build review)
++
++    /// <summary>The jail's whole plot (post to south-east corner) and the tile before its door.</summary>
++    private static bool InJailOrDoorway(int x, int y)
++    {
++        var post = TutorialJail.At(0, 0);
++        var corner = TutorialJail.At(10, 8);
++        var step = TutorialJail.At(5, 9);
++        return x >= post.X && x <= corner.X && y >= post.Y && y <= corner.Y || x == step.X && y == step.Y;
++    }
++
++    /// <summary>
++    /// Every fixed New Haven piece and every place a lesson sends a trainee: tour stops, where each lesson arms, its
++    /// building's props and fixture. The jail lesson's own place is the jail, so it is left out.
++    /// </summary>
++    private static IEnumerable<(string What, int X, int Y)> HavenPlacesOutsideTheJailLesson()
++    {
++        foreach (var piece in TutorialWingTrials.HavenPieces)
++        {
++            yield return ($"Haven piece 0x{piece.Id:X4} \"{piece.Name}\"", piece.At.X, piece.At.Y);
++        }
++
++        foreach (var t in TutorialWingTrials.Trades)
++        {
++            if (t.Key == TutorialJail.Key) { continue; }
++
++            if (t.Stops is { } stops)
++            {
++                foreach (var stop in stops)
++                {
++                    var at = stop.Spot();
++                    yield return ($"{t.Key} stop \"{stop.Name}\"", at.X, at.Y);
++                }
++            }
++            else
++            {
++                yield return ($"{t.Key} place", t.Place.X, t.Place.Y);
++            }
++
++            if (TutorialWingTrials.HavenPlace(t.Key) is { } hp)
++            {
++                yield return ($"{t.Key} arm", hp.Arm.X, hp.Arm.Y);
++                foreach (var prop in hp.Props) { yield return ($"{t.Key} prop", prop.X, prop.Y); }
++                if (hp.Fixture is { } f) { yield return ($"{t.Key} fixture", f.X, f.Y); }
++            }
++        }
++    }
++
++    [Fact]
++    public void NoHavenPieceAndNoOtherLessonStopIsInsideTheJail()
++    {
++        var inside = HavenPlacesOutsideTheJailLesson().Where(p => InJailOrDoorway(p.X, p.Y))
++            .Select(p => $"{p.What} at {p.X},{p.Y}").ToList();
++        Assert.True(inside.Count == 0, "inside the jail or on its doorstep: " + string.Join("; ", inside));
++    }
++
++    [Fact]
++    public void TheHousingLessonsSecondStopAndItsSignStandTogetherOutsideTheJail()
++    {
++        var stop = TutorialWingTrials.HousingStop(1);
++        var sign = TutorialWingTrials.HavenPieces.Single(p => p.Name.StartsWith("Housing lesson, stop 2", StringComparison.Ordinal));
++        Assert.False(InJailOrDoorway(stop.X, stop.Y));
++        Assert.False(InJailOrDoorway(sign.At.X, sign.At.Y));
++        Assert.NotEqual((stop.X, stop.Y), (sign.At.X, sign.At.Y)); // beside the stop, never on it (guide 6)
++        Assert.InRange(Math.Max(Math.Abs(stop.X - sign.At.X), Math.Abs(stop.Y - sign.At.Y)), 1, 2);
++        Assert.True(sign.At.Y <= stop.Y, "the sign stands on the north side of its stop");
++    }
++}
+diff --git a/server/tests/Tutorial/TutorialTradeTrialVerification.cs b/server/tests/Tutorial/TutorialTradeTrialVerification.cs
+index 4212d16..30b78f3 100644
+--- a/server/tests/Tutorial/TutorialTradeTrialVerification.cs
++++ b/server/tests/Tutorial/TutorialTradeTrialVerification.cs
+@@ -330,7 +330,6 @@ public class TutorialTradeTrialVerification : IDisposable
+ 
+     [Theory]
+     [InlineData("housing.basics")]
+-    [InlineData("reputation.wing")]
+     [InlineData("shard.systems")]
+     public void ATourCountsItsStopsInOrderAndFinishesAtTheLast(string key)
+     {
