@@ -920,7 +920,7 @@ from them.
 | 0x1852 | scales | verified (code, Alembic hall) |
 | 0x0B1D-0x0B1F, 0x0B26-0x0B28 | candelabra | verified (tiledata) |
 | 0x0BD2 brass sign; 0x0BCF wooden sign | sign posts | verified (code) |
-| 0x1E5E bulletin board, east face; 0xA0C5 standing bulletin board | notices | verified (code) |
+| 0x1E5E bulletin board for a **north** wall (frame runs east-west, faces south); 0x1E5F bulletin board for a **west** wall (frame runs north-south, faces east); 0xA0C5 standing bulletin board | notices | verified (render, cc-P849: `notes/cc-P849-review/board-arts-on-walls.jpg`; P803 had them swapped) |
 | 0x0A0C | wall torch | verified (code) |
 | 0x8B8F, 0x8B90 wall safe; 0x9C18, 0x9C19 safe | vault dressing | verified (tiledata); high IDs |
 | 0x0E7C (silver chest), 0x0E40-0x0E43 (metal or golden chests) | vault chests | unverified |
@@ -959,7 +959,7 @@ from them.
 | 0x0B1D-0x0B28 candelabra; 0x0A0C wall torch | light | verified |
 | 0x0B2C wooden bench; 0x0B4E/0x0B4F chair; 0x0B90 table | seating | verified (code) |
 | 0x0972 crossed swords; 0x0953/0x0959 fireplace | hall trim | verified (code) |
-| 0x1E5E bulletin board | guild notices | verified (code) |
+| 0x1E5E bulletin board on a north wall; 0x1E5F on a west wall | guild notices | verified (render, cc-P849: `notes/cc-P849-review/board-arts-on-walls.jpg`) |
 | 0x4037, 0x4038 gargoyle banner; 0x9FAC-0x9FB3 cult banners (fire, air, earth, water) | themed banners | verified (tiledata); high IDs |
 
 **Packs**
