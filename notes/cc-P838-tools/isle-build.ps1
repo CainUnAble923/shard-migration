@@ -1,0 +1,8 @@
+# cc-P838 (P820's): under the docker-build lock, the gated build of the release copy only (run 2: run 1 failed one random imbue fact).
+$t = 'D:\UO\golems\Iron\shard-migration\notes\cc-P838-tools'
+Remove-Item -LiteralPath "$t\isle-done.txt" -ErrorAction SilentlyContinue
+powershell -NoProfile -ExecutionPolicy Bypass -File D:\UO\golem\Use-GolemLock.ps1 -Take docker-build -Minutes 25 -Wait
+docker run --rm --privileged alpine:3.20 sh -c 'sync; echo 3 > /proc/sys/vm/drop_caches'
+& powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$t\gated-build.ps1" -Repo 'D:\UO\golems\Iron\p838-isle' -Tag 'sl-modernuo:cc-P838-isle' -Log "$t\gated-build-isle.log"
+powershell -NoProfile -ExecutionPolicy Bypass -File D:\UO\golem\Use-GolemLock.ps1 -Release docker-build
+'done' | Out-File -FilePath "$t\isle-done.txt"
