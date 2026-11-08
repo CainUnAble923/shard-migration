@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-25. Shard version 2026.11.08. Golem on, 2 queued, latest done P9772. Play tests: 1513 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-25. Shard version 2026.11.08. Golem on, 4 queued, latest done P9772. Play tests: 1513 open, 4 failed, 43 passed.
 
 ### Needs overseer review (13)
 
@@ -239,12 +239,14 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 690 prompts done, 5 more stopped early and not counted)
+### Queue (Golem on; 691 prompts done, 5 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
 | P826 review-build-isle-notes-2 | queued |  |
 | P828 review-build-fixup-jail | queued |  |
+| P829 review-build-port-wrong-and-covetous-void | queued |  |
+| P830 cont-fixup-playtest-bot-checks-first | queued |  |
 | P9772 remote-answer-test | done | 2026-11-02 |
 | P9770 run-next-test | done | 2026-11-02 |
 | P825 review-build-creation-and-wake | done | 2026-11-08 |
