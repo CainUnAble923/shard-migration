@@ -1,0 +1,91 @@
+mutant: m-rules__ChessRules.cs
+Build succeeded.
+  Failed ShatteredLegacy.Tests.BattleChessVerification.AGameSetsUpLivingPiecesAndTakesTurns
+  Failed ShatteredLegacy.Tests.BattleChessVerification.ARefusedMoveSaysWhy
+  Failed ShatteredLegacy.Tests.BattleChessVerification.CastlingEnPassantAndPromotionMoveTheRightPieces
+  Failed ShatteredLegacy.Tests.BattleChessVerification.CheckmateStalemateAndTheDrawsEndTheGame
+  Failed ShatteredLegacy.Tests.BattleChessVerification.TheRulesCountThePublishedMovePaths
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ACaptureRemovesTheTakenPiece
+  Passed ShatteredLegacy.Tests.BattleChessVerification.APawnPromotesToThePlayersChoice
+  Passed ShatteredLegacy.Tests.BattleChessVerification.APieceDeletedByStaffStopsTheGameWithNoResult
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CheckmateEndsTheGameBooksItAndFreesTheBoard
+  Passed ShatteredLegacy.Tests.BattleChessVerification.InvitationsAreRefusedPlainly
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ResigningRunningOutOfTimeAndStayingAwayLose
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheBoardIsWholeAndMapsItsSquares
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheBoardPlacesItselfOnce
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheRecordsAndTheBoardSaveAndLoad
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheSettingsFileIsRefusedWholeWhenWrong
+[21:47:40 INF] Client: 127.0.0.1: Connected. [21 Online] <s:Server.Network.NetState>
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheRecordsAndTheBoardSaveAndLoad [73 ms]
+  Failed ShatteredLegacy.Tests.BattleChessVerification.AGameSetsUpLivingPiecesAndTakesTurns [28 ms]
+  Error Message:
+   Assert.Contains() Failure: Sub-string not found
+String:    "Illegal move."
+Not found: "pawn moves one square forward"
+  Stack Trace:
+     at ShatteredLegacy.Tests.BattleChessVerification.AGameSetsUpLivingPiecesAndTakesTurns() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/BattleChessVerification.cs:line 356
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CheckmateEndsTheGameBooksItAndFreesTheBoard [14 ms]
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheBoardPlacesItselfOnce [1 ms]
+  Passed ShatteredLegacy.Tests.BattleChessVerification.APieceDeletedByStaffStopsTheGameWithNoResult [3 ms]
+  Failed ShatteredLegacy.Tests.BattleChessVerification.CheckmateStalemateAndTheDrawsEndTheGame [6 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: DrawFiftyMoves
+Actual:   Playing
+  Stack Trace:
+     at ShatteredLegacy.Tests.BattleChessVerification.CheckmateStalemateAndTheDrawsEndTheGame() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/BattleChessVerification.cs:line 183
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed ShatteredLegacy.Tests.BattleChessVerification.APawnPromotesToThePlayersChoice [1 ms]
+  Failed ShatteredLegacy.Tests.BattleChessVerification.CastlingEnPassantAndPromotionMoveTheRightPieces [2 ms]
+  Error Message:
+   Assert.Null() Failure: Value is not null
+Expected: null
+Actual:   O-O
+  Stack Trace:
+     at ShatteredLegacy.Tests.BattleChessVerification.CastlingEnPassantAndPromotionMoveTheRightPieces() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/BattleChessVerification.cs:line 205
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed ShatteredLegacy.Tests.BattleChessVerification.InvitationsAreRefusedPlainly [1 ms]
+[xUnit.net 00:00:01.39]     ShatteredLegacy.Tests.BattleChessVerification.ARefusedMoveSaysWhy [FAIL]
+[xUnit.net 00:00:01.39]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:01.39]       String:    "Illegal move."
+[xUnit.net 00:00:01.39]       Not found: "knight moves in an L"
+[xUnit.net 00:00:01.39]       Stack Trace:
+--
+[xUnit.net 00:00:01.43]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.43]   Finished:    UOContent.Tests
+  Failed ShatteredLegacy.Tests.BattleChessVerification.ARefusedMoveSaysWhy [< 1 ms]
+  Error Message:
+   Assert.Contains() Failure: Sub-string not found
+String:    "Illegal move."
+Not found: "knight moves in an L"
+  Stack Trace:
+     at ShatteredLegacy.Tests.BattleChessVerification.ARefusedMoveSaysWhy() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/BattleChessVerification.cs:line 135
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ e4-e5: There is no piece there.
+ e7-e5: That is a black piece; it is White's move.
+ g1-g3: Illegal move.
+--
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheBoardIsWholeAndMapsItsSquares [< 1 ms]
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ResigningRunningOutOfTimeAndStayingAwayLose [2 ms]
+  Failed ShatteredLegacy.Tests.BattleChessVerification.TheRulesCountThePublishedMovePaths [30 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 2039
+Actual:   2040
+  Stack Trace:
+     at ShatteredLegacy.Tests.BattleChessVerification.TheRulesCountThePublishedMovePaths() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/BattleChessVerification.cs:line 110
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+Test Run Failed.
+Total tests: 15
+     Passed: 10
+     Failed: 5
+ Total time: 1.7092 Seconds
+     Passed: 10
+     Failed: 5
