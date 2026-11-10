@@ -239,7 +239,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem on; 741 prompts done, 5 more stopped early and not counted)
+### Queue (Golem on; 742 prompts done, 5 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -251,6 +251,7 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P870 review-build-decor-addon-housing-furniture | queued |  |
 | P9772 remote-answer-test | done | 2026-11-02 |
 | P9770 run-next-test | done | 2026-11-02 |
+| P868 review-build-lamps-and-peddler-wagon | done | 2026-11-10 |
 | P866 review-build-variable-carpet | done | 2026-11-10 |
 | P865 review-build-new-haven-winter-set | done | 2026-11-10 |
 | P864 review-build-decor-addon-housing-furniture | done | 2026-11-10 |
@@ -258,7 +259,6 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P854 tools-minigames-assessment | done | 2026-11-08 |
 | P853 creatures-mounts-assessment | done | 2026-11-08 |
 | P852 deco-addons-assessment | done | 2026-11-08 |
-| P851 review-build-fixup-league-boards | done | 2026-11-08 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 199 patches, 12 replacements
 
