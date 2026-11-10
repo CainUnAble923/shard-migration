@@ -1,0 +1,1237 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index da38595..1890870 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -29,6 +29,12 @@ Example:
+ - Restoring a Jacob's Pickaxe no longer refuses ingots kept in your bank.
+ -->
+ 
++## 2026.11.10
++
++### Added
++- New Haven dresses up for winter from December 1: a Christmas train with turning wheels, smoke and lights, a big walk-round snow globe with falling snow, a Santa bench and a snowman bench. They go when the winter decorations come down after January 6.
++- The Festival's winter stock has a Santa bench, a snowman bench and a holiday fireplace with stockings and a bear rug, for your house. Each piece names the player who designed it.
++
+ ## 2026.11.08.3
+ 
+ ### Changed
+diff --git a/VERSION b/VERSION
+index 058b5c4..9dd5a5d 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-2026.11.08.3
+\ No newline at end of file
++2026.11.10
+diff --git a/server/customizations/ClusterFWinterDecorSeeder.cs b/server/customizations/ClusterFWinterDecorSeeder.cs
+index 72446f9..378418f 100644
+--- a/server/customizations/ClusterFWinterDecorSeeder.cs
++++ b/server/customizations/ClusterFWinterDecorSeeder.cs
+@@ -17,6 +17,13 @@
+ // skips a row whose key is already up: place twice places once, clear twice removes once, place after clear restores
+ // the same set.
+ //
++// cc-P856: the rows are the layout's (ClusterFWinterDecorLayout) and the winter set's (ClusterFWinterSetLayout: the
++// Christmas train, the snowman and Santa benches and the large snow globe; that file says where each stands), whose
++// layer "addon" makes a WinterSeasonAddon instead of a WinterDecor. A world whose decor is already
++// up when new rows arrive (a deploy in December) gets them at the next start: TopUp places the rows of the winter set
++// that are missing, only while the decor is up (the automatic check last put it up, it is the season, and some of it
++// stands), so a staff clear of the whole decor still stands.
++//
+ // [ClusterFWinterDecor status | preview [area] | place [area] | clear [area] [dryrun]]   (up and down still work)
+ //   preview lists what place would do (a dry run). An area is a row's area (bank, square, main road, inn, entrance,
+ //   healer hall, field office, docks). place works before the dates, for the test shard, and says so. The same verbs
+@@ -142,6 +149,15 @@ namespace Server
+                     Console.WriteLine(line);
+                 }
+             };
++            // cc-P856: after the load (items made inside World.Load reach World.Items only after it), the winter set's
++            // missing rows while the decor is up.
++            EventSink.WorldLoad += () => Timer.DelayCall(TimeSpan.Zero, () =>
++            {
++                foreach (var line in TopUp())
++                {
++                    Console.WriteLine(line);
++                }
++            });
+         }
+ 
+         /// <summary>The command verbs, shared by the in-game command and the console command. args: [verb] [area] [dryrun].</summary>
+@@ -180,20 +196,24 @@ namespace Server
+             }
+         }
+ 
+-        public static IEnumerable<string> Areas() => ClusterFWinterDecorLayout.Rows.Select(r => r.Area).Distinct();
++        /// <summary>cc-P856: every row the decor places: P678's layout, then the winter set's addons.</summary>
++        public static readonly ClusterFWinterDecorLayout.Row[] AllRows =
++            ClusterFWinterDecorLayout.Rows.Concat(ClusterFWinterSetLayout.Rows).ToArray();
++
++        public static IEnumerable<string> Areas() => AllRows.Select(r => r.Area).Distinct();
+ 
+         /// <summary>The rows of one area, or all of them.</summary>
+         public static IEnumerable<ClusterFWinterDecorLayout.Row> Rows(string filter) =>
+             string.IsNullOrWhiteSpace(filter)
+-                ? ClusterFWinterDecorLayout.Rows
+-                : ClusterFWinterDecorLayout.Rows.Where(r => r.Area.Equals(filter, StringComparison.OrdinalIgnoreCase));
++                ? AllRows
++                : AllRows.Where(r => r.Area.Equals(filter, StringComparison.OrdinalIgnoreCase));
+ 
+         public static bool KnownFilter(string filter) => string.IsNullOrWhiteSpace(filter) || Rows(filter).Any();
+ 
+         private static HashSet<Serial> Tracked => ClusterFSeasonalState.Placed(SeasonName);
+ 
+         private static string AreaOf(Item item) =>
+-            item is IWinterDecorItem w ? ClusterFWinterDecorLayout.Rows.FirstOrDefault(r => r.Key == w.Key)?.Area ?? "" : "";
++            item is IWinterDecorItem w ? AllRows.FirstOrDefault(r => r.Key == w.Key)?.Area ?? "" : "";
+ 
+         /// <summary>The items placed and remembered by serial, resolved; stale serials (no such item any more) are dropped.</summary>
+         public static List<Item> Placed()
+@@ -225,7 +245,47 @@ namespace Server
+             World.Items.Values.Where(i => i is IWinterDecorItem && !i.Deleted && !Tracked.Contains(i.Serial)).ToList();
+ 
+         public static Item Make(ClusterFWinterDecorLayout.Row row) =>
+-            row.Layer == CalendarLayer ? new WinterAdventCalendar(row) : new WinterDecor(row);
++            row.Layer switch
++            {
++                CalendarLayer => new WinterAdventCalendar(row),
++                ClusterFWinterSetLayout.AddonLayer => new WinterSeasonAddon(row),
++                _ => new WinterDecor(row)
++            };
++
++        /// <summary>
++        /// cc-P856: places the winter set's rows that are missing, only while the decor is up: the automatic check is on
++        /// and last put it up, it is the season, and at least one tracked piece stands. What it did, or nothing.
++        /// </summary>
++        public static List<string> TopUp()
++        {
++            var lines = new List<string>();
++            if (!Season.Automatic || Season.LastAutomatic != true || !Season.IsInSeason(Season.Clock()) || Placed().Count == 0)
++            {
++                return lines;
++            }
++
++            var have = new HashSet<string>(Placed().Concat(Strays()).Select(i => ((IWinterDecorItem)i).Key), StringComparer.Ordinal);
++            var placed = 0;
++            foreach (var row in ClusterFWinterSetLayout.Rows)
++            {
++                if (have.Contains(row.Key))
++                {
++                    continue;
++                }
++
++                var item = Make(row);
++                item.MoveToWorld(new Point3D(row.X, row.Y, row.Z), Facet);
++                Tracked.Add(item.Serial);
++                placed++;
++            }
++
++            if (placed > 0)
++            {
++                lines.Add($"[{Label}] the decor is up: placed {placed} new winter set piece(s) it did not have yet.");
++            }
++
++            return lines;
++        }
+ 
+         public static List<string> Up(bool dryRun, string filter)
+         {
+@@ -302,10 +362,10 @@ namespace Server
+             var lines = new List<string>
+             {
+                 $"[{Label}] local date {now:yyyy-MM-dd HH:mm} ({TimeZoneInfo.Local.Id}): {Season.SeasonText(now)}.",
+-                $"[{Label}] up: {placed.Count} of {ClusterFWinterDecorLayout.Rows.Length} rows placed (by serial){(strays.Count > 0 ? $", plus {strays.Count} stray item(s) not in the saved list" : "")}.",
++                $"[{Label}] up: {placed.Count} of {AllRows.Length} rows placed (by serial){(strays.Count > 0 ? $", plus {strays.Count} stray item(s) not in the saved list" : "")}.",
+                 $"[{Label}] {Season.AutomaticText()}"
+             };
+-            var byArea = placed.GroupBy(AreaOf).OrderBy(g => g.Key).Select(g => $"{g.Key} {g.Count()}/{ClusterFWinterDecorLayout.Rows.Count(r => r.Area == g.Key)}").ToList();
++            var byArea = placed.GroupBy(AreaOf).OrderBy(g => g.Key).Select(g => $"{g.Key} {g.Count()}/{AllRows.Count(r => r.Area == g.Key)}").ToList();
+             if (byArea.Count > 0)
+             {
+                 lines.Add("  " + string.Join(", ", byArea));
+@@ -315,7 +375,7 @@ namespace Server
+         }
+ 
+         [Usage("ClusterFWinterDecor [status|preview|place|clear] [area] [dryrun]")]
+-        [Description("The New Haven winter decor (clusterf.seasonal.winter.start to .end, default December 1 to January 6). status says the date, the season and what is placed. preview lists what place would do. place puts up the rows not already placed, all areas or one (bank, square, main road, inn, entrance, healer hall, field office, docks); allowed outside the dates, for testing, and it says so. clear removes every item the seeder placed, by serial, and nothing else. dryrun lists and changes nothing. up and down still mean place and clear.")]
++        [Description("The New Haven winter decor (clusterf.seasonal.winter.start to .end, default December 1 to January 6). status says the date, the season and what is placed. preview lists what place would do. place puts up the rows not already placed, all areas or one (bank, square, main road, inn, entrance, healer hall, field office, docks, and the winter set's: east, west); allowed outside the dates, for testing, and it says so. clear removes every item the seeder placed, by serial, and nothing else. dryrun lists and changes nothing. up and down still mean place and clear.")]
+         [ShardCommand(CommandCategory.WorldSetup, Rerun = CommandRerun.Skips, Shard = CommandShard.TestFirst, DryRun = "preview", Summary = "Puts up (or clears) New Haven's winter decor: the square, the bank, the main roads, the inn, the halls and the docks. It goes up by itself on December 1 and comes down after January 6 (settings); 'place' early is for the test shard. clear removes only what it placed, by serial. Dry run: 'preview' or 'clear dryrun'.")]
+         private static void OnCommand(CommandEventArgs e)
+         {
+diff --git a/server/customizations/RewardStores/FestivalStore.cs b/server/customizations/RewardStores/FestivalStore.cs
+index 92af10d..60bf221 100644
+--- a/server/customizations/RewardStores/FestivalStore.cs
++++ b/server/customizations/RewardStores/FestivalStore.cs
+@@ -358,6 +358,11 @@ public static class FestivalStock
+         yield return R(s, "gingerbread", "Gingerbread house (decor)", 10, 0x3C5F, Decor(0x3C5F, "a gingerbread house"));
+         yield return R(s, "painting.a", "Holiday painting A (decor)", 10, 0x3C63, Decor(0x3C63, "a holiday painting"));
+         yield return R(s, "painting.b", "Holiday painting B (decor)", 10, 0x3C65, Decor(0x3C65, "a holiday painting"));
++        // cc-P856: the New Haven winter set's house pieces (WinterSetAddon), stock art, each deed naming its author: Candy
++        // Apple's Santa and snowman benches, Lagatha's holiday fireplace (after Gwenivere).
++        yield return R(s, "santabench", "Santa bench (deed)", 30, 0x14F0, RewardStore.One(() => new WinterSetDeed("santa-bench")));
++        yield return R(s, "snowmanbench", "Snowman bench (deed)", 30, 0x14F0, RewardStore.One(() => new WinterSetDeed("snowman-bench")));
++        yield return R(s, "holidayfireplace", "Holiday fireplace (deed)", 40, 0x14F0, RewardStore.One(() => new WinterSetDeed("holiday-fireplace")));
+     }
+ 
+     private static IEnumerable<RewardStoreRow> Spring()
+diff --git a/server/customizations/WinterSet/ClusterFWinterSetLayout.cs b/server/customizations/WinterSet/ClusterFWinterSetLayout.cs
+new file mode 100644
+index 0000000..430b4dc
+--- /dev/null
++++ b/server/customizations/WinterSet/ClusterFWinterSetLayout.cs
+@@ -0,0 +1,45 @@
++// ClusterFWinterSetLayout.cs
++//
++// cc-P856: where New Haven's winter set stands, as rows of the winter decor (ClusterFWinterDecor places them with the
++// rest of the decor on December 1 and takes them down after January 6, by serial). Layer "addon": the row's piece is a
++// WinterSeasonAddon of the design DesignOf(key) names, standing with its own tile at X, Y, Z; ItemId is 0 (an addon has
++// no art of its own) and Name is the piece's name.
++//
++// RELEASE (isle) branch: the ML plaza's New Haven on the classic Trammel map (x 3400-3560). Each spot was found by
++// shard-migration notes/cc-P856-tools/rel/findrel.py: main's tests per tile on this map (reached on foot from the
++// square's start 3503,2574, standing z within 2, not protected by P266's list, not another winter row's tile, nothing
++// standing under a piece, nothing impassable in its outline) and the town's walk with the pieces in place; placed.md
++// in notes/cc-P856-review lists every part.
++//
++//   the plaza's harbour  the Santa bench at the top of the boardwalk, the snowman bench and the large snow globe on the pier
++//   east of the plaza    the Christmas train on the grass by the town's east wall
++//
++// The holiday fireplace has no row here either: no room in the Gentle Rest Inn fits it (notes, "Deviations").
++
++using System.Collections.Generic;
++
++namespace Server;
++
++public static class ClusterFWinterSetLayout
++{
++    public const string AddonLayer = "addon";
++
++    private static readonly Dictionary<string, string> _designs = new()
++    {
++        ["set-train"] = "christmas-train",
++        ["set-snowman-bench"] = "snowman-bench",
++        ["set-santa-bench"] = "santa-bench",
++        ["set-snow-globe"] = "large-snow-globe"
++    };
++
++    public static readonly ClusterFWinterDecorLayout.Row[] Rows =
++    {
++        new("set-train", "east", 3548, 2523, 14, 0, "a Christmas train", 0, "-", AddonLayer),
++        new("set-snowman-bench", "square", 3503, 2596, 1, 0, "a snowman bench", 0, "-", AddonLayer),
++        new("set-santa-bench", "square", 3503, 2588, 16, 0, "a Santa bench", 0, "-", AddonLayer),
++        new("set-snow-globe", "square", 3519, 2592, 1, 0, "a large snow globe", 0, "-", AddonLayer),
++    };
++
++    /// <summary>The design an addon row stands, or null for a key that is not one of these rows.</summary>
++    public static string DesignOf(string key) => key != null && _designs.TryGetValue(key, out var d) ? d : null;
++}
+diff --git a/server/customizations/WinterSet/WinterSetAddon.cs b/server/customizations/WinterSet/WinterSetAddon.cs
+new file mode 100644
+index 0000000..d710371
+--- /dev/null
++++ b/server/customizations/WinterSet/WinterSetAddon.cs
+@@ -0,0 +1,154 @@
++// WinterSetAddon.cs
++//
++// cc-P856 (P852 "port first" item 3): New Haven's winter set. Five pieces from the community, rebuilt as our own addons
++// from their component lists (WinterSetDesigns.cs, generated by shard-migration notes/cc-P856-tools/convert856.py; the
++// downloads in D:\UO\third-party\code were read for their numbers only, no code taken). Every piece is stock client art,
++// so no player package change. Notes: shard-migration notes/cc-P856-new-haven-winter-set.md.
++//
++//   christmas-train     Celestial            engine, fuel car and passenger car; wheels, smoke and lights animate
++//   large-snow-globe    Milva                a walk-round snow globe with moving snow
++//   santa-bench         Candy Apple          Santa between two benches under a garland, candy canes and lamps
++//   snowman-bench       Candy Apple          two benches, snowmen, poinsettias, a little tree
++//   holiday-fireplace   Lagatha, after Gwenivere (Knights of the Round Table shard)   stockings, garland, a bear rug
++//
++// P855's data addon (ShardDecorAddon) had not merged into main when this ran, so these are hand-written classes as the
++// prompt allows: one addon type that builds any of the five, a deed for the house version (the Festival's winter stock
++// sells the benches and the fireplace), and a seasonal version the winter decor seeder places and takes down by serial
++// (WinterSeasonAddon, ClusterFWinterSetLayout).
++
++using System.Collections.Generic;
++using ModernUO.Serialization;
++
++namespace Server.Items
++{
++    /// <summary>One piece of a design: art, offset from the addon's tile, hue, light (or null) and name (or null).</summary>
++    public sealed record WinterSetPart(int ItemID, int X, int Y, int Z, int Hue, LightType? Light, string Name);
++
++    /// <summary>A whole piece: its key, name, author and parts.</summary>
++    public sealed record WinterSetDesign(string Key, string Name, string Credit, IReadOnlyList<WinterSetPart> Parts);
++
++    /// <summary>A part of a winter set addon: stock art, with the design's author on it.</summary>
++    [SerializationGenerator(0, false)]
++    public partial class WinterSetComponent : AddonComponent
++    {
++        public WinterSetComponent(int itemID) : base(itemID)
++        {
++        }
++
++        public override void GetProperties(IPropertyList list)
++        {
++            base.GetProperties(list);
++            if (Addon is WinterSetAddon addon && WinterSetDesigns.All.TryGetValue(addon.Design ?? "", out var d))
++            {
++                list.Add($"Design by {d.Credit}");
++            }
++        }
++    }
++
++    /// <summary>One of the winter set's pieces as a house addon (from its deed).</summary>
++    [SerializationGenerator(0, false)]
++    public partial class WinterSetAddon : BaseAddon
++    {
++        [SerializableField(0, setter: "private")]
++        [SerializedCommandProperty(AccessLevel.GameMaster, readOnly: true)]
++        private string _design;
++
++        [Constructible(AccessLevel.GameMaster)]
++        public WinterSetAddon(string design)
++        {
++            _design = design;
++            if (!WinterSetDesigns.All.TryGetValue(design ?? "", out var d))
++            {
++                return;
++            }
++
++            Name = d.Name;
++            foreach (var part in d.Parts)
++            {
++                var c = new WinterSetComponent(part.ItemID);
++                if (part.Hue != 0)
++                {
++                    c.Hue = part.Hue;
++                }
++
++                if (part.Light is { } light)
++                {
++                    c.Light = light;
++                }
++
++                if (part.Name != null)
++                {
++                    c.Name = part.Name;
++                }
++
++                AddComponent(c, part.X, part.Y, part.Z);
++            }
++        }
++
++        // Each part keeps its design's hue.
++        public override bool ShareHue => false;
++
++        public override BaseAddonDeed Deed => new WinterSetDeed(_design);
++    }
++
++    /// <summary>The deed for a house copy of one winter set piece.</summary>
++    [SerializationGenerator(0, false)]
++    public partial class WinterSetDeed : BaseAddonDeed
++    {
++        [SerializableField(0, setter: "private")]
++        [SerializedCommandProperty(AccessLevel.GameMaster, readOnly: true)]
++        private string _design;
++
++        [Constructible(AccessLevel.GameMaster)]
++        public WinterSetDeed(string design)
++        {
++            _design = design;
++            Name = WinterSetDesigns.All.TryGetValue(design ?? "", out var d) ? $"a deed for {d.Name}" : "a deed for winter decor";
++        }
++
++        public override BaseAddon Addon => new WinterSetAddon(_design);
++
++        public override void GetProperties(IPropertyList list)
++        {
++            base.GetProperties(list);
++            if (WinterSetDesigns.All.TryGetValue(_design ?? "", out var d))
++            {
++                list.Add($"Design by {d.Credit}");
++            }
++
++            list.Add("House decor");
++        }
++
++        public override void OnDoubleClick(Mobile from)
++        {
++            if (!WinterSetDesigns.All.ContainsKey(_design ?? ""))
++            {
++                from.SendMessage(0x22, "This deed's design cannot be found. Please page a staff member.");
++                return;
++            }
++
++            base.OnDoubleClick(from);
++        }
++    }
++
++    /// <summary>
++    /// A winter set piece the New Haven winter decor placed (ClusterFWinterSetLayout's row, by its key). Tracked by
++    /// serial with the rest of the decor and taken down with it; no deed, not constructible.
++    /// </summary>
++    [SerializationGenerator(0, false)]
++    public partial class WinterSeasonAddon : WinterSetAddon, IWinterDecorItem
++    {
++        [SerializableField(0)]
++        [SerializedCommandProperty(AccessLevel.GameMaster, readOnly: true)]
++        private string _key;
++
++        public WinterSeasonAddon(ClusterFWinterDecorLayout.Row row) : base(ClusterFWinterSetLayout.DesignOf(row.Key))
++        {
++            _key = row.Key;
++        }
++
++        public override BaseAddonDeed Deed => null;
++
++        public override bool Decays => false;
++    }
++}
+diff --git a/server/customizations/WinterSet/WinterSetDesigns.cs b/server/customizations/WinterSet/WinterSetDesigns.cs
+new file mode 100644
+index 0000000..76b01c5
+--- /dev/null
++++ b/server/customizations/WinterSet/WinterSetDesigns.cs
+@@ -0,0 +1,461 @@
++// GENERATED by shard-migration notes/cc-P856-tools/convert856.py from the downloads' component lists. Do not edit by
++// hand: rerun the script. cc-P856: the New Haven winter set's five pieces, stock client art only. Each row: item ID,
++// x, y, z offset from the addon's tile, hue, light (or null) and name (or null). Credits are each design's own.
++
++using System.Collections.Generic;
++
++namespace Server.Items;
++
++public static class WinterSetDesigns
++{
++    public static readonly Dictionary<string, WinterSetDesign> All = new()
++    {
++        // celestial-christmas-train/Christmas_TrainAddon.cs (https://www.servuo.dev/archive/christmas-train.1493/), by Celestial.
++        ["christmas-train"] = new("christmas-train", "a Christmas train", "Celestial",
++        [
++            new(0x1B73, 0, 9, 23, 1108, null, "Christmas Train"),
++            new(0x087B, 0, 9, 5, 1108, null, "Christmas Train"),
++            new(0x0E7C, 0, 9, 15, 1107, null, "Christmas Train"),
++            new(0x0709, 0, 4, 5, 2019, null, "Christmas Train"),
++            new(0x0E7C, -1, 7, 7, 1107, null, "Christmas Train"),
++            new(0x1EA9, -1, 5, 16, 1106, null, "Christmas Train"),
++            new(0x9B2B, 0, 4, 7, 38, null, "Christmas Train"),
++            new(0x061A, 1, 6, 30, 2019, null, "Christmas Train"),
++            new(0x157E, 1, 10, 11, 38, null, "Christmas Train"),
++            new(0x29E3, 1, 5, 5, 2019, null, "Christmas Train"),
++            new(0x0709, 0, 8, 5, 1, null, "Christmas Train"),
++            new(0x1B73, 0, 9, 24, 1108, null, "Christmas Train"),
++            new(0x064F, 0, 5, 32, 2019, null, "Christmas Train"),
++            new(0x064F, 0, 6, 32, 2019, null, "Christmas Train"),
++            new(0x061A, 1, 5, 30, 2019, null, "Christmas Train"),
++            new(0x29E3, 1, 10, 5, 2019, null, "Christmas Train"),
++            new(0x9B25, 0, 3, 10, 38, null, "Christmas Train"),
++            new(0x0E7C, -1, 8, 7, 1107, null, "Christmas Train"),
++            new(0xA000, 1, 6, 16, 0, LightType.ArchedWindowEast, "Christmas Train"),
++            new(0x0709, -1, 5, 5, 2019, null, "Christmas Train"),
++            new(0x1016, 1, 4, 3, 1105, null, "Christmas Train"),
++            new(0x04AB, -1, 3, 10, 0, null, "Christmas Train"),
++            new(0x0E7C, 0, 8, 15, 1107, null, "Christmas Train"),
++            new(0x0709, 0, 6, 5, 1, null, "Christmas Train"),
++            new(0x9B18, -2, 3, 7, 38, null, "Christmas Train"),
++            new(0x9FFB, 1, 10, 25, 0, LightType.ArchedWindowEast, "Christmas Train"),
++            new(0x1094, -2, 3, 10, 0, null, "Christmas Train"),
++            new(0x0617, -1, 5, 28, 2019, null, "Christmas Train"),
++            new(0x4C5A, 0, 8, 20, 1106, null, "Christmas Train"),
++            new(0x0709, -1, 3, 5, 2019, null, "Christmas Train"),
++            new(0x1016, 1, 6, 3, 1105, null, "Christmas Train"),
++            new(0x29E3, 1, 4, 5, 2019, null, "Christmas Train"),
++            new(0x9B28, -2, 5, 7, 38, null, "Christmas Train"),
++            new(0x0709, 0, 7, 5, 1, null, "Christmas Train"),
++            new(0x0709, -1, 4, 5, 2019, null, "Christmas Train"),
++            new(0x29E3, 1, 9, 5, 2019, null, "Christmas Train"),
++            new(0x9B23, 0, 5, 10, 38, null, "Christmas Train"),
++            new(0x064F, 0, 4, 32, 2019, null, "Christmas Train"),
++            new(0x0A22, 1, 10, 32, 0, LightType.Circle300, "Christmas Train"),
++            new(0x29E3, 1, 8, 5, 2019, null, "Christmas Train"),
++            new(0x9B24, -1, 5, 10, 38, null, "Christmas Train"),
++            new(0x3709, 0, 9, 30, 0, LightType.ArchedWindowEast, "Christmas Train"),
++            new(0x1094, -1, 4, 10, 0, null, "Christmas Train"),
++            new(0x9B18, 0, 3, 7, 38, null, "Christmas Train"),
++            new(0x04AB, 0, 3, 10, 0, null, "Christmas Train"),
++            new(0x0E7C, -1, 6, 7, 1107, null, "Christmas Train"),
++            new(0x29E3, -1, 10, 5, 2019, null, "Christmas Train"),
++            new(0x0E7C, 0, 7, 7, 1107, null, "Christmas Train"),
++            new(0x0709, 0, 5, 5, 2019, null, "Christmas Train"),
++            new(0x232C, 1, 8, 34, 33, null, "Christmas Train"),
++            new(0x29E3, 1, 6, 5, 2019, null, "Christmas Train"),
++            new(0x1B73, 0, 9, 20, 1108, null, "Christmas Train"),
++            new(0x061A, 1, 4, 30, 2019, null, "Christmas Train"),
++            new(0xA000, 1, 4, 18, 0, LightType.ArchedWindowEast, "Christmas Train"),
++            new(0x0617, -1, 4, 28, 2019, null, "Christmas Train"),
++            new(0x232C, 1, 3, 20, 33, null, "Christmas Train"),
++            new(0xA000, 1, 5, 18, 0, LightType.ArchedWindowEast, "Christmas Train"),
++            new(0x04AB, 0, 4, 10, 0, null, "Christmas Train"),
++            new(0x232C, 2, 3, 21, 33, null, "Christmas Train"),
++            new(0x1093, -1, 3, 10, 0, null, "Christmas Train"),
++            new(0x9B25, -2, 5, 10, 38, null, "Christmas Train"),
++            new(0x29E3, 1, 3, 5, 2019, null, "Christmas Train"),
++            new(0x04AB, -1, 4, 10, 0, null, "Christmas Train"),
++            new(0x1B73, 0, 9, 22, 1108, null, "Christmas Train"),
++            new(0xA000, 1, 8, 16, 0, LightType.ArchedWindowEast, "Christmas Train"),
++            new(0x04AB, -1, 5, 10, 0, null, "Christmas Train"),
++            new(0x0A22, 0, 5, 16, 0, LightType.Circle300, "Christmas Train"),
++            new(0x0E76, 0, 7, 23, 1106, null, "Christmas Train"),
++            new(0x46FF, 1, 8, 0, 1105, null, "Christmas Train"),
++            new(0x46FF, 1, 7, 0, 1105, null, "Christmas Train"),
++            new(0x0709, 0, 3, 5, 2019, null, "Christmas Train"),
++            new(0x0617, -1, 6, 28, 2019, null, "Christmas Train"),
++            new(0x0E7C, 0, 7, 15, 1107, null, "Christmas Train"),
++            new(0x0E7C, 0, 8, 7, 1107, null, "Christmas Train"),
++            new(0x9B25, -2, 4, 10, 38, null, "Christmas Train"),
++            new(0x1B73, 0, 9, 21, 1108, null, "Christmas Train"),
++            new(0x9B2B, -2, 4, 7, 38, null, "Christmas Train"),
++            new(0x1B73, 0, 9, 25, 1108, null, "Christmas Train"),
++            new(0x29E3, -1, 9, 5, 2019, null, "Christmas Train"),
++            new(0x0E83, 0, 9, 29, 38, null, "Christmas Train"),
++            new(0x9B25, -2, 3, 10, 38, null, "Christmas Train"),
++            new(0x29E3, 1, 7, 5, 2019, null, "Christmas Train"),
++            new(0x9B25, 0, 4, 10, 38, null, "Christmas Train"),
++            new(0x9B27, 0, 5, 7, 38, null, "Christmas Train"),
++            new(0x9B29, -1, 5, 7, 38, null, "Christmas Train"),
++            new(0x0E7C, 0, 6, 7, 1107, null, "Christmas Train"),
++            new(0x0A22, -1, 6, 26, 0, LightType.Circle300, "Christmas Train"),
++            new(0x9B25, -1, -5, 11, 38, null, "Christmas Train"),
++            new(0x04AB, 1, -8, 11, 0, null, "Christmas Train"),
++            new(0x0617, -1, -6, 21, 2019, null, "Christmas Train"),
++            new(0x1BDF, 0, -1, 19, 0, null, "Christmas Train"),
++            new(0x9DC0, 3, -7, 15, 0, null, "Christmas Train"),
++            new(0xA000, 2, -6, 19, 0, LightType.ArchedWindowEast, "Christmas Train"),
++            new(0xA000, 2, 1, 19, 0, LightType.ArchedWindowEast, "Christmas Train"),
++            new(0x0110, -1, -2, 9, 0, null, "Christmas Train"),
++            new(0x0444, 1, -1, 17, 2019, null, "Christmas Train"),
++            new(0x0459, 0, -7, 10, 267, null, "Christmas Train"),
++            new(0xA000, 2, -4, 18, 0, LightType.ArchedWindowEast, "Christmas Train"),
++            new(0x0617, -1, -8, 21, 2019, null, "Christmas Train"),
++            new(0x9B23, 1, -4, 11, 38, null, "Christmas Train"),
++            new(0x0FD2, 2, 2, 4, 2019, null, "Christmas Train"),
++            new(0x9B25, 1, -6, 11, 38, null, "Christmas Train"),
++            new(0x232C, 2, -1, 38, 33, null, "Christmas Train"),
++            new(0x04AB, 0, -6, 11, 0, null, "Christmas Train"),
++            new(0x0444, 1, -2, 17, 2019, null, "Christmas Train"),
++            new(0x1BD7, 1, -1, 5, 0, null, "Christmas Train"),
++            new(0x29E3, 1, -1, 5, 2019, null, "Christmas Train"),
++            new(0x1502, 1, -7, 7, 1106, null, "Christmas Train"),
++            new(0x010F, 0, -3, 9, 0, null, "Christmas Train"),
++            new(0x9B18, -1, -9, 9, 38, null, "Christmas Train"),
++            new(0x29E3, 1, -8, 5, 2019, null, "Christmas Train"),
++            new(0x9B25, 1, -8, 11, 38, null, "Christmas Train"),
++            new(0x0459, 0, -6, 10, 267, null, "Christmas Train"),
++            new(0x1BDF, 1, -2, 16, 0, null, "Christmas Train"),
++            new(0x0110, 1, -2, 11, 38, null, "Christmas Train"),
++            new(0x9DC0, 3, 0, 17, 0, null, "Christmas Train"),
++            new(0x9B18, 1, -9, 10, 38, null, "Christmas Train"),
++            new(0x9B24, 0, -4, 11, 38, null, "Christmas Train"),
++            new(0x1BDF, 1, 0, 21, 0, null, "Christmas Train"),
++            new(0x064F, 1, -8, 36, 2019, null, "Christmas Train"),
++            new(0x1502, 1, -1, 7, 1106, null, "Christmas Train"),
++            new(0x04AB, 0, -8, 11, 0, null, "Christmas Train"),
++            new(0x064F, 1, -7, 36, 2019, null, "Christmas Train"),
++            new(0x04AB, 1, -6, 11, 0, null, "Christmas Train"),
++            new(0x04AB, 0, -5, 11, 0, null, "Christmas Train"),
++            new(0x9B25, -1, -4, 11, 38, null, "Christmas Train"),
++            new(0x1502, 1, -4, 7, 1106, null, "Christmas Train"),
++            new(0x0444, -1, 0, 12, 2019, null, "Christmas Train"),
++            new(0x061A, 2, -6, 35, 2019, null, "Christmas Train"),
++            new(0x0444, 1, 0, 17, 2019, null, "Christmas Train"),
++            new(0x061A, 2, -8, 35, 2019, null, "Christmas Train"),
++            new(0x0443, 0, -3, 12, 0, null, "Christmas Train"),
++            new(0x010F, 0, 1, 9, 38, null, "Christmas Train"),
++            new(0x064F, 1, -6, 36, 2019, null, "Christmas Train"),
++            new(0x04AB, 1, -5, 10, 0, null, "Christmas Train"),
++            new(0x1BDF, 1, -1, 20, 0, null, "Christmas Train"),
++            new(0x29E3, -1, 1, 5, 2019, null, "Christmas Train"),
++            new(0x0444, -1, -2, 17, 2019, null, "Christmas Train"),
++            new(0x1BD7, 0, 2, 5, 2019, null, "Christmas Train"),
++            new(0x9B25, -1, -6, 11, 38, null, "Christmas Train"),
++            new(0x9B25, 1, -5, 11, 38, null, "Christmas Train"),
++            new(0x0442, 1, 1, 14, 2019, null, "Christmas Train"),
++            new(0x0444, 1, 0, 14, 2019, null, "Christmas Train"),
++            new(0x0459, 1, -8, 10, 267, null, "Christmas Train"),
++            new(0x1B73, 0, 2, 9, 1108, null, "Christmas Train"),
++            new(0x1502, 1, -5, 7, 1106, null, "Christmas Train"),
++            new(0x0617, -1, -5, 21, 2019, null, "Christmas Train"),
++            new(0x1BDF, 0, -2, 15, 0, null, "Christmas Train"),
++            new(0x0110, -1, -1, 9, 0, null, "Christmas Train"),
++            new(0x0617, -1, -9, 21, 2019, null, "Christmas Train"),
++            new(0x04AB, 0, 1, 9, 0, null, "Christmas Train"),
++            new(0x061A, 2, -5, 35, 2019, null, "Christmas Train"),
++            new(0x9DC0, 3, -3, 16, 0, null, "Christmas Train"),
++            new(0x0444, 1, -1, 14, 1984, null, "Christmas Train"),
++            new(0x9B18, 1, -4, 9, 38, null, "Christmas Train"),
++            new(0x2845, 1, 2, 23, 1102, null, "Christmas Train"),
++            new(0x0444, -1, -1, 12, 0, null, "Christmas Train"),
++            new(0x064F, 1, -5, 36, 2019, null, "Christmas Train"),
++            new(0x29E3, 1, -10, 5, 2019, null, "Christmas Train"),
++            new(0x061A, 2, -4, 35, 2019, null, "Christmas Train"),
++            new(0x064F, 1, -4, 36, 2019, null, "Christmas Train"),
++            new(0x064F, 1, -3, 36, 2019, null, "Christmas Train"),
++            new(0x1502, 1, -8, 7, 1106, null, "Christmas Train"),
++            new(0xA000, 2, -1, 20, 0, LightType.ArchedWindowEast, "Christmas Train"),
++            new(0x0444, -1, 0, 5, 0, null, "Christmas Train"),
++            new(0x9B24, 0, -9, 11, 38, null, "Christmas Train"),
++            new(0x04AB, 0, -2, 9, 0, null, "Christmas Train"),
++            new(0x9B24, 1, -9, 11, 38, null, "Christmas Train"),
++            new(0x0443, 1, -3, 14, 2019, null, "Christmas Train"),
++            new(0x04AB, 1, -1, 11, 0, null, "Christmas Train"),
++            new(0x0110, -1, 1, 9, 38, null, "Christmas Train"),
++            new(0x0443, 1, -3, 17, 2019, null, "Christmas Train"),
++            new(0x0459, 1, -6, 10, 267, null, "Christmas Train"),
++            new(0x0444, 1, -2, 14, 2019, null, "Christmas Train"),
++            new(0x9B18, -1, -4, 11, 38, null, "Christmas Train"),
++            new(0x29E3, -1, 2, 5, 2019, null, "Christmas Train"),
++            new(0x0617, -1, -4, 21, 2019, null, "Christmas Train"),
++            new(0x0110, 1, -1, 11, 38, null, "Christmas Train"),
++            new(0x1BD7, 1, -5, 5, 0, null, "Christmas Train"),
++            new(0x0A22, 2, -3, 28, 0, LightType.Circle300, "Christmas Train"),
++            new(0x29E3, 1, -4, 5, 2019, null, "Christmas Train"),
++            new(0x04AB, 0, -1, 10, 0, null, "Christmas Train"),
++            new(0x29E3, 1, -3, 5, 2019, null, "Christmas Train"),
++            new(0x04AB, 1, 1, 11, 0, null, "Christmas Train"),
++            new(0x1BD7, 1, -6, 5, 0, null, "Christmas Train"),
++            new(0x1BD7, 1, -8, 5, 0, null, "Christmas Train"),
++            new(0x9DBF, 2, 2, 10, 0, null, "Christmas Train"),
++            new(0x9FFB, 1, -3, 17, 0, LightType.ArchedWindowEast, "Christmas Train"),
++            new(0x1BD7, 1, -9, 5, 0, null, "Christmas Train"),
++            new(0x061A, 2, -3, 35, 2019, null, "Christmas Train"),
++            new(0x0444, -1, -2, 12, 0, null, "Christmas Train"),
++            new(0x0459, 0, -5, 10, 267, null, "Christmas Train"),
++            new(0x04AB, 0, -7, 11, 0, null, "Christmas Train"),
++            new(0x04AB, 1, -4, 11, 0, null, "Christmas Train"),
++            new(0x1BD7, 0, 1, 5, 2019, null, "Christmas Train"),
++            new(0x1BD7, 1, -7, 5, 0, null, "Christmas Train"),
++            new(0x1502, 1, -2, 7, 1106, null, "Christmas Train"),
++            new(0x04AB, 0, -4, 11, 0, null, "Christmas Train"),
++            new(0x0443, 0, 1, 14, 2019, null, "Christmas Train"),
++            new(0x0444, -1, 0, 17, 2019, null, "Christmas Train"),
++            new(0x1502, 1, 1, 7, 1106, null, "Christmas Train"),
++            new(0x010F, 1, -3, 11, 38, null, "Christmas Train"),
++            new(0x04AB, 1, -7, 11, 0, null, "Christmas Train"),
++            new(0x1BDF, 0, 1, 19, 0, null, "Christmas Train"),
++            new(0x0459, 0, -8, 10, 267, null, "Christmas Train"),
++            new(0x29E3, 1, -5, 5, 2019, null, "Christmas Train"),
++            new(0x0444, -1, 1, 12, 2019, null, "Christmas Train"),
++            new(0x04AB, 1, 0, 11, 0, null, "Christmas Train"),
++            new(0x010D, -1, 1, 14, 2019, null, "Christmas Train"),
++            new(0x1BD7, 1, 0, 5, 0, null, "Christmas Train"),
++            new(0x1BDF, 1, 1, 22, 0, null, "Christmas Train"),
++            new(0x04AB, 1, -2, 11, 0, null, "Christmas Train"),
++            new(0x9DC0, 3, -5, 16, 0, null, "Christmas Train"),
++            new(0x04AB, 0, 0, 9, 0, null, "Christmas Train"),
++            new(0x29E3, 1, -9, 5, 2019, null, "Christmas Train"),
++            new(0x0110, -1, 0, 9, 38, null, "Christmas Train"),
++            new(0x010D, 1, 1, 14, 2019, null, "Christmas Train"),
++            new(0x29E3, 1, 0, 5, 2019, null, "Christmas Train"),
++            new(0x29E3, 1, -2, 5, 2019, null, "Christmas Train"),
++            new(0x1BDF, 0, 0, 9, 0, null, "Christmas Train"),
++            new(0x29E3, 1, 2, 5, 2019, null, "Christmas Train"),
++            new(0x061A, 2, -7, 35, 2019, null, "Christmas Train"),
++            new(0x0A22, 0, -3, 29, 0, LightType.Circle300, "Christmas Train"),
++            new(0x1BD7, 1, -2, 5, 0, null, "Christmas Train"),
++            new(0x9B25, -1, -8, 11, 38, null, "Christmas Train"),
++            new(0x29E3, 1, -6, 5, 2019, null, "Christmas Train"),
++            new(0x010E, 1, 1, 11, 38, null, "Christmas Train"),
++            new(0x29E3, 1, -7, 5, 2019, null, "Christmas Train"),
++            new(0x0617, -1, -7, 21, 2019, null, "Christmas Train"),
++            new(0x0459, 1, -7, 10, 267, null, "Christmas Train"),
++            new(0x0443, 0, -3, 17, 2019, null, "Christmas Train"),
++            new(0x9B25, 1, -7, 11, 38, null, "Christmas Train"),
++            new(0x0444, -1, -1, 17, 2019, null, "Christmas Train"),
++            new(0x9FFB, 1, 2, 17, 0, LightType.ArchedWindowEast, "Christmas Train"),
++            new(0x29E3, 1, 1, 5, 2019, null, "Christmas Train"),
++            new(0x0110, 1, 0, 11, 38, null, "Christmas Train"),
++            new(0x1BDF, 0, 0, 20, 0, null, "Christmas Train"),
++            new(0x010D, -1, -3, 10, 2019, null, "Christmas Train"),
++            new(0x1BDF, 1, 0, 13, 0, null, "Christmas Train"),
++            new(0x0459, 1, -5, 10, 267, null, "Christmas Train"),
++            new(0x9B25, -1, -7, 11, 38, null, "Christmas Train"),
++        ]),
++        // milva-snowglobe/NewLargeSnowGlobeAddon.cs (https://www.servuo.dev/archive/uo-snowglobe.1073/), by Milva.
++        ["large-snow-globe"] = new("large-snow-globe", "a large snow globe", "Milva",
++        [
++            new(0x17CD, 2, -1, 25, 0, null, null),
++            new(0x17CD, -1, -1, 25, 0, null, null),
++            new(0x17CD, -1, 2, 25, 0, null, null),
++            new(0x46A2, -1, 0, 5, 0, null, null),
++            new(0x46A6, 0, 2, 5, 1368, null, null),
++            new(0x46A4, 0, 0, 7, 37, null, null),
++            new(0x9DD2, 0, -1, 2, 0, null, "Christmas Tree"),
++            new(0x1CD9, 2, 0, 25, 1153, null, "Snow Globe"),
++            new(0x1CD9, 0, 2, 25, 1153, null, "Snow Globe"),
++            new(0x08CE, 0, -1, 25, 1368, null, "Snow Globe"),
++            new(0x08CE, 1, -1, 25, 1368, null, "Snow Globe"),
++            new(0x08CD, 2, 0, 25, 1368, null, "Snow Globe"),
++            new(0x08CD, 0, 2, 25, 1368, null, "Snow Globe"),
++            new(0x2BC7, 2, 1, 0, 37, null, "Snow Globe"),
++            new(0x9E1B, 1, 3, 5, 0, null, "Candy Cane"),
++            new(0x9E1C, 3, 1, 5, 0, null, "Candy Cane"),
++            new(0x9FFB, 0, 3, 5, 0, LightType.Circle225, "Garland"),
++            new(0x3A88, 1, -1, 5, 0, null, "Santa Sleigh"),
++            new(0x9DC0, 3, -1, 5, 0, null, "Christmas Bells"),
++            new(0x377A, 2, 0, 6, 1153, null, "Snow"),
++            new(0x3A87, 1, 0, 5, 0, null, "Santa Sleigh"),
++            new(0xA000, 3, 0, 5, 0, LightType.Circle225, "Garland"),
++            new(0x17C2, 2, -1, 6, 0, null, "Snow Globe"),
++            new(0x2CEF, 2, -1, 0, 37, null, "Snow Globe"),
++            new(0x377A, 1, 1, 5, 1153, null, "Snow"),
++            new(0x17BD, 0, 1, 5, 0, null, "Snow Globe"),
++            new(0x17BD, 0, -1, 5, 0, null, "Snow Globe"),
++            new(0x17BD, 1, 1, 5, 0, null, "Snow Globe"),
++            new(0x17BD, 1, 0, 5, 0, null, "Snow Globe"),
++            new(0x17BD, 1, -1, 5, 0, null, "Snow Globe"),
++            new(0x17BD, 2, -1, 5, 0, null, "Snow Globe"),
++            new(0x17BD, 2, 0, 5, 0, null, "Snow Globe"),
++            new(0x08CC, 1, 0, 25, 1368, null, "Snow Globe"),
++            new(0x17C3, 1, 2, 6, 0, null, "Snow Globe"),
++            new(0x17BD, 0, 0, 5, 0, null, "Snow Globe"),
++            new(0x08CC, 2, -1, 5, 1368, null, "Snow Globe"),
++            new(0x1CD9, 2, -1, 25, 1153, null, "Snow Globe"),
++            new(0x1CD9, 1, -1, 25, 1153, null, "Snow Globe"),
++            new(0x3A55, 2, 1, 6, 0, null, "Reindeer"),
++            new(0x08CD, 2, 1, 5, 1368, null, "Snow Globe"),
++            new(0x08CD, 1, 2, 5, 1368, null, "Snow Globe"),
++            new(0x08CC, 2, 0, 5, 1368, null, "Snow Globe"),
++            new(0x17BD, 0, 2, 5, 0, null, "Snow Globe"),
++            new(0x08CE, 0, 1, 25, 1368, null, "Snow Globe"),
++            new(0x2CF0, 0, 2, 0, 37, null, "Snow Globe"),
++            new(0x17BD, 1, 2, 5, 0, null, "Snow Globe"),
++            new(0x08CE, 0, 2, 5, 1368, null, "Snow Globe"),
++            new(0x2BC7, 1, 2, 0, 37, null, "Snow Globe"),
++            new(0x1CD9, 0, -1, 25, 1153, null, "Snow Globe"),
++            new(0x17C3, 2, 1, 6, 0, null, "Snow Globe"),
++            new(0x17BD, 2, 1, 5, 0, null, "Snow Globe"),
++            new(0x3A67, 1, 1, 5, 0, null, "Reindeer"),
++            new(0x17CB, 0, 2, 5, 0, null, "Snow Globe"),
++            new(0x17CB, 0, 2, 6, 0, null, "Snow Globe"),
++            new(0x17CA, 2, 0, 6, 0, null, "Snow Globe"),
++            new(0x17C9, 1, -1, 6, 0, null, "Snow Globe"),
++            new(0x17C9, 0, -1, 6, 0, null, "Snow Globe"),
++            new(0x08CC, 2, -1, 25, 1368, null, "Snow Globe"),
++            new(0x2CEF, 2, 0, 0, 37, null, "Snow Globe"),
++            new(0x377A, 0, 1, 5, 1153, null, "Snow"),
++            new(0x2CF0, 2, -2, 0, 37, null, "Snow Globe"),
++            new(0x2BC6, 2, -2, 5, 37, null, "Snow Globe"),
++            new(0x08CE, 2, -2, 6, 1368, null, "Snow Globe"),
++            new(0x08CE, 2, -2, 6, 1368, null, "Snow Globe"),
++            new(0x08CE, 1, -2, 6, 1368, null, "Snow Globe"),
++            new(0x08CE, 0, -2, 6, 1368, null, "Snow Globe"),
++            new(0x2CF0, 0, -2, 0, 37, null, "Snow Globe"),
++            new(0x2CF0, 1, -2, 0, 37, null, "Snow Globe"),
++            new(0x08CE, 2, -2, 25, 1368, null, "Snow Globe"),
++            new(0x08CE, 0, -2, 25, 1368, null, "Snow Globe"),
++            new(0x08CE, 1, -2, 25, 1368, null, "Snow Globe"),
++            new(0x1CD9, -1, 2, 25, 1153, null, "Snow Globe"),
++            new(0x17CC, -1, 0, 6, 0, null, "Snow Globe"),
++            new(0x9DBF, -1, 3, 6, 0, null, "Christmas Bells"),
++            new(0x08CC, -2, 2, 25, 1368, null, "Snow Globe"),
++            new(0x08CC, -1, 0, 25, 1368, null, "Snow Globe"),
++            new(0x9DB5, -1, 2, 6, 0, null, "Santa Bag"),
++            new(0x2CF0, -1, 2, 0, 37, null, "Snow Globe"),
++            new(0x17C4, -1, 2, 6, 0, null, "Snow Globe"),
++            new(0x17BD, -1, 0, 5, 0, null, "Snow Globe"),
++            new(0x17BD, -1, 1, 5, 0, null, "Snow Globe"),
++            new(0x17BD, -1, -1, 5, 0, null, "Snow Globe"),
++            new(0x2BC3, -2, 2, 5, 37, null, "Snow Globe"),
++            new(0x08CC, -2, -1, 25, 1368, null, "Snow Globe"),
++            new(0x08CC, -1, 1, 25, 1368, null, "Snow Globe"),
++            new(0x2BC4, -2, -1, 5, 37, null, "Snow Globe"),
++            new(0x08CC, -2, 1, 5, 1368, null, "Snow Globe"),
++            new(0x08CC, -2, 0, 6, 1368, null, "Snow Globe"),
++            new(0x08CC, -2, 1, 6, 1368, null, "Snow Globe"),
++            new(0x08CC, -2, -1, 6, 1368, null, "Snow Globe"),
++            new(0x08CC, -2, 2, 6, 1368, null, "Snow Globe"),
++            new(0x1CD9, -1, -1, 25, 1153, null, "Snow Globe"),
++            new(0x2CEF, -2, -1, 0, 37, null, "Snow Globe"),
++            new(0x2CEF, -2, 0, 0, 37, null, "Snow Globe"),
++            new(0x2CEF, -2, 1, 0, 37, null, "Snow Globe"),
++            new(0x17BD, -1, 2, 5, 0, null, "Snow Globe"),
++            new(0x08CE, -1, 2, 5, 1368, null, "Snow Globe"),
++            new(0x1CD9, -1, 0, 25, 1153, null, "Snow Globe"),
++            new(0x08CE, -1, 2, 25, 1368, null, "Snow Globe"),
++            new(0x2CEF, -2, 2, 0, 37, null, "Snow Globe"),
++            new(0x1CD9, -1, 1, 25, 1153, null, "Snow Globe"),
++            new(0x17C1, -1, -1, 6, 0, null, "Snow Globe"),
++            new(0x17CC, -1, 1, 6, 0, null, "Snow Globe"),
++            new(0x377A, -1, 0, 10, 1153, null, "Snow"),
++            new(0x08CC, -2, 0, 25, 1368, null, "Snow Globe"),
++            new(0x08CC, -2, 1, 25, 1368, null, "Snow Globe"),
++            new(0x2CF0, -1, -2, 0, 37, null, "Snow Globe"),
++            new(0x2BC5, -1, -2, 5, 37, null, "Snow Globe"),
++            new(0x08CE, -1, -2, 6, 1368, null, "Snow Globe"),
++            new(0x08CE, -1, -2, 6, 1368, null, "Snow Globe"),
++            new(0x08CE, -1, -2, 25, 1368, null, "Snow Globe"),
++        ]),
++        // candyapple-xmas-deco/X-Mas Deco/SantaBenchAddon.cs (https://www.servuo.dev/archive/x-mas-deco.1296/), by Candy Apple.
++        ["santa-bench"] = new("santa-bench", "a Santa bench", "Candy Apple",
++        [
++            new(0x4A99, 0, 0, 0, 0, null, null),
++            new(0x9E1C, -2, 1, 5, 0, null, null),
++            new(0x9E1B, 4, 1, 4, 0, null, null),
++            new(0x9DBF, 4, 1, 21, 0, null, null),
++            new(0x9DBF, -2, 1, 16, 0, null, null),
++            new(0x0B69, -2, 0, 0, 37, null, null),
++            new(0x0B69, 1, 0, 0, 37, null, null),
++            new(0x0B68, -1, 0, 0, 37, null, null),
++            new(0x0B68, 2, 0, 0, 37, null, null),
++            new(0x0B20, -3, 0, 3, 33, LightType.ArchedWindowEast, null),
++            new(0x0B20, 3, 0, 7, 33, LightType.ArchedWindowEast, null),
++            new(0x9FFB, 2, 0, 20, 0, LightType.ArchedWindowEast, null),
++            new(0x9FFB, 0, 0, 19, 0, LightType.ArchedWindowEast, null),
++            new(0x9FFB, -2, 0, 17, 0, LightType.ArchedWindowEast, null),
++        ]),
++        // candyapple-xmas-deco/X-Mas Deco/SnowmanBenchAddon.cs (https://www.servuo.dev/archive/x-mas-deco.1296/), by Candy Apple.
++        ["snowman-bench"] = new("snowman-bench", "a snowman bench", "Candy Apple",
++        [
++            new(0x9E1B, 0, -2, 12, 0, null, null),
++            new(0x4C17, -1, 0, 2, 0, null, null),
++            new(0x3F18, -1, 0, 2, 0, null, null),
++            new(0x0F0F, -1, 0, 3, 0, null, null),
++            new(0x0F10, -1, 0, 5, 0, null, null),
++            new(0x0F13, -1, 0, 5, 0, null, null),
++            new(0x0F1B, -1, 0, 4, 0, null, null),
++            new(0x0F8E, -1, 0, 8, 0, null, null),
++            new(0x9DC4, 0, 4, 12, 0, null, null),
++            new(0x2330, 0, 3, 6, 0, null, null),
++            new(0x2375, 1, -1, 23, 0, null, null),
++            new(0x2375, 1, 5, 23, 0, null, null),
++            new(0x2330, 0, -3, 7, 0, null, null),
++            new(0x0B63, -1, 1, 2, 33, null, null),
++            new(0x0B62, -1, -1, 2, 33, null, null),
++            new(0x0B63, -1, -2, 2, 33, null, null),
++            new(0xA000, 0, 1, 28, 0, LightType.ArchedWindowEast, null),
++            new(0xA000, 0, -1, 27, 0, LightType.ArchedWindowEast, null),
++            new(0x2336, 1, 2, 11, 0, LightType.ArchedWindowEast, null),
++            new(0x2332, 0, 1, 0, 0, LightType.ArchedWindowEast, null),
++            new(0x0B62, -1, 2, 2, 33, null, null),
++            new(0x0B24, -1, 3, 2, 33, LightType.ArchedWindowEast, null),
++            new(0x2328, -1, 4, 2, 33, null, null),
++            new(0xA000, 0, 3, 28, 0, LightType.ArchedWindowEast, null),
++            new(0x0B24, -1, -3, 2, 33, LightType.ArchedWindowEast, null),
++            new(0x2329, -1, -4, 1, 33, null, null),
++        ]),
++        // lagatha-holiday-fireplace/holidayfireplaceAddon.cs (https://www.servuo.dev/archive/holiday-fireplace.1320/), by Lagatha, after Gwenivere (Knights of the Round Table shard).
++        ["holiday-fireplace"] = new("holiday-fireplace", "a holiday fireplace", "Lagatha, after Gwenivere (Knights of the Round Table shard)",
++        [
++            new(0x001C, 1, -2, 0, 0, null, null),
++            new(0x001C, 0, -2, 0, 0, null, null),
++            new(0x001C, 2, -2, 0, 0, null, null),
++            new(0x001D, -2, -2, 0, 0, null, null),
++            new(0x001C, -1, -2, 0, 0, null, null),
++            new(0x1E55, 1, 1, 0, 0, null, null),
++            new(0x1E58, 0, 3, 0, 0, null, null),
++            new(0x2BE0, 0, 0, 2, 0, null, null),
++            new(0x32C9, 2, -1, 0, 0, null, null),
++            new(0x001B, 2, -1, 0, 0, null, null),
++            new(0x2330, 2, 0, 5, 0, null, null),
++            new(0x2BDB, 0, 0, 5, 0, null, null),
++            new(0x1BDE, 0, -1, 0, 0, null, null),
++            new(0x2331, -1, 0, 3, 0, null, null),
++            new(0x0025, 1, -1, 11, 0, null, null),
++            new(0x0025, 0, -1, 11, 0, null, null),
++            new(0x2BDE, 1, 0, 2, 0, null, null),
++            new(0x32C9, -1, -1, 0, 0, null, null),
++            new(0x2BD9, 1, 0, 7, 0, null, null),
++            new(0x32C9, 1, -1, 0, 0, null, null),
++            new(0x2BDF, 1, 0, 2, 0, null, null),
++            new(0x2BDD, 0, 0, 2, 0, null, null),
++            new(0x001B, -2, -1, 0, 0, null, null),
++            new(0x1E56, 0, 1, 0, 0, null, null),
++            new(0x1E57, 0, 2, 0, 0, null, null),
++            new(0x1E5A, -1, 2, 0, 0, null, null),
++            new(0x1E53, 1, 3, 0, 0, null, null),
++            new(0x1E59, -1, 3, 0, 0, null, null),
++            new(0x1E54, 1, 2, 0, 0, null, null),
++            new(0x1E5B, -1, 1, 0, 0, null, null),
++            new(0x0CB1, 0, 0, 16, 0, null, "Garland"),
++            new(0x29B0, -1, -1, 0, 0, LightType.Circle225, null),
++            new(0x29B0, 2, -1, 0, 0, LightType.Circle225, null),
++            new(0x0CB1, 1, 0, 16, 0, null, "Garland"),
++            new(0x19AB, 0, -1, 4, 0, LightType.Circle300, null),
++        ]),
++    };
++}
+diff --git a/server/tests/Misc/WinterDecorVerification.cs b/server/tests/Misc/WinterDecorVerification.cs
+index 2469a64..738feb4 100644
+--- a/server/tests/Misc/WinterDecorVerification.cs
++++ b/server/tests/Misc/WinterDecorVerification.cs
+@@ -250,7 +250,7 @@ public class WinterDecorVerification
+     public void TheAutomaticCheckPlacesInRangeRemovesAfterAndActsOnlyWhenTheSeasonChanges()
+     {
+         var s = ClusterFWinterDecor.Season;
+-        var rows = ClusterFWinterDecorLayout.Rows.Length;
++        var rows = ClusterFWinterDecor.AllRows.Length;   // cc-P856: the winter set's rows too
+         try
+         {
+             Clean();
+@@ -310,7 +310,7 @@ public class WinterDecorVerification
+     [Fact]
+     public void PlaceTwicePlacesOnceAndClearRemovesExactlyTheDecorBySerialAndNothingElse()
+     {
+-        var rows = ClusterFWinterDecorLayout.Rows;
++        var rows = ClusterFWinterDecor.AllRows;   // cc-P856: the winter set's rows too
+         var first = rows[0];
+         var stranger = new Item(0x0EED) { Movable = false };   // a gold coin pile, nothing to do with the decor
+         var lookalike = new Item(first.ItemId) { Movable = false, Name = first.Name };   // same art, not ours
+@@ -337,7 +337,15 @@ public class WinterDecorVerification
+                 var r = rows.Single(x => x.Key == ((IWinterDecorItem)p).Key);
+                 Assert.Equal(new Point3D(r.X, r.Y, r.Z), p.Location);
+                 Assert.Equal(Map.Trammel, p.Map);
+-                Assert.Equal(r.ItemId, p.ItemID);
++                if (r.Layer == ClusterFWinterSetLayout.AddonLayer)
++                {
++                    Assert.IsType<WinterSeasonAddon>(p);   // cc-P856: an addon has no art of its own (its parts do)
++                }
++                else
++                {
++                    Assert.Equal(r.ItemId, p.ItemID);
++                }
++
+                 Assert.Equal(r.Hue, p.Hue);
+                 Assert.False(p.Movable);
+                 Assert.False(p.Decays);
+@@ -357,7 +365,9 @@ public class WinterDecorVerification
+             Assert.False(stranger.Deleted);
+             Assert.False(lookalike.Deleted);
+             Assert.Equal(new Point3D(first.X, first.Y, first.Z), stranger.Location);
+-            Assert.Equal(before - rows.Length, World.Items.Count);
++            // cc-P856: each winter set addon takes its parts with it
++            var parts = ClusterFWinterSetLayout.Rows.Sum(r => WinterSetDesigns.All[ClusterFWinterSetLayout.DesignOf(r.Key)].Parts.Count);
++            Assert.Equal(before - rows.Length - parts, World.Items.Count);
+ 
+             ClusterFWinterDecor.Up(false, null);
+             Assert.Equal(rows.Select(r => r.Key).OrderBy(k => k), Keys(Placed()));
+@@ -408,7 +418,7 @@ public class WinterDecorVerification
+     [Fact]
+     public void TheDecorAndTheStateSurviveARestart()
+     {
+-        var rows = ClusterFWinterDecorLayout.Rows;
++        var rows = ClusterFWinterDecor.AllRows;   // cc-P856: the winter set's rows too
+         var s = ClusterFWinterDecor.Season;
+         var stray = (WinterDecor)null;
+         try
+diff --git a/server/tests/Misc/WinterSetVerification.cs b/server/tests/Misc/WinterSetVerification.cs
+new file mode 100644
+index 0000000..44c13c4
+--- /dev/null
++++ b/server/tests/Misc/WinterSetVerification.cs
+@@ -0,0 +1,319 @@
++// WinterSetVerification.cs
++//
++// cc-P856: New Haven's winter set (WinterSet/WinterSetAddon.cs, WinterSetDesigns.cs, ClusterFWinterSetLayout.cs), on
++// the winter decor's switch (ClusterFWinterDecorSeeder.cs). Notes in shard-migration notes/cc-P856-new-haven-winter-set.md.
++//
++// Facts:
++//   1. The five designs load with their parts as the downloads list them (counted by convert856.py: train 241, snow
++//      globe 111, Santa bench 14, snowman bench 26, holiday fireplace 35), each with its author, and only stock art (no
++//      ID in our art package's ranges).
++//   2. A house copy from its deed: every part at its offset with its hue, light and name, its own hues kept, the author
++//      on each part and on the deed, the deed back on a redeed, and the design kept through a save.
++//   3. The winter set's rows go up with the decor as WinterSeasonAddons at their row's tile, tracked by serial; place
++//      twice places once; clear takes each down with all its parts and nothing else; the seasonal copy has no deed.
++//   4. A world whose decor is already up gets the winter set's missing rows at the next start (TopUp), once; a world
++//      whose decor is down (out of season, never put up, or cleared whole by staff) gets nothing.
++//   5. The rows: four on the release branch's New Haven (the ML plaza), keys unique, each a design, inside the town
++//      box (P266's, 3400-3660 x 2460-2660); no holiday fireplace row.
++//   6. The Festival's winter stock sells the Santa bench, the snowman bench and the holiday fireplace as deeds.
++
++using System;
++using System.Buffers.Binary;
++using System.Collections.Generic;
++using System.Linq;
++using System.Text;
++using Server;
++using Server.Engines.RewardStores;
++using Server.Items;
++using Server.Mobiles;
++using Xunit;
++
++namespace ShatteredLegacy.Tests;
++
++[Collection("Sequential UOContent Tests")]
++public class WinterSetVerification
++{
++    private static void Clean()
++    {
++        foreach (var i in World.Items.Values.Where(i => i is IWinterDecorItem).ToList())
++        {
++            i.Delete();
++        }
++
++        ClusterFSeasonalState.Clear();
++        ClusterFWinterDecor.Season.Window = SeasonWindow.Parse(ClusterFWinterDecor.DefaultStart, ClusterFWinterDecor.DefaultEnd);
++        ClusterFWinterDecor.Season.Automatic = true;
++    }
++
++    private static DateTime At(int y, int m, int d) => new(y, m, d, 12, 30, 0);
++
++    private static List<WinterSeasonAddon> SetPieces() => ClusterFWinterDecor.Placed().OfType<WinterSeasonAddon>().ToList();
++
++    // Our art package's ID ranges (registry.csv, as RewardStoreVerification): stock art lies outside every one.
++    private static bool IsInOurArtRanges(int id) => id is >= 0x3C10 and <= 0x3D0D or >= 0x6D70 and <= 0x6E86 or >= 0x3384 and <= 0x33B6;
++
++    // The property list's text arguments, as the client is sent them (ItemKnowledgeVerification.Sent).
++    private static string Props(Item item)
++    {
++        var buffer = item.PropertyList.Buffer;
++        var entries = new List<string>();
++        var pos = 15;
++        while (pos + 6 <= buffer.Length)
++        {
++            var number = BinaryPrimitives.ReadInt32BigEndian(buffer.AsSpan(pos));
++            if (number == 0)
++            {
++                break;
++            }
++
++            var length = BinaryPrimitives.ReadUInt16BigEndian(buffer.AsSpan(pos + 4));
++            entries.Add(Encoding.Unicode.GetString(buffer, pos + 6, length));
++            pos += 6 + length;
++        }
++
++        return string.Join("\n", entries);
++    }
++
++    private static T RoundTrip<T>(T original) where T : ISerializable
++    {
++        var buffer = new byte[65536];
++        var writer = new BufferWriter(buffer, true);
++        original.Serialize(writer);
++        writer.Flush();
++
++        var copy = (T)Activator.CreateInstance(original.GetType(), original.Serial)!;
++        copy.Deserialize(new BufferReader(buffer));
++        return copy;
++    }
++
++    // ---------------------------------------------------------------- 1
++
++    [Fact]
++    public void TheFiveDesignsLoadWithTheirAuthorsAndOnlyStockArt()
++    {
++        var expected = new (string Key, int Parts, string Credit)[]
++        {
++            ("christmas-train", 241, "Celestial"),
++            ("large-snow-globe", 111, "Milva"),
++            ("santa-bench", 14, "Candy Apple"),
++            ("snowman-bench", 26, "Candy Apple"),
++            ("holiday-fireplace", 35, "Lagatha, after Gwenivere (Knights of the Round Table shard)")
++        };
++
++        Assert.Equal(expected.Select(e => e.Key).OrderBy(k => k), WinterSetDesigns.All.Keys.OrderBy(k => k));
++        foreach (var (key, parts, credit) in expected)
++        {
++            var d = WinterSetDesigns.All[key];
++            Assert.Equal((key, parts, credit), (d.Key, d.Parts.Count, d.Credit));
++            Assert.False(string.IsNullOrWhiteSpace(d.Name));
++            Assert.All(d.Parts, p => Assert.InRange(p.ItemID, 1, 0xFFFF));
++            Assert.All(d.Parts, p => Assert.False(IsInOurArtRanges(p.ItemID), $"{key}: 0x{p.ItemID:X4} is not stock art"));
++            Assert.All(d.Parts, p => Assert.InRange(Math.Max(Math.Abs(p.X), Math.Abs(p.Y)), 0, 10));
++        }
++    }
++
++    // ---------------------------------------------------------------- 2
++
++    [Fact]
++    public void AHouseCopyFromItsDeedBuildsEveryPartAndCreditsItsAuthor()
++    {
++        var deed = new WinterSetDeed("santa-bench");
++        WinterSetAddon addon = null;
++        try
++        {
++            Assert.Equal("a deed for a Santa bench", deed.Name);
++            Assert.Contains("Design by Candy Apple", Props(deed));
++            Assert.Contains("House decor", Props(deed));
++
++            addon = Assert.IsType<WinterSetAddon>(deed.Addon);
++            var at = new Point3D(5720, 1210, 0);
++            addon.MoveToWorld(at, Map.Felucca);
++            var design = WinterSetDesigns.All["santa-bench"];
++            Assert.Equal(design.Parts.Count, addon.Components.Count);
++            for (var i = 0; i < design.Parts.Count; i++)
++            {
++                var part = design.Parts[i];
++                var c = Assert.IsType<WinterSetComponent>(addon.Components[i]);
++                Assert.Equal((part.ItemID, new Point3D(at.X + part.X, at.Y + part.Y, at.Z + part.Z), part.Hue),
++                    (c.ItemID, c.Location, c.Hue));
++                if (part.Light is { } light)
++                {
++                    Assert.Equal(light, c.Light);
++                }
++
++                if (part.Name != null)
++                {
++                    Assert.Equal(part.Name, c.Name);
++                }
++            }
++
++            Assert.False(addon.ShareHue);
++            Assert.Contains("Design by Candy Apple", Props(addon.Components[0]));
++
++            var back = Assert.IsType<WinterSetDeed>(addon.Deed);
++            Assert.Equal("santa-bench", back.Design);
++            back.Delete();
++
++            Assert.Equal("santa-bench", RoundTrip(addon).Design);
++            Assert.Equal("santa-bench", RoundTrip(deed).Design);
++        }
++        finally
++        {
++            addon?.Delete();
++            deed.Delete();
++        }
++    }
++
++    // ---------------------------------------------------------------- 3
++
++    [Fact]
++    public void TheSetGoesUpWithTheDecorBySerialAndComesDownWithAllItsParts()
++    {
++        Clean();
++        var unrelated = new Static(0x0B2C);
++        try
++        {
++            var row = ClusterFWinterSetLayout.Rows[0];
++            unrelated.MoveToWorld(new Point3D(row.X, row.Y, row.Z), Map.Trammel);
++
++            ClusterFWinterDecor.Up(false, null);
++            var pieces = SetPieces();
++            Assert.Equal(ClusterFWinterSetLayout.Rows.Select(r => r.Key).OrderBy(k => k), pieces.Select(p => p.Key).OrderBy(k => k));
++            foreach (var p in pieces)
++            {
++                var r = ClusterFWinterSetLayout.Rows.Single(x => x.Key == p.Key);
++                Assert.Equal((new Point3D(r.X, r.Y, r.Z), Map.Trammel), (p.Location, p.Map));
++                Assert.Equal(ClusterFWinterSetLayout.DesignOf(r.Key), p.Design);
++                Assert.Equal(WinterSetDesigns.All[p.Design].Parts.Count, p.Components.Count);
++                Assert.Contains(p.Serial, ClusterFSeasonalState.Placed(ClusterFWinterDecor.SeasonName));
++                Assert.Null(p.Deed);
++                Assert.False(p.Decays);
++            }
++
++            var before = World.Items.Count;
++            ClusterFWinterDecor.Up(false, null);
++            Assert.Equal(before, World.Items.Count);
++
++            var parts = pieces.SelectMany(p => p.Components).ToList();
++            ClusterFWinterDecor.Down(false, null);
++            Assert.All(pieces, p => Assert.True(p.Deleted));
++            Assert.All(parts, c => Assert.True(c.Deleted));
++            Assert.False(unrelated.Deleted);
++            Assert.Empty(ClusterFWinterDecor.Placed());
++        }
++        finally
++        {
++            unrelated.Delete();
++            ClusterFWinterDecor.Down(false, null);
++            Clean();
++        }
++    }
++
++    // ---------------------------------------------------------------- 4
++
++    [Fact]
++    public void AWorldWhoseDecorIsUpGetsTheMissingSetPiecesAtTheNextStartAndOnlyThen()
++    {
++        Clean();
++        var s = ClusterFWinterDecor.Season;
++        var clock = s.Clock;
++        try
++        {
++            // The decor went up on December 1 before this build: every row but the winter set's.
++            s.Clock = () => At(2026, 12, 5);
++            s.LastAutomatic = true;
++            foreach (var area in ClusterFWinterDecorLayout.Rows.Select(r => r.Area).Distinct())
++            {
++                ClusterFWinterDecor.Up(false, area);
++            }
++
++            foreach (var p in SetPieces())
++            {
++                ClusterFSeasonalState.Placed(ClusterFWinterDecor.SeasonName).Remove(p.Serial);
++                p.Delete();
++            }
++
++            Assert.Empty(SetPieces());
++            var older = ClusterFWinterDecor.Placed().Count;
++            Assert.Equal(ClusterFWinterDecorLayout.Rows.Length, older);
++
++            // The next start: the winter set arrives, once.
++            Assert.NotEmpty(ClusterFWinterDecor.TopUp());
++            Assert.Equal(ClusterFWinterSetLayout.Rows.Length, SetPieces().Count);
++            Assert.Empty(ClusterFWinterDecor.TopUp());
++            Assert.Equal(older + ClusterFWinterSetLayout.Rows.Length, ClusterFWinterDecor.Placed().Count);
++
++            // Staff cleared the whole decor: it stays down.
++            ClusterFWinterDecor.Down(false, null);
++            Assert.Empty(ClusterFWinterDecor.TopUp());
++            Assert.Empty(ClusterFWinterDecor.Placed());
++
++            // Out of season, or never put up by the check: nothing.
++            ClusterFWinterDecor.Up(false, "square");
++            foreach (var p in SetPieces())
++            {
++                ClusterFSeasonalState.Placed(ClusterFWinterDecor.SeasonName).Remove(p.Serial);
++                p.Delete();
++            }
++
++            s.Clock = () => At(2027, 2, 1);
++            Assert.Empty(ClusterFWinterDecor.TopUp());
++            s.Clock = () => At(2026, 12, 5);
++            s.LastAutomatic = false;
++            Assert.Empty(ClusterFWinterDecor.TopUp());
++            s.LastAutomatic = null;
++            Assert.Empty(ClusterFWinterDecor.TopUp());
++            Assert.Empty(SetPieces());
++        }
++        finally
++        {
++            s.Clock = clock;
++            ClusterFWinterDecor.Down(false, null);
++            Clean();
++        }
++    }
++
++    // ---------------------------------------------------------------- 5
++
++    [Fact]
++    public void FourRowsInTheReleaseTownEachADesignInsideIt()
++    {
++        var rows = ClusterFWinterSetLayout.Rows;
++        Assert.Equal(4, rows.Length);
++        Assert.Equal(rows.Length, rows.Select(r => r.Key).Distinct().Count());
++        Assert.Equal(
++            new[] { "christmas-train", "large-snow-globe", "santa-bench", "snowman-bench" },
++            rows.Select(r => ClusterFWinterSetLayout.DesignOf(r.Key)).OrderBy(d => d));
++        foreach (var r in rows)
++        {
++            Assert.Equal(ClusterFWinterSetLayout.AddonLayer, r.Layer);
++            Assert.True(WinterSetDesigns.All.ContainsKey(ClusterFWinterSetLayout.DesignOf(r.Key)), r.Key);
++            Assert.True(r.X is >= 3400 and <= 3660 && r.Y is >= 2460 and <= 2660, $"{r.Key} at {r.X},{r.Y} is outside New Haven's box");
++            Assert.Equal(WinterSetDesigns.All[ClusterFWinterSetLayout.DesignOf(r.Key)].Name, r.Name);
++        }
++
++        Assert.Contains(ClusterFWinterDecor.Areas(), a => a == "east");
++        Assert.Equal(ClusterFWinterDecorLayout.Rows.Length + rows.Length, ClusterFWinterDecor.AllRows.Length);
++    }
++
++    // ---------------------------------------------------------------- 6
++
++    [Fact]
++    public void TheFestivalWinterStockSellsTheBenchesAndTheFireplaceAsDeeds()
++    {
++        var rows = FestivalStock.For(FestivalSeasons.Winter);
++        foreach (var (key, design) in new[]
++                 {
++                     ("festival.winter.santabench", "santa-bench"),
++                     ("festival.winter.snowmanbench", "snowman-bench"),
++                     ("festival.winter.holidayfireplace", "holiday-fireplace")
++                 })
++        {
++            var row = rows.Single(r => r.Key == key);
++            var items = row.Create!(null!);
++            var deed = Assert.IsType<WinterSetDeed>(Assert.Single(items));
++            Assert.Equal(design, deed.Design);
++            deed.Delete();
++        }
++    }
++}
