@@ -1,0 +1,34 @@
+Build succeeded.
+  Failed ShatteredLegacy.Tests.BattleChessVerification.TheSettingsFileIsRefusedWholeWhenWrong
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ACaptureRemovesTheTakenPiece
+  Passed ShatteredLegacy.Tests.BattleChessVerification.AGameSetsUpLivingPiecesAndTakesTurns
+  Passed ShatteredLegacy.Tests.BattleChessVerification.APawnPromotesToThePlayersChoice
+  Passed ShatteredLegacy.Tests.BattleChessVerification.APieceDeletedByStaffStopsTheGameWithNoResult
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ARefusedMoveSaysWhy
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CastlingEnPassantAndPromotionMoveTheRightPieces
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CheckmateEndsTheGameBooksItAndFreesTheBoard
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CheckmateStalemateAndTheDrawsEndTheGame
+  Passed ShatteredLegacy.Tests.BattleChessVerification.InvitationsAreRefusedPlainly
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ResigningRunningOutOfTimeAndStayingAwayLose
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheBoardIsWholeAndMapsItsSquares
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheBoardPlacesItselfOnce
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheRecordsAndTheBoardSaveAndLoad
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheRulesCountThePublishedMovePaths
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ARefusedMoveSaysWhy [< 1 ms]
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ACaptureRemovesTheTakenPiece [9 ms]
+  Failed ShatteredLegacy.Tests.BattleChessVerification.TheSettingsFileIsRefusedWholeWhenWrong [3 ms]
+  Error Message:
+   System.FormatException : The input string 'Nowhere' was not in a correct format.
+  Stack Trace:
+     at Server.Map.Parse(ReadOnlySpan`1 s, IFormatProvider provider) in /build/modernuo/Projects/Server/Maps/Map.cs:line 1805
+   at Server.BattleChess.BattleChessSettings.Parse(String json, List`1 errors) in /build/modernuo/Projects/UOContent/BattleChess/BattleChessSettings.cs:line 85
+   at ShatteredLegacy.Tests.BattleChessVerification.TheSettingsFileIsRefusedWholeWhenWrong() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/BattleChessVerification.cs:line 563
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheBoardIsWholeAndMapsItsSquares [1 ms]
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ResigningRunningOutOfTimeAndStayingAwayLose [3 ms]
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheRulesCountThePublishedMovePaths [47 ms]
+Test Run Failed.
+Total tests: 15
+     Passed: 14
+     Failed: 1

@@ -1,0 +1,94 @@
+mutant: m-game__BattleChessGame.cs
+Build succeeded.
+  Failed ShatteredLegacy.Tests.BattleChessVerification.ACaptureRemovesTheTakenPiece
+  Failed ShatteredLegacy.Tests.BattleChessVerification.APawnPromotesToThePlayersChoice
+  Failed ShatteredLegacy.Tests.BattleChessVerification.APieceDeletedByStaffStopsTheGameWithNoResult
+  Failed ShatteredLegacy.Tests.BattleChessVerification.CheckmateEndsTheGameBooksItAndFreesTheBoard
+  Failed ShatteredLegacy.Tests.BattleChessVerification.InvitationsAreRefusedPlainly
+  Failed ShatteredLegacy.Tests.BattleChessVerification.ResigningRunningOutOfTimeAndStayingAwayLose
+  Passed ShatteredLegacy.Tests.BattleChessVerification.AGameSetsUpLivingPiecesAndTakesTurns
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ARefusedMoveSaysWhy
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CastlingEnPassantAndPromotionMoveTheRightPieces
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CheckmateStalemateAndTheDrawsEndTheGame
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheBoardIsWholeAndMapsItsSquares
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheBoardPlacesItselfOnce
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheRecordsAndTheBoardSaveAndLoad
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheRulesCountThePublishedMovePaths
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheSettingsFileIsRefusedWholeWhenWrong
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheRecordsAndTheBoardSaveAndLoad [72 ms]
+  Passed ShatteredLegacy.Tests.BattleChessVerification.AGameSetsUpLivingPiecesAndTakesTurns [34 ms]
+  Failed ShatteredLegacy.Tests.BattleChessVerification.CheckmateEndsTheGameBooksItAndFreesTheBoard [7 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0
+  Stack Trace:
+     at ShatteredLegacy.Tests.BattleChessVerification.CheckmateEndsTheGameBooksItAndFreesTheBoard() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/BattleChessVerification.cs:line 384
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheBoardPlacesItselfOnce [1 ms]
+  Failed ShatteredLegacy.Tests.BattleChessVerification.APieceDeletedByStaffStopsTheGameWithNoResult [2 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: Over
+Actual:   Playing
+  Stack Trace:
+     at ShatteredLegacy.Tests.BattleChessVerification.APieceDeletedByStaffStopsTheGameWithNoResult() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/BattleChessVerification.cs:line 511
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CheckmateStalemateAndTheDrawsEndTheGame [7 ms]
+  Failed ShatteredLegacy.Tests.BattleChessVerification.APawnPromotesToThePlayersChoice [2 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: White knight
+Actual:   White queen
+  Stack Trace:
+     at ShatteredLegacy.Tests.BattleChessVerification.APawnPromotesToThePlayersChoice() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/BattleChessVerification.cs:line 426
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CastlingEnPassantAndPromotionMoveTheRightPieces [4 ms]
+  Failed ShatteredLegacy.Tests.BattleChessVerification.InvitationsAreRefusedPlainly [< 1 ms]
+  Error Message:
+   Assert.False() Failure
+Expected: False
+Actual:   True
+  Stack Trace:
+     at ShatteredLegacy.Tests.BattleChessVerification.InvitationsAreRefusedPlainly() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/BattleChessVerification.cs:line 485
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.25]     ShatteredLegacy.Tests.BattleChessVerification.ACaptureRemovesTheTakenPiece [FAIL]
+[xUnit.net 00:00:01.25]       Assert.True() Failure
+[xUnit.net 00:00:01.25]       Expected: True
+[xUnit.net 00:00:01.25]       Actual:   False
+[xUnit.net 00:00:01.25]       Stack Trace:
+[xUnit.net 00:00:01.25]         /build/modernuo/Projects/UOContent.Tests/Tests/Misc/BattleChessVerification.cs(406,0): at ShatteredLegacy.Tests.BattleChessVerification.ACaptureRemovesTheTakenPiece()
+--
+[xUnit.net 00:00:01.31]   Finished:    UOContent.Tests
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ARefusedMoveSaysWhy [< 1 ms]
+  Failed ShatteredLegacy.Tests.BattleChessVerification.ACaptureRemovesTheTakenPiece [4 ms]
+  Error Message:
+   Assert.True() Failure
+Expected: True
+Actual:   False
+  Stack Trace:
+     at ShatteredLegacy.Tests.BattleChessVerification.ACaptureRemovesTheTakenPiece() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/BattleChessVerification.cs:line 406
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheSettingsFileIsRefusedWholeWhenWrong [4 ms]
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheBoardIsWholeAndMapsItsSquares [1 ms]
+  Failed ShatteredLegacy.Tests.BattleChessVerification.ResigningRunningOutOfTimeAndStayingAwayLose [4 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0
+  Stack Trace:
+     at ShatteredLegacy.Tests.BattleChessVerification.ResigningRunningOutOfTimeAndStayingAwayLose() in /build/modernuo/Projects/UOContent.Tests/Tests/Misc/BattleChessVerification.cs:line 459
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheRulesCountThePublishedMovePaths [51 ms]
+Test Run Failed.
+Total tests: 15
+     Passed: 9
+     Failed: 6
+     Passed: 9
+     Failed: 6

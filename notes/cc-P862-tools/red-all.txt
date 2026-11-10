@@ -1,0 +1,158 @@
+=================== probe-red0-before.txt
+no Battle Chess code (before the change)
+UOContent.Tests/Tests/Misc/BattleChessVerification.cs(19,14): error CS0234: The type or namespace name 'BattleChess' does not exist in the namespace 'Server' (are you missing an assembly reference?)
+UOContent.Tests/Tests/Misc/BattleChessVerification.cs(243,13): error CS0246: The type or namespace name 'BattleChessBoard' could not be found (are you missing a using directive or an assembly reference?)
+UOContent.Tests/Tests/Misc/BattleChessVerification.cs(259,14): error CS0246: The type or namespace name 'BattleChessGame' could not be found (are you missing a using directive or an assembly reference?)
+UOContent.Tests/Tests/Misc/BattleChessVerification.cs(259,36): error CS0246: The type or namespace name 'BattleChessBoard' could not be found (are you missing a using directive or an assembly reference?)
+UOContent.Tests/Tests/Misc/BattleChessVerification.cs(271,30): error CS0246: The type or namespace name 'BattleChessGame' could not be found (are you missing a using directive or an assembly reference?)
+UOContent.Tests/Tests/Misc/BattleChessVerification.cs(464,14): error CS0246: The type or namespace name 'BattleChessGame' could not be found (are you missing a using directive or an assembly reference?)
+UOContent.Tests/Tests/Misc/BattleChessVerification.cs(464,36): error CS0246: The type or namespace name 'BattleChessBoard' could not be found (are you missing a using directive or an assembly reference?)
+UOContent.Tests/Tests/Misc/BattleChessVerification.cs(66,31): error CS0246: The type or namespace name 'ChessPosition' could not be found (are you missing a using directive or an assembly reference?)
+Build FAILED.
+=================== probe-red-m-rules.txt
+mutant: m-rules__ChessRules.cs
+Build succeeded.
+  Failed ShatteredLegacy.Tests.BattleChessVerification.AGameSetsUpLivingPiecesAndTakesTurns
+  Failed ShatteredLegacy.Tests.BattleChessVerification.ARefusedMoveSaysWhy
+  Failed ShatteredLegacy.Tests.BattleChessVerification.CastlingEnPassantAndPromotionMoveTheRightPieces
+  Failed ShatteredLegacy.Tests.BattleChessVerification.CheckmateStalemateAndTheDrawsEndTheGame
+  Failed ShatteredLegacy.Tests.BattleChessVerification.TheRulesCountThePublishedMovePaths
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ACaptureRemovesTheTakenPiece
+  Passed ShatteredLegacy.Tests.BattleChessVerification.APawnPromotesToThePlayersChoice
+  Passed ShatteredLegacy.Tests.BattleChessVerification.APieceDeletedByStaffStopsTheGameWithNoResult
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CheckmateEndsTheGameBooksItAndFreesTheBoard
+  Passed ShatteredLegacy.Tests.BattleChessVerification.InvitationsAreRefusedPlainly
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ResigningRunningOutOfTimeAndStayingAwayLose
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheBoardIsWholeAndMapsItsSquares
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheBoardPlacesItselfOnce
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheRecordsAndTheBoardSaveAndLoad
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheSettingsFileIsRefusedWholeWhenWrong
+Total tests: 15
+     Passed: 10
+     Failed: 5
+     Passed: 10
+     Failed: 5
+=================== probe-red-m-seed.txt
+mutant: m-seed__BattleChessSeeder.cs
+Build succeeded.
+  Failed ShatteredLegacy.Tests.BattleChessVerification.TheBoardPlacesItselfOnce
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ACaptureRemovesTheTakenPiece
+  Passed ShatteredLegacy.Tests.BattleChessVerification.AGameSetsUpLivingPiecesAndTakesTurns
+  Passed ShatteredLegacy.Tests.BattleChessVerification.APawnPromotesToThePlayersChoice
+  Passed ShatteredLegacy.Tests.BattleChessVerification.APieceDeletedByStaffStopsTheGameWithNoResult
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ARefusedMoveSaysWhy
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CastlingEnPassantAndPromotionMoveTheRightPieces
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CheckmateEndsTheGameBooksItAndFreesTheBoard
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CheckmateStalemateAndTheDrawsEndTheGame
+  Passed ShatteredLegacy.Tests.BattleChessVerification.InvitationsAreRefusedPlainly
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ResigningRunningOutOfTimeAndStayingAwayLose
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheBoardIsWholeAndMapsItsSquares
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheRecordsAndTheBoardSaveAndLoad
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheRulesCountThePublishedMovePaths
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheSettingsFileIsRefusedWholeWhenWrong
+     Passed: 14
+     Failed: 1
+=================== probe-red-m-game.txt
+mutant: m-game__BattleChessGame.cs
+Build succeeded.
+  Failed ShatteredLegacy.Tests.BattleChessVerification.ACaptureRemovesTheTakenPiece
+  Failed ShatteredLegacy.Tests.BattleChessVerification.APawnPromotesToThePlayersChoice
+  Failed ShatteredLegacy.Tests.BattleChessVerification.APieceDeletedByStaffStopsTheGameWithNoResult
+  Failed ShatteredLegacy.Tests.BattleChessVerification.CheckmateEndsTheGameBooksItAndFreesTheBoard
+  Failed ShatteredLegacy.Tests.BattleChessVerification.InvitationsAreRefusedPlainly
+  Failed ShatteredLegacy.Tests.BattleChessVerification.ResigningRunningOutOfTimeAndStayingAwayLose
+  Passed ShatteredLegacy.Tests.BattleChessVerification.AGameSetsUpLivingPiecesAndTakesTurns
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ARefusedMoveSaysWhy
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CastlingEnPassantAndPromotionMoveTheRightPieces
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CheckmateStalemateAndTheDrawsEndTheGame
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheBoardIsWholeAndMapsItsSquares
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheBoardPlacesItselfOnce
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheRecordsAndTheBoardSaveAndLoad
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheRulesCountThePublishedMovePaths
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheSettingsFileIsRefusedWholeWhenWrong
+Total tests: 15
+     Passed: 9
+     Failed: 6
+     Passed: 9
+     Failed: 6
+=================== probe-red-m-board.txt
+mutant: m-board__BattleChessBoard.cs
+Build succeeded.
+  Failed ShatteredLegacy.Tests.BattleChessVerification.TheBoardIsWholeAndMapsItsSquares
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ACaptureRemovesTheTakenPiece
+  Passed ShatteredLegacy.Tests.BattleChessVerification.AGameSetsUpLivingPiecesAndTakesTurns
+  Passed ShatteredLegacy.Tests.BattleChessVerification.APawnPromotesToThePlayersChoice
+  Passed ShatteredLegacy.Tests.BattleChessVerification.APieceDeletedByStaffStopsTheGameWithNoResult
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ARefusedMoveSaysWhy
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CastlingEnPassantAndPromotionMoveTheRightPieces
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CheckmateEndsTheGameBooksItAndFreesTheBoard
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CheckmateStalemateAndTheDrawsEndTheGame
+  Passed ShatteredLegacy.Tests.BattleChessVerification.InvitationsAreRefusedPlainly
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ResigningRunningOutOfTimeAndStayingAwayLose
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheBoardPlacesItselfOnce
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheRecordsAndTheBoardSaveAndLoad
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheRulesCountThePublishedMovePaths
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheSettingsFileIsRefusedWholeWhenWrong
+Total tests: 15
+     Passed: 14
+     Passed: 14
+     Failed: 1
+=================== probe-red-m-records.txt
+mutant: m-records__BattleChessRecords.cs
+Build succeeded.
+  Failed ShatteredLegacy.Tests.BattleChessVerification.TheRecordsAndTheBoardSaveAndLoad
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ACaptureRemovesTheTakenPiece
+  Passed ShatteredLegacy.Tests.BattleChessVerification.AGameSetsUpLivingPiecesAndTakesTurns
+  Passed ShatteredLegacy.Tests.BattleChessVerification.APawnPromotesToThePlayersChoice
+  Passed ShatteredLegacy.Tests.BattleChessVerification.APieceDeletedByStaffStopsTheGameWithNoResult
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ARefusedMoveSaysWhy
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CastlingEnPassantAndPromotionMoveTheRightPieces
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CheckmateEndsTheGameBooksItAndFreesTheBoard
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CheckmateStalemateAndTheDrawsEndTheGame
+  Passed ShatteredLegacy.Tests.BattleChessVerification.InvitationsAreRefusedPlainly
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ResigningRunningOutOfTimeAndStayingAwayLose
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheBoardIsWholeAndMapsItsSquares
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheBoardPlacesItselfOnce
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheRulesCountThePublishedMovePaths
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheSettingsFileIsRefusedWholeWhenWrong
+     Passed: 14
+     Failed: 1
+=================== probe-red-m-settings.txt
+mutant: m-settings__BattleChessSettings.cs
+Build succeeded.
+  Failed ShatteredLegacy.Tests.BattleChessVerification.TheSettingsFileIsRefusedWholeWhenWrong
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ACaptureRemovesTheTakenPiece
+  Passed ShatteredLegacy.Tests.BattleChessVerification.AGameSetsUpLivingPiecesAndTakesTurns
+  Passed ShatteredLegacy.Tests.BattleChessVerification.APawnPromotesToThePlayersChoice
+  Passed ShatteredLegacy.Tests.BattleChessVerification.APieceDeletedByStaffStopsTheGameWithNoResult
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ARefusedMoveSaysWhy
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CastlingEnPassantAndPromotionMoveTheRightPieces
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CheckmateEndsTheGameBooksItAndFreesTheBoard
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CheckmateStalemateAndTheDrawsEndTheGame
+  Passed ShatteredLegacy.Tests.BattleChessVerification.InvitationsAreRefusedPlainly
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ResigningRunningOutOfTimeAndStayingAwayLose
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheBoardIsWholeAndMapsItsSquares
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheBoardPlacesItselfOnce
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheRecordsAndTheBoardSaveAndLoad
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheRulesCountThePublishedMovePaths
+Total tests: 15
+     Passed: 14
+     Failed: 1
+=================== probe-green.txt
+Build succeeded.
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ACaptureRemovesTheTakenPiece
+  Passed ShatteredLegacy.Tests.BattleChessVerification.AGameSetsUpLivingPiecesAndTakesTurns
+  Passed ShatteredLegacy.Tests.BattleChessVerification.APawnPromotesToThePlayersChoice
+  Passed ShatteredLegacy.Tests.BattleChessVerification.APieceDeletedByStaffStopsTheGameWithNoResult
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ARefusedMoveSaysWhy
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CastlingEnPassantAndPromotionMoveTheRightPieces
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CheckmateEndsTheGameBooksItAndFreesTheBoard
+  Passed ShatteredLegacy.Tests.BattleChessVerification.CheckmateStalemateAndTheDrawsEndTheGame
+  Passed ShatteredLegacy.Tests.BattleChessVerification.InvitationsAreRefusedPlainly
+  Passed ShatteredLegacy.Tests.BattleChessVerification.ResigningRunningOutOfTimeAndStayingAwayLose
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheBoardIsWholeAndMapsItsSquares
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheBoardPlacesItselfOnce
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheRecordsAndTheBoardSaveAndLoad
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheRulesCountThePublishedMovePaths
+  Passed ShatteredLegacy.Tests.BattleChessVerification.TheSettingsFileIsRefusedWholeWhenWrong
+     Passed: 15
