@@ -1,0 +1,812 @@
+# cc-P856 placed pieces: the New Haven winter set
+
+One line per part: item ID, x,y,z, facing ("as made": each design has one facing, placed whole, no part turned), name if any. Every piece is a WinterSeasonAddon the winter decor places on December 1 and removes after January 6 (by serial); the house copies (deeds) are not placed anywhere. Checked by validate856.py (main) and rel/findrel.py --validate (release): each tile reached on foot, flat within 2, nothing protected, standing or impassable under or inside a piece, no building on the 3 tiles south or east of it (the camera), and the town walk intact with all four placed. No holiday fireplace is placed in either town (notes, Deviations).
+
+## Main (the Siege of Sosaria New Haven, Trammel)
+
+All 4 pieces together cover 133 tiles; the walk from 3634,2586 reaches every tile it reached before: yes.
+
+### set-train: a Christmas train (christmas-train), origin 3612,2539,0, area park: ok
+- 0x1B73, 3612,2548,23, as made, Christmas Train
+- 0x087B, 3612,2548,5, as made, Christmas Train
+- 0x0E7C, 3612,2548,15, as made, Christmas Train
+- 0x0709, 3612,2543,5, as made, Christmas Train
+- 0x0E7C, 3611,2546,7, as made, Christmas Train
+- 0x1EA9, 3611,2544,16, as made, Christmas Train
+- 0x9B2B, 3612,2543,7, as made, Christmas Train
+- 0x061A, 3613,2545,30, as made, Christmas Train
+- 0x157E, 3613,2549,11, as made, Christmas Train
+- 0x29E3, 3613,2544,5, as made, Christmas Train
+- 0x0709, 3612,2547,5, as made, Christmas Train
+- 0x1B73, 3612,2548,24, as made, Christmas Train
+- 0x064F, 3612,2544,32, as made, Christmas Train
+- 0x064F, 3612,2545,32, as made, Christmas Train
+- 0x061A, 3613,2544,30, as made, Christmas Train
+- 0x29E3, 3613,2549,5, as made, Christmas Train
+- 0x9B25, 3612,2542,10, as made, Christmas Train
+- 0x0E7C, 3611,2547,7, as made, Christmas Train
+- 0xA000, 3613,2545,16, as made, Christmas Train
+- 0x0709, 3611,2544,5, as made, Christmas Train
+- 0x1016, 3613,2543,3, as made, Christmas Train
+- 0x04AB, 3611,2542,10, as made, Christmas Train
+- 0x0E7C, 3612,2547,15, as made, Christmas Train
+- 0x0709, 3612,2545,5, as made, Christmas Train
+- 0x9B18, 3610,2542,7, as made, Christmas Train
+- 0x9FFB, 3613,2549,25, as made, Christmas Train
+- 0x1094, 3610,2542,10, as made, Christmas Train
+- 0x0617, 3611,2544,28, as made, Christmas Train
+- 0x4C5A, 3612,2547,20, as made, Christmas Train
+- 0x0709, 3611,2542,5, as made, Christmas Train
+- 0x1016, 3613,2545,3, as made, Christmas Train
+- 0x29E3, 3613,2543,5, as made, Christmas Train
+- 0x9B28, 3610,2544,7, as made, Christmas Train
+- 0x0709, 3612,2546,5, as made, Christmas Train
+- 0x0709, 3611,2543,5, as made, Christmas Train
+- 0x29E3, 3613,2548,5, as made, Christmas Train
+- 0x9B23, 3612,2544,10, as made, Christmas Train
+- 0x064F, 3612,2543,32, as made, Christmas Train
+- 0x0A22, 3613,2549,32, as made, Christmas Train
+- 0x29E3, 3613,2547,5, as made, Christmas Train
+- 0x9B24, 3611,2544,10, as made, Christmas Train
+- 0x3709, 3612,2548,30, as made, Christmas Train
+- 0x1094, 3611,2543,10, as made, Christmas Train
+- 0x9B18, 3612,2542,7, as made, Christmas Train
+- 0x04AB, 3612,2542,10, as made, Christmas Train
+- 0x0E7C, 3611,2545,7, as made, Christmas Train
+- 0x29E3, 3611,2549,5, as made, Christmas Train
+- 0x0E7C, 3612,2546,7, as made, Christmas Train
+- 0x0709, 3612,2544,5, as made, Christmas Train
+- 0x232C, 3613,2547,34, as made, Christmas Train
+- 0x29E3, 3613,2545,5, as made, Christmas Train
+- 0x1B73, 3612,2548,20, as made, Christmas Train
+- 0x061A, 3613,2543,30, as made, Christmas Train
+- 0xA000, 3613,2543,18, as made, Christmas Train
+- 0x0617, 3611,2543,28, as made, Christmas Train
+- 0x232C, 3613,2542,20, as made, Christmas Train
+- 0xA000, 3613,2544,18, as made, Christmas Train
+- 0x04AB, 3612,2543,10, as made, Christmas Train
+- 0x232C, 3614,2542,21, as made, Christmas Train
+- 0x1093, 3611,2542,10, as made, Christmas Train
+- 0x9B25, 3610,2544,10, as made, Christmas Train
+- 0x29E3, 3613,2542,5, as made, Christmas Train
+- 0x04AB, 3611,2543,10, as made, Christmas Train
+- 0x1B73, 3612,2548,22, as made, Christmas Train
+- 0xA000, 3613,2547,16, as made, Christmas Train
+- 0x04AB, 3611,2544,10, as made, Christmas Train
+- 0x0A22, 3612,2544,16, as made, Christmas Train
+- 0x0E76, 3612,2546,23, as made, Christmas Train
+- 0x46FF, 3613,2547,0, as made, Christmas Train
+- 0x46FF, 3613,2546,0, as made, Christmas Train
+- 0x0709, 3612,2542,5, as made, Christmas Train
+- 0x0617, 3611,2545,28, as made, Christmas Train
+- 0x0E7C, 3612,2546,15, as made, Christmas Train
+- 0x0E7C, 3612,2547,7, as made, Christmas Train
+- 0x9B25, 3610,2543,10, as made, Christmas Train
+- 0x1B73, 3612,2548,21, as made, Christmas Train
+- 0x9B2B, 3610,2543,7, as made, Christmas Train
+- 0x1B73, 3612,2548,25, as made, Christmas Train
+- 0x29E3, 3611,2548,5, as made, Christmas Train
+- 0x0E83, 3612,2548,29, as made, Christmas Train
+- 0x9B25, 3610,2542,10, as made, Christmas Train
+- 0x29E3, 3613,2546,5, as made, Christmas Train
+- 0x9B25, 3612,2543,10, as made, Christmas Train
+- 0x9B27, 3612,2544,7, as made, Christmas Train
+- 0x9B29, 3611,2544,7, as made, Christmas Train
+- 0x0E7C, 3612,2545,7, as made, Christmas Train
+- 0x0A22, 3611,2545,26, as made, Christmas Train
+- 0x9B25, 3611,2534,11, as made, Christmas Train
+- 0x04AB, 3613,2531,11, as made, Christmas Train
+- 0x0617, 3611,2533,21, as made, Christmas Train
+- 0x1BDF, 3612,2538,19, as made, Christmas Train
+- 0x9DC0, 3615,2532,15, as made, Christmas Train
+- 0xA000, 3614,2533,19, as made, Christmas Train
+- 0xA000, 3614,2540,19, as made, Christmas Train
+- 0x0110, 3611,2537,9, as made, Christmas Train
+- 0x0444, 3613,2538,17, as made, Christmas Train
+- 0x0459, 3612,2532,10, as made, Christmas Train
+- 0xA000, 3614,2535,18, as made, Christmas Train
+- 0x0617, 3611,2531,21, as made, Christmas Train
+- 0x9B23, 3613,2535,11, as made, Christmas Train
+- 0x0FD2, 3614,2541,4, as made, Christmas Train
+- 0x9B25, 3613,2533,11, as made, Christmas Train
+- 0x232C, 3614,2538,38, as made, Christmas Train
+- 0x04AB, 3612,2533,11, as made, Christmas Train
+- 0x0444, 3613,2537,17, as made, Christmas Train
+- 0x1BD7, 3613,2538,5, as made, Christmas Train
+- 0x29E3, 3613,2538,5, as made, Christmas Train
+- 0x1502, 3613,2532,7, as made, Christmas Train
+- 0x010F, 3612,2536,9, as made, Christmas Train
+- 0x9B18, 3611,2530,9, as made, Christmas Train
+- 0x29E3, 3613,2531,5, as made, Christmas Train
+- 0x9B25, 3613,2531,11, as made, Christmas Train
+- 0x0459, 3612,2533,10, as made, Christmas Train
+- 0x1BDF, 3613,2537,16, as made, Christmas Train
+- 0x0110, 3613,2537,11, as made, Christmas Train
+- 0x9DC0, 3615,2539,17, as made, Christmas Train
+- 0x9B18, 3613,2530,10, as made, Christmas Train
+- 0x9B24, 3612,2535,11, as made, Christmas Train
+- 0x1BDF, 3613,2539,21, as made, Christmas Train
+- 0x064F, 3613,2531,36, as made, Christmas Train
+- 0x1502, 3613,2538,7, as made, Christmas Train
+- 0x04AB, 3612,2531,11, as made, Christmas Train
+- 0x064F, 3613,2532,36, as made, Christmas Train
+- 0x04AB, 3613,2533,11, as made, Christmas Train
+- 0x04AB, 3612,2534,11, as made, Christmas Train
+- 0x9B25, 3611,2535,11, as made, Christmas Train
+- 0x1502, 3613,2535,7, as made, Christmas Train
+- 0x0444, 3611,2539,12, as made, Christmas Train
+- 0x061A, 3614,2533,35, as made, Christmas Train
+- 0x0444, 3613,2539,17, as made, Christmas Train
+- 0x061A, 3614,2531,35, as made, Christmas Train
+- 0x0443, 3612,2536,12, as made, Christmas Train
+- 0x010F, 3612,2540,9, as made, Christmas Train
+- 0x064F, 3613,2533,36, as made, Christmas Train
+- 0x04AB, 3613,2534,10, as made, Christmas Train
+- 0x1BDF, 3613,2538,20, as made, Christmas Train
+- 0x29E3, 3611,2540,5, as made, Christmas Train
+- 0x0444, 3611,2537,17, as made, Christmas Train
+- 0x1BD7, 3612,2541,5, as made, Christmas Train
+- 0x9B25, 3611,2533,11, as made, Christmas Train
+- 0x9B25, 3613,2534,11, as made, Christmas Train
+- 0x0442, 3613,2540,14, as made, Christmas Train
+- 0x0444, 3613,2539,14, as made, Christmas Train
+- 0x0459, 3613,2531,10, as made, Christmas Train
+- 0x1B73, 3612,2541,9, as made, Christmas Train
+- 0x1502, 3613,2534,7, as made, Christmas Train
+- 0x0617, 3611,2534,21, as made, Christmas Train
+- 0x1BDF, 3612,2537,15, as made, Christmas Train
+- 0x0110, 3611,2538,9, as made, Christmas Train
+- 0x0617, 3611,2530,21, as made, Christmas Train
+- 0x04AB, 3612,2540,9, as made, Christmas Train
+- 0x061A, 3614,2534,35, as made, Christmas Train
+- 0x9DC0, 3615,2536,16, as made, Christmas Train
+- 0x0444, 3613,2538,14, as made, Christmas Train
+- 0x9B18, 3613,2535,9, as made, Christmas Train
+- 0x2845, 3613,2541,23, as made, Christmas Train
+- 0x0444, 3611,2538,12, as made, Christmas Train
+- 0x064F, 3613,2534,36, as made, Christmas Train
+- 0x29E3, 3613,2529,5, as made, Christmas Train
+- 0x061A, 3614,2535,35, as made, Christmas Train
+- 0x064F, 3613,2535,36, as made, Christmas Train
+- 0x064F, 3613,2536,36, as made, Christmas Train
+- 0x1502, 3613,2531,7, as made, Christmas Train
+- 0xA000, 3614,2538,20, as made, Christmas Train
+- 0x0444, 3611,2539,5, as made, Christmas Train
+- 0x9B24, 3612,2530,11, as made, Christmas Train
+- 0x04AB, 3612,2537,9, as made, Christmas Train
+- 0x9B24, 3613,2530,11, as made, Christmas Train
+- 0x0443, 3613,2536,14, as made, Christmas Train
+- 0x04AB, 3613,2538,11, as made, Christmas Train
+- 0x0110, 3611,2540,9, as made, Christmas Train
+- 0x0443, 3613,2536,17, as made, Christmas Train
+- 0x0459, 3613,2533,10, as made, Christmas Train
+- 0x0444, 3613,2537,14, as made, Christmas Train
+- 0x9B18, 3611,2535,11, as made, Christmas Train
+- 0x29E3, 3611,2541,5, as made, Christmas Train
+- 0x0617, 3611,2535,21, as made, Christmas Train
+- 0x0110, 3613,2538,11, as made, Christmas Train
+- 0x1BD7, 3613,2534,5, as made, Christmas Train
+- 0x0A22, 3614,2536,28, as made, Christmas Train
+- 0x29E3, 3613,2535,5, as made, Christmas Train
+- 0x04AB, 3612,2538,10, as made, Christmas Train
+- 0x29E3, 3613,2536,5, as made, Christmas Train
+- 0x04AB, 3613,2540,11, as made, Christmas Train
+- 0x1BD7, 3613,2533,5, as made, Christmas Train
+- 0x1BD7, 3613,2531,5, as made, Christmas Train
+- 0x9DBF, 3614,2541,10, as made, Christmas Train
+- 0x9FFB, 3613,2536,17, as made, Christmas Train
+- 0x1BD7, 3613,2530,5, as made, Christmas Train
+- 0x061A, 3614,2536,35, as made, Christmas Train
+- 0x0444, 3611,2537,12, as made, Christmas Train
+- 0x0459, 3612,2534,10, as made, Christmas Train
+- 0x04AB, 3612,2532,11, as made, Christmas Train
+- 0x04AB, 3613,2535,11, as made, Christmas Train
+- 0x1BD7, 3612,2540,5, as made, Christmas Train
+- 0x1BD7, 3613,2532,5, as made, Christmas Train
+- 0x1502, 3613,2537,7, as made, Christmas Train
+- 0x04AB, 3612,2535,11, as made, Christmas Train
+- 0x0443, 3612,2540,14, as made, Christmas Train
+- 0x0444, 3611,2539,17, as made, Christmas Train
+- 0x1502, 3613,2540,7, as made, Christmas Train
+- 0x010F, 3613,2536,11, as made, Christmas Train
+- 0x04AB, 3613,2532,11, as made, Christmas Train
+- 0x1BDF, 3612,2540,19, as made, Christmas Train
+- 0x0459, 3612,2531,10, as made, Christmas Train
+- 0x29E3, 3613,2534,5, as made, Christmas Train
+- 0x0444, 3611,2540,12, as made, Christmas Train
+- 0x04AB, 3613,2539,11, as made, Christmas Train
+- 0x010D, 3611,2540,14, as made, Christmas Train
+- 0x1BD7, 3613,2539,5, as made, Christmas Train
+- 0x1BDF, 3613,2540,22, as made, Christmas Train
+- 0x04AB, 3613,2537,11, as made, Christmas Train
+- 0x9DC0, 3615,2534,16, as made, Christmas Train
+- 0x04AB, 3612,2539,9, as made, Christmas Train
+- 0x29E3, 3613,2530,5, as made, Christmas Train
+- 0x0110, 3611,2539,9, as made, Christmas Train
+- 0x010D, 3613,2540,14, as made, Christmas Train
+- 0x29E3, 3613,2539,5, as made, Christmas Train
+- 0x29E3, 3613,2537,5, as made, Christmas Train
+- 0x1BDF, 3612,2539,9, as made, Christmas Train
+- 0x29E3, 3613,2541,5, as made, Christmas Train
+- 0x061A, 3614,2532,35, as made, Christmas Train
+- 0x0A22, 3612,2536,29, as made, Christmas Train
+- 0x1BD7, 3613,2537,5, as made, Christmas Train
+- 0x9B25, 3611,2531,11, as made, Christmas Train
+- 0x29E3, 3613,2533,5, as made, Christmas Train
+- 0x010E, 3613,2540,11, as made, Christmas Train
+- 0x29E3, 3613,2532,5, as made, Christmas Train
+- 0x0617, 3611,2532,21, as made, Christmas Train
+- 0x0459, 3613,2532,10, as made, Christmas Train
+- 0x0443, 3612,2536,17, as made, Christmas Train
+- 0x9B25, 3613,2532,11, as made, Christmas Train
+- 0x0444, 3611,2538,17, as made, Christmas Train
+- 0x9FFB, 3613,2541,17, as made, Christmas Train
+- 0x29E3, 3613,2540,5, as made, Christmas Train
+- 0x0110, 3613,2539,11, as made, Christmas Train
+- 0x1BDF, 3612,2539,20, as made, Christmas Train
+- 0x010D, 3611,2536,10, as made, Christmas Train
+- 0x1BDF, 3613,2539,13, as made, Christmas Train
+- 0x0459, 3613,2534,10, as made, Christmas Train
+- 0x9B25, 3611,2532,11, as made, Christmas Train
+
+### set-snowman-bench: a snowman bench (snowman-bench), origin 3618,2545,0, area park: ok
+- 0x9E1B, 3618,2543,12, as made
+- 0x4C17, 3617,2545,2, as made
+- 0x3F18, 3617,2545,2, as made
+- 0x0F0F, 3617,2545,3, as made
+- 0x0F10, 3617,2545,5, as made
+- 0x0F13, 3617,2545,5, as made
+- 0x0F1B, 3617,2545,4, as made
+- 0x0F8E, 3617,2545,8, as made
+- 0x9DC4, 3618,2549,12, as made
+- 0x2330, 3618,2548,6, as made
+- 0x2375, 3619,2544,23, as made
+- 0x2375, 3619,2550,23, as made
+- 0x2330, 3618,2542,7, as made
+- 0x0B63, 3617,2546,2, as made
+- 0x0B62, 3617,2544,2, as made
+- 0x0B63, 3617,2543,2, as made
+- 0xA000, 3618,2546,28, as made
+- 0xA000, 3618,2544,27, as made
+- 0x2336, 3619,2547,11, as made
+- 0x2332, 3618,2546,0, as made
+- 0x0B62, 3617,2547,2, as made
+- 0x0B24, 3617,2548,2, as made
+- 0x2328, 3617,2549,2, as made
+- 0xA000, 3618,2548,28, as made
+- 0x0B24, 3617,2542,2, as made
+- 0x2329, 3617,2541,1, as made
+
+### set-santa-bench: a Santa bench (santa-bench), origin 3613,2554,0, area park: ok
+- 0x4A99, 3613,2554,0, as made
+- 0x9E1C, 3611,2555,5, as made
+- 0x9E1B, 3617,2555,4, as made
+- 0x9DBF, 3617,2555,21, as made
+- 0x9DBF, 3611,2555,16, as made
+- 0x0B69, 3611,2554,0, as made
+- 0x0B69, 3614,2554,0, as made
+- 0x0B68, 3612,2554,0, as made
+- 0x0B68, 3615,2554,0, as made
+- 0x0B20, 3610,2554,3, as made
+- 0x0B20, 3616,2554,7, as made
+- 0x9FFB, 3615,2554,20, as made
+- 0x9FFB, 3613,2554,19, as made
+- 0x9FFB, 3611,2554,17, as made
+
+### set-snow-globe: a large snow globe (large-snow-globe), origin 3639,2557,0, area square: ok
+- 0x17CD, 3641,2556,25, as made
+- 0x17CD, 3638,2556,25, as made
+- 0x17CD, 3638,2559,25, as made
+- 0x46A2, 3638,2557,5, as made
+- 0x46A6, 3639,2559,5, as made
+- 0x46A4, 3639,2557,7, as made
+- 0x9DD2, 3639,2556,2, as made, Christmas Tree
+- 0x1CD9, 3641,2557,25, as made, Snow Globe
+- 0x1CD9, 3639,2559,25, as made, Snow Globe
+- 0x08CE, 3639,2556,25, as made, Snow Globe
+- 0x08CE, 3640,2556,25, as made, Snow Globe
+- 0x08CD, 3641,2557,25, as made, Snow Globe
+- 0x08CD, 3639,2559,25, as made, Snow Globe
+- 0x2BC7, 3641,2558,0, as made, Snow Globe
+- 0x9E1B, 3640,2560,5, as made, Candy Cane
+- 0x9E1C, 3642,2558,5, as made, Candy Cane
+- 0x9FFB, 3639,2560,5, as made, Garland
+- 0x3A88, 3640,2556,5, as made, Santa Sleigh
+- 0x9DC0, 3642,2556,5, as made, Christmas Bells
+- 0x377A, 3641,2557,6, as made, Snow
+- 0x3A87, 3640,2557,5, as made, Santa Sleigh
+- 0xA000, 3642,2557,5, as made, Garland
+- 0x17C2, 3641,2556,6, as made, Snow Globe
+- 0x2CEF, 3641,2556,0, as made, Snow Globe
+- 0x377A, 3640,2558,5, as made, Snow
+- 0x17BD, 3639,2558,5, as made, Snow Globe
+- 0x17BD, 3639,2556,5, as made, Snow Globe
+- 0x17BD, 3640,2558,5, as made, Snow Globe
+- 0x17BD, 3640,2557,5, as made, Snow Globe
+- 0x17BD, 3640,2556,5, as made, Snow Globe
+- 0x17BD, 3641,2556,5, as made, Snow Globe
+- 0x17BD, 3641,2557,5, as made, Snow Globe
+- 0x08CC, 3640,2557,25, as made, Snow Globe
+- 0x17C3, 3640,2559,6, as made, Snow Globe
+- 0x17BD, 3639,2557,5, as made, Snow Globe
+- 0x08CC, 3641,2556,5, as made, Snow Globe
+- 0x1CD9, 3641,2556,25, as made, Snow Globe
+- 0x1CD9, 3640,2556,25, as made, Snow Globe
+- 0x3A55, 3641,2558,6, as made, Reindeer
+- 0x08CD, 3641,2558,5, as made, Snow Globe
+- 0x08CD, 3640,2559,5, as made, Snow Globe
+- 0x08CC, 3641,2557,5, as made, Snow Globe
+- 0x17BD, 3639,2559,5, as made, Snow Globe
+- 0x08CE, 3639,2558,25, as made, Snow Globe
+- 0x2CF0, 3639,2559,0, as made, Snow Globe
+- 0x17BD, 3640,2559,5, as made, Snow Globe
+- 0x08CE, 3639,2559,5, as made, Snow Globe
+- 0x2BC7, 3640,2559,0, as made, Snow Globe
+- 0x1CD9, 3639,2556,25, as made, Snow Globe
+- 0x17C3, 3641,2558,6, as made, Snow Globe
+- 0x17BD, 3641,2558,5, as made, Snow Globe
+- 0x3A67, 3640,2558,5, as made, Reindeer
+- 0x17CB, 3639,2559,5, as made, Snow Globe
+- 0x17CB, 3639,2559,6, as made, Snow Globe
+- 0x17CA, 3641,2557,6, as made, Snow Globe
+- 0x17C9, 3640,2556,6, as made, Snow Globe
+- 0x17C9, 3639,2556,6, as made, Snow Globe
+- 0x08CC, 3641,2556,25, as made, Snow Globe
+- 0x2CEF, 3641,2557,0, as made, Snow Globe
+- 0x377A, 3639,2558,5, as made, Snow
+- 0x2CF0, 3641,2555,0, as made, Snow Globe
+- 0x2BC6, 3641,2555,5, as made, Snow Globe
+- 0x08CE, 3641,2555,6, as made, Snow Globe
+- 0x08CE, 3641,2555,6, as made, Snow Globe
+- 0x08CE, 3640,2555,6, as made, Snow Globe
+- 0x08CE, 3639,2555,6, as made, Snow Globe
+- 0x2CF0, 3639,2555,0, as made, Snow Globe
+- 0x2CF0, 3640,2555,0, as made, Snow Globe
+- 0x08CE, 3641,2555,25, as made, Snow Globe
+- 0x08CE, 3639,2555,25, as made, Snow Globe
+- 0x08CE, 3640,2555,25, as made, Snow Globe
+- 0x1CD9, 3638,2559,25, as made, Snow Globe
+- 0x17CC, 3638,2557,6, as made, Snow Globe
+- 0x9DBF, 3638,2560,6, as made, Christmas Bells
+- 0x08CC, 3637,2559,25, as made, Snow Globe
+- 0x08CC, 3638,2557,25, as made, Snow Globe
+- 0x9DB5, 3638,2559,6, as made, Santa Bag
+- 0x2CF0, 3638,2559,0, as made, Snow Globe
+- 0x17C4, 3638,2559,6, as made, Snow Globe
+- 0x17BD, 3638,2557,5, as made, Snow Globe
+- 0x17BD, 3638,2558,5, as made, Snow Globe
+- 0x17BD, 3638,2556,5, as made, Snow Globe
+- 0x2BC3, 3637,2559,5, as made, Snow Globe
+- 0x08CC, 3637,2556,25, as made, Snow Globe
+- 0x08CC, 3638,2558,25, as made, Snow Globe
+- 0x2BC4, 3637,2556,5, as made, Snow Globe
+- 0x08CC, 3637,2558,5, as made, Snow Globe
+- 0x08CC, 3637,2557,6, as made, Snow Globe
+- 0x08CC, 3637,2558,6, as made, Snow Globe
+- 0x08CC, 3637,2556,6, as made, Snow Globe
+- 0x08CC, 3637,2559,6, as made, Snow Globe
+- 0x1CD9, 3638,2556,25, as made, Snow Globe
+- 0x2CEF, 3637,2556,0, as made, Snow Globe
+- 0x2CEF, 3637,2557,0, as made, Snow Globe
+- 0x2CEF, 3637,2558,0, as made, Snow Globe
+- 0x17BD, 3638,2559,5, as made, Snow Globe
+- 0x08CE, 3638,2559,5, as made, Snow Globe
+- 0x1CD9, 3638,2557,25, as made, Snow Globe
+- 0x08CE, 3638,2559,25, as made, Snow Globe
+- 0x2CEF, 3637,2559,0, as made, Snow Globe
+- 0x1CD9, 3638,2558,25, as made, Snow Globe
+- 0x17C1, 3638,2556,6, as made, Snow Globe
+- 0x17CC, 3638,2558,6, as made, Snow Globe
+- 0x377A, 3638,2557,10, as made, Snow
+- 0x08CC, 3637,2557,25, as made, Snow Globe
+- 0x08CC, 3637,2558,25, as made, Snow Globe
+- 0x2CF0, 3638,2555,0, as made, Snow Globe
+- 0x2BC5, 3638,2555,5, as made, Snow Globe
+- 0x08CE, 3638,2555,6, as made, Snow Globe
+- 0x08CE, 3638,2555,6, as made, Snow Globe
+- 0x08CE, 3638,2555,25, as made, Snow Globe
+
+
+## Release (the ML plaza New Haven, vanilla Trammel)
+
+All 4 pieces together cover 133 tiles; the walk from 3503,2574 reaches every tile it reached before: yes.
+
+### set-train (christmas-train), origin 3548,2523,14: ok
+- 0x1B73, 3548,2532,37, as made, Christmas Train
+- 0x087B, 3548,2532,19, as made, Christmas Train
+- 0x0E7C, 3548,2532,29, as made, Christmas Train
+- 0x0709, 3548,2527,19, as made, Christmas Train
+- 0x0E7C, 3547,2530,21, as made, Christmas Train
+- 0x1EA9, 3547,2528,30, as made, Christmas Train
+- 0x9B2B, 3548,2527,21, as made, Christmas Train
+- 0x061A, 3549,2529,44, as made, Christmas Train
+- 0x157E, 3549,2533,25, as made, Christmas Train
+- 0x29E3, 3549,2528,19, as made, Christmas Train
+- 0x0709, 3548,2531,19, as made, Christmas Train
+- 0x1B73, 3548,2532,38, as made, Christmas Train
+- 0x064F, 3548,2528,46, as made, Christmas Train
+- 0x064F, 3548,2529,46, as made, Christmas Train
+- 0x061A, 3549,2528,44, as made, Christmas Train
+- 0x29E3, 3549,2533,19, as made, Christmas Train
+- 0x9B25, 3548,2526,24, as made, Christmas Train
+- 0x0E7C, 3547,2531,21, as made, Christmas Train
+- 0xA000, 3549,2529,30, as made, Christmas Train
+- 0x0709, 3547,2528,19, as made, Christmas Train
+- 0x1016, 3549,2527,17, as made, Christmas Train
+- 0x04AB, 3547,2526,24, as made, Christmas Train
+- 0x0E7C, 3548,2531,29, as made, Christmas Train
+- 0x0709, 3548,2529,19, as made, Christmas Train
+- 0x9B18, 3546,2526,21, as made, Christmas Train
+- 0x9FFB, 3549,2533,39, as made, Christmas Train
+- 0x1094, 3546,2526,24, as made, Christmas Train
+- 0x0617, 3547,2528,42, as made, Christmas Train
+- 0x4C5A, 3548,2531,34, as made, Christmas Train
+- 0x0709, 3547,2526,19, as made, Christmas Train
+- 0x1016, 3549,2529,17, as made, Christmas Train
+- 0x29E3, 3549,2527,19, as made, Christmas Train
+- 0x9B28, 3546,2528,21, as made, Christmas Train
+- 0x0709, 3548,2530,19, as made, Christmas Train
+- 0x0709, 3547,2527,19, as made, Christmas Train
+- 0x29E3, 3549,2532,19, as made, Christmas Train
+- 0x9B23, 3548,2528,24, as made, Christmas Train
+- 0x064F, 3548,2527,46, as made, Christmas Train
+- 0x0A22, 3549,2533,46, as made, Christmas Train
+- 0x29E3, 3549,2531,19, as made, Christmas Train
+- 0x9B24, 3547,2528,24, as made, Christmas Train
+- 0x3709, 3548,2532,44, as made, Christmas Train
+- 0x1094, 3547,2527,24, as made, Christmas Train
+- 0x9B18, 3548,2526,21, as made, Christmas Train
+- 0x04AB, 3548,2526,24, as made, Christmas Train
+- 0x0E7C, 3547,2529,21, as made, Christmas Train
+- 0x29E3, 3547,2533,19, as made, Christmas Train
+- 0x0E7C, 3548,2530,21, as made, Christmas Train
+- 0x0709, 3548,2528,19, as made, Christmas Train
+- 0x232C, 3549,2531,48, as made, Christmas Train
+- 0x29E3, 3549,2529,19, as made, Christmas Train
+- 0x1B73, 3548,2532,34, as made, Christmas Train
+- 0x061A, 3549,2527,44, as made, Christmas Train
+- 0xA000, 3549,2527,32, as made, Christmas Train
+- 0x0617, 3547,2527,42, as made, Christmas Train
+- 0x232C, 3549,2526,34, as made, Christmas Train
+- 0xA000, 3549,2528,32, as made, Christmas Train
+- 0x04AB, 3548,2527,24, as made, Christmas Train
+- 0x232C, 3550,2526,35, as made, Christmas Train
+- 0x1093, 3547,2526,24, as made, Christmas Train
+- 0x9B25, 3546,2528,24, as made, Christmas Train
+- 0x29E3, 3549,2526,19, as made, Christmas Train
+- 0x04AB, 3547,2527,24, as made, Christmas Train
+- 0x1B73, 3548,2532,36, as made, Christmas Train
+- 0xA000, 3549,2531,30, as made, Christmas Train
+- 0x04AB, 3547,2528,24, as made, Christmas Train
+- 0x0A22, 3548,2528,30, as made, Christmas Train
+- 0x0E76, 3548,2530,37, as made, Christmas Train
+- 0x46FF, 3549,2531,14, as made, Christmas Train
+- 0x46FF, 3549,2530,14, as made, Christmas Train
+- 0x0709, 3548,2526,19, as made, Christmas Train
+- 0x0617, 3547,2529,42, as made, Christmas Train
+- 0x0E7C, 3548,2530,29, as made, Christmas Train
+- 0x0E7C, 3548,2531,21, as made, Christmas Train
+- 0x9B25, 3546,2527,24, as made, Christmas Train
+- 0x1B73, 3548,2532,35, as made, Christmas Train
+- 0x9B2B, 3546,2527,21, as made, Christmas Train
+- 0x1B73, 3548,2532,39, as made, Christmas Train
+- 0x29E3, 3547,2532,19, as made, Christmas Train
+- 0x0E83, 3548,2532,43, as made, Christmas Train
+- 0x9B25, 3546,2526,24, as made, Christmas Train
+- 0x29E3, 3549,2530,19, as made, Christmas Train
+- 0x9B25, 3548,2527,24, as made, Christmas Train
+- 0x9B27, 3548,2528,21, as made, Christmas Train
+- 0x9B29, 3547,2528,21, as made, Christmas Train
+- 0x0E7C, 3548,2529,21, as made, Christmas Train
+- 0x0A22, 3547,2529,40, as made, Christmas Train
+- 0x9B25, 3547,2518,25, as made, Christmas Train
+- 0x04AB, 3549,2515,25, as made, Christmas Train
+- 0x0617, 3547,2517,35, as made, Christmas Train
+- 0x1BDF, 3548,2522,33, as made, Christmas Train
+- 0x9DC0, 3551,2516,29, as made, Christmas Train
+- 0xA000, 3550,2517,33, as made, Christmas Train
+- 0xA000, 3550,2524,33, as made, Christmas Train
+- 0x0110, 3547,2521,23, as made, Christmas Train
+- 0x0444, 3549,2522,31, as made, Christmas Train
+- 0x0459, 3548,2516,24, as made, Christmas Train
+- 0xA000, 3550,2519,32, as made, Christmas Train
+- 0x0617, 3547,2515,35, as made, Christmas Train
+- 0x9B23, 3549,2519,25, as made, Christmas Train
+- 0x0FD2, 3550,2525,18, as made, Christmas Train
+- 0x9B25, 3549,2517,25, as made, Christmas Train
+- 0x232C, 3550,2522,52, as made, Christmas Train
+- 0x04AB, 3548,2517,25, as made, Christmas Train
+- 0x0444, 3549,2521,31, as made, Christmas Train
+- 0x1BD7, 3549,2522,19, as made, Christmas Train
+- 0x29E3, 3549,2522,19, as made, Christmas Train
+- 0x1502, 3549,2516,21, as made, Christmas Train
+- 0x010F, 3548,2520,23, as made, Christmas Train
+- 0x9B18, 3547,2514,23, as made, Christmas Train
+- 0x29E3, 3549,2515,19, as made, Christmas Train
+- 0x9B25, 3549,2515,25, as made, Christmas Train
+- 0x0459, 3548,2517,24, as made, Christmas Train
+- 0x1BDF, 3549,2521,30, as made, Christmas Train
+- 0x0110, 3549,2521,25, as made, Christmas Train
+- 0x9DC0, 3551,2523,31, as made, Christmas Train
+- 0x9B18, 3549,2514,24, as made, Christmas Train
+- 0x9B24, 3548,2519,25, as made, Christmas Train
+- 0x1BDF, 3549,2523,35, as made, Christmas Train
+- 0x064F, 3549,2515,50, as made, Christmas Train
+- 0x1502, 3549,2522,21, as made, Christmas Train
+- 0x04AB, 3548,2515,25, as made, Christmas Train
+- 0x064F, 3549,2516,50, as made, Christmas Train
+- 0x04AB, 3549,2517,25, as made, Christmas Train
+- 0x04AB, 3548,2518,25, as made, Christmas Train
+- 0x9B25, 3547,2519,25, as made, Christmas Train
+- 0x1502, 3549,2519,21, as made, Christmas Train
+- 0x0444, 3547,2523,26, as made, Christmas Train
+- 0x061A, 3550,2517,49, as made, Christmas Train
+- 0x0444, 3549,2523,31, as made, Christmas Train
+- 0x061A, 3550,2515,49, as made, Christmas Train
+- 0x0443, 3548,2520,26, as made, Christmas Train
+- 0x010F, 3548,2524,23, as made, Christmas Train
+- 0x064F, 3549,2517,50, as made, Christmas Train
+- 0x04AB, 3549,2518,24, as made, Christmas Train
+- 0x1BDF, 3549,2522,34, as made, Christmas Train
+- 0x29E3, 3547,2524,19, as made, Christmas Train
+- 0x0444, 3547,2521,31, as made, Christmas Train
+- 0x1BD7, 3548,2525,19, as made, Christmas Train
+- 0x9B25, 3547,2517,25, as made, Christmas Train
+- 0x9B25, 3549,2518,25, as made, Christmas Train
+- 0x0442, 3549,2524,28, as made, Christmas Train
+- 0x0444, 3549,2523,28, as made, Christmas Train
+- 0x0459, 3549,2515,24, as made, Christmas Train
+- 0x1B73, 3548,2525,23, as made, Christmas Train
+- 0x1502, 3549,2518,21, as made, Christmas Train
+- 0x0617, 3547,2518,35, as made, Christmas Train
+- 0x1BDF, 3548,2521,29, as made, Christmas Train
+- 0x0110, 3547,2522,23, as made, Christmas Train
+- 0x0617, 3547,2514,35, as made, Christmas Train
+- 0x04AB, 3548,2524,23, as made, Christmas Train
+- 0x061A, 3550,2518,49, as made, Christmas Train
+- 0x9DC0, 3551,2520,30, as made, Christmas Train
+- 0x0444, 3549,2522,28, as made, Christmas Train
+- 0x9B18, 3549,2519,23, as made, Christmas Train
+- 0x2845, 3549,2525,37, as made, Christmas Train
+- 0x0444, 3547,2522,26, as made, Christmas Train
+- 0x064F, 3549,2518,50, as made, Christmas Train
+- 0x29E3, 3549,2513,19, as made, Christmas Train
+- 0x061A, 3550,2519,49, as made, Christmas Train
+- 0x064F, 3549,2519,50, as made, Christmas Train
+- 0x064F, 3549,2520,50, as made, Christmas Train
+- 0x1502, 3549,2515,21, as made, Christmas Train
+- 0xA000, 3550,2522,34, as made, Christmas Train
+- 0x0444, 3547,2523,19, as made, Christmas Train
+- 0x9B24, 3548,2514,25, as made, Christmas Train
+- 0x04AB, 3548,2521,23, as made, Christmas Train
+- 0x9B24, 3549,2514,25, as made, Christmas Train
+- 0x0443, 3549,2520,28, as made, Christmas Train
+- 0x04AB, 3549,2522,25, as made, Christmas Train
+- 0x0110, 3547,2524,23, as made, Christmas Train
+- 0x0443, 3549,2520,31, as made, Christmas Train
+- 0x0459, 3549,2517,24, as made, Christmas Train
+- 0x0444, 3549,2521,28, as made, Christmas Train
+- 0x9B18, 3547,2519,25, as made, Christmas Train
+- 0x29E3, 3547,2525,19, as made, Christmas Train
+- 0x0617, 3547,2519,35, as made, Christmas Train
+- 0x0110, 3549,2522,25, as made, Christmas Train
+- 0x1BD7, 3549,2518,19, as made, Christmas Train
+- 0x0A22, 3550,2520,42, as made, Christmas Train
+- 0x29E3, 3549,2519,19, as made, Christmas Train
+- 0x04AB, 3548,2522,24, as made, Christmas Train
+- 0x29E3, 3549,2520,19, as made, Christmas Train
+- 0x04AB, 3549,2524,25, as made, Christmas Train
+- 0x1BD7, 3549,2517,19, as made, Christmas Train
+- 0x1BD7, 3549,2515,19, as made, Christmas Train
+- 0x9DBF, 3550,2525,24, as made, Christmas Train
+- 0x9FFB, 3549,2520,31, as made, Christmas Train
+- 0x1BD7, 3549,2514,19, as made, Christmas Train
+- 0x061A, 3550,2520,49, as made, Christmas Train
+- 0x0444, 3547,2521,26, as made, Christmas Train
+- 0x0459, 3548,2518,24, as made, Christmas Train
+- 0x04AB, 3548,2516,25, as made, Christmas Train
+- 0x04AB, 3549,2519,25, as made, Christmas Train
+- 0x1BD7, 3548,2524,19, as made, Christmas Train
+- 0x1BD7, 3549,2516,19, as made, Christmas Train
+- 0x1502, 3549,2521,21, as made, Christmas Train
+- 0x04AB, 3548,2519,25, as made, Christmas Train
+- 0x0443, 3548,2524,28, as made, Christmas Train
+- 0x0444, 3547,2523,31, as made, Christmas Train
+- 0x1502, 3549,2524,21, as made, Christmas Train
+- 0x010F, 3549,2520,25, as made, Christmas Train
+- 0x04AB, 3549,2516,25, as made, Christmas Train
+- 0x1BDF, 3548,2524,33, as made, Christmas Train
+- 0x0459, 3548,2515,24, as made, Christmas Train
+- 0x29E3, 3549,2518,19, as made, Christmas Train
+- 0x0444, 3547,2524,26, as made, Christmas Train
+- 0x04AB, 3549,2523,25, as made, Christmas Train
+- 0x010D, 3547,2524,28, as made, Christmas Train
+- 0x1BD7, 3549,2523,19, as made, Christmas Train
+- 0x1BDF, 3549,2524,36, as made, Christmas Train
+- 0x04AB, 3549,2521,25, as made, Christmas Train
+- 0x9DC0, 3551,2518,30, as made, Christmas Train
+- 0x04AB, 3548,2523,23, as made, Christmas Train
+- 0x29E3, 3549,2514,19, as made, Christmas Train
+- 0x0110, 3547,2523,23, as made, Christmas Train
+- 0x010D, 3549,2524,28, as made, Christmas Train
+- 0x29E3, 3549,2523,19, as made, Christmas Train
+- 0x29E3, 3549,2521,19, as made, Christmas Train
+- 0x1BDF, 3548,2523,23, as made, Christmas Train
+- 0x29E3, 3549,2525,19, as made, Christmas Train
+- 0x061A, 3550,2516,49, as made, Christmas Train
+- 0x0A22, 3548,2520,43, as made, Christmas Train
+- 0x1BD7, 3549,2521,19, as made, Christmas Train
+- 0x9B25, 3547,2515,25, as made, Christmas Train
+- 0x29E3, 3549,2517,19, as made, Christmas Train
+- 0x010E, 3549,2524,25, as made, Christmas Train
+- 0x29E3, 3549,2516,19, as made, Christmas Train
+- 0x0617, 3547,2516,35, as made, Christmas Train
+- 0x0459, 3549,2516,24, as made, Christmas Train
+- 0x0443, 3548,2520,31, as made, Christmas Train
+- 0x9B25, 3549,2516,25, as made, Christmas Train
+- 0x0444, 3547,2522,31, as made, Christmas Train
+- 0x9FFB, 3549,2525,31, as made, Christmas Train
+- 0x29E3, 3549,2524,19, as made, Christmas Train
+- 0x0110, 3549,2523,25, as made, Christmas Train
+- 0x1BDF, 3548,2523,34, as made, Christmas Train
+- 0x010D, 3547,2520,24, as made, Christmas Train
+- 0x1BDF, 3549,2523,27, as made, Christmas Train
+- 0x0459, 3549,2518,24, as made, Christmas Train
+- 0x9B25, 3547,2516,25, as made, Christmas Train
+
+### set-snowman-bench (snowman-bench), origin 3503,2596,1: ok
+- 0x9E1B, 3503,2594,13, as made
+- 0x4C17, 3502,2596,3, as made
+- 0x3F18, 3502,2596,3, as made
+- 0x0F0F, 3502,2596,4, as made
+- 0x0F10, 3502,2596,6, as made
+- 0x0F13, 3502,2596,6, as made
+- 0x0F1B, 3502,2596,5, as made
+- 0x0F8E, 3502,2596,9, as made
+- 0x9DC4, 3503,2600,13, as made
+- 0x2330, 3503,2599,7, as made
+- 0x2375, 3504,2595,24, as made
+- 0x2375, 3504,2601,24, as made
+- 0x2330, 3503,2593,8, as made
+- 0x0B63, 3502,2597,3, as made
+- 0x0B62, 3502,2595,3, as made
+- 0x0B63, 3502,2594,3, as made
+- 0xA000, 3503,2597,29, as made
+- 0xA000, 3503,2595,28, as made
+- 0x2336, 3504,2598,12, as made
+- 0x2332, 3503,2597,1, as made
+- 0x0B62, 3502,2598,3, as made
+- 0x0B24, 3502,2599,3, as made
+- 0x2328, 3502,2600,3, as made
+- 0xA000, 3503,2599,29, as made
+- 0x0B24, 3502,2593,3, as made
+- 0x2329, 3502,2592,2, as made
+
+### set-santa-bench (santa-bench), origin 3503,2588,16: ok
+- 0x4A99, 3503,2588,16, as made
+- 0x9E1C, 3501,2589,21, as made
+- 0x9E1B, 3507,2589,20, as made
+- 0x9DBF, 3507,2589,37, as made
+- 0x9DBF, 3501,2589,32, as made
+- 0x0B69, 3501,2588,16, as made
+- 0x0B69, 3504,2588,16, as made
+- 0x0B68, 3502,2588,16, as made
+- 0x0B68, 3505,2588,16, as made
+- 0x0B20, 3500,2588,19, as made
+- 0x0B20, 3506,2588,23, as made
+- 0x9FFB, 3505,2588,36, as made
+- 0x9FFB, 3503,2588,35, as made
+- 0x9FFB, 3501,2588,33, as made
+
+### set-snow-globe (large-snow-globe), origin 3519,2592,1: ok
+- 0x17CD, 3521,2591,26, as made
+- 0x17CD, 3518,2591,26, as made
+- 0x17CD, 3518,2594,26, as made
+- 0x46A2, 3518,2592,6, as made
+- 0x46A6, 3519,2594,6, as made
+- 0x46A4, 3519,2592,8, as made
+- 0x9DD2, 3519,2591,3, as made, Christmas Tree
+- 0x1CD9, 3521,2592,26, as made, Snow Globe
+- 0x1CD9, 3519,2594,26, as made, Snow Globe
+- 0x08CE, 3519,2591,26, as made, Snow Globe
+- 0x08CE, 3520,2591,26, as made, Snow Globe
+- 0x08CD, 3521,2592,26, as made, Snow Globe
+- 0x08CD, 3519,2594,26, as made, Snow Globe
+- 0x2BC7, 3521,2593,1, as made, Snow Globe
+- 0x9E1B, 3520,2595,6, as made, Candy Cane
+- 0x9E1C, 3522,2593,6, as made, Candy Cane
+- 0x9FFB, 3519,2595,6, as made, Garland
+- 0x3A88, 3520,2591,6, as made, Santa Sleigh
+- 0x9DC0, 3522,2591,6, as made, Christmas Bells
+- 0x377A, 3521,2592,7, as made, Snow
+- 0x3A87, 3520,2592,6, as made, Santa Sleigh
+- 0xA000, 3522,2592,6, as made, Garland
+- 0x17C2, 3521,2591,7, as made, Snow Globe
+- 0x2CEF, 3521,2591,1, as made, Snow Globe
+- 0x377A, 3520,2593,6, as made, Snow
+- 0x17BD, 3519,2593,6, as made, Snow Globe
+- 0x17BD, 3519,2591,6, as made, Snow Globe
+- 0x17BD, 3520,2593,6, as made, Snow Globe
+- 0x17BD, 3520,2592,6, as made, Snow Globe
+- 0x17BD, 3520,2591,6, as made, Snow Globe
+- 0x17BD, 3521,2591,6, as made, Snow Globe
+- 0x17BD, 3521,2592,6, as made, Snow Globe
+- 0x08CC, 3520,2592,26, as made, Snow Globe
+- 0x17C3, 3520,2594,7, as made, Snow Globe
+- 0x17BD, 3519,2592,6, as made, Snow Globe
+- 0x08CC, 3521,2591,6, as made, Snow Globe
+- 0x1CD9, 3521,2591,26, as made, Snow Globe
+- 0x1CD9, 3520,2591,26, as made, Snow Globe
+- 0x3A55, 3521,2593,7, as made, Reindeer
+- 0x08CD, 3521,2593,6, as made, Snow Globe
+- 0x08CD, 3520,2594,6, as made, Snow Globe
+- 0x08CC, 3521,2592,6, as made, Snow Globe
+- 0x17BD, 3519,2594,6, as made, Snow Globe
+- 0x08CE, 3519,2593,26, as made, Snow Globe
+- 0x2CF0, 3519,2594,1, as made, Snow Globe
+- 0x17BD, 3520,2594,6, as made, Snow Globe
+- 0x08CE, 3519,2594,6, as made, Snow Globe
+- 0x2BC7, 3520,2594,1, as made, Snow Globe
+- 0x1CD9, 3519,2591,26, as made, Snow Globe
+- 0x17C3, 3521,2593,7, as made, Snow Globe
+- 0x17BD, 3521,2593,6, as made, Snow Globe
+- 0x3A67, 3520,2593,6, as made, Reindeer
+- 0x17CB, 3519,2594,6, as made, Snow Globe
+- 0x17CB, 3519,2594,7, as made, Snow Globe
+- 0x17CA, 3521,2592,7, as made, Snow Globe
+- 0x17C9, 3520,2591,7, as made, Snow Globe
+- 0x17C9, 3519,2591,7, as made, Snow Globe
+- 0x08CC, 3521,2591,26, as made, Snow Globe
+- 0x2CEF, 3521,2592,1, as made, Snow Globe
+- 0x377A, 3519,2593,6, as made, Snow
+- 0x2CF0, 3521,2590,1, as made, Snow Globe
+- 0x2BC6, 3521,2590,6, as made, Snow Globe
+- 0x08CE, 3521,2590,7, as made, Snow Globe
+- 0x08CE, 3521,2590,7, as made, Snow Globe
+- 0x08CE, 3520,2590,7, as made, Snow Globe
+- 0x08CE, 3519,2590,7, as made, Snow Globe
+- 0x2CF0, 3519,2590,1, as made, Snow Globe
+- 0x2CF0, 3520,2590,1, as made, Snow Globe
+- 0x08CE, 3521,2590,26, as made, Snow Globe
+- 0x08CE, 3519,2590,26, as made, Snow Globe
+- 0x08CE, 3520,2590,26, as made, Snow Globe
+- 0x1CD9, 3518,2594,26, as made, Snow Globe
+- 0x17CC, 3518,2592,7, as made, Snow Globe
+- 0x9DBF, 3518,2595,7, as made, Christmas Bells
+- 0x08CC, 3517,2594,26, as made, Snow Globe
+- 0x08CC, 3518,2592,26, as made, Snow Globe
+- 0x9DB5, 3518,2594,7, as made, Santa Bag
+- 0x2CF0, 3518,2594,1, as made, Snow Globe
+- 0x17C4, 3518,2594,7, as made, Snow Globe
+- 0x17BD, 3518,2592,6, as made, Snow Globe
+- 0x17BD, 3518,2593,6, as made, Snow Globe
+- 0x17BD, 3518,2591,6, as made, Snow Globe
+- 0x2BC3, 3517,2594,6, as made, Snow Globe
+- 0x08CC, 3517,2591,26, as made, Snow Globe
+- 0x08CC, 3518,2593,26, as made, Snow Globe
+- 0x2BC4, 3517,2591,6, as made, Snow Globe
+- 0x08CC, 3517,2593,6, as made, Snow Globe
+- 0x08CC, 3517,2592,7, as made, Snow Globe
+- 0x08CC, 3517,2593,7, as made, Snow Globe
+- 0x08CC, 3517,2591,7, as made, Snow Globe
+- 0x08CC, 3517,2594,7, as made, Snow Globe
+- 0x1CD9, 3518,2591,26, as made, Snow Globe
+- 0x2CEF, 3517,2591,1, as made, Snow Globe
+- 0x2CEF, 3517,2592,1, as made, Snow Globe
+- 0x2CEF, 3517,2593,1, as made, Snow Globe
+- 0x17BD, 3518,2594,6, as made, Snow Globe
+- 0x08CE, 3518,2594,6, as made, Snow Globe
+- 0x1CD9, 3518,2592,26, as made, Snow Globe
+- 0x08CE, 3518,2594,26, as made, Snow Globe
+- 0x2CEF, 3517,2594,1, as made, Snow Globe
+- 0x1CD9, 3518,2593,26, as made, Snow Globe
+- 0x17C1, 3518,2591,7, as made, Snow Globe
+- 0x17CC, 3518,2593,7, as made, Snow Globe
+- 0x377A, 3518,2592,11, as made, Snow
+- 0x08CC, 3517,2592,26, as made, Snow Globe
+- 0x08CC, 3517,2593,26, as made, Snow Globe
+- 0x2CF0, 3518,2590,1, as made, Snow Globe
+- 0x2BC5, 3518,2590,6, as made, Snow Globe
+- 0x08CE, 3518,2590,7, as made, Snow Globe
+- 0x08CE, 3518,2590,7, as made, Snow Globe
+- 0x08CE, 3518,2590,26, as made, Snow Globe
