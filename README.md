@@ -239,7 +239,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem off; 751 prompts done, 5 more stopped early and not counted)
+### Queue (Golem off; 752 prompts done, 5 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -249,12 +249,12 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P9770 run-next-test | done | 2026-11-02 |
 | P876 review-build-names-and-statify | done | 2026-11-10 |
 | P875 review-build-lamps-and-peddler-wagon | done | 2026-11-10 |
+| P874 review-build-variable-carpet | done | 2026-11-10 |
 | P873 review-build-new-haven-winter-set | done | 2026-11-10 |
 | P872 cont-fixup-lamps-and-peddler-wagon | done | 2026-11-10 |
 | P870 review-build-decor-addon-housing-furniture | done | 2026-11-10 |
 | P868 review-build-lamps-and-peddler-wagon | done | 2026-11-10 |
 | P866 review-build-variable-carpet | done | 2026-11-10 |
-| P865 review-build-new-haven-winter-set | done | 2026-11-10 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 199 patches, 12 replacements
 
