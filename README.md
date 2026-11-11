@@ -63,7 +63,7 @@ notes/    working notes, scratch findings, anything not yet a decision
 <!-- PROGRESS:START -->
 **Direction: staying on ModernUO.** ServUO content is pulled in piece by piece.
 
-Judgment reviewed 2026-10-25. Shard version 2026.11.10.9. Golem off, 2 queued, latest done P9772. Play tests: 1580 open, 4 failed, 43 passed.
+Judgment reviewed 2026-10-25. Shard version 2026.11.10.10. Golem off, 2 queued, latest done P9772. Play tests: 1582 open, 4 failed, 43 passed.
 
 ### Needs overseer review (13)
 
@@ -79,7 +79,7 @@ Judgment reviewed 2026-10-25. Shard version 2026.11.10.9. Golem off, 2 queued, l
 - **gate No live gap a player would call a bug**: Last confirmed 2026-10-25 (16 days ago). Re-read its sources; still not met? `python tools/judge.py confirm gate "No live gap a player would call a bug"` or `python tools/judge.py gate "No live gap a player would call a bug" --done yes --detail "..."`
 - **gate The fresh-world wipe is ready**: Last confirmed 2026-10-25 (16 days ago). Re-read its sources; still not met? `python tools/judge.py confirm gate "The fresh-world wipe is ready"` or `python tools/judge.py gate "The fresh-world wipe is ready" --done yes --detail "..."`
 - **shard status**: Last confirmed 2026-10-25: "the test shard is the only shard: live was retired and deleted on 2026-10-14 until the fresh 1.0 world, and the launcher's Play button now connects to the test shard (2026.10.24.2); the test shard (2594, up) runs sl-modernuo:latest, built 2026-10-23 from main 0f1871f (version 2026.10.23.2), while main is 2026.10.25.7, 33 merges ahead; the overnight bot tests the newest main on its own world copy each night; which player package is published is not visible from the repos". Still what runs? `python tools/judge.py status "..."` or `python tools/judge.py confirm status`
-- **play tests not sorted**: 1137 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
+- **play tests not sorted**: 1139 open play-test item(s) have no Who: M-001, P163-0, P164-0, P165-1, P165-2, P165-3, P165-4, P165-5, P165-6, P174-0, P152-0, P182-0, P183-0, P184-1, P184-2, P184-3, P184-4, P184-5, P184-6, P184-7 .... Sort each into testing/bot-triage.md with its steps in testing/playtest-steps.json (that file's 'Where a new prompt's items are sorted'), then run the check. `python -m unittest tools/tests/test_play_who.py`
 
 ## Port list: 6 of 16 systems in. 833 of 983 files (85%).
 
@@ -239,7 +239,7 @@ Tasks          ░░░░░░░░░░░░░░░░░░░░░�
 
 _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates one row and its date._
 
-### Queue (Golem off; 752 prompts done, 5 more stopped early and not counted)
+### Queue (Golem off; 754 prompts done, 5 more stopped early and not counted)
 
 | Prompt | State | When |
 |---|---|---|
@@ -253,8 +253,8 @@ _Status lives in `tools/progress-state.json`; `python tools/judge.py` updates on
 | P873 review-build-new-haven-winter-set | done | 2026-11-10 |
 | P872 cont-fixup-lamps-and-peddler-wagon | done | 2026-11-10 |
 | P870 review-build-decor-addon-housing-furniture | done | 2026-11-10 |
+| P869 cont-fixup-new-haven-winter-set | done | 2026-11-10 |
 | P868 review-build-lamps-and-peddler-wagon | done | 2026-11-10 |
-| P866 review-build-variable-carpet | done | 2026-11-10 |
 
 ### Needs reconciling on a `MODERNUO_COMMIT` bump: 199 patches, 12 replacements
 
@@ -291,7 +291,7 @@ What a MODERNUO_COMMIT bump must reconcile. Patches fail LOUDLY - apply-patches.
 - **S3 costed menu - declines upheld with their ratios recorded** — Measured 2026-09-07, notes/s3-decline-costs.md. Skill Masteries (45 files/8,542 lines, unblocks 14, patches 35 upstream files - fails the layering test). Vice vs Virtue (57/9,613, unblocks 5, patches 21). Exploring the Deep (70/10,292, unblocks 2 - structurally the safest build here and the worst ratio). Shadowguard (14/11,222, unblocks 8). City Loyalty (28/8,177, unblocks 15 - decline on ratio, not structure; revisit with Town Cryer). Instanced Peerless (13/1,543, unblocks 2, and BasePeerless and PeerlessAltar are both absent from ModernUO, so there is no base to instance - cost Services/Peerless first). ServUO's ML quest framework (22 files/6,269 lines, not the 21/5,625 the brief stated) - declined because ModernUO already ships the same OSI system. NOT declined and recommended instead: SAAbsorptionAttributes, the TribeType transformation, and a one-quest spike onto ModernUO's ML quest engine. Vendor Searching (4/2,545) is a player feature, not content; the unblock ratio is the wrong test and it is Chase's call.
 - **ServUO ML quest framework - decline REAFFIRMED by S5** — S5 translated one quest end to end and the objective mapping holds for 4 of 5 types, two of them pinned by tests. Porting ServUO's 22-file, 6,269-line framework would put a second engine in the tree to do a job the engine we already have does correctly. The decline was always on two-engines-for-one-job; it now rests on measurement rather than on principle alone. What is NOT declined: the 164 of 203 missing quests that use a single standard objective type. The 39 that hand-write a BaseObjective subclass (25 InternalObjective, 3 CollectionsObtain, 2 QuestionAndAnswer, ~9 one-offs) are per-quest work, not a framework port, and are the thing to cost before the next quest batch.
 
-Counted from the trees: 1815 customization files, 206 patch files, 2416 tests in 335 files.
+Counted from the trees: 1818 customization files, 206 patch files, 2422 tests in 336 files.
 Shard status: the test shard is the only shard: live was retired and deleted on 2026-10-14 until the fresh 1.0 world, and the launcher's Play button now connects to the test shard (2026.10.24.2); the test shard (2594, up) runs sl-modernuo:latest, built 2026-10-23 from main 0f1871f (version 2026.10.23.2), while main is 2026.10.25.7, 33 merges ahead; the overnight bot tests the newest main on its own world copy each night; which player package is published is not visible from the repos (confirmed 2026-10-25).
 <!-- PROGRESS:END -->
 
